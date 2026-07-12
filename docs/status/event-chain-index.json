@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T01:17:15.450Z",
+  "generatedAt": "2026-07-12T03:56:32.124Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4719,
-      "linkedRelationCount": 19106,
+      "entityCount": 4735,
+      "linkedRelationCount": 19188,
       "layers": {
         "frontend": {
           "count": 193,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 715,
+          "count": 717,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1183,6 +1183,22 @@
               "status": "verified"
             },
             {
+              "id": "function:loginuser:bd88f35cc6",
+              "type": "function",
+              "name": "loginUser",
+              "path": "apps/api/src/modules/auth/auth.service.ts#loginUser",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:registeruser:8417c10f55",
+              "type": "function",
+              "name": "registerUser",
+              "path": "apps/api/src/modules/auth/auth.service.ts#registerUser",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "route:auth-session-ts:acb7f8af80",
               "type": "route",
               "name": "auth.session.ts",
@@ -1285,28 +1301,12 @@
               "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
               "owner": "QA Regression Lead",
               "status": "verified"
-            },
-            {
-              "id": "route:publicuser-ts:a393a249c4",
-              "type": "route",
-              "name": "publicUser.ts",
-              "path": "apps/api/src/modules/users/publicUser.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "task:luc-4819-production-performance-and-server-health-watch-task:3b924c7ae3",
-              "type": "task",
-              "name": "LUC-4819 Production Performance And Server Health Watch Task",
-              "path": "history/tasks/luc-4819-production-performance-health-watch-2026-06-20-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3634,
+          "count": 3648,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -7999,7 +7999,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 929,
-      "linkedRelationCount": 3442,
+      "linkedRelationCount": 3444,
       "layers": {
         "frontend": {
           "count": 25,
@@ -10108,7 +10108,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 3244,
-      "linkedRelationCount": 11249,
+      "linkedRelationCount": 11251,
       "layers": {
         "frontend": {
           "count": 390,
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9166,
-      "linkedRelationCount": 32527,
+      "entityCount": 9182,
+      "linkedRelationCount": 32594,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1568,
+          "count": 1570,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6063,
+          "count": 6077,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

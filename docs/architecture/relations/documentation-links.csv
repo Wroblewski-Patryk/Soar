@@ -207,6 +207,8 @@ apps/api/src/modules/auth/auth.controller.ts#me,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.controller.ts#register,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.controller.ts#setSessionCookie,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv,docs/modules/api-auth.md
+apps/api/src/modules/auth/auth.service.ts#registerUser,docs/modules/api-auth.md
+apps/api/src/modules/auth/auth.service.ts#loginUser,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.jwt.ts#signAuthToken,docs/modules/api-auth.md

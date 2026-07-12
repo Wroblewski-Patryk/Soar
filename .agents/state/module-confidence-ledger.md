@@ -1,10 +1,78 @@
+## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
+
+- Module row:
+  Account access / API auth service source-truth documentation.
+- Status:
+  `verified local source-truth link / one doc-link row resolved /
+implemented-proof follow-up required / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-618-account-access-registeruser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-618-account-access-registeruser-doc-link-2026-07-12-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document
+  `apps/api/src/modules/auth/auth.service.ts#registerUser`.
+  Architecture-awareness regenerated with `10741` entities and `35039`
+  relations; app-completion reports `missingDocLink=1988`; project-truth routes
+  the same entity as `implemented_needs_proof`.
+- Confidence:
+  high for this local source-truth/doc-link row. Runtime/test proof is not
+  claimed here; [LUC-621](/LUC/issues/LUC-621) owns the focused proof
+  follow-up.
+
+## 2026-07-12 LUC-613 Account Access loginUser Proof
+
+- Module row:
+  Account access / API auth service login proof.
+- Status:
+  `verified local focused proof / one implemented-needs-proof row resolved /
+no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-613-account-access-loginuser-proof-2026-07-12.md`;
+  `history/tasks/luc-613-account-access-loginuser-proof-2026-07-12-task.md`.
+- Current proof:
+  `apps/api/src/modules/auth/auth.loginUser.test.ts` verifies valid credential
+  login, invalid email and password rejection, generic credentials error,
+  password stripping from the returned user object, token signing payload
+  inputs including `sessionVersion`, and short versus remember-aware token TTL
+  selection. Architecture-awareness regenerated with `10738` entities and
+  `35024` relations; app-completion reports `implementedNeedsProof=113`;
+  project truth first Account access gap advanced to
+  `auth.service.ts#registerUser` as `missing_doc_link`.
+- Confidence:
+  high for this local Account access service proof row. This does not claim
+  protected production auth/session acceptance or broader Account access
+  browser proof.
+
+## 2026-07-12 LUC-611 Account Access loginUser Doc-Link
+
+- Module row:
+  Account access / API auth service source-truth documentation.
+- Status:
+  `verified local source-truth link / one doc-link row resolved /
+implemented-proof follow-up required / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-611-account-access-loginuser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-611-account-access-loginuser-doc-link-2026-07-12-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document
+  `apps/api/src/modules/auth/auth.service.ts#loginUser`. Architecture-awareness
+  regenerated with `10734` entities and `35005` relations; app-completion
+  reports `missingDocLink=1989`; project-truth routes the same entity as
+  `implemented_needs_proof`.
+- Confidence:
+  high for this local source-truth/doc-link row. Runtime/test proof is not
+  claimed here; [LUC-613](/LUC/issues/LUC-613) owns the focused proof
+  follow-up.
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 - Mission:
   `LUC-549-ACCOUNT-ACCESS-GETPREVIOUSSECRETEXPIRY-PROOF-2026-07-12`.
 - Status:
   `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Scope:
   Test Automation Engineer proof closure for
   `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
@@ -33,7 +101,7 @@
   Account access / API auth JWT source-truth documentation.
 - Status:
   `verified local source-truth link / one doc-link row resolved /
-  implemented-proof follow-up delegated / no runtime mutation`.
+implemented-proof follow-up delegated / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`;
   `history/tasks/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12-task.md`.
@@ -54,7 +122,7 @@
   Account access / API auth JWT source-truth documentation.
 - Status:
   `verified local source-truth link / one doc-link row resolved /
-  implemented-proof follow-up delegated / no runtime mutation`.
+implemented-proof follow-up delegated / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11.md`;
   `history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md`.
@@ -75,7 +143,7 @@
   Account access / API auth JWT secret resolution / app-completion proof.
 - Status:
   `verified local focused proof / one implemented-needs-proof row resolved /
-  no runtime mutation`.
+no runtime mutation`.
 - Evidence:
   `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
   `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
@@ -96,7 +164,7 @@
   Account access / API auth e2e source-truth documentation.
 - Status:
   `verified local source-truth link / one doc-link row resolved / no runtime
-  mutation`.
+mutation`.
 - Evidence:
   `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
   `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
@@ -118,7 +186,7 @@
   documentation truth.
 - Status:
   `verified local source-truth links / seven doc-link rows resolved / focused
-  cookie proof pass / no runtime mutation`.
+cookie proof pass / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-498-account-access-doc-link-burn-down-2026-07-11.md`;
   `history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md`.
@@ -141,7 +209,7 @@
   Account access / API auth controller / app-completion truth.
 - Status:
   `verified index links / six missing-test-link rows resolved / DB-backed
-  rerun blocked by local infra / no runtime mutation`.
+rerun blocked by local infra / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
   `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
@@ -165,7 +233,7 @@
   observability.
 - Status:
   `verified via DRE/Ops admin protected principal; unauthenticated diagnostics
-  fail closed; no runtime mutation`.
+fail closed; no runtime mutation`.
 - Evidence:
   `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
   `history/artifacts/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.json`;
@@ -187,7 +255,7 @@
   protected-route proof routing.
 - Status:
   `verified as owner-usable route-bundle split; no runtime mutation; protected
-  proof still gated`.
+proof still gated`.
 - Evidence:
   `history/evidence/luc-501-browser-review-owner-route-bundles-2026-07-11.md`;
   `history/tasks/luc-501-browser-review-owner-route-bundles-2026-07-11-task.md`.
@@ -208,7 +276,7 @@
   protected release/account readiness / encrypted runtime input binding.
 - Status:
   `input binding readiness resolved; account-access input gate pass; protected
-  proof still pending`.
+proof still pending`.
 - Evidence:
   `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
   `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
@@ -229,7 +297,7 @@
   deployment evidence gate.
 - Status:
   `verified for input-name presence only; all requested families present;
-  protected proof still pending`.
+protected proof still pending`.
 - Evidence:
   `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
   `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
@@ -254,7 +322,7 @@
   deployment evidence gate.
 - Status:
   `blocked; DRE runner cannot bind protected refs; no-secret readiness remains
-  partial; no runtime mutation`.
+partial; no runtime mutation`.
 - Evidence:
   `history/evidence/luc-342-protected-input-binding-readiness-2026-07-10.md`;
   `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-10.json`;
@@ -279,7 +347,7 @@
   register.
 - Status:
   `verified docs source-truth / historical TBD metric gap reconciled / no
-  runtime mutation`.
+runtime mutation`.
 - Evidence:
   `history/tasks/luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth-2026-07-10-task.md`.
 - Current proof:
@@ -299,7 +367,7 @@
   link.
 - Status:
   `verified index link / missing-doc-link resolved / project-truth advanced /
-  no runtime mutation`.
+no runtime mutation`.
 - Evidence:
   `history/evidence/luc-242-account-access-controller-clearsession-doc-link-2026-07-10.md`;
   `history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md`.
@@ -322,7 +390,7 @@
   authenticated browser proof / runtime and trading top-flow QA packet.
 - Status:
   `proof packet prepared / local helper proof pass / production run gated / no
-  protected smoke`.
+protected smoke`.
 - Evidence:
   `history/evidence/luc-172-protected-authenticated-browser-proof-packet-2026-07-10.md`;
   `history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md`.
@@ -341,7 +409,7 @@
   Account access / API auth controller / app-completion truth.
 - Status:
   `verified index link / missing-test-link resolved / DB-backed rerun blocked
-  by local infra / no runtime mutation`.
+by local infra / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md`;
   `history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md`.
@@ -362,7 +430,7 @@
   Account access / API auth middleware / app-completion truth.
 - Status:
   `verified locally / requireAuth project-truth gap resolved /
-  app-completion refreshed / API typecheck pass / no runtime mutation`.
+app-completion refreshed / API typecheck pass / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`;
   `history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md`.
@@ -385,7 +453,7 @@
   protected release/account readiness.
 - Status:
   `blocked / no-secret readiness partial / account-access gate fail /
-  secret-binding access 403 / no runtime mutation`.
+secret-binding access 403 / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`;
   `history/artifacts/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.json`;
@@ -393,7 +461,7 @@
 - Current proof:
   `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; only
   `SOAR_PROD_*` is present by name count. `corepack pnpm run
-  ops:protected-inputs:check:test` passed (`7/7`). Paperclip secret metadata
+ops:protected-inputs:check:test` passed (`7/7`). Paperclip secret metadata
   access returned `403 Forbidden`, so this runner cannot bind/verify protected
   company refs directly.
 - Confidence:
@@ -408,8 +476,8 @@
   release/account readiness; source-control closure.
 - Status:
   `partially verified / local architecture drift pass / protected input
-  readiness partial / app-completion gaps require routing / no runtime
-  mutation`.
+readiness partial / app-completion gaps require routing / no runtime
+mutation`.
 - Evidence:
   `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md`;
   `history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md`.
@@ -429,7 +497,7 @@
   Account access / Auth session / API auth middleware / app-completion truth.
 - Status:
   `verified locally / clearSession project-truth gap resolved /
-  app-completion refreshed / no runtime mutation`.
+app-completion refreshed / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
   `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
@@ -452,7 +520,7 @@
   Account access / API auth middleware / typed backend test suite.
 - Status:
   `verified locally / requireAuth middleware test pass / API typecheck pass /
-  test-only change`.
+test-only change`.
 - Evidence:
   `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
 - Current proof:
@@ -471,7 +539,7 @@
   protected runtime freshness route.
 - Status:
   `verified locally / DB-backed auth-origin route proof pass /
-  DB-backed worker runtime freshness route proof pass / no runtime mutation`.
+DB-backed worker runtime freshness route proof pass / no runtime mutation`.
 - Evidence:
   `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`;
   `history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md`.
@@ -587,8 +655,8 @@
   release readiness.
 - Status:
   `done for deploy queue sweep / public Web and API smoke pass / redacted
-  deploy-log export integrated / Coolify deployment queue cleared on read-only
-  recheck / no production mutation`.
+deploy-log export integrated / Coolify deployment queue cleared on read-only
+recheck / no production mutation`.
 - Evidence:
   `history/evidence/luc-3515-coolify-production-deploy-health-sweep-2026-07-02.md`;
   `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md`.
@@ -612,7 +680,7 @@
   assistant runtime foundation.
 - Status:
   `partially verified / DB-free worker and assistant contracts pass /
-  DB-backed runtime freshness route proof blocked by local PostgreSQL`.
+DB-backed runtime freshness route proof blocked by local PostgreSQL`.
 - Evidence:
   `history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md`.
 - Current proof:
@@ -748,7 +816,7 @@
   subscription entitlements.
 - Status:
   `blocked / protected input readiness partial / server-side security
-  boundaries verified`.
+boundaries verified`.
 - Evidence:
   `history/evidence/luc-6830-security-account-access-gate-sweep-2026-07-02.md`;
   `history/evidence/luc-6830-security-account-access-gate-readiness-2026-07-02.md`;
@@ -772,7 +840,7 @@
 - Module row: regression baseline / Web smoke / API DB-backed smoke /
   Backtests smoke / public deploy smoke.
 - Status: `blocked / Web smoke verified / API and backtests blocked by local
-  Docker engine / production Web blocked`.
+Docker engine / production Web blocked`.
 - Evidence:
   `history/artifacts/luc-6820-qa-repeatable-smoke-e2e-2026-07-02.json`;
   `history/evidence/luc-6820-qa-repeatable-smoke-e2e-2026-07-02.md`;
@@ -943,7 +1011,7 @@
   control tick returned `supervise_active_runs`; strict architecture drift
   passed `850/850` with `0` missing; protected-input checker regression
   passed `7/7`; no-secret protected-input readiness remains `PARTIAL /
-  NO-GO`.
+NO-GO`.
 - Confidence:
   high that there is no fresh TSA architecture drift to route from this
   heartbeat; blocked for release completion until existing Ops, QA/Test,
@@ -1132,7 +1200,7 @@
   production timing.
 - Reality:
   `blocked / production Web 503 / authenticated acceptance not executable /
-  protected runtime auth binding absent`.
+protected runtime auth binding absent`.
 - Update:
   [LUC-6608](/LUC/issues/LUC-6608) reran QVE production acceptance. API
   health/ready passes, but production Web root/build-info return `503`; UI
@@ -1156,7 +1224,7 @@
   subscription entitlements.
 - Reality:
   `blocked / protected input readiness partial / server-side security
-  boundaries verified`.
+boundaries verified`.
 - Update:
   [LUC-6594](/LUC/issues/LUC-6594) reran the no-secret protected-input
   readiness sweep and focused API security boundary packets. The current
@@ -1475,7 +1543,7 @@
   release source-build provenance.
 - Reality:
   `architecture drift verified; production Web and worker readiness blocked;
-  protected account-access gate fail; app-completion proof backlog remains`.
+protected account-access gate fail; app-completion proof backlog remains`.
 - Update:
   [LUC-6459](/LUC/issues/LUC-6459) collected the known-state baseline after the
   local-board comment. Strict architecture drift passed with `850/850`
@@ -1593,7 +1661,7 @@
   baseline / release-protected gates.
 - Reality:
   `verified baseline refresh; strict architecture drift pass; actionable test-link
-  gap delegated`.
+gap delegated`.
 - Update:
   [LUC-6309](/LUC/issues/LUC-6309) refreshed architecture-awareness at
   `2026-06-29T23:12:50.198Z`: `10195` entities, `32507` relations, `12433`
@@ -1622,7 +1690,7 @@
   protected gates.
 - Reality:
   `verified refresh; no new TSA repair child; protected input gate remains
-  fail-closed`.
+fail-closed`.
 - Update:
   [LUC-6303](/LUC/issues/LUC-6303) refreshed the TSA gap posture. Strict
   architecture drift passed and no new architecture repair is required.
@@ -1671,7 +1739,7 @@
   Security-account-access gate / Release-Ops protected gates.
 - Reality:
   `architecture clean; production acceptance green; protected account gate
-  fail-closed`.
+fail-closed`.
 - Update:
   [LUC-6285](/LUC/issues/LUC-6285) refreshed the TSA controller posture.
   Strict architecture drift passed and no new TSA architecture repair,
@@ -1745,7 +1813,7 @@
   app-completion proof backlog / User configuration.
 - Status delta:
   `PARTIALLY_VERIFIED / CONFIG_SUPPORT_PASS / API_KEY_PROBE_PASS /
-  DB_BACKED_PROFILE_ROUTE_PROOF_BLOCKED`.
+DB_BACKED_PROFILE_ROUTE_PROOF_BLOCKED`.
 - Evidence:
   `history/evidence/luc-6097-user-configuration-api-support-contract-2026-06-29.md`;
   `history/tasks/luc-6097-user-configuration-api-support-contract-2026-06-29-task.md`.
@@ -2056,7 +2124,7 @@
   worker readiness / Coolify read-only status.
 - Status delta:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Confidence:
   [LUC-5986](/LUC/issues/LUC-5986) refreshed read-only production runtime
   confidence. Public API/Web smoke passed; fresh-login protected
@@ -2086,7 +2154,7 @@
   Paperclip control-plane owner-path closure.
 - Status delta:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
+OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
 - Confidence update:
   [LUC-5921](/LUC/issues/LUC-5921) refreshed the TSA gap-register posture.
   Current architecture-awareness has zero actionable missing-test,
@@ -2120,7 +2188,7 @@
   worker readiness / Coolify read-only status.
 - Status delta:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Confidence:
   [LUC-5947](/LUC/issues/LUC-5947) refreshed read-only production runtime
   confidence. Public API/Web smoke passed; fresh-login protected
@@ -2149,7 +2217,7 @@
   worker readiness / Coolify read-only status.
 - Status delta:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Confidence update:
   [LUC-5910](/LUC/issues/LUC-5910) refreshed read-only production runtime
   confidence. Public API/Web smoke passed; fresh-login protected
@@ -2207,7 +2275,7 @@
   Paperclip control-plane owner-path closure.
 - Status delta:
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  OWNER_PATH_ALREADY_ROUTED`.
+OWNER_PATH_ALREADY_ROUTED`.
 - Confidence update:
   [LUC-5900](/LUC/issues/LUC-5900) reconciled the PM no-stall queue without
   creating duplicate proof, architecture repair, protected recheck, production
@@ -2260,7 +2328,7 @@
   worker readiness / Coolify read-only status.
 - Status delta:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Confidence update:
   [LUC-5880](/LUC/issues/LUC-5880) refreshed read-only production runtime
   confidence. Public API/Web smoke passed; fresh-login protected
@@ -2314,7 +2382,7 @@
   evidence.
 - Status delta:
   `DONE / VERIFIED_TRIAGE / BROWSER_REVIEW_BACKLOG_CLASSIFIED /
-  V1_PARTIALLY_VERIFIED`.
+V1_PARTIALLY_VERIFIED`.
 - Confidence update:
   [LUC-5862](/LUC/issues/LUC-5862) classified the current `452` browser-review
   rows by flow and linked existing same-day production browser proof from
@@ -2338,7 +2406,7 @@
   Architecture Evidence Graph / app-completion proof backlog.
 - Status delta:
   `DONE / VERIFIED_DOCS_RECONCILIATION / ARCHITECTURE_ACTIONABLE_ZERO /
-  APP_COMPLETION_BACKLOG_RECORDED`.
+APP_COMPLETION_BACKLOG_RECORDED`.
 - Confidence update:
   [LUC-5865](/LUC/issues/LUC-5865) reconciled the current generated evidence
   links. Architecture-awareness has no current actionable repair rows, while
@@ -2363,7 +2431,7 @@
   Soar V1 PM status / app-completion proof backlog / release-readiness gates.
 - Status delta:
   `DONE / VERIFIED_PM_STATUS_REFRESH / V1_PARTIALLY_VERIFIED /
-  NO_DUPLICATE_LANE`.
+NO_DUPLICATE_LANE`.
 - Confidence update:
   [LUC-5857](/LUC/issues/LUC-5857) refreshed the PM view without creating
   duplicate proof lanes. Current architecture-awareness has zero actionable
@@ -2391,7 +2459,7 @@
   SOAR-OPERATIONS-001 / production performance and server-health.
 - Confidence:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Evidence:
   [LUC-5835](/LUC/issues/LUC-5835) refreshed the recurring DRE production
   watch. Public smoke/timing, fresh-login protected workers readiness, runtime
@@ -2422,7 +2490,7 @@
   release-source-control closure.
 - Status delta:
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Confidence update:
   [LUC-5822](/LUC/issues/LUC-5822) reconciled the PM no-stall queue without
   creating duplicate proof, architecture repair, protected recheck, or
@@ -2450,7 +2518,7 @@
   release-source-control closure.
 - Status delta:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Confidence update:
   [LUC-5806](/LUC/issues/LUC-5806) refreshed the TSA gap-register posture for
   the current Soar V1 audit loop. Architecture-awareness has zero actionable
@@ -2479,7 +2547,7 @@
   health, and representative performance timing.
 - Status delta:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Confidence update:
   [LUC-5803](/LUC/issues/LUC-5803) refreshed QVE production acceptance. Public
   and protected smoke, auth-session browser proof, UI module clickthrough,
@@ -2613,7 +2681,7 @@
   app-completion proof backlog / Exchange connection and configuration.
 - Status delta:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Confidence update:
   [LUC-5706](/LUC/issues/LUC-5706) refreshed the gap register after
   [LUC-5687](/LUC/issues/LUC-5687) and [LUC-5693](/LUC/issues/LUC-5693).
@@ -2695,7 +2763,7 @@
   `Profile API Keys` / `API Exchange` / Exchange connection and configuration.
 - Status delta:
   `DONE / VERIFIED_LOCAL / NAMES_ONLY_EXCHANGE_CONFIG /
-  FAIL_CLOSED_API_PROOF`.
+FAIL_CLOSED_API_PROOF`.
 - Confidence update:
   [LUC-5680](/LUC/issues/LUC-5680) closed the Core Backend slice of the
   Exchange connection/configuration proof lane. Profile API-key create/test
@@ -2778,7 +2846,7 @@
   SOAR-OPERATIONS-001 / production protected worker readiness.
 - Status delta:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Confidence update:
   [LUC-5643](/LUC/issues/LUC-5643) refreshed the protected recheck for
   [LUC-241](/LUC/issues/LUC-241). Canonical public production smoke passed,
@@ -2858,7 +2926,7 @@
   runtime freshness.
 - Status delta:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Confidence update:
   [LUC-5596](/LUC/issues/LUC-5596) refreshed production QA acceptance for
   deployed `42177530f2a2ddc22832133b545bccab6ab404eb`. Public/protected smoke
@@ -2911,7 +2979,7 @@
   release gate routing.
 - Status delta:
   `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
 - Confidence update:
   [LUC-5598](/LUC/issues/LUC-5598) refreshed the TSA repair-lane decision from
   current generated evidence. `docs/status/architecture-awareness-report.md`
@@ -3007,7 +3075,7 @@
   pnpm 11 config readback PASS; focused runner contract tests PASS (`8/8`);
   package-managed Web smoke PASS (`3` files / `18` tests); API smoke
   rerun after infra restoration; closure recheck `node --test
-  scripts/runQaRepeatableSmokeE2e.test.mjs scripts/goLiveSmoke.test.mjs` PASS
+scripts/runQaRepeatableSmokeE2e.test.mjs scripts/goLiveSmoke.test.mjs` PASS
   (`20/20`).
 - Residual:
   full repeatable `api,backtests` remains non-green because the broad API
@@ -3043,7 +3111,7 @@
   DB-backed smoke.
 - Status delta:
   `DONE / PARTIALLY_VERIFIED / SAFE_WEB_AND_PUBLIC_SMOKE_GREEN /
-  LOCAL_API_DB_SMOKE_BLOCKED`.
+LOCAL_API_DB_SMOKE_BLOCKED`.
 - Confidence update:
   [LUC-5542](/LUC/issues/LUC-5542) refreshed safe QA evidence. Repository
   guardrails passed, public production no-worker smoke passed for API
@@ -3273,7 +3341,7 @@
 - Module row: SOAR-OPERATIONS-001 / production deploy health and Coolify/VPS
   diagnosis.
 - Status delta: `VERIFIED_READ_ONLY / APP_HEALTHY /
-  PROVENANCE_RESIDUAL_ROUTED`.
+PROVENANCE_RESIDUAL_ROUTED`.
 - Confidence update:
   [LUC-4929](/LUC/issues/LUC-4929) completed the previously blocked Coolify
   read-only deployment/resource diagnosis after [LUC-4811](/LUC/issues/LUC-4811)
@@ -3301,7 +3369,7 @@
 - Module row: SOAR-OPERATIONS-001 / production performance and server-health.
 - Status delta:
   `DONE / PARTIALLY_VERIFIED / ACTIVE_API_TAIL_NOT_REPRODUCED /
-  TLS_PROXY_VARIANCE_CLASSIFIED`.
+TLS_PROXY_VARIANCE_CLASSIFIED`.
 - Confidence update:
   [LUC-5360](/LUC/issues/LUC-5360) consumed the latency-tail signal delegated
   by [LUC-5356](/LUC/issues/LUC-5356). Fresh public smoke passed and bounded
@@ -3328,7 +3396,7 @@
   release gate routing.
 - Status delta:
   `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
 - Confidence update:
   [LUC-5367](/LUC/issues/LUC-5367) refreshed the TSA repair-lane decision
   from current generated evidence. `docs/graphs/architecture-health.json`
@@ -3367,7 +3435,7 @@
   release gate routing.
 - Status delta:
   `PARTIALLY_VERIFIED / STRICT_ARCHITECTURE_DRIFT_CLEAN /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED / RELEASE_GATES_STILL_BLOCKED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED / RELEASE_GATES_STILL_BLOCKED`.
 - Confidence update:
   [LUC-5351](/LUC/issues/LUC-5351) refreshed the TSA controller state from the
   current generated indexes. Strict architecture graph drift passed with
@@ -3402,7 +3470,7 @@
 
 - Module rows: runtime DCA/PnL; bot runtime readback; exchange boundary.
 - Status delta: `PARTIALLY_VERIFIED / LOCAL_RUNTIME_CONTRACTS_PASS /
-  PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
+PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
 - Confidence update:
   [LUC-5310](/LUC/issues/LUC-5310) refreshed focused local confidence for
   runtime DCA/PnL contracts. Engine tests passed for exchange-PnL DCA
@@ -3460,7 +3528,7 @@
 - Module rows: orders; positions; bot runtime; exchange adapter; Gate.io
   selected-market position creation.
 - Status delta: `VERIFIED_LOCAL / FULL_E2E_BLOCKER_REPAIRED /
-  PRODUCTION_LIVE_PROOF_NOT_RUN`.
+PRODUCTION_LIVE_PROOF_NOT_RUN`.
 - Confidence update:
   [LUC-5311](/LUC/issues/LUC-5311) repaired the backend/test-runtime blocker
   found by [LUC-5308](/LUC/issues/LUC-5308). The root cause was mixed: stale
@@ -3486,8 +3554,8 @@
 - Module rows: exchange adapter; orders; positions; bot runtime; Gate.io
   selected-market position creation.
 - Status delta: `VERIFIED_LOCAL /
-  GATEIO_PAPER_SELECTED_MARKET_POSITION_PROVEN /
-  PRODUCTION_LIVE_PROOF_NOT_RUN`.
+GATEIO_PAPER_SELECTED_MARKET_POSITION_PROVEN /
+PRODUCTION_LIVE_PROOF_NOT_RUN`.
 - Confidence update:
   [LUC-5308](/LUC/issues/LUC-5308) consumed the completed
   [LUC-5311](/LUC/issues/LUC-5311) blocker repair and added a dedicated local
@@ -3513,7 +3581,7 @@
 - Module rows: app function inventory; wallet; exchange adapter; positions;
   runtime DCA/PnL; dashboard runtime; auth/session; production health.
 - Status delta: `REPORT_PUBLISHED / BROAD_LOCAL_IMPLEMENTATION /
-  PRODUCTION_PROOF_GAPS_IDENTIFIED`.
+PRODUCTION_PROOF_GAPS_IDENTIFIED`.
 - Confidence update:
   [LUC-5307](/LUC/issues/LUC-5307) consolidated current Soar V1/V1.x function
   truth from generated architecture indexes and same-day production evidence.
@@ -3542,7 +3610,7 @@
 
 - Module row: Production Health / Auth Session / Operations Runtime.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
   Public production smoke passed for API `/health`, API `/ready`, Web `/`,
   and Web `/api/build-info` on production SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`. Five-sample public timing was
@@ -3590,7 +3658,7 @@
 
 - Module row: Protected auth/session browser proof.
 - Status delta: `VERIFIED_ROUTING / NO_RUNTIME_REPAIR_REQUIRED /
-  STALE_FAILURE_SUPERSEDED`.
+STALE_FAILURE_SUPERSEDED`.
 - Confidence update:
   [LUC-5298](/LUC/issues/LUC-5298) inspected the protected-route redirect
   surface after [LUC-5206](/LUC/issues/LUC-5206) failed on invalid-token
@@ -3662,7 +3730,7 @@
 - Module row: Architecture Evidence Graph / proof-gap register and repair-lane
   routing.
 - Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Confidence update:
   [LUC-5210](/LUC/issues/LUC-5210) refreshed the current TSA gap register after
   same-day graph, QA, security, PM, and production-health lanes. The current
@@ -3678,7 +3746,7 @@
 - Validation:
   `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
   missing); `pnpm softwarehouse:control-tick` unavailable (`Command
-  "softwarehouse:control-tick" not found`).
+"softwarehouse:control-tick" not found`).
 - Residual:
   V1 release readiness remains blocked outside this architecture lane by
   protected input readiness, Coolify/VPS server-health readback through
@@ -3687,19 +3755,19 @@
 
 # 2026-06-20 LUC-5206 Module Confidence Delta
 
-| Date | Module / Journey | State | Evidence | Next proof / fix |
-| --- | --- | --- | --- | --- |
-| 2026-06-20 | Production public Web/API smoke | partially verified | `ops:deploy:smoke` PASS; build-info SHA `42177530f2a2ddc22832133b545bccab6ab404eb`; timing max Web `/` `281 ms`, Web `/api/build-info` `2220 ms`, API `/health` `2484 ms` | Watch tail latency; do not declare release-grade provenance while `metadataSource=env-runtime`. |
-| 2026-06-20 | Authenticated UI module clickthrough | verified for route reachability | `history/evidence/luc-5206-prod-ui-module-clickthrough-2026-06-20.md` PASS | Rerun after auth redirect fix and any redeploy. |
-| 2026-06-20 | Protected auth/session browser proof | failed | `history/evidence/luc-5206-prod-auth-session-browser-proof-2026-06-20.md` FAIL: invalid token redirects to `/auth/login` without `session=expired` | [LUC-5146](/LUC/issues/LUC-5146) decides/fixes contract, then QVE reruns protected proof. |
-| 2026-06-20 | Coolify/VPS/DB/worker health readback | blocked | `ops:coolify-stack:env-check` failed closed with required present `0/16` | [LUC-4811](/LUC/issues/LUC-4811) injects approved read-only binding families. |
+| Date       | Module / Journey                      | State                           | Evidence                                                                                                                                                                  | Next proof / fix                                                                                |
+| ---------- | ------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 2026-06-20 | Production public Web/API smoke       | partially verified              | `ops:deploy:smoke` PASS; build-info SHA `42177530f2a2ddc22832133b545bccab6ab404eb`; timing max Web `/` `281 ms`, Web `/api/build-info` `2220 ms`, API `/health` `2484 ms` | Watch tail latency; do not declare release-grade provenance while `metadataSource=env-runtime`. |
+| 2026-06-20 | Authenticated UI module clickthrough  | verified for route reachability | `history/evidence/luc-5206-prod-ui-module-clickthrough-2026-06-20.md` PASS                                                                                                | Rerun after auth redirect fix and any redeploy.                                                 |
+| 2026-06-20 | Protected auth/session browser proof  | failed                          | `history/evidence/luc-5206-prod-auth-session-browser-proof-2026-06-20.md` FAIL: invalid token redirects to `/auth/login` without `session=expired`                        | [LUC-5146](/LUC/issues/LUC-5146) decides/fixes contract, then QVE reruns protected proof.       |
+| 2026-06-20 | Coolify/VPS/DB/worker health readback | blocked                         | `ops:coolify-stack:env-check` failed closed with required present `0/16`                                                                                                  | [LUC-4811](/LUC/issues/LUC-4811) injects approved read-only binding families.                   |
 
 # 2026-06-20 LUC-5088 Web Latency Coolify Runtime Correlation
 
 - Module row: SOAR-OPERATIONS-001 / production performance and server-health
   readiness.
 - Status delta: `PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED /
-  RUNTIME_CLUE_RECORDED`.
+RUNTIME_CLUE_RECORDED`.
 - Confidence update:
   [LUC-5088](/LUC/issues/LUC-5088) completed the DRE correlation follow-up
   from [LUC-5087](/LUC/issues/LUC-5087). Current public production timing did
@@ -3725,7 +3793,7 @@
 - Module row: Architecture Evidence Graph / proof-gap register and repair-lane
   routing.
 - Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Confidence update:
   [LUC-5043](/LUC/issues/LUC-5043) refreshed the current TSA gap register after
   same-day graph, QA, security, PM, and production-health lanes. The current
@@ -3752,7 +3820,7 @@
 - Module row: production acceptance / auth-session / dashboard route
   reachability / operations health.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_READBACK_BLOCKED`.
+COOLIFY_VPS_READBACK_BLOCKED`.
 - Evidence: public smoke PASS; authenticated UI clickthrough PASS; auth/session
   browser proof PASS; timing maxes all below `250 ms`; Coolify env checker
   contract PASS (`11/11`); current-runner binding preflight FAIL closed with
@@ -3768,7 +3836,7 @@
 - Module row: SOAR-OPERATIONS-001 / production performance, auth/session, and
   server-health readiness.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Confidence update:
   [LUC-5022](/LUC/issues/LUC-5022) refreshed the DRE production health signal.
   Public Web/API smoke passed, public response timing remained responsive,
@@ -3785,7 +3853,7 @@
   public smoke PASS; protected auth proof PASS; public timing maxes stayed at
   Web `/` `411 ms`, Web `/auth/login` `59 ms`, Web `/api/build-info` `30 ms`,
   API `/health` `96 ms`, and API `/ready` `46 ms`; `pnpm run -s
-  ops:coolify-stack:env-check:test` PASS (`11/11`); current-runner Coolify env
+ops:coolify-stack:env-check:test` PASS (`11/11`); current-runner Coolify env
   check FAIL_CLOSED with required present `0/16`.
 - Residual:
   [LUC-4811](/LUC/issues/LUC-4811) must inject approved read-only Coolify/VPS
@@ -3795,7 +3863,7 @@
 
 - Module rows: Wallets, Dashboard Home, Exchange Adapter, Profile API Keys.
 - Status delta: `PARTIALLY_VERIFIED / PRODUCT_REPAIR_NOT_PROVEN /
-  TEST_HARNESS_REPAIR_DELEGATED`.
+TEST_HARNESS_REPAIR_DELEGATED`.
   Web wallet/dashboard rendering is verified locally for the focused selected
   runtime wallet KPI/list/preview surfaces. Exchange authenticated-read and
   capability boundaries are verified locally. API wallet product contracts are
@@ -3817,10 +3885,10 @@
 
 ## 2026-06-30 LUC-6439 Production Protected Gate
 
-| Module / Journey | Status | Evidence | Next proof or fix | Last updated |
-| --- | --- | --- | --- | --- |
-| Production Web availability and protected worker readiness | blocked | `history/evidence/luc-6439-soar-protected-recheck-2026-06-30.md` | Resolve [LUC-6331](/LUC/issues/LUC-6331), then rerun DRE protected recheck. | 2026-06-30 |
-| Runtime freshness | verified | `history/evidence/luc-6439-soar-protected-recheck-2026-06-30.md` | Keep adjacent rollback guard tied to worker readiness restoration. | 2026-06-30 |
+| Module / Journey                                           | Status   | Evidence                                                         | Next proof or fix                                                           | Last updated |
+| ---------------------------------------------------------- | -------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------ |
+| Production Web availability and protected worker readiness | blocked  | `history/evidence/luc-6439-soar-protected-recheck-2026-06-30.md` | Resolve [LUC-6331](/LUC/issues/LUC-6331), then rerun DRE protected recheck. | 2026-06-30   |
+| Runtime freshness                                          | verified | `history/evidence/luc-6439-soar-protected-recheck-2026-06-30.md` | Keep adjacent rollback guard tied to worker readiness restoration.          | 2026-06-30   |
 
 ## 2026-07-01 LUC-6466 User-Journey App-Completion Proof Closure
 
@@ -3854,7 +3922,7 @@
 - Module rows: Architecture Evidence Graph; SOAR-OPERATIONS-001 / V1 release
   readiness controller.
 - Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  RELEASE_GATES_STILL_BLOCKED`.
+RELEASE_GATES_STILL_BLOCKED`.
 - Confidence update:
   [LUC-5011](/LUC/issues/LUC-5011) refreshed the TSA audit-to-completion
   controller after same-day security, DRE, QA, PM, and graph-drift closure
@@ -3870,7 +3938,7 @@
 - Validation:
   `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
   missing); `pnpm run -s quality:guardrails` PASS. `pnpm
-  softwarehouse:control-tick` is unavailable in this checkout and remains a
+softwarehouse:control-tick` is unavailable in this checkout and remains a
   control-loop tooling limitation, not a product/runtime failure.
 - Residual:
   V1 release readiness remains blocked by existing non-architecture lanes:
@@ -3909,7 +3977,7 @@
 - Module row: SOAR-OPERATIONS-001 / production performance, auth/session, and
   server-health readiness.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Confidence update:
   [LUC-4959](/LUC/issues/LUC-4959) refreshed the DRE production health signal.
   Public Web/API smoke passed, public response timing remained low, current
@@ -3935,7 +4003,7 @@
 - Module row: Architecture Evidence Graph / Stripe webhook traceability and
   guardrail health.
 - Status delta: `VERIFIED_LOCAL / ARCHITECTURE_GRAPH_DRIFT_REPAIRED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Confidence update:
   [LUC-4945](/LUC/issues/LUC-4945) repaired the source registry gap that
   caused [LUC-4939](/LUC/issues/LUC-4939) to fail guardrails. The Stripe
@@ -3962,7 +4030,7 @@
 - Module rows: SOAR-OPERATIONS-001 / regression evidence baseline; Architecture
   Evidence Graph / graph drift guardrail.
 - Status delta: `PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
-  ARCHITECTURE_GRAPH_DRIFT_REPAIRED_BY_LUC_4945`.
+ARCHITECTURE_GRAPH_DRIFT_REPAIRED_BY_LUC_4945`.
 - Confidence update:
   [LUC-4939](/LUC/issues/LUC-4939) refreshed the safe QA baseline. Repeatable
   Web/API/backtests smoke passed, docs parity passed, and public production
@@ -3988,7 +4056,7 @@
 - Module row: SOAR-OPERATIONS-001 / production deploy health and Coolify/VPS
   diagnosis.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
+DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
 - Confidence update:
   [LUC-4929](/LUC/issues/LUC-4929) verified public production Web/API health,
   current Web build-info readback, protected auth/session browser behavior, and
@@ -4016,7 +4084,7 @@
 
 - Module row: SOAR-OPERATIONS-001 / Web build-info deploy provenance.
 - Status delta: `VERIFIED_NO_CODE_CHANGE /
-  DEPLOY_APPROVAL_STILL_REQUIRED`.
+DEPLOY_APPROVAL_STILL_REQUIRED`.
 - Confidence update:
   [LUC-4912](/LUC/issues/LUC-4912) verified that current production Web reports
   the expected `origin/main` SHA `42177530...` but only via
@@ -4043,7 +4111,7 @@
 - Module row: Architecture Evidence Graph / implementation-without-tests
   health signal.
 - Status delta: `VERIFIED_CLASSIFICATION / NO_NEW_ACTIONABLE_GAP /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Confidence update:
   [LUC-4854](/LUC/issues/LUC-4854) classified the post-[LUC-4849](/LUC/issues/LUC-4849)
   `implementation_without_tests=1288` raw signal. The current actionable
@@ -4087,7 +4155,7 @@
 - Module row: SOAR-OPERATIONS-001 / authenticated production acceptance and
   performance.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Confidence update:
   [LUC-4833](/LUC/issues/LUC-4833) verified current production app-level
   acceptance on SHA `42177530f2a2ddc22832133b545bccab6ab404eb`: public Web/API
@@ -4115,7 +4183,7 @@
 
 - Module row: SOAR-OPERATIONS-001 / production performance and server health.
 - Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Confidence update:
   [LUC-4819](/LUC/issues/LUC-4819) verified that public production web/API
   surfaces remain responsive and protected auth/session dashboard proof passes
@@ -4424,7 +4492,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3597](/LUC/issues/LUC-3597) refreshed generated
+NO_MUTATION`. [LUC-3597](/LUC/issues/LUC-3597) refreshed generated
   architecture-awareness outputs at `2026-06-11T22:08:23.147Z`.
 - Evidence:
   `history/tasks/luc-3597-architecture-awareness-after-luc-3590-relation-row-2026-06-11-task.md`.
@@ -4466,7 +4534,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3589](/LUC/issues/LUC-3589) refreshed generated
+NO_MUTATION`. [LUC-3589](/LUC/issues/LUC-3589) refreshed generated
   architecture-awareness outputs at `2026-06-11T20:46:21.821Z`.
 - Evidence:
   `history/tasks/luc-3589-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
@@ -4592,7 +4660,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3572](/LUC/issues/LUC-3572) refreshed generated
+NO_MUTATION`. [LUC-3572](/LUC/issues/LUC-3572) refreshed generated
   architecture-awareness outputs at `2026-06-11T19:33:48.788Z`.
 - Evidence:
   `history/tasks/luc-3572-architecture-awareness-after-normalizebaseurl-2026-06-11-task.md`.
@@ -4652,7 +4720,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3558](/LUC/issues/LUC-3558) refreshed generated
+NO_MUTATION`. [LUC-3558](/LUC/issues/LUC-3558) refreshed generated
   architecture-awareness outputs at `2026-06-11T18:34:56.688Z`.
 - Evidence:
   `history/tasks/luc-3558-architecture-awareness-after-hasflag-2026-06-11-task.md`.
@@ -4691,7 +4759,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3552](/LUC/issues/LUC-3552) refreshed generated
+NO_MUTATION`. [LUC-3552](/LUC/issues/LUC-3552) refreshed generated
   architecture-awareness outputs at `2026-06-11T18:16:37.570Z`.
 - Evidence:
   `history/tasks/luc-3552-v1-audit-to-completion-controller-2026-06-11-task.md`.
@@ -4731,7 +4799,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3549](/LUC/issues/LUC-3549) refreshed generated
+NO_MUTATION`. [LUC-3549](/LUC/issues/LUC-3549) refreshed generated
   architecture-awareness outputs at `2026-06-11T18:04:25.885Z`.
 - Evidence:
   `history/tasks/luc-3549-architecture-awareness-after-isdeploybuildidaccepted-2026-06-11-task.md`.
@@ -4770,7 +4838,7 @@
 - Module row: Architecture Evidence Graph / Web build-info deploy wait
   traceability backlog.
 - Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
-  NO_MUTATION`. [LUC-3536](/LUC/issues/LUC-3536) refreshed generated
+NO_MUTATION`. [LUC-3536](/LUC/issues/LUC-3536) refreshed generated
   architecture-awareness outputs at `2026-06-11T17:34:59.119Z`.
 - Evidence:
   `history/tasks/luc-3536-architecture-awareness-after-closed-relation-rows-2026-06-11-task.md`.
@@ -4827,7 +4895,7 @@
 
 - Module row: SOAR-OPERATIONS-001 / Coolify production deploy health.
 - Status delta: `PARTIALLY_VERIFIED / PUBLIC_SMOKE_PASS / DEEPER_LOGS_BLOCKED /
-  NO_MUTATION`.
+NO_MUTATION`.
   [LUC-3515](/LUC/issues/LUC-3515) refreshed read-only production health:
   public no-worker smoke passed for API `/health`, API `/ready`, Web `/`, and
   Web `/api/build-info`; Coolify read-only access resolved selector
@@ -5353,7 +5421,7 @@
   `history/tasks/luc-2975-public-read-only-browser-proof-helper-test-lane-2026-06-08-task.md`.
 - Validation:
   syntax checks PASS; safe `--help` PASS; `node --test
-  scripts/runPublicReadOnlyBrowserProof.test.mjs` PASS (`5/5`); direct
+scripts/runPublicReadOnlyBrowserProof.test.mjs` PASS (`5/5`); direct
   [LUC-2958](/LUC/issues/LUC-2958) relation readback PASS (`16` rows);
   `pnpm run architecture:graph:generate` PASS (`653` nodes / `842` relations /
   `27` chains); Softwarehouse architecture-awareness refresh PASS (`9328`
@@ -5402,7 +5470,7 @@
   focused helper tests PASS (`8/8`); direct [LUC-2970](/LUC/issues/LUC-2970)
   relation readback PASS (`18` rows); `pnpm run architecture:graph:generate`
   PASS (`653` nodes / `842` relations / `27` chains); `pnpm run
-  quality:guardrails` PASS.
+quality:guardrails` PASS.
 - Residual risk:
   canonical architecture-awareness refresh was not run because
   `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
@@ -6389,7 +6457,7 @@
   RC/SLO helper families are no longer the top actionable family. Created
   [LUC-2685](/LUC/issues/LUC-2685) for Test Automation Engineer after active
   duplicate searches for `buildV1CompletionScorecard`, `V1 completion
-  scorecard`, and `buildV1MasterStateLedger` returned `0`.
+scorecard`, and `buildV1MasterStateLedger` returned `0`.
   No code/runtime/deploy/push/restart/rollback/env/account/secret/
   protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
   `history/tasks/luc-2684-architecture-awareness-refresh-after-rc-slo-proof-closure-2026-06-07-task.md`.
@@ -6583,7 +6651,7 @@
 - 2026-06-07 `LUC-2631-WEB-PWA-SERVICE-WORKER-MISSING-TEST-LINKS-2026-06-07`
   applies to Web PWA/service-worker registration behavior and Architecture
   Evidence Graph relation confidence. Status: `verified_local / traceability
-  only`. Added focused `ServiceWorkerRegistration` coverage for
+only`. Added focused `ServiceWorkerRegistration` coverage for
   install/updatefound activation handoff and added direct `LUC-2631` rows to
   `docs/architecture/relations/priority-test-links.csv` for
   `checkBuildVersion`, `handleControllerChange`, `handleVisibilityChange`,
@@ -6637,7 +6705,7 @@
 - 2026-06-07 `LUC-2611-SHARED-UI-FORM-PRIMITIVE-MISSING-TEST-LINKS-2026-06-07`
   applies to Web shared UI primitives, Web form primitives, and Architecture
   Evidence Graph relation confidence. Status: `verified_local / traceability
-  only`. Added focused `TableToneBadge` coverage and added direct `LUC-2611`
+only`. Added focused `TableToneBadge` coverage and added direct `LUC-2611`
   rows to `docs/architecture/relations/priority-test-links.csv` for
   `FooterPreferencesSwitchers`, `ProfileButton`, `StatusBadge`,
   `TableToneBadge`, `Tabs#syncFromHash`, `SuccessState`, `FormAlert`,
@@ -6861,13 +6929,13 @@
   `docs/architecture/traceability-matrix.md`, and
   `docs/architecture/chains/chains.csv`.
 
-  | Issue | Owner lane | Current status | Protected gate | Proof requirement |
-  | --- | --- | --- | --- | --- |
-  | [LUC-2564](/LUC/issues/LUC-2564) | QA/Test Automation | blocked | yes, first-class blocked by [LUC-241](/LUC/issues/LUC-241) | Fresh authenticated browser proof for protected dashboard/runtime and protected route/action rows before claims move beyond local/partial evidence. |
-  | [LUC-2565](/LUC/issues/LUC-2565) | Security | done | no for local review; yes for protected production probes | Security review of high-risk architecture proof gaps, including Profile API keys, subscriptions/admin/payment, AI assistant foundation, and API platform safety boundaries. |
-  | [LUC-2566](/LUC/issues/LUC-2566) | Backend/Runtime / Integration | done | no for audit/decomposition; yes for LIVE/protected readback | Runtime, engine, exchange, DCA/PnL, and market-stream local-only chain audit with repair slices and explicit protected proof boundaries. |
-  | [LUC-2567](/LUC/issues/LUC-2567) | Ops/Release | blocked | yes, first-class blocked by [LUC-241](/LUC/issues/LUC-241) | Protected production/runtime evidence gate map for release audit tooling, Ops config pipeline, worker/runtime readiness, Coolify/resource facts, and release proof sequencing. |
-  | [LUC-2568](/LUC/issues/LUC-2568) | Documentation Steward | done | no | Durable ledger sync of architecture backlog rows and no-regression note that historical unchecked plans are not active unless backed by current architecture rows and owner lanes. |
+  | Issue                            | Owner lane                    | Current status | Protected gate                                              | Proof requirement                                                                                                                                                                  |
+  | -------------------------------- | ----------------------------- | -------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [LUC-2564](/LUC/issues/LUC-2564) | QA/Test Automation            | blocked        | yes, first-class blocked by [LUC-241](/LUC/issues/LUC-241)  | Fresh authenticated browser proof for protected dashboard/runtime and protected route/action rows before claims move beyond local/partial evidence.                                |
+  | [LUC-2565](/LUC/issues/LUC-2565) | Security                      | done           | no for local review; yes for protected production probes    | Security review of high-risk architecture proof gaps, including Profile API keys, subscriptions/admin/payment, AI assistant foundation, and API platform safety boundaries.        |
+  | [LUC-2566](/LUC/issues/LUC-2566) | Backend/Runtime / Integration | done           | no for audit/decomposition; yes for LIVE/protected readback | Runtime, engine, exchange, DCA/PnL, and market-stream local-only chain audit with repair slices and explicit protected proof boundaries.                                           |
+  | [LUC-2567](/LUC/issues/LUC-2567) | Ops/Release                   | blocked        | yes, first-class blocked by [LUC-241](/LUC/issues/LUC-241)  | Protected production/runtime evidence gate map for release audit tooling, Ops config pipeline, worker/runtime readiness, Coolify/resource facts, and release proof sequencing.     |
+  | [LUC-2568](/LUC/issues/LUC-2568) | Documentation Steward         | done           | no                                                          | Durable ledger sync of architecture backlog rows and no-regression note that historical unchecked plans are not active unless backed by current architecture rows and owner lanes. |
 
   No-regression note: historical unchecked checklist rows are background
   signals only. They must not be promoted as active V1 work unless they map to
@@ -7643,14 +7711,14 @@ Last updated: 2026-06-06
   routing Web build/start through a production-env Next wrapper, then verified
   local public/read-only route rendering and password visibility toggles in a
   fresh browser. Validation passed: `node --check
-  scripts/runWebNextProductionCommand.mjs`, `node --check
-  scripts/runPublicReadOnlyBrowserProof.mjs`, `pnpm --filter web run build`,
+scripts/runWebNextProductionCommand.mjs`, `node --check
+scripts/runPublicReadOnlyBrowserProof.mjs`, `pnpm --filter web run build`,
   `pnpm --filter web run typecheck`, local production HTTP route checks on
   `127.0.0.1:3101`, and
   `node scripts/runPublicReadOnlyBrowserProof.mjs --issue LUC-2261
-  --web-base-url http://127.0.0.1:3101 ...` with status `PASS`. Previous
+--web-base-url http://127.0.0.1:3101 ...` with status `PASS`. Previous
   local blocker `Next /404 prerender <Html> should not be imported outside of
-  pages/_document` did not recur. Validation-owned local Web and browser
+pages/_document` did not recur. Validation-owned local Web and browser
   processes were cleaned up (`Port3101Listeners=0`, `ProofBrowsers=0`). This
   is local public/read-only proof only, not protected production auth proof,
   deploy, secret/account/database/exchange mutation, or live-trading proof.
@@ -7849,9 +7917,9 @@ Last updated: 2026-06-06
   runner and verified the static fixture-route mode. Validation passed:
   `node --check scripts/runLocalProtectedRouteActionProof.mjs` and
   `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05
-  --issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests
-  --dynamic-fixtures-only --include-dynamic-fixtures
-  --static-dynamic-fixture-proof --cdp-timeout-ms 5000`. Evidence readback:
+--issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests
+--dynamic-fixtures-only --include-dynamic-fixtures
+--static-dynamic-fixture-proof --cdp-timeout-ms 5000`. Evidence readback:
   status `PASS`, `12` dynamic route rows PASS, `1` fail-closed browser row
   BLOCKED, failures `0`, blockers `0`, static mapping `PASS`. This is local
   static fixture-ID route/source/index proof only, not rendered browser proof,
@@ -8098,7 +8166,7 @@ Last updated: 2026-06-06
   package commands, generated artifact readback, or approval-gated protected
   proof. No new focused coverage gap or runtime/tooling defect was isolated.
   Validation passed: focused/aggregate script test pack (`136/136`), `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing), and targeted
+architecture:graph:drift:strict` (`822/822`, `0` missing), and targeted
   `git diff --check`. Remaining signal is scanner direct-relation
   incompleteness or optional future focused tests for concrete regressions, not
   a current QA blocker. Evidence:
@@ -8117,7 +8185,7 @@ Last updated: 2026-06-06
   eight production-environment resources, and `17` visible global resource
   rows. Application inventory status remains `running:unknown`; PostgreSQL and
   Redis report `running:healthy`. Validation passed: `pnpm run
-  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
   proof only, not deploy, restart, rollback, protected smoke, database health
   beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
   `history/evidence/luc-2149-coolify-read-only-production-status-access-2026-06-05.md`.
@@ -8128,8 +8196,8 @@ Last updated: 2026-06-06
   `scripts/runLocalProtectedRouteActionProof.mjs` from wallets/strategies to a
   five-cluster matrix covering wallets, strategies, markets, bots, and
   backtests. Fresh validation passed: `node --check
-  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`. JSON readback
+scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+qa:local-protected-route-actions:proof -- --today 2026-06-05`. JSON readback
   confirms `19/19` PASS rows, static mapping `PASS`, and blockers `0`, with
   local-cookie route reachability and list-page create navigation for the
   requested markets/bots/backtests clusters. Backtest detail proof is synthetic
@@ -8233,7 +8301,7 @@ Last updated: 2026-06-06
   eight production-environment resources, and `17` visible global resource
   rows. Application inventory status remains `running:unknown`; PostgreSQL and
   Redis report `running:healthy`. Validation passed: `pnpm run
-  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
   proof only, not deploy, restart, rollback, protected smoke, database health
   beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
   `history/evidence/luc-2130-coolify-read-only-production-status-access-2026-06-05.md`.
@@ -8265,8 +8333,8 @@ Last updated: 2026-06-06
   wallet root/list/create route reachability, wallet list-page create
   navigation, strategies list/create route reachability, and strategies
   list-page create navigation. Validation passed: `node --check
-  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup proof
+scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup proof
   found no owned listener/browser process left on ports `3217`/`9347`.
   Boundary remains local-only: no form submission, production auth/session,
   wallet/strategy mutation, exchange call, DB mutation, deploy, restart,
@@ -8288,7 +8356,7 @@ Last updated: 2026-06-06
   eight production-environment resources, and `17` visible global resource
   rows. Application inventory status remains `running:unknown`; PostgreSQL and
   Redis report `running:healthy`. Validation passed: `pnpm run
-  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
   proof only, not deploy, restart, rollback, protected smoke, database health
   beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
   `history/evidence/luc-2122-coolify-read-only-production-status-access-2026-06-05.md`.
@@ -8460,7 +8528,7 @@ Last updated: 2026-06-06
   noise `7322`. Focused readback confirmed auth/upload/root/dashboard/admin API
   false positives no longer appear in top actionable samples. Validation
   passed: scanner syntax check, scanner refresh, and `pnpm run
-  architecture:graph:drift:strict` (`820/820` covered / `0` missing). This is
+architecture:graph:drift:strict` (`820/820` covered / `0` missing). This is
   docs/report/graph triage proof only, not runtime, browser, production,
   deploy, protected, database, or route behavior proof. Evidence:
   `history/tasks/luc-2020-normalize-inferred-link-report-noise-2026-06-04-task.md`.
@@ -8508,7 +8576,7 @@ Last updated: 2026-06-06
   and `SOAR-FEATURE-AI-ASSISTANT-FOUNDATION`: Security Review classified
   `CHAIN-API-PLATFORM-SAFETY` and `CHAIN-AI-ASSISTANT-FOUNDATION` against
   current graph/docs/tests and reran fresh local proof. `pnpm run
-  test:adversarial:api-assistant` passed (`8` files / `29` tests). API platform
+test:adversarial:api-assistant` passed (`8` files / `29` tests). API platform
   safety remains locally verified for current architecture/adversarial
   regression scope. AI assistant foundation remains locally verified for
   dry-run/foundation and default LIVE fail-closed scope. Protected production
@@ -8582,7 +8650,7 @@ Do not turn uncertainty into optimism.
   Assistant foundation ownership for `AssistantDryRunSchema` advisory-mode
   safety. Final strict drift also mapped adjacent same-gate API test omissions
   to their existing middleware/auth owner nodes. Validation passed: `pnpm run
-  architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
+architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
   `pnpm run architecture:graph:drift:strict` (`820/820` covered / `0`
   missing), and focused API tests for the four newly mapped files (`4` files /
   `10` tests). This is graph/test traceability proof only, not fresh browser,
@@ -9730,7 +9798,7 @@ Do not turn uncertainty into optimism.
 
 - 2026-05-24 `PROD-PUBLIC-REACHABILITY-REFRESH-2026-05-24`: operations/release
   confidence improves from `blocked by public reachability` to `publicly
-  reachable but deploy freshness blocked`. API `/health`, API `/ready`, and
+reachable but deploy freshness blocked`. API `/health`, API `/ready`, and
   Web `/` return `200`, TCP succeeds for Web/API/VPS public ports checked, and
   public no-worker deploy smoke passes. Current production Web build-info is
   stale at `51fa41efb1664d5cb2e8dbb81cbec33f11365ccd` while `origin/main` is
@@ -9746,7 +9814,7 @@ Do not turn uncertainty into optimism.
   `pnpm run architecture:graph:drift:strict` reports `796/796` covered and
   `0` missing; `node --test scripts/repoGuardrails.test.mjs` passes `9/9`;
   `pnpm run quality:guardrails` passes and reports `Architecture graph drift:
-  OK`. This is graph traceability enforcement, not runtime journey proof.
+OK`. This is graph traceability enforcement, not runtime journey proof.
 
 - 2026-05-24 `RELEASE-AUDIT-TOOLING-GRAPH-BACKFILL-2026-05-24`: architecture
   graph confidence is improved for release/audit tooling. The shared
@@ -9763,7 +9831,7 @@ Do not turn uncertainty into optimism.
   architecture evidence graph foundation exists with CSV node registries,
   relation rows, function-chain rows, generated Markdown node notes, generated
   JSON graph export, and generated status. `pnpm run
-  architecture:graph:generate` passed with `45` nodes, `24` relations, and
+architecture:graph:generate` passed with `45` nodes, `24` relations, and
   `4` chains. This is a seed, not full repository coverage; unmapped modules,
   routes, tests, docs, workers, config, migrations, prompts, and events remain
   backfill work and must not be treated as graph-verified.
@@ -9795,7 +9863,7 @@ Do not turn uncertainty into optimism.
   session, symbol-stat, position, trade, and close-position API routes,
   controller, DTO schemas, aggregate/read/command services, runtime session and
   trading models, API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `115` nodes, `103` relations,
+architecture:graph:generate` now passes with `115` nodes, `103` relations,
   and `7` chains. This is graph traceability proof, not fresh authenticated
   production runtime readback or LIVE mutation approval.
 
@@ -9818,7 +9886,7 @@ Do not turn uncertainty into optimism.
   service, exchange capability/authenticated-read/adapter-boundary links,
   ledger and cashflow services, Wallet/Bot/Position/Order data dependencies,
   focused API/Web/ledger tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `176` nodes, `177` relations,
+architecture:graph:generate` now passes with `176` nodes, `177` relations,
   and `9` chains. This is graph traceability proof, not fresh authenticated
   browser proof or approved LIVE mutation/readback proof.
 
@@ -9829,7 +9897,7 @@ Do not turn uncertainty into optimism.
   routes, controller, DTOs, encrypted storage, connection probes, exchange
   probe client boundary, API-key and log DB models, Wallets/Bot Runtime
   consumers, focused API/Web/probe tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `202` nodes, `212` relations,
+architecture:graph:generate` now passes with `202` nodes, `212` relations,
   and `10` chains. This is graph traceability proof, not fresh authenticated
   browser proof or secret-bearing production probe proof.
 
@@ -9853,7 +9921,7 @@ Do not turn uncertainty into optimism.
   routes, controller, DTO/config validation, strategy service, Strategy/Bot/
   MarketGroupStrategyLink DB guards, Bot Setup and Bot Runtime consumers,
   focused API/Web/indicator/utility tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `261` nodes, `293` relations,
+architecture:graph:generate` now passes with `261` nodes, `293` relations,
   and `12` chains. This is graph traceability proof, not fresh authenticated
   browser proof or production strategy mutation proof.
 
@@ -9865,7 +9933,7 @@ Do not turn uncertainty into optimism.
   controller, DTOs, markets service, exchange-catalog/symbol resolver,
   MarketUniverse/SymbolGroup/Bot/BotMarketGroup DB guards, Bot Setup and Bot
   Runtime consumers, focused API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `286` nodes, `329` relations,
+architecture:graph:generate` now passes with `286` nodes, `329` relations,
   and `13` chains. This is graph traceability proof, not fresh authenticated
   browser proof or production market mutation proof.
 
@@ -9889,7 +9957,7 @@ Do not turn uncertainty into optimism.
   backtests service, cross-mode API route, controller, backend reports service,
   mode aggregation utility, BacktestReport/BacktestTrade/Trade/Bot read
   models, focused API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `336` nodes, `396` relations,
+architecture:graph:generate` now passes with `336` nodes, `396` relations,
   and `15` chains. This is graph traceability proof, not fresh authenticated
   browser proof or production report readback.
 
@@ -9899,7 +9967,7 @@ Do not turn uncertainty into optimism.
   graph records for the logs route, `AuditTrailView`, Web logs service, logs
   API route, controller, query schema, backend logs service, Log model,
   API-key/Bot Setup producer links, focused API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `349` nodes, `413` relations,
+architecture:graph:generate` now passes with `349` nodes, `413` relations,
   and `16` chains. This is graph traceability proof, not fresh authenticated
   browser proof or production action-produced readback.
 
@@ -9912,7 +9980,7 @@ Do not turn uncertainty into optimism.
   controllers, DTO schemas, subscription services, entitlement guard, checkout
   intent persistence, SubscriptionPlan/UserSubscription/PaymentIntent/User DB
   models, focused API/entitlement/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `387` nodes, `463` relations,
+architecture:graph:generate` now passes with `387` nodes, `463` relations,
   and `17` chains. This is graph traceability proof, not fresh authenticated
   browser proof or production admin mutation proof.
 
@@ -9925,14 +9993,14 @@ Do not turn uncertainty into optimism.
   BotAssistantConfig/BotSubagentConfig/Bot DB dependencies, focused
   API/orchestrator/Web/protocol tests, assistant runtime docs, AI integration
   docs, red-team agent, and prompt protocol. `pnpm run
-  architecture:graph:generate` now passes with `411` nodes, `499` relations,
+architecture:graph:generate` now passes with `411` nodes, `499` relations,
   and `18` chains. This is graph traceability proof, not fresh authenticated
   browser proof, production assistant readback, model-backed red-team proof,
   or hot-path AI trading approval.
 
 - 2026-05-24 `ARCH-GRAPH-DRIFT-DETECTION-2026-05-24`: documentation/process
   confidence is improved for future graph completeness checks. `pnpm run
-  architecture:graph:drift` now inventories representative source, test, docs,
+architecture:graph:drift` now inventories representative source, test, docs,
   config, and pipeline files against graph CSV path references. Latest audit
   after config/pipeline backfill: `404/796` covered and `392` missing, with
   `configAndPipelines` at `9/9` covered. This is an informational backfill
@@ -9943,7 +10011,7 @@ Do not turn uncertainty into optimism.
   topology traceability. Operations config and pipeline now has graph records
   for package manifests, pnpm workspace, local/VPS compose topology, GitHub CI,
   repository guardrails, and local/testing/deployment docs. `pnpm run
-  architecture:graph:generate` passes with `426` nodes, `519` relations, and
+architecture:graph:generate` passes with `426` nodes, `519` relations, and
   `19` chains. This is graph traceability proof, not remote CI or protected
   production deployment proof.
 
@@ -9953,7 +10021,7 @@ Do not turn uncertainty into optimism.
   `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332`, with `HEAD...origin/main` at
   `0 0`. Public Web/API is currently unreachable from this workstation (`curl`
   to build-info, API `/health`, and API `/ready` timed out with `Failed to
-  connect`). Local guardrails, docs parity, typecheck, and focused runtime
+connect`). Local guardrails, docs parity, typecheck, and focused runtime
   automation exchange-PnL/service/DCA parity tests pass (`3` files / `41`
   tests). Confidence remains blocked for public reachability, authenticated app
   journeys that match the operator-reported broken flows, protected production
@@ -10067,35 +10135,35 @@ Do not turn uncertainty into optimism.
 
 ## Ledger
 
-| ID | Module | Journey / function | Priority | Status | Confidence | Evidence | Missing proof or defect | Next smallest action | Owner | Last verified |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SOAR-DATA-001 | Data Model / Migrations | Prisma schema, migration chain, indexes, uniqueness, ownership, and DB-backed data contracts | P0 | PARTIALLY VERIFIED | High | 2026-05-19 `history/audits/data-model-migrations-audit-2026-05-19.md`: Prisma schema validation passed; local migration status reported `54` migrations and schema up to date; full local migration replay applied all `54` migrations; schema diff generation passed; isolated wallet data-contract e2e passed (`1` file / `24` tests), isolated backtests data-contract e2e passed (`1` file / `15` tests), and runtime repository contract passed (`1` file / `2` tests). 2026-05-23 `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23`: Docker Desktop was started after local Postgres/Redis were unavailable, `pnpm run go-live:infra:up` brought up `soar-postgres-1` and `soar-redis-1`, `pnpm run audit:data:db-isolated` passed with Prisma schema validation, migration status, full reset/replay of `55` migrations, wallets `24/24`, backtests `15/15`, and runtime repository `2/2`; `pnpm run ops:db:backup-restore:check-local` passed with `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`. Critical manual partial-index invariants remain identified for open position scoping and one active market group. | Production migration status and production backup/restore freshness were not rerun in this local audit. Shared-DB parallel e2e remains a documented run-policy pitfall; the isolated audit path is current and passing. | Keep DB-backed audit packs sequential or isolated; refresh production migration/backup/restore proof under protected ops context before future production release claims. | DB/Migrations + QA/Test | 2026-05-23 |
-| SOAR-MOBILE-001 | Mobile / Cross-platform | Native/mobile app scope, scaffold status, and future parity gates | P2 | OUT_OF_SCOPE_FOR_V1 | High | 2026-05-19 `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md`: `apps/mobile` contains only `package.json`, `README.md`, and `src/.gitkeep`; mobile build/test scripts print scaffold-only deferred messages; mobile README and `docs/planning/mobile-parity-contract.md` state no production mobile runtime and no independent mobile backend contracts. 2026-05-28 `LUC-386`: mobile docs registry/index baseline is now explicit via `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-doc-status-index.md` (Mobile Surface), and `docs/modules/module-registry.md` (Mobile Module Registry). 2026-06-07 [LUC-2793](/LUC/issues/LUC-2793): native/mobile traceability is `out_of_scope_for_v1`; current map is a scaffold-only documentation seed, not an active V1 implementation gap. 2026-07-10 [LUC-253](/LUC/issues/LUC-253): TSA readback reconfirmed the same scaffold-only inventory and refreshed mobile module docs/index evidence without runtime mutation. | No native mobile app, Expo Router, mobile screens, app config, mobile CI gate, independent mobile API contract, or real mobile tests exist by design. Responsive Web mobile evidence is tracked under `SOAR-UX-A11Y-MOBILE-001`, not this native scope row. | Keep mobile module docs/index rows in sync as long as scope stays scaffold-only; when Product/CTO activation is approved, replace scaffold echoes with real Expo/native build/test validation and expand `mobile-*.md` coverage in the same lane. | Product + Frontend/Mobile + Docs Memory | 2026-07-10 |
-| SOAR-I18N-001 | Web i18n / Copy | Route-reachable locale copy, namespace registry, hardcoded literal guardrails, and language policy | P1 | VERIFIED | High | 2026-05-19 `history/audits/i18n-copy-reachability-audit-2026-05-19.md`: route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, and hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests), covering translations, guardrails, namespace registry, route locale smoke, provider loading, locale formatting, and optional i18n behavior. | None for current route-reachable local scope. Future route/copy changes must rerun the route-reachable i18n audit. | Keep `corepack pnpm i18n:audit:route-reachable:web` in route/copy change gates. | Frontend Builder + QA/Test | 2026-05-19 |
-| SOAR-AUTH-001 | Auth | Login, logout, session validation, expired-session redirect, and protected-route cookie gate | P0 | VERIFIED | High | 2026-05-11 `V1-AUTH-SESSION-LIFECYCLE-PROOF-2026-05-11`: API Auth e2e passed (`11/11`) and proves registration/login cookie TTLs, logout cookie clearing, deleted-user session expiry, expired JWT clearing, and duplicate-token precedence. Focused Web Auth tests passed (`5` files, `17` tests) and cover AuthProvider bootstrap, logout redirect, session-expired warning cleanup, API interceptor redirect to `/auth/login?session=expired`, middleware cookie gate, login form rendering/error alert, and login hook fail-closed missing-session-refresh behavior. 2026-05-14 `history/evidence/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md` found a production replay gap on deployed `2fc90a08`: browser route fail-closed checks passed, but direct reuse of the pre-logout JWT still returned `/auth/me` `200`. `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` fixed logout by incrementing the matching user's `sessionVersion`; focused Auth/middleware tests passed (`21/21`), root typecheck/lint/build passed, and `history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md` passed on deployed `84711599`, including stale-token `/auth/me` `401` after logout. | Current Auth proof is covered for the V1/post-V1 target scope. | Keep auth proof fresh after future deploys; reopen only on a new failing auth/session signal. | Backend Builder + QA/Test | 2026-05-14 |
-| SOAR-PROFILE-001 | Profile | Basic profile update, timezone preference, password change, and account deletion guards | P0 | VERIFIED | High | 2026-05-11 `V1-PROFILE-LOCAL-PROOF-2026-05-11`: API Profile basic/security e2e passed (`2` files, `7` tests), proving self-delete route behavior, legacy delete rejection, valid timezone persistence, invalid timezone rejection, unauthenticated security access rejection, valid-current-password change, weak/invalid password rejection, old-login failure/new-login success, and password-confirmed account deletion. Focused Web Profile tests passed (`2` files, `5` tests), proving basic profile save success/error toasts, timezone preference payload, password mismatch short-circuit without API call, and successful password change payload/feedback. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md` verifies production-safe profile read, reversible update, and restore with disposable fixture boundaries and no raw secret artifacts. | Current V1 Profile proof is covered for local security/form behavior plus production-safe reversible update. Avatar upload transport is outside this V1 row. | Keep proof fresh after future deploys; reopen only on a new failing Profile signal or changed profile scope. | QA/Test + Frontend Builder | 2026-05-14 |
-| SOAR-PROFILE-API-KEYS-001 | Profile API Keys | Create, test, store, rotate, revoke, delete, and audit exchange API keys | P0 | VERIFIED | High | 2026-05-11 `V1-PROFILE-API-KEYS-LOCAL-PROOF-2026-05-11`: API key e2e and probe service tests passed (`2` files, `25` tests). Evidence covers authenticated access, encrypted-only storage, masked responses, create/list/update/delete, rotate/revoke, owner-only mutation/test behavior, Binance and Gate.io provided/stored probes, no persistence of provided test secrets, audit log metadata without raw secrets, placeholder exchange probe fail-closed behavior, bad-key rejection, futures-missing rejection, and unauthorized ownership protections. Focused Web API key form/list tests passed (`2` files, `13` tests), covering connection-test-before-save, placeholder exchange save behavior, probe support status, stored-key test action, and delete risk confirmation. 2026-05-14 production fixture proof verifies masked API-key create, stored probe fail-closed behavior, audit log visibility for the probe event, and API-key cleanup without writing raw credentials to artifacts. | Current V1 Profile API Keys proof is covered for local secret/ownership contracts and production-safe masked create/probe/audit/delete. | Keep proof fresh after future deploys; do not store or print raw operator secrets in proof artifacts. | QA/Test + Frontend Builder | 2026-05-14 |
-| SOAR-WALLETS-001 | Wallets | Create, edit, delete, PAPER/LIVE modes, balance preview, reset guards, and ledger readback | P0 | VERIFIED | High | 2026-05-11 `V1-WALLETS-LOCAL-PROOF-2026-05-11`: API Wallets tests passed (`4` files, `43` tests), covering CRUD normalization, ownership isolation, active-bot edit/delete guards, LIVE api-key/allocation validation, exchange mismatch rejection, Gate.io PAPER/LIVE support, preview allocation modes, unsupported placeholder preview fail-closed behavior, Gate.io stored-key preview, paper reset mode/open-position/open-order guards, reset checkpoint preservation, cashflow classification, and wallet open-PnL scoping. Web Wallets tests passed (`9` files, `22` tests), covering list/empty/create routes, inline API-key state, clone payload, create/edit form validation, mode-specific fields, LIVE preview, metadata options, Gate.io PAPER submit, paper reset success/error states, preview summary/timeline/cashflow, partial ledger, and unavailable ledger fail-closed state. 2026-05-14 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` adds focused API proof that PAPER wallet reset fails closed while an active bot uses the wallet and succeeds after deactivation when no open wallet-scoped positions/orders remain. 2026-05-14 production fixture proof verifies disposable wallet create, update, readback, and cleanup. 2026-05-19 `history/audits/wallets-capital-ledger-audit-2026-05-19.md` refreshed local proof: Web wallet/capital pack passed (`10` files / `23` tests) and API wallets/capital pack passed (`7` files / `84` tests). | Current V1 Wallets proof is covered for local safety/ledger/reset contracts and production-safe disposable wallet CRUD. LIVE exchange mutation remains outside this proof. | Keep proof fresh after future deploys; reopen only on a new failing Wallets signal. Track explicit wallet command audit-log events under `AUD-17`. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-MARKETS-001 | Markets | Universe create, edit, delete, catalog import, symbol composition, capability guards, and active-bot mutation guard | P0 | VERIFIED | High | 2026-05-11 `V1-MARKETS-LOCAL-PROOF-2026-05-11`: API Markets e2e passed (`1` file, `17` tests), covering authenticated CRUD, normalization, canonical symbol composition, linked symbol-group sync, empty symbol set handling, Binance/Gate.io catalog reads, placeholder exchange persistence, explicit not-implemented catalog response, active bot update/delete blocking, inactive PAPER/LIVE bot edits, deactivation-through-bot-API edits, stale legacy link ignore, active primary bot drift blocking, and cross-user isolation. Web Markets tests passed (`5` files, `12` tests), covering form preview parity, saved volume filter, whitelist/blacklist composition, catalog-hidden whitelist selection, empty preview submit, edit-mode saved selections, placeholder exchange submit, validation helper, table clone payload, and route shells. 2026-05-14 production fixture proof verifies disposable market universe create, update, catalog read, and cleanup. 2026-05-19 `history/audits/markets-strategies-configuration-audit-2026-05-19.md` refreshed local proof as part of `AUD-15`: Web market/strategy pack passed (`19` files / `60` tests) and API markets/strategies pack passed (`4` files / `35` tests). | Current V1 Markets proof is covered for local active-bot/ownership/capability contracts and production-safe disposable universe CRUD/catalog read. | Keep proof fresh after future deploys; reopen only on a new failing Markets signal. Track catalog source freshness telemetry as an observability follow-up. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-STRATEGIES-001 | Strategies | Strategy create, edit, delete, clone, import/export, indicator catalog, config validation, and active-bot mutation guard | P0 | VERIFIED | High | 2026-05-11 `V1-STRATEGIES-LOCAL-PROOF-2026-05-11`: API Strategies tests passed (`3` files, `17` tests), covering authenticated CRUD, export/import package contracts, advanced TSL valid/invalid validation, invalid import rejection, cross-user get/update/delete isolation, active-bot update/delete blocking, inactive bot update allowance, DCA reachability validation, and indicator catalog service behavior. Web Strategies tests passed (`14` files, `46` tests), covering list clone naming/create payload, create/edit/detail route shells, form validation and tab flow, zero lifetime, advanced TSL and reordered DCA validation, unreachable DCA blocking, preset utilities, indicator section behavior, form mapping, numeric normalization, close validation, indicator presentation, and taxonomy. 2026-05-14 production fixture proof verifies disposable strategy create, export, update, bot link/readback, backtest run compatibility, and strategy cleanup. 2026-05-14 `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`: Web edit-page submit proof passes (`3/3`), Web strategies suite passes (`14` files, `48` tests), and API strategies e2e passes (`11/11`), covering inactive linked bot update allowance plus active-bot lock rendering/action. 2026-05-19 `history/audits/markets-strategies-configuration-audit-2026-05-19.md` refreshed local proof as part of `AUD-15`: Web market/strategy pack passed (`19` files / `60` tests) and API markets/strategies pack passed (`4` files / `35` tests). | Current V1 Strategies proof is covered for local validation/guard contracts, user-facing Web edit submit parity, active-bot lock handling, and production-safe disposable strategy CRUD/export plus representative bot/backtest compatibility. | Keep proof fresh after future deploys; reopen only on a new failing Strategies signal. Track typed domain errors and Web i18n/dirty-state follow-ups separately. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-MANUAL-ORDERS-001 | Manual Orders | Manual context, PAPER order placement, validation, lifecycle readback, cancel/close, selected-bot scope, and Dashboard Home action states | P0 | VERIFIED | High | 2026-05-11 `V1-MANUAL-ORDERS-LOCAL-PROOF-2026-05-11`: API Manual Orders tests passed (`7` files, `75` tests), covering manual context, PAPER market truth, open/cancel/close endpoints, order/position ownership, selected-bot write/read scope, quantity rules, position scope, LIVE risk guards, exchange-backed fail-closed cancel behavior, live fill resolution, and live cancel boundary. Web Manual Orders tests passed (`6` files, `20` tests), covering Dashboard Home submit, validation, context/venue/scope semantics, open-order source labels, open-order cancel actions, and submitted/waiting/ready/imported/position-opened/blocked action states. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified manual-order context, disposable PAPER limit order open/read/cancel, cancel fail-closed without `riskAck`, and canceled-order readback. 2026-05-19 `history/audits/orders-manual-trading-audit-2026-05-19.md` refreshed local proof: Web manual/open-order pack passed (`8` files / `46` tests) and API orders/manual trading pack passed (`10` files / `121` tests). 2026-05-23 `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` added DB-backed service and route tests for Gate.io futures manual-order context contract-size truth: `quantity=4`, `contractSize=10`, `markPrice=0.25` => `10 USDT` notional and `2 USDT` margin at leverage `5`. | Current V1 Manual Orders proof is covered for PAPER production-safe lifecycle and local Gate.io futures contract-size context semantics. LIVE exchange mutation remains blocked-risk without separate explicit approval. | Keep proof fresh after future deploys; do not run LIVE manual orders without separate explicit approval. | QA/Test + Frontend Builder | 2026-05-23 |
-| SOAR-POSITIONS-001 | Positions | Position list/read, close/update, takeover, exchange snapshot, import status, reconciliation, and runtime close UI states | P0 | VERIFIED | High | 2026-05-11 `V1-POSITIONS-LOCAL-PROOF-2026-05-11`: API Positions tests passed (`12` files, `90` tests), covering list/read ownership, symbol filter normalization, stale local exclusion, live status scoping, exchange snapshot selection/fail-closed behavior, Gate.io/Binance authenticated snapshots, takeover classification/rebind, bot-only management truth, orphan repair, imported lifecycle history hydration, live reconciliation ownership/ambiguity/stale-close/open-order handling, manual TP/SL safety, management-mode guards, EXCHANGE_SYNC runtime visibility, selected LIVE close, profitable PAPER manual close, carryover open orders, and pending external DCA separation. Web Positions tests passed (`3` files, `10` tests), covering runtime position PnL derivation/fallbacks, ignored/closed close-action states, pending close state, and runtime table action semantics. 2026-05-12 `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligns Web Positions docs to canonical Dashboard Home/Bot Runtime ownership and legacy redirect behavior. 2026-05-14 `history/evidence/prod-positions-proof-2fc90a08-2026-05-14.md` passed on production: deployed build-info matched `2fc90a08`, unauthenticated Positions access failed closed, an active PAPER runtime candidate was selected, a proof PAPER position was opened, read, switched to manual management and restored, manually updated, checked through live-status/takeover-status/exchange-snapshot reads, rejected close without `riskAck`, closed with `riskAck`, read back as terminal `CLOSED`, and confirmed absent from the OPEN list. 2026-05-19 `history/audits/positions-reconciliation-audit-2026-05-19.md` refreshed local proof: Web runtime positions pack passed (`6` files / `46` tests) and API positions/reconciliation pack passed (`11` files / `68` tests). | Current V1 Positions proof is covered for production-safe PAPER lifecycle and read/fail-closed boundaries. LIVE exchange mutation remains blocked-risk without explicit safe plan. | Keep proof fresh after future deploys; do not run LIVE position mutation without separate explicit approval. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-ORDERS-001 | Orders | Order list/read/open/cancel/close, active-only filtering, exchange events, fills, fees, and open-order UI actions | P0 | VERIFIED | High | 2026-05-11 `V1-ORDERS-LOCAL-PROOF-2026-05-11`: API Orders tests passed (`10` files, `121` tests), covering active order filtering, PAPER/LIVE open contracts, missing price truth rejection, same-symbol add/reverse conflict handling, canonical bot context, LIVE pretrade/risk guards, exchange ids/status/fills/fees, propagated execution errors, manual context rules, close attribution, stale/open exchange-backed cancel and close fail-closed behavior, API list/get ownership, exchange event open/close/DCA/account-update lifecycle, partial/underfilled/capped fill progress, fee pending/backfill, live fill resolution, quantity rules, position scope, and live cancel boundary. Web Orders tests passed (`2` files, `3` tests), covering source labels, active open-order cancel action, and terminal order read-only behavior. 2026-05-12 `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligns Web Orders docs to canonical Dashboard Home/Bot Runtime ownership and legacy redirect behavior. 2026-05-14 production fixture proof verified disposable PAPER limit order open/read/cancel, fail-closed cancel-without-ack behavior, and terminal canceled-order readback. 2026-05-19 `history/audits/orders-manual-trading-audit-2026-05-19.md` refreshed local proof: Web manual/open-order pack passed (`8` files / `46` tests) and API orders/manual trading pack passed (`10` files / `121` tests), covering lifecycle, ownership, active filtering, fills, fees, exchange events, exchange-backed fail-closed cancel boundary, quantity rules, and position scope. 2026-05-23 Gate.io contract-size follow-up locked order context/rules parity with DB-backed service and route tests plus quantity-rules/runtime contract-size tests; the same route pack fixed LIVE close dedupe truth so submitted reused close orders do not claim closed before completion. | Current V1 Orders proof is covered for production-safe PAPER open/cancel, local fill/fee/exchange-event contracts, local Gate.io futures contract-size order context, and local LIVE close submitted-truth dedupe. LIVE exchange mutation remains blocked-risk without separate explicit approval. | Keep proof fresh after future deploys; do not run LIVE order mutation without separate explicit approval. | QA/Test + Frontend Builder | 2026-05-23 |
-| SOAR-BACKTESTS-001 | Backtests | Backtest run create/list/get/delete, replay worker, report, timeline, parity, and UI details flow | P0 | VERIFIED | High | 2026-05-11 `V1-BACKTESTS-LOCAL-PROOF-2026-05-11`: API Backtests tests passed (`12` files, `110` tests), covering auth/ownership, create/list/get/delete, explicit `startAt/endAt` range validation, enriched list fields, pending report contract, strategy-to-backtest-to-paper/live critical flow, paper/live parity with reconciliation, venue consistency, market-universe symbol formula, empty-symbol fail-closed behavior, 3-symbol paper alignment, failed parity diagnostics, run queue/job persistence, replay core, runtime kernel parity, contract remediation, data gateway, fill model, range service, and indicator timeline series. Web Backtests tests passed (`13` files, `32` tests), covering list/create/detail route shells, create form behavior, run details presentation, legacy list view, runs table actions, core-data hook, view-models, non-overlapping trade segments, pair metrics, and timeline indicator overlays. 2026-05-13 `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` routes backtest candle loading through the Exchange public market-data boundary with resolved exchange context, scopes candle cache uniqueness by `source`, carries exchange through run/timeline replay, updates Web timeline types, and passes focused bot/backtest tests (`56/56`) plus API/Web typechecks. 2026-05-13 `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` renders resolved `exchange / marketType / baseCurrency` in Backtest details and passes focused Web proof (`4/4`). 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified disposable backtest run create/readback, report readback, trades readback, timeline readback with candles, and delete cleanup. 2026-05-19 `history/audits/backtests-reports-audit-2026-05-19.md` refreshed local proof: Web backtests/reports pack passed (`15` files / `37` tests) and API backtests/reports pack passed (`13` files / `114` tests). 2026-05-23 `BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23`: non-Binance FUTURES backtests that require `ORDER_BOOK_*` history now fail closed with explicit parity diagnostics instead of simulating against a silent empty order-book series; focused backtest pack passed (`47/47`) and API typecheck passed. | Current V1 Backtests proof is covered for production-safe disposable run lifecycle and local adapter/replay contracts. Non-Binance historical order-book support remains a future adapter scope; current behavior is fail-closed when an order-book strategy would otherwise require missing history. | Keep proof fresh after future deploys; implement real historical non-Binance order-book support before claiming full order-book parity. | QA/Test + Frontend Builder + Backend Builder | 2026-05-23 |
-| SOAR-REPORTS-001 | Reports | Cross-mode performance summaries, per-run report table, and dashboard reports route states | P1 | VERIFIED | High | 2026-05-11 `V1-REPORTS-LOCAL-PROOF-2026-05-11`: API Reports service tests passed (`1` file, `2` tests), covering weighted BACKTEST report aggregation and PAPER trade aggregation. Web Reports tests passed (`3` files, `5` tests), covering `/dashboard/reports` route shell, empty state, aggregated report cards/tables, and route-reachable locale copy. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified per-run report readback for a disposable production backtest run. 2026-05-19 `history/audits/backtests-reports-audit-2026-05-19.md` refreshed local proof: Web backtests/reports pack passed (`15` files / `37` tests) and API backtests/reports pack passed (`13` files / `114` tests). 2026-05-21 gap-hunt follow-up added DB-backed `reports.e2e.test.ts`; focused Reports API proof passed (`2` files / `4` tests), covering unauthenticated rejection and authenticated user-scoped BACKTEST/PAPER/LIVE cross-mode aggregation. | Current V1 Reports proof is covered for implemented report surfaces. Export/download is not part of the current implemented Reports surface. | Keep proof fresh after future deploys; track export/download, richer filters, snapshot persistence, and i18n hardening separately if they become product scope. | QA/Test + Frontend Builder | 2026-05-21 |
-| SOAR-LOGS-001 | Logs/Audit Trail | Authenticated audit log filters, pagination, action-produced events, and metadata trace UI | P1 | VERIFIED | High | 2026-05-11 `V1-LOGS-AUDIT-LOCAL-PROOF-2026-05-11`: API Logs tests passed (`2` files, `5` tests), covering unauthenticated rejection, owner-only reads, source/actor/severity filters, bot action-produced audit event visibility, and pagination defaults/bounds. Web Logs tests passed (`3` files, `4` tests), covering `/dashboard/logs` route shell, empty and loaded states, severity filter request payload, metadata trace rendering, and route-reachable locale copy. 2026-05-14 production fixture proof verifies audit logs readback with the API-key probe event visible, and production UI module audit verifies `/dashboard/logs` route render. 2026-05-19 `history/audits/logs-audit-trail-audit-2026-05-19.md` refreshed local proof: Web logs/audit pack passed (`2` files / `3` tests) and API logs/pagination pack passed (`2` files / `5` tests). | Current V1 Logs/Audit proof is covered for local filter/pagination/rendering contracts and production-safe action-produced audit readback. | Keep proof fresh after future deploys; reopen only on a new failing Logs/Audit signal. Track total-count envelope, pagination controls, saved filters, index tuning, and command-event write coverage separately. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-EXCHANGE-ADAPTER-001 | Exchange Adapter | Binance/Gate.io capability boundaries, public/authenticated reads, API-key probes, live adapter fail-closed behavior, and UI capability wiring | P0 | VERIFIED | High | 2026-05-11 `V1-EXCHANGE-ADAPTER-LOCAL-PROOF-2026-05-11`: fixed Gate.io public catalog symbol normalization at the exchange boundary, then API Exchange tests passed (`19` files, `93` tests), covering API-key probes, runtime exchange order guard, Binance public REST/user data stream, CCXT futures connector behavior, adapter boundary fail-closed support, adapter registry, authenticated read service/contracts, connector factory, execution capability contract, market catalog, metadata contract, public read/market data, symbol rules, live order adapter, live fee reconciliation, and position exchange snapshot normalization. Web Exchanges/Profile API-key tests passed (`5` files, `17` tests), covering capability gating, `/dashboard/exchanges` redirect, profile API-key integration, connection tests, stored-key tests, and delete risk confirmation. 2026-05-12 `V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12` aligns V1 static scan classification with the approved exchange capability matrix so unsupported exchange fail-closed gates are not counted as unresolved findings. 2026-05-13 `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` removed an Engine-side Binance REST warmup shortcut; runtime candle recovery now uses the Exchange public market-data boundary and Gate.io warmup regression proves Binance REST is not called. 2026-05-13 `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` extends that boundary to backtest candle loading and bot runtime fallback candles, and scopes candle cache uniqueness by source. 2026-05-14 `history/evidence/prod-security-exchange-proof-2fc90a08-2026-05-14.md` passed on production: unsupported exchange probe fails closed, Binance futures catalog returns read-only data, Gate.io futures catalog returns canonical symbols, and protected readiness details are authenticated. 2026-05-19 `EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19`: API exchange capability/registry/boundary tests passed (`4` files / `21` tests), focused exact contract tests passed (`2` files / `4` tests), orders/wallet neutral type consumer tests passed (`2` files / `41` tests), API typecheck passed, and Web exchange capability tests passed (`2` files / `3` tests), confirming exact `(exchange, marketType, operation)` capability truth and neutral exchange-owned type naming are locally green. | Current V1 local and production-safe exchange-boundary proof is covered for read-only/fail-closed scope. Real live mutation remains outside this proof and requires a separate explicit safe plan. The former architecture-level exact matrix debt is repaired; operation support now includes `marketType`. | Keep proof fresh after future deploys; do not claim live-money mutation coverage from this read-only/fail-closed proof. Keep future exchange additions on exact capability contracts and neutral exchange-owned type aliases. | QA/Test + Backend Builder + Frontend Builder | 2026-05-19 |
-| SOAR-ENGINE-001 | Engine | Runtime signal merge, final-candle decision, pre-trade, execution orchestration, dedupe, PAPER/LIVE parity, and position automation | P0 | VERIFIED | High | 2026-05-19 `history/audits/engine-trading-decision-flow-audit-2026-05-19.md`: focused engine service/unit pack passed (`15` files / `173` tests), covering deterministic signal merge, decision engine, final-candle decisions, execution orchestration, runtime dedupe, exchange order guard, pre-trade/risk, PAPER/LIVE decision equivalence, market-data gateway, runtime loop/supervisor/scan loop, and position automation. DB-backed engine e2e/smoke pack passed (`4` files / `13` tests), covering PAPER runtime order/position lifecycle, runtime orchestration smoke, pre-trade e2e, and owned imported-position execution. | Current local engine decision-flow proof is covered. Production LIVE/exchange-side mutation and assistant hot-path runtime integration remain outside this row. | Keep engine proof fresh after runtime/engine/exchange lifecycle changes; do not claim LIVE mutation coverage without an explicit safe plan. | QA/Test + Backend Builder | 2026-05-19 |
-| SOAR-WORKERS-001 | Workers | Runtime loops, market stream, backtest worker, queue/process topology, readiness, and runtime freshness | P0 | VERIFIED | High | 2026-05-11 `V1-WORKERS-LOCAL-PROOF-2026-05-11`: API Workers/stream/runtime proof passed (`18` files, `88` tests), covering worker ownership/topology, market-stream source config, subscriptions, fanout retry, market-stream route contracts/e2e, Exchange polling source/fanout, Binance stream parsing, protected worker health/readiness, runtime freshness pass/fail/skip behavior, protected `/ready` diagnostics, PAPER runtime-flow worker telemetry, execution orchestrator behavior/import cleanup, execution adapter parity, backtest run job persistence, and queue tuning. 2026-05-14 `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14`: protected production runtime freshness passed for deployed `457bce05` with `runningCount=4`, worker heartbeat PASS, market data PASS, runtime signal lag PASS, and runtime sessions PASS. 2026-05-14 controlled no-order-guard LIVE proof produced `LIVEIMPORT-03` PASS for `TRXUSDT`, simultaneous PAPER+LIVE readback passed with the Binance LIVE bot and both Binance PAPER bots RUNNING, and post-cleanup readback confirmed the LIVE bot was inactive again. Full release gate for `457bce05` is `ready`. 2026-05-19 `history/audits/workers-runtime-operations-audit-2026-05-19.md` refreshed local proof: API worker/runtime operations pack passed (`17` files / `85` tests). | Current V1 worker/runtime freshness and production non-Gate.io simultaneous runtime evidence are covered. Gate.io/second-LIVE production shape remains deferred/outside this release slice. | Keep scheduled runtime freshness and release regression evidence fresh before future deploys. | QA/Test + Backend Builder + Ops/Release | 2026-05-19 |
-| SOAR-SECURITY-PRIVACY-001 | Security/Privacy | Auth, session, trusted origin, ops network, rate limits, headers, secret readiness, crypto, ownership isolation, API-key privacy, and abuse throttling | P0 | VERIFIED | High | 2026-05-11 `V1-SECURITY-PRIVACY-LOCAL-PROOF-2026-05-11`: API Security/Privacy proof passed (`23` files, `111` tests), covering security/no-store headers, alerts/metrics admin access, `/ready` secret/runtime diagnostics, API error redaction, crypto keyring and legacy decrypt behavior, rate-limit degradation, ops-network/trusted-origin/auth middleware, critical secret readiness, Auth lifecycle/JWT/cookie/error contracts, cross-module data isolation, Profile API-key ownership/secret handling/probes, Profile password/account deletion, stage abuse throttling, and authenticated position snapshots. Web Auth/Profile proof passed (`13` files, `48` tests), covering middleware, AuthContext, login/register forms/hooks/types, public auth cache contract, profile page, API-key form/list, security form, and basic profile form. This slice also tightened test env restoration for JWT rotation and API-key encryption keyring variables. 2026-05-14 `history/evidence/prod-security-exchange-proof-2fc90a08-2026-05-14.md` passed on production: security headers are present, authenticated profile reads are `no-store`, unauthenticated protected/ops/metrics routes fail closed, API-key list responses are redacted, untrusted Origin receives controlled `403`, unsupported exchange probe fails closed without stored secrets in artifacts, and authenticated readiness details require auth. 2026-05-19 `history/audits/security-privacy-audit-2026-05-19.md` refreshed local proof: auth/middleware/header API pack passed (`9` files / `32` tests), DB-backed auth/profile/API-key/isolation/abuse pack passed (`7` files / `47` tests), focused Web auth/profile/API-key pack passed (`7` files / `28` tests), and public auth cache contract passed (`1` file / `2` tests). | Current V1 local and production-safe protected security proof is covered. External independent security review remains a separate governance follow-up and should not be represented as automated proof. | Keep proof fresh after future deploys; schedule external independent review as a governance follow-up before broader public launch. | QA/Test + Security + Backend Builder + Frontend Builder | 2026-05-19 |
-| SOAR-UX-A11Y-MOBILE-001 | UX/A11y/Mobile | Public/dashboard routes, loading/empty/error/success states, keyboard/focus, responsive shell, mobile navigation, screenshot evidence, and console health | P1 | VERIFIED | High | 2026-05-12 `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11`: local authenticated route audit passed for implemented public/dashboard/legacy routes; focused Web UX/a11y/state tests passed (`25` files, `126` tests), covering shared state components, tables/tabs, form primitives, invalid-field focus, dashboard/page title a11y, responsive header/footer, Dashboard Home states, Bots, Wallets, Markets, Strategies, Backtests, Reports, Logs, Auth, Profile, and route locale smoke. Edge/CDP browser proof captured desktop Dashboard empty/onboarding, desktop Wallets empty state, mobile Dashboard, and mobile menu screenshots; mobile menu focus/click interaction was exercised; CDP console/exception check returned `0` events and no framework overlay was detected. 2026-05-14 `history/plans/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md` passed for production route/module reachability. 2026-05-14 `history/evidence/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md` passed on production with authenticated desktop Dashboard/Wallets/Bots/Profile screenshots, mobile Dashboard screenshot, mobile menu click, keyboard focus, no framework overlay, and no horizontal overflow. 2026-05-21 gap-hunt follow-up hardened `scripts/runProdUxA11yMobileProof.mjs` so runtime exceptions and console error/warning events become page failures rather than warnings; syntax check passed. | Current V1 UX/A11y/Mobile proof is covered for route reachability and production desktop/mobile browser rendering, but current-target authenticated production proof still requires protected inputs under `AUD-19`. Non-blocking accessibility heuristic warnings remain as polish follow-up. | Keep proof fresh after future deploys; rerun production UX proof with protected inputs and address unnamed internal-control warnings as post-V1 polish. | QA/Test + Frontend Builder | 2026-05-21 |
-| SOAR-SUBSCRIPTIONS-ADMIN-001 | Subscriptions/Admin | Admin-only subscription plans, entitlement validation, user role/plan assignment, and rendered admin routes | P0 | VERIFIED | High | 2026-05-12 `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12`: API admin/subscription tests passed (`3` files, `18` tests), covering unauthenticated rejection, non-admin rejection, plan catalog read, plan price/entitlement update validation, invalid entitlement rejection, user listing with active subscription metadata, role/plan updates, self-demotion blocking, and profile subscription readback. Web admin/profile subscription tests passed (`3` files, `7` tests), covering loaded, error, role-toggle, and plan-assignment UI states. Local admin route audit passed with a throwaway admin, and Edge/CDP screenshots rendered `/admin/subscriptions` and `/admin/users` with no framework overlay. `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12` adds focused module coverage for invalid entitlement fallback and FREE-plan LIVE trading fail-closed behavior (`2/2`). `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12` aligns the API Subscriptions doc to the current checkout/admin/profile V1 boundary. `V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12` removes placeholder wording from manual checkout metadata and passes focused profile subscription checkout proof (`8/8`). 2026-05-14 production UI module audits verify authenticated admin route render for `/admin/users` and `/admin/subscriptions` with valid admin auth and no raw secret artifacts. 2026-05-19 `history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md` refreshed local proof: Web admin/subscription pack passed (`4` files / `9` tests) and API admin/subscriptions pack passed (`5` files / `25` tests). | Current V1 Subscriptions/Admin proof is covered for local entitlement/role safety and production protected admin route rendering. Non-destructive production entitlement mutation remains a future admin-ops exercise, not a V1 blocker. | Keep proof fresh after future deploys; reopen only on a new failing admin/subscription signal or changed entitlement scope. | QA/Test + Backend Builder + Frontend Builder | 2026-05-19 |
-| SOAR-OPERATIONS-001 | Operations | Deployment smoke, rollback guard/proof, SLO evidence, release gates, alerts, backup/restore, and liveimport readback | P0 | PARTIAL | Medium | 2026-05-13 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`: final `LIVEIMPORT-03` passed for `TRXUSDT`; final preflight has no blockers; production target-only V1 release gate is `ready`; build-info freshness, post-deploy smoke, runtime freshness, and rollback guard passed against deployed `00169d7f`. 2026-05-14 `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14`: deployed `457bce05` passed protected runtime freshness, rollback proof, authenticated production UI clickthrough, controlled no-order-guard `LIVEIMPORT-03`, RC gates/sign-off/checklist, production backup/restore drill, final preflight, and full non-dry-run release gate. 2026-05-19 `history/audits/operations-release-deployment-audit-2026-05-19.md` refreshed local proof: typecheck PASS, lint PASS, build PASS, go-live smoke PASS (`45` API tests and `18` Web tests), and local backup/restore PASS after required local Postgres startup. 2026-05-20 `history/tasks/v1-function-architecture-verification-2026-05-20-task.md` refreshed local validation: guardrails PASS, guardrails regression tests PASS, docs parity PASS, endpoint parity PASS, reusable audit manifest verify PASS, lint PASS, typecheck PASS, build PASS, Web tests PASS (`149` files / `514` tests), full API Vitest PASS in a controlled one-worker local-infra window, i18n route audit PASS, `audit:data:db-isolated` PASS after sequential rerun, and go-live smoke PASS (`45` API / `18` Web). Production public deploy freshness is verified for `dd1a1faf`, but final protected `AUD-19` evidence remains blocked on missing protected inputs. | Current local release-safety proof is fresh, and production public deploy freshness is verified for `dd1a1faf`. Full protected production release gate remains historical for deployed `457bce05`; the current target still needs protected auth/context, Gate2 SLO evidence, named Gate4 sign-off/owner fields, runtime, rollback, backup/restore, liveimport, and production UI evidence before a full production readiness claim. | Provide approved protected inputs and execute the current operator unblock packet for the current target; do not claim full production readiness from public smoke alone. | Ops/Release + QA/Test | 2026-05-20 |
-| SOAR-DASHBOARD-001 | Dashboard Home | Selected-bot runtime truth, wallet KPIs, runtime positions/orders/trades tables | P0 | VERIFIED | High | Local proof covers loading, retryable error, selected-bot switching, wallet KPI recalculation, open-orders rows, trade-history rows, stale-row suppression, desktop/mobile empty/onboarding state, active PAPER runtime rows, wallet baseline/free funds, and Orders tab interaction. 2026-05-14 production evidence for deployed `457bce05` adds authenticated `/dashboard` route reachability plus simultaneous runtime readback where both Binance PAPER bots expose fresh `RUNNING` sessions, symbol stats, positions, trades, and aggregate data, while the controlled Binance LIVE observation window also proved runtime readback without order placement. Evidence: `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`, `history/plans/prod-ui-module-clickthrough-457bce05-2026-05-14.md`, `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`, and `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`. | Current Dashboard Home proof is covered for the approved non-Gate.io V1/post-V1 target scope. Gate.io/second-LIVE production shape remains separate. | Keep proof fresh after future deploys; reopen only on a new Dashboard runtime failing signal or broader Gate.io/2x LIVE scope decision. | QA/Test + Frontend Builder | 2026-05-14 |
-| SOAR-BOT-RUNTIME-001 | Bot Runtime | Canonical bot monitoring route, runtime sessions, symbol stats, open positions, open orders, trades, and legacy runtime redirects | P0 | VERIFIED | High | Local proof covers running/completed PAPER session list/detail, aggregate, positions, symbol stats, trades, completed-session filter, desktop/tablet/mobile rendering, safe session view switch, legacy redirects, and real `RuntimeSignalLoop` telemetry readback through authenticated APIs. 2026-05-14 production evidence for deployed `457bce05` adds authenticated Bot Runtime route/redirect reachability plus simultaneous runtime readback: both active Binance PAPER bots expose fresh `RUNNING` sessions, symbol stats, positions, trades, and aggregate data; controlled no-order-guard Binance LIVE proof exposes a `RUNNING` LIVE session and `LIVEIMPORT-03` readback for `TRXUSDT`; post-cleanup readback confirms the LIVE bot is inactive again. Evidence: `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`, `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`, `history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`, and `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`. 2026-05-19 `history/audits/bots-runtime-truth-audit-2026-05-19.md` refreshed local runtime proof: Web bot/dashboard runtime pack passed (`8` files / `61` tests) and API bot/runtime pack passed (`10` files / `88` tests), covering runtime scope, monitoring aggregate, history parity, takeover visibility, LIVE/PAPER isolation, and delete cleanup. | Current Bot Runtime proof is covered for the approved non-Gate.io V1/post-V1 target scope. Gate.io/second-LIVE production shape remains separate. | Keep proof fresh after future deploys; reopen only on a new runtime failing signal or broader Gate.io/2x LIVE scope decision. | QA/Test + Frontend Builder | 2026-05-19 |
-| SOAR-BOTS-001 | Bots | Create, edit, delete, start/stop, and monitor bot through real UI/API path | P0 | VERIFIED | High | 2026-05-11 `BOT-DELETE-ACTIVE-PAPER-2026-05-11`: active PAPER bot delete no longer routes through LIVE confirmation; Web Vitest passed (`147` files, `501` tests), API Bots e2e passed (`27/27`), Web typecheck passed, guardrails passed, diff check passed with line-ending warnings only. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: deployed `457bce05` production fixture proof verified disposable inactive PAPER bot create/read/update, runtime graph read, market-group and strategy-link readbacks, assistant config update, and bot delete cleanup `PASS`; no LIVE bot activation, order, position, or exchange-side mutation was performed. 2026-05-14 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` adds local API proof that inactive bot deletion removes bot-owned positions, orders, trades, fills, signals, logs, runtime dedupe rows, runtime sessions, runtime events, runtime stats, market-group links, strategy links, assistant config, and subagent config while preserving the linked strategy. 2026-05-19 `history/audits/bots-runtime-truth-audit-2026-05-19.md` refreshed local bot proof: Web bot/dashboard runtime pack passed (`8` files / `61` tests) and API bot/runtime pack passed (`10` files / `88` tests), covering CRUD, ownership, wallet-first writes, duplicate guards, entitlements, runtime graph/scope, LIVE/PAPER isolation, and delete cleanup. | Current V1 Bots CRUD/config proof is covered for the disposable production fixture boundary. LIVE activation and live exchange mutation remain outside this row and require separate approval. | Keep Bots proof fresh after future deploys; do not run LIVE bot actions without separate explicit approval. | QA/Test + Builder | 2026-05-19 |
-| SOAR-ASSISTANT-AI-001 | Assistant/AI | Assistant config, dry-run orchestration, runtime integration truth, and AI red-team readiness | P1 | VERIFIED_FOUNDATION / ACCEPTED_DEFERRED_FOR_V1_HOTPATH | Medium | 2026-05-19 `AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19`: deterministic assistant foundation is locally proven. Backend orchestrator tests passed (`2` files / `6` tests), focused Web assistant route tests passed (`2` files / `3` tests), and bot assistant config/dry-run e2e passed after local Postgres/Redis startup (`1` file / `3` tests). Evidence covers config/dry-run, subagent slots, deterministic merge, fail-closed planner failure, timeout/error trace status, sanitization, policy gate, and circuit breaker. 2026-05-23 foundation protocol harness maps all `AI_TESTING_PROTOCOL.md` risk areas for the accepted foundation/dry-run scope and executes deterministic foundation-applicable scenarios. 2026-06-04 `LUC-1945`/`LUC-2018` verify local adversarial assistant foundation/fail-closed behavior. 2026-06-07 `LUC-2773` records the V1 disposition as `accepted_deferred_for_v1` for executable assistant hot-path orchestration. | No audited BACKTEST/PAPER/LIVE hot-path runtime call site to `orchestrateAssistantDecision`; no full model-backed multi-turn runtime AI red-team proof. This is accepted future/gated scope under `DEC-AUD-002` and `LUC-2773`, not a current architecture-code mismatch or V1 blocker. | Keep foundation/dry-run scope verified. Do not create implementation children for hot-path assistant orchestration unless Product+CTO activate a separate future AI/security slice with persisted traces, fail-closed integration, model/runtime assumptions, and full AI red-team evidence. | Product + CTO activation gate; then AI Runtime + Security + QA/Test | 2026-06-07 |
-| SOAR-REL-001 | Release confidence | Release-critical module inventory and proof map | P0 | VERIFIED | High | 2026-05-14 final evidence pack: `history/audits/v1-master-state-ledger-2026-05-14-final.md`, `history/plans/v1-project-index-2026-05-14-final.md`, `history/releases/v1-completion-scorecard-2026-05-14-final.md`, `history/audits/v1-final-evidence-inventory-2026-05-14.md`, and `history/audits/v1-100-percent-truth-audit-2026-05-14.md` define the current module-by-module proof map, score, evidence inventory, and scoped 100 percent verdict. 2026-05-14 ledger reconciliation promotes the stale Profile, Profile API Keys, Wallets, Markets, Strategies, Logs/Audit Trail, and Subscriptions/Admin rows to `VERIFIED` using already-accepted production-safe proof artifacts instead of collapsing unproven LIVE mutation scope. | None for the release-confidence inventory row. LIVE order/cancel/close, unsafe LIVE position mutation, existing-data mutation, and broader Gate.io/second-LIVE production shape remain outside the verified V1 scope unless separately approved. | Keep proof-map artifacts fresh after future scope changes or deploys; use new failing signals rather than stale proof gaps to reopen rows. | Planning | 2026-05-14 |
+| ID                           | Module                  | Journey / function                                                                                                                                        | Priority | Status                                                 | Confidence | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Missing proof or defect                                                                                                                                                                                                                                                                                                                                                                                                              | Next smallest action                                                                                                                                                                                                                                                                         | Owner                                                               | Last verified |
+| ---------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------- |
+| SOAR-DATA-001                | Data Model / Migrations | Prisma schema, migration chain, indexes, uniqueness, ownership, and DB-backed data contracts                                                              | P0       | PARTIALLY VERIFIED                                     | High       | 2026-05-19 `history/audits/data-model-migrations-audit-2026-05-19.md`: Prisma schema validation passed; local migration status reported `54` migrations and schema up to date; full local migration replay applied all `54` migrations; schema diff generation passed; isolated wallet data-contract e2e passed (`1` file / `24` tests), isolated backtests data-contract e2e passed (`1` file / `15` tests), and runtime repository contract passed (`1` file / `2` tests). 2026-05-23 `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23`: Docker Desktop was started after local Postgres/Redis were unavailable, `pnpm run go-live:infra:up` brought up `soar-postgres-1` and `soar-redis-1`, `pnpm run audit:data:db-isolated` passed with Prisma schema validation, migration status, full reset/replay of `55` migrations, wallets `24/24`, backtests `15/15`, and runtime repository `2/2`; `pnpm run ops:db:backup-restore:check-local` passed with `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`. Critical manual partial-index invariants remain identified for open position scoping and one active market group.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Production migration status and production backup/restore freshness were not rerun in this local audit. Shared-DB parallel e2e remains a documented run-policy pitfall; the isolated audit path is current and passing.                                                                                                                                                                                                              | Keep DB-backed audit packs sequential or isolated; refresh production migration/backup/restore proof under protected ops context before future production release claims.                                                                                                                    | DB/Migrations + QA/Test                                             | 2026-05-23    |
+| SOAR-MOBILE-001              | Mobile / Cross-platform | Native/mobile app scope, scaffold status, and future parity gates                                                                                         | P2       | OUT_OF_SCOPE_FOR_V1                                    | High       | 2026-05-19 `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md`: `apps/mobile` contains only `package.json`, `README.md`, and `src/.gitkeep`; mobile build/test scripts print scaffold-only deferred messages; mobile README and `docs/planning/mobile-parity-contract.md` state no production mobile runtime and no independent mobile backend contracts. 2026-05-28 `LUC-386`: mobile docs registry/index baseline is now explicit via `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-doc-status-index.md` (Mobile Surface), and `docs/modules/module-registry.md` (Mobile Module Registry). 2026-06-07 [LUC-2793](/LUC/issues/LUC-2793): native/mobile traceability is `out_of_scope_for_v1`; current map is a scaffold-only documentation seed, not an active V1 implementation gap. 2026-07-10 [LUC-253](/LUC/issues/LUC-253): TSA readback reconfirmed the same scaffold-only inventory and refreshed mobile module docs/index evidence without runtime mutation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | No native mobile app, Expo Router, mobile screens, app config, mobile CI gate, independent mobile API contract, or real mobile tests exist by design. Responsive Web mobile evidence is tracked under `SOAR-UX-A11Y-MOBILE-001`, not this native scope row.                                                                                                                                                                          | Keep mobile module docs/index rows in sync as long as scope stays scaffold-only; when Product/CTO activation is approved, replace scaffold echoes with real Expo/native build/test validation and expand `mobile-*.md` coverage in the same lane.                                            | Product + Frontend/Mobile + Docs Memory                             | 2026-07-10    |
+| SOAR-I18N-001                | Web i18n / Copy         | Route-reachable locale copy, namespace registry, hardcoded literal guardrails, and language policy                                                        | P1       | VERIFIED                                               | High       | 2026-05-19 `history/audits/i18n-copy-reachability-audit-2026-05-19.md`: route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, and hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests), covering translations, guardrails, namespace registry, route locale smoke, provider loading, locale formatting, and optional i18n behavior.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | None for current route-reachable local scope. Future route/copy changes must rerun the route-reachable i18n audit.                                                                                                                                                                                                                                                                                                                   | Keep `corepack pnpm i18n:audit:route-reachable:web` in route/copy change gates.                                                                                                                                                                                                              | Frontend Builder + QA/Test                                          | 2026-05-19    |
+| SOAR-AUTH-001                | Auth                    | Login, logout, session validation, expired-session redirect, and protected-route cookie gate                                                              | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-AUTH-SESSION-LIFECYCLE-PROOF-2026-05-11`: API Auth e2e passed (`11/11`) and proves registration/login cookie TTLs, logout cookie clearing, deleted-user session expiry, expired JWT clearing, and duplicate-token precedence. Focused Web Auth tests passed (`5` files, `17` tests) and cover AuthProvider bootstrap, logout redirect, session-expired warning cleanup, API interceptor redirect to `/auth/login?session=expired`, middleware cookie gate, login form rendering/error alert, and login hook fail-closed missing-session-refresh behavior. 2026-05-14 `history/evidence/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md` found a production replay gap on deployed `2fc90a08`: browser route fail-closed checks passed, but direct reuse of the pre-logout JWT still returned `/auth/me` `200`. `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` fixed logout by incrementing the matching user's `sessionVersion`; focused Auth/middleware tests passed (`21/21`), root typecheck/lint/build passed, and `history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md` passed on deployed `84711599`, including stale-token `/auth/me` `401` after logout.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Current Auth proof is covered for the V1/post-V1 target scope.                                                                                                                                                                                                                                                                                                                                                                       | Keep auth proof fresh after future deploys; reopen only on a new failing auth/session signal.                                                                                                                                                                                                | Backend Builder + QA/Test                                           | 2026-05-14    |
+| SOAR-PROFILE-001             | Profile                 | Basic profile update, timezone preference, password change, and account deletion guards                                                                   | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-PROFILE-LOCAL-PROOF-2026-05-11`: API Profile basic/security e2e passed (`2` files, `7` tests), proving self-delete route behavior, legacy delete rejection, valid timezone persistence, invalid timezone rejection, unauthenticated security access rejection, valid-current-password change, weak/invalid password rejection, old-login failure/new-login success, and password-confirmed account deletion. Focused Web Profile tests passed (`2` files, `5` tests), proving basic profile save success/error toasts, timezone preference payload, password mismatch short-circuit without API call, and successful password change payload/feedback. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md` verifies production-safe profile read, reversible update, and restore with disposable fixture boundaries and no raw secret artifacts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Current V1 Profile proof is covered for local security/form behavior plus production-safe reversible update. Avatar upload transport is outside this V1 row.                                                                                                                                                                                                                                                                         | Keep proof fresh after future deploys; reopen only on a new failing Profile signal or changed profile scope.                                                                                                                                                                                 | QA/Test + Frontend Builder                                          | 2026-05-14    |
+| SOAR-PROFILE-API-KEYS-001    | Profile API Keys        | Create, test, store, rotate, revoke, delete, and audit exchange API keys                                                                                  | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-PROFILE-API-KEYS-LOCAL-PROOF-2026-05-11`: API key e2e and probe service tests passed (`2` files, `25` tests). Evidence covers authenticated access, encrypted-only storage, masked responses, create/list/update/delete, rotate/revoke, owner-only mutation/test behavior, Binance and Gate.io provided/stored probes, no persistence of provided test secrets, audit log metadata without raw secrets, placeholder exchange probe fail-closed behavior, bad-key rejection, futures-missing rejection, and unauthorized ownership protections. Focused Web API key form/list tests passed (`2` files, `13` tests), covering connection-test-before-save, placeholder exchange save behavior, probe support status, stored-key test action, and delete risk confirmation. 2026-05-14 production fixture proof verifies masked API-key create, stored probe fail-closed behavior, audit log visibility for the probe event, and API-key cleanup without writing raw credentials to artifacts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Current V1 Profile API Keys proof is covered for local secret/ownership contracts and production-safe masked create/probe/audit/delete.                                                                                                                                                                                                                                                                                              | Keep proof fresh after future deploys; do not store or print raw operator secrets in proof artifacts.                                                                                                                                                                                        | QA/Test + Frontend Builder                                          | 2026-05-14    |
+| SOAR-WALLETS-001             | Wallets                 | Create, edit, delete, PAPER/LIVE modes, balance preview, reset guards, and ledger readback                                                                | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-WALLETS-LOCAL-PROOF-2026-05-11`: API Wallets tests passed (`4` files, `43` tests), covering CRUD normalization, ownership isolation, active-bot edit/delete guards, LIVE api-key/allocation validation, exchange mismatch rejection, Gate.io PAPER/LIVE support, preview allocation modes, unsupported placeholder preview fail-closed behavior, Gate.io stored-key preview, paper reset mode/open-position/open-order guards, reset checkpoint preservation, cashflow classification, and wallet open-PnL scoping. Web Wallets tests passed (`9` files, `22` tests), covering list/empty/create routes, inline API-key state, clone payload, create/edit form validation, mode-specific fields, LIVE preview, metadata options, Gate.io PAPER submit, paper reset success/error states, preview summary/timeline/cashflow, partial ledger, and unavailable ledger fail-closed state. 2026-05-14 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` adds focused API proof that PAPER wallet reset fails closed while an active bot uses the wallet and succeeds after deactivation when no open wallet-scoped positions/orders remain. 2026-05-14 production fixture proof verifies disposable wallet create, update, readback, and cleanup. 2026-05-19 `history/audits/wallets-capital-ledger-audit-2026-05-19.md` refreshed local proof: Web wallet/capital pack passed (`10` files / `23` tests) and API wallets/capital pack passed (`7` files / `84` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Current V1 Wallets proof is covered for local safety/ledger/reset contracts and production-safe disposable wallet CRUD. LIVE exchange mutation remains outside this proof.                                                                                                                                                                                                                                                           | Keep proof fresh after future deploys; reopen only on a new failing Wallets signal. Track explicit wallet command audit-log events under `AUD-17`.                                                                                                                                           | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-MARKETS-001             | Markets                 | Universe create, edit, delete, catalog import, symbol composition, capability guards, and active-bot mutation guard                                       | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-MARKETS-LOCAL-PROOF-2026-05-11`: API Markets e2e passed (`1` file, `17` tests), covering authenticated CRUD, normalization, canonical symbol composition, linked symbol-group sync, empty symbol set handling, Binance/Gate.io catalog reads, placeholder exchange persistence, explicit not-implemented catalog response, active bot update/delete blocking, inactive PAPER/LIVE bot edits, deactivation-through-bot-API edits, stale legacy link ignore, active primary bot drift blocking, and cross-user isolation. Web Markets tests passed (`5` files, `12` tests), covering form preview parity, saved volume filter, whitelist/blacklist composition, catalog-hidden whitelist selection, empty preview submit, edit-mode saved selections, placeholder exchange submit, validation helper, table clone payload, and route shells. 2026-05-14 production fixture proof verifies disposable market universe create, update, catalog read, and cleanup. 2026-05-19 `history/audits/markets-strategies-configuration-audit-2026-05-19.md` refreshed local proof as part of `AUD-15`: Web market/strategy pack passed (`19` files / `60` tests) and API markets/strategies pack passed (`4` files / `35` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Current V1 Markets proof is covered for local active-bot/ownership/capability contracts and production-safe disposable universe CRUD/catalog read.                                                                                                                                                                                                                                                                                   | Keep proof fresh after future deploys; reopen only on a new failing Markets signal. Track catalog source freshness telemetry as an observability follow-up.                                                                                                                                  | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-STRATEGIES-001          | Strategies              | Strategy create, edit, delete, clone, import/export, indicator catalog, config validation, and active-bot mutation guard                                  | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-STRATEGIES-LOCAL-PROOF-2026-05-11`: API Strategies tests passed (`3` files, `17` tests), covering authenticated CRUD, export/import package contracts, advanced TSL valid/invalid validation, invalid import rejection, cross-user get/update/delete isolation, active-bot update/delete blocking, inactive bot update allowance, DCA reachability validation, and indicator catalog service behavior. Web Strategies tests passed (`14` files, `46` tests), covering list clone naming/create payload, create/edit/detail route shells, form validation and tab flow, zero lifetime, advanced TSL and reordered DCA validation, unreachable DCA blocking, preset utilities, indicator section behavior, form mapping, numeric normalization, close validation, indicator presentation, and taxonomy. 2026-05-14 production fixture proof verifies disposable strategy create, export, update, bot link/readback, backtest run compatibility, and strategy cleanup. 2026-05-14 `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`: Web edit-page submit proof passes (`3/3`), Web strategies suite passes (`14` files, `48` tests), and API strategies e2e passes (`11/11`), covering inactive linked bot update allowance plus active-bot lock rendering/action. 2026-05-19 `history/audits/markets-strategies-configuration-audit-2026-05-19.md` refreshed local proof as part of `AUD-15`: Web market/strategy pack passed (`19` files / `60` tests) and API markets/strategies pack passed (`4` files / `35` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Current V1 Strategies proof is covered for local validation/guard contracts, user-facing Web edit submit parity, active-bot lock handling, and production-safe disposable strategy CRUD/export plus representative bot/backtest compatibility.                                                                                                                                                                                       | Keep proof fresh after future deploys; reopen only on a new failing Strategies signal. Track typed domain errors and Web i18n/dirty-state follow-ups separately.                                                                                                                             | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-MANUAL-ORDERS-001       | Manual Orders           | Manual context, PAPER order placement, validation, lifecycle readback, cancel/close, selected-bot scope, and Dashboard Home action states                 | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-MANUAL-ORDERS-LOCAL-PROOF-2026-05-11`: API Manual Orders tests passed (`7` files, `75` tests), covering manual context, PAPER market truth, open/cancel/close endpoints, order/position ownership, selected-bot write/read scope, quantity rules, position scope, LIVE risk guards, exchange-backed fail-closed cancel behavior, live fill resolution, and live cancel boundary. Web Manual Orders tests passed (`6` files, `20` tests), covering Dashboard Home submit, validation, context/venue/scope semantics, open-order source labels, open-order cancel actions, and submitted/waiting/ready/imported/position-opened/blocked action states. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified manual-order context, disposable PAPER limit order open/read/cancel, cancel fail-closed without `riskAck`, and canceled-order readback. 2026-05-19 `history/audits/orders-manual-trading-audit-2026-05-19.md` refreshed local proof: Web manual/open-order pack passed (`8` files / `46` tests) and API orders/manual trading pack passed (`10` files / `121` tests). 2026-05-23 `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` added DB-backed service and route tests for Gate.io futures manual-order context contract-size truth: `quantity=4`, `contractSize=10`, `markPrice=0.25` => `10 USDT` notional and `2 USDT` margin at leverage `5`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Current V1 Manual Orders proof is covered for PAPER production-safe lifecycle and local Gate.io futures contract-size context semantics. LIVE exchange mutation remains blocked-risk without separate explicit approval.                                                                                                                                                                                                             | Keep proof fresh after future deploys; do not run LIVE manual orders without separate explicit approval.                                                                                                                                                                                     | QA/Test + Frontend Builder                                          | 2026-05-23    |
+| SOAR-POSITIONS-001           | Positions               | Position list/read, close/update, takeover, exchange snapshot, import status, reconciliation, and runtime close UI states                                 | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-POSITIONS-LOCAL-PROOF-2026-05-11`: API Positions tests passed (`12` files, `90` tests), covering list/read ownership, symbol filter normalization, stale local exclusion, live status scoping, exchange snapshot selection/fail-closed behavior, Gate.io/Binance authenticated snapshots, takeover classification/rebind, bot-only management truth, orphan repair, imported lifecycle history hydration, live reconciliation ownership/ambiguity/stale-close/open-order handling, manual TP/SL safety, management-mode guards, EXCHANGE_SYNC runtime visibility, selected LIVE close, profitable PAPER manual close, carryover open orders, and pending external DCA separation. Web Positions tests passed (`3` files, `10` tests), covering runtime position PnL derivation/fallbacks, ignored/closed close-action states, pending close state, and runtime table action semantics. 2026-05-12 `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligns Web Positions docs to canonical Dashboard Home/Bot Runtime ownership and legacy redirect behavior. 2026-05-14 `history/evidence/prod-positions-proof-2fc90a08-2026-05-14.md` passed on production: deployed build-info matched `2fc90a08`, unauthenticated Positions access failed closed, an active PAPER runtime candidate was selected, a proof PAPER position was opened, read, switched to manual management and restored, manually updated, checked through live-status/takeover-status/exchange-snapshot reads, rejected close without `riskAck`, closed with `riskAck`, read back as terminal `CLOSED`, and confirmed absent from the OPEN list. 2026-05-19 `history/audits/positions-reconciliation-audit-2026-05-19.md` refreshed local proof: Web runtime positions pack passed (`6` files / `46` tests) and API positions/reconciliation pack passed (`11` files / `68` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Current V1 Positions proof is covered for production-safe PAPER lifecycle and read/fail-closed boundaries. LIVE exchange mutation remains blocked-risk without explicit safe plan.                                                                                                                                                                                                                                                   | Keep proof fresh after future deploys; do not run LIVE position mutation without separate explicit approval.                                                                                                                                                                                 | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-ORDERS-001              | Orders                  | Order list/read/open/cancel/close, active-only filtering, exchange events, fills, fees, and open-order UI actions                                         | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-ORDERS-LOCAL-PROOF-2026-05-11`: API Orders tests passed (`10` files, `121` tests), covering active order filtering, PAPER/LIVE open contracts, missing price truth rejection, same-symbol add/reverse conflict handling, canonical bot context, LIVE pretrade/risk guards, exchange ids/status/fills/fees, propagated execution errors, manual context rules, close attribution, stale/open exchange-backed cancel and close fail-closed behavior, API list/get ownership, exchange event open/close/DCA/account-update lifecycle, partial/underfilled/capped fill progress, fee pending/backfill, live fill resolution, quantity rules, position scope, and live cancel boundary. Web Orders tests passed (`2` files, `3` tests), covering source labels, active open-order cancel action, and terminal order read-only behavior. 2026-05-12 `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligns Web Orders docs to canonical Dashboard Home/Bot Runtime ownership and legacy redirect behavior. 2026-05-14 production fixture proof verified disposable PAPER limit order open/read/cancel, fail-closed cancel-without-ack behavior, and terminal canceled-order readback. 2026-05-19 `history/audits/orders-manual-trading-audit-2026-05-19.md` refreshed local proof: Web manual/open-order pack passed (`8` files / `46` tests) and API orders/manual trading pack passed (`10` files / `121` tests), covering lifecycle, ownership, active filtering, fills, fees, exchange events, exchange-backed fail-closed cancel boundary, quantity rules, and position scope. 2026-05-23 Gate.io contract-size follow-up locked order context/rules parity with DB-backed service and route tests plus quantity-rules/runtime contract-size tests; the same route pack fixed LIVE close dedupe truth so submitted reused close orders do not claim closed before completion.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Current V1 Orders proof is covered for production-safe PAPER open/cancel, local fill/fee/exchange-event contracts, local Gate.io futures contract-size order context, and local LIVE close submitted-truth dedupe. LIVE exchange mutation remains blocked-risk without separate explicit approval.                                                                                                                                   | Keep proof fresh after future deploys; do not run LIVE order mutation without separate explicit approval.                                                                                                                                                                                    | QA/Test + Frontend Builder                                          | 2026-05-23    |
+| SOAR-BACKTESTS-001           | Backtests               | Backtest run create/list/get/delete, replay worker, report, timeline, parity, and UI details flow                                                         | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-BACKTESTS-LOCAL-PROOF-2026-05-11`: API Backtests tests passed (`12` files, `110` tests), covering auth/ownership, create/list/get/delete, explicit `startAt/endAt` range validation, enriched list fields, pending report contract, strategy-to-backtest-to-paper/live critical flow, paper/live parity with reconciliation, venue consistency, market-universe symbol formula, empty-symbol fail-closed behavior, 3-symbol paper alignment, failed parity diagnostics, run queue/job persistence, replay core, runtime kernel parity, contract remediation, data gateway, fill model, range service, and indicator timeline series. Web Backtests tests passed (`13` files, `32` tests), covering list/create/detail route shells, create form behavior, run details presentation, legacy list view, runs table actions, core-data hook, view-models, non-overlapping trade segments, pair metrics, and timeline indicator overlays. 2026-05-13 `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` routes backtest candle loading through the Exchange public market-data boundary with resolved exchange context, scopes candle cache uniqueness by `source`, carries exchange through run/timeline replay, updates Web timeline types, and passes focused bot/backtest tests (`56/56`) plus API/Web typechecks. 2026-05-13 `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` renders resolved `exchange / marketType / baseCurrency` in Backtest details and passes focused Web proof (`4/4`). 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified disposable backtest run create/readback, report readback, trades readback, timeline readback with candles, and delete cleanup. 2026-05-19 `history/audits/backtests-reports-audit-2026-05-19.md` refreshed local proof: Web backtests/reports pack passed (`15` files / `37` tests) and API backtests/reports pack passed (`13` files / `114` tests). 2026-05-23 `BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23`: non-Binance FUTURES backtests that require `ORDER_BOOK_*` history now fail closed with explicit parity diagnostics instead of simulating against a silent empty order-book series; focused backtest pack passed (`47/47`) and API typecheck passed.                                                                             | Current V1 Backtests proof is covered for production-safe disposable run lifecycle and local adapter/replay contracts. Non-Binance historical order-book support remains a future adapter scope; current behavior is fail-closed when an order-book strategy would otherwise require missing history.                                                                                                                                | Keep proof fresh after future deploys; implement real historical non-Binance order-book support before claiming full order-book parity.                                                                                                                                                      | QA/Test + Frontend Builder + Backend Builder                        | 2026-05-23    |
+| SOAR-REPORTS-001             | Reports                 | Cross-mode performance summaries, per-run report table, and dashboard reports route states                                                                | P1       | VERIFIED                                               | High       | 2026-05-11 `V1-REPORTS-LOCAL-PROOF-2026-05-11`: API Reports service tests passed (`1` file, `2` tests), covering weighted BACKTEST report aggregation and PAPER trade aggregation. Web Reports tests passed (`3` files, `5` tests), covering `/dashboard/reports` route shell, empty state, aggregated report cards/tables, and route-reachable locale copy. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: production fixture proof verified per-run report readback for a disposable production backtest run. 2026-05-19 `history/audits/backtests-reports-audit-2026-05-19.md` refreshed local proof: Web backtests/reports pack passed (`15` files / `37` tests) and API backtests/reports pack passed (`13` files / `114` tests). 2026-05-21 gap-hunt follow-up added DB-backed `reports.e2e.test.ts`; focused Reports API proof passed (`2` files / `4` tests), covering unauthenticated rejection and authenticated user-scoped BACKTEST/PAPER/LIVE cross-mode aggregation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Current V1 Reports proof is covered for implemented report surfaces. Export/download is not part of the current implemented Reports surface.                                                                                                                                                                                                                                                                                         | Keep proof fresh after future deploys; track export/download, richer filters, snapshot persistence, and i18n hardening separately if they become product scope.                                                                                                                              | QA/Test + Frontend Builder                                          | 2026-05-21    |
+| SOAR-LOGS-001                | Logs/Audit Trail        | Authenticated audit log filters, pagination, action-produced events, and metadata trace UI                                                                | P1       | VERIFIED                                               | High       | 2026-05-11 `V1-LOGS-AUDIT-LOCAL-PROOF-2026-05-11`: API Logs tests passed (`2` files, `5` tests), covering unauthenticated rejection, owner-only reads, source/actor/severity filters, bot action-produced audit event visibility, and pagination defaults/bounds. Web Logs tests passed (`3` files, `4` tests), covering `/dashboard/logs` route shell, empty and loaded states, severity filter request payload, metadata trace rendering, and route-reachable locale copy. 2026-05-14 production fixture proof verifies audit logs readback with the API-key probe event visible, and production UI module audit verifies `/dashboard/logs` route render. 2026-05-19 `history/audits/logs-audit-trail-audit-2026-05-19.md` refreshed local proof: Web logs/audit pack passed (`2` files / `3` tests) and API logs/pagination pack passed (`2` files / `5` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Current V1 Logs/Audit proof is covered for local filter/pagination/rendering contracts and production-safe action-produced audit readback.                                                                                                                                                                                                                                                                                           | Keep proof fresh after future deploys; reopen only on a new failing Logs/Audit signal. Track total-count envelope, pagination controls, saved filters, index tuning, and command-event write coverage separately.                                                                            | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-EXCHANGE-ADAPTER-001    | Exchange Adapter        | Binance/Gate.io capability boundaries, public/authenticated reads, API-key probes, live adapter fail-closed behavior, and UI capability wiring            | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-EXCHANGE-ADAPTER-LOCAL-PROOF-2026-05-11`: fixed Gate.io public catalog symbol normalization at the exchange boundary, then API Exchange tests passed (`19` files, `93` tests), covering API-key probes, runtime exchange order guard, Binance public REST/user data stream, CCXT futures connector behavior, adapter boundary fail-closed support, adapter registry, authenticated read service/contracts, connector factory, execution capability contract, market catalog, metadata contract, public read/market data, symbol rules, live order adapter, live fee reconciliation, and position exchange snapshot normalization. Web Exchanges/Profile API-key tests passed (`5` files, `17` tests), covering capability gating, `/dashboard/exchanges` redirect, profile API-key integration, connection tests, stored-key tests, and delete risk confirmation. 2026-05-12 `V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12` aligns V1 static scan classification with the approved exchange capability matrix so unsupported exchange fail-closed gates are not counted as unresolved findings. 2026-05-13 `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` removed an Engine-side Binance REST warmup shortcut; runtime candle recovery now uses the Exchange public market-data boundary and Gate.io warmup regression proves Binance REST is not called. 2026-05-13 `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` extends that boundary to backtest candle loading and bot runtime fallback candles, and scopes candle cache uniqueness by source. 2026-05-14 `history/evidence/prod-security-exchange-proof-2fc90a08-2026-05-14.md` passed on production: unsupported exchange probe fails closed, Binance futures catalog returns read-only data, Gate.io futures catalog returns canonical symbols, and protected readiness details are authenticated. 2026-05-19 `EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19`: API exchange capability/registry/boundary tests passed (`4` files / `21` tests), focused exact contract tests passed (`2` files / `4` tests), orders/wallet neutral type consumer tests passed (`2` files / `41` tests), API typecheck passed, and Web exchange capability tests passed (`2` files / `3` tests), confirming exact `(exchange, marketType, operation)` capability truth and neutral exchange-owned type naming are locally green. | Current V1 local and production-safe exchange-boundary proof is covered for read-only/fail-closed scope. Real live mutation remains outside this proof and requires a separate explicit safe plan. The former architecture-level exact matrix debt is repaired; operation support now includes `marketType`.                                                                                                                         | Keep proof fresh after future deploys; do not claim live-money mutation coverage from this read-only/fail-closed proof. Keep future exchange additions on exact capability contracts and neutral exchange-owned type aliases.                                                                | QA/Test + Backend Builder + Frontend Builder                        | 2026-05-19    |
+| SOAR-ENGINE-001              | Engine                  | Runtime signal merge, final-candle decision, pre-trade, execution orchestration, dedupe, PAPER/LIVE parity, and position automation                       | P0       | VERIFIED                                               | High       | 2026-05-19 `history/audits/engine-trading-decision-flow-audit-2026-05-19.md`: focused engine service/unit pack passed (`15` files / `173` tests), covering deterministic signal merge, decision engine, final-candle decisions, execution orchestration, runtime dedupe, exchange order guard, pre-trade/risk, PAPER/LIVE decision equivalence, market-data gateway, runtime loop/supervisor/scan loop, and position automation. DB-backed engine e2e/smoke pack passed (`4` files / `13` tests), covering PAPER runtime order/position lifecycle, runtime orchestration smoke, pre-trade e2e, and owned imported-position execution.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Current local engine decision-flow proof is covered. Production LIVE/exchange-side mutation and assistant hot-path runtime integration remain outside this row.                                                                                                                                                                                                                                                                      | Keep engine proof fresh after runtime/engine/exchange lifecycle changes; do not claim LIVE mutation coverage without an explicit safe plan.                                                                                                                                                  | QA/Test + Backend Builder                                           | 2026-05-19    |
+| SOAR-WORKERS-001             | Workers                 | Runtime loops, market stream, backtest worker, queue/process topology, readiness, and runtime freshness                                                   | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-WORKERS-LOCAL-PROOF-2026-05-11`: API Workers/stream/runtime proof passed (`18` files, `88` tests), covering worker ownership/topology, market-stream source config, subscriptions, fanout retry, market-stream route contracts/e2e, Exchange polling source/fanout, Binance stream parsing, protected worker health/readiness, runtime freshness pass/fail/skip behavior, protected `/ready` diagnostics, PAPER runtime-flow worker telemetry, execution orchestrator behavior/import cleanup, execution adapter parity, backtest run job persistence, and queue tuning. 2026-05-14 `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14`: protected production runtime freshness passed for deployed `457bce05` with `runningCount=4`, worker heartbeat PASS, market data PASS, runtime signal lag PASS, and runtime sessions PASS. 2026-05-14 controlled no-order-guard LIVE proof produced `LIVEIMPORT-03` PASS for `TRXUSDT`, simultaneous PAPER+LIVE readback passed with the Binance LIVE bot and both Binance PAPER bots RUNNING, and post-cleanup readback confirmed the LIVE bot was inactive again. Full release gate for `457bce05` is `ready`. 2026-05-19 `history/audits/workers-runtime-operations-audit-2026-05-19.md` refreshed local proof: API worker/runtime operations pack passed (`17` files / `85` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Current V1 worker/runtime freshness and production non-Gate.io simultaneous runtime evidence are covered. Gate.io/second-LIVE production shape remains deferred/outside this release slice.                                                                                                                                                                                                                                          | Keep scheduled runtime freshness and release regression evidence fresh before future deploys.                                                                                                                                                                                                | QA/Test + Backend Builder + Ops/Release                             | 2026-05-19    |
+| SOAR-SECURITY-PRIVACY-001    | Security/Privacy        | Auth, session, trusted origin, ops network, rate limits, headers, secret readiness, crypto, ownership isolation, API-key privacy, and abuse throttling    | P0       | VERIFIED                                               | High       | 2026-05-11 `V1-SECURITY-PRIVACY-LOCAL-PROOF-2026-05-11`: API Security/Privacy proof passed (`23` files, `111` tests), covering security/no-store headers, alerts/metrics admin access, `/ready` secret/runtime diagnostics, API error redaction, crypto keyring and legacy decrypt behavior, rate-limit degradation, ops-network/trusted-origin/auth middleware, critical secret readiness, Auth lifecycle/JWT/cookie/error contracts, cross-module data isolation, Profile API-key ownership/secret handling/probes, Profile password/account deletion, stage abuse throttling, and authenticated position snapshots. Web Auth/Profile proof passed (`13` files, `48` tests), covering middleware, AuthContext, login/register forms/hooks/types, public auth cache contract, profile page, API-key form/list, security form, and basic profile form. This slice also tightened test env restoration for JWT rotation and API-key encryption keyring variables. 2026-05-14 `history/evidence/prod-security-exchange-proof-2fc90a08-2026-05-14.md` passed on production: security headers are present, authenticated profile reads are `no-store`, unauthenticated protected/ops/metrics routes fail closed, API-key list responses are redacted, untrusted Origin receives controlled `403`, unsupported exchange probe fails closed without stored secrets in artifacts, and authenticated readiness details require auth. 2026-05-19 `history/audits/security-privacy-audit-2026-05-19.md` refreshed local proof: auth/middleware/header API pack passed (`9` files / `32` tests), DB-backed auth/profile/API-key/isolation/abuse pack passed (`7` files / `47` tests), focused Web auth/profile/API-key pack passed (`7` files / `28` tests), and public auth cache contract passed (`1` file / `2` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Current V1 local and production-safe protected security proof is covered. External independent security review remains a separate governance follow-up and should not be represented as automated proof.                                                                                                                                                                                                                             | Keep proof fresh after future deploys; schedule external independent review as a governance follow-up before broader public launch.                                                                                                                                                          | QA/Test + Security + Backend Builder + Frontend Builder             | 2026-05-19    |
+| SOAR-UX-A11Y-MOBILE-001      | UX/A11y/Mobile          | Public/dashboard routes, loading/empty/error/success states, keyboard/focus, responsive shell, mobile navigation, screenshot evidence, and console health | P1       | VERIFIED                                               | High       | 2026-05-12 `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11`: local authenticated route audit passed for implemented public/dashboard/legacy routes; focused Web UX/a11y/state tests passed (`25` files, `126` tests), covering shared state components, tables/tabs, form primitives, invalid-field focus, dashboard/page title a11y, responsive header/footer, Dashboard Home states, Bots, Wallets, Markets, Strategies, Backtests, Reports, Logs, Auth, Profile, and route locale smoke. Edge/CDP browser proof captured desktop Dashboard empty/onboarding, desktop Wallets empty state, mobile Dashboard, and mobile menu screenshots; mobile menu focus/click interaction was exercised; CDP console/exception check returned `0` events and no framework overlay was detected. 2026-05-14 `history/plans/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md` passed for production route/module reachability. 2026-05-14 `history/evidence/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md` passed on production with authenticated desktop Dashboard/Wallets/Bots/Profile screenshots, mobile Dashboard screenshot, mobile menu click, keyboard focus, no framework overlay, and no horizontal overflow. 2026-05-21 gap-hunt follow-up hardened `scripts/runProdUxA11yMobileProof.mjs` so runtime exceptions and console error/warning events become page failures rather than warnings; syntax check passed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Current V1 UX/A11y/Mobile proof is covered for route reachability and production desktop/mobile browser rendering, but current-target authenticated production proof still requires protected inputs under `AUD-19`. Non-blocking accessibility heuristic warnings remain as polish follow-up.                                                                                                                                       | Keep proof fresh after future deploys; rerun production UX proof with protected inputs and address unnamed internal-control warnings as post-V1 polish.                                                                                                                                      | QA/Test + Frontend Builder                                          | 2026-05-21    |
+| SOAR-SUBSCRIPTIONS-ADMIN-001 | Subscriptions/Admin     | Admin-only subscription plans, entitlement validation, user role/plan assignment, and rendered admin routes                                               | P0       | VERIFIED                                               | High       | 2026-05-12 `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12`: API admin/subscription tests passed (`3` files, `18` tests), covering unauthenticated rejection, non-admin rejection, plan catalog read, plan price/entitlement update validation, invalid entitlement rejection, user listing with active subscription metadata, role/plan updates, self-demotion blocking, and profile subscription readback. Web admin/profile subscription tests passed (`3` files, `7` tests), covering loaded, error, role-toggle, and plan-assignment UI states. Local admin route audit passed with a throwaway admin, and Edge/CDP screenshots rendered `/admin/subscriptions` and `/admin/users` with no framework overlay. `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12` adds focused module coverage for invalid entitlement fallback and FREE-plan LIVE trading fail-closed behavior (`2/2`). `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12` aligns the API Subscriptions doc to the current checkout/admin/profile V1 boundary. `V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12` removes placeholder wording from manual checkout metadata and passes focused profile subscription checkout proof (`8/8`). 2026-05-14 production UI module audits verify authenticated admin route render for `/admin/users` and `/admin/subscriptions` with valid admin auth and no raw secret artifacts. 2026-05-19 `history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md` refreshed local proof: Web admin/subscription pack passed (`4` files / `9` tests) and API admin/subscriptions pack passed (`5` files / `25` tests).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Current V1 Subscriptions/Admin proof is covered for local entitlement/role safety and production protected admin route rendering. Non-destructive production entitlement mutation remains a future admin-ops exercise, not a V1 blocker.                                                                                                                                                                                             | Keep proof fresh after future deploys; reopen only on a new failing admin/subscription signal or changed entitlement scope.                                                                                                                                                                  | QA/Test + Backend Builder + Frontend Builder                        | 2026-05-19    |
+| SOAR-OPERATIONS-001          | Operations              | Deployment smoke, rollback guard/proof, SLO evidence, release gates, alerts, backup/restore, and liveimport readback                                      | P0       | PARTIAL                                                | Medium     | 2026-05-13 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`: final `LIVEIMPORT-03` passed for `TRXUSDT`; final preflight has no blockers; production target-only V1 release gate is `ready`; build-info freshness, post-deploy smoke, runtime freshness, and rollback guard passed against deployed `00169d7f`. 2026-05-14 `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14`: deployed `457bce05` passed protected runtime freshness, rollback proof, authenticated production UI clickthrough, controlled no-order-guard `LIVEIMPORT-03`, RC gates/sign-off/checklist, production backup/restore drill, final preflight, and full non-dry-run release gate. 2026-05-19 `history/audits/operations-release-deployment-audit-2026-05-19.md` refreshed local proof: typecheck PASS, lint PASS, build PASS, go-live smoke PASS (`45` API tests and `18` Web tests), and local backup/restore PASS after required local Postgres startup. 2026-05-20 `history/tasks/v1-function-architecture-verification-2026-05-20-task.md` refreshed local validation: guardrails PASS, guardrails regression tests PASS, docs parity PASS, endpoint parity PASS, reusable audit manifest verify PASS, lint PASS, typecheck PASS, build PASS, Web tests PASS (`149` files / `514` tests), full API Vitest PASS in a controlled one-worker local-infra window, i18n route audit PASS, `audit:data:db-isolated` PASS after sequential rerun, and go-live smoke PASS (`45` API / `18` Web). Production public deploy freshness is verified for `dd1a1faf`, but final protected `AUD-19` evidence remains blocked on missing protected inputs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Current local release-safety proof is fresh, and production public deploy freshness is verified for `dd1a1faf`. Full protected production release gate remains historical for deployed `457bce05`; the current target still needs protected auth/context, Gate2 SLO evidence, named Gate4 sign-off/owner fields, runtime, rollback, backup/restore, liveimport, and production UI evidence before a full production readiness claim. | Provide approved protected inputs and execute the current operator unblock packet for the current target; do not claim full production readiness from public smoke alone.                                                                                                                    | Ops/Release + QA/Test                                               | 2026-05-20    |
+| SOAR-DASHBOARD-001           | Dashboard Home          | Selected-bot runtime truth, wallet KPIs, runtime positions/orders/trades tables                                                                           | P0       | VERIFIED                                               | High       | Local proof covers loading, retryable error, selected-bot switching, wallet KPI recalculation, open-orders rows, trade-history rows, stale-row suppression, desktop/mobile empty/onboarding state, active PAPER runtime rows, wallet baseline/free funds, and Orders tab interaction. 2026-05-14 production evidence for deployed `457bce05` adds authenticated `/dashboard` route reachability plus simultaneous runtime readback where both Binance PAPER bots expose fresh `RUNNING` sessions, symbol stats, positions, trades, and aggregate data, while the controlled Binance LIVE observation window also proved runtime readback without order placement. Evidence: `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`, `history/plans/prod-ui-module-clickthrough-457bce05-2026-05-14.md`, `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`, and `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Current Dashboard Home proof is covered for the approved non-Gate.io V1/post-V1 target scope. Gate.io/second-LIVE production shape remains separate.                                                                                                                                                                                                                                                                                 | Keep proof fresh after future deploys; reopen only on a new Dashboard runtime failing signal or broader Gate.io/2x LIVE scope decision.                                                                                                                                                      | QA/Test + Frontend Builder                                          | 2026-05-14    |
+| SOAR-BOT-RUNTIME-001         | Bot Runtime             | Canonical bot monitoring route, runtime sessions, symbol stats, open positions, open orders, trades, and legacy runtime redirects                         | P0       | VERIFIED                                               | High       | Local proof covers running/completed PAPER session list/detail, aggregate, positions, symbol stats, trades, completed-session filter, desktop/tablet/mobile rendering, safe session view switch, legacy redirects, and real `RuntimeSignalLoop` telemetry readback through authenticated APIs. 2026-05-14 production evidence for deployed `457bce05` adds authenticated Bot Runtime route/redirect reachability plus simultaneous runtime readback: both active Binance PAPER bots expose fresh `RUNNING` sessions, symbol stats, positions, trades, and aggregate data; controlled no-order-guard Binance LIVE proof exposes a `RUNNING` LIVE session and `LIVEIMPORT-03` readback for `TRXUSDT`; post-cleanup readback confirms the LIVE bot is inactive again. Evidence: `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`, `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`, `history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`, and `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`. 2026-05-19 `history/audits/bots-runtime-truth-audit-2026-05-19.md` refreshed local runtime proof: Web bot/dashboard runtime pack passed (`8` files / `61` tests) and API bot/runtime pack passed (`10` files / `88` tests), covering runtime scope, monitoring aggregate, history parity, takeover visibility, LIVE/PAPER isolation, and delete cleanup.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Current Bot Runtime proof is covered for the approved non-Gate.io V1/post-V1 target scope. Gate.io/second-LIVE production shape remains separate.                                                                                                                                                                                                                                                                                    | Keep proof fresh after future deploys; reopen only on a new runtime failing signal or broader Gate.io/2x LIVE scope decision.                                                                                                                                                                | QA/Test + Frontend Builder                                          | 2026-05-19    |
+| SOAR-BOTS-001                | Bots                    | Create, edit, delete, start/stop, and monitor bot through real UI/API path                                                                                | P0       | VERIFIED                                               | High       | 2026-05-11 `BOT-DELETE-ACTIVE-PAPER-2026-05-11`: active PAPER bot delete no longer routes through LIVE confirmation; Web Vitest passed (`147` files, `501` tests), API Bots e2e passed (`27/27`), Web typecheck passed, guardrails passed, diff check passed with line-ending warnings only. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`: deployed `457bce05` production fixture proof verified disposable inactive PAPER bot create/read/update, runtime graph read, market-group and strategy-link readbacks, assistant config update, and bot delete cleanup `PASS`; no LIVE bot activation, order, position, or exchange-side mutation was performed. 2026-05-14 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` adds local API proof that inactive bot deletion removes bot-owned positions, orders, trades, fills, signals, logs, runtime dedupe rows, runtime sessions, runtime events, runtime stats, market-group links, strategy links, assistant config, and subagent config while preserving the linked strategy. 2026-05-19 `history/audits/bots-runtime-truth-audit-2026-05-19.md` refreshed local bot proof: Web bot/dashboard runtime pack passed (`8` files / `61` tests) and API bot/runtime pack passed (`10` files / `88` tests), covering CRUD, ownership, wallet-first writes, duplicate guards, entitlements, runtime graph/scope, LIVE/PAPER isolation, and delete cleanup.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Current V1 Bots CRUD/config proof is covered for the disposable production fixture boundary. LIVE activation and live exchange mutation remain outside this row and require separate approval.                                                                                                                                                                                                                                       | Keep Bots proof fresh after future deploys; do not run LIVE bot actions without separate explicit approval.                                                                                                                                                                                  | QA/Test + Builder                                                   | 2026-05-19    |
+| SOAR-ASSISTANT-AI-001        | Assistant/AI            | Assistant config, dry-run orchestration, runtime integration truth, and AI red-team readiness                                                             | P1       | VERIFIED_FOUNDATION / ACCEPTED_DEFERRED_FOR_V1_HOTPATH | Medium     | 2026-05-19 `AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19`: deterministic assistant foundation is locally proven. Backend orchestrator tests passed (`2` files / `6` tests), focused Web assistant route tests passed (`2` files / `3` tests), and bot assistant config/dry-run e2e passed after local Postgres/Redis startup (`1` file / `3` tests). Evidence covers config/dry-run, subagent slots, deterministic merge, fail-closed planner failure, timeout/error trace status, sanitization, policy gate, and circuit breaker. 2026-05-23 foundation protocol harness maps all `AI_TESTING_PROTOCOL.md` risk areas for the accepted foundation/dry-run scope and executes deterministic foundation-applicable scenarios. 2026-06-04 `LUC-1945`/`LUC-2018` verify local adversarial assistant foundation/fail-closed behavior. 2026-06-07 `LUC-2773` records the V1 disposition as `accepted_deferred_for_v1` for executable assistant hot-path orchestration.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | No audited BACKTEST/PAPER/LIVE hot-path runtime call site to `orchestrateAssistantDecision`; no full model-backed multi-turn runtime AI red-team proof. This is accepted future/gated scope under `DEC-AUD-002` and `LUC-2773`, not a current architecture-code mismatch or V1 blocker.                                                                                                                                              | Keep foundation/dry-run scope verified. Do not create implementation children for hot-path assistant orchestration unless Product+CTO activate a separate future AI/security slice with persisted traces, fail-closed integration, model/runtime assumptions, and full AI red-team evidence. | Product + CTO activation gate; then AI Runtime + Security + QA/Test | 2026-06-07    |
+| SOAR-REL-001                 | Release confidence      | Release-critical module inventory and proof map                                                                                                           | P0       | VERIFIED                                               | High       | 2026-05-14 final evidence pack: `history/audits/v1-master-state-ledger-2026-05-14-final.md`, `history/plans/v1-project-index-2026-05-14-final.md`, `history/releases/v1-completion-scorecard-2026-05-14-final.md`, `history/audits/v1-final-evidence-inventory-2026-05-14.md`, and `history/audits/v1-100-percent-truth-audit-2026-05-14.md` define the current module-by-module proof map, score, evidence inventory, and scoped 100 percent verdict. 2026-05-14 ledger reconciliation promotes the stale Profile, Profile API Keys, Wallets, Markets, Strategies, Logs/Audit Trail, and Subscriptions/Admin rows to `VERIFIED` using already-accepted production-safe proof artifacts instead of collapsing unproven LIVE mutation scope.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | None for the release-confidence inventory row. LIVE order/cancel/close, unsafe LIVE position mutation, existing-data mutation, and broader Gate.io/second-LIVE production shape remain outside the verified V1 scope unless separately approved.                                                                                                                                                                                     | Keep proof-map artifacts fresh after future scope changes or deploys; use new failing signals rather than stale proof gaps to reopen rows.                                                                                                                                                   | Planning                                                            | 2026-05-14    |
 
 ## Current Release Evidence Notes
 
@@ -10136,7 +10204,7 @@ Do not turn uncertainty into optimism.
   market universe `Main gateio` had been saved as `BINANCE / FUTURES / USDT`,
   causing the wallet-market context mismatch. Gate.io stored API-key read-only
   probe passed for futures, Gate.io futures catalog returned data, `Main
-  gateio` was updated to `GATEIO / FUTURES / USDT`, and inactive bot
+gateio` was updated to `GATEIO / FUTURES / USDT`, and inactive bot
   `Gate.io RSI 20/80` was created with the Gate.io wallet and `RSI 20 / 80`
   strategy. This verifies inactive configuration only; LIVE activation and any
   exchange-side mutation remain separately approval-gated. Evidence:
@@ -10469,8 +10537,8 @@ Do not turn uncertainty into optimism.
   futures bot. Latest PAPER sessions are RUNNING with fresh heartbeats; latest
   LIVE sessions are CANCELED. Production lacks the requested second active LIVE
   bot and has no visible LIVE Gate.io bot, so the local 2x PAPER + Binance LIVE
-  + Gate.io LIVE proof shape cannot yet be claimed in production. Rows remain
-  `PARTIAL`.
+  - Gate.io LIVE proof shape cannot yet be claimed in production. Rows remain
+    `PARTIAL`.
 - 2026-05-13
   `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` applies to
   `SOAR-BOTS-001`, `SOAR-UX-A11Y-MOBILE-001`, and
@@ -10955,6 +11023,7 @@ Do not turn uncertainty into optimism.
 - Evidence:
   `history/evidence/luc-2456-regression-evidence-sweep-2026-06-06.md`,
   `history/tasks/luc-2456-regression-evidence-sweep-2026-06-06-task.md`.
+
 ## 2026-06-06 LUC-2499 Operations Deploy Health Delta
 
 - Module row: `SOAR-OPERATIONS-001`.
@@ -10986,6 +11055,7 @@ Do not turn uncertainty into optimism.
   `16/16` Web, `39/39` routes).
   No runtime, deploy, protected-smoke, account, secret, exchange, or
   live-trading mutation occurred.
+
 ## 2026-06-06 LUC-2578 Position Reconciliation Helper Test Links
 
 - Module row: positions reconciliation local proof and architecture/docs parity
@@ -11051,6 +11121,7 @@ Do not turn uncertainty into optimism.
   `scripts/generateArchitectureAwarenessIndex.mjs` are absent in this checkout;
   production/browser/deploy proof remains outside this local traceability
   repair.
+
 ## 2026-06-07 LUC-2733 Protected Input Readiness Checker Test Links
 
 - Module row: release audit tooling / protected input readiness local proof and
@@ -11115,7 +11186,7 @@ Do not turn uncertainty into optimism.
   readback PASS (`12` rows); architecture-awareness report generated
   `2026-06-07T21:37:41.107Z` reports `193` actionable missing-test links and
   no `runProdFixtureActionProof` top actionable rows; `pnpm run
-  quality:guardrails` PASS.
+quality:guardrails` PASS.
 - Residual risk:
   broader architecture-awareness missing-test backlog remains outside this
   focused repair; protected production fixture action proof remains approval
@@ -11161,6 +11232,7 @@ Do not turn uncertainty into optimism.
 - 2026-06-07 | Release audit tooling / `runProdSecurityExchangeProof` helper
   traceability | implemented, not verified | [LUC-2955](/LUC/issues/LUC-2955)
   selected `scripts/runProdSecurityExchangeProof.mjs` as the next non-duplicate
+
 # 2026-06-20 LUC-5085 Production Web Home Latency Signal
 
 - Module row: SOAR-OPERATIONS-001 / production performance and server-health
@@ -11198,6 +11270,7 @@ Do not turn uncertainty into optimism.
   `node --test scripts/runProdSecurityExchangeProof.test.mjs` PASS (`4/4`);
   `node scripts/runProdSecurityExchangeProof.mjs --help` PASS; direct relation
   readback PASS (`14` rows); architecture-awareness report generated
+
 ## 2026-06-20 LUC-4413 Coolify Read-Only Production Status Access
 
 - Module row: `SOAR-OPERATIONS-001` / Coolify production status access.
@@ -11222,7 +11295,7 @@ Do not turn uncertainty into optimism.
 - Module row: production acceptance / auth session / dashboard-admin route
   reachability / public API-Web smoke.
 - Status delta: `AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PARTIALLY_VERIFIED`.
+PERFORMANCE_PARTIALLY_VERIFIED`.
 - Evidence:
   `history/tasks/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-task.md`;
   `history/evidence/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-ui-clickthrough.md`;
@@ -11245,7 +11318,7 @@ Do not turn uncertainty into optimism.
 - Module row: Production Runtime Health / Dashboard Runtime / Release Ops
   Evidence.
 - Status delta: `VERIFIED_READ_ONLY / APP_HEALTHY /
-  TOKEN_STALE_RESIDUAL`.
+TOKEN_STALE_RESIDUAL`.
   Public smoke and timing passed, protected workers readiness passed through
   fresh login path after the pre-bound token failed closed with `401`,
   rollback guard returned `shouldRollback=false`, authenticated UI clickthrough
@@ -11267,7 +11340,8 @@ Do not turn uncertainty into optimism.
 
   `2026-06-07T22:24:06.213Z` reports `159` actionable missing-test links and
   no `runProdSecurityExchangeProof` top actionable rows; `pnpm run
-  quality:guardrails` PASS.
+quality:guardrails` PASS.
+
 - Residual risk:
   broader architecture-awareness missing-test backlog remains outside this
   focused repair; protected production security/exchange proof remains
@@ -11289,12 +11363,13 @@ Do not turn uncertainty into optimism.
   `releaseOpsScriptContracts.test.mjs`); direct [LUC-3008](/LUC/issues/LUC-3008)
   relation readback PASS (`10` rows); `pnpm run architecture:graph:generate`
   PASS (`653` nodes / `842` relations / `27` chains); `pnpm run
-  quality:guardrails` PASS; no leftover `chrome-headless-shell` process found.
+quality:guardrails` PASS; no leftover `chrome-headless-shell` process found.
 - Residual risk:
   architecture-awareness refresh could not run because
   `scripts/build-architecture-awareness-index.mjs` is absent in this checkout;
   production/prod-like startup smoke and real worker runtime proof remain
   separate runtime gates.
+
 # 2026-06-11 LUC-3405 Public Read-Only Browser Proof Process Anchor Classification
 
 - Status delta: `VERIFIED_CLASSIFICATION`. The residual public read-only
@@ -11351,7 +11426,7 @@ Do not turn uncertainty into optimism.
 - Module row: production acceptance / auth session / dashboard-admin route
   reachability / runtime freshness.
 - Status delta: `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_WATCHFUL / RUNTIME_HEALTHY`.
+PERFORMANCE_WATCHFUL / RUNTIME_HEALTHY`.
 - Evidence:
   `history/tasks/luc-5531-authenticated-production-acceptance-performance-sweep-2026-06-27-task.md`;
   `history/evidence/luc-5531-authenticated-production-acceptance-performance-sweep-2026-06-27.md`;
@@ -11371,7 +11446,7 @@ Do not turn uncertainty into optimism.
 
 - Module row: API smoke / Backtests e2e / shared DB cleanup.
 - Status delta: `VERIFIED_LOCAL / CLEANUP_RESIDUAL_REPAIRED /
-  REPEATABLE_API_BACKTESTS_GREEN`.
+REPEATABLE_API_BACKTESTS_GREEN`.
 - Repair:
   `apps/api/src/modules/backtests/backtests.e2e.test.ts` now resets the
   backtests e2e database through a dependency-ordered helper covering
@@ -11385,7 +11460,7 @@ Do not turn uncertainty into optimism.
 - Validation:
   focused backtests e2e PASS (`15/15`); `pnpm run test:go-live:api:with-infra`
   PASS (`4` files / `45` tests); `pnpm run qa:smoke-e2e:repeatable -- --checks
-  api,backtests` PASS (`2/2` selected checks).
+api,backtests` PASS (`2/2` selected checks).
 - Residual risk:
   generated repeatable artifact still carries the runner's legacy internal
   issue label `LUC-43`; this row and the issue-specific evidence file bind it
@@ -11399,13 +11474,14 @@ Do not turn uncertainty into optimism.
   `history/tasks/luc-5622-known-state-evidence-architecture-baseline-2026-06-27-task.md`.
 - Validation:
   architecture-awareness refresh PASS (`9872` entities, `31955` relations,
+
 # 2026-06-28 LUC-5868 Stale SMOKE_AUTH_TOKEN Runner Binding
 
 - Module row: production protected smoke / runner auth binding /
   `/workers/ready` release proof.
 - Status delta:
   `BLOCKED / VERIFIED_STALE_BINDING_PRESENT / FRESH_LOGIN_PASS /
-  SECRET_MANAGEMENT_ACCESS_DENIED`.
+SECRET_MANAGEMENT_ACCESS_DENIED`.
 - Evidence:
   `history/tasks/luc-5868-stale-smoke-auth-token-runner-binding-2026-06-28-task.md`;
   `history/evidence/luc-5868-stale-smoke-auth-token-runner-binding-2026-06-28.md`.
@@ -11425,7 +11501,7 @@ Do not turn uncertainty into optimism.
   reachability / runtime freshness.
 - Status delta:
   `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
+RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
 - Evidence:
   `history/tasks/luc-5915-authenticated-production-acceptance-performance-sweep-2026-06-28-task.md`;
   `history/evidence/luc-5915-authenticated-production-acceptance-performance-sweep-2026-06-28.md`;
@@ -11446,6 +11522,7 @@ Do not turn uncertainty into optimism.
   `10584` files); app-completion refresh PASS (`2553` items, `8` flows);
   strict architecture drift PASS (`849/849`, `0` missing); repository
   guardrails PASS.
+
 - Residual risk:
   app-completion proof backlog remains large and user-facing confidence is
   only partially verified. Three proof lanes are required for Account access,
@@ -11459,7 +11536,7 @@ Do not turn uncertainty into optimism.
 - Module row: production acceptance / auth session / dashboard-admin route
   reachability / runtime freshness.
 - Status delta: `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Evidence:
   `history/tasks/luc-5699-authenticated-production-acceptance-performance-sweep-2026-06-28-task.md`;
   `history/evidence/luc-5699-authenticated-production-acceptance-performance-sweep-2026-06-28.md`;
@@ -11505,7 +11582,7 @@ Do not turn uncertainty into optimism.
   rollback guard.
 - Status delta:
   `VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Evidence:
   `history/tasks/luc-5866-protected-gate-blocked-flow-evidence-packet-2026-06-28-task.md`;
   `history/evidence/luc-5866-protected-gate-blocked-flow-evidence-packet-2026-06-28.md`.
@@ -11523,6 +11600,7 @@ Do not turn uncertainty into optimism.
 - Residual risk:
   stale pre-bound `SMOKE_AUTH_TOKEN` cleanup, release-grade build provenance,
   and host-level VPS/log-window proof remain separate owner gates.
+
 ## 2026-06-28 LUC-5998 App-Completion Row-Level Proof Backlog
 
 - Module row: app-completion proof linkage / browser-review backlog /
@@ -11605,7 +11683,7 @@ Do not turn uncertainty into optimism.
   readiness / Coolify read-only status.
 - Status delta:
   `VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Evidence:
   `history/evidence/luc-6028-production-performance-server-health-watch-2026-06-28.md`;
   `history/tasks/luc-6028-production-performance-server-health-watch-2026-06-28-task.md`.
@@ -11627,7 +11705,7 @@ Do not turn uncertainty into optimism.
   clickthrough / worker readiness / runtime freshness.
 - Status delta:
   `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY`.
+RUNTIME_HEALTHY`.
 - Evidence:
   `history/evidence/luc-6034-authenticated-production-acceptance-performance-sweep-2026-06-28.md`;
   `history/artifacts/luc-6034-production-performance-timing-2026-06-28.json`;
@@ -11642,13 +11720,14 @@ Do not turn uncertainty into optimism.
 - Residual risk:
   stale `SMOKE_AUTH_TOKEN`, release-grade build provenance, and host-level
   VPS/log-window proof remain separate owner paths.
+
 ## 2026-06-29 LUC-6106 User Configuration Doc-Link Reconciliation
 
 - Module row:
   app-completion proof backlog / User configuration.
 - Status delta:
   `DOC_LINK_ROWS_RECONCILED / USER_CONFIGURATION_MISSING_DOC_LINK_49_TO_30 /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-6106-user-configuration-doc-link-reconciliation-2026-06-29.md`;
   `history/artifacts/luc-6106-user-configuration-doc-link-reconciliation-2026-06-29.json`;
@@ -11663,6 +11742,7 @@ Do not turn uncertainty into optimism.
   `2` Backend/API platform rows and `28` Frontend/Web profile or Web platform
   rows. DB-backed profile route proof and browser proof are not closed by this
   DSM doc-link lane.
+
 ## 2026-06-29 LUC-6109 Production Auth Acceptance
 
 - Module row:
@@ -11686,13 +11766,14 @@ Do not turn uncertainty into optimism.
 - Remaining:
   Backend/Auth must repair logout `502` and token invalidation, then QVE must
   rerun the production auth proof before marking this row verified.
+
 ## 2026-06-29 LUC-6097 User Configuration Parent Closure
 
 - Module row:
   app-completion proof backlog / User configuration.
 - Status delta:
   `VERIFIED_LOCAL_API_SUPPORT_CONTRACT / DB_BACKED_PROFILE_ROUTE_PROOF_PASS /
-  DOC_LINK_CHILD_RECONCILED`.
+DOC_LINK_CHILD_RECONCILED`.
 - Evidence:
   `history/evidence/luc-6097-user-configuration-api-support-contract-2026-06-29.md`;
   `history/tasks/luc-6097-user-configuration-api-support-contract-2026-06-29-task.md`;
@@ -11733,6 +11814,7 @@ Do not turn uncertainty into optimism.
   [LUC-6121](/LUC/issues/LUC-6121) owns the CBE logout/session invalidation
   repair and backend proof; QVE reruns production auth acceptance afterward.
   Existing app-completion and release gates remain separate owner paths.
+
 ## 2026-06-29 LUC-6123 Production Auth Session Proof Rerun
 
 - Module row:
@@ -11754,6 +11836,7 @@ Do not turn uncertainty into optimism.
   redirect contract or obtain a product/architecture decision to change the
   proof expectation. QVE must rerun the proof before production auth acceptance
   can close.
+
 ## 2026-06-29 LUC-6134 Auth Invalid-Token Redirect Repair
 
 - Module row:
@@ -11808,7 +11891,7 @@ Do not turn uncertainty into optimism.
   Release/Ops protected gates.
 - Reality:
   `architecture actionable-clean; auth failed-check gap closed; residual proof
-  backlog remains routed`.
+backlog remains routed`.
 - Update:
   [LUC-6181](/LUC/issues/LUC-6181) refreshed the gap posture after
   [LUC-6180](/LUC/issues/LUC-6180). The prior production auth blocker chain is
@@ -11852,6 +11935,7 @@ Do not turn uncertainty into optimism.
   no remaining backend cleanup-isolation action on [LUC-6164](/LUC/issues/LUC-6164).
   Source-control/release owner must handle commit/push batching separately
   because the shared workspace remains dirty and divergent.
+
 ## 2026-06-29 LUC-6205 Regression Evidence Sweep
 
 - Module row:
@@ -11873,6 +11957,7 @@ Do not turn uncertainty into optimism.
 - Remaining:
   release-grade build provenance, host-level VPS/log-window proof, and
   app-completion row burn-down remain separate owner paths.
+
 ## 2026-06-29 LUC-6234 Security Account-Access Gate
 
 - Module row:
@@ -11887,6 +11972,7 @@ Do not turn uncertainty into optimism.
 - Validation:
   public build-info readback PASS; protected input checker regression PASS
   (`6/6`); focused API security boundary first timed out once on bcrypt at
+
 ## 2026-06-30 LUC-6271 Production Performance And Server Health Watch
 
 - Module row:
@@ -11918,10 +12004,12 @@ Do not turn uncertainty into optimism.
 
   default `5000ms`, then PASS with `--testTimeout=20000` (`6` files / `35`
   tests); tracked secret-like filename scan found no tracked `.env` file.
+
 - Residual risk:
   protected release/account-access proof remains fail-closed until
   board-capable Security/Ops binds the missing protected input families
   through approved encrypted runtime paths.
+
 ## 2026-06-29 LUC-6248 Authenticated Production Acceptance And Performance Sweep
 
 - Module row:
@@ -11938,6 +12026,7 @@ Do not turn uncertainty into optimism.
 - Evidence:
   `history/evidence/luc-6248-authenticated-production-acceptance-performance-sweep-2026-06-29.md`;
   `history/tasks/luc-6248-authenticated-production-acceptance-performance-sweep-2026-06-29-task.md`.
+
 ## 2026-07-01 LUC-6479 Backtest Web Grouped Proof Instability
 
 - Module row:
@@ -11970,6 +12059,7 @@ Do not turn uncertainty into optimism.
   sample); host-level proof and release-grade build provenance remain separate;
   default runner protected-auth binding drift should be handled on the
   appropriate Security/Ops owner path.
+
 ## 2026-06-29 LUC-6250 Gap Register And Repair Lane Refresh
 
 - Module row:
@@ -11997,6 +12087,7 @@ Do not turn uncertainty into optimism.
   separate owner paths. No Backend/Auth repair child is required from this
   heartbeat because [LUC-6248](/LUC/issues/LUC-6248) passed production auth
   acceptance.
+
 ## 2026-06-29 LUC-6269 No-Stall Queue Expeditor
 
 - Module row:
@@ -12004,7 +12095,7 @@ Do not turn uncertainty into optimism.
   input owner path.
 - Reality:
   `production acceptance green; release remains blocked by existing protected
-  input gate`.
+input gate`.
 - Update:
   [LUC-6269](/LUC/issues/LUC-6269) performed a PM no-stall readback without
   creating duplicate children. [LUC-6248](/LUC/issues/LUC-6248) and
@@ -12040,6 +12131,7 @@ Do not turn uncertainty into optimism.
 - Remaining:
   none for the eight scoped missing-test-link rows. Broader V1 release gates
   remain on their existing owner paths.
+
 # 2026-07-01 LUC-6551 Authenticated Production Acceptance
 
 - Module row:
@@ -12047,7 +12139,7 @@ Do not turn uncertainty into optimism.
   / worker readiness / production timing.
 - Reality:
   `blocked; API health ready and runtime freshness verified; Web and worker
-  readiness not acceptable`.
+readiness not acceptable`.
 - Update:
   [LUC-6551](/LUC/issues/LUC-6551) reran QVE read-only production acceptance.
   API `/health` and `/ready` passed; runtime freshness passed. Web `/` and
@@ -12069,7 +12161,7 @@ Do not turn uncertainty into optimism.
   resource health / rollback guard.
 - Reality:
   `blocked; API health ready and runtime freshness verified; Web and worker
-  readiness not acceptable`.
+readiness not acceptable`.
 - Update:
   [LUC-6606](/LUC/issues/LUC-6606) reran DRE read-only production watch. API
   `/health` and `/ready` passed; runtime freshness passed. Web `/` and
@@ -12092,7 +12184,7 @@ Do not turn uncertainty into optimism.
   resource health / rollback guard.
 - Reality:
   `blocked; API health ready and runtime freshness verified; Web and worker
-  readiness not acceptable`.
+readiness not acceptable`.
 - Update:
   [LUC-6657](/LUC/issues/LUC-6657) reran DRE read-only production watch. API
   `/health` and `/ready` passed; runtime freshness passed. Web `/` and
@@ -12115,7 +12207,7 @@ Do not turn uncertainty into optimism.
   resource health / rollback guard.
 - Reality:
   `verified for sampled window; public/protected smoke and rollback guard pass;
-  Coolify queue and build provenance remain watch items`.
+Coolify queue and build provenance remain watch items`.
 - Update:
   [LUC-6904](/LUC/issues/LUC-6904) reran DRE read-only production watch. API
   `/health` and `/ready` passed; Web `/`, `/auth/login`, and `/api/build-info`
@@ -12156,7 +12248,7 @@ Do not turn uncertainty into optimism.
   Web shared/module docs and Web icons/module docs.
 - Reality:
   `verified docs/source-truth; exact test-file tables present; no runtime
-  mutation`.
+mutation`.
 - Update:
   [LUC-254](/LUC/issues/LUC-254) converted residual inferred/shared coverage
   prose in `docs/modules/web-shared.md` into exact grouped `Tests` tables and
@@ -12168,3 +12260,25 @@ Do not turn uncertainty into optimism.
 - Remaining:
   scanner relation count reduction remains optional architecture-awareness
   maintenance; no current module coverage blocker was found in this slice.
+## 2026-07-12 LUC-621 Account Access registerUser Proof
+
+- Module row:
+  Account access / API auth service registration proof.
+- Status:
+  `verified local focused proof / one implemented-needs-proof row resolved /
+no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
+  `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.
+- Current proof:
+  `apps/api/src/modules/auth/auth.registerUser.test.ts` verifies duplicate
+  email rejection before hashing/transaction work, password hashing, public
+  user response shape, default avatar URL, and default subscription bootstrap
+  inside the registration transaction. Architecture-awareness regenerated with
+  `10745` entities and `35062` relations; app-completion reports
+  `implementedNeedsProof=113`; project truth first Account access gap advanced
+  to `auth.session.ts#getSessionJwtExpiresIn` as `missing_doc_link`.
+- Confidence:
+  high for this local Account access registration service proof row. This does
+  not claim protected production auth/session acceptance or broader Account
+  access browser proof.

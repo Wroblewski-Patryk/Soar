@@ -1,3 +1,80 @@
+## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
+
+- DSM resolved the bounded Account access source-truth row for
+  `apps/api/src/modules/auth/auth.service.ts#registerUser`.
+- Linked `registerUser` through `docs/modules/api-auth.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- Validation passed:
+  formatter-supported docs/JSON formatting, CSV direct row readback,
+  architecture-awareness refresh (`10741` entities / `35039` relations,
+  `relationOverridesApplied=6`), app-completion refresh
+  (`missingDocLink=1988`, `implementedNeedsProof=114`), and project-truth
+  `--apply`.
+- Project truth now routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.service.ts#registerUser` as
+  `implemented_needs_proof`.
+- Follow-up:
+  [LUC-621](/LUC/issues/LUC-621) is assigned to Test Automation Engineer for
+  focused proof of `apps/api/src/modules/auth/auth.service.ts#registerUser`.
+- Evidence:
+  `history/evidence/luc-618-account-access-registeruser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-618-account-access-registeruser-doc-link-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production smoke, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-613 Account Access loginUser Proof
+
+- TAE resolved the bounded Account access proof row for
+  `apps/api/src/modules/auth/auth.service.ts#loginUser`.
+- Added focused no-DB proof in
+  `apps/api/src/modules/auth/auth.loginUser.test.ts`, linked it through
+  `docs/architecture/relations/priority-test-links.csv`, and marked the entity
+  verified in `docs/architecture/scanner-overrides.json`.
+- Validation passed:
+  `auth.loginUser.test.ts` (`1` file / `3` tests), Prettier check for the new
+  test and scanner override JSON, architecture-awareness refresh (`10738`
+  entities / `35024` relations), app-completion refresh
+  (`implementedNeedsProof=113`), and project-truth `--apply`.
+- Project truth now routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.service.ts#registerUser` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-613-account-access-loginuser-proof-2026-07-12.md`;
+  `history/tasks/luc-613-account-access-loginuser-proof-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production smoke, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-611 Account Access loginUser Doc-Link
+
+- [LUC-611](/LUC/issues/LUC-611) can close as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- DSM linked `apps/api/src/modules/auth/auth.service.ts#loginUser` through
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json`.
+- Validation:
+  architecture-awareness generation passed with `10734` entities, `35005`
+  relations, and `relationOverridesApplied=5`; app-completion refresh passed
+  with `missingDocLink=1989` and `implementedNeedsProof=114`; project-truth
+  `--apply` passed and now routes `loginUser` as `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-611-account-access-loginuser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-611-account-access-loginuser-doc-link-2026-07-12-task.md`.
+- Follow-up:
+  [LUC-613](/LUC/issues/LUC-613) is assigned to Test Automation Engineer for
+  the focused `loginUser` proof row.
+- Boundary:
+  no runtime auth change, deploy, protected credential access, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action occurred.
+
 ## 2026-07-12 LUC-586 Stale signAuthToken Classifier Blocker Reconciliation
 
 - `LUC-586` is closed as a stale blocker in the current snapshot.
@@ -58,7 +135,7 @@
 
 - [LUC-549](/LUC/issues/LUC-549) is verified locally as
   `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - TAE extended `apps/api/src/modules/auth/auth.jwt.test.ts` with focused
   previous-secret expiry behavior coverage: open-ended previous-secret window
   acceptance and invalid `JWT_SECRET_PREVIOUS_UNTIL` fail-closed behavior.
@@ -87,8 +164,8 @@
 
 - [LUC-547](/LUC/issues/LUC-547) is verified locally as
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
-  NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+NO_RUNTIME_MUTATION`.
 - DSM added `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry` to
   `docs/modules/api-auth.md`, linked it in
   `docs/architecture/relations/documentation-links.csv`, and connected it with
@@ -101,7 +178,7 @@
   missing); `git diff --check` passed with CRLF warnings only.
 - Follow-up:
   [LUC-549](/LUC/issues/LUC-549) is assigned to `09 TAE (Test Automation
-  Engineer)` for focused JWT rotation-window proof. No runtime, deploy,
+Engineer)` for focused JWT rotation-window proof. No runtime, deploy,
   protected credential, secret/account readback, DB/Redis, exchange/payment,
   subscription, order, position, bot activation, or LIVE trading mutation
   occurred.
@@ -110,8 +187,8 @@
 
 - [LUC-541](/LUC/issues/LUC-541) can close as
   `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
-  NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+NO_RUNTIME_MUTATION`.
 - TAE resolved the bounded Account access proof row
   `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets` by linking it to
   `apps/api/src/modules/auth/auth.jwt.test.ts` in
@@ -138,8 +215,8 @@
 
 - [LUC-539](/LUC/issues/LUC-539) can close as
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
-  NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
+NO_RUNTIME_MUTATION`.
 - DSM resolved the bounded Account access source-truth row
   `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets` by linking it to
   `docs/modules/api-auth.md` in the module classification table,
@@ -171,7 +248,7 @@
 
 - [LUC-528](/LUC/issues/LUC-528) can close as
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - DSM resolved the bounded Account access source-truth row
   `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv` by linking it to
   `docs/modules/api-auth.md` in the module classification table and
@@ -196,7 +273,7 @@
 
 - [LUC-498](/LUC/issues/LUC-498) can close as
   `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
-  FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
+FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
 - DSM resolved a tight Account access source-truth batch:
   `auth.cookie.ts#getSessionCookieBaseOptions`,
   `auth.controller.ts#clearSessionCookie`, `#login`, `#logout`, `#me`,
@@ -229,8 +306,8 @@
 
 - [LUC-499](/LUC/issues/LUC-499) can close as
   `DONE / VERIFIED_LOCAL_INDEX_LINK / SIX_MISSING_TEST_LINK_ROWS_RESOLVED /
-  API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
-  NO_RUNTIME_MUTATION`.
+API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
+NO_RUNTIME_MUTATION`.
 - Verified:
   scoped scanner overrides linked existing DB-backed `auth.e2e.test.ts`
   coverage to auth-controller rows `clearSessionCookie`, `login`, `logout`,
@@ -258,8 +335,8 @@
 ## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
 
 - [LUC-503](/LUC/issues/LUC-503) is `DONE /
-  PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 / UNAUTH_FAIL_CLOSED /
-  NO_RUNTIME_MUTATION`.
+PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 / UNAUTH_FAIL_CLOSED /
+NO_RUNTIME_MUTATION`.
 - Verified:
   existing production proof script passed with DRE/Ops admin bindings against
   build `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`. Unauthenticated
@@ -281,7 +358,7 @@
 ## 2026-07-11 LUC-502 VPS Readiness Smoke Checklist
 
 - [LUC-502](/LUC/issues/LUC-502) is `DONE /
-  CHECKLIST_PREPARED / NO_SECRET_VALUES / NO_RUNTIME_MUTATION`.
+CHECKLIST_PREPARED / NO_SECRET_VALUES / NO_RUNTIME_MUTATION`.
 - Verified:
   DRE converted the remaining production proof gaps into
   `docs/operations/vps-production-readiness-smoke-checklist.md`, covering
@@ -308,8 +385,8 @@
 ## 2026-07-11 LUC-501 Browser-Review Owner Route Bundles
 
 - [LUC-501](/LUC/issues/LUC-501) is `DONE /
-  ROUTE_BROWSER_REVIEW_BUNDLES_SPLIT / PUBLIC_ACCESS_SEPARATED /
-  PROTECTED_RUNTIME_REUSED_LUC-172 / NO_RUNTIME_MUTATION`.
+ROUTE_BROWSER_REVIEW_BUNDLES_SPLIT / PUBLIC_ACCESS_SEPARATED /
+PROTECTED_RUNTIME_REUSED_LUC-172 / NO_RUNTIME_MUTATION`.
 - FEW split the current browser-review backlog into owner-usable bundles:
   public shell/legal, account access, dashboard runtime/trading,
   setup/configuration, reports/backtests, bots/assistant, admin/subscription,
@@ -336,8 +413,8 @@
 ## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
 
 - [LUC-264](/LUC/issues/LUC-264) is `DONE /
-  INPUT_BINDING_READINESS_RESOLVED / ACCOUNT_INPUT_GATE_PASS /
-  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+INPUT_BINDING_READINESS_RESOLVED / ACCOUNT_INPUT_GATE_PASS /
+PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
 - Closure basis:
   child [LUC-342](/LUC/issues/LUC-342) completed the one authorized Soar gate
   recheck after board/Codex runtime binding repair. DRE evidence shows `38`
@@ -358,8 +435,8 @@
 ## 2026-07-11 LUC-342 Protected Input Binding Readiness Rerun
 
 - [LUC-342](/LUC/issues/LUC-342) is `DONE /
-  INPUT_FAMILIES_PRESENT_BY_NAME / ACCOUNT_INPUT_GATE_PASS /
-  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+INPUT_FAMILIES_PRESENT_BY_NAME / ACCOUNT_INPUT_GATE_PASS /
+PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
 - Verified:
   current DRE runtime has `38` matching protected input names across all
   requested families: `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
@@ -381,7 +458,7 @@
 ## 2026-07-10 LUC-342 Protected Input Binding Readiness
 
 - [LUC-342](/LUC/issues/LUC-342) is `BLOCKED /
-  DRE_BINDING_ACCESS_FORBIDDEN / READINESS_PARTIAL / NO_RUNTIME_MUTATION`.
+DRE_BINDING_ACCESS_FORBIDDEN / READINESS_PARTIAL / NO_RUNTIME_MUTATION`.
 - Verified:
   current DRE runtime has only `SOAR_PROD_*` protected input names present by
   count (`3`). Required account-access families are still missing:
@@ -408,8 +485,8 @@
 ## 2026-07-10 LUC-256 ARB-005 Docs Parity Pipeline Enforcement
 
 - [LUC-256](/LUC/issues/LUC-256) is `DONE /
-  PIPELINE_PARITY_HOOK_ENFORCED / CHECKLIST_UPDATED /
-  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+PIPELINE_PARITY_HOOK_ENFORCED / CHECKLIST_UPDATED /
+LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
 - Verified:
   `scripts/runLocalExternalGatesPipeline.mjs` now runs
   `docs:parity:endpoints:api` and `docs:parity:route-api-matrix` before
@@ -431,8 +508,8 @@
 ## 2026-07-10 LUC-255 ARB-004 UI Scorecard TBD Metrics Source Truth
 
 - [LUC-255](/LUC/issues/LUC-255) is `DONE /
-  UI_SCORECARD_TBD_GAP_RECONCILED / DOCUMENTATION_DRIFT_REPAIRED /
-  NO_RUNTIME_MUTATION`.
+UI_SCORECARD_TBD_GAP_RECONCILED / DOCUMENTATION_DRIFT_REPAIRED /
+NO_RUNTIME_MUTATION`.
 - Verified:
   `docs/ux/ui-scorecard.md` no longer contains `TBD` in the ARB-004 target
   rows. The three review-template rows use explicit defer metadata with owner
@@ -454,7 +531,7 @@
 
 - `LUC-244-ROUTE-BROWSER-REVIEW-SLICE-CHECKLIST-2026-07-10` is
   `DONE / ROUTE_BROWSER_REVIEW_SLICED / PROTECTED_RUNTIME_REUSED_LUC-172 /
-  NO_PROTECTED_SMOKE`.
+NO_PROTECTED_SMOKE`.
 - FEW converted the app-completion/user-action route browser-review backlog
   into owner-usable bundles with owner, gate, proof type, auth requirement, and
   current routing.
@@ -479,7 +556,7 @@
 
 - `LUC-242-ACCOUNT-ACCESS-CONTROLLER-CLEARSESSION-DOC-LINK-2026-07-10` is
   `DONE / MISSING_DOC_LINK_RESOLVED / PROJECT_TRUTH_REFRESHED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - DSM closed one Account access architecture-awareness documentation-link row:
   `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
   `docs/modules/api-auth.md` now classifies the controller-local session
@@ -506,8 +583,8 @@
 
 - `LUC-174-PROTECTED-TRADING-READBACK-LIVE-MUTATION-APPROVAL-PACKET-2026-07-10`
   is `DONE / APPROVAL_PACKET_PREPARED /
-  READ_ONLY_PROOF_ALLOWED_WHEN_BOUND /
-  LIVE_MUTATION_REQUIRES_SEPARATE_APPROVAL / NO_PROTECTED_RUN`.
+READ_ONLY_PROOF_ALLOWED_WHEN_BOUND /
+LIVE_MUTATION_REQUIRES_SEPARATE_APPROVAL / NO_PROTECTED_RUN`.
 - Security produced a non-secret packet from [LUC-174](/LUC/issues/LUC-174)
   and [LUC-169](/LUC/issues/LUC-169) that separates safe protected production
   trading readback from LIVE exchange-side mutation. The packet defines
@@ -516,7 +593,7 @@
   future LIVE mutation proposal.
 - Validation:
   `git diff --check` passed; `node --test
-  scripts/runProdSecurityExchangeProof.test.mjs` passed (`4/4`).
+scripts/runProdSecurityExchangeProof.test.mjs` passed (`4/4`).
 - Boundary:
   no protected production run, raw secret/cookie/token/API-key readback, push,
   deploy, restart, rollback, DB/Redis mutation, API-key mutation,
@@ -529,7 +606,7 @@
 ## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
 
 - [LUC-172](/LUC/issues/LUC-172) is `DONE / PROOF_PACKET_PREPARED /
-  LOCAL_HELPER_PROOF_PASS / PRODUCTION_RUN_GATED / NO_PROTECTED_SMOKE`.
+LOCAL_HELPER_PROOF_PASS / PRODUCTION_RUN_GATED / NO_PROTECTED_SMOKE`.
 - Verified:
   route/action checklist now covers auth/session boundary, Dashboard runtime,
   Bots runtime monitoring, Manual Orders, Positions/Orders readback, and
@@ -537,8 +614,8 @@
   stop conditions.
 - Validation:
   `git diff --check` passed; `node --test
-  scripts/runProdAuthSessionBrowserProof.test.mjs
-  scripts/runProdFixtureActionProof.test.mjs` passed (`12/12`). A broader
+scripts/runProdAuthSessionBrowserProof.test.mjs
+scripts/runProdFixtureActionProof.test.mjs` passed (`12/12`). A broader
   Vitest command failed because it discovered stale copied tests under
   `.paperclip/worktrees`, so Node file-level proof is the reliable current
   checkout validation for these helpers.
@@ -553,8 +630,8 @@
 ## 2026-07-10 LUC-310 Source Control Closure
 
 - [LUC-310](/LUC/issues/LUC-310) is `DONE /
-  LOCAL_SOURCE_CONTROL_CLOSURE_COMMITTED / VALIDATED_NO_SECRET_HITS /
-  API_REQUIREAUTH_PROOF_PASS / API_TYPECHECK_PASS / NO_PUSH_NO_DEPLOY`.
+LOCAL_SOURCE_CONTROL_CLOSURE_COMMITTED / VALIDATED_NO_SECRET_HITS /
+API_REQUIREAUTH_PROOF_PASS / API_TYPECHECK_PASS / NO_PUSH_NO_DEPLOY`.
 - Concrete action:
   the sidecar comment `cb56979e-ab20-41da-ad30-5f35bebf97e2` was treated as
   local source-control closure only; protected delivery gates for
@@ -578,8 +655,8 @@
 ## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
 
 - [LUC-306](/LUC/issues/LUC-306) is `DONE / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / API_TYPECHECK_PASS /
-  DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / API_TYPECHECK_PASS /
+DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA / NO_RUNTIME_MUTATION`.
 - Verified:
   the existing DB-backed route proof in `auth.e2e.test.ts` covers controller
   session clearing through logout, cleared cookie, stale cookie rejection,
@@ -606,8 +683,8 @@
 ## 2026-07-10 LUC-263 Account Access requireAuth App-Completion Proof
 
 - [LUC-263](/LUC/issues/LUC-263) is `DONE / VERIFIED_LOCAL /
-  REQUIREAUTH_PROJECT_TRUTH_RESOLVED / APP_COMPLETION_REFRESHED /
-  API_TYPECHECK_PASS / NO_RUNTIME_MUTATION`.
+REQUIREAUTH_PROJECT_TRUTH_RESOLVED / APP_COMPLETION_REFRESHED /
+API_TYPECHECK_PASS / NO_RUNTIME_MUTATION`.
 - Verified:
   focused `requireAuth` middleware proof passed (`1` file / `9` tests), API
   typecheck passed, and `git diff --check` passed with line-ending warnings
@@ -629,7 +706,7 @@
 ## 2026-07-10 LUC-264 Protected Input Readiness Binding Follow-Up
 
 - [LUC-264](/LUC/issues/LUC-264) is `BLOCKED / NO_SECRET_READINESS_PARTIAL /
-  ACCOUNT_ACCESS_GATE_FAIL / SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
+ACCOUNT_ACCESS_GATE_FAIL / SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
 - Verified:
   `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL` with `3`
   matching protected input names; only `SOAR_PROD_*` is present. Required
@@ -662,7 +739,7 @@
   `LUC-265-EVIDENCE-SOURCE-CONTROL-CLOSURE-SIDECAR-2026-07-10`.
 - Status:
   `DONE / SOURCE_CONTROL_BATCHING_DECISION_RECORDED / NO_COMMIT_NO_PUSH /
-  LUC_261_SIDECAR_LINKED`.
+LUC_261_SIDECAR_LINKED`.
 - Scope:
   EDL source-control coordination only. No product code, commit, push, deploy,
   restart, rollback, protected smoke, production access, secret/account
@@ -684,9 +761,9 @@
 ## 2026-07-10 LUC-261 Known State Evidence And Architecture Baseline
 
 - [LUC-261](/LUC/issues/LUC-261) is `PARTIALLY_VERIFIED /
-  LOCAL_ARCHITECTURE_BASELINE_PASS / PROTECTED_INPUTS_PARTIAL /
-  APP_COMPLETION_GAPS_REQUIRE_ROUTING /
-  SOURCE_CONTROL_SIDECAR_LINKED_BY_LUC_265`.
+LOCAL_ARCHITECTURE_BASELINE_PASS / PROTECTED_INPUTS_PARTIAL /
+APP_COMPLETION_GAPS_REQUIRE_ROUTING /
+SOURCE_CONTROL_SIDECAR_LINKED_BY_LUC_265`.
 - Verified locally:
   strict architecture graph drift passed (`850/850`, `0` missing);
   protected-input checker tests passed (`7/7`); no-secret protected input
@@ -717,7 +794,7 @@
 
 - [LUC-253](/LUC/issues/LUC-253) can close as
   `DONE / MOBILE_DOCS_INDEX_PRESENT / REGISTRY_ROWS_REFRESHED /
-  SOAR_MOBILE_OUT_OF_SCOPE_FOR_V1_CONFIRMED / NO_RUNTIME_MUTATION`.
+SOAR_MOBILE_OUT_OF_SCOPE_FOR_V1_CONFIRMED / NO_RUNTIME_MUTATION`.
 - Verified:
   `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`,
   `docs/modules/module-registry.md`, and
@@ -740,7 +817,7 @@
 
 - Status:
   `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
-  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
   `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
@@ -763,7 +840,7 @@
 
 - Status:
   `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
-  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
 - Current truth:
@@ -784,7 +861,7 @@
 
 - Status:
   `DONE / TWO_MISSING_DOC_LINK_ROWS_RESOLVED / PROJECT_TRUTH_REFRESHED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md`.
 - Current truth:
@@ -805,7 +882,7 @@
 
 - Status:
   `DONE / MISSING_DOC_LINK_RESOLVED / REQUIREAUTH_HAS_DOC_TRUE /
-  PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md`.
 - Current truth:
@@ -825,7 +902,7 @@
 
 - Status:
   `VERIFIED / DB_FREE_RUNTIME_WORKER_MARKET_STREAM_SIGNAL_PACK_PASS /
-  NO_PRODUCT_CODE_CHANGE / DB_BACKED_AND_PROTECTED_GATES_STILL_SEPARATE`.
+NO_PRODUCT_CODE_CHANGE / DB_BACKED_AND_PROTECTED_GATES_STILL_SEPARATE`.
 - Evidence:
   `history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md`.
 - Current proof:
@@ -852,8 +929,8 @@
   by rechecking before mutation.
 - Status:
   `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
-  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
-  NO_PRODUCTION_MUTATION`.
+COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+NO_PRODUCTION_MUTATION`.
 - Current truth:
   API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` return
   `200`. Focused no-worker deploy smoke passes for
@@ -895,8 +972,8 @@
   reported API `/ready -> 503`.
 - Status:
   `DONE / PUBLIC_API_READY_RESTORED / PROTECTED_WORKERS_READY_PASS /
-  ROLLBACK_GUARD_PASS / PROJECT_TRUTH_INDEX_REFRESHED /
-  NO_PRODUCTION_MUTATION`.
+ROLLBACK_GUARD_PASS / PROJECT_TRUTH_INDEX_REFRESHED /
+NO_PRODUCTION_MUTATION`.
 - Evidence:
   `history/evidence/luc-6920-api-ready-production-runtime-restoration-2026-07-02.md`;
   `history/tasks/luc-6920-api-ready-production-runtime-restoration-2026-07-02-task.md`.
@@ -922,7 +999,7 @@
   [LUC-6901](/LUC/issues/LUC-6901).
 - Status:
   `DONE / PUBLIC_API_READY_RESTORED / PUBLIC_DEPLOY_SMOKE_PASS /
-  WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
+WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
 - Evidence:
   `history/evidence/luc-6898-api-ready-runtime-restore-diagnosis-2026-07-02.md`;
   `history/tasks/luc-6898-api-ready-runtime-restore-diagnosis-2026-07-02-task.md`.
@@ -945,8 +1022,8 @@
   regression from [LUC-6898](/LUC/issues/LUC-6898) is no longer reproducing.
 - Status:
   `DONE / PUBLIC_API_READY_RESTORED / PUBLIC_DEPLOY_SMOKE_PASS /
-  WEB_PUBLIC_PASS / COOLIFY_RESOURCE_READBACK_NOT_AVAILABLE_IN_COO_RUNNER /
-  NO_PRODUCTION_MUTATION`.
+WEB_PUBLIC_PASS / COOLIFY_RESOURCE_READBACK_NOT_AVAILABLE_IN_COO_RUNNER /
+NO_PRODUCTION_MUTATION`.
 - Evidence:
   `history/evidence/luc-6901-coolify-redis-api-readiness-restoration-2026-07-02.md`;
   `history/tasks/luc-6901-coolify-redis-api-readiness-restoration-2026-07-02-task.md`.
@@ -968,8 +1045,8 @@
   probe after board-approved narrow runtime mutation.
 - Status:
   `PARTIALLY_DONE / PUBLIC_PROBE_RESTORED / API_HEALTH_READY_PASS /
-  WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
-  COOLIFY_INVENTORY_500_AFTER_RESTORE`.
+WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
+COOLIFY_INVENTORY_500_AFTER_RESTORE`.
 - Evidence:
   `history/evidence/luc-6894-public-probe-runtime-restore-diagnosis-2026-07-02.md`;
   `history/tasks/luc-6894-public-probe-runtime-restore-diagnosis-2026-07-02-task.md`;
@@ -992,8 +1069,8 @@
   top protected route groups.
 - Status:
   `PARTIALLY_VERIFIED / LOCAL_BROWSER_PACKET_PASS /
-  PRODUCTION_BLOCKED_BY_LUC-6331 / PROTECTED_AUTH_BLOCKED_BY_LUC-241 /
-  NO_DUPLICATE_CHILD`.
+PRODUCTION_BLOCKED_BY_LUC-6331 / PROTECTED_AUTH_BLOCKED_BY_LUC-241 /
+NO_DUPLICATE_CHILD`.
 - Evidence:
   `history/evidence/luc-6890-app-completion-browser-review-packet-2026-07-02.md`;
   `history/evidence/luc-6890-local-protected-route-action-proof-2026-07-02.md`;
@@ -1013,9 +1090,9 @@
   repair-lane posture.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Evidence:
   `history/evidence/luc-6893-gap-register-and-repair-lane-refresh-2026-07-02.md`;
   `history/evidence/luc-6893-protected-input-readiness-2026-07-02.md`;
@@ -1060,7 +1137,7 @@
 - [LUC-6876](/LUC/issues/LUC-6876) refreshed the Soar no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Evidence:
   `history/tasks/luc-6876-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
@@ -1079,7 +1156,7 @@
 - [LUC-6873](/LUC/issues/LUC-6873) refreshed the Soar no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Evidence:
   `history/tasks/luc-6873-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
@@ -1097,9 +1174,9 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6870-production-performance-server-health-watch-2026-07-02.md`;
   `history/tasks/luc-6870-production-performance-server-health-watch-2026-07-02-task.md`.
@@ -1117,7 +1194,7 @@
 - [LUC-6867](/LUC/issues/LUC-6867) refreshed the Soar no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Evidence:
   `history/tasks/luc-6867-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
@@ -1137,9 +1214,9 @@
   lane posture.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Evidence:
   `history/evidence/luc-6857-gap-register-and-repair-lane-refresh-2026-07-02.md`;
   `history/evidence/luc-6857-protected-input-readiness-2026-07-02.md`;
@@ -1161,9 +1238,9 @@
 - [LUC-6846](/LUC/issues/LUC-6846) refreshed the TSA V1 controller posture.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Current evidence:
   strict architecture graph drift passed (`850/850`, `0` missing);
   protected-input checker regression passed (`7/7`); current no-secret
@@ -1192,8 +1269,8 @@
   account-access release gate and is blocked, not done.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
-  REVIEWED_SECRET_PATTERN_NOISE`.
+SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
+REVIEWED_SECRET_PATTERN_NOISE`.
 - Current evidence:
   protected-input checker regression passed (`7/7`); current readiness remains
   `PARTIAL / NO-GO` with `11` matching protected input names and missing
@@ -1217,8 +1294,8 @@
 - [LUC-6822](/LUC/issues/LUC-6822) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
-  JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
+JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Evidence:
   `history/tasks/luc-6822-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
@@ -1260,13 +1337,13 @@
 - [LUC-6817](/LUC/issues/LUC-6817) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
-  JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
+JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Evidence:
   `history/tasks/luc-6817-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `155` open issues: `1 in_progress`, `1
-  in_review`, `1 todo`, `148 blocked`, and `4 backlog`. The only runnable
+in_review`, `1 todo`, `148 blocked`, and `4 backlog`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked. No duplicate child is warranted.
 - Release impact:
@@ -1281,13 +1358,13 @@
 - [LUC-6815](/LUC/issues/LUC-6815) refreshed the Soar PM daily status posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  EXISTING_OWNER_PATHS_PRESERVED`.
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+EXISTING_OWNER_PATHS_PRESERVED`.
 - Evidence:
   `history/tasks/luc-6815-daily-project-status-refresh-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `155` open issues: `2 in_progress`, `1
-  in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
+in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked.
 - Release impact:
@@ -1302,9 +1379,9 @@
 
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6809-v1-audit-to-completion-controller-2026-07-02.md`;
   `history/tasks/luc-6809-v1-audit-to-completion-controller-2026-07-02-task.md`.
@@ -1320,12 +1397,12 @@
 - [LUC-6794](/LUC/issues/LUC-6794) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6794-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `154` open issues: `1 in_progress`, `1
-  in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
+in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked. No duplicate child is warranted.
 - Release impact:
@@ -1340,12 +1417,12 @@
 - [LUC-6790](/LUC/issues/LUC-6790) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6790-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `154` open issues: `1 in_progress`, `1
-  in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
+in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked. No duplicate child is warranted.
 - Release impact:
@@ -1361,9 +1438,9 @@
   lane posture.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Evidence:
   `history/evidence/luc-6784-gap-register-and-repair-lane-refresh-2026-07-02.md`;
   `history/artifacts/luc-6784-protected-input-readiness-2026-07-02.json`;
@@ -1385,13 +1462,13 @@
 - [LUC-6781](/LUC/issues/LUC-6781) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / QVE_RUN_CANCELLED_CONFIRMED /
-  SINGLE_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+SINGLE_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6781-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   initial live Soar project readback showed `155` open issues: `2
-  in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`.
+in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`.
   Intermediate post-close readback showed `154` open issues while
   [LUC-6782](/LUC/issues/LUC-6782) was `blocked`; final readback showed `153`
   open issues: `147 blocked`, `1 in_review`, `1 todo`, and `4 backlog`;
@@ -1417,7 +1494,7 @@
   porcelain rows (`44` tracked dirty files, `473` untracked files).
 - Validation:
   `git diff --check` passed with CRLF warnings only; `pnpm run
-  ops:protected-inputs:check:test` passed `7/7`.
+ops:protected-inputs:check:test` passed `7/7`.
 - Release impact:
   this checkout is not a release source; no commit, push, deploy, restart, or
   production mutation occurred. [LUC-6331](/LUC/issues/LUC-6331) remains the
@@ -1430,12 +1507,12 @@
 - [LUC-6760](/LUC/issues/LUC-6760) refreshed the PM no-stall queue posture.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6760-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `154` open issues: `1 in_progress`, `1
-  in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
+in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked. No duplicate child is warranted.
 - Release impact:
@@ -1450,9 +1527,9 @@
 - [LUC-6757](/LUC/issues/LUC-6757) refreshed the read-only production watch.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   API health and ready pass; Web `/`, `/auth/login`, and `/api/build-info`
   return `503`; protected `/workers/ready` returns `503`; runtime freshness
@@ -1470,8 +1547,8 @@
 
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6750-gap-register-and-repair-lane-refresh-2026-07-02.md`;
   `history/artifacts/luc-6750-protected-input-readiness-2026-07-02.json`;
@@ -1492,9 +1569,9 @@
 
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6742-v1-audit-to-completion-controller-2026-07-02.md`;
   `history/evidence/luc-6742-protected-input-readiness-2026-07-02.md`;
@@ -1517,12 +1594,12 @@
 
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6739-no-stall-queue-expeditor-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `154` open issues: `1 in_progress`, `1
-  in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
+in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
   non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked.
 - Release impact:
@@ -1535,9 +1612,9 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6733-production-performance-server-health-watch-2026-07-02.md`;
   `history/tasks/luc-6733-production-performance-server-health-watch-2026-07-02-task.md`.
@@ -1554,7 +1631,7 @@
 
 - Status:
   `DONE / PROTECTED_TEST_ACCOUNT_PATH_PRESENT / SECRET_REFS_REDACTED /
-  RUNTIME_FRESHNESS_PASS / PRODUCTION_SMOKE_BLOCKED_BY_503`.
+RUNTIME_FRESHNESS_PASS / PRODUCTION_SMOKE_BLOCKED_BY_503`.
 - Evidence:
   `history/evidence/luc-6726-protected-test-account-smoke-path-2026-07-02.md`;
   `history/tasks/luc-6726-protected-test-account-smoke-path-2026-07-02-task.md`.
@@ -1573,11 +1650,11 @@
 # 2026-07-02 LUC-6722 No-Stall Queue Expeditor
 
 - Status: `DONE / LIVE_QUEUE_READBACK_COMPLETE /
-  SINGLE_RUNNABLE_TODO_ROUTED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+SINGLE_RUNNABLE_TODO_ROUTED / NO_DUPLICATE_CHILD_CREATED /
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - PM queue readback: [LUC-6722](/LUC/issues/LUC-6722) heartbeat-context
   succeeded and live Soar project query returned `154` open issues: `1
-  in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
+in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
 - Concrete routing: [LUC-6468](/LUC/issues/LUC-6468) is the only runnable
   non-PM todo; it is unblocked and assigned to CBE. SPM attempted the
   execute/split/block handoff on that issue, but Paperclip rejected the direct
@@ -1598,9 +1675,9 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6711-production-performance-server-health-watch-2026-07-02.md`;
   `history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md`.
@@ -1617,7 +1694,7 @@
 
 - Status:
   `IN_REVIEW / METHOD_SELECTION_INTERACTION_PENDING /
-  SECURITY_BOUNDARY_PRESERVED / NO_SECRET_OR_ACCOUNT_PROOF_RUN`.
+SECURITY_BOUNDARY_PRESERVED / NO_SECRET_OR_ACCOUNT_PROOF_RUN`.
 - Evidence:
   `history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md`.
 - Current queue signal:
@@ -1633,7 +1710,7 @@
 
 - Status:
   `DONE / WAITING_POSTURE_ALREADY_RESTORED / LUC-4103_IN_REVIEW /
-  METHOD_SELECTION_INTERACTION_PENDING / NO_PRODUCT_CODE_MUTATION`.
+METHOD_SELECTION_INTERACTION_PENDING / NO_PRODUCT_CODE_MUTATION`.
 - Evidence:
   `history/tasks/luc-6705-restore-owner-login-verification-waiting-state-2026-07-02-task.md`.
 - Current queue signal:
@@ -1651,8 +1728,8 @@
 
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6716-authenticated-production-acceptance-performance-sweep-2026-07-02.md`;
   `history/evidence/luc-6716-prod-ui-module-clickthrough-2026-07-02.md`;
@@ -1671,8 +1748,8 @@
 
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
 - Evidence:
   `history/evidence/luc-6707-v1-audit-to-completion-controller-2026-07-02.md`;
   `history/tasks/luc-6707-v1-audit-to-completion-controller-2026-07-02-task.md`.
@@ -1691,7 +1768,7 @@
 
 - Status:
   `DONE / RECOVERY_CHILD_CREATED / NO_PRODUCT_CODE_MUTATION /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6701-no-stall-queue-expeditor-2026-07-01-task.md`.
 - Current queue signal:
@@ -1710,7 +1787,7 @@
 
 - Status:
   `DONE / PM_TAIL_DISPOSITION_APPLIED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Evidence:
   `history/tasks/luc-6697-no-stall-queue-expeditor-2026-07-01-task.md`.
 - Current queue signal:
@@ -1727,9 +1804,9 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6688-production-performance-server-health-watch-2026-07-01.md`;
   `history/tasks/luc-6688-production-performance-server-health-watch-2026-07-01-task.md`.
@@ -1746,9 +1823,9 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6673-production-performance-server-health-watch-2026-07-01.md`;
   `history/tasks/luc-6673-production-performance-server-health-watch-2026-07-01-task.md`.
@@ -1767,7 +1844,7 @@
   `LUC-6668-NO-STALL-QUEUE-EXPEDITOR-2026-07-01`.
 - Status:
   `DONE / NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_CONFIRMED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only; no product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1787,8 +1864,8 @@
   `LUC-6662-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1815,8 +1892,8 @@
   `LUC-6660-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, production
@@ -1843,8 +1920,8 @@
   `LUC-6654-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1870,9 +1947,9 @@
   `LUC-6643-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1899,9 +1976,9 @@
   `LUC-6624-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1928,8 +2005,8 @@
   `LUC-6612-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1960,7 +2037,7 @@
   `LUC-6608-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
-  PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
+PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -1985,8 +2062,8 @@
   `LUC-6602-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -2015,7 +2092,7 @@
   `LUC-6598-NO-STALL-QUEUE-EXPEDITOR-2026-07-01`.
 - Status:
   `DONE / NO_DUPLICATE_CHILD_CREATED / ACTIVE_OWNER_LANE_EXISTS /
-  PRODUCTION_RESTORATION_BLOCKED`.
+PRODUCTION_RESTORATION_BLOCKED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -2046,8 +2123,8 @@
   `LUC-6594-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
-  NO_SECRET_PATTERN_MATCHES`.
+SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
+NO_SECRET_PATTERN_MATCHES`.
 - Scope:
   read-only security verification only. No deploy, push, restart, rollback,
   env edit, secret/account value readback, DB/Redis mutation, production
@@ -2081,9 +2158,9 @@
 
 - [LUC-6580](/LUC/issues/LUC-6580) is locally recorded as
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Current production signal:
   API `/health` and `/ready` pass, while production Web `/` and
   `/api/build-info` return `503`; protected `/workers/ready` returns `503`.
@@ -2108,8 +2185,8 @@
 
 - [LUC-6579](/LUC/issues/LUC-6579) is locally recorded as
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_WEB_503 /
-  BACKTEST_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_PARTIAL /
-  ARCHITECTURE_DRIFT_PASS / NO_NEW_DUPLICATE_LANE`.
+BACKTEST_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_PARTIAL /
+ARCHITECTURE_DRIFT_PASS / NO_NEW_DUPLICATE_LANE`.
 - Current production signal:
   API `/health` and `/ready` pass, while production Web `/` and
   `/api/build-info` return `503`. Latest Coolify read-only evidence shows
@@ -2141,8 +2218,8 @@
 
 - [LUC-6553](/LUC/issues/LUC-6553) is locally recorded as
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Concrete action:
   TSA refreshed the gap register, ran strict architecture drift, ran the
   protected-input checker regression, captured current no-secret
@@ -2170,7 +2247,7 @@
 
 - [LUC-6546](/LUC/issues/LUC-6546) is locally recorded as
   `BLOCKED / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
 - Concrete action:
   TSA refreshed the V1 audit-to-completion controller, confirmed heartbeat
   context, ran strict architecture drift, ran protected-input checker tests,
@@ -2193,7 +2270,7 @@
 
 - [LUC-6524](/LUC/issues/LUC-6524) is blocked as
   `PRODUCTION_WEB_503 / WORKERS_READY_503 / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Current production signal:
   API `/health` and `/ready` pass; public Web `/` and Web `/api/build-info`
   return `503`; protected `/workers/ready` returns `503`.
@@ -2240,7 +2317,7 @@
 
 - [LUC-6504](/LUC/issues/LUC-6504) is blocked as
   `PRODUCTION_WEB_503 / WORKERS_READY_503 / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Current production signal:
   API `/health` and `/ready` pass; public Web `/` and Web `/api/build-info`
   return `503`; protected `/workers/ready` returns `503`.
@@ -2264,7 +2341,7 @@
   `LUC-6489-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
 - Result:
   read-only production watch reproduced the current production block. API
   health/ready passed, runtime freshness passed, but Web `/`, Web
@@ -2285,8 +2362,8 @@
   `LUC-6412-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production deploy health sweep. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -2309,8 +2386,8 @@
 
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  RELEASE_GATES_ALREADY_ROUTED / PROTECTED_INPUT_GATE_PARTIAL /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED`.
+RELEASE_GATES_ALREADY_ROUTED / PROTECTED_INPUT_GATE_PARTIAL /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED`.
 - Summary:
   TSA refreshed the V1 controller posture. Strict architecture drift passed
   (`850/850`, `0` missing), protected-input checker tests passed (`7/7`), and
@@ -2329,7 +2406,7 @@
 
 - Current Backtest Web grouped proof is verified:
   `DONE / VERIFIED_BACKTEST_WEB_GROUPED_PACKET / HARNESS_ISOLATION_HARDENED /
-  NO_FEW_ESCALATION`.
+NO_FEW_ESCALATION`.
 - TAE isolated [LUC-6479](/LUC/issues/LUC-6479) and did not reproduce a
   product UI defect. The Backtest grouped Web packet passed `13` files / `33`
   tests after adding after-test cleanup/mock reset to
@@ -2367,8 +2444,8 @@
   `LUC-6491-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, production DB/Redis
@@ -2401,7 +2478,7 @@
 
 - Queue disposition:
   `DONE / LUC_6463_CHILDREN_CONFIRMED / UNASSIGNED_BLOCKER_ROUTED /
-  NO_DUPLICATE_CHILD_CREATED`.
+NO_DUPLICATE_CHILD_CREATED`.
 - Live readback:
   [LUC-6463](/LUC/issues/LUC-6463) is `done`; child lanes exist. The missing
   queue owner was [LUC-6479](/LUC/issues/LUC-6479), the deterministic Backtest
@@ -2417,7 +2494,7 @@
 
 - Current production health remains blocked:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - DRE read-only watch verified API `/health` and `/ready` as `200`, public Web
   `/` and `/api/build-info` as `503`, protected `/workers/ready` as `503`,
   runtime freshness as `PASS`, rollback guard as `shouldRollback=true`, and
@@ -2434,7 +2511,7 @@
 
 - [LUC-6465](/LUC/issues/LUC-6465) is locally verified as
   `DONE / VERIFIED_LOCAL_SHARED_UI_FORM_COMPONENT_STATE_PACKET /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Verified:
   parent [LUC-6463](/LUC/issues/LUC-6463) packet
   `LUC-6463-SHARED-UI-01` covers `26` shared UI/form component-state rows.
@@ -2463,7 +2540,7 @@
 
 - [LUC-6466](/LUC/issues/LUC-6466) is locally recorded as
   `PARTIALLY_VERIFIED / STRATEGY_REPORTS_LOGS_PUBLIC_SHELL_PASS /
-  BACKTEST_GROUPED_WEB_PROOF_UNSTABLE / TAE_FOLLOW_UP_REQUIRED`.
+BACKTEST_GROUPED_WEB_PROOF_UNSTABLE / TAE_FOLLOW_UP_REQUIRED`.
 - Verified:
   Strategy Web split passed (`14` files / `48` tests), Reports/logs Web split
   passed (`4` files / `8` tests), Public shell/PWA split passed (`4` files /
@@ -2528,7 +2605,7 @@
 
 - [LUC-6459](/LUC/issues/LUC-6459) completed as
   `DONE / BASELINE_COLLECTED / ARCHITECTURE_DRIFT_PASS /
-  PROTECTED_INPUT_GATE_PARTIAL / REPAIR_LANES_ROUTED / NO_RUNTIME_MUTATION`.
+PROTECTED_INPUT_GATE_PARTIAL / REPAIR_LANES_ROUTED / NO_RUNTIME_MUTATION`.
 - Current local baseline:
   strict architecture graph drift passed with `850/850` covered and `0`
   missing; architecture-awareness readback has `0` actionable missing test/doc
@@ -2563,7 +2640,7 @@
 
 - [LUC-6197](/LUC/issues/LUC-6197) completed as
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  RELEASE_GATES_REMAIN`.
+RELEASE_GATES_REMAIN`.
 - Current product signal:
   [LUC-6180](/LUC/issues/LUC-6180) provides same-day authenticated production
   acceptance PASS evidence for Web SHA
@@ -2630,7 +2707,7 @@
   route proof.
 - Result:
   `PARTIALLY_VERIFIED / CONFIG_SUPPORT_PASS / API_KEY_PROBE_PASS /
-  DB_BACKED_PROFILE_ROUTE_PROOF_BLOCKED`.
+DB_BACKED_PROFILE_ROUTE_PROOF_BLOCKED`.
 - Evidence:
   `history/evidence/luc-6097-user-configuration-api-support-contract-2026-06-29.md`;
   `history/tasks/luc-6097-user-configuration-api-support-contract-2026-06-29-task.md`.
@@ -2649,7 +2726,7 @@
 
 - [LUC-6102](/LUC/issues/LUC-6102) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Evidence:
   `history/evidence/luc-6102-production-performance-server-health-watch-2026-06-29.md`;
   `history/tasks/luc-6102-production-performance-server-health-watch-2026-06-29-task.md`.
@@ -2688,7 +2765,7 @@
   app-completion row-linkage limitation after [LUC-6086](/LUC/issues/LUC-6086).
 - Result:
   `DONE / ROW_LINKAGE_RECONCILED / TAXONOMY_ESCALATION_ROUTED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-6089-trading-app-completion-row-linkage-reconciliation-2026-06-29.md`;
   `history/tasks/luc-6089-trading-app-completion-row-linkage-reconciliation-2026-06-29-task.md`.
@@ -2728,7 +2805,7 @@
   residual browser/linkage proof packet delegated from [LUC-6074](/LUC/issues/LUC-6074).
 - Result:
   `DONE / VERIFIED_BEHAVIOR_PACKET / ROW_LINKAGE_LIMITATION_RECORDED /
-  NO_LIVE_MUTATION`.
+NO_LIVE_MUTATION`.
 - Evidence:
   `history/evidence/luc-6086-trading-operation-residual-no-live-browser-linkage-proof-2026-06-29.md`;
   `history/tasks/luc-6086-trading-operation-residual-no-live-browser-linkage-proof-2026-06-29-task.md`.
@@ -2863,7 +2940,7 @@
   verification.
 - Result:
   `BLOCKED / SECRET_MANAGER_METADATA_403 / STALE_TOKEN_REPRODUCED /
-  FRESH_LOGIN_PASS`.
+FRESH_LOGIN_PASS`.
 - Evidence:
   current DRE runner has `SMOKE_AUTH_TOKEN` present by name/length only; direct
   Paperclip secret metadata route returned `403`; `paperclipai` CLI is not
@@ -2890,7 +2967,7 @@
   [LUC-6043](/LUC/issues/LUC-6043).
 - Result:
   `DONE / RUNTIME_IMPACT_DIRTY_CLUSTER_CLASSIFIED / NOT_COMMITTED /
-  BACKEND_QA_CLOSURE_REQUIRED`.
+BACKEND_QA_CLOSURE_REQUIRED`.
 - Evidence:
   current shared `main` is still dirty/divergent (`ahead 15, behind 2`) with
   `209` dirty porcelain rows. The runtime-impact subset contains `11` tracked
@@ -2989,7 +3066,7 @@
   for deployed Web build-info `3bd65e21d09f294a18d3317d2f59f7a0d4e577b4`.
 - Result:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Evidence:
   public API/Web smoke and timing passed; fresh-login protected
   `/workers/ready` passed after stale-token `401`; runtime freshness passed;
@@ -3015,7 +3092,7 @@
   for deployed Web build-info `3bd65e21d09f294a18d3317d2f59f7a0d4e577b4`.
 - Result:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Evidence:
   public API/Web smoke and timing passed; fresh-login protected
   `/workers/ready` passed after stale-token `401`; runtime freshness passed;
@@ -3054,7 +3131,7 @@
   `3bd65e21d09f294a18d3317d2f59f7a0d4e577b4`.
 - Result:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
 - Evidence:
   public/protected deploy smoke passed through approved audit-login env
   mapping; UI clickthrough passed; auth-session browser proof passed on retry
@@ -3071,7 +3148,7 @@
   `LUC-5910-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -3157,7 +3234,7 @@
   `LUC-5880-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -3218,7 +3295,7 @@
   `LUC-5862-APP-COMPLETION-BROWSER-REVIEW-PROOF-TRIAGE-2026-06-28`.
 - Status:
   `DONE / VERIFIED_TRIAGE / BROWSER_REVIEW_BACKLOG_CLASSIFIED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   QVE read-only triage only: app-completion baseline readback, architecture
   graph-derived browser-review classification, existing browser proof linkage,
@@ -3248,7 +3325,7 @@
   `LUC-5865-EVIDENCE-LINK-RECONCILIATION-2026-06-28`.
 - Status:
   `DONE / VERIFIED_DOCS_RECONCILIATION / ARCHITECTURE_ACTIONABLE_ZERO /
-  APP_COMPLETION_BACKLOG_RECORDED`.
+APP_COMPLETION_BACKLOG_RECORDED`.
 - Scope:
   Documentation Steward evidence-link reconciliation only. No product code,
   deploy, push, restart, protected smoke, secret/account readback, production
@@ -3276,7 +3353,7 @@
 
 - [LUC-5857](/LUC/issues/LUC-5857) completed as
   `DONE / VERIFIED_PM_STATUS_REFRESH / V1_PARTIALLY_VERIFIED /
-  NO_DUPLICATE_LANE`.
+NO_DUPLICATE_LANE`.
 - Current status:
   Soar V1 is not idle or release-complete. Production/protected watches are
   healthy enough for routine closure through current evidence, and
@@ -3299,7 +3376,7 @@
 
 - [LUC-5835](/LUC/issues/LUC-5835) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Production validation:
   public API/Web smoke passed; protected `/workers/ready` failed through stale
   `SMOKE_AUTH_TOKEN` with `401` but passed through the fresh-login path;
@@ -3326,7 +3403,7 @@
 
 - [LUC-5822](/LUC/issues/LUC-5822) completed as
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - PM readback:
   the assigned wake had no pending comments, no blockers, and no active
   recovery action. The queue should not spawn duplicate proof/controller lanes
@@ -3349,7 +3426,7 @@
 
 - [LUC-5809](/LUC/issues/LUC-5809) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production gate readback:
   canonical smoke with current runner bindings passed public API/Web checks
   and failed protected `/workers/ready` with stale `SMOKE_AUTH_TOKEN` (`401`);
@@ -3377,7 +3454,7 @@
 
 - [LUC-5806](/LUC/issues/LUC-5806) completed as
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Current architecture posture:
   `docs/status/architecture-awareness-report.md` generated
   `2026-06-28T02:38:24.562Z` reports zero actionable missing-test,
@@ -3401,7 +3478,7 @@
 
 - [LUC-5803](/LUC/issues/LUC-5803) completed as
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Production acceptance:
   deploy smoke passed API `/health`, API `/ready`, Web `/`, Web
   `/api/build-info`, and protected `/workers/ready`; auth-session browser proof
@@ -3424,7 +3501,7 @@
 
 - [LUC-5798](/LUC/issues/LUC-5798) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Production watch:
   public API/Web smoke and timing passed; fresh-login protected
   `/workers/ready` passed after stale token path failed closed with `401`;
@@ -3471,7 +3548,7 @@
 
 - [LUC-5790](/LUC/issues/LUC-5790) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production gate readback:
   canonical smoke with current runner bindings passed public API/Web checks
   and failed protected `/workers/ready` with stale `SMOKE_AUTH_TOKEN` (`401`);
@@ -3499,7 +3576,7 @@
 
 - [LUC-5781](/LUC/issues/LUC-5781) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production gate readback:
   canonical smoke with current runner bindings passed public API/Web checks
   and failed protected `/workers/ready` with stale `SMOKE_AUTH_TOKEN` (`401`);
@@ -3546,7 +3623,7 @@
 
 - [LUC-5736](/LUC/issues/LUC-5736) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production gate readback:
   canonical smoke with current runner bindings passed public API/Web checks
   and failed protected `/workers/ready` with stale `SMOKE_AUTH_TOKEN` (`401`);
@@ -3574,7 +3651,7 @@
 
 - [LUC-5729](/LUC/issues/LUC-5729) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Production watch:
   public API/Web smoke passed; public timing returned `200:8` with max
   `102.0 ms`; protected `/workers/ready` failed closed with stale
@@ -3603,7 +3680,7 @@
 
 - [LUC-5721](/LUC/issues/LUC-5721) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production gate readback:
   canonical smoke with current runner bindings passed public API/Web checks
   and failed protected `/workers/ready` with stale `SMOKE_AUTH_TOKEN` (`401`);
@@ -3631,7 +3708,7 @@
 
 - [LUC-5706](/LUC/issues/LUC-5706) completed as
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Current architecture posture:
   `docs/status/architecture-awareness-report.md` generated
   `2026-06-27T19:10:41.841Z` reports zero actionable missing-test,
@@ -3696,7 +3773,7 @@
 
 - [LUC-5680](/LUC/issues/LUC-5680) completed the backend portion of Exchange
   connection/configuration proof as `DONE / VERIFIED_LOCAL /
-  NAMES_ONLY_EXCHANGE_CONFIG / FAIL_CLOSED_API_PROOF`.
+NAMES_ONLY_EXCHANGE_CONFIG / FAIL_CLOSED_API_PROOF`.
 - Change:
   API-key create/test validation now consumes `EXCHANGE_OPTIONS` from
   `@cryptosparrow/shared`; the API no longer duplicates the exchange-name
@@ -3771,7 +3848,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - DRE production gate recheck:
   canonical API `/health`, API `/ready`, Web `/`, and Web `/api/build-info`
   returned `200`. Protected `/workers/ready` failed closed with stale
@@ -3847,7 +3924,7 @@
 
 - [LUC-5596](/LUC/issues/LUC-5596) completed this QVE heartbeat as
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Current production posture:
   deployed SHA `42177530f2a2ddc22832133b545bccab6ab404eb` passed public and
   protected smoke, auth-session browser proof, authenticated UI module
@@ -3892,7 +3969,7 @@
 
 - [LUC-5598](/LUC/issues/LUC-5598) completed this TSA heartbeat as
   `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
 - Current architecture posture:
   strict architecture drift passed (`849/849`, `0` missing), and the generated
   architecture-awareness report has zero actionable missing-test, missing-doc,
@@ -3962,7 +4039,7 @@
 
 - `LUC-5577-QA-SMOKE-RUNNER-PNPM11-DB-AVAILABILITY-2026-06-27`
   is `DONE / RUNNER_AND_INFRA_PREREQS_REPAIRED /
-  API_PACK_DB_CLEANUP_RESIDUAL_SPLIT`.
+API_PACK_DB_CLEANUP_RESIDUAL_SPLIT`.
 - Scope:
   package-managed repeatable smoke runner only; no deploy, push, production
   smoke, protected proof, secret readback, account mutation, exchange action,
@@ -4020,7 +4097,7 @@
 
 - [LUC-5542](/LUC/issues/LUC-5542) completed this QVE heartbeat as
   `DONE / PARTIALLY_VERIFIED / SAFE_WEB_AND_PUBLIC_SMOKE_GREEN /
-  LOCAL_API_DB_SMOKE_BLOCKED`.
+LOCAL_API_DB_SMOKE_BLOCKED`.
 - Safe verification:
   repository guardrails passed; public production no-worker smoke passed for
   API `/health`, API `/ready`, Web `/`, and Web `/api/build-info`; Web smoke
@@ -4263,7 +4340,7 @@
 # 2026-06-21 LUC-4929 Coolify Production Deploy Health Sweep Continuation
 
 - [LUC-4929](/LUC/issues/LUC-4929) is `DONE / VERIFIED_READ_ONLY /
-  APP_HEALTHY / PROVENANCE_RESIDUAL_ROUTED`.
+APP_HEALTHY / PROVENANCE_RESIDUAL_ROUTED`.
 - Wake was `issue_blockers_resolved`; inline payload had no pending comments
   and `fallbackFetchNeeded=false`. Checkout was already claimed by the harness
   and was not repeated.
@@ -4298,7 +4375,7 @@
   projection through [LUC-5381](/LUC/issues/LUC-5381).
 - Existing [LUC-4767](/LUC/issues/LUC-4767) could not be directly resumed by
   SPM because Paperclip returned `403 Issue is outside this actor's
-  authorization boundary`.
+authorization boundary`.
 - Source-control posture remains unchanged: no commit, push, deploy, restart,
   rollback, protected smoke, env edit, secret readback, or production mutation
   occurred.
@@ -4309,7 +4386,7 @@
 
 - [LUC-5360](/LUC/issues/LUC-5360) completed as
   `DONE / PARTIALLY_VERIFIED / ACTIVE_API_TAIL_NOT_REPRODUCED /
-  TLS_PROXY_VARIANCE_CLASSIFIED`.
+TLS_PROXY_VARIANCE_CLASSIFIED`.
 - Current production public smoke passed for API `/health`, API `/ready`, Web
   `/`, and Web `/api/build-info` on SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
@@ -4349,7 +4426,7 @@
 
 - Status:
   `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  RELEASE_GATES_STILL_BLOCKED`.
+RELEASE_GATES_STILL_BLOCKED`.
 - Evidence:
   `history/tasks/luc-5367-gap-register-and-repair-lane-refresh-2026-06-21-task.md`;
   `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
@@ -4394,7 +4471,7 @@
 
 - [LUC-5310](/LUC/issues/LUC-5310) is closed for QVE triage as
   `PARTIALLY_VERIFIED / LOCAL_RUNTIME_CONTRACTS_PASS /
-  PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
+PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
 - Local runtime proof passed for DCA trigger/close precedence, exchange PnL
   truth, runtime PnL and DCA API readback, stale-DCA fail-closed behavior, and
   exchange-boundary/dedupe checks.
@@ -4417,7 +4494,7 @@
 - Validation:
   `pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts src/modules/wallets/wallets.crud.e2e.test.ts --run`
   passed (`2` files / `36` tests); `pnpm --filter api test --
-  src/middleware/rateLimit.test.ts --run` passed (`1` file / `7` tests).
+src/middleware/rateLimit.test.ts --run` passed (`1` file / `7` tests).
 - Boundary:
   no production deploy, push, restart, env edit, secret/account readback, real
   exchange I/O, exchange mutation, payment/subscription mutation, or
@@ -4432,7 +4509,7 @@
   `DONE / VERIFIED_LOCAL / FULL_E2E_BLOCKER_REPAIRED`.
 - Backend repair: `apps/api/src/modules/orders/orders.service.ts` now uses the
   repository's test-runtime convention (`NODE_ENV === 'test' || VITEST ===
-  'true'`) for default-deps manual context and LIVE exchange-boundary skips,
+'true'`) for default-deps manual context and LIVE exchange-boundary skips,
   while preserving injected LIVE execution deps in service tests.
 - Test fixture repair:
   `apps/api/src/modules/orders/orders-positions.e2e.test.ts` now supplies
@@ -4545,7 +4622,7 @@
   [LUC-4811](/LUC/issues/LUC-4811) for read-only Coolify/VPS status bindings.
 - Control-plane cleanup: direct QVE PATCH of
   [LUC-5146](/LUC/issues/LUC-5146) to `done` returned `403 Issue is outside
-  this actor's authorization boundary`, so [LUC-5306](/LUC/issues/LUC-5306)
+this actor's authorization boundary`, so [LUC-5306](/LUC/issues/LUC-5306)
   owned the root/platform action. Paperclip readback on 2026-06-21 confirms
   [LUC-5306](/LUC/issues/LUC-5306) is `done`,
   [LUC-5146](/LUC/issues/LUC-5146) is `done`, and
@@ -4614,7 +4691,7 @@
 
 - [LUC-5250](/LUC/issues/LUC-5250) completed as
   `DELEGATED / PARTIALLY_VERIFIED / API_LOW_SECOND_OUTLIERS /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Scope: DRE read-only production health checkpoint; no code, deploy, push,
   restart, rollback, env edit, secret/account readback, database/Redis
   mutation, raw log capture, screenshot, exchange action, order, position,
@@ -4662,7 +4739,7 @@
 
 - [LUC-5213](/LUC/issues/LUC-5213) completed as a CBE read-only investigation
   with final disposition `DONE / PARTIALLY_VERIFIED /
-  ACTIVE_TIMEOUT_NOT_REPRODUCED / BACKEND_RISK_IDENTIFIED`.
+ACTIVE_TIMEOUT_NOT_REPRODUCED / BACKEND_RISK_IDENTIFIED`.
 - Parent [LUC-5198](/LUC/issues/LUC-5198) remains valid historical evidence:
   API `/ready` had one `000` timeout at `21048 ms` plus low-second outliers.
 - Current focused probes did not reproduce the active timeout: Node fetch
@@ -4683,13 +4760,13 @@
 
 - [LUC-5210](/LUC/issues/LUC-5210) completed as a TSA gap-register refresh
   with final disposition `DONE / VERIFIED_REFRESH /
-  NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / NO_RUNTIME_MUTATION`.
+NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-5210-gap-register-and-repair-lane-refresh-2026-06-20-task.md`.
 - Validation: Paperclip heartbeat-context readback succeeded and
   `pnpm run -s architecture:graph:drift:strict` passed (`849/849`, `0`
   missing). `pnpm softwarehouse:control-tick` remains unavailable (`Command
-  "softwarehouse:control-tick" not found`).
+"softwarehouse:control-tick" not found`).
 - Architecture posture: the current `2026-06-20T05:14:22.302Z` report has `0`
   actionable missing-test links, `0` actionable missing-doc links, `0`
   actionable task-link gaps, `0` ownerless entities, `0`
@@ -4718,7 +4795,7 @@
 
 - [LUC-5192](/LUC/issues/LUC-5192) completed as a TSA controller refresh with
   final disposition `DONE / PARTIALLY_VERIFIED /
-  NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / RELEASE_GATES_STILL_BLOCKED`.
+NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / RELEASE_GATES_STILL_BLOCKED`.
 - Evidence:
   `history/tasks/luc-5192-v1-audit-to-completion-controller-2026-06-20-task.md`.
 - Validation: Paperclip heartbeat-context readback succeeded and
@@ -4772,7 +4849,7 @@
 
 - [LUC-5085](/LUC/issues/LUC-5085) completed as
   `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / WEB_HOME_LATENCY_SPIKES /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Public smoke passed for API `/health`, API `/ready`, Web `/`, and Web
   `/api/build-info`; production build-info reported
   `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
@@ -4811,7 +4888,7 @@
 # 2026-06-20 LUC-5022 Production Performance And Server Health Watch
 
 - [LUC-5022](/LUC/issues/LUC-5022) is `BLOCKED / PARTIALLY_VERIFIED /
-  APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Scope: DRE read-only production health checkpoint; no code, deploy, push,
   restart, rollback, env edit, secret/account readback, database/Redis
   mutation, raw log capture, screenshot, exchange action, order, position,
@@ -4841,7 +4918,7 @@
 # 2026-06-20 LUC-5011 V1 Audit-To-Completion Controller
 
 - [LUC-5011](/LUC/issues/LUC-5011) is `DONE / VERIFIED_REFRESH /
-  NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / RELEASE_GATES_STILL_BLOCKED`.
+NO_NEW_ACTIONABLE_ARCHITECTURE_GAP / RELEASE_GATES_STILL_BLOCKED`.
 - Scope: TSA controller refresh only; no runtime code, deploy, push, restart,
   rollback, env edit, protected smoke, secret/account readback, database/Redis
   mutation, exchange action, order, position, payment/subscription mutation, or
@@ -4869,7 +4946,7 @@
 # 2026-06-20 LUC-4971 Security And Account-Access Gate Sweep
 
 - [LUC-4971](/LUC/issues/LUC-4971) is `BLOCKED / PARTIALLY_VERIFIED /
-  PROTECTED_INPUTS_NO_GO`.
+PROTECTED_INPUTS_NO_GO`.
 - Scope: Security & Privacy Auditor no-secret gate refresh; no deploy, push,
   restart, rollback, env edit, secret/account readback, database mutation,
   exchange action, order, position, payment/subscription mutation, API-key
@@ -4898,7 +4975,7 @@
 # 2026-06-20 LUC-4959 Production Performance And Server Health Watch
 
 - [LUC-4959](/LUC/issues/LUC-4959) is `BLOCKED / PARTIALLY_VERIFIED /
-  APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Scope: DRE read-only production health checkpoint; no code, deploy, push,
   restart, rollback, env edit, secret/account readback, database/Redis
   mutation, raw log capture, screenshot, exchange action, order, position,
@@ -4928,7 +5005,7 @@
 # 2026-06-20 LUC-4945 Stripe Webhook Graph Drift Repair
 
 - [LUC-4945](/LUC/issues/LUC-4945) is `DONE / VERIFIED_LOCAL /
-  ARCHITECTURE_GRAPH_DRIFT_REPAIRED / NO_RUNTIME_MUTATION`.
+ARCHITECTURE_GRAPH_DRIFT_REPAIRED / NO_RUNTIME_MUTATION`.
 - Scope: Technical Solution Architect source graph repair only; no runtime
   code, deploy, push, restart, rollback, env edit, secret/account readback,
   database/Redis mutation, exchange action, order, position,
@@ -4952,8 +5029,8 @@
 # 2026-06-20 LUC-4939 Regression Evidence Sweep
 
 - [LUC-4939](/LUC/issues/LUC-4939) is `DONE_WITH_DELEGATED_REPAIR /
-  PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
-  ARCHITECTURE_GRAPH_DRIFT_DELEGATED`.
+PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
+ARCHITECTURE_GRAPH_DRIFT_DELEGATED`.
 - Scope: QVE safe regression evidence only; no deploy, push, restart,
   rollback, env edit, secret/account readback, database/Redis mutation,
   exchange action, order, position, payment/subscription mutation, or
@@ -4977,7 +5054,7 @@
 # 2026-06-20 LUC-4928 Daily Project Status Refresh
 
 - [LUC-4928](/LUC/issues/LUC-4928) is `DONE / PARTIALLY_VERIFIED /
-  APP_HEALTHY / RELEASE_GATES_STILL_BLOCKED`.
+APP_HEALTHY / RELEASE_GATES_STILL_BLOCKED`.
 - Scope: Soar Product Manager status integration only; no code, deploy, push,
   restart, rollback, env edit, secret/account readback, database/Redis
   mutation, exchange action, order, position, payment/subscription mutation, or
@@ -5001,7 +5078,7 @@
 # 2026-06-20 LUC-4929 Coolify Production Deploy Health Sweep
 
 - [LUC-4929](/LUC/issues/LUC-4929) is `BLOCKED / PARTIALLY_VERIFIED /
-  APP_HEALTHY / DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
+APP_HEALTHY / DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5050,7 +5127,7 @@
 # 2026-06-20 LUC-4912 Web Build-Info Env-Runtime Provenance Gate Mismatch
 
 - [LUC-4912](/LUC/issues/LUC-4912) is `DONE / VERIFIED_NO_CODE_CHANGE /
-  DEPLOY_APPROVAL_STILL_REQUIRED`.
+DEPLOY_APPROVAL_STILL_REQUIRED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5087,7 +5164,7 @@
 # 2026-06-20 LUC-4893 Production Performance And Server Health Watch
 
 - [LUC-4893](/LUC/issues/LUC-4893) is `DONE / PARTIALLY_VERIFIED /
-  APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5127,7 +5204,7 @@
 # 2026-06-20 LUC-4854 Implementation-Without-Tests Health Signal Classification
 
 - [LUC-4854](/LUC/issues/LUC-4854) is `DONE / VERIFIED_CLASSIFICATION /
-  NO_NEW_ACTIONABLE_GAP / NO_RUNTIME_MUTATION`.
+NO_NEW_ACTIONABLE_GAP / NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5170,7 +5247,7 @@
 # 2026-06-20 LUC-4843 Gap Register And Repair Lane Refresh
 
 - [LUC-4843](/LUC/issues/LUC-4843) is `DONE / VERIFIED_REFRESH /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5204,7 +5281,7 @@
 # 2026-06-20 LUC-4833 Authenticated Production Acceptance And Performance Sweep
 
 - [LUC-4833](/LUC/issues/LUC-4833) is `PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5245,7 +5322,7 @@
 # 2026-06-20 LUC-4819 Production Performance And Server Health Watch
 
 - [LUC-4819](/LUC/issues/LUC-4819) is `DONE / PARTIALLY_VERIFIED /
-  APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5283,7 +5360,7 @@
 # 2026-06-20 LUC-4815 V1 Audit-To-Completion Controller
 
 - [LUC-4815](/LUC/issues/LUC-4815) is `DONE / VERIFIED_LOCAL /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5314,7 +5391,7 @@
 # 2026-06-20 LUC-4811 Inject Read-Only Coolify/VPS Status Bindings
 
 - [LUC-4811](/LUC/issues/LUC-4811) is `BLOCKED /
-  BOARD_SECRET_STORE_ACCESS_REQUIRED / NO_MUTATION`.
+BOARD_SECRET_STORE_ACCESS_REQUIRED / NO_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5343,7 +5420,7 @@
 # 2026-06-20 LUC-4806 Coolify/VPS Read-Only Binding Gate
 
 - [LUC-4806](/LUC/issues/LUC-4806) is `BLOCKED /
-  SECRET_STORE_ACCESS_REQUIRED / NO_MUTATION`.
+SECRET_STORE_ACCESS_REQUIRED / NO_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5371,7 +5448,7 @@
 # 2026-06-20 LUC-4766 Production Performance And Server Health Watch
 
 - [LUC-4766](/LUC/issues/LUC-4766) is `PARTIALLY_VERIFIED /
-  APP_HEALTHY / COOLIFY_VPS_READBACK_DELEGATED`.
+APP_HEALTHY / COOLIFY_VPS_READBACK_DELEGATED`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5402,7 +5479,7 @@
 # 2026-06-20 LUC-4767 Coolify/VPS Health Readback Blocked
 
 - [LUC-4767](/LUC/issues/LUC-4767) is `BLOCKED /
-  READ_ONLY_BINDINGS_MISSING / NO_MUTATION`.
+READ_ONLY_BINDINGS_MISSING / NO_MUTATION`.
 - Scope: DRE read-only production server-health follow-up from
   [LUC-4766](/LUC/issues/LUC-4766). No deploy, push, restart, rollback, env
   edit, database/Redis mutation, account mutation, secret readback,
@@ -5430,7 +5507,7 @@
 # 2026-06-15 LUC-4144 Coolify Read-Only Production Status Access
 
 - [LUC-4144](/LUC/issues/LUC-4144) is `DONE / VERIFIED_READ_ONLY /
-  NO_MUTATION`.
+NO_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5463,7 +5540,7 @@
 # 2026-06-15 LUC-4121 Protected Test-Account Smoke Path
 
 - [LUC-4121](/LUC/issues/LUC-4121) is `DONE /
-  VERIFIED_PROTECTED_SMOKE / NO_SECRET_DISCLOSURE`.
+VERIFIED_PROTECTED_SMOKE / NO_SECRET_DISCLOSURE`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5496,7 +5573,7 @@
 # 2026-06-13 LUC-3796 Coolify Resource Inventory Reconciliation
 
 - [LUC-3796](/LUC/issues/LUC-3796) is `DONE / VERIFIED_READ_ONLY /
-  NO_MUTATION`.
+NO_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5525,7 +5602,7 @@
 # 2026-06-15 LUC-4204 V1 Audit-To-Completion Controller
 
 - [LUC-4204](/LUC/issues/LUC-4204) is `DONE / VERIFIED_LOCAL / DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5556,7 +5633,7 @@
 # 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
 
 - [LUC-3722](/LUC/issues/LUC-3722) is `DONE / VERIFIED_LOCAL /
-  SOURCE_PROMOTION_GUARDRAIL_CLEARED`.
+SOURCE_PROMOTION_GUARDRAIL_CLEARED`.
 - The failing source-promotion guardrail was a false-positive inventory scope
   issue: `scripts/auditArchitectureGraphDrift.mjs` walked nested
   `.paperclip/worktrees/` execution workspaces and counted copied config files
@@ -5580,7 +5657,7 @@
 # 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
 
 - [LUC-3708](/LUC/issues/LUC-3708) is `DONE / VERIFIED_READ_ONLY /
-  NO_MUTATION`.
+NO_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5608,7 +5685,7 @@
 # 2026-06-13 LUC-3707 Coolify Read-Only Secret Binding
 
 - [LUC-3707](/LUC/issues/LUC-3707) is `DONE / VERIFIED_READ_ONLY /
-  NO_SECRET_DISCLOSURE / NO_RUNTIME_MUTATION`.
+NO_SECRET_DISCLOSURE / NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5637,7 +5714,7 @@
 # 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
 
 - [LUC-3601](/LUC/issues/LUC-3601) is `DONE / VERIFIED_LOCAL /
-  TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5663,7 +5740,7 @@
 # 2026-06-12 LUC-3600 V1 Audit-To-Completion Controller Architecture Refresh
 
 - [LUC-3600](/LUC/issues/LUC-3600) is `DONE / VERIFIED_LOCAL / DELEGATED /
-  NO_RUNTIME_MUTATION` for the current TSA heartbeat.
+NO_RUNTIME_MUTATION` for the current TSA heartbeat.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5696,7 +5773,7 @@
 # 2026-06-11 LUC-3598 waitForWebBuildInfo resolveOptions Relation Row
 
 - [LUC-3598](/LUC/issues/LUC-3598) is `DONE / VERIFIED_LOCAL /
-  TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5722,7 +5799,7 @@
 # 2026-06-11 LUC-3597 Architecture-Awareness After LUC-3590 Relation Row
 
 - [LUC-3597](/LUC/issues/LUC-3597) is `DONE / VERIFIED_LOCAL / DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5753,7 +5830,7 @@
 # 2026-06-11 LUC-3595 No-Stall Queue Expeditor
 
 - [LUC-3595](/LUC/issues/LUC-3595) is `DONE / DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Wake was `issue_assigned`; inline payload had no pending comments and
   `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
   was not repeated.
@@ -5781,7 +5858,7 @@
 # 2026-06-11 LUC-3586 Coolify Resource Inventory Reconciliation
 
 - [LUC-3586](/LUC/issues/LUC-3586) `[Ops][Soar] Reconcile Coolify resource
-  inventory` is verified with fresh read-only Coolify API evidence.
+inventory` is verified with fresh read-only Coolify API evidence.
   Authenticated `GET` projection at `2026-06-11T21:00:50Z` confirmed selector
   `LuckySparrow`, project `Soar`, production environment id `6`, six
   application resources, one PostgreSQL resource, one Redis resource, zero
@@ -5804,7 +5881,7 @@
 # 2026-06-11 LUC-3589 Gap Register And Repair Lane Refresh
 
 - [LUC-3589](/LUC/issues/LUC-3589) is `DONE / VERIFIED_LOCAL / DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Canonical scanner command passed from `Paperclip_Softwarehouse`:
   `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
 - Fresh architecture-awareness report generated `2026-06-11T20:46:21.821Z`
@@ -5859,7 +5936,7 @@
 # 2026-06-11 LUC-3587 Architecture-Awareness After normalizeNonEmptyString
 
 - [LUC-3587](/LUC/issues/LUC-3587) is `DONE / VERIFIED_LOCAL / DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Canonical scanner command passed from `Paperclip_Softwarehouse`:
   `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
 - Fresh architecture-awareness report generated `2026-06-11T20:34:15.942Z`
@@ -5884,7 +5961,6 @@
   `history/tasks/luc-3587-architecture-awareness-after-normalizenonemptystring-2026-06-11-task.md`.
 
 # 2026-06-11 LUC-3583 No-Stall Queue Expeditor
-
 
 - `LUC-3583-NO-STALL-QUEUE-EXPEDITOR-2026-06-11`
   completed as a Soar Product Manager queue-disposition checkpoint with
@@ -6232,7 +6308,7 @@
 - 2026-06-11 `LUC-3515-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-11`
   completed as a DRE read-only production health sweep with
   `PARTIALLY_VERIFIED / PUBLIC_SMOKE_PASS / DEEPER_LOGS_BLOCKED /
-  NO_MUTATION`. Public no-worker deploy smoke passed for API `/health`, API
+NO_MUTATION`. Public no-worker deploy smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info` on expected SHA
   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; Web `/auth/login` also
   returned `200` in direct probing. Coolify read-only API resolved selector
@@ -6345,7 +6421,7 @@
   `scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun`, and
   `scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot`. Focused proof
   passed: syntax check, `node --test scripts/rcGateSummaryChecklist.test.mjs
-  scripts/releaseOpsScriptContracts.test.mjs` (`9/9`), direct relation
+scripts/releaseOpsScriptContracts.test.mjs` (`9/9`), direct relation
   readback (`3/3`), and no leftover `chrome-headless-shell`. No real RC/prod
   gate, protected proof, deploy, restart, rollback, secret/account readback,
   DB/Redis mutation, exchange/order/position/payment/live-trading action
@@ -6473,7 +6549,7 @@
   completed as a QA/Test safe local regression evidence refresh. The previous
   run failure was adapter authentication (`401 Unauthorized`) before product
   evidence, so this heartbeat reran the evidence directly: `pnpm run
-  ops:project:known-state` passed with graph `653` nodes / `842` relations /
+ops:project:known-state` passed with graph `653` nodes / `842` relations /
   `27` chains, strict drift `846/846`, docs parity PASS, guardrails PASS,
   project index `PASS:21`, V1 static scan `0` findings, master ledger `GO`,
   and completion scorecard `GO` at `100%`. Focused helper packs passed:
@@ -7082,7 +7158,7 @@
   is `DONE / VERIFIED_LOCAL`. `scripts/runKnownStateRefresh.mjs#run` now has
   focused injected Node proof and direct `LUC-2920` architecture relation
   evidence. Validation passed: syntax checks, `node --test
-  scripts/runKnownStateRefresh.test.mjs` (`5/5`), direct relation readback,
+scripts/runKnownStateRefresh.test.mjs` (`5/5`), direct relation readback,
   `pnpm run architecture:graph:generate` (`653` nodes / `842` relations /
   `27` chains), Softwarehouse architecture-awareness refresh (`15046`
   entities / `34456` relations / `9738` files; `245` actionable missing-test
@@ -7095,7 +7171,7 @@
   Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
   checkout was already claimed by the harness and was not repeated.
   Paperclip heartbeat-context succeeded. `corepack pnpm
-  softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
+softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
   not exposed in this checkout. Current architecture-awareness report generated
   `2026-06-07T18:49:12.396Z` reports `251` actionable missing-test links and no
   actionable missing-doc, ownerless, or disconnected-entity gaps. Generated
@@ -7485,7 +7561,7 @@
   Paperclip heartbeat-context readback succeeded for
   [LUC-2821](/LUC/issues/LUC-2821), with no pending comments and no unresolved
   first-class blockers on the routine issue. `corepack pnpm
-  softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
+softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
   not exposed in this checkout. Current architecture-awareness report
   generated `2026-06-07T13:36:23.702Z` reports `311` actionable missing-test
   links, `0` actionable missing-doc links, `0` ownerless entities, and `0`
@@ -7524,7 +7600,7 @@
   Paperclip heartbeat-context readback succeeded for
   [LUC-2817](/LUC/issues/LUC-2817), with no pending comments and no unresolved
   first-class blockers on the routine issue. `corepack pnpm
-  softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
+softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
   not exposed in this checkout. Current architecture-awareness report
   generated `2026-06-07T13:04:38.451Z` reports `314` actionable missing-test
   links, `0` actionable missing-doc links, `0` ownerless entities, and `0`
@@ -7784,13 +7860,13 @@
 - 2026-06-07 `LUC-2776` completed a PM no-stall/delegation checkpoint after
   completed [LUC-2775](/LUC/issues/LUC-2775). Paperclip heartbeat-context
   readback succeeded for [LUC-2776](/LUC/issues/LUC-2776). `corepack pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. Current
+softwarehouse:control-tick` remains unavailable in this checkout. Current
   architecture-awareness report generated `2026-06-07T10:30:41.562Z` still
   lists `scripts/dev-backend.mjs` as top actionable after its completed proof
   lane, so the report needs refresh/reconciliation before another worker proof
   lane is selected. Active duplicate searches found no open matching refresh
   lane. Created [LUC-2779](/LUC/issues/LUC-2779) for `09 TSA (Technical
-  Solution Architect)` to refresh or reconcile architecture-awareness and
+Solution Architect)` to refresh or reconcile architecture-awareness and
   create at most one current non-duplicate worker-ready lane if gaps remain.
   No production/runtime/deploy/protected/account/secret/database/exchange/
   Docker Compose/live-trading mutation occurred. Evidence:
@@ -7866,7 +7942,7 @@
   `14880` entities, `23980` relations, `377` actionable missing-test links,
   `0` actionable missing-doc links, `0` ownerless entities, `0` disconnected
   entities, and `7441` classified inferred-link noise rows. `pnpm run
-  docs:parity:check` passed (`22/22` API modules, `16/16` Web features,
+docs:parity:check` passed (`22/22` API modules, `16/16` Web features,
   `39/39` routes). `pnpm softwarehouse:control-tick` remains unavailable in
   this checkout. Current top `scripts/collectNonGateioRuntimeReadback.mjs`
   script-cluster coverage is already running under Test Automation in
@@ -7954,7 +8030,7 @@
 - 2026-06-07 `LUC-2735` completed a PM no-stall/delegation checkpoint after
   completed [LUC-2733](/LUC/issues/LUC-2733). Paperclip heartbeat-context
   readback succeeded for [LUC-2735](/LUC/issues/LUC-2735). `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. Current
+softwarehouse:control-tick` remains unavailable in this checkout. Current
   architecture-awareness report generated `2026-06-07T08:46:05.612Z` still
   lists `scripts/checkProtectedInputReadiness.mjs` as top actionable after its
   completed proof lane, so the report needs refresh/reconciliation before
@@ -8062,7 +8138,7 @@
   [LUC-2702](/LUC/issues/LUC-2702) removed
   `scripts/checkCoolifyStackEnv.mjs` from the top actionable family. Current
   top family is `scripts/checkDocsParity.mjs`; `node --check
-  scripts/checkDocsParity.mjs` and `pnpm run docs:parity:check` passed.
+scripts/checkDocsParity.mjs` and `pnpm run docs:parity:check` passed.
   Duplicate search found no active docs parity child lane beyond current
   [LUC-2723](/LUC/issues/LUC-2723), so [LUC-2725](/LUC/issues/LUC-2725) was
   created for Test Automation coverage/classification of
@@ -8192,7 +8268,7 @@
 
 - 2026-06-07 `LUC-2681` completed a PM no-stall/delegation checkpoint.
   Paperclip heartbeat-context readback succeeded, `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout, and the
+softwarehouse:control-tick` remains unavailable in this checkout, and the
   current architecture-awareness report generated `2026-06-07T04:42:13.421Z`
   still lists RC/SLO helper families already covered by completed
   [LUC-2674](/LUC/issues/LUC-2674) and [LUC-2678](/LUC/issues/LUC-2678).
@@ -8282,7 +8358,7 @@
   `LUC-2671` relation rows for already covered anchors in
   `docs/architecture/relations/priority-test-links.csv`. Focused tests passed
   (`node --test scripts/auditRouteReachableI18n.test.mjs
-  scripts/buildObsidianVaultLayer.test.mjs scripts/buildProjectIndex.test.mjs`,
+scripts/buildObsidianVaultLayer.test.mjs scripts/buildProjectIndex.test.mjs`,
   `18/18`), `pnpm run architecture:graph:generate` passed (`653` nodes /
   `842` relations / `27` chains), and `pnpm run quality:guardrails` passed.
   Test-file fixture functions remain scanner inference noise, not true product
@@ -8298,7 +8374,7 @@
   and added direct `LUC-2664` rows to
   `docs/architecture/relations/priority-test-links.csv`. Validation passed:
   `node --check scripts/buildProjectIndex.mjs`, `node --test
-  scripts/buildProjectIndex.test.mjs` (`8/8`),
+scripts/buildProjectIndex.test.mjs` (`8/8`),
   `pnpm run architecture:graph:generate` (`653` nodes / `842` relations /
   `27` chains), and `pnpm run quality:guardrails`. No production mutation
   occurred. Evidence:
@@ -8404,7 +8480,7 @@
 
 - 2026-06-07 `LUC-2638` completed a TSA V1 audit-to-completion controller
   checkpoint. Paperclip heartbeat-context readback succeeded; `corepack pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. Current
+softwarehouse:control-tick` remains unavailable in this checkout. Current
   architecture-awareness report generated `2026-06-07T01:03:05.613Z`; recent
   Web missing-test repair lanes [LUC-2624](/LUC/issues/LUC-2624) and
   [LUC-2631](/LUC/issues/LUC-2631) are complete. Duplicate search found prior
@@ -8690,7 +8766,7 @@
   (`fallbackFetchNeeded=false`, comments `0/0`), and checkout was already
   claimed by the harness. Paperclip heartbeat-context succeeded for
   [LUC-2591](/LUC/issues/LUC-2591). `corepack pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout and
+softwarehouse:control-tick` remains unavailable in this checkout and
   `scripts/run-live-run-janitor.mjs` is absent. Fresh read-only queue readback
   returned `95` non-terminal Soar issues (`91` blocked, `2` in_progress,
   `2` in_review, `0` todo). The only active execution besides the PM
@@ -8715,7 +8791,7 @@
   `733` actionable missing-test links, and `0` actionable missing-doc links.
   Updated `docs/status/known-state-readiness.md` from stale 2026-05-26 local
   pass wording to active repair/verification and protected gate hold. `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout and
+softwarehouse:control-tick` remains unavailable in this checkout and
   `scripts/run-live-run-janitor.mjs` is absent. No product-code/runtime/deploy/
   push/restart/rollback/env/account/secret/protected-smoke/exchange/database/
   live-trading mutation occurred. Evidence:
@@ -8776,7 +8852,7 @@
   production/browser proof is separate. No backend implementation gap was
   found, so no child repair issue was opened. Closure distinction: local code
   paths are `verified_local`; protected production/LIVE behavior is `present in
-  code, behavior unknown` until [LUC-241](/LUC/issues/LUC-241)-blocked readback
+code, behavior unknown` until [LUC-241](/LUC/issues/LUC-241)-blocked readback
   or explicit LIVE-mutation approval proof exists. Evidence:
   `history/tasks/luc-2566-runtime-exchange-local-only-chain-audit-2026-06-06-task.md`.
   No code/runtime/deploy/push/restart/rollback/env/account/secret/protected-
@@ -8872,7 +8948,7 @@
   docs against each other: canonical route-map inventory routes and primary API
   contracts must be covered by `docs/architecture/traceability-matrix.md`.
   Focused regression proof passed (`node --test
-  scripts/checkRouteApiMatrixParity.test.mjs`, `6/6`), live route/API matrix
+scripts/checkRouteApiMatrixParity.test.mjs`, `6/6`), live route/API matrix
   parity passed (`39` Web routes, `109` API endpoints, `0` gaps), and docs
   parity passed (`22/22` API, `16/16` Web, `39/39` routes). The stronger audit
   exposed and closed matrix drift for `/privacy`, `/terms`, and
@@ -9005,7 +9081,7 @@
   [LUC-244](/LUC/issues/LUC-244), all blocked. [LUC-2506](/LUC/issues/LUC-2506),
   [LUC-2507](/LUC/issues/LUC-2507), and [LUC-2520](/LUC/issues/LUC-2520)
   are `done`, so no duplicate specialist lane was opened. `pnpm
-  softwarehouse:control-tick` failed because the command is not exposed in this
+softwarehouse:control-tick` failed because the command is not exposed in this
   checkout; `scripts/run-live-run-janitor.mjs` is absent. Evidence:
   `history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md`.
   No code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
@@ -9319,7 +9395,7 @@
   and checkout was already claimed by the harness. Paperclip heartbeat-context
   readback succeeded and showed no comments, child issues, blockers, or active
   execution workspace. The required control command `pnpm
-  softwarehouse:control-tick` is still not exposed as a direct Soar command,
+softwarehouse:control-tick` is still not exposed as a direct Soar command,
   and `scripts/run-live-run-janitor.mjs` is absent. Routing result: no
   duplicate Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or
   release lane is needed. Current critical path remains
@@ -9832,7 +9908,7 @@
   `/api/build-info` are `503`. Coolify reports `soar-web`
   `restarting:unknown`, `last_restart_type=crash`,
   `last_restart_at=2026-06-05T21:18:51Z`, and app logs endpoint `400 Bad
-  Request`. Read-only `codex-vps` Docker log tail confirms repeated
+Request`. Read-only `codex-vps` Docker log tail confirms repeated
   `MODULE_NOT_FOUND` for `[APP_ROOT]/scripts/runWebNextProductionCommand.mjs`,
   pnpm recursive start failure, and exit `1`. Classification:
   `web image/startup packaging`. No production mutation occurred. Evidence:
@@ -9870,7 +9946,7 @@
   database mutation. Fresh public smoke still shows API `/health` and `/ready`
   `200`, Web `/` and `/api/build-info` `503` for expected rollback SHA
   `b894e5dd30614dfd2035e91e3d848c842d3ff380`; `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Evidence:
+ops:coolify-stack:env-check:test` passed (`8/8`). Evidence:
   `history/tasks/luc-2302-select-next-soar-web-recovery-path-after-rollback-failed-closed-2026-06-05-task.md`
   and
   `history/evidence/luc-2302-soar-web-next-recovery-decision-2026-06-05.md`.
@@ -9994,7 +10070,7 @@
   healthy. Precheck: API `/health` and `/ready` -> `200`; Web `/` and
   `/api/build-info` -> `503`; `ops:deploy:smoke --no-workers` failed only Web
   checks. Source state matched the permit (`HEAD == origin/main ==
-  6e31d814046b640ad529d1cd57f968ba6f67b05e`) with only an unrelated
+6e31d814046b640ad529d1cd57f968ba6f67b05e`) with only an unrelated
   pre-existing history note dirty. The single restart request returned
   `Deployment already queued for this commit.` Polling and final smoke showed
   no recovery: Web stayed `503/503`, Coolify stayed `soar-web`
@@ -10444,7 +10520,7 @@
   admin users (`6/6` PASS rows, static mapping `PASS`, blockers `0`).
   Validation passed: `node --check scripts/runLocalProtectedRouteActionProof.mjs`
   and `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05
-  --clusters reports,logs,profile,admin --cdp-timeout-ms 30000`. Cleanup found
+--clusters reports,logs,profile,admin --cdp-timeout-ms 30000`. Cleanup found
   no active owners on ports `3217` or `9347`; only `TIME_WAIT` sockets with
   owning process `0`. No production auth/session, account, exchange, form
   submit, profile/admin/data mutation, DB mutation, deploy, restart, rollback,
@@ -10502,8 +10578,8 @@
   and `22292` relations; actionable missing docs improved from `72` to `32`.
   Validation passed: `pnpm run architecture:graph:generate` (`651` nodes /
   `842` relations / `27` chains), `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
-  docs:parity:check`, and targeted `git diff --check` with CRLF warnings only.
+architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
+docs:parity:check`, and targeted `git diff --check` with CRLF warnings only.
   No code/runtime behavior, route behavior, deploy, restart, rollback, env,
   database, account, protected-smoke, secret, exchange mutation, or
   live-trading action occurred. Evidence:
@@ -10561,7 +10637,7 @@
   production-environment resources, and `17` visible global resource rows.
   Applications report `running:unknown`; PostgreSQL/Redis report
   `running:healthy` from the production environment readback. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, protected smoke, secret readback,
@@ -10623,7 +10699,7 @@
   production-environment resources, and `17` visible global resource rows.
   Applications report `running:unknown`; PostgreSQL/Redis report
   `running:healthy` from the global status projection. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, protected smoke, secret readback,
@@ -10680,8 +10756,8 @@
   (`documents=1` for five scripts plus two backend model entities),
   `node --check` for the exporter, `pnpm run architecture:graph:generate`
   (`651` nodes / `842` relations / `27` chains), `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
-  docs:parity:check`, and diff checks with CRLF warnings only. No runtime,
+architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
+docs:parity:check`, and diff checks with CRLF warnings only. No runtime,
   route, deploy, restart, rollback, env, database, account, protected-smoke,
   secret, exchange, or live-trading action occurred. Evidence:
   `history/tasks/luc-2155-repair-documentation-links-ingestion-actionable-missing-docs-2026-06-05-task.md`.
@@ -10746,7 +10822,7 @@
   across wallets, strategies, markets, bots, and backtests; static action/source
   mapping is `PASS` and blockers are `0`. Validation passed:
   `node --check scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
+qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
   no matching owned Node/Chrome/cmd validation processes; only `TIME_WAIT`
   sockets on ports `3217` and `9347` with owning process `0`. Scope stayed
   local-only and non-mutating: no production session, owner account, exchange
@@ -10809,7 +10885,7 @@
   rows no longer appear in top missing-doc samples. Validation passed:
   `pnpm run architecture:graph:generate`, architecture-awareness scanner
   refresh (`14237` entities / `22052` relations / `7097` files), and `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing). A second-wave
+architecture:graph:drift:strict` (`822/822`, `0` missing). A second-wave
   tooling doc-link backlog remains for later owner review. No runtime, deploy,
   protected, account, secret, exchange, or live-trading action occurred.
   Evidence:
@@ -10827,7 +10903,7 @@
   `7377`, and disconnected entities `0`; the normalized Web i18n/lib/helper
   rows no longer appear in top actionable missing doc-link samples. Validation
   passed: `pnpm run architecture:graph:generate` and `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing). The external
+architecture:graph:drift:strict` (`822/822`, `0` missing). The external
   architecture-awareness scanner wrote exports and printed `14237` entities /
   `22052` relations before timing out at `120s`. No runtime, deploy,
   protected, account, secret, exchange, or live-trading action occurred.
@@ -10864,8 +10940,8 @@
   root/list/create local-cookie reachability, wallet list create navigation,
   strategies list/create local-cookie reachability, and strategies list create
   navigation. Validation passed: `node --check
-  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
+scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
   only `TIME_WAIT` sockets on port `3217` with owning process `0` and no
   matching browser process on CDP port `9347`. No production auth/session,
   form submit, wallet or strategy mutation, exchange call, database mutation,
@@ -10927,7 +11003,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -10961,7 +11037,7 @@
   global resource rows. Applications report `running:unknown`; PostgreSQL
   reports `running:healthy`; Redis resource presence is verified but status is
   `running:unknown` in this redacted readback. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11010,7 +11086,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11030,7 +11106,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11062,7 +11138,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11082,7 +11158,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11102,7 +11178,7 @@
   six applications, PostgreSQL, Redis, zero generic services, and `17` visible
   global resource rows. Applications report `running:unknown`;
   PostgreSQL/Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
   heartbeat to `in_progress`, priority `critical`, zero pending comments, and
   `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
   database action, team setting change, account action, protected smoke,
@@ -11261,9 +11337,7 @@
 
 - 2026-06-03 `LUC-1672` Operator Coolify team/workspace selector confirmation is verified and done. Read-only Coolify API readback at `2026-06-03T05:34:32Z` confirmed current selector id `0`, name `LuckySparrow`; configured project resolves to `Soar`, and production environment resolves to `production` id `6` with six application rows. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent in this runner, but the exact expected selector is recorded as non-secret config truth and not an active blocker while current-team and project-scoped reads succeed. Paperclip heartbeat context showed `in_progress` with zero first-class blockers. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret readback was performed. Evidence: `history/evidence/luc-1672-coolify-team-workspace-confirmation-2026-06-03.md`, `history/tasks/luc-1672-confirm-coolify-team-workspace-2026-06-03-task.md`.
 
-
 - 2026-06-03 `LUC-1677` Operator Coolify read-only production status access binding is verified and done. Runtime bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an active blocker because authenticated Coolify read-only API readback at `2026-06-03T05:39:51Z` confirmed selector id `0`, name `LuckySparrow`, project `Soar`, environment `production`, and eight canonical production-environment resources: `soar-web`, `workers-backtest`, `workers-market-stream`, `workers-execution`, `soar-api`, `workers-market-data`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy` from global resource readback. The global resources endpoint still exposes one redacted PostgreSQL companion row, which remains a reconciliation alias, not a ninth production-environment deploy target. Paperclip heartbeat context read the issue as `blocked` with zero first-class blockers, so this heartbeat resolved the stale disposition with fresh proof. No deploy, restart, rollback, env edit, database action, team setting change, account action, secret readback, or live trading action was performed. Evidence: `history/evidence/luc-1677-coolify-read-only-production-status-access-2026-06-03.md`, `history/tasks/luc-1677-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`.
-
 
 - 2026-06-03 `LUC-1668` Operator Coolify team/workspace selector confirmation is verified and done. Read-only Coolify API readback at `2026-06-03T05:08:45Z` confirmed current selector id `0`, name `LuckySparrow`; configured project resolves to `Soar`, and production environment resolves to `production` id `6` with six application rows. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent in this runner, but the exact expected selector is recorded as non-secret config truth and not an active blocker while current-team and project-scoped reads succeed. Paperclip heartbeat context showed `in_progress` with zero first-class blockers. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret readback was performed. Evidence: `history/evidence/luc-1668-coolify-team-workspace-confirmation-2026-06-03.md`, `history/tasks/luc-1668-confirm-coolify-team-workspace-2026-06-03-task.md`.
 
@@ -11479,7 +11553,9 @@
 - Disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
+
 ## 2026-06-01 LUC-1247 continuation [finish_successful_run_handoff]
+
 - Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - reran anti-drift consistency check across `LUC-1247` control map, task contract, and canonical state files,
@@ -11490,7 +11566,9 @@
 - Evidence:
   - `history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md`
   - `history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md`
+
 ## 2026-06-01 LUC-1247 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - reconciled canonical ARB backlog lineage and latest control-map artifacts,
@@ -11513,11 +11591,15 @@
   - Converted workers readiness contract tests to deterministic signed-auth principal path and removed dependency on `/auth/register` bootstrap in this lane.
   - Full suite verification PASS: `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` (`8/8`).
   - Evidence: `history/evidence/luc-1197-workers-ready-contract-suite-closure-2026-06-01.md`, `history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md`.
+
 ## 2026-06-01 - LUC-1190 finish-handoff checkpoint
+
 - Status: `done` for Security Review Lead lane.
 - Continuation check confirms gate packet is complete and aligned with acceptance scope.
 - Remaining execution owner unchanged: Ops Release Lead (one protected read-only smoke evidence pass).
+
 ## 2026-06-01 - LUC-1190 continuation closure (security lane)
+
 - Status: `done` (Security Review Lead lane complete).
 - Added in continuation:
   - executable ops checklist with explicit principal scope, deny cases, expected HTTP statuses, and redaction constraints,
@@ -11528,7 +11610,9 @@
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
+
 ## 2026-06-01 - LUC-1190 security gate definition for workers-ready smoke principal
+
 - Status: `in_review`.
 - Delivered in this checkpoint:
   - canonical authorization gate for protected `GET /workers/ready` smoke (auth session + `ADMIN` role + ops-network + read-only scope),
@@ -11544,7 +11628,9 @@
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
+
 ## 2026-06-01 - LUC-1174 backend contract verification (exchange/positions/DCA-TSL/workers readiness)
+
 - Status: `blocked`.
 - Verified in this checkpoint:
   - exchange + positions ownership continuity contract slice (`implemented and verified`) via focused `livePositionReconciliation` tests;
@@ -11563,7 +11649,9 @@
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
+
 ## 2026-05-31 - LUC-1161 public-green vs restart-evidence reconciliation
+
 - Status: `implemented and verified` for public production reachability, `blocked` for protected worker readiness, and `implemented but not verified` for crash root-cause classification.
 - Fresh verification in this checkpoint:
   - `ops:deploy:smoke` => public routes `200`, protected `/workers/ready` => `401`.
@@ -11579,77 +11667,79 @@
   - reran public smoke (`pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`) -> PASS (`/health`, `/ready`, `/`, `/api/build-info` all `200`),
   - attempted protected runtime freshness probe (`pnpm run ops:deploy:runtime-freshness -- --base-url https://api.soar.luckysparrow.ch`) -> FAIL (`HTTP 401`),
   - executed 20-round availability sample for `/health` and `/ready` with 3-second cadence -> `20/20` success for both.
-  Updated diagnosis:
+    Updated diagnosis:
   - no active restart loop is visible in the public probe window,
   - prior API crash signal still lacks pre-crash root-cause proof.
-  Blocking owner/action:
+    Blocking owner/action:
   1. Ops Release Lead + platform/Coolify owner: provide pre-crash host/Coolify logs/events around `2026-05-31T21:08:45Z`.
   2. Security-approved read-only principal: provide protected probe path for `/workers/ready`, `/alerts`, `/metrics`.
-  Evidence: `history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md`, `history/evidence/luc-1160-coolify-restart-loop-diagnosis-2026-05-31.md`.
+     Evidence: `history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md`, `history/evidence/luc-1160-coolify-restart-loop-diagnosis-2026-05-31.md`.
 
 - `LUC-1164 [Soar][LUC-241][Backend] Trace /workers/ready auth chain and produce fix-ready map` completed on 2026-05-31 and is `done`.
   Wake `issue_continuation_needed` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - traced `GET /workers/ready` protected auth chain end-to-end from route gate to token/session/network gates,
   - produced fix-ready breakpoint map with explicit fail codes and remediation options.
-  Continuation verification delta:
+    Continuation verification delta:
   - ran `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`,
   - suite result: `1 passed, 7 failed`; failing cases stop before `/workers/ready` checks because `/auth/register` returns `500` (expected `201`) in test bootstrap helpers.
-  Verified chain: `requireAuth` -> `requireRole('ADMIN')` -> `requireOpsNetwork`.
-  Key breakpoints captured: role mismatch, trusted-proxy mismatch, allowed-IP mismatch, and session-version drift.
-  Fix-lane sequencing note: stabilize `/auth/register` bootstrap path first, then re-run protected `/workers/ready` auth-chain assertions.
-  Runtime/deploy mutation: none.
-  Evidence: `history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md`.
+    Verified chain: `requireAuth` -> `requireRole('ADMIN')` -> `requireOpsNetwork`.
+    Key breakpoints captured: role mismatch, trusted-proxy mismatch, allowed-IP mismatch, and session-version drift.
+    Fix-lane sequencing note: stabilize `/auth/register` bootstrap path first, then re-run protected `/workers/ready` auth-chain assertions.
+    Runtime/deploy mutation: none.
+    Evidence: `history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md`.
 - `LUC-1148 [Soar][Source Control Closure]` continuation wake (`issue_continuation_needed`) executed on 2026-05-31 and is `done`.
   Wake `issue_continuation_needed` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran local source-control closure verification (`git status --short --branch`, `git log --oneline -n 6`),
   - confirmed closure commit `505924bc` remains present on branch history,
   - confirmed worktree remains clean (`main...origin/main [ahead 16]`, no dirty paths).
-  Final wake disposition: `done` (no additional local classification or closure commit needed).
+    Final wake disposition: `done` (no additional local classification or closure commit needed).
 
 - `LUC-1154 [Soar] [Known State Refresh]` continuation heartbeat (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
   Wake `source_scoped_recovery_action` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - executed scanner refresh command `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse`,
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources.
-  Evidence delta result:
+    Evidence delta result:
   - baseline changed vs prior checkpoint (`generated_at=2026-05-31T20:42:36.027Z`, entities `13396` vs `7338`, relations `20522` vs `14300`, inferred gaps now tests `200` and docs `200` vs `2056` and `798`, disconnected entities `0`),
   - blocker-routing unchanged; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Final wake disposition: `done` (no local runtime/deploy mutation).
+    Final wake disposition: `done` (no local runtime/deploy mutation).
 - `LUC-1154 [Soar] [Known State Refresh]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-31 and is `done`.
   Wake `finish_successful_run_handoff` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Final wake disposition: `done` (no local runtime/deploy mutation).
+    Final wake disposition: `done` (no local runtime/deploy mutation).
 - `LUC-1154 [Soar] [Known State Refresh]` continuation heartbeat (`issue_commented`) executed on 2026-05-31 and is `done`.
   Wake `issue_commented` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `bb9b6d99-ade0-4e41-8021-605d4afc6e9d`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Final wake disposition: `done` (no local runtime/deploy mutation).
+    Final wake disposition: `done` (no local runtime/deploy mutation).
 - `LUC-1154 [Soar] [Known State Refresh]` heartbeat executed on 2026-05-31 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+
 ## 2026-05-31 LUC-1148 continuation [source_scoped_recovery_action-2]
+
 - `LUC-1148 [Soar][Source Control Closure]` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
 - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Continuation verification:
@@ -11659,6 +11749,7 @@
 - Evidence: `history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md`.
 
 ## 2026-05-31 LUC-1148 continuation [source_scoped_recovery_action]
+
 - `LUC-1148 [Soar][Source Control Closure]` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
 - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Continuation verification:
@@ -11668,6 +11759,7 @@
 - Evidence: `history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md`.
 
 ## 2026-05-31 LUC-1148 continuation [finish_successful_run_handoff]
+
 - `LUC-1148 [Soar][Source Control Closure]` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and is `done`.
 - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Continuation verification:
@@ -11677,6 +11769,7 @@
 - Evidence: `history/tasks/luc-1148-source-control-closure-finish-successful-run-handoff-2026-05-31-task.md`.
 
 ## 2026-05-31 LUC-1148 continuation [issue_commented, local repair lane starter]
+
 - `LUC-1148 [Soar][Source Control Closure]` continuation wake (`issue_commented`) executed on 2026-05-31 and is `done`.
 - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `4527d3e2-b96a-4186-b145-5d5be1076fd6`).
 - Comment impact: sidecar scope remains local source-control closure only; target `LUC-241` remains dependency-blocked by protected delivery gates.
@@ -11688,6 +11781,7 @@
 - Evidence: `history/tasks/luc-1148-source-control-closure-comment-followup-2026-05-31-task.md`.
 
 ## 2026-05-31 LUC-1128 source-control closure for LUC-973/LUC-1127 dirty set
+
 - `LUC-1128 [Soar][Source Control Closure] Classify and close local dirty state for LUC-973-LUC-1127` executed as a closure sidecar lane.
 - Continuation wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Continuation action:
@@ -11714,6 +11808,7 @@
   - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1127 blocked triage classification for LUC-973
+
 - `LUC-1127 [Softwarehouse][Blocked Triage] Classify LUC-973 and produce next legal action` executed as a triage-only lane and marked `done`.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Classification outcome:
@@ -11728,6 +11823,7 @@
   - `history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1126 source-control closure for LUC-405/LUC-1123 dirty set
+
 - `LUC-1126 [Soar][Source Control Closure] Classify and close local dirty state for LUC-405-LUC-1123` executed as a closure sidecar lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Dirty-worktree baseline:
@@ -11741,7 +11837,9 @@
   - `LUC-1126` closed as `done`.
 - Evidence:
   - `history/tasks/luc-1126-source-control-closure-classify-and-close-local-dirty-state-for-luc-405-luc-1123-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1122 continuation reconciliation (finish_successful_run_handoff)
+
 - Wake `finish_successful_run_handoff` processed as closure continuity verification and marked `done`.
 - Concrete action:
   - revalidated source-control closure lane evidence for `LUC-1119/LUC-1120/LUC-1121`,
@@ -11752,6 +11850,7 @@
   - no runtime, deploy, credentials, or product-scope mutation was introduced by this continuation heartbeat.
 
 ## 2026-05-31 LUC-1122 source-control closure for LUC-1119/LUC-1120/LUC-1121 dirty set
+
 - `LUC-1122 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1119-LUC-1120-LUC-1121` executed as a coordination-only closure lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Dirty-worktree baseline in this heartbeat:
@@ -11766,7 +11865,9 @@
   - `LUC-1122` closed as `done`.
 - Evidence:
   - `history/tasks/luc-1122-source-control-closure-classify-and-close-local-dirty-state-for-luc-1119-luc-1120-luc-1121-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1120 continuation reconciliation (finish_successful_run_handoff)
+
 - Wake `finish_successful_run_handoff` processed as a read-only continuity checkpoint and marked `done`.
 - Concrete action:
   - revalidated `LUC-1120` closure evidence packet against canonical context,
@@ -11779,6 +11880,7 @@
   - `.codex/context/PROJECT_STATE.md`
 
 ## 2026-05-31 LUC-1120 blocked triage closure for LUC-1119 classification lane
+
 - `LUC-1120 [Softwarehouse][Blocked Triage] Classify LUC-1119 and produce next legal action` executed as a blocker-resolution verification lane.
 - Wake `issue_blockers_resolved` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action:
@@ -11791,6 +11893,7 @@
   - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1121 state reconciliation for LUC-1119 disposition drift
+
 - `LUC-1121 [Softwarehouse][State Reconciliation] Correct LUC-1119 disposition drift` executed as a reconciliation-only lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action:
@@ -11805,6 +11908,7 @@
   - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1119 source-control closure for LUC-1068/LUC-1075 dirty set
+
 - `LUC-1119 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075` executed as a source-control hygiene lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Dirty-worktree baseline before edits:
@@ -11822,6 +11926,7 @@
   - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (finish_successful_run_handoff-2)
+
 - Wake `finish_successful_run_handoff` processed as read-only triage continuity and marked `done`.
 - Concrete action:
   - reran reconciliation across canonical `LUC-1075` task artifact and `LUC-1068`/`LUC-1065` evidence artifacts,
@@ -11836,6 +11941,7 @@
   - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1115 source-control closure for LUC-1068/LUC-1075/LUC-1112 dirty set
+
 - `LUC-1115 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075-LUC-1112` executed and closed as `done`.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Classification outcome:
@@ -11850,6 +11956,7 @@
   - `.codex/context/PROJECT_STATE.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (issue_reopened_via_comment)
+
 - Wake `issue_reopened_via_comment` processed from comment `103dfbf8-8f70-4a02-a9a4-bb03e7efb348` (`softwarehouse-blocked-triage-lane-starter:v2`) and marked `done`.
 - Concrete action:
   - reran read-only reconciliation of `LUC-1075` triage artifact with `LUC-1068` closure evidence and `LUC-1065` blocker evidence,
@@ -11864,6 +11971,7 @@
   - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (source_scoped_recovery_action)
+
 - Wake `source_scoped_recovery_action` processed as read-only triage continuity and marked `done`.
 - Concrete action:
   - reran reconciliation of canonical `LUC-1075`/`LUC-1068`/`LUC-1065` artifacts,
@@ -11878,6 +11986,7 @@
   - `.codex/context/PROJECT_STATE.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (finish_successful_run_handoff)
+
 - Wake `finish_successful_run_handoff` processed as read-only triage continuity and marked `done`.
 - Concrete action:
   - reran reconciliation of `LUC-1075` canonical task/context artifacts after run `e08c9005-7ce7-4dcf-9f10-e65477055618`,
@@ -11892,6 +12001,7 @@
   - `.codex/context/PROJECT_STATE.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (project_source_control_closure_needed)
+
 - Wake from comment `7b57401b-f243-49a4-aabf-1162cee1a1c5` processed as read-only source-control closure continuity and marked `done`.
 - Concrete action:
   - reviewed `LUC-1113` routed classification package for Soar dirty groups,
@@ -11907,6 +12017,7 @@
   - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1112 continuation reconciliation (finish_successful_run_handoff)
+
 - Wake `finish_successful_run_handoff` was processed as a read-only continuity checkpoint and is `done`.
 - Concrete action:
   - revalidated `LUC-1112` backlog-conversion artifacts against canonical context,
@@ -11919,6 +12030,7 @@
   - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1112 architecture backlog conversion refresh
+
 - `LUC-1112 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-31 and is `done`.
 - Wake `issue_assigned` was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action:
@@ -11938,6 +12050,7 @@
   - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1108 source-control closure classification
+
 - Classified local dirty set requested by `LUC-1108` as fully owned by `LUC-1105` continuity context/evidence artifacts.
 - Dirty paths at classification time:
   - `.codex/context/PROJECT_STATE.md`
@@ -11948,7 +12061,9 @@
 - Disposition: `done` for classification lane; no commit/push/deploy action executed in this heartbeat.
 - Evidence:
   - `history/tasks/luc-1108-source-control-closure-classify-and-close-luc-1105-context-evidence-dirty-set-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1105 continuation (finish_successful_run_handoff)
+
 - Executed one additional read-only continuity recheck after prior `done` sweep.
 - Canonical public endpoints remained healthy (`200` across API `/health`, API `/ready`, Web `/`, Web `/api/build-info`).
 - Build-info parity remained unchanged on `main` (`gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `metadataSource=github-branch`).
@@ -11956,7 +12071,9 @@
 - Evidence:
   - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
   - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1105 coolify production deploy health sweep
+
 - Executed one read-only public health sweep on canonical Soar production hosts after prior degraded (`503`) continuity evidence.
 - Captured source snapshot: `HEAD=a314b8742a2318f5fe22b0442ccc7f68ed67a54d`, `origin/main=6839cd6b8884e26eca735ce32cea98c1dadccfbe`.
 - Result: `https://api.soar.luckysparrow.ch/health`, `https://api.soar.luckysparrow.ch/ready`, `https://soar.luckysparrow.ch/`, and `https://soar.luckysparrow.ch/api/build-info` all returned `200`.
@@ -11965,7 +12082,9 @@
 - Evidence:
   - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
   - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
+
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - revalidated canonical triage artifacts for `LUC-1075` and closure evidence for `LUC-1068`,
@@ -11976,7 +12095,9 @@
 - Final disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1075 continuation [finish_successful_run_handoff]
+
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - revalidated `LUC-1075` canonical triage artifacts and source-of-truth entries,
@@ -11988,7 +12109,9 @@
 - Evidence:
   - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
   - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1075 [Softwarehouse][Blocked Triage] Classify LUC-1068 and produce next legal action
+
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - reviewed canonical `LUC-1068` task artifact and context closure notes,
@@ -12004,7 +12127,9 @@
   - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
   - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
   - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1068 [Soar][Source Control Closure] local dirty state classification for LUC-1065
+
 - Classified active dirty paths as fully scoped to `LUC-1065` continuity/evidence artifacts.
 - Verified no runtime/product/deploy file paths in the dirty set (`0`).
 - Recorded closure disposition as `done` for the source-control sidecar lane.
@@ -12012,6 +12137,7 @@
   - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`.
 
 ## 2026-05-31 LUC-1065 continuation (source_scoped_recovery_action)
+
 - Executed one additional read-only continuity sweep on canonical Soar production hosts.
 - Captured source snapshot: `HEAD=fe041ecf324f4dcbb5b587875e2338c73d032eab`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`.
 - Result unchanged: API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` all return `503`.
@@ -12021,6 +12147,7 @@
   2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
 
 ## 2026-05-31 LUC-1065 continuation (finish_successful_run_handoff)
+
 - Executed one additional read-only continuity diagnostic (`HEAD` probes) on canonical production endpoints.
 - Result unchanged: `/health`, `/ready`, web `/`, and `/api/build-info` all return `503`.
 - Verified failed-deploy diagnosis child lane artifact exists: `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`.
@@ -12030,6 +12157,7 @@
   2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
 
 ## 2026-05-31 LUC-1065 coolify production deploy health sweep
+
 - Executed one read-only public health sweep on canonical Soar production hosts.
 - Result: https://api.soar.luckysparrow.ch/health, .../ready, https://soar.luckysparrow.ch/, and /api/build-info all returned 503.
 - Disposition: blocked due to degraded production availability; no deploy/restart/rollback/env mutation performed.
@@ -12039,14 +12167,18 @@
   2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
 
 ## 2026-05-31 LUC-1033 continuation (source_scoped_recovery_action)
+
 - Revalidated local canonical evidence after wake payload reported `blocked`.
 - Status drift classified as stale: triage lane remains closed and evidence-backed.
 - Disposition reaffirmed: `LUC-962` remains `done`; continuation remains external (`LUC-973` Ops/Security protected readiness blocker path).
 
 ## 2026-05-31 LUC-1033 continuation (finish_successful_run_handoff)
+
 - Revalidated prior blocked-triage conclusion; no contradictory evidence found.
 - Disposition reaffirmed: `LUC-962` remains `done`; continuation remains external (`LUC-973` Ops/Security protected readiness blocker path).
+
 ## 2026-05-31 LUC-1033 blocked-triage classification
+
 - Classified `LUC-962` as `done` from canonical artifact + commit evidence.
 - Verified closure commit exists: `2dc983ced4a4c66e31e7f37264710c124955e57b` (scope-limited to expected regression test + task evidence file).
 - Confirmed downstream public deploy SHA parity already exists in `LUC-973`; remaining blocker is outside `LUC-962` (protected `/workers/ready` auth/readiness evidence path).
@@ -12068,11 +12200,11 @@
   - revalidated `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md` and `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`,
   - classified `LUC-919` as closed planning lane (`done`) with no contradictory reopen evidence,
   - confirmed only active blocker in this lineage remains `ARB-006` via `LUC-402` (`blocked_on_protected_inputs`) pending `ARB6-EV-001..008` issuance/execution.
-  Next legal action is fail-closed and explicit:
+    Next legal action is fail-closed and explicit:
   1. Delivery + Security/Test + Ops create/assign and run `ARB6-EV-001..008` child evidence lanes under `LUC-402`.
   2. Keep `LUC-919` closed unless canonical backlog or accepted decision-gate truth is superseded.
-  Evidence:
-  `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
+     Evidence:
+     `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `blocked`.
   Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action (read-only continuity checkpoint):
@@ -12083,8 +12215,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition remains fail-closed `blocked`; canonical availability blocker is unchanged and protected `/workers/ready` recheck is not actionable in this wake.
-  First-class unblock owner/action:
+    Disposition remains fail-closed `blocked`; canonical availability blocker is unchanged and protected `/workers/ready` recheck is not actionable in this wake.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12098,8 +12230,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition remains fail-closed `blocked`; canonical availability blocker is unchanged and no live continuation path exists in this wake.
-  First-class unblock owner/action:
+    Disposition remains fail-closed `blocked`; canonical availability blocker is unchanged and no live continuation path exists in this wake.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12109,8 +12241,8 @@
   - executed one canonical-host smoke recheck:
     `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: `API /health -> 503`, `API /ready -> 503`, `WEB / -> 503`, `WEB /api/build-info -> 503`, `API /workers/ready -> 503`.
-  Disposition remains fail-closed `blocked`; canonical runtime availability is still degraded in this window and protected authz proof remains unresolved.
-  First-class unblock owner/action:
+    Disposition remains fail-closed `blocked`; canonical runtime availability is still degraded in this window and protected authz proof remains unresolved.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12124,8 +12256,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition remains fail-closed `blocked`; runtime availability blocker remains active and protected `/workers/ready` recheck is not actionable in this wake.
-  First-class unblock owner/action:
+    Disposition remains fail-closed `blocked`; runtime availability blocker remains active and protected `/workers/ready` recheck is not actionable in this wake.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12139,8 +12271,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition remains fail-closed `blocked`; no live continuation path exists in this wake because runtime availability is still degraded and smoke auth artifacts are absent.
-  First-class unblock owner/action:
+    Disposition remains fail-closed `blocked`; no live continuation path exists in this wake because runtime availability is still degraded and smoke auth artifacts are absent.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner restore/confirm approved read-only smoke auth artifact path for this lane runtime.
   3. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12151,8 +12283,8 @@
   - executed one canonical-host smoke recheck:
     `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: `API /health -> 503`, `API /ready -> 503`, `WEB / -> 503`, `WEB /api/build-info -> 503`, `API /workers/ready -> 503`.
-  Disposition remains fail-closed `blocked`; canonical runtime availability is the active upstream blocker in this window, so protected authz proof remains unresolved.
-  Unblock owner/action:
+    Disposition remains fail-closed `blocked`; canonical runtime availability is the active upstream blocker in this window, so protected authz proof remains unresolved.
+    Unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12164,9 +12296,9 @@
   - reaffirmed ownership split:
     - `current`: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
     - `out_of_scope`: `scripts/buildObsidianVaultLayer.mjs`, `docs/obsidian/README.md`, `docs/obsidian/soar-vault-dashboard.md`, `docs/obsidian/docs-health-report.md`, `docs/obsidian/feature-index.md`, `docs/obsidian/proof-gap-register.md`, `docs/obsidian/route-action-map.md`.
-  Commit decision remains `no-commit` due to mixed ownership.
-  Evidence:
-  `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+      Commit decision remains `no-commit` due to mixed ownership.
+      Evidence:
+      `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
 
 - `LUC-997 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241` continuation wake (`issue_continuation_needed`) executed on 2026-05-31 and is `done`.
   Wake carried no pending comments (`0/0`) and remained in strict sidecar source-control closure scope.
@@ -12174,13 +12306,13 @@
   - recaptured dirty snapshot (`git status --short --branch`) and confirmed unchanged mixed set,
   - inspected active diffs across continuity/docs-generator paths,
   - reran targeted redaction scan over all dirty paths with no secret-value pattern hits.
-  Classification refresh:
+    Classification refresh:
   - `current`: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
   - `out_of_scope` for this sidecar lane: `scripts/buildObsidianVaultLayer.mjs`, `docs/obsidian/README.md`, `docs/obsidian/soar-vault-dashboard.md`, `docs/obsidian/docs-health-report.md`, `docs/obsidian/feature-index.md`, `docs/obsidian/proof-gap-register.md`, `docs/obsidian/route-action-map.md`,
   - `stale`: none detected.
-  Commit decision remains `no-commit` because mixed ownership persists.
-  Evidence:
-  `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+    Commit decision remains `no-commit` because mixed ownership persists.
+    Evidence:
+    `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
 
 - `LUC-997 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241` continuation wake (`issue_commented`) executed on 2026-05-31 and is `done`.
   Wake comment `eb951ca7-becd-4cb4-b679-3bdea046a12a` was acknowledged first and kept scope as local sidecar closure only while target `LUC-241` remains dependency-blocked.
@@ -12188,19 +12320,19 @@
   - reran dirty-state capture (`git status --short --branch`) and confirmed unchanged mixed set (`3` continuity files + `7` Obsidian/docs-generation files),
   - reran targeted redaction scan over dirty paths and found no secret-value pattern hits,
   - reaffirmed no-commit decision for this heartbeat due to mixed cross-lane ownership including `scripts/buildObsidianVaultLayer.mjs`.
-  Remaining dirty paths explicitly tracked:
-  `.codex/context/PROJECT_STATE.md`,
-  `.codex/context/TASK_BOARD.md`,
-  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
-  `docs/obsidian/README.md`,
-  `docs/obsidian/soar-vault-dashboard.md`,
-  `scripts/buildObsidianVaultLayer.mjs`,
-  `docs/obsidian/docs-health-report.md`,
-  `docs/obsidian/feature-index.md`,
-  `docs/obsidian/proof-gap-register.md`,
-  `docs/obsidian/route-action-map.md`.
-  Evidence:
-  `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+    Remaining dirty paths explicitly tracked:
+    `.codex/context/PROJECT_STATE.md`,
+    `.codex/context/TASK_BOARD.md`,
+    `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
+    `docs/obsidian/README.md`,
+    `docs/obsidian/soar-vault-dashboard.md`,
+    `scripts/buildObsidianVaultLayer.mjs`,
+    `docs/obsidian/docs-health-report.md`,
+    `docs/obsidian/feature-index.md`,
+    `docs/obsidian/proof-gap-register.md`,
+    `docs/obsidian/route-action-map.md`.
+    Evidence:
+    `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
 
 - `LUC-997 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241` heartbeat (`issue_assigned`) executed on 2026-05-31 and is `done`.
   Wake had no pending comments and required direct local source-control triage.
@@ -12219,12 +12351,12 @@
       `docs/obsidian/feature-index.md`,
       `docs/obsidian/proof-gap-register.md`,
       `docs/obsidian/route-action-map.md`.
-  Closure for this lane is classification-only: `not committed`, push `not needed`, deploy impact `none`.
-  Next owners:
+      Closure for this lane is classification-only: `not committed`, push `not needed`, deploy impact `none`.
+      Next owners:
   1. `LUC-241` owner closes the three continuity files.
   2. Obsidian/docs lane owner closes the seven-file docs-generation diff.
-  Evidence:
-  `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+     Evidence:
+     `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_continuation_needed`) executed on 2026-05-31 and is `blocked`.
   Wake carried no new approval/comment delta (`fallbackFetchNeeded=false`, comments `0/0`), so this heartbeat stayed on read-only continuity checks.
@@ -12232,10 +12364,10 @@
   - fresh fact at `2026-05-31T11:33:11.3613827+02:00`,
   - auth artifacts: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
   - canonical public probes remained `503` for `/health`, `/ready`, web `/`, and web `/api/build-info`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime recovery and explicit one-shot gate approval.
-  Explicit next review condition/time:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime recovery and explicit one-shot gate approval.
+    Explicit next review condition/time:
   - next review at `2026-05-31T13:00:00Z` or earlier only when canonical `200` recovery fact and/or explicit protected-rerun approval arrives.
-  Unblock owner/action unchanged:
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12246,10 +12378,10 @@
   - produced a fresh operational fact after required threshold at `2026-05-31T11:31:52.0447924+02:00`,
   - auth artifacts: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
   - canonical public probes remained `503` for `/health`, `/ready`, web `/`, and web `/api/build-info`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime availability recovers and explicit one-shot gate approval exists.
-  Explicit next review condition/time:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime availability recovers and explicit one-shot gate approval exists.
+    Explicit next review condition/time:
   - next review at `2026-05-31T12:30:00Z` or earlier only when canonical `200` recovery fact and/or explicit protected-rerun approval arrives.
-  Unblock owner/action unchanged:
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12264,8 +12396,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability.
-  Unblock owner/action unchanged:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability.
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12280,8 +12412,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability.
-  Unblock owner/action unchanged:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability.
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12292,8 +12424,8 @@
   - executed one canonical-host smoke recheck at `2026-05-31T04:48:53.5569898+02:00`:
     `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: all checks returned `503` (`API /health`, `API /ready`, `WEB /`, `WEB /api/build-info`, `API /workers/ready`).
-  Disposition stays fail-closed `blocked`; this wake evidence indicates upstream runtime availability failure in this window, so protected authz verification was not reachable.
-  Unblock owner/action unchanged:
+    Disposition stays fail-closed `blocked`; this wake evidence indicates upstream runtime availability failure in this window, so protected authz verification was not reachable.
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12308,8 +12440,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability and missing auth artifact class in runner context.
-  Unblock owner/action unchanged:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable in this wake due to ongoing runtime unavailability and missing auth artifact class in runner context.
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
   3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
@@ -12324,8 +12456,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime availability recovers and fresh gate approval is issued.
-  Unblock owner/action unchanged:
+    Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime availability recovers and fresh gate approval is issued.
+    Unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
@@ -12335,8 +12467,8 @@
   - executed one canonical-host smoke recheck at `2026-05-31T04:20:22.8404262+02:00`:
     `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: all checks returned `503` (`API /health`, `API /ready`, `WEB /`, `WEB /api/build-info`, `API /workers/ready`).
-  Disposition stays fail-closed `blocked`; this wake evidence indicates upstream runtime availability failure in this window, so protected authz verification was not reachable.
-  Unblock owner/action:
+    Disposition stays fail-closed `blocked`; this wake evidence indicates upstream runtime availability failure in this window, so protected authz verification was not reachable.
+    Unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
   2. After availability recovery and fresh explicit approval, Ops Release Lead executes one new read-only protected `/workers/ready` recheck and publishes redaction-safe proof.
 
@@ -12346,12 +12478,12 @@
   - captured local dirty-worktree baseline (`git status --short`),
   - classified each dirty path into one of the requested lanes (`LUC-959`, `LUC-963`, `LUC-965`),
   - confirmed no unrelated runtime mutation and no secret-like artifacts in the classified set.
-  Closure disposition:
+    Closure disposition:
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-966-source-control-closure-classify-and-close-local-dirty-state-for-luc-959-luc-963-luc-965-2026-05-31-task.md`.
+    Evidence:
+    `history/tasks/luc-966-source-control-closure-classify-and-close-local-dirty-state-for-luc-959-luc-963-luc-965-2026-05-31-task.md`.
 
 - `LUC-965 [Soar][Non-DCA Closure Coordination]` continuation heartbeat (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
   Wake `source_scoped_recovery_action` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12359,12 +12491,12 @@
   - converted residual non-DCA gaps into explicit closure lanes with owner/proof/unblock contracts,
   - fixed execution order to `SOAR-OPERATIONS-001` -> `SOAR-DATA-001` -> `SOAR-ASSISTANT-AI-001`,
   - kept this heartbeat in coordination scope only (no runtime/deploy mutation).
-  Closure disposition:
+    Closure disposition:
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-965-non-dca-closure-lane-delegation-2026-05-31-task.md`.
+    Evidence:
+    `history/tasks/luc-965-non-dca-closure-lane-delegation-2026-05-31-task.md`.
 
 - `LUC-965 [Soar][Non-DCA Functional Research]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-31 and is `done`.
   Wake `finish_successful_run_handoff` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12375,12 +12507,12 @@
     1. `SOAR-OPERATIONS-001` (`P0`, `PARTIAL`) - protected release evidence chain still open,
     2. `SOAR-DATA-001` (`P0`, `PARTIALLY VERIFIED`) - protected production migration/restore freshness not refreshed,
     3. `SOAR-ASSISTANT-AI-001` (`P1`, `PARTIAL`) - no audited hot-path model runtime/red-team packet.
-  Closure disposition:
+       Closure disposition:
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-965-non-dca-functional-architecture-gap-map-2026-05-31-task.md`.
+    Evidence:
+    `history/tasks/luc-965-non-dca-functional-architecture-gap-map-2026-05-31-task.md`.
 
 - `LUC-965 [Soar][Code Research] reszta badan kodu` heartbeat executed on 2026-05-31 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12388,12 +12520,12 @@
   - executed repository static code-research scan using the latest available project index,
   - generated `history/audits/v1-static-issue-scan-2026-05-31.md` and `history/audits/v1-static-issue-scan-2026-05-31.json`,
   - scan result recorded `Findings: 0` and `By severity: {}`.
-  Closure disposition:
+    Closure disposition:
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-965-reszta-badan-kodu-2026-05-31-task.md`.
+    Evidence:
+    `history/tasks/luc-965-reszta-badan-kodu-2026-05-31-task.md`.
 
 - `LUC-923 [Soar][Source Control Closure]` continuation wake (`issue_commented`) executed on 2026-05-30 and is `done`.
   Wake comment `e3a98d61-dd7c-4402-b531-c7cd8a70b2c2` was acknowledged first and constrained scope to local source-control closure only while `LUC-402` protected delivery remains dependency-blocked.
@@ -12401,12 +12533,12 @@
   - reran local dirty-state capture via `git status --short --branch`, `git diff --name-only`, and `git ls-files --others --exclude-standard`,
   - reclassified dirty scope as `state/control=2`, `planning-evidence=1`, `task-evidence=3`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
   - confirmed no runtime/product/deploy mutation and preserved active cross-issue evidence-lane dirty files.
-  Closure disposition:
+    Closure disposition:
   - commit: `not committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-923-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
+    Evidence:
+    `history/tasks/luc-923-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
 
 - `LUC-923 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12414,14 +12546,14 @@
   - captured local dirty set via `git status --short --branch` and `git diff --name-only`,
   - classified current dirty scope as `state/control=2`, `planning-evidence=1`, `task-evidence=2`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
   - confirmed sidecar scope only: no runtime/product/deploy mutation.
-  Closure disposition:
+    Closure disposition:
   - commit: `not committed` (existing dirty set belongs to prior active evidence lanes and was preserved without revert/overwrite)
   - push: `not needed`
   - deploy impact: `none`
-  Residual risk unchanged:
+    Residual risk unchanged:
   1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this source-control sidecar closure.
-  Evidence:
-  `history/tasks/luc-923-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
+     Evidence:
+     `history/tasks/luc-923-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` source-scoped recovery heartbeat executed on 2026-05-31 and is `blocked`.
   Inline wake had no new comments/facts (`pending 0/0`), so protected probe path stayed non-actionable for this run.
@@ -12433,8 +12565,8 @@
     `https://api.soar.luckysparrow.ch/ready -> 503`,
     `https://soar.luckysparrow.ch/ -> 503`,
     `https://soar.luckysparrow.ch/api/build-info -> 503`.
-  Disposition remains fail-closed `blocked`.
-  First-class blockers / unblock owner-action:
+    Disposition remains fail-closed `blocked`.
+    First-class blockers / unblock owner-action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note.
   2. After availability restoration and fresh board approval, Ops executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe proof.
 
@@ -12443,8 +12575,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T22:24:43.4415798+02:00` (secret-safe booleans only),
   - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12454,8 +12586,8 @@
   - executed one canonical-host command at `2026-05-30T22:23:04.8829677+02:00`:
     `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: public checks passed (`/health`, `/ready`, `/`, `/api/build-info`), protected endpoint failed (`GET /workers/ready -> 401`).
-  Blocker remains authz-boundary on protected worker readiness endpoint for current smoke principal/session path.
-  Unblock owner/action unchanged:
+    Blocker remains authz-boundary on protected worker readiness endpoint for current smoke principal/session path.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12465,29 +12597,29 @@
   - revalidated architecture-repair backlog control map against canonical execution lineage,
   - confirmed decision-gate truth unchanged: `ARB-001` remains gated by accepted `DEC-ARB-001` and `ARB-002` remains gated by accepted `DEC-ARB-002`,
   - confirmed active blocker truth unchanged: only `ARB-006` (`LUC-402`) remains blocked on protected-input ownership and `ARB6-EV-001..008` issuance.
-  Evidence:
-  `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`,
-  `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
+    Evidence:
+    `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`,
+    `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
 - `LUC-919 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-30 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - refreshed architecture-repair backlog control map with canonical execution lineage,
   - synchronized decision-gate truth: `ARB-001` remains `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
   - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains the only active ARB blocker pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
-  Evidence:
-  `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`,
-  `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
+    Evidence:
+    `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`,
+    `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
 - `LUC-871 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - captured local dirty state via `git status --short` and `git diff --name-only`,
   - classified current dirty scope as `state/control=2`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
   - closed the full local classified set with one source-control evidence commit.
-  Closure disposition:
+    Closure disposition:
   - commit: `completed` (local closure commit for `LUC-871`)
   - push: `not needed`
   - deploy impact: `none`
-  Residual risk:
+    Residual risk:
   1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this source-control sidecar closure.
 
 - `LUC-835 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
@@ -12496,11 +12628,11 @@
   - captured local dirty state via `git status --short` and `git diff --name-only`,
   - classified current dirty scope as `state/control=4`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
   - closed the full local classified set with one source-control evidence commit.
-  Closure disposition:
+    Closure disposition:
   - commit: `completed` (local closure commit for `LUC-835`)
   - push: `not needed`
   - deploy impact: `none`
-  Residual risk:
+    Residual risk:
   1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this source-control sidecar closure.
 
 - `LUC-832 [Soar] [Known State Refresh]` continuation heartbeat (`source_scoped_recovery_action`) executed on 2026-05-30 and is `done`.
@@ -12508,112 +12640,112 @@
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-832 [Soar] [Known State Refresh]` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-30 and is `done`.
   Wake `issue_continuation_needed` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-832 [Soar] [Known State Refresh]` continuation heartbeat (`issue_commented`) executed on 2026-05-30 and is `done`.
   Wake comment `c17bdab1-59ca-42a7-9175-ea834172093d` (`softwarehouse-known-state-refresh-wakeup:v1`) was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-832 [Soar] [Known State Refresh]` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - revalidated canonical known-state set (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
   - rechecked architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed ownership remains on `LUC-47`.
-  Next repair lanes published:
+    Next repair lanes published:
   1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
   2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` evidence.
   3. `GAP-L45-003` QA lane: deterministic repeatable smoke-e2e on active release SHA.
   4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-812 [Soar] [Known State Refresh]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Handoff reconciliation result:
+    Handoff reconciliation result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator),
   - no new local repair lane beyond already published chain (`LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004`).
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+    Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-812 [Soar] [Known State Refresh]` continuation heartbeat (`issue_commented`) executed on 2026-05-30 and is `done`.
   Wake comment `431c6c8f-0273-4e32-80f7-d219ed2a70c2` (`softwarehouse-known-state-refresh-wakeup:v1`) was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-812 [Soar] [Known State Refresh]` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - revalidated canonical known-state set (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
   - rechecked architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed ownership remains on `LUC-47`.
-  Next repair lanes published:
+    Next repair lanes published:
   1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
   2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` evidence.
   3. `GAP-L45-003` QA lane: deterministic repeatable smoke-e2e on active release SHA.
   4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-810 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Baseline note before edits:
   - observed dirty files: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`, `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
   - ownership assumption: completed `LUC-807` planning/state evidence; no runtime ownership overlap.
-  Concrete action:
+    Concrete action:
   - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`state/control=2`, `planning-evidence=1`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`),
   - created task contract artifact for this closure heartbeat,
   - committed the full classified dirty set as one reversible source-control closure commit.
-  Verification:
+    Verification:
   - `git status --short`
   - `git diff -- .codex/context/PROJECT_STATE.md`
   - `git diff -- .codex/context/TASK_BOARD.md`
@@ -12625,7 +12757,7 @@
   - revalidated `LUC-807` artifact/state parity across plan/task/board/project-state files,
   - confirmed decision-gate truth remains unchanged (`DEC-ARB-001` for `ARB-001`, `DEC-ARB-002` for `ARB-002`),
   - confirmed active blocker truth remains unchanged: `ARB-006` (`LUC-402`) is the only active ARB blocker (`protected_input_gate`) pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
-  Verification:
+    Verification:
   - `rg -n "LUC-807|finish_successful_run_handoff|DEC-ARB-001|DEC-ARB-002|ARB-006" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`
 
 - `LUC-807 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-30 and is `done`.
@@ -12634,9 +12766,9 @@
   - refreshed architecture-repair backlog control map with canonical execution lineage,
   - synchronized decision-gate truth: `ARB-001` remains `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
   - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains the only active ARB blocker pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
-  Evidence:
-  `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`,
-  `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
+    Evidence:
+    `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`,
+    `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
 
 - `LUC-785 [Soar][Source Control Closure]` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12644,62 +12776,62 @@
   - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified all dirty entries by lane ownership and runtime risk,
   - closed the full docs/state/evidence dirty set with one local source-control closure commit.
-  Classification:
+    Classification:
   - `state/control=4` (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`),
   - `task-evidence=1` (`history/tasks/luc-784-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`),
   - `runtime/product code=0`,
   - `LUC-402 scoped dirty files=0`.
-  Scope stayed coordination/docs/evidence only (`deploy impact=none`, `push=not needed`).
-  Evidence:
-  `history/tasks/luc-785-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
+    Scope stayed coordination/docs/evidence only (`deploy impact=none`, `push=not needed`).
+    Evidence:
+    `history/tasks/luc-785-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
 
 - `LUC-784 [Soar] [Known State Refresh]` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - reran known-state continuity recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Reconciliation result:
+    Reconciliation result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator),
   - no new local repair lane beyond already published chain (`LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004`).
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+    Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-784 [Soar] [Known State Refresh]` continuation wake (`issue_commented`) executed on 2026-05-30 and is `done`.
   Wake comment `0597d0e2-ac02-49dc-8a28-5b623ccd0e82` (`softwarehouse-known-state-refresh-wakeup:v1`) was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`).
   Concrete action:
   - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
   - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
-  Next repair lanes unchanged:
+    Next repair lanes unchanged:
   1. `LUC-47` ops packet,
   2. `GAP-L45-006` source-control closure packet,
   3. `GAP-L45-003` deterministic QA repeatable smoke,
   4. `GAP-L45-004` protected read-only security packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 
 - `LUC-784 [Soar] [Known State Refresh]` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
   - revalidated canonical known-state set (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
   - rechecked architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
-  Evidence delta result:
+    Evidence delta result:
   - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
   - no blocker-routing drift; fail-closed ownership remains on `LUC-47`.
-  Next repair lanes published:
+    Next repair lanes published:
   1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
   2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` evidence.
   3. `GAP-L45-003` QA lane: deterministic repeatable smoke-e2e on active release SHA.
   4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange packet.
-  Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
+     Scope stayed docs/state/evidence only (`runtime/product code=0`, `deploy impact=none`).
 - `LUC-777 [Soar][Source Control Closure]` handoff heartbeat (`finish_successful_run_handoff`) executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
   Concrete action:
   - reran local source-control validation (`git status --short --branch`, `git log -1 --oneline`),
   - confirmed no dirty tracked set in this heartbeat (`main...origin/main [ahead 61]`),
   - confirmed latest closure evidence commit remains `7b2268b5`.
-  Closure disposition:
+    Closure disposition:
   - commit: `not needed` (no dirty set)
   - push: `not needed`
   - deploy impact: `none`
@@ -12710,11 +12842,11 @@
   - reran local source-control check (`git status --short --branch`),
   - confirmed clean worktree (`main...origin/main [ahead 60]`) with no tracked or staged dirty files,
   - revalidated closure evidence document continuity for `LUC-777`.
-  Closure disposition:
+    Closure disposition:
   - commit: `not needed` (no new dirty set)
   - push: `not needed`
   - deploy impact: `none`
-  Residual blocker unchanged:
+    Residual blocker unchanged:
   1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar closure issue.
 
 - `LUC-777 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
@@ -12723,11 +12855,11 @@
   - captured local source-control evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`state/control=4`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`),
   - closed full local dirty set with one source-control closure commit.
-  Closure disposition:
+    Closure disposition:
   - commit: `a2e79cc9` (`chore(evidence): close docs-state dirty set for LUC-777 LUC-774 LUC-402`)
   - push: `not needed`
   - deploy impact: `none`
-  Residual risk unchanged:
+    Residual risk unchanged:
   1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local source-control sidecar lane.
 
 - `LUC-774 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-30 and is `blocked`.
@@ -12735,8 +12867,8 @@
   Concrete action:
   - rechecked blocker/state drift across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
   - rechecked architecture-awareness continuity: `docs/graphs/architecture-awareness.json` generated `2026-05-29T21:57:07.511Z`; status report continuity unchanged (`inferred test gaps=2056`, `inferred docs gaps=798`, `disconnected entities=0`).
-  Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
-  Unblock owner/action unchanged:
+    Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
+    Unblock owner/action unchanged:
   1. `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
 
 - `LUC-774 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked` heartbeat executed on 2026-05-30 and is `blocked`.
@@ -12744,8 +12876,8 @@
   Concrete action:
   - rechecked blocker/state drift across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
   - rechecked architecture-awareness baseline: `docs/graphs/architecture-awareness.json` generated `2026-05-29T21:57:07.511Z`; status report continuity unchanged (`inferred test gaps=2056`, `inferred docs gaps=798`, `disconnected entities=0`).
-  Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
-  Unblock owner/action unchanged:
+    Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
+    Unblock owner/action unchanged:
   1. `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` source-scoped recovery heartbeat executed on 2026-05-30 and is `blocked`.
@@ -12753,8 +12885,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T12:44:54.2475403+02:00` (secret-safe booleans only),
   - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12763,8 +12895,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T06:33:18.7574189+02:00` (secret-safe booleans only),
   - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12774,8 +12906,8 @@
   - executed one canonical-host command at `2026-05-30T06:31:39.3479927+02:00`:
     `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: public checks passed (`/health`, `/ready`, `/`, `/api/build-info`), protected endpoint failed (`GET /workers/ready -> 401`).
-  Blocker remains authz-boundary on protected worker readiness endpoint for current smoke principal/session path.
-  Unblock owner/action unchanged:
+    Blocker remains authz-boundary on protected worker readiness endpoint for current smoke principal/session path.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12784,8 +12916,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T00:56:14.1456890+02:00` (secret-safe booleans only),
   - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12795,11 +12927,11 @@
   - reran local source-control checks (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - confirmed clean worktree (`main...origin/main [ahead 56]`) with no tracked/staged dirty set,
   - classified dirty groups as empty (`current=none`, `stale=none`, `out-of-scope=none`, `runtime/product code=0`).
-  Closure disposition:
+    Closure disposition:
   - commit: `not needed` (no dirty set)
   - push: `not needed`
   - deploy impact: `none`
-  Next owner/action unchanged:
+    Next owner/action unchanged:
   1. `LUC-402` protected-input unblock owners continue dependency closure outside this sidecar lane.
 
 - `LUC-762 [Soar][Source Control Closure]` local dirty-state classification heartbeat executed on 2026-05-30 and is `done`.
@@ -12811,8 +12943,8 @@
     `.codex/context/TASK_BOARD.md`,
     `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
   - confirmed `LUC-402` scoped dirty files in current set: `0`.
-  Closure disposition: `not committed` for this sidecar lane because current dirty ownership belongs to active `LUC-241` evidence/state continuity.
-  Next owner/action:
+    Closure disposition: `not committed` for this sidecar lane because current dirty ownership belongs to active `LUC-241` evidence/state continuity.
+    Next owner/action:
   1. `LUC-241` lane owner commits or explicitly supersedes/reverts the three dirty files to restore clean worktree.
   2. `LUC-402` protected-input unblock owners continue dependency closure outside this sidecar lane.
 
@@ -12821,8 +12953,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T00:50:58.0927570+02:00` (secret-safe booleans only),
   - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12832,8 +12964,8 @@
   - executed one canonical-host command at `2026-05-30T00:49:30.2107738+02:00`:
     `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: public checks passed (`/health`, `/ready`, `/`, `/api/build-info`), protected endpoint failed (`GET /workers/ready -> 401`).
-  Blocker remains authz-boundary on protected worker readiness endpoint for the currently effective smoke principal/session.
-  Unblock owner/action:
+    Blocker remains authz-boundary on protected worker readiness endpoint for the currently effective smoke principal/session.
+    Unblock owner/action:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12842,8 +12974,8 @@
   Concrete action:
   - ran one read-only auth-presence checkpoint at `2026-05-30T00:28:51.4419651+02:00` (secret-safe booleans only),
   - observed no active auth/session env artifact in this runner: `SMOKE_AUTH_TOKEN=False`, `SMOKE_AUTH_EMAIL=False`, `SMOKE_AUTH_PASSWORD=False`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  Disposition remains fail-closed `blocked`; unblock chain unchanged.
-  Unblock owner/action unchanged:
+    Disposition remains fail-closed `blocked`; unblock chain unchanged.
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12853,12 +12985,12 @@
   - reran local source-control checks (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - confirmed clean worktree (`main...origin/main [ahead 55]`) and no staged scope,
   - classified current checkpoint groups as empty (`current=none`, `stale=none`, `out-of-scope=none`, `runtime/product code=0`).
-  Disposition:
+    Disposition:
   - commit: `not needed` (no dirty set)
   - push: `not needed`
   - deploy impact: `none`.
-  Evidence:
-  `history/tasks/luc-755-source-control-closure-source-scoped-recovery-recheck-2026-05-30-task.md`.
+    Evidence:
+    `history/tasks/luc-755-source-control-closure-source-scoped-recovery-recheck-2026-05-30-task.md`.
 
 - `LUC-755 [Soar][Source Control Closure]` finish-successful-run handoff verification executed on 2026-05-30 and remains `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12866,7 +12998,7 @@
   - revalidated post-closure repository state for commit `ae1aa9c9`,
   - confirmed clean working tree (`git status --short --branch` => `main...origin/main [ahead 54]`),
   - confirmed closure commit scope remains docs/history/context only and still satisfies sidecar source-control closure contract.
-  Disposition unchanged:
+    Disposition unchanged:
   - commit: `completed` (`ae1aa9c9`)
   - push: `not needed`
   - deploy impact: `none`.
@@ -12878,11 +13010,11 @@
   - classified dirty scope as non-runtime and outside `LUC-402` implementation lane (`architecture-evidence/generated-docs=4`, `state/control=2`, `task-evidence=1`, `runtime/product code=0`),
   - ran targeted redaction scan over dirty files (no secret-pattern match),
   - closed the full docs/history/context dirty set with one local source-control closure commit and recorded explicit closure disposition.
-  Residual risk unchanged:
+    Residual risk unchanged:
   1. dirty set remains generated architecture-awareness doc scope.
   2. parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
-  Evidence:
-  `history/tasks/luc-755-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+     Evidence:
+     `history/tasks/luc-755-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-742 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12890,11 +13022,11 @@
   - captured local dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified dirty scope as non-runtime and not owned by `LUC-402` implementation (`state/control=2`, `task-evidence=1`, `runtime/product code=0`),
   - preserved unrelated dirty state without revert/overwrite and recorded explicit closure disposition.
-  Residual risk unchanged:
+    Residual risk unchanged:
   1. dirty set remains tied to `LUC-241` state/evidence lane.
   2. parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
-  Evidence:
-  `history/tasks/luc-742-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+     Evidence:
+     `history/tasks/luc-742-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-732 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12902,9 +13034,9 @@
   - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified dirty scope as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
   - recorded explicit closure disposition for this sidecar lane.
-  Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
-  Evidence:
-  `history/tasks/luc-732-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
+    Evidence:
+    `history/tasks/luc-732-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-709 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12913,13 +13045,13 @@
   - classified dirty scope as non-runtime (`state/control=2`, `planning-evidence=1`, `task-evidence=1`, `runtime/product code=0`),
   - ran targeted redaction scan over dirty files (no secret-pattern match),
   - closed the full local dirty set with one source-control closure commit.
-  Commit scope:
-  `.codex/context/PROJECT_STATE.md`,
-  `.codex/context/TASK_BOARD.md`,
-  `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`,
-  `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`,
-  `history/tasks/luc-709-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
-  Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
+    Commit scope:
+    `.codex/context/PROJECT_STATE.md`,
+    `.codex/context/TASK_BOARD.md`,
+    `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`,
+    `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`,
+    `history/tasks/luc-709-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
 
 - `LUC-705 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12927,7 +13059,7 @@
   - revalidated `LUC-705` artifact/state parity across plan/task/board/project-state files,
   - confirmed decision-gate truth remains unchanged (`DEC-ARB-001` for `ARB-001`, `DEC-ARB-002` for `ARB-002`),
   - confirmed active blocker truth remains unchanged: `ARB-006` (`LUC-402`) is the only active ARB blocker (`protected_input_gate`) pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
-  Verification:
+    Verification:
   - `rg -n "LUC-705|finish_successful_run_handoff|DEC-ARB-001|DEC-ARB-002|ARB-006" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`
 
 - `LUC-705 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-29 and is `done`.
@@ -12936,16 +13068,16 @@
   - refreshed architecture-repair backlog control map with canonical execution lineage,
   - synchronized decision-gate truth: `ARB-001` is `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
   - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains the only active ARB blocker pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
-  Evidence:
-  `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`,
-  `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
+    Evidence:
+    `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`,
+    `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_continuation_needed`) executed on 2026-05-29 and is `blocked`.
   Wake carried no new comments/facts (`pending 0/0`), so no new protected probe was actionable after the previously approved and already-executed one-time recheck.
   Heartbeat action:
   - enforced no-repeat protected-probe rule for `/workers/ready` in absence of a fresh owner-provided auth/session fact,
   - preserved unchanged unblock chain and owner/action.
-  Unblock owner/action unchanged:
+    Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12955,8 +13087,8 @@
   - executed one canonical-host command at `2026-05-29T22:18:41.2907995+02:00`:
     `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
   - outcome: public checks passed (`/health`, `/ready`, `/`, `/api/build-info`), protected endpoint failed (`GET /workers/ready -> 401`).
-  Blocker remains authz-boundary for the approved smoke principal/session on protected worker-readiness endpoint.
-  Unblock owner/action:
+    Blocker remains authz-boundary for the approved smoke principal/session on protected worker-readiness endpoint.
+    Unblock owner/action:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
@@ -12966,7 +13098,7 @@
   Heartbeat action:
   - enforced fail-closed execution boundary (no protected recheck in this run),
   - preserved explicit unblock chain and owner handoff.
-  Unblock owner/action:
+    Unblock owner/action:
   1. `local-board` accepts and publishes the approval/session fact in `LUC-686`.
   2. Ops Release Lead runs exactly one read-only canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe proof.
 
@@ -12984,7 +13116,7 @@
   - confirmed docs/history/evidence/context-only scope with zero runtime/product code impact,
   - ran targeted redaction scan over dirty files (no secret values found),
   - completed one local source-control closure commit for the full docs/evidence/state dirty set.
-  Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this sidecar lane.
+    Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this sidecar lane.
 
 - `LUC-668 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -12992,8 +13124,8 @@
   - captured local dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified current dirty set as non-runtime (`state/control=2`, `task-evidence=1`, `release-artifact-evidence=2`, `runtime/product code=0`),
   - published closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
-  Evidence:
-  `history/tasks/luc-668-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-668-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-660 [Soar][Source Control Closure]` continuation heartbeat (`issue_commented`) executed on 2026-05-29 and is `done`.
   Wake comment `e32e1895-c2f3-49cd-b823-305b53087e50` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
@@ -13001,12 +13133,12 @@
   - reran local closure checks (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
   - reconfirmed dirty scope is docs/state/release/task evidence only (`state/control=2`, `release-evidence=2`, `task-evidence=2`, `runtime/product code=0`),
   - closed docs-only cross-issue dirty set with one operational evidence commit for `LUC-660`, `LUC-657`, `LUC-405`.
-  Disposition:
+    Disposition:
   - commit: `committed`
   - push: `not needed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-660 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13014,8 +13146,8 @@
   - reran local dirty-state verification (`git status --short`, `git diff --name-only`),
   - classified current dirty set as state/release/task evidence only (`state/control=2`, `release-evidence=2`, `task-evidence=1`, `runtime/product code=0`),
   - published closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
-  Evidence:
-  `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 - `LUC-657 [Soar][ARB-006][Security]` source-scoped recovery heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Continuation action:
@@ -13024,9 +13156,9 @@
   - preserved exact unblock trigger for parent `LUC-405`:
     1. Auth credential owner provides fresh valid artifact matching approved class.
     2. Ops Release Lead runs one canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe proof.
-  Evidence:
-  `.codex/context/TASK_BOARD.md`,
-  `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
+       Evidence:
+       `.codex/context/TASK_BOARD.md`,
+       `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
 
 - `LUC-657 [Soar][ARB-006][Security]` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13035,11 +13167,11 @@
     API-authenticated session, `ADMIN` role, ops-network boundary, read-only readiness use only;
   - published explicit rejection criteria (invalid/expired/unaccepted artifact, non-admin/non-ops path, scope widening);
   - confirmed redaction posture (no secret values in files/comments/artifacts/logs).
-  Remaining blocker is operational, not policy: a fresh valid approved artifact still must be provided and proven via one canonical-host protected recheck.
-  Evidence:
-  `history/releases/luc-657-arb-006-security-approval-read-only-principal-session-2026-05-29.md`,
-  `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`,
-  `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
+    Remaining blocker is operational, not policy: a fresh valid approved artifact still must be provided and proven via one canonical-host protected recheck.
+    Evidence:
+    `history/releases/luc-657-arb-006-security-approval-read-only-principal-session-2026-05-29.md`,
+    `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`,
+    `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
 
 - `LUC-386 [Soar][ARB-002]` source-scoped recovery heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13047,22 +13179,22 @@
   - wake metadata flagged `blocked`,
   - local scope and canonical records confirm prior closure for scaffold-only mobile docs/registry work,
   - reopen remains fail-closed behind `DEC-ARB-002` (Product/CTO-approved mobile runtime activation).
-  Final disposition: `done` (no valid unblock action in current gate state).
-  Evidence:
-  `.codex/context/TASK_BOARD.md`,
-  `.codex/context/PROJECT_STATE.md`.
+    Final disposition: `done` (no valid unblock action in current gate state).
+    Evidence:
+    `.codex/context/TASK_BOARD.md`,
+    `.codex/context/PROJECT_STATE.md`.
 
 - `LUC-644 [Soar][Source Control Closure]` source-scoped recovery heartbeat executed on 2026-05-29 and remains `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
   Consistency resolution in this heartbeat:
   - wake metadata flagged the issue as `blocked`,
   - continuation summary and local closure evidence confirm closed state.
-  Revalidation:
+    Revalidation:
   - `git status --short` -> clean,
   - `git log --oneline -n 5` -> confirms closure lineage includes `2bc01123`, `7d21146f`, `3a61a0c1`.
-  Final disposition: `done` (no reopen trigger detected).
-  Evidence:
-  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Final disposition: `done` (no reopen trigger detected).
+    Evidence:
+    `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake payload consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
@@ -13070,12 +13202,12 @@
   - revalidated clean local worktree (`git status --short`),
   - confirmed closure lineage in local git history (`git log --oneline -n 3`),
   - verified latest continuation commit scope (`git show --name-only -n 1 7d21146f`) is evidence/state-only.
-  Closure disposition unchanged:
+    Closure disposition unchanged:
   - commit closure already recorded (`2bc01123`, `7d21146f`)
   - push: `not performed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-29 and remains `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
@@ -13083,16 +13215,16 @@
   - revalidated local post-closure source-control state (`git status --short`, `git diff --name-only`) -> clean,
   - reconciled continuation-summary touched-routes drift with current worktree,
   - rechecked closure commit scope via `git show --name-only -n 1 2bc01123` (docs/state/evidence only).
-  Scope reconciliation:
+    Scope reconciliation:
   - no local dirty/runtime entries for `server/workers/frontend`, `.github/workflows/ci.yml`,
     `scripts/build-architecture-awareness-index.mjs`, `scripts/check-two-project-readiness.mjs`,
     `scripts/run-live-run-janitor.mjs`.
-  Closure disposition remains:
+    Closure disposition remains:
   - commit: `already closed` (`2bc01123`)
   - push: `not performed`
   - deploy impact: `none`
-  Evidence:
-  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-644 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13100,8 +13232,8 @@
   - reran dirty-state verification (`git status --short`, `git diff --name-only`),
   - confirmed current dirty set is state/control + task-evidence only (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
   - published source-control closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
-  Evidence:
-  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`, post-issue-assigned reconciliation) executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13110,8 +13242,8 @@
   - dirty classification unchanged (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
   - no local dirty/runtime entries for `server/workers/frontend`, `.github/workflows/ci.yml`, `scripts/build-architecture-awareness-index.mjs`, `scripts/check-two-project-readiness.mjs`, `scripts/run-live-run-janitor.mjs`,
   - closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
-  Evidence:
-  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`issue_assigned`, `softwarehouse-local-repair-lane-starter:v1`) executed on 2026-05-29 and is `done`.
   Wake comment `21cae26c-1515-4ea8-85f7-686eb6fffb2b` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
@@ -13119,8 +13251,8 @@
   Revalidation result:
   - dirty classification unchanged (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
   - closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
-  Evidence:
-  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13129,9 +13261,9 @@
   - no `server/workers/frontend` change in `LUC-636` lane,
   - no `.github/workflows/ci.yml` change in `LUC-636` lane,
   - lane remains state/evidence-only (`state/control=4`, `task-evidence=2`, `runtime/product code=0`).
-  Closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
-  Evidence:
-  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
+    Evidence:
+    `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`issue_commented`) executed on 2026-05-29 and is `done`.
   Wake comment `d0f0eb04-06bd-4fd0-bf36-1a8f3fcb7bc4` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
@@ -13139,8 +13271,8 @@
   Revalidation result:
   - dirty classification remains non-runtime (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
   - closure disposition stays `commit=not committed`, `push=not needed`, `deploy impact=none`.
-  Evidence:
-  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-636 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13148,11 +13280,11 @@
   - classified current local dirty state for `LUC-402` sidecar continuity,
   - inspected dirty tracked diffs and confirmed drift is docs/state/task-evidence only (`state/control=4`, `task-evidence=1`, `runtime/product code=0`),
   - published explicit closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
-  Residual risk:
+    Residual risk:
   1. Existing dirty state remains and should be intentionally closed by owner of `LUC-633` artifacts before release mutation work.
   2. Parent protected-delivery flow for `LUC-402` remains blocked on protected-input owners and child execution issuance.
-  Evidence:
-  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+     Evidence:
+     `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-633 [Soar][Gate] source_scoped_recovery_action reconciliation` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`).
@@ -13163,11 +13295,11 @@
   PM coordination published a durable decision gate for ARB-002 reopen routing:
   - added `DEC-ARB-002` in `.agents/state/decision-register.md`,
   - updated `history/plans/luc-583-architecture-repair-backlog-control-map-2026-05-29.md` so `ARB-002` is `done_gated` with `decision_gate`.
-  Reopen trigger is explicit and fail-closed; both conditions are required:
+    Reopen trigger is explicit and fail-closed; both conditions are required:
   1. Product/CTO-approved mobile issue enters `in_progress` with Frontend/Mobile owner.
   2. The issue includes non-scaffold runtime scope in `apps/mobile` (not docs/index/scaffold-only edits).
-  Evidence:
-  `history/tasks/luc-633-mobile-lane-activation-trigger-2026-05-29-task.md`.
+     Evidence:
+     `history/tasks/luc-633-mobile-lane-activation-trigger-2026-05-29-task.md`.
 
 - `LUC-583 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13183,8 +13315,8 @@
   - reconciled canonical backlog (`LUC-384`) and prior execution/control maps (`LUC-408`, `LUC-508`) with latest ARB lane outcomes,
   - preserved fail-closed blocker truth: `ARB-001` (`LUC-385`) and `ARB-006` (`LUC-402`) remain the only open blockers,
   - kept specialist execution delegated; this lane is planning/state only.
-  Evidence:
-  `history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
+    Evidence:
+    `history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
 
 - `LUC-508 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13200,8 +13332,8 @@
   - reconciled canonical backlog (`LUC-384`) and execution baseline (`LUC-408`) with latest ARB lane outcomes,
   - confirmed `ARB-007` closure (`LUC-403`) and preserved fail-closed blockers for `ARB-001` and `ARB-006`,
   - kept specialist implementation delegated; this lane is planning/state only.
-  Evidence:
-  `history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
+    Evidence:
+    `history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
 
 - `LUC-403 [Soar][ARB-007]` handoff closure heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -13223,9 +13355,9 @@
   - every backlog row `ARB-001..ARB-008` is now mapped to a concrete execution lane/status/owner action,
   - blocked rows keep first-class blocker classes (`decision_gate`, `protected_input_gate`),
   - remaining low-coupling execution work was narrowed to `LUC-403` for `ARB-007`; that lane is now completed and recorded above.
-  Scope remained planning/state only (no code/runtime/deploy mutation).
-  Evidence:
-  `history/tasks/luc-408-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
+    Scope remained planning/state only (no code/runtime/deploy mutation).
+    Evidence:
+    `history/tasks/luc-408-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
 
 - `LUC-402 [Soar][ARB-006]` heartbeat executed on 2026-05-28 and is `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
@@ -13237,18 +13369,18 @@
     `docs/status/function-journey-index.md` into `ARB6-EV-001..008`,
   - each row now has owner, target date, evidence class (`public`/`protected`),
     verification contract, and first-class blocker.
-  Backlog sync:
+    Backlog sync:
   - `history/plans/luc-384-architecture-repair-backlog-2026-05-28.md`
     updated `ARB-006` status to
     `execution_register_ready_blocked_on_inputs`.
-  Unblock owner/action:
+    Unblock owner/action:
   1. Delivery/PM creates and assigns child execution issues from
      `ARB6-EV-001..008`.
   2. Security/Test credential owner provides approved protected
      principal/session artifacts.
   3. Ops runs one bounded protected evidence checkpoint per ready child task.
-  Evidence:
-  `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
+     Evidence:
+     `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
 
 - `LUC-402 [Soar][ARB-006]` issue_commented heartbeat executed on 2026-05-28 and remains `blocked`.
   Inline comment `f032103a-df8a-4d18-944d-eadd1e635452` (`softwarehouse-local-repair-lane-starter:v1`) was acknowledged first and treated as a local source-control closure lane, not a protected-deliverable unblock.
@@ -13256,10 +13388,10 @@
   Validation in lane scope:
   - `git status --short`
   - `rg -n "LUC-402|ARB-006|local repair|source-control" .agents/state/active-mission.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md`
-  Commit/push/deploy outcome: `not committed` / `not needed` / deploy impact `none`.
-  Blocker contract unchanged: parent remains fail-closed on `LUC-405` protected window + input-readiness owners/actions before any protected evidence execution or unblock publication.
-  Evidence:
-  `history/tasks/luc-402-arb-006-local-repair-source-control-lane-2026-05-28-task.md`.
+    Commit/push/deploy outcome: `not committed` / `not needed` / deploy impact `none`.
+    Blocker contract unchanged: parent remains fail-closed on `LUC-405` protected window + input-readiness owners/actions before any protected evidence execution or unblock publication.
+    Evidence:
+    `history/tasks/luc-402-arb-006-local-repair-source-control-lane-2026-05-28-task.md`.
 
 - `LUC-404 [Soar][ARB-008]` heartbeat executed on 2026-05-28 and is `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
@@ -13273,19 +13405,19 @@
     (`CcxtFuturesOrderFill`, `CcxtWalletCashflowHistoryEntry`) or
     `exchange/ccxtFuturesConnector.types` imports appear outside
     `modules/exchange`.
-  Verification:
+    Verification:
   - focused vitest pack (`exchangeExecutionCapabilityContract`,
     `exchangeAuthenticatedReadContract`, `exchangeCapabilityContract.regression`)
     => `6/6 PASS`.
   - focused downstream regression pack (`orders.exchangeEvents.helpers`,
     `walletCashflowClassifier.service`) => `27/27 PASS`.
   - `pnpm --filter api run typecheck` => `PASS`.
-  Contract diff review confirms tuple contract and neutral type boundary remain
-  intact (`supportsExchangeExecutionCapability(exchange, marketType, operation)`
-  is canonical; `orders/wallets` consume neutral aliases from
-  `exchangeData.types`).
-  Evidence:
-  `history/tasks/luc-404-arb-008-exchange-capability-regression-suite-2026-05-28-task.md`.
+    Contract diff review confirms tuple contract and neutral type boundary remain
+    intact (`supportsExchangeExecutionCapability(exchange, marketType, operation)`
+    is canonical; `orders/wallets` consume neutral aliases from
+    `exchangeData.types`).
+    Evidence:
+    `history/tasks/luc-404-arb-008-exchange-capability-regression-suite-2026-05-28-task.md`.
 
 - `LUC-388 [Soar][ARB-004]` heartbeat executed on 2026-05-28 and is `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
@@ -13305,8 +13437,8 @@
   - validator tests (`checkAuditRemediationPlan`, `checkFullReusableAuditHandoff`, `checkReusableAuditRerunPlaybook`, `checkReusableAuditToolingIndex`) => `39/39 PASS`
   - `pnpm run docs:parity:endpoints:api` => `PASS` (`Endpoints 109`, `documented 109`, `gaps 0`)
   - `pnpm run i18n:audit:route-reachable:web` => `PASS` (`findings=0`)
-  Evidence:
-  `history/tasks/luc-389-pipeline-hook-checklist-enforcement-2026-05-28-task.md`.
+    Evidence:
+    `history/tasks/luc-389-pipeline-hook-checklist-enforcement-2026-05-28-task.md`.
 - `LUC-175 [Soar][LUC-103-P6] Source-control queue executor gate` heartbeat
   executed on 2026-05-28 (`issue_commented`) and remains `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
@@ -13333,7 +13465,7 @@
   state files plus blocker-evidence reference sweep for `LUC-47`.
   Result: no new blocker-closure evidence landed in this wake scope and queue
   executor routing remains unchanged with capacity governor preserved (`one live
-  lane`).
+lane`).
   Unblock owner/action unchanged:
   `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
   expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
@@ -13421,7 +13553,7 @@
   `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-continuation-task.md`.
 
 - `LUC-285 [Soar][Safe Lane] Non-production architecture/status refresh while
-  gate is blocked` heartbeat executed on 2026-05-27 with concrete
+gate is blocked` heartbeat executed on 2026-05-27 with concrete
   docs-memory/state synchronization and remains `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
   comments `0/0`, latest comment id `unknown`); no new unblock evidence or
@@ -13523,14 +13655,14 @@
   1. captured baseline dirty set via `git status --porcelain=v1 -uall`,
   2. reviewed per-file diffs for `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, and `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`,
   3. classified all dirty files as documentation/evidence continuity (no runtime/product code drift, no `LUC-402` delivery-surface drift).
-  Closure disposition:
+     Closure disposition:
   - commit: `not committed` (classification-only checkpoint),
   - push: `not needed`,
   - deploy impact: `none`.
-  Residual risk:
-  dirty workspace persists until a follow-up closure lane performs a coherent docs-only commit or explicit defer decision with owner/date.
-  Evidence:
-  `history/tasks/luc-824-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
+    Residual risk:
+    dirty workspace persists until a follow-up closure lane performs a coherent docs-only commit or explicit defer decision with owner/date.
+    Evidence:
+    `history/tasks/luc-824-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
 - `LUC-241 finish_successful_run_handoff continuation (2026-05-27)` executed a
   concrete protected-proof recheck and remains `blocked`.
   New artifact signal in this run: `SMOKE_AUTH_TOKEN` is present, but full
@@ -13716,7 +13848,7 @@
   No pending human unblock input was present (`0/0`).
   Fresh checks in this heartbeat confirm unchanged state:
   production expected-SHA smoke `PASS`, temp-domain smoke `FAIL` (`fetch
-  failed`), SHA-bound operator packet check `PASS`.
+failed`), SHA-bound operator packet check `PASS`.
   No production mutation was executed.
   Unblock owner/action remains unchanged: Coolify operator + release
   controller must accept the `NO_TEMP_STACK` packet or restore temp-stack
@@ -14337,10 +14469,10 @@
   - `LUC-47` (Ops Release Lead + host operator) must publish expected-SHA
     temp-domain deploy/smoke/readiness packet with worker readiness and
     rollback note.
-  Capacity governor remained preserved (`<=5` active live runs); no new lane
-  creation was performed.
-  Evidence:
-  `history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md`.
+    Capacity governor remained preserved (`<=5` active live runs); no new lane
+    creation was performed.
+    Evidence:
+    `history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md`.
 
 - `LUC-126 source_scoped_recovery_action (2026-05-26)` was reconciled as a
   second fail-closed controller checkpoint with unchanged blocker topology.
@@ -14363,12 +14495,12 @@
   - `history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md`
   - `docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md`
   - `.codex/context/TASK_BOARD.md`
-  Disposition is `done` for the protected packet closure objective.
-  Residual follow-up remains explicit: route-cluster `loading/empty/error`
-  artifact expansion stays in separate frontend+QA scope and is not an open
-  blocker for `LUC-49` objective closure in this lane.
-  Evidence:
-  `history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md`.
+    Disposition is `done` for the protected packet closure objective.
+    Residual follow-up remains explicit: route-cluster `loading/empty/error`
+    artifact expansion stays in separate frontend+QA scope and is not an open
+    blocker for `LUC-49` objective closure in this lane.
+    Evidence:
+    `history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md`.
 
 - `LUC-122 assigned heartbeat (2026-05-26)` executed a concrete PM no-stall
   queue-expeditor checkpoint and remains `blocked`.
@@ -14397,13 +14529,13 @@
     (`d2oo1wwy8i55q27e5mdky0i4`) = `exited:unhealthy`
   - restart API accepted (`Deployment already queued for this commit.`)
   - post-action polling (`6` checks / `60s`) remained `exited:unhealthy`
-  No deploy mutation, push, or secret disclosure was performed in this lane.
-  Unblock owner/action: Ops Release Lead + Coolify operator + local-board
-  release controller must clear deployment queue/crash-loop cause, recover
-  worker health with proof, then publish temp-domain expected-SHA acceptance
-  packet with rollback note.
-  Evidence:
-  `history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md`.
+    No deploy mutation, push, or secret disclosure was performed in this lane.
+    Unblock owner/action: Ops Release Lead + Coolify operator + local-board
+    release controller must clear deployment queue/crash-loop cause, recover
+    worker health with proof, then publish temp-domain expected-SHA acceptance
+    packet with rollback note.
+    Evidence:
+    `history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md`.
 
 - `LUC-118 assigned heartbeat (2026-05-26)` completed as `done` for
   `LUC-103-P5F` (`LUC-107` Ops evidence closure).
@@ -14435,12 +14567,12 @@
   Repeatable smoke runner was executed with fresh date pin:
   - `pnpm run qa:smoke-e2e:repeatable -- --checks web --today 2026-05-26` -> PASS
   - `pnpm run qa:smoke-e2e:repeatable -- --checks api --today 2026-05-26` -> PASS
-  Durable outputs:
-  `history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`,
-  `history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md`,
-  and task packet
-  `history/tasks/luc-114-qa-repeatable-smoke-evidence-closure-2026-05-26-task.md`.
-  Scope stayed QA verification only (no runtime/deploy mutation).
+    Durable outputs:
+    `history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`,
+    `history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md`,
+    and task packet
+    `history/tasks/luc-114-qa-repeatable-smoke-evidence-closure-2026-05-26-task.md`.
+    Scope stayed QA verification only (no runtime/deploy mutation).
 
 - `LUC-113 assigned heartbeat (2026-05-26)` completed as `done` for
   docs-analysis provenance closure within `LUC-103` (`P5B` subset only).
@@ -14532,14 +14664,14 @@
     execution outcome fields in runtime payloads.
   - `LUC-64-D` docs/state parity closure is recorded in:
     `history/tasks/luc-127-luc-64-backend-runtime-signal-docs-closure-2026-05-26-task.md`.
-  Board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`) requires
-  non-live status for stale runs; later parity reconciliation closes this item.
-  Continuation incident on 2026-05-26:
-  run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
-  `codex_transient_upstream` (model usage limit). This does not change product
-  evidence or scope.
-  Board model-cleanup comment (`bf496bbc-6469-4872-acbf-fd30cb9228c0`) confirms
-  stale `in_progress` without a live run must be cleared.
+    Board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`) requires
+    non-live status for stale runs; later parity reconciliation closes this item.
+    Continuation incident on 2026-05-26:
+    run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
+    `codex_transient_upstream` (model usage limit). This does not change product
+    evidence or scope.
+    Board model-cleanup comment (`bf496bbc-6469-4872-acbf-fd30cb9228c0`) confirms
+    stale `in_progress` without a live run must be cleared.
 
 - `LUC-63 [Soar][PM] No-stall queue expeditor` is now active as the
   queue-motion control checkpoint for this heartbeat. Published
@@ -14557,7 +14689,7 @@
   Paperclip Dashboard signal repair lane. Dashboard Home signal cards now derive
   condition-active LONG/SHORT presentation and the signal header count from
   explicit backend condition-line matches (`lastSignalConditionLines[].matched
-  === true`) instead of accepted execution state only. Runtime market-state
+=== true`) instead of accepted execution state only. Runtime market-state
   badges and `lastSignalMessage`/`lastSignalReason` remain separate, so an open
   position or pre-trade block can stay visible without hiding the satisfied
   strategy condition. Evidence:
@@ -14586,7 +14718,7 @@
   Local pre-deploy safety gate is green after the API liveness correction:
   `corepack pnpm run docker:coolify:config` PASS (API healthcheck `/health`,
   `/ready` preserved for smoke), `corepack pnpm run
-  ops:coolify-stack:env-check:example` PASS (`16/16` required names present,
+ops:coolify-stack:env-check:example` PASS (`16/16` required names present,
   redacted output), and `corepack pnpm run quality:guardrails` PASS. Remaining
   lane objective needs a temp-domain Coolify parallel-stack deploy for the
   expected SHA plus API/Web/build-info/worker smoke artifacts before any
@@ -14601,10 +14733,10 @@
     `workers-market-stream`=`d2oo1wwy8i55q27e5mdky0i4`,
     `workers-backtest`=`gktawk85w6826z2bs8z123mz`,
     `workers-execution`=`s2qz86w8c9hc5anajdtl5d8r`.
-  Continuation run on 2026-05-26 failed before lane execution with adapter
-  bootstrap `EEXIST` during auth symlink creation. Local verification confirms
-  source and runtime-target auth files exist and target is a regular file, so
-  this is runtime bootstrap conflict, not a Soar deploy/smoke result.
+    Continuation run on 2026-05-26 failed before lane execution with adapter
+    bootstrap `EEXIST` during auth symlink creation. Local verification confirms
+    source and runtime-target auth files exist and target is a regular file, so
+    this is runtime bootstrap conflict, not a Soar deploy/smoke result.
 
 - `LUC-45 [Soar] V1 audit-to-completion controller` is implemented and
   verified for delivery-control scope. Published
@@ -14612,7 +14744,7 @@
   as the active V1 controller packet with one accountable owner per lane and
   strict gate order across unresolved blocker families:
   `A backend runtime/API stability`, `B ops stack rollout`, `C QA repeatable
-  journey proof`, `D security boundary read-only proof`, and
+journey proof`, `D security boundary read-only proof`, and
   `E docs/state parity sync`. Current status: controller is ready; lane
   execution evidence is still pending and required before any V1 readiness
   closure claim.
@@ -14732,7 +14864,7 @@
 - `LUC-24-ADAPTER-SMOKE-SYMLINK-PERMISSION-2026-05-25` is resolved and
   verified by board runtime evidence. Initial local reproduction confirmed the
   Windows symlink privilege failure (`Administrator privilege required for this
-  operation`) and established this as runtime/harness behavior, not Soar app
+operation`) and established this as runtime/harness behavior, not Soar app
   code. Board closure then verified runtime fallback deployment:
   `node scripts/doctor-luckysparrow-softwarehouse.mjs` reports `overall: pass`,
   `8/8` LuckySparrow agents pass adapter probes, and Windows auth/skill
@@ -14836,7 +14968,7 @@
   journeys/pages, `96` API surfaces, `39` user actions, `0` critical
   structural/action gaps, `28` high function/API proof gaps, and `37` high
   user-action proof gaps. `pnpm run architecture:journey:triage -- --query
-  SOAR-UI-MANUAL-ORDER-SUBMIT` now traces a UI action to `/dashboard`,
+SOAR-UI-MANUAL-ORDER-SUBMIT` now traces a UI action to `/dashboard`,
   `SOAR-API-ORDER-OPEN`, manual-order chains, backend services, DB models,
   tests, docs, and proof gaps. This helps prevent repeated "something is
   broken" rediscovery by making each missing proof boundary visible before
@@ -15083,7 +15215,7 @@
   drift audit in strict fail-on-drift mode, so future representative source,
   test, docs, config, or pipeline paths must be referenced by graph CSV records
   before guardrails can pass. Validation passed: `pnpm run
-  architecture:graph:drift:strict` reported `796/796` covered and `0`
+architecture:graph:drift:strict` reported `796/796` covered and `0`
   missing; `node --test scripts/repoGuardrails.test.mjs` passed `9/9`;
   `pnpm run architecture:graph:generate` reported `643` nodes, `798`
   relations, and `27` chains; `pnpm run quality:guardrails` passed with
@@ -15096,7 +15228,7 @@
   representative inventory across source, tests, documentation, config, and
   pipeline paths. `pnpm run architecture:graph:generate` passes with `643`
   nodes, `798` relations, and `27` chains. `pnpm run
-  architecture:graph:drift` passes with `796/796` covered and `0` missing.
+architecture:graph:drift` passes with `796/796` covered and `0` missing.
   This is graph/documentation proof only; it does not replace fresh runtime
   journey proof, protected production proof, external security review, or live
   exchange-side mutation approval.
@@ -15106,7 +15238,7 @@
   first foundation for an Obsidian-first architecture evidence graph: CSV node
   registries, relation records, function-chain records, generated Markdown
   nodes, generated graph exports, and a status report. `pnpm run
-  architecture:graph:generate` passed with `45` nodes, `24` relations, and
+architecture:graph:generate` passed with `45` nodes, `24` relations, and
   `4` chains; `pnpm run quality:guardrails` and
   `pnpm run docs:parity:check` also passed. This is documentation/tooling only
   and does not change runtime behavior, deployment, production data, or LIVE
@@ -15119,7 +15251,7 @@
   DTO schemas, orders service, manual-context service, quantity rules,
   pre-trade, exchange boundary, execution orchestration, lifecycle, exchange
   events, `OrderFill`, tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `67` nodes, `51` relations, and
+architecture:graph:generate` now passes with `67` nodes, `51` relations, and
   `5` chains; guardrails and docs parity pass. This did not change runtime
   behavior or authorize LIVE mutation.
 
@@ -15128,7 +15260,7 @@
   legacy route, Dashboard/runtime UI, Web positions service, Positions API
   routes, controller, DTO, service, exchange snapshot normalization, LIVE
   reconciliation, `Position`/`Order`/`Trade`, tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `93` nodes, `80` relations, and
+architecture:graph:generate` now passes with `93` nodes, `80` relations, and
   `6` chains. This is graph traceability proof only; it did not change runtime
   behavior, run production clickthrough, or authorize LIVE mutation.
 
@@ -15148,7 +15280,7 @@
   boundaries, adapter boundary, connector factory, CCXT futures connector, live
   order adapter, fee reconciliation, symbol rules, market catalog, API-key
   probe client, consumers, tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `142` nodes, `129` relations,
+architecture:graph:generate` now passes with `142` nodes, `129` relations,
   and `8` chains. This is graph traceability proof only; it did not change
   exchange behavior, run production mutation proof, or authorize LIVE mutation.
 
@@ -15159,7 +15291,7 @@
   service, exchange capability/authenticated-read/adapter-boundary links,
   ledger/cashflow services, Wallet/Bot/Position/Order data dependencies,
   focused API/Web/ledger tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `176` nodes, `177` relations,
+architecture:graph:generate` now passes with `176` nodes, `177` relations,
   and `9` chains. This is graph traceability proof only; it did not change
   wallet runtime behavior, run authenticated browser proof, or authorize LIVE
   mutation/readback.
@@ -15193,7 +15325,7 @@
   routes, controller, DTO/config validation, strategy service, Strategy/Bot/
   MarketGroupStrategyLink DB guards, Bot Setup and Bot Runtime consumers,
   focused API/Web/indicator/utility tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `261` nodes, `293` relations,
+architecture:graph:generate` now passes with `261` nodes, `293` relations,
   and `12` chains. This is graph traceability proof only; it did not change
   strategy runtime behavior, run authenticated browser proof, or run
   production strategy mutation proof.
@@ -15205,7 +15337,7 @@
   controller, DTOs, markets service, exchange-catalog/symbol resolver,
   MarketUniverse/SymbolGroup/Bot/BotMarketGroup DB guards, Bot Setup and Bot
   Runtime consumers, focused API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `286` nodes, `329` relations,
+architecture:graph:generate` now passes with `286` nodes, `329` relations,
   and `13` chains. This is graph traceability proof only; it did not change
   market runtime behavior, run authenticated browser proof, or run production
   market mutation proof.
@@ -15229,7 +15361,7 @@
   backtests service, cross-mode reports API route, controller, backend reports
   service, mode aggregation utility, BacktestReport/BacktestTrade/Trade/Bot
   read models, focused API/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `336` nodes, `396` relations,
+architecture:graph:generate` now passes with `336` nodes, `396` relations,
   and `15` chains. This is graph traceability proof only; it did not change
   reports runtime behavior, run authenticated browser proof, or run production
   report readback.
@@ -15252,7 +15384,7 @@
   subscription services, entitlement guard, checkout intent persistence,
   SubscriptionPlan/UserSubscription/PaymentIntent/User models, focused
   API/entitlement/Web tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `387` nodes, `463` relations,
+architecture:graph:generate` now passes with `387` nodes, `463` relations,
   and `17` chains. This is graph traceability proof only; it did not change
   subscription/admin runtime behavior, run authenticated browser proof, or run
   production admin mutation proof.
@@ -15327,7 +15459,7 @@
   loading, auth/rate-limit/request-logger/ops-network/trusted-origin
   middleware, error handling, shared errors, HTTP error mapping, logger,
   symbols, focused config/middleware/lib tests, and docs. `pnpm run
-  architecture:graph:generate` now passes with `520` nodes, `597` relations,
+architecture:graph:generate` now passes with `520` nodes, `597` relations,
   and `22` chains. `pnpm run architecture:graph:drift` now reports total
   coverage `478/796` and `318` remaining gaps. This is graph traceability
   proof only; it did not run a fresh adversarial security review.
@@ -15349,7 +15481,7 @@
   auth service, AuthContext, API register/login/me/logout routes, auth
   controller, auth service, cookie/JWT/error/session-token helpers, auth types,
   User model, Web/API auth tests, and auth module docs. `pnpm run
-  architecture:graph:generate` now passes with `573` nodes, `659` relations,
+architecture:graph:generate` now passes with `573` nodes, `659` relations,
   and `24` chains. `pnpm run architecture:graph:drift` now reports total
   coverage `534/796` and `262` remaining gaps. This is graph traceability
   proof only; it did not run fresh production auth browser proof.
@@ -15361,7 +15493,7 @@
   `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` with `HEAD...origin/main` at
   `0 0`. Public production is not currently verified: `curl` to Web
   build-info, API `/health`, and API `/ready` timed out with `Failed to
-  connect` during validation. Local validation passed repository
+connect` during validation. Local validation passed repository
   guardrails, docs parity, typecheck, and the focused runtime automation
   exchange-PnL/service/DCA parity pack (`3` files / `41` tests). Transient
   auth/browser artifacts under `.tmp/` and `tmp/` were removed, and these
@@ -15485,7 +15617,7 @@
   `docs/operations` for living runbooks/status procedures. Validation passed:
   old taxonomy path scan `0`, markdown link check `1804` files / `0` missing
   targets, dated markdown scan under `docs/` returned no files, `pnpm run
-  quality:guardrails` passed, and `pnpm run docs:parity:check` passed. This is
+quality:guardrails` passed, and `pnpm run docs:parity:check` passed. This is
   docs/tooling only: no runtime behavior, deployment, production data, or LIVE
   exchange mutation is involved. Evidence/task:
   `history/tasks/doc-knowledge-taxonomy-refinement-2026-05-23-task.md`.
@@ -15621,10 +15753,10 @@
   Postgres/Redis were unavailable and Laragon was found running without
   PostgreSQL, Docker Desktop was started and `pnpm run go-live:infra:up`
   brought up `soar-postgres-1` and `soar-redis-1`. `pnpm run
-  audit:data:db-isolated` passed with Prisma schema validation, migration
+audit:data:db-isolated` passed with Prisma schema validation, migration
   status, full reset/replay of `55` migrations, wallets `24/24`, backtests
   `15/15`, and runtime repository `2/2`. `pnpm run
-  ops:db:backup-restore:check-local` passed and wrote
+ops:db:backup-restore:check-local` passed and wrote
   `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`.
   Production migration status and production backup/restore freshness remain a
   separate protected ops gate. The docs/state commit for this proof was pushed
@@ -16067,7 +16199,7 @@
   exchange-capability test now expects `marketType` in the exact capability
   error details; module docs now reflect Gate.io exact operation support and
   assistant foundation/dry-run scope; `SOAR-OPERATIONS-001` is `PARTIAL /
-  Medium` because current local gates are fresh but protected `AUD-19`
+Medium` because current local gates are fresh but protected `AUD-19`
   production evidence is still absent. Validation passed: guardrails, docs
   parity, guardrail regression tests, endpoint parity, `audit:manifest:verify`,
   lint, typecheck, build, full Web tests, full API Vitest in a controlled
@@ -17913,6 +18045,7 @@
   without an explicit safe plan.
 
 ## 2026-05-08 UX/UI Feedback Memory Autonomy
+
 - 2026-05-08 `UX-UI-MEMORY-AUTONOMY-2026-05-08` made UX/UI feedback capture
   autonomous for future agents by extending the existing user feedback loop,
   design memory, and screen quality checklist. Future UX/UI tasks must classify
@@ -17923,6 +18056,7 @@
   `history/tasks/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+
 - 2026-05-11 `V1-ORDERS-LOCAL-PROOF-2026-05-11` closes the local Orders proof
   gap. API Orders tests passed (`10` files, `121` tests), covering active
   order filtering, PAPER/LIVE open contracts, missing price truth rejection,
@@ -19197,7 +19331,7 @@
 - 2026-05-09 `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09` aligned
   active continuation snippets with that same deployed candidate. Build-info
   wait and `LIVEIMPORT-03` examples now use explicit `$expectedSha =
-  4792fbca...` and date-aware output paths instead of local evidence-only
+4792fbca...` and date-aware output paths instead of local evidence-only
   `HEAD`. Evidence:
   `history/tasks/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 - 2026-05-09 `V1-PROTECTED-ACCESS-READINESS-2026-05-09` confirmed the current
@@ -19448,6 +19582,7 @@
   `history/audits/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+
 - 2026-05-07 `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` fixed the
   authenticated `/dashboard/positions/live-status` route so live-import
   reconciliation diagnostics are scoped to the requesting user. The route now
@@ -19494,6 +19629,7 @@
   `history/tasks/v1-final-blocker-execution-pack-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 Continuation State Sync
+
 - 2026-05-07 `V1-CONTINUATION-STATE-SYNC-2026-05-07` synchronized the
   continuation state after the recovery-proof blocker refresh. The canonical
   `LIVEIMPORT-03` command now targets production build-info SHA
@@ -19503,6 +19639,7 @@
   `history/tasks/v1-continuation-state-sync-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 Production Recovery Proof Blocked Refresh
+
 - 2026-05-07 `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` refreshed
   production backup/restore and rollback proof blockers as current failed
   evidence. Rollback proof was executed through the existing script and failed
@@ -19516,6 +19653,7 @@
   `history/evidence/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 RC Blocked Evidence Refresh
+
 - 2026-05-07 `V1-RC-BLOCKED-REFRESH-2026-05-07` refreshed RC external gates
   status, RC sign-off, and RC checklist as current blocked/open evidence.
   Current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off
@@ -19528,6 +19666,7 @@
   `history/releases/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 Production Activation Refresh
+
 - 2026-05-07 `V1-PROD-ACTIVATION-REFRESH-2026-05-07` created fresh production
   activation plan and activation evidence audit artifacts for 2026-05-07 with
   explicit `NO-GO` status. Follow-up release-gate dry-run
@@ -19540,6 +19679,7 @@
   `history/tasks/v1-production-activation-plan-refresh-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 Production Release Gate Dry Run
+
 - 2026-05-07 `V1-PROD-GATE-DRY-RUN-2026-05-07` ran the existing
   `ops:release:v1:gate` script in production dry-run mode with protected
   execution steps skipped. Generated artifacts:
@@ -19553,6 +19693,7 @@
   `history/releases/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
 
 ## 2026-05-07 Production Build-Info Lag After Collector Hardening
+
 - 2026-05-07 `PROD-BUILDINFO-LAG-2026-05-07` rechecked public production
   freshness after `origin/main` advanced to
   `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical build-info wait
@@ -19567,6 +19708,7 @@
   `history/evidence/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
 
 ## 2026-05-07 LIVEIMPORT-03 Readback Collector
+
 - 2026-05-07 `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07` hardened the
   read-only collector so a discovered LIVE bot with no RUNNING session cannot
   produce a false-positive release artifact. The collector now summarizes
@@ -19596,6 +19738,7 @@
   `history/evidence/liveimport-03-readback-collector-task-2026-05-07.md`.
 
 ## 2026-05-07 Production Promotion Prerequisite Sweep
+
 - 2026-05-07 `PROD-PROMOTE-PREQ-2026-05-07` captured the post-push production
   blocker. Local `main` and `origin/main` are synchronized at
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Public production web
@@ -19611,6 +19754,7 @@
   `history/tasks/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
 
 ## 2026-05-07 Planning Status Sweep After Local Audit Gates
+
 - 2026-05-07 `PLAN-SWEEP-2026-05-07` synchronized active planning after
   `LIVEIMPORT-03` remained blocked by missing production read-only auth. The
   top `mvp-execution-plan.md` progress log now records the local audit closure
@@ -19620,6 +19764,7 @@
   `history/audits/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
 
 ## 2026-05-07 LIVEIMPORT-03 Production Readback Prerequisite Sweep
+
 - 2026-05-07 `LIVEIMPORT-03-PREQ-2026-05-07` rechecked production readback
   prerequisites after the local audit gates closed through `FULLARCH-FIX-11`.
   A names-only environment scan returned only `FIGMA_OAUTH_TOKEN` and
@@ -19631,6 +19776,7 @@
   `history/evidence/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-11 Wallet Market Bot Topology Gate
+
 - 2026-05-07 `FULLARCH-FIX-11` closed focused local API+Web evidence for
   wallet/capital handling, market universe scope, bot create/edit/list
   behavior, single active bot market scope, multi-strategy links, subscription
@@ -19643,6 +19789,7 @@
   `history/tasks/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-05 API Single Active Bot Scope
+
 - 2026-05-07 `FULLARCH-FIX-05` closed the API e2e failures exposed after the
   Web harness fix. Bot market-group writes now preflight the approved
   one-enabled-`ACTIVE`-market-scope-per-bot invariant and return a controlled
@@ -19653,10 +19800,11 @@
   and clean backtest rows before deleting users. Validation PASS: focused API
   blocker pack (`6/6` files, `59/59` tests), API typecheck, root workspace
   tests (`api 174/174 files, 1163/1163 tests; web 145/145 files, 482/482
-  tests`), lint, guardrails, docs parity, and diff check. Evidence:
+tests`), lint, guardrails, docs parity, and diff check. Evidence:
   `history/tasks/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-06 Binance Futures Snapshot Normalization
+
 - 2026-05-07 `FULLARCH-FIX-06` closed the remaining local live-import audit
   coverage gap for Binance futures position snapshots. The exchange snapshot
   normalizer now converts signed `positionAmt` into positive `contracts`,
@@ -19670,6 +19818,7 @@
   `history/tasks/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-07 Runtime Repair Closure Validation
+
 - 2026-05-07 `FULLARCH-FIX-07` closed the local post-repair runtime validation
   follow-up from the full architecture audit. The focused sequential pack
   covered runtime signal merge/final-candle/loop, pre-trade and risk gates,
@@ -19680,6 +19829,7 @@
   `history/tasks/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
 
 ## 2026-05-07 Full Architecture Audit Repair Queue Sync
+
 - 2026-05-07 `FULLARCH-AUDIT-SYNC-2026-05-07` synchronized the original full
   architecture conformance audit report after the local repair chain closed.
   The audit now points to the actual completed local evidence tasks
@@ -19689,6 +19839,7 @@
   `history/audits/fullarch-audit-repair-queue-sync-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-08 Security And Isolation Release Gate
+
 - 2026-05-07 `FULLARCH-FIX-08` closed the local security/isolation release-gate
   evidence requested by the full architecture audit. The focused sequential
   API pack covered rate limiting, auth/session, trusted origin, security
@@ -19700,6 +19851,7 @@
   `history/releases/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-09 Strategy Backtest Reports Logs Gate
+
 - 2026-05-07 `FULLARCH-FIX-09` closed focused local API+Web evidence for
   strategy/indicator parity, backtest execution and replay, reports, and
   logs/audit trail after the Web navigation mock harness repair. No code,
@@ -19709,6 +19861,7 @@
   `history/tasks/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-10 Market Stream Dashboard Monitoring Gate
+
 - 2026-05-07 `FULLARCH-FIX-10` closed focused local API+Web evidence for
   market stream ingestion/fanout/route contracts and dashboard/bot monitoring
   surfaces after the Web navigation mock harness repair. No code, schema,
@@ -19718,6 +19871,7 @@
   `history/evidence/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
 
 ## 2026-05-07 Safe Environment Scan Guardrail
+
 - 2026-05-07 `AOS-STATE-ENV-2026-05-07` captured a secret-safe continuation
   guardrail after the production-readback prerequisite recheck: environment
   scans for auth or production access must print variable names only and must
@@ -19728,6 +19882,7 @@
   `history/audits/aos-state-env-scan-secret-safety-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-04 Web Navigation Mock Harness
+
 - 2026-05-07 `FULLARCH-FIX-04` repaired broad Web test harness drift after
   the full architecture audit found local `next/navigation` mocks shadowing
   the global Vitest setup without `usePathname`. Local route, redirect, form,
@@ -19743,6 +19898,7 @@
   `history/tasks/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-03 Reconciliation Diagnostics
+
 - 2026-05-07 `FULLARCH-FIX-03` added structured per-symbol diagnostics to live
   position reconciliation. Each reconciled snapshot row can now report outcome,
   ownership status, management mode, sync state, continuity state, projected
@@ -19755,6 +19911,7 @@
   `history/tasks/fullarch-fix-03-reconciliation-diagnostics-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-02 Six-Position Import Regression
+
 - 2026-05-07 `FULLARCH-FIX-02` added the missing DB-backed vertical
   regression for the reported one-of-six import class. The test creates one
   active opted-in LIVE bot with a canonical six-symbol market scope, mocks six
@@ -19768,11 +19925,12 @@
   `history/evidence/fullarch-fix-02-six-position-import-readback-regression-task-2026-05-07.md`.
 
 ## 2026-05-07 FULLARCH-FIX-01 Recovered Import Visibility
+
 - 2026-05-07 `FULLARCH-FIX-01` restored runtime readback visibility for
   recovered imported LIVE positions. `listBotRuntimeSessionPositions` now
   includes the narrow open-position state
   `origin=EXCHANGE_SYNC + continuityState=RECOVERED_UNACTIONABLE +
-  syncState=DRIFT` alongside normal `IN_SYNC` open positions. Actionability
+syncState=DRIFT` alongside normal `IN_SYNC` open positions. Actionability
   remains fail-closed because serialization still requires
   `continuityState=CONFIRMED` plus bot and strategy context. Validation PASS:
   focused runtime takeover e2e (`4/4`), focused import/ownership/takeover pack
@@ -19780,6 +19938,7 @@
   `history/tasks/fullarch-fix-01-recovered-imported-position-visibility-task-2026-05-07.md`.
 
 ## 2026-05-07 Full Architecture Conformance Audit
+
 - 2026-05-07 `FULLARCH-AUDIT-2026-05-07` completed a full V1 function-family
   audit against product and architecture truth. The audit mapped auth,
   profile/API keys, wallets/capital, markets/symbol scopes, strategies,
@@ -19798,6 +19957,7 @@
   `history/audits/full-architecture-conformance-audit-task-2026-05-07.md`.
 
 ## 2026-05-07 Live Import Runtime Architecture Audit
+
 - 2026-05-07 `LIVEIMPORT-AUDIT-2026-05-07` reviewed exchange-position import
   and bot runtime readback against canonical architecture after an operator
   reported that only one of six exchange positions imports into the bot.
@@ -19816,6 +19976,7 @@
   `history/audits/live-import-runtime-architecture-audit-task-2026-05-07.md`.
 
 ## 2026-05-07 Continuation State Sync
+
 - 2026-05-07 `AOS-STATE-2026-05-07` synchronized `.agents/state/*` after a
   short continuation nudge. Canonical planning and task board scans show the
   first open task is `LIVEIMPORT-03`, but the current shell has no production
@@ -19828,6 +19989,7 @@
   `history/evidence/agent-state-production-readback-sync-task-2026-05-07.md`.
 
 ## 2026-05-07 Agent Operating System Foundation
+
 - 2026-05-07 `AOS-2026-05-07` established the durable agent operating system
   requested for autonomous continuation. New `.agents/core` files define the
   operating system, 15-step execution loop, anti-regression system, and
@@ -19840,6 +20002,7 @@
   `history/tasks/agent-operating-system-task-2026-05-07.md`.
 
 ## 2026-05-07 V1 Runtime UI Hardening
+
 - 2026-05-07 Dashboard Home open-order status hardening slice `V1UI-41` is
   closed on `main`. BUILDER-mode review found that the Dashboard Home
   open-order table used the shared known-status suffix mapper, but unsupported
@@ -19857,6 +20020,7 @@
   `history/tasks/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+
 - 2026-05-07 production Redis AOF recovery completed in Coolify. Production
   API `/health` stayed `200`, but `/ready` returned `503` while Redis was in
   `Restarting (unhealthy)` with over 670 restarts. Redis logs showed a bad
@@ -22010,7 +22174,7 @@
 - 2026-05-03 exchange-fill close fee attribution slice `RUNTIME-AUDIT-17` is
   closed locally. LIVE exchange order-trade close confirmation now aggregates
   entry-leg fees by the owned position lifecycle (`userId + positionId + entry
-  side`) instead of mutable `botId` / `walletId` projections, matching the
+side`) instead of mutable `botId` / `walletId` projections, matching the
   synchronous runtime orchestrator close contract. Imported or recovered LIVE
   positions with null identity projections now keep correct close PnL when the
   exchange fill confirms through a selected bot wallet. Validation PASS:
@@ -22505,7 +22669,7 @@
 - 2026-05-03 `BOTMULTI-A` is now active after `SYSFINAL-09` satisfied the
   stable post-V1 confidence prerequisite. `BOTMULTI-01` is closed locally:
   architecture now freezes the post-V1 target as `1 bot = 1 wallet + 1 active
-  symbol-group market scope + N enabled strategies`, keeps multi-market-group
+symbol-group market scope + N enabled strategies`, keeps multi-market-group
   bots out of scope, requires manual-order ambiguity to fail closed, requires
   runtime merge trace to preserve primary strategy provenance, and keeps
   DCA/TTP/SL/TSL ownership position-scoped. Evidence:
@@ -22596,6 +22760,7 @@
   `history/tasks/live-import-ownership-wallet-scope-task-2026-05-03.md`.
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+
 - 2026-05-02 operator-reported LIVE ETHUSDT DCA-first protection hardening
   `ETHDCA-01` is closed locally. Runtime position automation now hydrates
   durable DCA progress from persisted `Trade` lifecycle rows before evaluating
@@ -22723,6 +22888,7 @@
   signal for imported position history hydration and a green full API suite.
 
 ## Product Snapshot
+
 - Name: CryptoSparrow / Soar
 - Goal: deliver a crypto-trading operations platform with backtest, paper, and
   live execution support, operator dashboards, and a path toward assistant or
@@ -22739,7 +22905,7 @@
   more explicit about degraded routing/runtime-input outcomes, and the
   approved singular bot architecture is now implemented as canonical
   production truth: `1 bot = 1 wallet + 1 symbol-group market scope + 1
-  strategy`. Runtime and operator surfaces now consume inherited context from
+strategy`. Runtime and operator surfaces now consume inherited context from
   wallet, symbol-group market scope, and strategy modules instead of
   reconstructing canonical truth from legacy topology. The newest production
   hardening slices (`V1BOT-07B`, `V1BOT-09`, `V1DASH-A`, `V1BOTSURF-A`,
@@ -22775,10 +22941,10 @@
   `V1LIVE-A` hardening wave is now fully closed: it kept `PAPER`
   exchange-free, kept all `LIVE` work inside the approved exchange boundary,
   forced adapter selection to follow the exact user/bot `exchange +
-  marketType` settings, and closed the full path `signal -> order -> exchange
-  update -> position -> takeover/runtime visibility` under one canonical
+marketType` settings, and closed the full path `signal -> order -> exchange
+update -> position -> takeover/runtime visibility` under one canonical
   contract. The first completed adapter family in that wave is `BINANCE +
-  SPOT` and `BINANCE + FUTURES`; it is not a hidden default for all future
+SPOT` and `BINANCE + FUTURES`; it is not a hidden default for all future
   live execution. The newest post-V1 production hotfix slice
   (`V1FIX-2026-04-26-A`) additionally recovers manual order open lifecycle
   truth when a same-symbol open position already exists: manual same-direction
@@ -22817,6 +22983,7 @@
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+
 - 2026-05-02: closed `V1CLOSEOUT-08..10` from the V1 closeout audit
   remediation queue. RC artifacts now agree with blocked signoff truth:
   Gate 1, Gate 2, and Gate 3 are PASS, while Gate 4 is OPEN until final
@@ -23251,7 +23418,7 @@
 - 2026-05-01: completed the production slice of `V1EXCEL-06` runtime observability. Authenticated `ops:deploy:runtime-freshness` passed on production, and authenticated `ops:deploy:rollback-guard` returned `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Evidence: `history/plans/v1excel-runtime-observability-2026-04-29.md` and `history/tasks/v1excel-06-prod-runtime-observability-task-2026-05-01.md`. The broader `V1EXCEL` confidence wave remains open for manual matrix, stage evidence, broader prod release-gate evidence families, and stage runtime observability.
 - 2026-05-01: refreshed `V1EXCEL-04` stage public smoke and found a new,
   earlier blocker than protected auth. Stage web/API currently return `503 no
-  available server` for public health/ready/root and web build-info, so
+available server` for public health/ready/root and web build-info, so
   authenticated stage release gates cannot be meaningfully rerun until the
   Coolify stage services are restored or redeployed. Evidence:
   `history/plans/v1excel-04-stage-refresh-503-2026-05-01.md`.
@@ -24128,7 +24295,7 @@
   locked to wallet `paperInitialBalance + post-reset realizedPnL`. The
   residual production finding is now narrower and more honest: the affected
   bots are currently reaching real `No votes` / `No trade decision after
-  strategy merge` outcomes, not silently losing accepted signals on the paper
+strategy merge` outcomes, not silently losing accepted signals on the paper
   or live adapter path.
 - 2026-04-23: after local Docker-backed infra became available again, the
   remaining DB-backed runtime recovery evidence also passed: selected-bot
@@ -24193,7 +24360,7 @@
 - 2026-04-22: formal RC sign-off was recorded, but the later `2026-04-25`
   activation-truth reconciliation found the generated sign-off artifact to be
   internally inconsistent (`PASS, PASS, PASS, OPEN` plus `RC status:
-  APPROVED`), so V1 must remain operator-blocked until the sign-off record is
+APPROVED`), so V1 must remain operator-blocked until the sign-off record is
   rebuilt and checklist/status are resynced from the corrected source.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
@@ -24253,6 +24420,7 @@
   state (no zero-entry synthetic position fallback).
 
 ## Technical Baseline
+
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
 - Frontend: Next.js 15, React 19, TypeScript
 - Mobile: none in current repository scope; responsive web and PWA-first
@@ -24283,6 +24451,7 @@
 - MCP / external tools: Playwright and Stitch-related UX docs available locally
 
 ## Validation Commands
+
 - Lint: `pnpm run lint`
 - Typecheck: `pnpm run typecheck`
 - Unit tests: `pnpm --filter api run test -- --run` and
@@ -24295,6 +24464,7 @@
   - `pnpm run build`
 
 ## Deployment Contract
+
 - Primary deploy path: Coolify-managed VPS deployment with explicit stage and
   prod promotion flow
 - Coolify app/service layout:
@@ -24328,6 +24498,7 @@
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
+
 - Main active objective: preserve the now-clean post-approval V1 validation
   signal, keep canonical queue/context docs honest after the closed
   `V1SIG-A`, `V1CAP-A`, `V1IND-A`, `V1POSTBOT-A`, `V1SURF-B`, and `V1LIFE-A`
@@ -24363,12 +24534,15 @@
     truth.
 
 ## Autonomous Iteration State
+
 - Current iteration: 17
 - Current operation mode: BUILDER
 - Last completed iteration: 17
 - Last completed task: V1UI-17 dashboard open-position entry/quantity parity
 - Next required mode: ARCHITECT
+
 ## Recent Progress
+
 - 2026-04-22: queued `SAFEV1-A` in
   `history/plans/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md` after
   a fresh V1 review confirmed four remaining safety gaps: reconciliation can
@@ -24497,7 +24671,7 @@
   and froze the permanent lifecycle rules in
   `docs/architecture/reference/execution-lifecycle-parity-contract.md` so
   future execution work is forced through one shared `order -> fill ->
-  position` truth model for `PAPER` and `LIVE`, with explicit prohibition on
+position` truth model for `PAPER` and `LIVE`, with explicit prohibition on
   local close-before-fill and on mark-price-based execution accounting.
 - 2026-04-22: closed `TRUTH-A` end-to-end by removing LIVE order fallback to
   unrelated recent API keys, requiring canonical bot/wallet-bound key
@@ -24534,12 +24708,12 @@
   (chunk loading, cursor/cached merge, in-flight request locking, and
   parity-failed symbol handling) into `useBacktestTimelineOrchestration`,
   leaving `BacktestRunDetails` with tab composition and presenter wiring; `web
-  typecheck`, focused backtest tests, and `web build` passed.
+typecheck`, focused backtest tests, and `web build` passed.
 - 2026-04-22: closed `SCALE-13` by extracting runtime table presenter ownership
   (`runtimeDataTablePresenters.tsx`) and selected-bot sidebar presenter
   assembly (`runtimeSidebarPresenters.ts`) out of `HomeLiveWidgets`, keeping
   the container composition-focused; focused dashboard tests + `web typecheck`
-  + `web build` passed.
+  - `web build` passed.
 - 2026-04-22: closed `SCALE-11` + `SCALE-12` by freezing one explicit web
   container split contract in
   `docs/architecture/reference/web-container-split-contract.md` and extracting
@@ -24761,7 +24935,7 @@
   for order-open, shared order-fill-position lifecycle handling across
   runtime/manual paths, waiting-fill runtime semantics, dashboard lifecycle copy
   parity, and passing closure pack (`api UOLF matrix`, `HomeLiveWidgets +
-  preview parity`, `api/web typecheck`, `build`, `quality:guardrails`,
+preview parity`, `api/web typecheck`, `build`, `quality:guardrails`,
   `test:go-live:smoke`).
 - 2026-04-20: queued wallets list + paper reset safety wave (`WAPR-01..WAPR-10`)
   and published executor-ready plan
@@ -24897,7 +25071,7 @@
   canonical-first, adding deterministic drift audit + safe idempotent repair
   endpoints, extending web switch regression for `Market + Strategy` parity,
   and completing focused closure validation pack (`api bots.e2e +
-  bots.runtime-scope.e2e`, `web HomeLiveWidgets`, `api/web typecheck`) with
+bots.runtime-scope.e2e`, `web HomeLiveWidgets`, `api/web typecheck`) with
   canonical queue/context synchronization.
 - 2026-04-19: closed `DAGG-C` (`DAGG-09..DAGG-10`) end-to-end by adding
   explicit cross-route selected-bot parity regression
@@ -25223,6 +25397,7 @@
   validation contract, deployment contract, and learning journal are aligned.
 
 ## Working Agreements
+
 - Keep task board and project state synchronized.
 - Keep planning docs synchronized with task board.
 - Keep changes small and reversible.
@@ -25258,6 +25433,7 @@
   `/api/build-info`.
 
 ## Canonical Context
+
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
@@ -25268,6 +25444,7 @@
 - `.agents/workflows/responsibility-lanes.md`
 
 ## Canonical Docs
+
 - `docs/documentation-overview.md`
 - `docs/product/overview.md`
 - `docs/product/product.md`
@@ -25292,10 +25469,9 @@
 - `docs/ux/dashboard-design-system.md`
 
 ## Optional Project Docs
+
 - Add only if the repository truly needs them.
 - Record their canonical paths here once they exist.
-
-
 
 - 2026-05-26 stale-state cleanup applied to `LUC-45` controller operations from
   board comment `24f62373-1a53-444c-96d1-c88a9031bbb7`.
@@ -25308,18 +25484,19 @@
   existing lanes.
 
 ## 2026-05-26 Delivery Reconciliation Pulse
+
 - `LUC-45` remains explicitly `BLOCKED` in controller lane while `LUC-46` (backend/runtime) and `LUC-47` (ops/deploy) evidence remain open.
 - 2-hour active Delivery routine continues to own reconciliation and blocker validation.
 - No new unblock evidence payload arrived in this cycle; parent status remains stable fail-closed.
 
 ## 2026-05-26 Stale Parent Cleanup Update
+
 - `LUC-45` parent controller remains `BLOCKED` and must not appear as passive `in_progress` without a live reconciliation run.
 - Open blocker set now explicitly includes three proof lanes:
   - `LUC-46` backend/runtime proof,
   - `LUC-47` ops/deploy proof,
   - `LUC-48-A/browser-proof` frontend proof lane.
 - Active V1 controller routine owns the next reconciliation pass and keeps fail-closed gate enforcement until all open proof lanes provide closure evidence.
-
 
 - `LUC-115 assigned heartbeat (2026-05-26)` completed as `done` for
   `LUC-103-P5D` (`LUC-86` Ops evidence closure).
@@ -25363,15 +25540,6 @@
   No runtime/deploy mutation and no cross-lane implementation changes occurred.
   Evidence: `history/tasks/luc-147-history-plans-closure-bundle-2026-05-26-task.md` and
   `history/evidence/luc-147-history-plans-closure-bundle-2026-05-26.md`.
-
-
-
-
-
-
-
-
-
 
 - `LUC-175 source_scoped_recovery_action heartbeat (2026-05-26)` was reconciled as a status-only source-control queue-gate checkpoint and remains `blocked`.
   Inline wake payload was used first (`fallback fetch: no`) and introduced no pending human unblock input (`0/0`) and no new blocker-closure evidence.
@@ -25528,14 +25696,10 @@
   Temp expected-SHA smoke still fails (fetch failed), and a new release-critical drift was observed: production web build-info now reports 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 instead of 3fedb7a9....
   Control smoke against observed SHA 71b8d503... passes, so parent closure must reconcile expected-SHA decision plus unresolved workers-market-stream readiness recovery/deeper-blocker evidence.
 
-
-
-
 - LUC-99 resume delta (2026-05-26, finish_successful_run_handoff) executed with concrete revalidation and remains blocked.
   Runtime auth bindings were present; protected-input readiness stayed PARTIAL (9) for parent expected SHA 3fedb7a9....
   Temp expected-SHA smoke remains failed, production expected-SHA smoke for 3fedb7a9... still fails on build-info mismatch, and production control smoke for observed SHA 71b8d503... passes.
   Read-only Coolify snapshot now reports workers-market-stream as `running:unknown` (improved from exited:unhealthy) but without explicit readiness proof, so closure still requires worker-readiness evidence plus release-controller expected-SHA reconciliation.
-
 
 - `LUC-99` source-scoped recovery heartbeat (2026-05-26, Ops Release Lead) executed with concrete read-only checks and remains `blocked`.
   In this runner, Coolify auth bindings are absent, protected-input readiness is `BLOCKED` (`0`), temp smoke remains failed (`fetch failed`), and production expected-SHA smoke still mismatches (`expected=3fedb7a9...`, `observed=71b8d503...`).
@@ -25604,6 +25768,7 @@
   Unblock remains operator-owned: authenticated worker readiness/log evidence (or accepted deeper-blocker packet) plus parent closure decision update.
 
 ## 2026-05-26 Wake Delta (issue_assigned, Ops Release Lead, authenticated-boundary stability recheck)
+
 - Stage: `verification`
 - Scope: read-only verification only; no deploy/restart/runtime mutation.
 - Fresh command results:
@@ -25624,9 +25789,11 @@
   - Temp acceptance surface remains unreachable by direct smoke path.
 
 ### Final Disposition
+
 - `blocked`
 
 ### Unblock Owner / Action
+
 - Owner: Soar API auth credential owner + Coolify operator + release controller.
 - Action:
   1. provide approved read-only app auth/session path that can pass `/workers/ready`,
@@ -25634,6 +25801,7 @@
   3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
 
 ## 2026-05-26 Wake Delta (issue_continuation_needed, Ops runtime+smoke reconciliation)
+
 - Stage: `verification`
 - Scope: concrete read-only ops reconciliation; no deploy/restart/runtime mutation.
 - Fresh runtime signals:
@@ -25653,15 +25821,16 @@
   - temp direct acceptance path remains unavailable.
 
 ### Final Disposition
+
 - `blocked`
 
 ### Unblock Owner / Action
+
 - Owner: Soar API auth credential owner + Coolify operator + release controller.
 - Action:
   1. provide approved read-only app auth/session path that can pass `/workers/ready`,
   2. attach authenticated readiness proof (or equivalent protected readiness/log packet) for `workers-market-stream`,
   3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
-
 
 - `LUC-221 finish_successful_run_handoff heartbeat (2026-05-27)` was
   reconciled as a status-only PM no-stall checkpoint and remains `blocked`.
@@ -25671,7 +25840,6 @@
   temp-domain expected-SHA smoke/readiness + worker readiness + rollback note.
   Evidence:
   `history/tasks/luc-221-no-stall-queue-expeditor-2026-05-27-task.md`.
-
 
 - `LUC-244 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
   queue-expeditor checkpoint and remains `blocked`.
@@ -25714,19 +25882,17 @@
   Evidence:
   `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
 
-
 - `LUC-386 Mobile module docs baseline (2026-05-28)` is now explicitly recorded as complete for the scaffold-only scope. `docs/modules/mobile-module-index.md` and `docs/modules/mobile-bootstrap.md` are present; `docs/modules/module-doc-status-index.md` includes `Mobile Surface`; `docs/modules/module-registry.md` includes `Mobile Module Registry`; and `.agents/state/module-confidence-ledger.md` (`SOAR-MOBILE-001`) now references this docs baseline. Native/mobile implementation remains deferred by design until activation approval.
-
 
 - `LUC-175 [Soar][LUC-103-P6]` heartbeat (`issue_commented`, 2026-05-28) consumed comment `f2640c8a-3c88-4971-bd25-d1ab2730c7ec` and applied control-loop unblock policy for local source-control closure lanes.
   Local closure is now explicitly decoupled from protected production gates: `LUC-241`/`LUC-47` continue to block deploy/restart/push/protected smoke, but do not block local diff classification, local validation, and local commit/no-commit disposition.
   Concrete execution completed:
-  1) full dirty-group classification (`product-code=2`, `state/control=6`, `docs/evidence/plans=15`),
-  2) local validation for product-code group (`assistantOrchestrator`): targeted vitest `7/7 pass` + `api` typecheck pass,
-  3) disposition split: product-code is local commit-eligible; non-product groups remain no-commit/preserved in this heartbeat.
-  No revert, no push, no deploy/restart/protected smoke, no secret disclosure.
-  Evidence:
-  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+  1. full dirty-group classification (`product-code=2`, `state/control=6`, `docs/evidence/plans=15`),
+  2. local validation for product-code group (`assistantOrchestrator`): targeted vitest `7/7 pass` + `api` typecheck pass,
+  3. disposition split: product-code is local commit-eligible; non-product groups remain no-commit/preserved in this heartbeat.
+     No revert, no push, no deploy/restart/protected smoke, no secret disclosure.
+     Evidence:
+     `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
 
 - `LUC-387 [ARB-003]` is complete for the targeted inferred-coverage slice. Web deep dives for `orders`, `positions`, `icons`, and `shared` now include exact-file `Tests` tables, and drift/traceability wording was updated from unresolved inferred coverage to repaired-with-maintenance guidance. Evidence: `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.
 
@@ -25763,16 +25929,16 @@
   2. one canonical-host smoke rerun on expected SHA
      `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
      `PASS` public checks and `FAIL API /workers/ready -> 401`.
-  Interpretation: fresh gate evidence attached; protected readiness remains
-  blocked on auth/session/permission path with missing runtime `SMOKE_AUTH_*`
-  bindings.
-  Explicit next-review condition recorded:
-  run next active protected recheck only when at least one appears:
-  restored approved `SMOKE_AUTH_*` bindings, fresh valid approved principal/session
-  artifact, or explicit board gate approval for exactly one protected recheck.
-  Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
-  Evidence:
-  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+     Interpretation: fresh gate evidence attached; protected readiness remains
+     blocked on auth/session/permission path with missing runtime `SMOKE_AUTH_*`
+     bindings.
+     Explicit next-review condition recorded:
+     run next active protected recheck only when at least one appears:
+     restored approved `SMOKE_AUTH_*` bindings, fresh valid approved principal/session
+     artifact, or explicit board gate approval for exactly one protected recheck.
+     Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
+     Evidence:
+     `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
 - `LUC-241 issue_continuation_needed heartbeat (2026-05-28)` executed a
   concrete read-only status-sync checkpoint and remains `blocked`.
@@ -25810,11 +25976,13 @@
   Unblock owner/action unchanged.
 
 ## 2026-05-28 - LUC-405 protected evidence window revalidation (Ops)
+
 - `ops:operator-unblock:check`: PASS, packet stays fail-closed and no-mutation.
 - `ops:protected-inputs:check` for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`: PARTIAL; protected families still missing (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`).
 - Project release posture for ARB-006 remains `NO-GO / BLOCKED` pending named external owners.
 
 ## 2026-05-28 - LUC-405 parent unblock publication packet
+
 - Published `history/releases/luc-405-luc-402-parent-unblock-comment-packet-2026-05-28.md` for direct parent (`LUC-402`) posting.
 - Packet encodes: window `ARB6-WIN-2026-05-30-A`, expected SHA, no-mutation gate, named owners/actions, and required approvals.
 - ARB-006 release posture remains `BLOCKED/NO-GO` pending auth principal and missing protected evidence families.
@@ -25823,11 +25991,13 @@
   Contract remains fail-closed `blocked` pending approved read-only principal/session for `GET /workers/ready` and closure of missing protected evidence families.
 
 ## 2026-05-28 - LUC-405 Ops heartbeat continuation
+
 - Reran `ops:operator-unblock:check` as minimal protected-window contract checkpoint.
 - Result remains `PASS` with explicit `NO-GO` (`Status NO-GO: yes`) and packet/readiness consistency (`Protected input evidence matches packet: yes`, missing packet fragments/paths: `0`).
 - Release posture unchanged: `blocked` on approved read-only auth principal/session for protected `GET /workers/ready` plus completion/execution of protected evidence window chain for parent `LUC-402`.
 
 ## 2026-05-28 - LUC-405 protected-input readiness continuation
+
 - Reran `ops:protected-inputs:check` for `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` with dated JSON/Markdown outputs.
 - Result remains `PARTIAL` with matching protected names `9`; missing families are unchanged (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE*` / `GATE_*`).
 - Release posture remains `blocked/NO-GO`; unblock contract unchanged (`GET /workers/ready` approved read-only principal/session plus missing protected evidence families before parent `LUC-402` unblock publication).
@@ -25835,12 +26005,14 @@
 - `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) validated protected-input artifact parity (`PARTIAL`, `NO-GO`, missing families unchanged) and kept disposition `blocked` with unchanged unblock owners/actions.
 
 ## 2026-05-28 - LUC-405 input-readiness sign-off artifact (Ops)
+
 - Added executable protected-window input readiness sheet:
   - `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`
 - The sheet captures owner/status/evidence fields for all currently missing protected families and enforces a hard T-30 stop rule (`2026-05-30 08:30 Europe/Berlin`) if any row remains `BLOCKED`.
 - Release posture unchanged: `blocked/NO-GO` until read-only auth principal for protected `GET /workers/ready` and all protected families are marked `READY`.
 
 ## 2026-05-28 - LUC-405 resume-delta readiness checkpoint (Ops)
+
 - Revalidated protected-window contract after resume delta:
   - `ops:operator-unblock:check` stayed `PASS` with explicit `NO-GO: yes`,
   - `ops:protected-inputs:check` stayed `PARTIAL` (only `PROD_UI_*` / `PROD_UI_AUDIT_*` present, all other required families still missing).
@@ -25850,6 +26022,7 @@
   Disposition remains `blocked`; unblock now explicitly includes restoring protected-input families in the active runner context before window execution.
 
 ## 2026-05-28 - LUC-405 protected-input readiness oscillation control (Ops)
+
 - Heartbeat reran `ops:protected-inputs:check` for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` and returned `PARTIAL` (`matching names: 9`) after earlier same-day `BLOCKED` (`0`) drift.
 - Added explicit stability gate artifact:
   - `history/releases/luc-405-arb-006-protected-input-readiness-oscillation-addendum-2026-05-28.md`
@@ -25857,6 +26030,7 @@
 - Disposition remains `blocked`; no production mutation performed.
 
 ## 2026-05-28 - LUC-405 continuation checkpoint (Ops)
+
 - Rechecked protected evidence gate with dual verification:
   - `ops:operator-unblock:check` => `PASS` (`NO-GO: yes`),
   - `ops:protected-inputs:check` => `PARTIAL` (`matching names: 9`; required families still missing outside `PROD_UI_*` / `PROD_UI_AUDIT_*`).
@@ -25894,6 +26068,7 @@
 - `LUC-418 finish_successful_run_handoff (2026-05-28)` reconciled to `done` for the PM known-state baseline scope. No new blockers introduced; blocker topology for V1 remains unchanged outside this issue scope (`LUC-47` + protected evidence owners).
 
 ## 2026-05-28 LUC-431 [Soar][Source Control Closure] classify local dirty state for LUC-402
+
 - Wake issue_assigned consumed from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
 - Concrete action in this heartbeat:
   - classified current dirty worktree into source-control closure groups,
@@ -25905,6 +26080,7 @@
   history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md.
 
 ## 2026-05-28 - LUC-431 issue_commented follow-up (local sidecar closure)
+
 - Processed board comment `827fcda9-240a-414f-a42a-71f9f9f9a4ea` as local sidecar-only scope for source-control closure.
 - Revalidated current dirty-state classification with no runtime/product code mutation in lane scope.
 - Recorded explicit no-commit closure disposition for this heartbeat under blocked protected-delivery dependencies.
@@ -25913,6 +26089,7 @@
   - `history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md`
 
 ## 2026-05-28 - LUC-431 finish_successful_run_handoff sync
+
 - Processed resume-delta handoff with no comment/unblock delta.
 - Revalidated local source-control closure classification; lane remains state/evidence-only with no runtime/product code mutation.
 - Disposition remains `done` with unchanged no-commit decision.
@@ -25928,6 +26105,7 @@
   `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
 
 ## 2026-05-28 - LUC-433 issue_commented follow-up (local repair sidecar closure)
+
 - Processed board comment `e5003ea1-8d54-44ab-9a71-d09c8ab29391` first and treated it as sidecar-only local source-control closure scope.
 - Revalidated local dirty-state classification; lane remains state/evidence-only with no runtime/product code mutation.
 - Recorded explicit no-commit closure disposition under unchanged protected-gate dependency block in parent flow.
@@ -25936,6 +26114,7 @@
   - `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
 
 ## 2026-05-28 - LUC-433 finish_successful_run_handoff sync
+
 - Processed resume-delta handoff with no new comment/unblock signal.
 - Revalidated local source-control closure classification; lane remains state/evidence-only with `runtime/product code=0`.
 - Disposition remains `done` with unchanged no-commit decision.
@@ -25984,9 +26163,9 @@
   `history/tasks/luc-512-source-control-closure-source-scoped-recovery-action-2026-05-28-task.md`.
 
 - LUC-241 source-scoped recovery heartbeat (2026-05-28T15:24:52+02:00) executed concrete read-only status checkpoint and remains blocked.
-  Presence scan in runner context: SMOKE_AUTH_TOKEN=False, SMOKE_AUTH_EMAIL=False, SMOKE_AUTH_PASSWORD=False, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
+  Presence scan in runner context: SMOKE*AUTH_TOKEN=False, SMOKE_AUTH_EMAIL=False, SMOKE_AUTH_PASSWORD=False, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
   No protected /workers/ready rerun was allowed because required auth artifact class is absent.
-  Unblock owner/action unchanged: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_*, then Ops executes exactly one read-only protected recheck and publishes evidence + rollback-impact note.
+  Unblock owner/action unchanged: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH*\*, then Ops executes exactly one read-only protected recheck and publishes evidence + rollback-impact note.
 
 - `LUC-516 known-state evidence baseline (2026-05-28)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
 
@@ -25997,6 +26176,7 @@
 - `LUC-579 finish_successful_run_handoff (2026-05-29)` reconciled to `done` after read-only baseline recheck; metrics remained stable (`generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`) and blocker topology stayed unchanged (`LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
 
 ## 2026-05-29 LUC-616 ARB-001 activation-scope decision packet (Product lane)
+
 - Wake `issue_assigned` was consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action: published Product decision packet `history/plans/luc-616-arb-001-activation-scope-decision-2026-05-29.md` and added decision register row `DEC-ARB-001`.
 - Decision outcome: Soar V1 keeps assistant runtime hot-path orchestration deactivated for `BACKTEST/PAPER/LIVE`; foundation + dry-run remains the active scope.
@@ -26024,6 +26204,7 @@
   `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 ## 2026-05-29 LUC-636 [Soar][Source Control Closure] source_scoped_recovery_action disposition-closure sync
+
 - Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action:
   - reran local dirty-state verification (`git status --short`, `git diff --name-only`),
@@ -26043,7 +26224,6 @@
 - `LUC-386` reconciliation (2026-05-29): child gate issue `LUC-633` is `done` and confirms `DEC-ARB-002`. Current ARB-002 scope remains complete for scaffold-only mobile docs/registry coverage; any new mobile module doc expansion is blocked by design until Product/CTO-approved mobile runtime activation is explicitly started.
 
 - `LUC-386` continuation reconciliation (2026-05-29): validated local dirty scope is docs/state-only (`.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`). No runtime/product-code mutation is present in this lane; continuation-summary touched entries `server/workers/frontend` and `.github/workflows/ci.yml` are not actionable for current docs-memory scope. Status remains `done` pending explicit Product/CTO mobile runtime activation.
-
 
 - `LUC-405 [Soar][ARB-006][Ops]` wake `issue_blockers_resolved` (2026-05-29) was validated with live evidence and remains `blocked`.
   `ops:protected-inputs:check` for `2026-05-29` stayed `PARTIAL` (`matching names=9`; required families still missing), while `ops:operator-unblock:check` stayed `PASS` with `NO-GO: yes`.
@@ -26072,10 +26252,10 @@
   - reran local dirty-state verification (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
   - classified current dirty set as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
   - published closure disposition (`commit=committed locally` as `22427858`, `push=not needed`, `deploy impact=none`).
-  Residual risk:
+    Residual risk:
   1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar checkpoint.
-  Evidence:
-  `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+     Evidence:
+     `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-241 source_scoped_recovery_action heartbeat (2026-05-29)` executed a
   concrete read-only status checkpoint and remains `blocked`.
@@ -26114,19 +26294,19 @@
   2. one canonical-host smoke recheck on expected SHA
      `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
      public checks `PASS`, protected `API /workers/ready -> 401`.
-  Interpretation: board-approved one-time recheck was executed exactly once and
-  evidence captured; protected readiness remains blocked on
-  auth/session/permission boundary.
-  Unblock owner/action unchanged:
-  Soar API auth credential owner + Security/Test permission owner must
-  provide/confirm fresh valid approved read-only ADMIN principal/session
-  artifact accepted by API auth and authorized for protected
-  `GET /workers/ready`; then Ops Release Lead executes exactly one new
-  read-only protected recheck and publishes redaction-safe proof.
-  Scope remained read-only verification/docs-state sync
-  (no deploy/restart/runtime mutation).
-  Evidence:
-  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+     Interpretation: board-approved one-time recheck was executed exactly once and
+     evidence captured; protected readiness remains blocked on
+     auth/session/permission boundary.
+     Unblock owner/action unchanged:
+     Soar API auth credential owner + Security/Test permission owner must
+     provide/confirm fresh valid approved read-only ADMIN principal/session
+     artifact accepted by API auth and authorized for protected
+     `GET /workers/ready`; then Ops Release Lead executes exactly one new
+     read-only protected recheck and publishes redaction-safe proof.
+     Scope remained read-only verification/docs-state sync
+     (no deploy/restart/runtime mutation).
+     Evidence:
+     `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
 - `LUC-241 source_scoped_recovery_action heartbeat (2026-05-30)` executed a
   concrete read-only status checkpoint and remains `blocked`.
@@ -26188,19 +26368,19 @@
   2. one canonical-host smoke recheck on expected SHA
      `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
      public checks `PASS`, protected `API /workers/ready -> 401`.
-  Interpretation: approved one-time recheck was executed exactly once and
-  captured; protected readiness remains blocked on
-  auth/session/permission boundary.
-  Unblock owner/action unchanged:
-  Soar API auth credential owner + Security/Test permission owner must
-  provide/confirm fresh valid approved read-only ADMIN principal/session
-  artifact accepted by API auth and authorized for protected
-  `GET /workers/ready`; then Ops Release Lead executes exactly one new
-  read-only protected recheck and publishes redaction-safe proof.
-  Scope remained read-only verification/docs-state sync
-  (no deploy/restart/runtime mutation).
-  Evidence:
-  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+     Interpretation: approved one-time recheck was executed exactly once and
+     captured; protected readiness remains blocked on
+     auth/session/permission boundary.
+     Unblock owner/action unchanged:
+     Soar API auth credential owner + Security/Test permission owner must
+     provide/confirm fresh valid approved read-only ADMIN principal/session
+     artifact accepted by API auth and authorized for protected
+     `GET /workers/ready`; then Ops Release Lead executes exactly one new
+     read-only protected recheck and publishes redaction-safe proof.
+     Scope remained read-only verification/docs-state sync
+     (no deploy/restart/runtime mutation).
+     Evidence:
+     `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
 - `LUC-241 source_scoped_recovery_action heartbeat (2026-05-30)` executed a
   concrete read-only status checkpoint and remains `blocked`.
@@ -26309,20 +26489,18 @@
   2. one canonical-host smoke recheck on expected SHA
      `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
      public checks `PASS`, protected `API /workers/ready -> 401`.
-  Interpretation: repaired `SMOKE_AUTH_*` binding class is present, but
-  protected readiness remains blocked on auth/session/permission boundary.
-  Unblock owner/action unchanged:
-  Soar API auth credential owner + Security/Test permission owner must
-  provide/confirm fresh valid approved read-only ADMIN principal/session
-  artifact accepted by API auth and authorized for protected
-  `GET /workers/ready`; then Ops Release Lead executes exactly one new
-  read-only protected recheck and publishes redaction-safe proof.
-  Scope remained read-only verification/docs-state sync
-  (no deploy/restart/runtime mutation).
-  Evidence:
-  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
-
-
+     Interpretation: repaired `SMOKE_AUTH_*` binding class is present, but
+     protected readiness remains blocked on auth/session/permission boundary.
+     Unblock owner/action unchanged:
+     Soar API auth credential owner + Security/Test permission owner must
+     provide/confirm fresh valid approved read-only ADMIN principal/session
+     artifact accepted by API auth and authorized for protected
+     `GET /workers/ready`; then Ops Release Lead executes exactly one new
+     read-only protected recheck and publishes redaction-safe proof.
+     Scope remained read-only verification/docs-state sync
+     (no deploy/restart/runtime mutation).
+     Evidence:
+     `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
 - `LUC-959 issue_assigned heartbeat (2026-05-31)` executed a concrete coordination traceability check and is `done`.
   Wake scope was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -26382,8 +26560,8 @@
   - `current` (`LUC-241` continuity): `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
   - `out_of_scope` docs-generation lane: `docs/maps/*.canvas`, `docs/obsidian/*`, `scripts/buildObsidianVaultLayer.mjs`.
   - `current` (`LUC-997` evidence-only): `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
-  Commit/no-commit decision: `no-commit` (cross-lane mixed ownership remains).
-  Unblock owner/action:
+    Commit/no-commit decision: `no-commit` (cross-lane mixed ownership remains).
+    Unblock owner/action:
   1. `LUC-241` owner closes continuity files.
   2. Obsidian/docs-generation owner closes map/docs/script dirty paths.
   3. Run one fresh clean-tree `LUC-997` recheck, then close.
@@ -26422,11 +26600,10 @@
   Unblock owner/action unchanged: `LUC-241` owner closes continuity files, docs-generation owner closes `docs/maps/*`, `docs/obsidian/*`, `scripts/buildObsidianVaultLayer.mjs`, then one clean-tree `LUC-997` recheck.
 
 - LUC-997 (2026-05-31, comment f9b218b...): local source-control closure lane switched from repeated
-o-commit to closure commit path after targeted revalidation (
-ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan no secret values). Operational rule applied: docs/history/context/evidence dirty set must be locally committed rather than left mixed by issue boundaries.
+  o-commit to closure commit path after targeted revalidation (
+  ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan no secret values). Operational rule applied: docs/history/context/evidence dirty set must be locally committed rather than left mixed by issue boundaries.
 
 - LUC-997 closed on 2026-05-31 after post-commit recheck: local worktree clean and closure commit 86218a1ba2a5a3e819bc8000aba18b1b16aa496 recorded; no push/deploy executed in this lane.
-
 
 - `LUC-1027 [Soar] Coolify production deploy health sweep` heartbeat executed on 2026-05-31 and is `blocked`.
   Wake `issue_assigned` was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -26435,12 +26612,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `https://api.soar.luckysparrow.ch/ready -> 503`
   - `https://soar.luckysparrow.ch/ -> 503`
   - `https://soar.luckysparrow.ch/api/build-info -> 503`
-  Source snapshot in the same run: `HEAD=83ddd20e3046926b214e380d57d0701e642260c2`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`.
-  No deploy/restart/rollback/env/database mutation was performed.
-  First-class unblock owner/action:
+    Source snapshot in the same run: `HEAD=83ddd20e3046926b214e380d57d0701e642260c2`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`.
+    No deploy/restart/rollback/env/database mutation was performed.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
   2. After recovery, rerun one read-only production health sweep and publish fresh SHA/build-info/readiness evidence.
-  Evidence:
+     Evidence:
   - `history/tasks/luc-1027-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
   - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
 - `LUC-1027 [Soar]` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and remains `blocked`.
@@ -26453,14 +26630,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     Soar `postgresql` + `redis` remain `running:healthy`.
   - canonical public endpoints remain unavailable (`503` for `/health`, `/ready`, `/`, `/api/build-info`).
   - deployment lineage ambiguity remains in this token context (`/api/v1/deployments` returned no recent rows), and runtime binding drift exists (`COOLIFY_SOAR_PROJECT_ID` resolves to project `n8n`, not `Soar`).
-  First-class unblock owner/action:
+    First-class unblock owner/action:
   1. Ops Release Lead + Coolify operator: under explicit release mutation permit, inspect failed Soar deploy objects/logs for `environment_id=6` and publish root-cause packet.
   2. Security/ops credential owner: correct Soar project binding (or approved explicit query path) to restore deterministic read-only deploy lineage for Soar.
   3. Any production recovery mutation remains fail-closed until explicit permit names resource/action/source/rollback/smoke.
-  Evidence:
+     Evidence:
   - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
   - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
-
 
 - `LUC-1064 [Soar][Source Control Closure]` heartbeat executed on 2026-05-31 and closed as `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -26470,9 +26646,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Closure disposition for this lane: `committed locally` / `not pushed` / `none`.
   Evidence:
   `history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
-
-
-
 
 - `LUC-1080 [Soar][Infra Gate] Diagnose production DNS/network failure for LUC-241` heartbeat (`issue_assigned`) executed on 2026-05-31 and is `done`.
   - Read-only artifact: `history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31.json`.
@@ -26490,13 +26663,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - captured dirty baseline with `git status --short --branch`,
   - classified all dirty paths for `LUC-241/LUC-1080` continuity scope,
   - confirmed no `runtime/product/deploy` paths in the dirty set (`0`).
-  Classification summary:
+    Classification summary:
   - `state/control=2` (`.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`),
   - `task-evidence=4` (`history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31*.json`, `history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md`),
   - `runtime/product/deploy=0`.
-  Closure disposition: `not committed` / `not needed` / `none`.
-  Evidence:
-  `history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md`.
+    Closure disposition: `not committed` / `not needed` / `none`.
+    Evidence:
+    `history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md`.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_reopened_via_comment`) executed on 2026-05-31 and remains `blocked`.
   Board comment `softwarehouse-autonomous-gate-approval:LUC-241:v1` (id `f12260b0-fb30-42c4-9dca-cc45ebe2fe59`) was acknowledged first and consumed as exactly one authorized read-only recheck.
@@ -26511,8 +26684,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     - `API /workers/ready -> 503`
   - auth artifact presence checkpoint (no secret values):
     `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
-  No deploy/restart/runtime mutation/push was performed.
-  First-class unblock owner/action:
+    No deploy/restart/runtime mutation/push was performed.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After recovery and fresh explicit gate approval, execute exactly one read-only protected `/workers/ready` recheck and publish redaction-safe evidence.
 
@@ -26525,8 +26698,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     - `https://api.soar.luckysparrow.ch/ready -> 503`
     - `https://soar.luckysparrow.ch/ -> 503`
     - `https://soar.luckysparrow.ch/api/build-info -> 503`
-  Interpretation: blocker state unchanged; canonical runtime availability remains degraded.
-  First-class unblock owner/action unchanged:
+      Interpretation: blocker state unchanged; canonical runtime availability remains degraded.
+      First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After recovery and fresh explicit gate approval, execute exactly one read-only protected `/workers/ready` recheck and publish redaction-safe evidence.
 
@@ -26541,8 +26714,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     - `https://soar.luckysparrow.ch/api/build-info -> ERR`
   - read-only Coolify probe:
     - `COOLIFY /api/v1/health -> ERR` (runner-side null-reference error path).
-  Interpretation: blocker state unchanged; canonical API availability remains degraded and protected readiness proof cannot progress in this wake.
-  First-class unblock owner/action unchanged:
+      Interpretation: blocker state unchanged; canonical API availability remains degraded and protected readiness proof cannot progress in this wake.
+      First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After recovery and fresh explicit gate approval, execute exactly one read-only protected `/workers/ready` recheck and publish redaction-safe evidence.
 
@@ -26551,8 +26724,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Concrete action (read-only continuity checkpoint at 2026-05-31T16:46:49.5006511+02:00):
   - auth artifact presence: SMOKE_AUTH_TOKEN=True, SMOKE_AUTH_EMAIL=True, SMOKE_AUTH_PASSWORD=True, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
   - canonical public probes: https://api.soar.luckysparrow.ch/health -> 503, https://api.soar.luckysparrow.ch/ready -> 503, https://soar.luckysparrow.ch/ -> 503, https://soar.luckysparrow.ch/api/build-info -> 503.
-  Disposition remains fail-closed locked; canonical runtime availability blocker is unchanged and protected /workers/ready recheck is not actionable in this wake.
-  First-class unblock owner/action:
+    Disposition remains fail-closed locked; canonical runtime availability blocker is unchanged and protected /workers/ready recheck is not actionable in this wake.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing 503 interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 
@@ -26562,8 +26735,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - captured dirty baseline via `git status --short --branch` + `git diff --name-only`,
   - classified all dirty paths as `LUC-241` continuity ownership,
   - confirmed runtime/product/deploy dirty paths remain `0`.
-  Final disposition for this wake: `done`.
-  Evidence:
+    Final disposition for this wake: `done`.
+    Evidence:
   - `history/tasks/luc-1097-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`
 
 - LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions continuation wake (issue_reopened_via_comment) executed on 2026-05-31 and is locked.
@@ -26573,8 +26746,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - remote verification: origin/main is 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - read-only canonical smoke with expected SHA 6839cd6b... failed on all checks with 503, including protected /workers/ready.
   - read-only Coolify probes confirmed control-plane reachability (/api/v1/version, /api/v1/health, /api/v1/applications each 200) with token presence available.
-  Disposition remains fail-closed locked; push path is complete, but canonical Soar runtime availability blocker is unchanged.
-  First-class unblock owner/action:
+    Disposition remains fail-closed locked; push path is complete, but canonical Soar runtime availability blocker is unchanged.
+    First-class unblock owner/action:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability and publish no-mutation incident note for the ongoing 503 interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 
@@ -26584,14 +26757,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - auth/context presence: SMOKE_AUTH_TOKEN=True, SMOKE_AUTH_EMAIL=True, SMOKE_AUTH_PASSWORD=True, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False, COOLIFY_BASE_URL=True, COOLIFY_TOKEN=True, COOLIFY_API_TOKEN=True.
   - canonical Soar probes: /health -> 503, /ready -> 503, web / -> 503, web /api/build-info -> 503.
   - read-only Coolify probe: /api/v1/health -> 200.
-  Disposition remains fail-closed locked; Soar runtime availability remains the active upstream blocker for protected /workers/ready proof.
-  First-class unblock owner/action unchanged:
+    Disposition remains fail-closed locked; Soar runtime availability remains the active upstream blocker for protected /workers/ready proof.
+    First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability and publish no-mutation incident note for the ongoing 503 interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 
-
-
 ## 2026-05-31 LUC-1075 continuation reconciliation (source_scoped_recovery_action-2)
+
 - Wake `source_scoped_recovery_action` processed as read-only triage continuity and marked `done`.
 - Concrete action:
   - reran reconciliation across canonical `LUC-1075` task artifact and `LUC-1068`/`LUC-1065` evidence artifacts,
@@ -26600,7 +26772,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `LUC-1068` stays `done` and does not reopen.
   - one legal next action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
 - Commit policy in this lane remains `no-commit` (classification-only continuity).
-
 
 - `LUC-1123 [Softwarehouse][Blocked Triage]` (2026-05-31): classified `LUC-405` as still fail-closed `blocked/NO-GO` with unchanged protected-family gaps and no valid blocker-resolved evidence.
   Next legal action remains trigger-gated by continuation-control contract: wait for explicit trigger, then run one same-context dual-check (`ops:operator-unblock:check` + `ops:protected-inputs:check`) and publish parent unblock only on complete/stable readiness.
@@ -26612,14 +26783,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - `LUC-1123` continuation wake `source_scoped_recovery_action` (2026-05-31) reconciled to `done` as read-only triage continuity.
   Revalidation confirmed no new blocker-resolved trigger for `LUC-405`; fail-closed `blocked/NO-GO` classification remains unchanged with existing trigger-gated next action.
 
-
 - `LUC-1128 [Soar][Source Control Closure]` continuation wake `source_scoped_recovery_action` executed on 2026-05-31 and is `done`.
   Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); no comment delta required triage.
   Concrete action (read-only local closure continuity check at 2026-05-31T20:53:50.3659854+02:00):
   - `git status --short` -> clean worktree (no dirty paths),
   - `git log --oneline -n 8` -> continuity closure chain present (`7797e880`, `843a6deb`, `cae7917e`).
-  Disposition: no new dirty-state classification or closure commit required in this wake; sidecar lane remains closed.
-  Evidence:
+    Disposition: no new dirty-state classification or closure commit required in this wake; sidecar lane remains closed.
+    Evidence:
   - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
 
 - `LUC-1145 [Soar][LUC-241][Security] Read-only permission decision packet for /workers/ready smoke` heartbeat (`issue_commented`) executed on 2026-05-31 and is `done`.
@@ -26636,8 +26806,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - Closure action: one local source-control closure commit created; no push/deploy in this heartbeat.
   - Evidence: `history/tasks/luc-1148-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1144-luc-1145-luc-1146-2026-05-31-task.md`.
 
-
 ## 2026-05-31 LUC-1148 local repair lane closure
+
 - Processed wake comment `73477930-b96b-43d4-a18c-2a267afc9f1f` (`softwarehouse-local-repair-lane-starter:v1`) under local-only source-control closure constraints.
 - Classified active dirty set as docs/state/evidence-only continuity artifacts (no runtime/product code changes).
 - Created closure evidence packet: `history/tasks/luc-1148-source-control-closure-comment-73477930-local-repair-lane-2026-05-31-task.md`.
@@ -26655,7 +26825,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - Recheck reran one canonical smoke command; outcome unchanged: public probes `PASS`, protected `GET /workers/ready=401`.
   - No runtime/deploy mutation and no protected unblock evidence delta in this wake.
 
-
 | 2026-05-31 | LUC-1160 Coolify restart-loop diagnosis | PARTIALLY_VERIFIED: public Soar endpoints recovered (`200`) after prior `503` outage; Coolify read-only app state shows `soar-api` had a recovered crash (`last_restart_type=crash`, `last_restart_at=2026-05-31T21:08:45Z`, `restart_count=2`) while Soar workers show `restart_count=0` in same snapshot. No active loop confirmed at heartbeat end, but root cause remains unproven without pre-crash host-level logs and protected worker/alerts probes. | `history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md`; `history/evidence/luc-1160-coolify-restart-loop-diagnosis-2026-05-31.md`; `history/artifacts/luc-1160-soar-api-logs-redacted-snippet-2026-05-31.txt` | Extract host-level pre-crash logs/events around `2026-05-31T21:08:45Z`; run approved protected read-only probes for `/workers/ready` and `/alerts`. |
 
 - `LUC-1162 [Soar][LUC-241][Security] Validate /workers/ready principal permission path` heartbeat (`issue_continuation_needed`) executed on 2026-05-31 and remains `blocked`.
@@ -26667,7 +26836,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - Unblock owner/action: Ops/Auth credential owner must provide fresh approved read-only ADMIN principal/session artifact, then QA/Ops runs one approved protected `/workers/ready` recheck and publishes redaction-safe proof.
   - Evidence: `history/tasks/luc-1162-soar-luc-241-security-validate-workers-ready-principal-permission-path-2026-05-31-task.md`.
 
-
 - `LUC-1186 [Soar] Coolify production deploy health sweep` heartbeat (`issue_assigned`) executed on 2026-06-01 and is `done`.
   - Read-only production verification executed: `git rev-parse HEAD`, `git rev-parse origin/main`, `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`, and build-info readback from `https://soar.luckysparrow.ch/api/build-info`.
   - Public probes are healthy (`GET /health=200`, `GET /ready=200`, `GET /=200`, `GET /api/build-info=200`).
@@ -26676,7 +26844,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - Evidence:
     - `history/tasks/luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md`
     - `history/evidence/luc-1186-coolify-production-deploy-health-sweep-2026-06-01.md`
-
 
 - `LUC-1175 [Soar][V1 Conformance][Frontend]` heartbeat (`issue_assigned`) executed on 2026-06-01 and is `blocked`.
   - Wake comment `softwarehouse-local-repair-lane-starter:v1` acknowledged and applied first under local fail-closed lane constraints.
@@ -26699,9 +26866,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `LUC-1167` linkage confirmed for signal-semantics fix coverage; no duplicated implementation lane created.
   - Unblock owner/action unchanged: Frontend encoding repair + QA/Frontend closure rerun.
 
-
-
 ## 2026-06-01 - LUC-1190 source-scoped recovery alignment
+
 - Status: `done` (security/architecture lane remains complete).
 - Heartbeat action:
   - revalidated the canonical authorization gate packet and task artifact for scope completeness (`ADMIN` + auth + ops network + read-only scope; deny matrix `401/403`; redaction contract).
@@ -26714,6 +26880,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - deploy impact: `none`
 
 ## 2026-06-01 - LUC-1195 route-level conformance pack consolidation (Delivery lane)
+
 - Status: locked.
 - Concrete progress: consolidated one explicit DCA/TSL route-level conformance pack definition for runtime positions read/close with required assertions, current proof sources, and gap classification.
 - Durable packet:
@@ -26727,8 +26894,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - push: not needed
   - deploy impact: none
 
-
 ## 2026-06-01 - LUC-1194 orphan-repair endpoint contract closure
+
 - Status: `implemented and verified`.
 - Delivered in this checkpoint:
   - added dedicated endpoint contract test `apps/api/src/modules/positions/positions.orphan-repair.contract.e2e.test.ts`;
@@ -26739,6 +26906,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Deploy impact: `none`.
 
 ## 2026-06-01 - LUC-1195 runtime positions read DCA/TSL route-level conformance pack
+
 - Status: `blocked`.
 - Delivered in this checkpoint:
   - consolidated executable route-level conformance command in API scripts:
@@ -26768,6 +26936,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     - `history/evidence/luc-1197-workers-ready-contract-suite-unblock-and-proof-closure-2026-06-01.md`
 
 ## 2026-06-01 - LUC-1196 runtime close route-level DCA-first pack
+
 - Status: `implemented but not verified` (environment-blocked verification).
 - Implemented in this checkpoint:
   - new backend e2e route pack for runtime position close authority:
@@ -26781,7 +26950,9 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Next owner/action:
   1. Backend/QA: bring up local Postgres for test runtime.
   2. Backend: rerun focused test pack and publish PASS evidence.
+
 ## 2026-06-01 - LUC-1196 runtime close DCA-first route-level pack
+
 - Status: `blocked`.
 - Delivered in this checkpoint:
   - added focused backend e2e pack for `POST /dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close`:
@@ -26812,6 +26983,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
     - `history/evidence/luc-1176-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01.md`
 
 ## 2026-06-01 - LUC-1177 deploy/restart/release-readiness reconciliation
+
 - Status: `partially verified` (fail-closed).
 - Reconciled evidence chain:
   - public deploy health sweep PASS (`LUC-1186`),
@@ -26823,12 +26995,14 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Source-control closure in this heartbeat: `not committed` due to broad unrelated runtime/product dirty workspace state.
 
 ## 2026-06-01 LUC-1177 continuation closure
+
 - Reconciliation with `LUC-1160`/`LUC-1161` is now explicit and current.
 - Fresh public read-only smoke remains green; protected release-readiness remains blocked by guarded evidence gates.
 - Source-control truth captured: deployed evidence SHA aligns with `origin/main` (`6839cd6b...`), while local `HEAD` is different (`89bbf392...`); no mutation performed.
 - Lane disposition: `done` for reconciliation objective.
 
 ## 2026-06-01 LUC-1223 source-control closure classification (sidecar lane)
+
 - Wake comment `505b1d8a-1860-4749-a8f9-91325893f1c1` (`softwarehouse-local-repair-lane-starter:v1`) was acknowledged first; scope stayed local source-control closure only while target delivery remains dependency-blocked.
 - Dirty-state snapshot captured with `git status --porcelain=v1 -uall`:
   - total dirty paths: `62`
@@ -26846,6 +27020,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md`
 
 ## 2026-06-01 - LUC-1223 source-control closure classification
+
 - Status: `verified`.
 - Scope completed in this lane:
   - classified current dirty workspace for `LUC-241 + LUC-1160/1161/1162 + follow-up lanes` into explicit buckets;
@@ -26863,6 +27038,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/evidence/luc-1223-source-control-closure-dirty-state-classification-2026-06-01.md`
 
 ## 2026-06-01 - LUC-1223 reopen delta
+
 - Status: `blocked`.
 - Reason:
   - source-control closure lane now has explicit full remaining dirty-path inventory;
@@ -26879,11 +27055,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
 
 ## 2026-06-01 - LUC-1223 handoff checkpoint
+
 - Status: `blocked` (unchanged).
 - Dirty-path inventory and no-commit blocker remain current and explicit in `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`.
 - Commit/push/deploy in this heartbeat: `not committed` / `not needed` / `none`.
 
 ## 2026-06-01 - LUC-1223 cancellation-reason checkpoint
+
 - Status: `blocked` (unchanged).
 - Wake context confirmed: `source_scoped_recovery_action` with no pending comment delta and no fallback thread fetch requirement.
 - PM lane action in this heartbeat:
@@ -26895,6 +27073,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. `LUC-1223` rerun after split commits.
 
 ## 2026-06-01 - LUC-1223 autonomous repair lane checkpoint (comment 361fc702-9a88-438f-86af-0d5e589c6ea1)
+
 - Status: `blocked` (unchanged).
 - Revalidated local dirty tree and branch status; no single-owner PM-lane commit boundary exists.
 - Scope/mutation guard preserved: no commit, no push, no deploy.
@@ -26904,24 +27083,21 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. Rerun `LUC-1223` closure checkpoint after split commits.
 
 ## 2026-06-01 - LUC-1223 continuation split packet
+
 - Status: `blocked`.
 - Added actionable owner-batch split to reduce unblock ambiguity (A backend, B frontend, C history evidence/tasks, D state ledgers).
 - Validation rerun: `git status --short`.
 - Closure remains blocked pending commit SHA evidence for split batches.
 
 ## 2026-06-01 - LUC-1223 recovery continuation
+
 - Status: `blocked` (unchanged).
 - Heartbeat action: reran `git status --short`; A/B/C/D split counts remain `9/8/46/2`.
 - Closure is still blocked pending owner-batch commit SHA evidence.
 - Unblock owner/action unchanged: Engineering Delivery Lead coordinates split commit execution and rerun.
 
-
-
-
-
-
-
 ## 2026-06-01 LUC-1247 continuation [source_scoped_recovery_action]
+
 - Wake `source_scoped_recovery_action` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - revalidated closure parity for `LUC-1247` across control map, task contract, and canonical context files,
@@ -26931,8 +27107,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md`
   - `history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md`
 
-
 ## 2026-06-01 LUC-1256 continuation [issue_commented]
+
 - Wake `issue_commented` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `865ac40f-a81c-4258-9bf8-67966a9fa07c`).
 - Comment impact applied first: executed `softwarehouse-known-state-wakeup:v1` as local evidence collection + repair-lane conversion (no push/deploy/restart/protected smoke).
 - Evidence delta result unchanged: `generated_at=2026-05-31T20:42:36.027Z`, entities `13396`, relations `20522`, inferred test gaps `200`, inferred docs gaps `200`, disconnected entities `0`.
@@ -26945,6 +27121,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
 
 ## 2026-06-01 LUC-1256 continuation [finish_successful_run_handoff]
+
 - Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - attempted architecture-awareness refresh: `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` from `Paperclip_Softwarehouse`.
@@ -26960,6 +27137,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
 
 ## 2026-06-01 - LUC-1223 autonomous local repair lane refresh (comment 8de91d7d-472f-4794-8e63-eb6294da0b46)
+
 - Consumed board wake first and kept fail-closed local-repair scope (`no push/deploy/restart`).
 - Revalidated current dirty tree with `git status --short` and `git status --porcelain=v1 -uall`.
 - Dirty-state snapshot now: `80` paths (`apps=17`, `state(.codex/.agents)=3`, `history=51`, `docs=9`).
@@ -26970,6 +27148,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. Docs/PM closes residual batches and reruns `LUC-1223` closure checkpoint.
 
 ## 2026-06-01 - LUC-1223 finish_successful_run_handoff continuation
+
 - Executed source-control closure recheck in fail-closed local lane.
 - Validation: `git status --porcelain=v1 -uall`.
 - Current dirty scope unchanged: `80` paths (`apps=17`, `state=3`, `history=51`, `docs=9`).
@@ -26980,13 +27159,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. Docs/PM closes residual scope and reruns closure checkpoint.
 
 ## 2026-06-01 - LUC-1223 issue_continuation_needed checkpoint
+
 - Performed concrete closure-lane recheck; no dirty-scope delta from prior heartbeat.
 - Validation: `git status --porcelain=v1 -uall` => `total=80`, `apps=17`, `state=3`, `history=51`, `docs=9`.
 - Disposition: `blocked` with unchanged unblock chain (Delivery split -> runtime SHAs -> docs/state/history closeout -> rerun checkpoint).
 
-
-
 ## 2026-06-01 - LUC-1223 reopen via comment checkpoint
+
 - Consumed board wake first (`softwarehouse-local-repair-lane-starter:v1`) and reran local closure verification.
 - Prior failed run was adapter-level; no local command failure reproduced in this heartbeat.
 - Validation: `git status --porcelain=v1 -uall`, `git status --short --branch`.
@@ -26994,20 +27173,24 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Disposition: `blocked` pending Delivery-led split and owner-batch commit SHAs.
 
 ## 2026-06-01 - LUC-1223 finish_successful_run_handoff continuity
+
 - Concrete recheck completed; dirty-state classification unchanged (`82`: apps `17`, state `3`, history `53`, docs `9`).
 - No PM-lane commit boundary available; blocker and owner path unchanged.
 
 ## 2026-06-01 - LUC-1223 recovery continuation (docs-aware recount)
+
 - Status: `blocked` (unchanged).
 - Heartbeat action: reran `git status --porcelain=v1 -uall`.
 - Current scope: `total=82`, `apps=17`, `state=3`, `history=53`, `docs=9`.
 - Blocker unchanged: no owner-batch commit SHAs yet; PM lane remains non-mutation.
 
 ## 2026-06-01 - LUC-1223 continuation checkpoint
+
 - Recheck complete with unchanged scope (`82` total; apps `17`, state `3`, history `53`, docs `9`).
 - Blocked status retained pending Delivery-led split and owner commit SHAs.
 
 ## 2026-06-01 LUC-1223 reopen via comment checkpoint (001c5795-07a5-48b1-8b7f-5ee5e1bd3f40)
+
 - New wake handled first under fail-closed source-control closure scope.
 - Previous cancellation cause confirmed as control-plane cancellation; no local lane execution fault reproduced.
 - Validation rerun: git status --porcelain=v1 -uall.
@@ -27020,6 +27203,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. Docs/PM closes residual history/state/docs and reruns closure checkpoint.
 
 ## 2026-06-01 Continuation (issue_continuation_needed, no-comment delta)
+
 - Wake delta handled with concrete source-control recheck under local closure sidecar scope.
 - Validation rerun:
   - git status --porcelain=v1 -uall
@@ -27034,23 +27218,27 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   3. Docs/PM lane closes residual history/state/docs batches and reruns LUC-1223 closure checkpoint.
 
 ## 2026-06-01 - LUC-1223 recovery continuation (refined 5-batch split)
+
 - Status: `blocked` (unchanged).
 - Heartbeat action: docs-aware recount + split refinement to five owner batches.
 - Current scope: `total=82`, `apps=17`, `state=3`, `history=53`, `docs=9`.
 - New unblock sequence: A+B (Engineering) -> C+E (Docs/Delivery) -> D (PM) -> closure rerun.
 
 ## 2026-06-01 LUC-1306 Runtime DCA/TSL parity checkpoint
+
 - `LUC-1306` advanced as a bounded backend verification/fix slice.
 - Reproduced focused DCA/TSL parity suite timeout (`2/2`) and fixed the test-runtime dependency leak by mocking `runtimePositionStateStore` methods in `runtimePositionAutomation.dcaTpParity.test.ts`.
 - Focused parity suite now passes (`2/2`), proving TP/SL DCA-side gating assertions execute deterministically in local unit scope.
 - Route-level DB-backed e2e close-authority proof remains pending due missing local PostgreSQL (`localhost:5432`); mission status stays `in_progress` with explicit next gate.
 
 ## 2026-06-01 LUC-1306 handoff continuation
+
 - Transitioned LUC-1306 from unit-level parity checkpoint to route-level DB-backed DCA-first close-authority verification.
 - Route-level pack is currently infra-blocked in this runner (`localhost:5432` unavailable; no Docker/PostgreSQL runtime detected).
 - Mission disposition for this heartbeat: `blocked` with explicit Ops/Environment + Backend/QA unblock chain.
 
 ## 2026-06-01 LUC-1307 Coolify production deploy health sweep
+
 - Completed a read-only Ops continuation sweep for canonical production endpoints and build-info freshness.
 - Public probes PASS: API `/health=200`, API `/ready=200`, Web `/=200`, Web `/api/build-info=200`.
 - Build-info parity: `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `gitRef=main`, `metadataSource=github-branch`.
@@ -27061,6 +27249,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/tasks/luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md`
 
 ## 2026-06-01 - LUC-1196 continuation after reopen comment
+
 - Wake reason: `issue_reopened_via_comment`.
 - Applied comment first: unblock note from `LUC-1315` about deterministic DB-backed route-test path.
 - Repository fit check in this lane:
@@ -27076,6 +27265,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   2. Backend QA reruns focused route-pack proof and updates row classification.
 
 ## 2026-06-01 - LUC-1196 environment unblock retry
+
 - Prior cancellation was control-plane driven (not a code/test assertion failure).
 - Environment verification in this continuation:
   - local Postgres port `5432` closed,
@@ -27088,12 +27278,14 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   2. Backend QA reruns focused route-pack proof and updates row classification.
 
 ## 2026-06-02 LUC-1223 source-control closure checkpoint
+
 - Latest wake handled first: comment `4dc325ba-7372-4366-9ece-f98942a464d4` (`softwarehouse-local-repair-lane-starter:v1`).
 - Local dirty-state snapshot is stable and mixed: `72` paths (`apps=2`, `agents_state=1`, `codex_state=2`, `docs=9`, `history=58`).
 - Closure status remains `blocked`; PM lane kept fail-closed no-commit posture (`not committed`, push `not needed`, deploy impact `none`).
 - Unblock path unchanged: child `LUC-1300` closes residual runtime/API test scope with validation + SHA evidence, then parent `LUC-1223` closes residual history/state/docs and reruns clean-tree checkpoint.
 
 ## 2026-06-02 LUC-1223 continuity checkpoint (issue_continuation_needed)
+
 - Local source-control closure sidecar rerun completed with unchanged mixed dirty scope (`72` paths).
 - Cancellation reason confirmation for this wake: no cancellation signal present; no local command/runtime fault observed.
 - Closure stays `blocked` with unchanged owner/action: child `LUC-1300` closes residual runtime/API-test scope with validation + SHA evidence; parent `LUC-1223` then closes residual history/state/docs and reruns clean-tree checkpoint.
@@ -27107,6 +27299,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - Evidence: `history/evidence/luc-1371-coolify-resource-inventory-2026-06-02.md`, `history/tasks/luc-1371-soar-coolify-resource-inventory-2026-06-02-task.md`.
 
 ## 2026-06-02 LUC-1371 Coolify resource inventory reconciliation
+
 - Read-only Coolify API inventory completed for Soar production.
 - Current verified resource shape: 6 applications, 0 services, 1 PostgreSQL, 1 Redis, total 8 resources.
 - Applications: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`.
@@ -27129,6 +27322,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence: `history/evidence/luc-1399-coolify-resource-inventory-reconciliation-2026-06-02.md`; task packet: `history/tasks/luc-1399-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
 
 ## 2026-06-02 - LUC-1196 status-change continuation
+
 - Wake reason: `issue_status_changed`; issue returned to `in_progress`.
 - Concrete action:
   - rechecked local DB reachability: `127.0.0.1:5432` remains closed;
@@ -27158,6 +27352,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence: `history/evidence/luc-1306-dca-tsl-runtime-parity-checkpoint-2026-06-01.md`; task packet: `history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md`.
 
 ## 2026-06-02 - LUC-1196 typecheck cleanup continuation
+
 - Concrete action:
   - ran API typecheck;
   - repaired the `LUC-1196` route-pack seed shape and related pending-DCA runtime close test helper usage.
@@ -27170,6 +27365,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   2. Backend QA reruns focused route-pack proof and updates close-authority row after PASS.
 
 ## 2026-06-02 LUC-1419 [Soar][Ops][LUC-1196] Local DB-backed API e2e runtime restored
+
 - Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Local runtime proof: `127.0.0.1:5432` reachable, Docker server `28.3.2`, and compose services `soar-postgres-1` / `soar-redis-1` running on loopback ports.
 - Focused route-pack proof: `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose` reached authenticated endpoint assertions; result `2/3` passed, `1/3` failed in pending-DCA behavior (`closed` received where `submitted` is expected).
@@ -27219,6 +27415,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - 2026-06-02 `LUC-1479` Ops Coolify resource inventory reconciliation is verified and done. Fresh read-only Coolify API readback at `2026-06-02T09:33:58Z` confirmed configured project `Soar`, production environment present, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1479-coolify-resource-inventory-reconciliation-2026-06-02.md`, `history/tasks/luc-1479-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
 - 2026-06-02 `LUC-1482` Ops Coolify resource inventory reconciliation is verified and done. Fresh read-only Coolify API readback at `2026-06-02T10:03:06Z` confirmed configured project `Soar`, production environment id `6`, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1482-coolify-resource-inventory-reconciliation-2026-06-02.md`, `history/tasks/luc-1482-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
 - 2026-06-02 `LUC-1532` Operator Coolify read-only production status access binding is verified and done. Runtime bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_API_APP_ID`, and `COOLIFY_SOAR_WEB_APP_ID` without values printed; `COOLIFY_SOAR_TEAM_ID`/`COOLIFY_TEAM_ID` are absent but not an active blocker because authenticated Coolify read-only API readback at `2026-06-02T16:01:58Z` confirmed current selector id `0`, name `LuckySparrow`, configured project `Soar`, production environment `production`, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1532-coolify-read-only-production-status-access-2026-06-02.md`, `history/tasks/luc-1532-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`.
+
 ## 2026-06-06 LUC-2333 Runtime Aggregate Trade Row Repair
 
 - [LUC-2333](/LUC/issues/LUC-2333) is verified locally and ready to unblock the
@@ -27297,6 +27494,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   next recovery requires source-control closure/push and a separate Ops release
   permit. Evidence:
   `history/evidence/luc-2304-web-runtime-start-wrapper-fix-2026-06-05.md`.
+
 ## 2026-06-05 LUC-2293 controlled soar-web rollback failed closed
 
 - [LUC-2293](/LUC/issues/LUC-2293) executed one permitted production
@@ -27368,6 +27566,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/evidence/luc-2456-regression-evidence-sweep-2026-06-06.md`;
   task packet:
   `history/tasks/luc-2456-regression-evidence-sweep-2026-06-06-task.md`.
+
 ## 2026-06-06 LUC-2578 position reconciliation helper test links
 
 - [LUC-2578](/LUC/issues/LUC-2578) is verified locally for backend helper
@@ -27408,7 +27607,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - 2026-06-07 `LUC-2665` completed a Documentation Steward autonomous idle and
   map drift sweep. Soar remains `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE
-  HOLD`, not monitoring-only: fresh Paperclip readback returned `95`
+HOLD`, not monitoring-only: fresh Paperclip readback returned `95`
   non-terminal issues (`92` blocked, `1` in_progress for this sweep,
   `2` in_review, `0` todo). Generated architecture-awareness is current at
   `2026-06-07T04:12:30.440Z` with `14796` entities, `23696` relations,
@@ -27530,6 +27729,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `115` actionable missing-test links and no actionable docs/owner/disconnect
   gaps. PM skipped duplicate/protected rows and stale [LUC-2997](/LUC/issues/LUC-2997)
   RC strict rows, then created [LUC-3001](/LUC/issues/LUC-3001) for Test
+
 # 2026-06-20 LUC-5043 Gap Register And Repair Lane Refresh
 
 - [LUC-5043](/LUC/issues/LUC-5043) completed as a TSA architecture
@@ -27568,6 +27768,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   unavailable in this checkout because `scripts/build-architecture-awareness-index.mjs`
   is absent. Evidence:
   `history/tasks/luc-3008-prod-like-worker-startup-wrapper-missing-test-rows-2026-06-08-task.md`.
+
 # 2026-06-20 LUC-4413 Coolify Read-Only Production Status Access
 
 - [LUC-4413](/LUC/issues/LUC-4413) completed as
@@ -27594,7 +27795,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - `LUC-5362-AUTHENTICATED-PROD-ACCEPTANCE-PERFORMANCE-2026-06-21`
   completed as a QVE read-only production acceptance checkpoint with final
   disposition `DONE / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PARTIALLY_VERIFIED`.
+PERFORMANCE_PARTIALLY_VERIFIED`.
 - Production Web build-info observed by authenticated artifacts:
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
 - Public production smoke passed for API `/health`, API `/ready`, Web `/`,
@@ -27648,7 +27849,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-5309](/LUC/issues/LUC-5309) completed QVE local proof/triage as
   `PARTIALLY_VERIFIED / PRODUCT_REPAIR_NOT_PROVEN /
-  TEST_HARNESS_REPAIR_DELEGATED`.
+TEST_HARNESS_REPAIR_DELEGATED`.
 - Web wallet/dashboard proof passed for selected runtime wallet KPI rendering,
   controller auth gating, wallet list table, and wallet preview panel
   (`4` files / `10` tests).
@@ -27737,7 +27938,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Verification:
   focused backtests e2e PASS (`15/15`); `pnpm run test:go-live:api:with-infra`
   PASS (`45/45`); `pnpm run qa:smoke-e2e:repeatable -- --checks
-  api,backtests` PASS (`2/2` selected checks).
+api,backtests` PASS (`2/2` selected checks).
 - Evidence:
   `history/tasks/luc-5604-api-backtests-shared-db-cleanup-repair-2026-06-27-task.md`;
   `history/evidence/luc-5604-api-backtests-shared-db-cleanup-repair-2026-06-27.md`;
@@ -27777,11 +27978,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   not committed because the shared worktree was already mixed dirty and
   divergent (`main...origin/main` `ahead 14, behind 1`). No push/deploy
   occurred.
+
 # 2026-06-28 LUC-5682 Exchange Credential And Live-Trading Boundary Review
 
 - [LUC-5682](/LUC/issues/LUC-5682) completed as
   `DONE / SECURITY_REVIEW_COMPLETE / PARTIALLY_VERIFIED_LOCAL /
-  QA_TEST_CLEANUP_RESIDUAL_DELEGATED`.
+QA_TEST_CLEANUP_RESIDUAL_DELEGATED`.
 - Security review found no secret-handling or LIVE-boundary bypass in the
   inspected surfaces. API keys are encrypted at rest, masked in API responses,
   decrypted at the authenticated exchange adapter entry, scoped by ownership,
@@ -27805,12 +28007,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-5699](/LUC/issues/LUC-5699) completed as
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Production validation:
   public/protected deploy smoke passed; protected `/workers/ready` returned
   `200` through fresh-login auth; auth-session browser proof passed; UI module
   clickthrough passed (`public 4/4`, `dashboard 18/18`, `admin 3/3`, `legacy
-  3/3`); runtime freshness passed; rollback guard returned
+3/3`); runtime freshness passed; rollback guard returned
   `shouldRollback=false`; all sampled public/dashboard/admin timing endpoints
   returned `200`, with slowest sample `139.1 ms`.
 - Evidence:
@@ -27822,7 +28024,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Source-control:
   not committed because this was a read-only QA heartbeat and the shared
   worktree was already mixed dirty/divergent (`main...origin/main` `ahead 14,
-  behind 1`). No push/deploy occurred.
+behind 1`). No push/deploy occurred.
 - Residual:
   release-grade build provenance and host-level VPS pressure/log evidence
   remain Ops/release owner scope.
@@ -27873,7 +28075,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-5767](/LUC/issues/LUC-5767) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Production validation:
   public API/Web smoke passed; protected `/workers/ready` failed through stale
   `SMOKE_AUTH_TOKEN` with `401` but passed through the fresh-login path;
@@ -27897,7 +28099,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-5866](/LUC/issues/LUC-5866) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production validation:
   current-binding smoke proved blocked-flow fail-closed behavior
   (`/workers/ready -> 401` with stale `SMOKE_AUTH_TOKEN`) after public API/Web
@@ -27915,11 +28117,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Source-control:
   not committed because this was a read-only DRE packet and the shared
   worktree was already mixed dirty/divergent (`main...origin/main` `ahead 15,
-  behind 2`). No push/deploy occurred.
+behind 2`). No push/deploy occurred.
 - Residual:
   stale pre-bound `SMOKE_AUTH_TOKEN`, release-grade build provenance, and
   host-level VPS/log-window proof remain separate Security/Ops/release owner
   gates; stale smoke-token cleanup is delegated to [LUC-5868](/LUC/issues/LUC-5868).
+
 # 2026-06-28 LUC-5998 App-Completion Row-Level Proof Backlog
 
 - Mission:
@@ -27949,7 +28152,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6003-UNCLASSIFIED-BROWSER-REVIEW-ROW-CLASSIFICATION-2026-06-28`.
 - Status:
   `DONE / VERIFIED_DOCS_CLASSIFICATION / 147_ROWS_CLASSIFIED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM docs/PM classification only. No product code, deploy, push, restart,
   protected smoke, secret/account readback, production mutation, exchange
@@ -27980,7 +28183,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6028-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -28005,7 +28208,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Current health signal:
   `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY`.
+RUNTIME_HEALTHY`.
 - Production smoke:
   `/health`, `/ready`, Web `/`, Web `/api/build-info`, and protected
   `/workers/ready` returned `200` through fresh-login auth. Default/stale token
@@ -28033,7 +28236,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Current state:
   `partially verified / execution restored through delegated lanes / protected
-  and board-owned gates still blocked`.
+and board-owned gates still blocked`.
 - Readiness index:
   `153` active Soar issues; `135 blocked`, `5 in_review`, `6 backlog`,
   `6 todo`, `1 in_progress`; `16` paused-owner; `10` local-board-owned.
@@ -28064,11 +28267,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   exchange/payment mutation, order, position, or live-trading action occurred.
 - Evidence:
   `history/tasks/luc-6081-no-stall-queue-expeditor-2026-06-28-task.md`.
+
 ## 2026-06-29 LUC-6134 Invalid-Token Redirect Repair
 
 - [LUC-6197](/LUC/issues/LUC-6197) completed as
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  RELEASE_GATES_REMAIN`.
+RELEASE_GATES_REMAIN`.
 - Current product signal:
   [LUC-6180](/LUC/issues/LUC-6180) provides same-day authenticated production
   acceptance PASS evidence for Web SHA
@@ -28125,7 +28329,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6215](/LUC/issues/LUC-6215) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Concrete action:
   executed the recurring DRE read-only production performance/server-health
   watch: deploy smoke, runtime freshness, rollback guard, public timing,
@@ -28175,7 +28379,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6245-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-29`.
 - Status:
   `BLOCKED / ARCHITECTURE_ACTIONABLE_CLEAN / PRODUCTION_AUTH_ACCEPTANCE_PASS /
-  PROTECTED_INPUT_READINESS_NO_GO`.
+PROTECTED_INPUT_READINESS_NO_GO`.
 - Scope:
   TSA controller/readback only. No product code, push, deploy, restart,
   protected smoke, secret/account readback, production mutation,
@@ -28209,7 +28413,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6242](/LUC/issues/LUC-6242) completed as
   `DONE / ACCOUNT_ACCESS_GATE_BOUND_TO_PROTECTED_INPUT_FAMILIES /
-  CURRENT_RUNNER_GATE_FAILS_CLOSED / NO_SECRET_READBACK`.
+CURRENT_RUNNER_GATE_FAILS_CLOSED / NO_SECRET_READBACK`.
 - Result:
   `scripts/checkProtectedInputReadiness.mjs` now emits structured
   `accountAccessGate` output with `status`, `requiredFamilies`,
@@ -28237,7 +28441,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6234](/LUC/issues/LUC-6234) remains blocked as
   `PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Continuation trigger:
   child [LUC-6242](/LUC/issues/LUC-6242) completed the checker repair, so the
   parent reran the no-secret gate against the current runner.
@@ -28269,8 +28473,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6290](/LUC/issues/LUC-6290) completed as
   `DONE / VERIFIED_READ_ONLY / PRODUCTION_RUNTIME_HEALTHY /
-  ROLLBACK_NOT_REQUIRED / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+ROLLBACK_NOT_REQUIRED / MARKET_CATALOG_COLD_SAMPLE_WATCH /
+COOLIFY_QUEUE_WATCH`.
 - Production signal:
   deploy smoke passed public API/Web and protected `/workers/ready -> 200` on
   Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`.
@@ -28298,7 +28502,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Current production acceptance:
   `VERIFIED / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY` for Web SHA
+RUNTIME_HEALTHY` for Web SHA
   `c357d957741f56835f27a1fc3a948dad43a91036`.
 - Evidence:
   `history/evidence/luc-6296-authenticated-production-acceptance-performance-sweep-2026-06-30.md`;
@@ -28343,13 +28547,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Backtests cleanup-isolation acceptance packet.
 - Delegation:
   PM direct closure of [LUC-5606](/LUC/issues/LUC-5606) returned `403 Issue is
-  outside this actor's authorization boundary`, so [LUC-6323](/LUC/issues/LUC-6323)
+outside this actor's authorization boundary`, so [LUC-6323](/LUC/issues/LUC-6323)
   was created and assigned to CBE for owner-path cleanup.
 - Verification:
   [LUC-6322](/LUC/issues/LUC-6322) heartbeat-context readback PASS; open Soar
   issue query PASS; [LUC-5606](/LUC/issues/LUC-5606) heartbeat-context readback
   PASS; [LUC-6323](/LUC/issues/LUC-6323) creation PASS. `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout.
+softwarehouse:control-tick` remains unavailable in this checkout.
 - Residual:
   CBE owns [LUC-6323](/LUC/issues/LUC-6323). [LUC-6234](/LUC/issues/LUC-6234)
   protected input/account-access gate, source/build provenance, host-level
@@ -28359,12 +28563,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6329](/LUC/issues/LUC-6329) completed as
   `DONE / WATCH_COMPLETED / PRODUCTION_WEB_DOWN /
-  BACKTEST_WORKER_NOT_READY / INCIDENT_CHILD_CREATED`.
+BACKTEST_WORKER_NOT_READY / INCIDENT_CHILD_CREATED`.
 - Current production signal:
   API `/health`, API `/ready`, authenticated `/auth/me`, dashboard
   `strategy-drift`, runtime freshness, and alerts were healthy/responsive.
   Public Web `/` and `/api/build-info` returned stable `503 no available
-  server`; protected `/workers/ready` returned `503 not_ready` because the
+server`; protected `/workers/ready` returned `503 not_ready` because the
   backtest heartbeat was missing.
 - Coolify read-only signal:
   `soar-web` and `workers-backtest` are `exited:unhealthy`; API and other
@@ -28382,7 +28586,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6413-REGRESSION-EVIDENCE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / REGRESSION_BASELINE_FAIL / LOCAL_DOCKER_UNAVAILABLE /
-  WEB_SMOKE_TIMEOUTS / PRODUCTION_WEB_503`.
+WEB_SMOKE_TIMEOUTS / PRODUCTION_WEB_503`.
 - Current product signal:
   safe regression evidence is not green. The established repeatable smoke
   packet failed on Web/API/backtests; public production Web remains `503`.
@@ -28400,7 +28604,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Current fact:
   production API health/ready passes, runtime freshness passes, but public Web
   and protected workers readiness return `503`; rollback guard requires action
@@ -28417,7 +28621,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - [LUC-6445](/LUC/issues/LUC-6445) refreshed DRE production health evidence.
 - Current state:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6445-production-performance-server-health-watch-2026-06-30.md`;
   `history/tasks/luc-6445-production-performance-server-health-watch-2026-06-30-task.md`.
@@ -28452,7 +28656,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6106](/LUC/issues/LUC-6106) completed as
   `DONE / DOC_LINK_ROWS_RECONCILED / USER_CONFIGURATION_MISSING_DOC_LINK_49_TO_30 /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Result:
   DSM added `19` scanner-readable documentation links for already-tested
   User configuration API/support rows, linking API platform config rows to
@@ -28472,12 +28676,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `2` Backend/API platform rows and `28` Frontend/Web profile or Web platform
   rows. Do not claim DB-backed profile route proof, browser proof, or Web
   profile doc-link closure from [LUC-6106](/LUC/issues/LUC-6106).
+
 # 2026-06-29 LUC-6109 Authenticated Production Acceptance
 
 - [LUC-6109](/LUC/issues/LUC-6109) is blocked, not accepted.
 - Result:
   `BLOCKED / AUTH_LOGOUT_SESSION_INVALIDATION_REPRODUCED / RUNTIME_HEALTHY /
-  PERFORMANCE_PASS`.
+PERFORMANCE_PASS`.
 - Evidence:
   `history/evidence/luc-6109-authenticated-production-acceptance-performance-sweep-2026-06-29.md`;
   `history/tasks/luc-6109-authenticated-production-acceptance-performance-sweep-2026-06-29-task.md`.
@@ -28489,11 +28694,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   returned `502`, and `/auth/me` with the same token returned `200` after the
   failed logout. A Backend/Auth repair child is required before QVE reruns and
   closes production acceptance.
+
 # 2026-06-29 LUC-6097 User Configuration Parent Closure
 
 - [LUC-6097](/LUC/issues/LUC-6097) completed the CBE parent closure as
   `DONE / VERIFIED_LOCAL_API_SUPPORT_CONTRACT /
-  DB_BACKED_PROFILE_ROUTE_PROOF_PASS / DOC_LINK_CHILD_RECONCILED`.
+DB_BACKED_PROFILE_ROUTE_PROOF_PASS / DOC_LINK_CHILD_RECONCILED`.
 - Evidence:
   `history/evidence/luc-6097-user-configuration-api-support-contract-2026-06-29.md`;
   `history/tasks/luc-6097-user-configuration-api-support-contract-2026-06-29-task.md`.
@@ -28518,7 +28724,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6119](/LUC/issues/LUC-6119) completed the TSA gap-register refresh as
   `DONE / ARCHITECTURE_ACTIONABLE_CLEAN / AUTH_REPAIR_DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Validation:
   `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
   missing). Current architecture-awareness readback reports `10086` entities
@@ -28537,6 +28743,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence:
   `history/evidence/luc-6119-gap-register-and-repair-lane-refresh-2026-06-29.md`;
   `history/tasks/luc-6119-gap-register-and-repair-lane-refresh-2026-06-29-task.md`.
+
 # 2026-06-29 LUC-6123 Production Auth Proof Rerun
 
 - [LUC-6123](/LUC/issues/LUC-6123) is blocked after a real production rerun.
@@ -28556,11 +28763,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Residual:
   Auth/Web owner must repair or explicitly change the invalid-token redirect
   contract before QVE can close production auth acceptance.
+
 # 2026-06-29 LUC-6139 Production Performance And Server Health Watch
 
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Production health:
   public API/Web smoke, protected `/workers/ready`, runtime freshness, rollback
   guard, representative public/authenticated timing, and Coolify read-only GET
@@ -28578,7 +28786,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6161](/LUC/issues/LUC-6161) completed as
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_PASS / NO_RUNTIME_MUTATION`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_PASS / NO_RUNTIME_MUTATION`.
 - Production health:
   current-binding deploy smoke passed public API/Web and protected
   `/workers/ready -> 200`; runtime freshness passed; rollback guard returned
@@ -28591,11 +28799,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence:
   `history/evidence/luc-6161-soar-protected-recheck-2026-06-29.md`;
   `history/tasks/luc-6161-soar-protected-recheck-2026-06-29-task.md`.
+
 # 2026-06-29 LUC-6170 Production Watch Closure
 
 - [LUC-6170](/LUC/issues/LUC-6170) can close as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Concrete action:
   executed the recurring DRE read-only production performance/server-health
   watch: deploy smoke, runtime freshness, rollback guard, public timing,
@@ -28613,13 +28822,14 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence:
   `history/evidence/luc-6170-production-performance-server-health-watch-2026-06-29.md`;
   `history/tasks/luc-6170-production-performance-server-health-watch-2026-06-29-task.md`.
+
 # 2026-06-29 LUC-6180 Authenticated Production Acceptance
 
 - Mission:
   `LUC-6180-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-29`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance only; no deploy, push, restart, rollback
   execution, env edit, secret/account readback, production DB/Redis mutation,
@@ -28635,6 +28845,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Residual:
   market-catalog cold-start timing remains a watch item; host-level proof and
   release/source provenance remain separate gates.
+
 # 2026-06-29 LUC-6177 V1 Audit-To-Completion Controller
 
 - Mission:
@@ -28724,6 +28935,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   no remaining LUC-6164 backend cleanup-isolation work. Commit/push/deploy were
   not performed because the shared workspace remains dirty/divergent and this
   issue did not authorize a release operation.
+
 # 2026-06-29 LUC-6245 Controller Disposition Retry
 
 - [LUC-6245](/LUC/issues/LUC-6245) remains locally classified as
@@ -28754,7 +28966,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6252](/LUC/issues/LUC-6252) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Current production signal:
   deploy smoke passed public API/Web and protected `/workers/ready -> 200`;
   runtime freshness passed with worker/market heartbeat age `8270 ms`;
@@ -28774,7 +28986,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6271](/LUC/issues/LUC-6271) completed as
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Current product/runtime signal:
   production deploy smoke passed API `/health`, API `/ready`, Web `/`, Web
   `/api/build-info`, and protected API `/workers/ready`; runtime freshness
@@ -28804,7 +29016,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6285](/LUC/issues/LUC-6285) completed a TSA controller refresh as
   `BLOCKED / VERIFIED_CONTROLLER_REFRESH / NO_NEW_TSA_REPAIR_CHILD /
-  PROTECTED_INPUT_ACCOUNT_GATE_FAIL`.
+PROTECTED_INPUT_ACCOUNT_GATE_FAIL`.
 - Current product signal:
   [LUC-6248](/LUC/issues/LUC-6248) keeps authenticated production acceptance
   green for Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`; [LUC-6252](/LUC/issues/LUC-6252)
@@ -28876,7 +29088,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6411](/LUC/issues/LUC-6411) completed as
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_WEB_INCIDENT_ACTIVE /
-  EXISTING_OWNER_PATHS_PRESERVED`.
+EXISTING_OWNER_PATHS_PRESERVED`.
 - Current product/runtime signal:
   production is not acceptance-ready while Web returns `503`. [LUC-6386](/LUC/issues/LUC-6386)
   found API `/health` and `/ready` passing, but Web `/` and Web
@@ -28920,7 +29132,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6424-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Current product signal:
   production API `/health` and `/ready` are healthy, and runtime freshness
   passed with fresh worker/market/runtime signals. Production Web is not
@@ -28943,7 +29155,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - [LUC-6197](/LUC/issues/LUC-6197) completed as
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  RELEASE_GATES_REMAIN`.
+RELEASE_GATES_REMAIN`.
 - Current product signal:
   [LUC-6180](/LUC/issues/LUC-6180) provides same-day authenticated production
   acceptance PASS evidence for Web SHA
@@ -28976,11 +29188,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   row burn-down on existing owner paths. No deploy, push, restart, protected
   mutation, secret/account readback, exchange/payment mutation, order,
   position, or live-trading action occurred.
+
 # 2026-06-29 LUC-6248 Authenticated Production Acceptance
 
 - [LUC-6248](/LUC/issues/LUC-6248) completed as
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Current product signal:
   production acceptance passed for Web SHA
   `c357d957741f56835f27a1fc3a948dad43a91036`. Deploy smoke, auth-session
@@ -29002,6 +29215,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   their own owner paths. No deploy, push, restart, protected mutation,
   secret/account readback, exchange/payment mutation, order, position, or
   live-trading action occurred.
+
 # 2026-06-29 LUC-6250 Gap Register And Repair Lane Refresh
 
 - [LUC-6250](/LUC/issues/LUC-6250) can close as
@@ -29046,6 +29260,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/tasks/luc-6245-v1-audit-to-completion-controller-2026-06-29-task.md`.
 
 # 2026-06-30 LUC-6307 Soar Protected Recheck
+
 # 2026-07-01 LUC-6584 Regression Evidence Sweep
 
 - [LUC-6584](/LUC/issues/LUC-6584) refreshed the QVE regression baseline and is
@@ -29067,7 +29282,6 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   TAE/FEW handles Web timeout triage, Ops/DRE restores local Docker, and
   Ops/Coolify resolves [LUC-6331](/LUC/issues/LUC-6331) before QVE reruns
   public/auth acceptance.
-
 
 - [LUC-6307](/LUC/issues/LUC-6307) completed as
   `DONE / VERIFIED_PROTECTED_AUTH_SMOKE_PASS`.
@@ -29108,6 +29322,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence:
   `history/evidence/luc-6312-architecture-baseline-missing-test-link-reconciliation-2026-06-30.md`;
   `history/tasks/luc-6312-architecture-baseline-missing-test-link-reconciliation-2026-06-30-task.md`.
+
 # 2026-07-01 LUC-6551 Authenticated Production Acceptance
 
 - [LUC-6551](/LUC/issues/LUC-6551) is blocked, not accepted:
@@ -29129,6 +29344,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `/health` and `/ready` returned `200`; unauthenticated `/workers/ready`
   returned `401`. Paperclip comment/PATCH retries timed out, so the local
   disposition remains `blocked` pending control-plane recovery.
+
 # 2026-07-01 LUC-6548 Production Watch
 
 - [LUC-6548](/LUC/issues/LUC-6548) completed a read-only production
@@ -29148,15 +29364,16 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Source control:
   no commit; repo was already heavily dirty with unrelated lanes, and this wake
   forbids push/deploy.
+
 # 2026-07-01 LUC-6606 Production Performance And Server Health Watch
 
 - Mission:
   `LUC-6606-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret readback, DB/Redis mutation,
@@ -29183,9 +29400,9 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6657-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret readback, DB/Redis mutation,
@@ -29205,6 +29422,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   [LUC-6331](/LUC/issues/LUC-6331) remains the production restoration path.
   No local commit was made because the repo was already dirty/divergent before
   this heartbeat; push/deploy/restart were forbidden and not needed.
+
 ## 2026-07-02 LUC-6720 Gap Register And Repair Lane Refresh
 
 - Current state:
@@ -29221,14 +29439,15 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/evidence/luc-6720-gap-register-and-repair-lane-refresh-2026-07-02.md`;
   `history/artifacts/luc-6720-protected-input-readiness-2026-07-02.json`;
   `history/tasks/luc-6720-gap-register-and-repair-lane-refresh-2026-07-02-task.md`.
+
 ## 2026-07-02 LUC-6774 V1 Audit-To-Completion Controller
 
 - [LUC-6774](/LUC/issues/LUC-6774) refreshed the TSA controller posture.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6774-v1-audit-to-completion-controller-2026-07-02.md`;
   `history/evidence/luc-6774-protected-input-readiness-2026-07-02.md`;
@@ -29236,7 +29455,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/tasks/luc-6774-v1-audit-to-completion-controller-2026-07-02-task.md`.
 - Current queue signal:
   live Soar project readback shows `154` open issues: `1 in_progress`, `1
-  in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
+in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The only runnable
   todo remains [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked.
 - Release impact:
@@ -29252,8 +29471,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6838-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
-  JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
+JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -29275,13 +29494,14 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   [LUC-4103](/LUC/issues/LUC-4103), and [LUC-6820](/LUC/issues/LUC-6820).
   [LUC-6584](/LUC/issues/LUC-6584) and [LUC-6594](/LUC/issues/LUC-6594)
   are cancelled in the live readback and are not active owner paths.
+
 ## 2026-07-02 LUC-6878 V1 Audit-To-Completion Controller
 
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Current proof:
   Paperclip heartbeat context returned `200`; Paperclip control tick returned
   `supervise_active_runs`; strict architecture drift passed `850/850`; protected
@@ -29301,7 +29521,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6891-MISSING-TEST-LINK-SMOKE-SELECTOR-2026-07-02`.
 - Status:
   `DONE / HIGH_RISK_ROWS_CLASSIFIED / LOCAL_SMOKE_SELECTORS_PUBLISHED /
-  NO_DUPLICATE_TESTS_ADDED / PROTECTED_PROOF_REMAINS_SEPARATE`.
+NO_DUPLICATE_TESTS_ADDED / PROTECTED_PROOF_REMAINS_SEPARATE`.
 - Scope:
   TAE local classification and selector recommendation only. No product code,
   production/protected smoke, browser proof with real credentials, secret/account
@@ -29318,7 +29538,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/tasks/luc-6891-missing-test-link-smoke-selector-2026-07-02-task.md`;
   `docs/operations/v1-go-live-smoke-pack.md`;
   `pnpm exec node --test scripts/goLiveSmoke.test.mjs
-  scripts/runQaRepeatableSmokeE2e.test.mjs` passed `20/20`.
+scripts/runQaRepeatableSmokeE2e.test.mjs` passed `20/20`.
 - Residual:
   protected production/browser acceptance remains blocked by
   [LUC-241](/LUC/issues/LUC-241) and protected input/account gates. CBE owns
@@ -29329,7 +29549,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Status:
   `DONE / VERIFIED_LOCAL / CLEARSESSION_BEHAVIOR_PROOF_ADDED /
-  APP_COMPLETION_ROW_OK / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_ROW_OK / NO_RUNTIME_MUTATION`.
 - Current proof:
   `apps/api/src/middleware/requireAuth.test.ts` now covers clear-session cookie
   clearing for missing-token, invalid issuer/audience, expired JWT,
@@ -29350,8 +29570,8 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `LUC-6904-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / PUBLIC_AND_PROTECTED_SMOKE_PASS /
-  ROLLBACK_GUARD_PASS / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+ROLLBACK_GUARD_PASS / MARKET_CATALOG_COLD_SAMPLE_WATCH /
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production health watch. No code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -29375,7 +29595,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 - Status:
   `DONE / MISSING_DOC_LINK_RESOLVED / PROJECT_TRUTH_REFRESHED /
-  QA_PROOF_FOLLOWUP_CREATED`.
+QA_PROOF_FOLLOWUP_CREATED`.
 - Current proof:
   `apps/api/src/middleware/requireAuth.ts#clearSession` now documents to
   `docs/modules/api-auth.md`; app-completion readback reports `hasDoc=true`
@@ -29389,6 +29609,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   owns [LUC-93](/LUC/issues/LUC-93) for fresh behavior proof. No runtime,
   production, account, secret, deploy, exchange, payment, subscription, order,
   position, or live-trading mutation occurred.
+
 ## 2026-07-10 LUC-252 ARB-001 Security Disposition
 
 - [LUC-252](/LUC/issues/LUC-252) was revalidated by Security as a stale
@@ -29423,3 +29644,28 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - Evidence:
   `history/evidence/luc-254-arb-003-web-tests-table-expansion-2026-07-10.md`;
   `history/tasks/luc-254-arb-003-web-tests-table-expansion-2026-07-10-task.md`.
+## 2026-07-12 LUC-621 Account Access registerUser Proof
+
+- TAE resolved the bounded Account access proof row for
+  `apps/api/src/modules/auth/auth.service.ts#registerUser`.
+- Added focused no-DB proof in
+  `apps/api/src/modules/auth/auth.registerUser.test.ts`, linked it through
+  `docs/architecture/relations/priority-test-links.csv`, and marked the entity
+  verified in `docs/architecture/scanner-overrides.json`.
+- Validation passed:
+  `auth.registerUser.test.ts` (`1` file / `2` tests), Prettier check for the
+  new test and scanner override JSON, architecture-awareness refresh (`10745`
+  entities / `35062` relations, `entityOverridesApplied=15`),
+  app-completion refresh (`implementedNeedsProof=113`, `riskItems=3527`), and
+  project-truth `--apply`.
+- Project truth now routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
+  `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production deploy, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  account mutation, exchange/payment/subscription mutation, order, position,
+  bot activation, or LIVE trading action occurred.

@@ -10560,3 +10560,23 @@ shell still lacks those credentials and approvals.
   queued.
 - Evidence:
   `history/evidence/luc-6904-production-performance-server-health-watch-2026-07-02.md`.
+## 2026-07-12 LUC-621 Account Access registerUser Proof
+
+- Status:
+  `DONE / FOCUSED_REGISTERUSER_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access implemented-needs-proof gap was removed from
+  the priority queue. App-completion now reports `implementedNeedsProof=113`
+  and project truth routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn` as
+  `missing_doc_link`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  secret/account readback, DB/Redis mutation, account mutation, exchange/
+  payment/subscription mutation, order, position, or LIVE trading action
+  occurred. Browser cleanup check found no matching leftover validation browser
+  process rows.
+- Evidence:
+  `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
+  `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.

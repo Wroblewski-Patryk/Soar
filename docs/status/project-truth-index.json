@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T01:17:15.450Z",
+  "generatedAt": "2026-07-12T03:56:32.124Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,55 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3529,
+    "appCompletionGaps": 3527,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3529,
+    "knownAppCompletionRiskItems": 3527,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3529
+    "totalGaps": 3527
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: loginUser has app-completion risk missing_doc_link.",
+    "summary": "Account access: getSessionJwtExpiresIn has app-completion risk missing_doc_link.",
     "nextOwner": "Docs Memory Lead + Project Manager",
     "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
-      "apps/api/src/modules/auth/auth.service.ts#loginUser"
+      "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn"
     ],
-    "sourceItemId": "function:loginuser:bd88f35cc6",
+    "sourceItemId": "function:getsessionjwtexpiresin:301a733b15",
     "risk": "missing_doc_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: loginUser has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.service.ts#loginUser"
-      ],
-      "sourceItemId": "function:loginuser:bd88f35cc6",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: registerUser has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.service.ts#registerUser"
-      ],
-      "sourceItemId": "function:registeruser:8417c10f55",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2604,32 @@
         "scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser"
       ],
       "sourceItemId": "function:launchbrowser:ea8390eb36",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: main has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#main"
+      ],
+      "sourceItemId": "function:main:74b7601b9b",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: navigate has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#navigate"
+      ],
+      "sourceItemId": "function:navigate:06d3ef70a4",
       "risk": "missing_doc_link"
     }
   ]

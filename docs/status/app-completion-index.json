@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T01:16:49.361Z",
+  "generatedAt": "2026-07-12T03:56:32.087Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 974,
-    "missingDocLink": 1990,
+    "missingDocLink": 1988,
     "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3529,
-    "appCompletionRiskItems": 3529,
+    "riskItems": 3527,
+    "appCompletionRiskItems": 3527,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,16 +22,16 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 21,
-        "missing_doc_link": 140,
+        "ok": 23,
+        "missing_doc_link": 138,
         "missing_test_link": 70,
         "implemented_needs_proof": 3,
         "needs_browser_review": 31
       },
       "gates": {
         "auth": 265,
-        "configuration": 17,
-        "subscription": 2,
+        "configuration": 18,
+        "subscription": 3,
         "gateio": 1
       }
     },
@@ -138,48 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:loginuser:bd88f35cc6",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "loginUser",
-      "path": "apps/api/src/modules/auth/auth.service.ts#loginUser",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:registeruser:8417c10f55",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "registerUser",
-      "path": "apps/api/src/modules/auth/auth.service.ts#registerUser",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:getsessionjwtexpiresin:301a733b15",
       "type": "function",
       "kind": "feature_or_capability",
@@ -197,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 3,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
@@ -4336,6 +4294,48 @@
       "kind": "feature_or_capability",
       "name": "launchBrowser",
       "path": "scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:main:74b7601b9b",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "main",
+      "path": "scripts/runProdAuthSessionBrowserProof.mjs#main",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:navigate:06d3ef70a4",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "navigate",
+      "path": "scripts/runProdAuthSessionBrowserProof.mjs#navigate",
       "owner": "Engineering Delivery Lead",
       "status": "implemented_needs_proof",
       "userFlow": "Account access",

@@ -1,10 +1,87 @@
+## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
+
+- Mission:
+  `LUC-618-ACCOUNT-ACCESS-REGISTERUSER-DOC-LINK-2026-07-12`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/auth/auth.service.ts#registerUser`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected credential
+  access, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  the registration service path is documented in `docs/modules/api-auth.md`,
+  linked through `documentation-links.csv`, and connected with a scanner
+  `documents` override. App-completion `missingDocLink` dropped to `1988`;
+  project truth now reports the same row as `implemented_needs_proof`, which is
+  outside DSM ownership.
+- Evidence:
+  `history/evidence/luc-618-account-access-registeruser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-618-account-access-registeruser-doc-link-2026-07-12-task.md`.
+- Residual:
+  no remaining DSM action on [LUC-618](/LUC/issues/LUC-618).
+  [LUC-621](/LUC/issues/LUC-621) is assigned to Test Automation Engineer for
+  the focused `registerUser` proof follow-up.
+
+## 2026-07-12 LUC-613 Account Access loginUser Proof
+
+- Mission:
+  `LUC-613-ACCOUNT-ACCESS-LOGINUSER-PROOF-2026-07-12`.
+- Status:
+  `DONE / FOCUSED_LOGINUSER_PROOF_PASS / TEST_LINK_RESOLVED /
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/auth/auth.service.ts#loginUser`. No runtime code,
+  protected smoke, secret/account readback, deploy, restart, rollback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  bot activation, or LIVE trading action.
+- Result:
+  added a focused no-DB `auth.loginUser.test.ts` proof and linked it through
+  architecture scanner inputs. Project truth now routes the first Account
+  access gap to `auth.service.ts#registerUser` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-613-account-access-loginuser-proof-2026-07-12.md`;
+  `history/tasks/luc-613-account-access-loginuser-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-611 Account Access loginUser Doc-Link
+
+- Mission:
+  `LUC-611-ACCOUNT-ACCESS-LOGINUSER-DOC-LINK-2026-07-12`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/auth/auth.service.ts#loginUser`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected credential
+  access, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  the `loginUser` service path is documented in `docs/modules/api-auth.md`,
+  linked through `documentation-links.csv`, and connected with a scanner
+  `documents` override. App-completion `missingDocLink` dropped to `1989`;
+  project truth now reports the same row as `implemented_needs_proof`, which is
+  outside DSM ownership.
+- Evidence:
+  `history/evidence/luc-611-account-access-loginuser-doc-link-2026-07-12.md`;
+  `history/tasks/luc-611-account-access-loginuser-doc-link-2026-07-12-task.md`.
+- Residual:
+  no remaining DSM action on [LUC-611](/LUC/issues/LUC-611).
+  [LUC-613](/LUC/issues/LUC-613) is assigned to Test Automation Engineer for
+  the focused `loginUser` proof follow-up.
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 - Mission:
   `LUC-549-ACCOUNT-ACCESS-GETPREVIOUSSECRETEXPIRY-PROOF-2026-07-12`.
 - Status:
   `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Scope:
   TAE local automated proof and project-truth linkage for
   `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
@@ -30,8 +107,8 @@
   `LUC-547-ACCOUNT-ACCESS-AUTH-JWT-GETPREVIOUSSECRETEXPIRY-DOC-LINK-2026-07-12`.
 - Status:
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
-  NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM source-truth repair for
   `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
@@ -59,8 +136,8 @@
   `LUC-539-ACCOUNT-ACCESS-AUTH-JWT-GETJWTSECRETS-DOC-LINK-2026-07-11`.
 - Status:
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
-  NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM source-truth repair for
   `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`. No runtime code,
@@ -87,8 +164,8 @@
   `LUC-541-ACCOUNT-ACCESS-GETJWTSECRETS-PROOF-2026-07-12`.
 - Status:
   `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
-  NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+NO_RUNTIME_MUTATION`.
 - Scope:
   Test Automation Engineer source-truth/proof closure for
   `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`. No runtime code,
@@ -116,7 +193,7 @@
   `LUC-528-ACCOUNT-ACCESS-AUTH-E2E-RESTOREENV-DOC-LINK-2026-07-11`.
 - Status:
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Scope:
   DSM source-truth repair for
   `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv`. No runtime code,
@@ -143,7 +220,7 @@
   `LUC-503-PROTECTED-OPS-DIAGNOSTICS-READONLY-PROOF-2026-07-11`.
 - Status:
   `DONE / PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 /
-  UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
+UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
 - Scope:
   DRE/Ops protected read-only production diagnostics proof for the LUC-500
   blocker. No product code, deploy, push, restart, rollback, env edit,
@@ -171,7 +248,7 @@
   `LUC-500-PROTECTED-BROWSER-RUNTIME-TRADING-READONLY-PROOF-2026-07-11`.
 - Status:
   `DONE / AUTH_BROWSER_PASS / TRADING_READONLY_PASS_AFTER_DRE_OPS /
-  OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
+OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
 - Scope:
   QVE protected read-only verification only. No product code, commit, push,
   deploy, restart, rollback, env edit, migration, production fixture action,
@@ -199,8 +276,8 @@
   `LUC-499-ACCOUNT-ACCESS-AUTH-CONTROLLER-TEST-LINK-ROWS-2026-07-11`.
 - Status:
   `DONE / VERIFIED_LOCAL_INDEX_LINK / SIX_MISSING_TEST_LINK_ROWS_RESOLVED /
-  API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
-  NO_RUNTIME_MUTATION`.
+API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
+NO_RUNTIME_MUTATION`.
 - Scope:
   CBE source-truth/linkage repair only for auth-controller Account access
   `missing_test_link` rows. No runtime code change, schema/migration,
@@ -227,7 +304,7 @@
   `LUC-176-ACCOUNT-ACCESS-CLEARSESSION-PROJECT-TRUTH-PROOF-2026-07-05`.
 - Status:
   `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
-  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
 - Scope:
   QVE verification/source-truth closure only. No runtime code change, commit,
   push, deploy, restart, rollback, env edit, migration, production protected
@@ -253,7 +330,7 @@
   `LUC-175-REQUIREAUTH-TEST-TYPING-API-BUILD-BLOCKER-2026-07-05`.
 - Status:
   `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
-  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
 - Scope:
   CBE backend test typing fix only. No runtime auth behavior change, product
   code change outside the test, commit, push, deploy, restart, rollback, env
@@ -276,7 +353,7 @@
   `LUC-171-DB-BACKED-AUTH-WORKER-RUNTIME-FRESHNESS-2026-07-05`.
 - Status:
   `DONE / VERIFIED_LOCAL / DB_BACKED_AUTH_PASS /
-  WORKER_RUNTIME_FRESHNESS_PASS / NO_RUNTIME_MUTATION`.
+WORKER_RUNTIME_FRESHNESS_PASS / NO_RUNTIME_MUTATION`.
 - Scope:
   QVE local verification only. No product code, commit, push, deploy, restart,
   rollback, env edit, migration, production access, secret/account readback,
@@ -301,8 +378,8 @@
   `LUC-6917-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / STALE_LUC-6331_RECHECK_PATH_NAMED /
-  SOAR_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
-  EXISTING_OWNER_PATHS_PRESERVED`.
+SOAR_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
+EXISTING_OWNER_PATHS_PRESERVED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -332,8 +409,8 @@
   `LUC-6901-COOLIFY-REDIS-API-READINESS-RESTORATION-2026-07-02`.
 - Status:
   `DONE / PUBLIC_API_READY_RESTORED / PUBLIC_DEPLOY_SMOKE_PASS /
-  WEB_PUBLIC_PASS / COOLIFY_RESOURCE_READBACK_NOT_AVAILABLE_IN_COO_RUNNER /
-  NO_PRODUCTION_MUTATION`.
+WEB_PUBLIC_PASS / COOLIFY_RESOURCE_READBACK_NOT_AVAILABLE_IN_COO_RUNNER /
+NO_PRODUCTION_MUTATION`.
 - Scope:
   COO coordination and read-only public readiness verification for the
   [LUC-6898](/LUC/issues/LUC-6898) recovery child. No product code, commit,
@@ -362,7 +439,7 @@
   `LUC-6898-API-READY-RUNTIME-RESTORE-2026-07-02`.
 - Status:
   `DONE / PUBLIC_API_READY_RESTORED / PUBLIC_DEPLOY_SMOKE_PASS /
-  WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
+WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
 - Scope:
   DRE read-only production diagnosis and recovery routing. No product code,
   commit, push, deploy, restart, rollback execution, env edit,
@@ -396,8 +473,8 @@
   `LUC-6894-PUBLIC-PROBE-RUNTIME-RESTORE-2026-07-02`.
 - Status:
   `PARTIALLY_DONE / PUBLIC_PROBE_RESTORED / API_HEALTH_READY_PASS /
-  WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
-  COOLIFY_INVENTORY_500_AFTER_RESTORE`.
+WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
+COOLIFY_INVENTORY_500_AFTER_RESTORE`.
 - Scope:
   DRE read-only production diagnosis plus explicit permit request. No product
   code, commit, push, deploy, restart, rollback execution, env edit,
@@ -428,9 +505,9 @@
   `LUC-6893-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -496,7 +573,7 @@
   `LUC-6876-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -523,7 +600,7 @@
   `LUC-6873-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -550,9 +627,9 @@
   `LUC-6870-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production watch only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account value readback,
@@ -578,7 +655,7 @@
   `LUC-6867-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -605,7 +682,7 @@
   `LUC-6859-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
+NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_PRESERVED`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -632,9 +709,9 @@
   `LUC-6857-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -666,9 +743,9 @@
   `LUC-6850-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production watch only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account value readback,
@@ -694,9 +771,9 @@
   `LUC-6846-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -728,8 +805,8 @@
   `LUC-6830-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-07-02`.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
-  REVIEWED_SECRET_PATTERN_NOISE`.
+SECURITY_ACCOUNT_ACCESS_NO_GO / API_SECURITY_BOUNDARIES_PASS /
+REVIEWED_SECRET_PATTERN_NOISE`.
 - Scope:
   SPA read-only security verification only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account value readback,
@@ -758,8 +835,8 @@
   `LUC-6838-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
-  JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
+JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -788,7 +865,7 @@
   `LUC-6828-WIRE-LUC-6816-TO-LUC-6331-RECOVERY-GATE-2026-07-02`.
 - Status:
   `DONE / FIRST_CLASS_BLOCKER_WIRING_APPLIED / LUC-6816_BLOCKED_BY_LUC-6331 /
-  NO_DUPLICATE_RECOVERY_CHILD / NO_PRODUCTION_MUTATION`.
+NO_DUPLICATE_RECOVERY_CHILD / NO_PRODUCTION_MUTATION`.
 - Scope:
   DRE coordination and release-gate dependency wiring only. No product code,
   commit, push, deploy, restart, rollback execution, env edit,
@@ -816,9 +893,9 @@
   `LUC-6824-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production watch only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account value readback,
@@ -844,8 +921,8 @@
   `LUC-6822-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SOAR_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
-  JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT /
+JANITOR_SCRIPT_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -874,8 +951,8 @@
   `LUC-6819-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -905,9 +982,9 @@
   `LUC-6816-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only Coolify production deploy health sweep only. No product code,
   commit, push, deploy, restart, rollback execution, env edit, secret/account
@@ -933,9 +1010,9 @@
   `LUC-6809-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -967,7 +1044,7 @@
   `LUC-6807-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -977,7 +1054,7 @@
   [LUC-6807](/LUC/issues/LUC-6807) issue and heartbeat-context readbacks
   returned `200`, with no blockers and `0` comments in the wake/context
   readback. Live Soar project readback returned `154` open issues: `1
-  in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
+in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
   only runnable non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), already
   assigned to CBE and unblocked.
 - Evidence:
@@ -997,7 +1074,7 @@
   `LUC-6802-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1007,7 +1084,7 @@
   [LUC-6802](/LUC/issues/LUC-6802) issue and heartbeat-context readbacks
   returned `200`, with no blockers and `0` comments in the wake/context
   readback. Live Soar project readback returned `154` open issues: `1
-  in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
+in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
   only runnable non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), already
   assigned to CBE and unblocked.
 - Evidence:
@@ -1027,7 +1104,7 @@
   `LUC-6794-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1037,7 +1114,7 @@
   [LUC-6794](/LUC/issues/LUC-6794) issue and heartbeat-context readbacks
   returned `200`, with no blockers and `0` pending comments in the wake
   payload. Live Soar project readback returned `154` open issues: `1
-  in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
+in_progress`, `1 in_review`, `1 todo`, `147 blocked`, and `4 backlog`. The
   only runnable non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), already
   assigned to CBE and unblocked.
 - Evidence:
@@ -1057,7 +1134,7 @@
   `LUC-6790-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1086,7 +1163,7 @@
   `LUC-6786-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1115,9 +1192,9 @@
   `LUC-6784-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -1141,8 +1218,8 @@
   `LUC-6781-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / QVE_RUN_CANCELLED_CONFIRMED /
-  SINGLE_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+SINGLE_RUNNABLE_TODO_CONFIRMED / NO_DUPLICATE_CHILD_CREATED /
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1156,7 +1233,7 @@
   with [LUC-6782](/LUC/issues/LUC-6782) active under QVE. Post-close readback
   returned `154` open issues while [LUC-6782](/LUC/issues/LUC-6782) was
   briefly `blocked`. Final readback returned `153` open issues: `147
-  blocked`, `1 in_review`, `1 todo`, and `4 backlog`; [LUC-6782](/LUC/issues/LUC-6782)
+blocked`, `1 in_review`, `1 todo`, and `4 backlog`; [LUC-6782](/LUC/issues/LUC-6782)
   is now `cancelled`. The only runnable non-PM todo remains
   [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and unblocked.
   [LUC-4103](/LUC/issues/LUC-4103) remains a first-class `in_review`
@@ -1179,7 +1256,7 @@
   `LUC-6768-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1210,7 +1287,7 @@
   `LUC-6760-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1220,7 +1297,7 @@
   Paperclip issue and heartbeat-context readbacks for
   [LUC-6760](/LUC/issues/LUC-6760) returned `200`, with `0` comments. Live
   Soar project readback returned `154` open issues: `1 in_progress`, `1
-  in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
+in_review`, `147 blocked`, `4 backlog`, and `1 todo`. The only runnable
   non-PM todo remains [LUC-6468](/LUC/issues/LUC-6468), assigned to CBE and
   unblocked.
 - Evidence:
@@ -1240,9 +1317,9 @@
   `LUC-6757-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production health watch only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -1268,9 +1345,9 @@
   `LUC-6750-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -1301,9 +1378,9 @@
   `LUC-6776-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production health watch only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -1329,9 +1406,9 @@
   `LUC-6742-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1362,7 +1439,7 @@
   `LUC-6739-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1370,7 +1447,7 @@
   subscription mutation, or live-trading action.
 - Result:
   live Paperclip readback found `154` open Soar project issues: `1
-  in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
+in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
   The only runnable non-PM todo remains [LUC-6468](/LUC/issues/LUC-6468),
   assigned to CBE and unblocked. Existing gate paths remain first-class; no
   duplicate PM/DRE/QVE/TSA/FEW/CBE/Security/Ops child is warranted.
@@ -1389,7 +1466,7 @@
   `LUC-6736-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `DONE / LIVE_QUEUE_READBACK_COMPLETE / SINGLE_RUNNABLE_TODO_CONFIRMED /
-  NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+NO_DUPLICATE_CHILD_CREATED / CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1397,7 +1474,7 @@
   subscription mutation, or live-trading action.
 - Result:
   live Paperclip readback found `154` open Soar project issues: `1
-  in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
+in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
   The only runnable non-PM todo remains [LUC-6468](/LUC/issues/LUC-6468),
   assigned to CBE and unblocked. Existing gate paths remain first-class; no
   duplicate PM/DRE/QVE/TSA/FEW/CBE/Security/Ops child is warranted.
@@ -1416,7 +1493,7 @@
   `LUC-6726-PROTECTED-TEST-ACCOUNT-SMOKE-PATH-2026-07-02`.
 - Status:
   `DONE / PROTECTED_TEST_ACCOUNT_PATH_PRESENT / SECRET_REFS_REDACTED /
-  RUNTIME_FRESHNESS_PASS / PRODUCTION_SMOKE_BLOCKED_BY_503`.
+RUNTIME_FRESHNESS_PASS / PRODUCTION_SMOKE_BLOCKED_BY_503`.
 - Scope:
   QVE protected account-path verification only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account value readback,
@@ -1443,8 +1520,8 @@
   `LUC-6722-NO-STALL-QUEUE-EXPEDITOR-2026-07-02`.
 - Status:
   `VERIFIED / DONE / LIVE_QUEUE_READBACK_COMPLETE /
-  SINGLE_RUNNABLE_TODO_ROUTED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+SINGLE_RUNNABLE_TODO_ROUTED / NO_DUPLICATE_CHILD_CREATED /
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1452,7 +1529,7 @@
   subscription mutation, or live-trading action.
 - Result:
   live Paperclip readback found `154` open Soar project issues: `1
-  in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
+in_progress`, `1 in_review`, `147 blocked`, `4 backlog`, and `1 todo`.
   The only runnable non-PM todo is [LUC-6468](/LUC/issues/LUC-6468), assigned
   to CBE, unblocked, and idle. SPM attempted a concrete execute/split/block
   handoff comment on [LUC-6468](/LUC/issues/LUC-6468), but Paperclip rejected
@@ -1473,9 +1550,9 @@
   `LUC-6711-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production health watch only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -1501,7 +1578,7 @@
   `LUC-4103-OWNER-LOGIN-WAITING-STATE-SECURITY-HEARTBEAT-2026-07-02`.
 - Status:
   `IN_REVIEW / METHOD_SELECTION_INTERACTION_PENDING /
-  SECURITY_BOUNDARY_PRESERVED / NO_SECRET_OR_ACCOUNT_PROOF_RUN`.
+SECURITY_BOUNDARY_PRESERVED / NO_SECRET_OR_ACCOUNT_PROOF_RUN`.
 - Scope:
   SPA control-plane verification and waiting-state disposition only. No login,
   browser proof, product code, commit, push, deploy, restart, rollback
@@ -1526,7 +1603,7 @@
   `LUC-6705-RESTORE-OWNER-LOGIN-VERIFICATION-WAITING-STATE-2026-07-02`.
 - Status:
   `DONE / WAITING_POSTURE_ALREADY_RESTORED / LUC-4103_IN_REVIEW /
-  METHOD_SELECTION_INTERACTION_PENDING / NO_PRODUCT_CODE_MUTATION`.
+METHOD_SELECTION_INTERACTION_PENDING / NO_PRODUCT_CODE_MUTATION`.
 - Scope:
   AIA control-plane recovery verification only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -1549,10 +1626,10 @@
   `LUC-6720-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`.
 - Status:
   `VERIFIED / DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS /
-  ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
+ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
+FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback,
@@ -1580,8 +1657,8 @@
   `LUC-6716-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-02`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1611,8 +1688,8 @@
   `LUC-6707-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1638,7 +1715,7 @@
   `LUC-6701-NO-STALL-QUEUE-EXPEDITOR-2026-07-01`.
 - Status:
   `DONE / RECOVERY_CHILD_CREATED / NO_PRODUCT_CODE_MUTATION /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1667,7 +1744,7 @@
   `LUC-6697-NO-STALL-QUEUE-EXPEDITOR-2026-07-01`.
 - Status:
   `DONE / PM_TAIL_DISPOSITION_APPLIED / NO_DUPLICATE_CHILD_CREATED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1695,9 +1772,9 @@
   `LUC-6688-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1725,9 +1802,9 @@
   `LUC-6673-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1755,7 +1832,7 @@
   `LUC-6668-NO-STALL-QUEUE-EXPEDITOR-2026-07-01`.
 - Status:
   `DONE / NO_DUPLICATE_CHILD_CREATED / EXISTING_OWNER_PATHS_CONFIRMED /
-  CONTROL_TICK_SCRIPT_UNAVAILABLE`.
+CONTROL_TICK_SCRIPT_UNAVAILABLE`.
 - Scope:
   SPM coordination only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1779,8 +1856,8 @@
   `LUC-6662-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`.
 - Status:
   `VERIFIED / DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA gap-register refresh only. No product code, commit, push, deploy,
   restart, rollback execution, env edit, secret/account readback, DB/Redis
@@ -1801,8 +1878,8 @@
   `LUC-6660-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1832,8 +1909,8 @@
   `LUC-6654-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1853,9 +1930,9 @@
   `LUC-6643-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1881,9 +1958,9 @@
   `LUC-6624-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1931,7 +2008,7 @@
   `LUC-6608-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
-  PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
+PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, production
@@ -1963,9 +2040,9 @@
   `LUC-6606-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation,
@@ -1991,8 +2068,8 @@
   `LUC-6602-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -2011,8 +2088,8 @@
   `LUC-6584-REGRESSION-EVIDENCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / REGRESSION_BASELINE_FAIL / WEB_SMOKE_TIMEOUTS /
-  LOCAL_DOCKER_ENGINE_UNAVAILABLE / PUBLIC_WEB_503 /
-  ARCHITECTURE_DRIFT_PASS`.
+LOCAL_DOCKER_ENGINE_UNAVAILABLE / PUBLIC_WEB_503 /
+ARCHITECTURE_DRIFT_PASS`.
 - Scope:
   QVE verification only. No product code, commit, push, deploy, restart,
   rollback, env edit, secret/account readback, production account mutation,
@@ -2039,8 +2116,8 @@
   `LUC-6579-DAILY-PROJECT-STATUS-REFRESH-2026-07-01`.
 - Status:
   `DONE / PM_STATUS_REFRESHED / PRODUCTION_WEB_503 /
-  BACKTEST_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_PARTIAL /
-  ARCHITECTURE_DRIFT_PASS / NO_NEW_DUPLICATE_LANE`.
+BACKTEST_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_PARTIAL /
+ARCHITECTURE_DRIFT_PASS / NO_NEW_DUPLICATE_LANE`.
 - Scope:
   SPM status integration only. No code implementation, commit, push, deploy,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2067,8 +2144,8 @@
   `LUC-6548-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 /
-  PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / COOLIFY_WEB_BACKTEST_UNHEALTHY /
-  ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
+PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / COOLIFY_WEB_BACKTEST_UNHEALTHY /
+ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
 - Scope:
   read-only production performance/server-health watch and source-control
   closure note. No deploy, push, restart, rollback execution, env edit, secret
@@ -2096,8 +2173,8 @@
   `LUC-6553-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA gap-register refresh only. No code implementation, commit, push, deploy,
   restart, rollback execution, env edit, secret value readback, DB/Redis
@@ -2126,8 +2203,8 @@
   `LUC-6551-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_NOT_ACCEPTABLE /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No production mutation, deploy,
   push, restart, rollback, env edit, secret readback, account mutation,
@@ -2170,8 +2247,8 @@
   `LUC-6546-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `BLOCKED / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  NO_COMMIT_DIRTY_TREE`.
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+NO_COMMIT_DIRTY_TREE`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret value readback, DB/Redis mutation,
@@ -2198,7 +2275,7 @@
   `LUC-6524-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
 - Scope:
   read-only production performance/server-health watch and source-control
   closure note. No deploy, push, restart, rollback execution, env edit, secret
@@ -2225,7 +2302,7 @@
   `LUC-6518-PRODUCT-CODE-DIRTY-LANE-CLASSIFICATION-2026-07-01`.
 - Status:
   `DONE / PRODUCT_CODE_DIRTY_LANE_CLASSIFIED / NO_COMMIT / NO_PUSH /
-  SOURCE_CONTROL_OWNER_NEXT`.
+SOURCE_CONTROL_OWNER_NEXT`.
 - Scope:
   CTO source-control classification of the product/script dirty lane surfaced
   by [LUC-6516](/LUC/issues/LUC-6516). No product implementation, commit,
@@ -2253,7 +2330,7 @@
   `LUC-6504-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
 - Scope:
   read-only production performance/server-health watch and source-control
   closure note. No deploy, push, restart, rollback execution, env edit, secret
@@ -2280,7 +2357,7 @@
   `LUC-6489-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED / NO_COMMIT_DIRTY_TREE`.
 - Scope:
   read-only production performance/server-health watch and source-control
   closure note. No deploy, push, restart, rollback execution, env edit, secret
@@ -2333,8 +2410,8 @@
   `LUC-6387-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL`.
+FAILED_CHECKS_ALREADY_ROUTED / PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL`.
 - Scope:
   TSA gap-register refresh only. No code implementation, commit, push, deploy,
   restart, rollback execution, env edit, secret value readback, DB/Redis
@@ -2363,7 +2440,7 @@
   `LUC-6479-BACKTEST-WEB-GROUPED-PROOF-INSTABILITY-2026-07-01`.
 - Status:
   `DONE / VERIFIED_BACKTEST_WEB_GROUPED_PACKET / HARNESS_ISOLATION_HARDENED /
-  NO_FEW_ESCALATION`.
+NO_FEW_ESCALATION`.
 - Scope:
   TAE local Web test isolation only. No product UI repair, API work, push,
   deploy, restart, protected smoke, secret/account readback, production
@@ -2388,8 +2465,8 @@
   `LUC-6491-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No production mutation, deploy,
   push, restart, rollback, env edit, secret readback, account mutation, DB/Redis
@@ -2414,8 +2491,8 @@
   `LUC-6382-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`.
 - Status:
   `DONE / ARCHITECTURE_DRIFT_PASS / NO_NEW_TSA_REPAIR_CHILD /
-  RELEASE_GATES_ALREADY_ROUTED / PROTECTED_INPUT_GATE_PARTIAL /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED`.
+RELEASE_GATES_ALREADY_ROUTED / PROTECTED_INPUT_GATE_PARTIAL /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED`.
 - Scope:
   TSA controller refresh only. No code implementation, commit, push, deploy,
   restart, rollback execution, env edit, secret value readback, DB/Redis
@@ -2449,7 +2526,7 @@
   `LUC-6483-NO-STALL-QUEUE-EXPEDITOR-2026-06-30`.
 - Status:
   `DONE / LUC_6463_CHILDREN_CONFIRMED / UNASSIGNED_BLOCKER_ROUTED /
-  NO_DUPLICATE_CHILD_CREATED`.
+NO_DUPLICATE_CHILD_CREATED`.
 - Scope:
   SPM queue coordination only. No product code, push, deploy, restart,
   protected smoke, secret/account readback, production mutation,
@@ -2474,9 +2551,9 @@
   `LUC-6331-PRODUCTION-WEB-BACKTEST-WORKER-RESTORATION-RECHECK-2026-07-01`.
 - Status:
   `BLOCKED / RESTORATION_NOT_COMPLETE / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production restoration recheck. No deploy, push, restart,
   rollback execution, env edit, secret/account value readback, DB/Redis
@@ -2510,7 +2587,7 @@
   `LUC-6476-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2537,7 +2614,7 @@
   `LUC-6473-NO-STALL-QUEUE-EXPEDITOR-2026-06-30`.
 - Status:
   `BLOCKED / CONTROL_PLANE_ISSUE_ROUTES_TIMEOUT / NO_DUPLICATE_CHILD_CREATED /
-  LUC_6463_RECOVERY_PATH_IDENTIFIED`.
+LUC_6463_RECOVERY_PATH_IDENTIFIED`.
 - Scope:
   SPM queue coordination only. No product code, push, deploy, restart,
   protected smoke, secret/account readback, production mutation,
@@ -2564,8 +2641,8 @@
   `LUC-6462-HOST-LEVEL-VPS-LOG-WINDOW-PROOF-2026-06-30`.
 - Status:
   `BLOCKED / COOLIFY_LOG_WINDOW_PROOF_CAPTURED / HOST_SSH_PROOF_BLOCKED /
-  PRODUCTION_WEB_503 / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+PRODUCTION_WEB_503 / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only host/Coolify/log-window proof. No deploy, push, restart,
   rollback execution, env edit, secret/account value readback, DB/Redis
@@ -2594,7 +2671,7 @@
   `LUC-6445-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2620,7 +2697,7 @@
   `LUC-6439-SOAR-PROTECTED-RECHECK-2026-06-30`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only protected gate recheck only. No deploy, push, restart,
   rollback execution, env edit, secret/account value readback, DB/Redis
@@ -2644,7 +2721,7 @@
   `LUC-6424-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, production DB/Redis
@@ -2675,7 +2752,7 @@
   `LUC-6413-REGRESSION-EVIDENCE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / REGRESSION_BASELINE_FAIL / LOCAL_DOCKER_UNAVAILABLE /
-  WEB_SMOKE_TIMEOUTS / PRODUCTION_WEB_503`.
+WEB_SMOKE_TIMEOUTS / PRODUCTION_WEB_503`.
 - Scope:
   QVE safe regression verification only. No deploy, push, restart, protected
   smoke, secret/account readback, production mutation, DB mutation outside test
@@ -2700,7 +2777,7 @@
   `LUC-6416-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Scope:
   SPA no-secret, non-mutating protected-input/account-access gate sweep. No
   deploy, push, restart, rollback execution, env edit, secret/account value
@@ -2734,7 +2811,7 @@
   `LUC-6386-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-30`.
 - Status:
   `BLOCKED / PRODUCTION_WEB_503 / AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, production DB/Redis
@@ -2765,7 +2842,7 @@
   `LUC-6369-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `BLOCKED / WATCH_COMPLETED / PRODUCTION_WEB_DOWN / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2796,7 +2873,7 @@
   `LUC-6329-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `DONE / WATCH_COMPLETED / PRODUCTION_WEB_DOWN /
-  BACKTEST_WORKER_NOT_READY / INCIDENT_CHILD_CREATED`.
+BACKTEST_WORKER_NOT_READY / INCIDENT_CHILD_CREATED`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2807,7 +2884,7 @@
   API health/ready and authenticated dashboard API reads remained responsive,
   runtime freshness passed, and alerts were empty. Public Web returned stable
   `503 no available server`; protected `/workers/ready` returned `503
-  not_ready` because backtest heartbeat was missing. Coolify read-only
+not_ready` because backtest heartbeat was missing. Coolify read-only
   projection confirmed `soar-web` and `workers-backtest` as
   `exited:unhealthy`.
 - Evidence:
@@ -2889,9 +2966,9 @@
   `LUC-6657-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-01`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   read-only DRE production watch. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation,
@@ -2912,7 +2989,7 @@
   `LUC-6296-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-30`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart,
   rollback execution, env edit, secret/account readback, production DB/Redis
@@ -2946,8 +3023,8 @@
   `LUC-6290-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / PRODUCTION_RUNTIME_HEALTHY /
-  ROLLBACK_NOT_REQUIRED / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+ROLLBACK_NOT_REQUIRED / MARKET_CATALOG_COLD_SAMPLE_WATCH /
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -2983,7 +3060,7 @@
   `LUC-6271-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-30`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -3022,7 +3099,7 @@
   `LUC-6285-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-30`.
 - Status:
   `BLOCKED / VERIFIED_CONTROLLER_REFRESH / NO_NEW_TSA_REPAIR_CHILD /
-  PROTECTED_INPUT_ACCOUNT_GATE_FAIL`.
+PROTECTED_INPUT_ACCOUNT_GATE_FAIL`.
 - Scope:
   TSA controller/readback only. No product code, deploy, push, restart,
   protected smoke, secret/account readback, production mutation,
@@ -3054,7 +3131,7 @@
   `LUC-6234-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-29`.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Scope:
   SPA no-secret/non-mutating parent gate rerun after child
   [LUC-6242](/LUC/issues/LUC-6242). No deploy, push, restart, rollback
@@ -3088,7 +3165,7 @@
   `LUC-6269-NO-STALL-QUEUE-EXPEDITOR-2026-06-29`.
 - Status:
   `DONE_LOCALLY / NO_NEW_CHILD_LANE / EXISTING_PROTECTED_INPUT_BLOCKER_REMAINS /
-  PAPERCLIP_BLOCKED_UNDER_AIA_RECOVERY`.
+PAPERCLIP_BLOCKED_UNDER_AIA_RECOVERY`.
 - Scope:
   SPM queue coordination only. No product code, deploy, push, restart,
   protected smoke, secret/account readback, production mutation,
@@ -3115,7 +3192,7 @@
   readback found [LUC-6269](/LUC/issues/LUC-6269) already `blocked` and
   assigned to [00 AIA](/LUC/agents/00-aia-ai-assistant) for
   `stranded_assigned_issue` recovery; SPM status mutation returned `403
-  Issue is outside this actor's authorization boundary`. CTO recovery heartbeat
+Issue is outside this actor's authorization boundary`. CTO recovery heartbeat
   also found the injected Paperclip API unresponsive on checkout,
   heartbeat-context, identity, and issue search, so the board status remains a
   control-plane recovery item rather than a Soar product blocker.
@@ -3126,7 +3203,7 @@
   `LUC-6252-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-29`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -3162,7 +3239,7 @@
   `LUC-6242-PROTECTED-INPUT-FAMILY-BINDING-ACCOUNT-ACCESS-GATE-2026-06-29`.
 - Status:
   `DONE / ACCOUNT_ACCESS_GATE_BOUND_TO_PROTECTED_INPUT_FAMILIES /
-  CURRENT_RUNNER_GATE_FAILS_CLOSED / NO_SECRET_READBACK`.
+CURRENT_RUNNER_GATE_FAILS_CLOSED / NO_SECRET_READBACK`.
 - Scope:
   CTO/Security bridge repair of the no-secret protected-input readiness checker
   only. No deploy, push, restart, rollback execution, env edit, secret/account
@@ -3193,7 +3270,7 @@
   `LUC-6234-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-29`.
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL / SECURITY_ACCOUNT_ACCESS_NO_GO /
-  NO_SECRET_READBACK / NO_RUNTIME_MUTATION`.
+NO_SECRET_READBACK / NO_RUNTIME_MUTATION`.
 - Scope:
   SPA no-secret security/account-access gate refresh for deployed Web SHA
   `c357d957741f56835f27a1fc3a948dad43a91036`. No deploy, push, restart,
@@ -3228,7 +3305,7 @@
   `LUC-6215-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-29`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production performance/server-health watch. No deploy, push,
   restart, rollback execution, env edit, secret/account value readback,
@@ -3285,7 +3362,7 @@
   Backtests PASS (`15/15`), broad API smoke PASS (`45/45`), and repeatable
   `api,backtests` PASS (`2/2`). `pnpm softwarehouse:control-tick` remains
   unavailable in this checkout (`Command "softwarehouse:control-tick" not
-  found`).
+found`).
 - Residual:
   no new Backend or Test Automation child is required for the Backtests cleanup
   repair. [LUC-5606](/LUC/issues/LUC-5606) should be closed or marked
@@ -3299,7 +3376,7 @@
   `LUC-6170-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-29`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account value readback, DB/Redis mutation, raw
@@ -3336,7 +3413,7 @@
   `LUC-6106-USER-CONFIGURATION-DOC-LINK-RECONCILIATION-2026-06-29`.
 - Status:
   `DONE / DOC_LINK_ROWS_RECONCILED / USER_CONFIGURATION_MISSING_DOC_LINK_49_TO_30 /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM documentation-link reconciliation for [LUC-6097](/LUC/issues/LUC-6097)
   User configuration API/support rows. No product code, production mutation,
@@ -3373,7 +3450,7 @@
   mutation, order, position, or live-trading action.
 - Result:
   split the [LUC-6003](/LUC/issues/LUC-6003) classified `Unclassified user
-  workflow` rows into four executable proof packets: API/support, runtime/AI
+workflow` rows into four executable proof packets: API/support, runtime/AI
   worker, shared UI component state, and user journey/browser/API. Exact row
   coverage is `147/147` with `0` unassigned rows.
 - Evidence:
@@ -3476,7 +3553,7 @@
   `LUC-6089-TRADING-APP-COMPLETION-ROW-LINKAGE-RECONCILIATION-2026-06-29`.
 - Status:
   `DONE / ROW_LINKAGE_RECONCILED / TAXONOMY_ESCALATION_ROUTED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM documentation reconciliation after [LUC-6086](/LUC/issues/LUC-6086)
   proved the no-live Trading operation `HomeLiveWidgets` behavior packet. No
@@ -3634,7 +3711,7 @@
   `LUC-6066-MUTATE-CENTRAL-SMOKE-AUTH-TOKEN-BINDING-2026-06-28`.
 - Status:
   `DONE / CENTRAL_SMOKE_AUTH_TOKEN_AGENT_BINDING_REMOVED /
-  DOWNSTREAM_SMOKE_VERIFIED`.
+DOWNSTREAM_SMOKE_VERIFIED`.
 - Scope:
   AIA board/security/ops Paperclip config mutation only: heartbeat context
   readback, metadata/name-only secret readback, agent env-key source
@@ -3685,7 +3762,7 @@
   `LUC-6053-RUNTIME-IMPACT-DIRTY-CLUSTER-CLASSIFICATION-2026-06-28`.
 - Status:
   `DONE / RUNTIME_IMPACT_DIRTY_CLUSTER_CLASSIFIED / NOT_COMMITTED /
-  BACKEND_QA_CLOSURE_REQUIRED`.
+BACKEND_QA_CLOSURE_REQUIRED`.
 - Scope:
   CTO source-control classification only for the runtime-impact dirty cluster
   from [LUC-6043](/LUC/issues/LUC-6043): three API test/type files, five
@@ -3719,7 +3796,7 @@
   `LUC-6038-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
+OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
 - Scope:
   TSA architecture/gap-register refresh only: wake acknowledgement, current
   source-of-truth readback, generated architecture/app-completion posture,
@@ -3866,7 +3943,7 @@
   `LUC-5986-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -3897,7 +3974,7 @@
   `LUC-5947-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -3928,7 +4005,7 @@
   `LUC-5938-NO-STALL-QUEUE-EXPEDITOR-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / DIRECT_BLOCKER_MUTATION_403 /
-  OWNER_PATH_ALREADY_ROUTED`.
+OWNER_PATH_ALREADY_ROUTED`.
 - Scope:
   SPM queue reconciliation only: Paperclip heartbeat-context readback, active
   Soar issue queue readback, control-tick availability check, source-control
@@ -3957,7 +4034,7 @@
   `LUC-5921-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
+OWNER_PATH_BLOCKER_ALREADY_ROUTED`.
 - Scope:
   TSA architecture/gap-register refresh only: wake payload acknowledgement,
   Paperclip heartbeat-context readback, generated architecture/app-completion
@@ -3999,7 +4076,7 @@
   `LUC-5915-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
 - Scope:
   QVE read-only production acceptance and performance verification only. No
   deploy, push, restart, rollback execution, env edit, secret/account
@@ -4026,7 +4103,7 @@
   `LUC-5910-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4094,7 +4171,7 @@
   `LUC-5900-NO-STALL-QUEUE-EXPEDITOR-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  OWNER_PATH_ALREADY_ROUTED`.
+OWNER_PATH_ALREADY_ROUTED`.
 - Scope:
   SPM queue reconciliation only: wake payload acknowledgement, Paperclip
   heartbeat-context readback, [LUC-5636](/LUC/issues/LUC-5636) and
@@ -4187,7 +4264,7 @@
   `LUC-5880-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4219,7 +4296,7 @@
   `LUC-5868-STALE-SMOKE-AUTH-TOKEN-BINDING-2026-06-28`.
 - Status:
   `BLOCKED / VERIFIED_STALE_BINDING_PRESENT / FRESH_LOGIN_PASS /
-  SECRET_MANAGEMENT_ACCESS_DENIED`.
+SECRET_MANAGEMENT_ACCESS_DENIED`.
 - Scope:
   SPA no-secret verification of the stale `SMOKE_AUTH_TOKEN` runner binding.
   No token value readback, secret mutation, deploy, push, restart, rollback
@@ -4246,7 +4323,7 @@
   `LUC-5865-EVIDENCE-LINK-RECONCILIATION-2026-06-28`.
 - Status:
   `DONE / VERIFIED_DOCS_RECONCILIATION / ARCHITECTURE_ACTIONABLE_ZERO /
-  APP_COMPLETION_BACKLOG_RECORDED`.
+APP_COMPLETION_BACKLOG_RECORDED`.
 - Scope:
   Documentation Steward evidence-link reconciliation only: read current
   architecture-awareness and app-completion generated reports, validate strict
@@ -4276,7 +4353,7 @@
   `LUC-5857-DAILY-PROJECT-STATUS-REFRESH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PM_STATUS_REFRESH / V1_PARTIALLY_VERIFIED /
-  NO_DUPLICATE_LANE`.
+NO_DUPLICATE_LANE`.
 - Scope:
   SPM daily status refresh only: Paperclip heartbeat-context readback,
   control-signal availability check, architecture/app-completion readback,
@@ -4307,7 +4384,7 @@
   `LUC-5835-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4339,7 +4416,7 @@
   `LUC-5822-NO-STALL-QUEUE-EXPEDITOR-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Scope:
   SPM queue reconciliation only: wake payload acknowledgement, Paperclip
   heartbeat-context readback, current state/evidence readback, control-tick
@@ -4372,7 +4449,7 @@
   `LUC-5806-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Scope:
   TSA gap-register and repair-lane refresh only: Paperclip heartbeat/issue
   readback, architecture/app-completion report readback, strict architecture
@@ -4401,7 +4478,7 @@
   `LUC-5803-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance sweep only. No deploy, push, restart,
   rollback execution, env edit, DB/Redis mutation, raw log capture, production
@@ -4428,7 +4505,7 @@
   `LUC-5798-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4486,7 +4563,7 @@
   `LUC-5790-SOAR-PROTECTED-RECHECK-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Scope:
   DRE read-only protected gate recheck for [LUC-241](/LUC/issues/LUC-241):
   canonical production API/Web smoke, protected `/workers/ready`, rollback
@@ -4516,7 +4593,7 @@
   `LUC-5781-SOAR-PROTECTED-RECHECK-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Scope:
   DRE read-only protected gate recheck for [LUC-241](/LUC/issues/LUC-241):
   canonical production API/Web smoke, protected `/workers/ready`, rollback
@@ -4546,7 +4623,7 @@
   `LUC-5767-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4575,7 +4652,7 @@
   `LUC-5736-SOAR-PROTECTED-RECHECK-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Scope:
   DRE read-only protected gate recheck for [LUC-241](/LUC/issues/LUC-241):
   canonical production API/Web smoke, protected `/workers/ready`, rollback
@@ -4605,7 +4682,7 @@
   `LUC-5729-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -4634,7 +4711,7 @@
   `LUC-5721-SOAR-PROTECTED-RECHECK-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Scope:
   DRE read-only protected gate recheck for [LUC-241](/LUC/issues/LUC-241):
   canonical production API/Web smoke, protected `/workers/ready`, rollback
@@ -4664,7 +4741,7 @@
   `LUC-5706-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_REFRESH / NO_NEW_TSA_ARCHITECTURE_REPAIR_LANE /
-  EXCHANGE_PARENT_INTEGRATION_REMAINS`.
+EXCHANGE_PARENT_INTEGRATION_REMAINS`.
 - Scope:
   TSA gap-register and repair-lane refresh only: Paperclip readback,
   architecture/app-completion report readback, strict architecture drift
@@ -4716,7 +4793,7 @@
   `LUC-5680-NAMES-ONLY-EXCHANGE-CONFIGURATION-FAIL-CLOSED-API-PROOF-2026-06-28`.
 - Status:
   `DONE / VERIFIED_LOCAL / NAMES_ONLY_EXCHANGE_CONFIG /
-  FAIL_CLOSED_API_PROOF`.
+FAIL_CLOSED_API_PROOF`.
 - Scope:
   Core Backend proof for Exchange connection/configuration only: shared
   exchange-name validation source, API-key probe capability contract, local
@@ -4796,7 +4873,7 @@
   `LUC-5643-SOAR-PROTECTED-RECHECK-2026-06-27`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Scope:
   DRE read-only protected gate recheck for [LUC-241](/LUC/issues/LUC-241):
   canonical production API/Web smoke plus protected `/workers/ready`. No
@@ -4875,7 +4952,7 @@
   `LUC-5596-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-27`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance and performance sweep only. No deploy,
   push, restart, rollback execution, env edit, secret/account readback,
@@ -4931,7 +5008,7 @@
   `LUC-5598-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-27`.
 - Status:
   `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
 - Scope:
   Technical Solution Architect architecture gap-register refresh only. No
   runtime code, deploy, push, restart, rollback, env edit, protected smoke,
@@ -5009,7 +5086,7 @@
   `LUC-5604-API-BACKTESTS-SHARED-DB-CLEANUP-REPAIR-2026-06-27`.
 - Status:
   `DONE / VERIFIED_LOCAL / API_BACKTESTS_SHARED_DB_CLEANUP_REPAIRED /
-  REPEATABLE_API_BACKTESTS_GREEN`.
+REPEATABLE_API_BACKTESTS_GREEN`.
 - Scope:
   Core Backend test-harness repair for
   `apps/api/src/modules/backtests/backtests.e2e.test.ts`. No deploy, push,
@@ -5306,7 +5383,7 @@
   `LUC-5367-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-21`.
 - Status:
   `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
 - Scope:
   Technical Solution Architect architecture gap-register refresh only. No
   runtime code, deploy, push, restart, rollback, env edit, protected smoke,
@@ -5361,7 +5438,7 @@
   `LUC-5351-V1-AUDIT-CONTROLLER-REFRESH-2026-06-21`.
 - Status:
   `PARTIALLY_VERIFIED / STRICT_ARCHITECTURE_DRIFT_CLEAN /
-  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED / RELEASE_GATES_STILL_BLOCKED`.
+APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED / RELEASE_GATES_STILL_BLOCKED`.
 - Scope:
   TSA controller verification and routing only. No runtime code repair,
   production smoke, protected proof, deploy, push, restart, rollback, env edit,
@@ -5412,7 +5489,7 @@
 - `LUC-5310-RUNTIME-DCA-PNL-PAPER-FIRST-PROOF-TRIAGE-2026-06-20`
   completed as a QVE proof/triage checkpoint with final disposition
   `PARTIALLY_VERIFIED / LOCAL_RUNTIME_CONTRACTS_PASS /
-  PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
+PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
 - Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
   checkout was already claimed by the harness and was not repeated.
 - Focused local runtime proof passed for exchange-PnL DCA thresholds (`2/2`),
@@ -5460,7 +5537,7 @@
 - `LUC-5309-WALLET-LIVE-PAPER-DASHBOARD-READBACK-2026-06-20` completed as a
   QVE proof/triage checkpoint with final disposition
   `PARTIALLY_VERIFIED / PRODUCT_REPAIR_NOT_PROVEN /
-  TEST_HARNESS_REPAIR_DELEGATED`.
+TEST_HARNESS_REPAIR_DELEGATED`.
 - Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
   checkout was already claimed by the harness and was not repeated.
 - Web wallet/dashboard focused proof passed (`4` files / `10` tests). API
@@ -5510,7 +5587,7 @@
 - `LUC-5304-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
   DRE read-only production health checkpoint with final disposition
   `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
@@ -5611,7 +5688,7 @@
 - `LUC-5206-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-20`
   completed as a QVE read-only production acceptance checkpoint with final
   disposition `BLOCKED / PARTIALLY_VERIFIED / AUTH_PROOF_FAILED /
-  COOLIFY_VPS_BINDINGS_BLOCKED`. Public smoke passed for API `/health`, API
+COOLIFY_VPS_BINDINGS_BLOCKED`. Public smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
   SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
   `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only `metadataSource=env-runtime`.
@@ -5664,7 +5741,7 @@
 - `LUC-5143-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
   DRE read-only production health checkpoint with final disposition
   `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / PUBLIC_APP_HEALTHY /
-  PROTECTED_AUTH_PROOF_FAILED`. Wake `issue_assigned` had no pending comments
+PROTECTED_AUTH_PROOF_FAILED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`; five-sample public timing did
@@ -5692,7 +5769,7 @@
 - `LUC-5088-WEB-LATENCY-COOLIFY-RUNTIME-CORRELATION-2026-06-20` completed as
   a DRE read-only production runtime correlation checkpoint with final
   disposition `DONE / PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED /
-  RUNTIME_CLUE_RECORDED`. Wake `issue_assigned` had no pending comments
+RUNTIME_CLUE_RECORDED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public timing did not reproduce the [LUC-5085](/LUC/issues/LUC-5085)
   Web `/` spike: Web `/` `115-136 ms` over five samples, `/auth/login`
@@ -5716,7 +5793,7 @@
 - `LUC-5085-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
   DRE read-only production health checkpoint with final disposition
   `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / WEB_HOME_LATENCY_SPIKES /
-  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
@@ -5771,7 +5848,7 @@
 - `LUC-5032-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-20`
   completed as a QVE read-only production acceptance checkpoint with final
   disposition `BLOCKED / PARTIALLY_VERIFIED / PRODUCTION_APP_HEALTHY /
-  COOLIFY_VPS_READBACK_BLOCKED`. Public production smoke passed for API
+COOLIFY_VPS_READBACK_BLOCKED`. Public production smoke passed for API
   `/health`, API `/ready`, Web `/`, and Web `/api/build-info`. Production
   build-info resolved SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on
   `main`, build id `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
@@ -5795,7 +5872,7 @@
 - `LUC-5022-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
   DRE read-only production health checkpoint with final disposition
   `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
@@ -5808,7 +5885,7 @@
   browser proof passed using process-local mapping from pre-bound
   `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to the script's `PROD_AUTH_*` names,
   without secret/cookie/token/body artifact storage. `pnpm run -s
-  ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
+ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
   `ops:coolify-stack:env-check` failed closed with required present `0/16`.
   Server-health readback remains incomplete because this DRE runner exposes no
   approved read-only Coolify/VPS/DB/worker binding families; existing unblock
@@ -5874,7 +5951,7 @@
 - `LUC-4959-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
   DRE read-only production health checkpoint with final disposition
   `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
   (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
   and was not repeated. Public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
@@ -5887,7 +5964,7 @@
   browser proof passed using process-local mapping from pre-bound
   `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to the script's `PROD_AUTH_*` names,
   without secret/cookie/token/body artifact storage. `pnpm run -s
-  ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
+ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
   `ops:coolify-stack:env-check` failed closed with required present `0/16`.
   Server-health readback remains incomplete because this DRE runner exposes no
   approved read-only Coolify/VPS/DB/RC/Gate binding families; existing unblock
@@ -6373,7 +6450,7 @@
   comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
   harness and was not repeated. The canonical Softwarehouse scanner command
   passed: `node scripts/build-architecture-awareness-index.mjs --project Soar
-  --root ../Soar`. Fresh report generated `2026-06-11T20:46:21.821Z` with
+--root ../Soar`. Fresh report generated `2026-06-11T20:46:21.821Z` with
   `9539` entities, `30410` relations, `9847` files, `44` actionable
   missing-test links, `0` actionable missing-doc links, `0` ownerless
   entities, and `0` disconnected entities. [LUC-3588](/LUC/issues/LUC-3588)
@@ -6603,7 +6680,7 @@ Last updated: 2026-06-11
   [09 TSA](/LUC/agents/09-tsa-technical-solution-architect) to refresh
   architecture-awareness after [LUC-3567](/LUC/issues/LUC-3567) and route at
   most one next non-duplicate local-safe repair lane. `corepack pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. No code,
+softwarehouse:control-tick` remains unavailable in this checkout. No code,
   runtime, deploy, protected proof, secret/account, database/Redis, exchange,
   order, position, payment/subscription, or live-trading mutation occurred.
   Evidence: `history/tasks/luc-3569-no-stall-queue-expeditor-2026-06-11-task.md`.
@@ -6960,7 +7037,7 @@ Last updated: 2026-06-11
   claimed by the harness and was not repeated. Paperclip heartbeat context for
   [LUC-3513](/LUC/issues/LUC-3513) showed no comments, no first-class blockers,
   parent [LUC-12](/LUC/issues/LUC-12), and active local workspace. `corepack
-  pnpm softwarehouse:control-tick` remains unavailable in this checkout.
+pnpm softwarehouse:control-tick` remains unavailable in this checkout.
   `corepack pnpm run ops:project:known-state` passed: graph `653` nodes /
   `842` relations / `27` chains, strict drift `846/846`, journey indexes
   `0` critical gaps, docs parity PASS, guardrails PASS, project index
@@ -6971,7 +7048,7 @@ Last updated: 2026-06-11
   disconnected entities. Live Soar queue readback found `96` blocked,
   `3` in_review, `1` in_progress for [LUC-3513](/LUC/issues/LUC-3513), and
   `0` todo issues. Soar remains `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE
-  HOLD`, not monitoring-only idle. No duplicate child, code/runtime/deploy/
+HOLD`, not monitoring-only idle. No duplicate child, code/runtime/deploy/
   protected proof, secret/account, database/Redis, exchange, order, position,
   payment/subscription, or live-trading mutation occurred. Evidence:
   `history/tasks/luc-3513-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`.
@@ -7003,7 +7080,7 @@ Last updated: 2026-06-11
 - `LUC-3506-CLASSIFY-NUL-WORKSPACE-ARTIFACT-2026-06-11` completed as a DRE
   source-control hygiene checkpoint for the root `NUL` artifact. Initial
   `git status` reported `?? NUL`; `git ls-files --others --exclude-standard
-  -- NUL` confirmed the untracked path; exact path bytes were `4E 55 4C 00`;
+-- NUL` confirmed the untracked path; exact path bytes were `4E 55 4C 00`;
   normal Win32 lookup failed; extended path lookup resolved a zero-byte archive
   file; and `git hash-object --no-filters -- NUL` returned the empty blob hash.
   Cleanup deleted only `\\?\C:\Personal\Projekty\Aplikacje\Soar\NUL` after
@@ -7027,7 +7104,7 @@ Last updated: 2026-06-11
   changes remove BOM/mojibake drift while preserving i18n keys/placeholders,
   and the test change adds loaded-dictionary encoding drift coverage. Focused
   proof passed: `corepack pnpm --filter web exec vitest run
-  src/i18n/translations.test.ts --reporter=verbose` (`7/7`), direct locale
+src/i18n/translations.test.ts --reporter=verbose` (`7/7`), direct locale
   encoding-marker scan returned no matches, and scoped `git diff --check`
   reported no whitespace errors beyond existing Windows LF-to-CRLF warnings.
   Recommendation: scoped three-file product-code group is commit-ready, but FEW
@@ -7054,7 +7131,7 @@ Last updated: 2026-06-11
   already provide same-day read-only Coolify evidence. Direct PM attempt to
   close [LUC-3435](/LUC/issues/LUC-3435) was rejected by Paperclip
   authorization boundary (`Issue is outside this actor's authorization
-  boundary`), so [LUC-3493](/LUC/issues/LUC-3493) is blocked on the authorized
+boundary`), so [LUC-3493](/LUC/issues/LUC-3493) is blocked on the authorized
   Ops owner action: [01 Ops Release Lead](/LUC/agents/01dd0c79-172b-4848-80eb-40692f07ccbb)
   must close or explicitly supersede [LUC-3435](/LUC/issues/LUC-3435) using
   [LUC-3437](/LUC/issues/LUC-3437) and [LUC-3461](/LUC/issues/LUC-3461)
@@ -7075,7 +7152,7 @@ Last updated: 2026-06-11
   exported-helper resolver proof for the sync checklist script, and extended
   release Ops contract proof for the import-safe CLI guard shape. Validation
   passed: `node --check scripts/rcGateSummaryChecklist.test.mjs`; `node --test
-  scripts/rcGateSummaryChecklist.test.mjs scripts/releaseOpsScriptContracts.test.mjs`
+scripts/rcGateSummaryChecklist.test.mjs scripts/releaseOpsScriptContracts.test.mjs`
   PASS (`9/9`); direct relation readback PASS (`3/3`); no leftover
   `chrome-headless-shell` process. No real RC/prod gate, protected proof,
   deploy, restart, rollback, secret/account readback, database/Redis mutation,
@@ -7590,8 +7667,8 @@ Last updated: 2026-06-11
   `scripts/runRollbackProofEvidence.test.mjs` is absent, and [LUC-2252](/LUC/issues/LUC-2252)
   only provides wrapper-level relation evidence. Created [LUC-3014](/LUC/issues/LUC-3014)
   for Test Automation to resolve or classify those rows. `node --check
-  scripts/runRollbackProofEvidence.mjs` passed; `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. No code
+scripts/runRollbackProofEvidence.mjs` passed; `pnpm
+softwarehouse:control-tick` remains unavailable in this checkout. No code
   implementation, real rollback proof, protected proof, secret, deploy, push,
   restart, rollback execution, database mutation, exchange credential, order,
   position, account/payment, or live-trading action occurred. Evidence:
@@ -7641,8 +7718,8 @@ Last updated: 2026-06-11
   [LUC-2252](/LUC/issues/LUC-2252) only provides script-level wrapper relation
   evidence. Created [LUC-3001](/LUC/issues/LUC-3001) for Test Automation to
   resolve or classify those rows. `node --check
-  scripts/runRestoreDrillEvidence.mjs` passed; `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. No code
+scripts/runRestoreDrillEvidence.mjs` passed; `pnpm
+softwarehouse:control-tick` remains unavailable in this checkout. No code
   implementation, real restore drill, protected proof, secret, deploy, push,
   restart, rollback, database mutation, exchange credential, order, position,
   account, payment/subscription, or live-trading action occurred. Evidence:
@@ -8566,7 +8643,7 @@ Last updated: 2026-06-11
   [LUC-2791](/LUC/issues/LUC-2791) owns generated function/user-action index
   helpers, and existing blocked [LUC-2792](/LUC/issues/LUC-2792) owns go-live
   smoke helpers. Duplicate search for `runControlledLiveSessionProof
-  printUsage` returned no matching issue. Created
+printUsage` returned no matching issue. Created
   [LUC-2878](/LUC/issues/LUC-2878) for Test Automation to cover or classify
   `scripts/runControlledLiveSessionProof.mjs#printUsage`. No code, runtime,
   deploy, push, restart, rollback, env, account, secret, protected-smoke,
@@ -8959,7 +9036,7 @@ Last updated: 2026-06-11
   helpers and [LUC-2792](/LUC/issues/LUC-2792) for go-live smoke helpers.
   Attempting to restore [LUC-2791](/LUC/issues/LUC-2791) from `blocked` to
   `todo` failed with Paperclip least-privilege policy (`Agent cannot mutate
-  another agent's issue`), so no retry was attempted. Created
+another agent's issue`), so no retry was attempted. Created
   [LUC-2808](/LUC/issues/LUC-2808) for Test Automation Engineer to cover or
   classify the next non-duplicate anchor,
   `scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie`. No product-code,
@@ -9196,7 +9273,7 @@ Last updated: 2026-06-11
   [LUC-2775](/LUC/issues/LUC-2775) reduced the stale `scripts/dev-backend.mjs`
   top family to one residual exact anchor, `scripts/dev-backend.mjs#shutdownImpl`.
   Focused existing proof passed (`node --check scripts/dev-backend.mjs; node
-  --test scripts/dev-backend.test.mjs` => `9/9`). Duplicate searches for
+--test scripts/dev-backend.test.mjs` => `9/9`). Duplicate searches for
   `shutdownImpl dev-backend` and `dev-workers prefixLog` found no open lanes.
   Created [LUC-2781](/LUC/issues/LUC-2781) for Test Automation Engineer to
   cover or classify residual `shutdownImpl` without reopening broad dev-backend
@@ -9217,7 +9294,7 @@ Last updated: 2026-06-11
   [LUC-2775](/LUC/issues/LUC-2775), so duplicate Test Automation work was not
   reopened. Active duplicate searches found no open matching refresh lane for
   `architecture-awareness dev-backend` or `Refresh architecture-awareness after
-  dev backend helper proof closure`. Created [LUC-2779](/LUC/issues/LUC-2779)
+dev backend helper proof closure`. Created [LUC-2779](/LUC/issues/LUC-2779)
   for `09 TSA (Technical Solution Architect)` to refresh/reconcile
   architecture-awareness and create at most one current non-duplicate
   worker-ready lane if gaps remain. No product-code, runtime, deploy, push,
@@ -9322,7 +9399,7 @@ Last updated: 2026-06-11
   links, `0` ownerless entities, `0` disconnected entities, and `7441`
   classified inferred-link noise rows. `pnpm run docs:parity:check` passed
   (`22/22` API modules, `16/16` Web features, `39/39` routes). `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout. A
+softwarehouse:control-tick` remains unavailable in this checkout. A
   concurrent TSA/Test Automation lane [LUC-2764](/LUC/issues/LUC-2764) is
   already running for the top `scripts/collectNonGateioRuntimeReadback.mjs`
   script cluster, so no further worker lane is needed. A duplicate child
@@ -10414,14 +10491,14 @@ Last updated: 2026-06-11
   payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
   claimed by the harness and was not repeated. Paperclip heartbeat-context
   succeeded for [LUC-2604](/LUC/issues/LUC-2604). `corepack pnpm
-  softwarehouse:control-tick` still fails because the command is not exposed in
+softwarehouse:control-tick` still fails because the command is not exposed in
   this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Live Soar
   queue readback returned `0` todo, `0` in_progress, `2` in_review, and `91`
   blocked issues. [LUC-2601](/LUC/issues/LUC-2601) readback confirmed `done`,
   so stale architecture-awareness rows for its Web API/form utility family were
   skipped. Duplicate search found no issue for `themeBootstrap`, `DataTable
-  applySearch compareValues`, or `FooterPreferencesSwitchers ProfileButton
-  StatusBadge`. Created [LUC-2607](/LUC/issues/LUC-2607) for
+applySearch compareValues`, or `FooterPreferencesSwitchers ProfileButton
+StatusBadge`. Created [LUC-2607](/LUC/issues/LUC-2607) for
   `09 FEW (Frontend Web Engineer)` to cover Web theme bootstrap and DataTable
   missing-test links with local-only proof and scanner-readable relation rows.
   No product-code/runtime/deploy/push/restart/rollback/env/account/secret/
@@ -10456,7 +10533,7 @@ Last updated: 2026-06-11
   from inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout
   was already claimed by the harness and was not repeated. Paperclip heartbeat-context
   succeeded for [LUC-2598](/LUC/issues/LUC-2598). `corepack pnpm
-  softwarehouse:control-tick` still fails because the command is not exposed in
+softwarehouse:control-tick` still fails because the command is not exposed in
   this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Fresh
   Current architecture-awareness report generated `2026-06-06T23:01:39.171Z`
   exposes the next safe local Web missing-test family under
@@ -10555,7 +10632,7 @@ Last updated: 2026-06-11
   global deployments returned `0` visible rows. Local source inspection maps
   the visible skip messages to non-fatal branches. Classification:
   `unknown_from_retained_coolify_evidence`. `corepack pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No deploy, restart,
   rollback, env edit, DB action, protected smoke, account, secret, exchange,
   host-level, or live-trading mutation occurred. Evidence:
   `history/tasks/luc-2594-workers-execution-coolify-crash-metadata-diagnosis-2026-06-07-task.md`.
@@ -10594,7 +10671,7 @@ Last updated: 2026-06-11
   payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
   claimed by the harness and was not repeated. Paperclip heartbeat-context
   succeeded for [LUC-2591](/LUC/issues/LUC-2591). `corepack pnpm
-  softwarehouse:control-tick` still fails because the command is not exposed in
+softwarehouse:control-tick` still fails because the command is not exposed in
   this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Fresh
   read-only Paperclip queue readback returned `95` non-terminal Soar issues:
   `91` blocked, `2` in_progress, `2` in_review, and `0` todo. The only active
@@ -10625,7 +10702,7 @@ Last updated: 2026-06-11
   missing-test links, and `0` actionable missing-doc links. The stale
   `docs/status/known-state-readiness.md` 2026-05-26 snapshot was updated to
   active repair/verification and protected gate hold. `pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout, and
+softwarehouse:control-tick` remains unavailable in this checkout, and
   `scripts/run-live-run-janitor.mjs` is absent. No product-code/runtime/
   deploy/push/restart/rollback/env/account/secret/protected-smoke/exchange/
   database/live-trading mutation occurred. Evidence:
@@ -10709,7 +10786,6 @@ Last updated: 2026-06-11
   Evidence:
   `history/tasks/luc-2578-position-reconciliation-helper-missing-test-links-2026-06-06-task.md`.
 
-
 ## 2026-06-06 LUC-2579 Security Utility Missing-Test Link Repair
 
 - `LUC-2579-SECURITY-UTILITY-MISSING-TEST-LINKS-2026-06-06` completed as a
@@ -10789,7 +10865,6 @@ Last updated: 2026-06-11
   No code/runtime/deploy/push/restart/rollback/env/account/secret/protected-
   smoke/exchange/live-trading mutation occurred. Evidence:
   `history/tasks/luc-2566-runtime-exchange-local-only-chain-audit-2026-06-06-task.md`.
-
 
 ## 2026-06-06 LUC-2560 PM No-Stall Queue Expeditor
 
@@ -10945,7 +11020,7 @@ Last updated: 2026-06-11
   `4ffd3b24-8cc8-46eb-af81-ee8a5220b506`; duplicates
   [LUC-2528](/LUC/issues/LUC-2528) and [LUC-2531](/LUC/issues/LUC-2531) were
   blocked behind [LUC-2407](/LUC/issues/LUC-2407). `pnpm
-  softwarehouse:control-tick` is not exposed in this checkout, and
+softwarehouse:control-tick` is not exposed in this checkout, and
   `scripts/run-live-run-janitor.mjs` is absent. No code/runtime/deploy/push/
   restart/rollback/env/account/secret/exchange/protected-smoke/live-trading
   mutation occurred. Evidence:
@@ -11026,7 +11101,7 @@ Last updated: 2026-06-11
   services, `17` visible global resource rows, and the canonical eight-resource
   production-environment inventory. Application rows report `running:unknown`;
   PostgreSQL and Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed `8/8`. No code/runtime/deploy/push/
+ops:coolify-stack:env-check:test` passed `8/8`. No code/runtime/deploy/push/
   restart/rollback/env/account/secret/exchange/protected-smoke/live-trading
   mutation occurred. Evidence:
   `history/evidence/luc-2223-coolify-resource-inventory-reconciliation-2026-06-06.md`
@@ -11051,7 +11126,7 @@ Last updated: 2026-06-11
   [LUC-244](/LUC/issues/LUC-244) `blocked`. [LUC-2506](/LUC/issues/LUC-2506),
   [LUC-2507](/LUC/issues/LUC-2507), and [LUC-2520](/LUC/issues/LUC-2520) read
   back as `done`; no duplicate specialist lane was opened. `pnpm
-  softwarehouse:control-tick` failed because the command is not exposed in
+softwarehouse:control-tick` failed because the command is not exposed in
   this checkout; `scripts/run-live-run-janitor.mjs` remains absent. No code/
   runtime/deploy/push/restart/rollback/env/account/secret/exchange/protected-
   smoke/live-trading mutation occurred. Evidence:
@@ -11104,7 +11179,7 @@ repository history.
   claimed by the harness and was not repeated. Paperclip live readback and
   heartbeat-context succeeded for [LUC-2514](/LUC/issues/LUC-2514), showing no
   comments, no children, and no first-class blockers. `pnpm
-  softwarehouse:control-tick` still fails because the command is not exposed in
+softwarehouse:control-tick` still fails because the command is not exposed in
   this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Current live
   queue result: [LUC-244](/LUC/issues/LUC-244) remains the canonical PM
   no-stall lane and is blocked by [LUC-47](/LUC/issues/LUC-47) plus
@@ -11485,7 +11560,7 @@ repository history.
   [LUC-2361](/LUC/issues/LUC-2361) ->
   [LUC-2378](/LUC/issues/LUC-2378). No duplicate Backend, source-control, PM,
   Ops, Security/Ops, QA, TSA, or release lane is needed. `pnpm
-  softwarehouse:control-tick` is still absent as a direct command in this
+softwarehouse:control-tick` is still absent as a direct command in this
   checkout. No code/runtime/deploy/push/restart/rollback/env/account/secret/
   exchange/protected-smoke/live-trading mutation occurred. Evidence:
   `history/tasks/luc-2449-daily-project-status-refresh-2026-06-06-task.md`.
@@ -11990,7 +12065,7 @@ repository history.
   `softwarehouse-live-run-janitor:cancel_duplicate_owner_run:LUC-2285:v1` was
   acknowledged as a duplicate-run cleanup that kept one owner lane. Source
   remained valid (`HEAD == origin/main ==
-  6e31d814046b640ad529d1cd57f968ba6f67b05e`). Coolify readback showed no
+6e31d814046b640ad529d1cd57f968ba6f67b05e`). Coolify readback showed no
   stale queued `soar-web` rows at inspection time and one active target
   deployment for the exact SHA (`in_progress`, API-triggered, created
   `2026-06-05T20:53:02Z`). Public Web did not recover: six-minute build-info
@@ -12452,9 +12527,9 @@ repository history.
   blockers `0`, and static mapping `PASS`. Validation passed:
   `node --check scripts/runLocalProtectedRouteActionProof.mjs` and
   `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05
-  --issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests
-  --dynamic-fixtures-only --include-dynamic-fixtures
-  --static-dynamic-fixture-proof --cdp-timeout-ms 5000`. Rendered browser/API
+--issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests
+--dynamic-fixtures-only --include-dynamic-fixtures
+--static-dynamic-fixture-proof --cdp-timeout-ms 5000`. Rendered browser/API
   fixture proof remains not claimed because repeated local CDP attempts timed
   out on dynamic routes; cleanup removed proof-owned process trees and left no
   active owners on ports `3217` or `9347`. No production auth/session, real
@@ -12474,8 +12549,8 @@ repository history.
   Validation passed: targeted relation readback (`32` linked / `0` missing /
   `0` duplicate exact rows), `pnpm run architecture:graph:generate` (`651`
   nodes / `842` relations / `27` chains), `pnpm run
-  architecture:graph:drift:strict` (`823/823`, `0` missing), `pnpm run
-  docs:parity:check` (`API 22/22`, `Web 16/16`, `Routes 37/37`),
+architecture:graph:drift:strict` (`823/823`, `0` missing), `pnpm run
+docs:parity:check` (`API 22/22`, `Web 16/16`, `Routes 37/37`),
   Softwarehouse architecture-awareness refresh (`14305` entities / `22365`
   relations), and targeted diff check with CRLF warnings only. Refreshed
   `docs/status/architecture-awareness-report.md` generated
@@ -12518,8 +12593,8 @@ repository history.
   logs, profile, admin subscriptions, and admin users: `6/6` PASS rows,
   static mapping `PASS`, blockers `0`. Validation passed:
   `node --check scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05 --clusters
-  reports,logs,profile,admin --cdp-timeout-ms 30000`. Cleanup found no active
+qa:local-protected-route-actions:proof -- --today 2026-06-05 --clusters
+reports,logs,profile,admin --cdp-timeout-ms 30000`. Cleanup found no active
   owners on ports `3217` or `9347`; only `TIME_WAIT` sockets with owning
   process `0`. Scope stayed local-only and non-mutating: no production auth/
   session, owner account, real exchange key, form submit, profile/admin/data
@@ -12597,7 +12672,7 @@ repository history.
   inventory guardrail: orders, positions, bots runtime reads/actions, profile
   API keys, profile subscriptions, admin users/subscription plans, and reports
   cross-mode performance. Validation passed: `pnpm run
-  docs:parity:route-api-matrix` (`37` Web routes / `109` API endpoints / `0`
+docs:parity:route-api-matrix` (`37` Web routes / `109` API endpoints / `0`
   gaps) and focused reports service proof (`reports.service.test.ts`, `2/2`).
   Static route/controller/type/service/doc/test inspection found explicit DTO/
   query parsing or justified no-input read contracts for each sampled family.
@@ -12660,7 +12735,7 @@ repository history.
   read back as `0`. `apps/web/vitest.setup.ts` and `libs/shared/index.d.ts`
   remain classified support/type surfaces, not user-facing shared UI test
   gaps. Validation passed: scanner refresh, `pnpm run
-  architecture:graph:generate` (`651` nodes / `842` relations / `27` chains),
+architecture:graph:generate` (`651` nodes / `842` relations / `27` chains),
   and `pnpm run architecture:graph:drift:strict` (`822/822`, `0` missing).
   No production browser proof, runtime behavior, route behavior, deploy,
   restart, rollback, env, database, account, protected-smoke, secret, exchange,
@@ -12799,7 +12874,7 @@ repository history.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. Application inventory status is
   `running:unknown`; PostgreSQL and Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -12813,8 +12888,8 @@ repository history.
   checkout was already claimed by the harness and was not repeated. The local
   protected action harness now covers wallets, strategies, markets, bots, and
   backtests. Validation passed: `node --check
-  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`; JSON readback
+scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+qa:local-protected-route-actions:proof -- --today 2026-06-05`; JSON readback
   confirms `19/19` PASS rows, `0` FAIL rows, static mapping `PASS`, blockers
   `0`. Cleanup found no matching owned Node/Chrome/cmd validation processes;
   only `TIME_WAIT` sockets on ports `3217` and `9347` with owning process `0`.
@@ -12837,7 +12912,7 @@ repository history.
   UI/forms/layout/lib missing-test samples were classified against focused and
   aggregate tests. No new focused coverage gap was found. Validation passed:
   focused shared Web test pack (`28` files / `145` tests) and `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing). Remaining signal
+architecture:graph:drift:strict` (`822/822`, `0` missing). Remaining signal
   is scanner/direct-relation incompleteness or type/test-harness relation
   backlog, not a current runtime UI defect or QA blocker. No production browser
   proof, runtime/product behavior, route behavior, deploy, restart, rollback,
@@ -12857,7 +12932,7 @@ repository history.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. Application inventory status is
   `running:unknown`; PostgreSQL and Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -12900,7 +12975,7 @@ repository history.
   ownership was clear through `docs/architecture/relations/documentation-links.csv`,
   and `docs/automation/guardrail-commands.md` now records the repair table and
   residual owner recommendations. Validation passed: `pnpm run
-  architecture:graph:generate` (`651` nodes / `842` relations / `27` chains),
+architecture:graph:generate` (`651` nodes / `842` relations / `27` chains),
   architecture-awareness scanner refresh (`14237` entities / `22052`
   relations), and `pnpm run architecture:graph:drift:strict` (`822/822`, `0`
   missing). Architecture-awareness report generated
@@ -12926,7 +13001,7 @@ repository history.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. Application inventory status is
   `running:unknown`; PostgreSQL and Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -12971,7 +13046,7 @@ repository history.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. Application inventory status is
   `running:unknown`; PostgreSQL and Redis report `running:healthy`. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -13041,7 +13116,7 @@ repository history.
   `17` visible global resource rows, and `8` production-environment resources.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -13059,7 +13134,7 @@ repository history.
   `17` visible global resource rows, and `8` production-environment resources.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -13094,7 +13169,7 @@ repository history.
   `17` visible global resource rows, and `8` production-environment resources.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -13112,7 +13187,7 @@ repository history.
   `17` visible global resource rows, and `8` production-environment resources.
   `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
   blocker while project-scoped reads succeed. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
   rollback, env edit, database action, team setting change, account action,
   protected smoke, secret value readback, raw resource id storage, generated DB
   suffix storage, screenshot, or live-trading action occurred. Evidence:
@@ -13171,7 +13246,7 @@ repository history.
   the existing redacted module logger event `redis_client_error` instead of raw
   `console.error`, while production Redis-unavailable fail-closed behavior is
   preserved. Focused proof passed `pnpm --filter api exec vitest run
-  src/middleware/rateLimit.test.ts` (`1` file / `7` tests), and targeted grep
+src/middleware/rateLimit.test.ts` (`1` file / `7` tests), and targeted grep
   found no remaining old raw Redis rate-limit console path in touched files.
   Full API typecheck remains blocked by unrelated existing test typing errors
   in positions orphan-repair and workers readiness tests. No deploy, restart,
@@ -13231,7 +13306,7 @@ repository history.
 
 - `LUC-1769-SOURCE-READ-ONLY-APP-SMOKE-AUTH-APPROVAL-2026-06-03` is done as a bounded Security approval lane for ARB-006 QA binding. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Names-only runner readback found `SMOKE_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL`, `SMOKE_AUTH_PASSWORD`, and `PROD_UI_AUDIT_ADMIN_*` present, while `PROD_UI_AUDIT_AUTH_*` and `SOAR_PROD_AUTH_*` were absent. Security approved only `SMOKE_AUTH_TOKEN` as a source ref that Portfolio/Ops may bind to `PROD_UI_AUDIT_AUTH_TOKEN` for one read-only production app/dashboard smoke principal/session. `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD` is not approved as email/password target refs from this run because the redacted email-shape check did not validate the email ref. `PROD_UI_AUDIT_ADMIN_*` remains admin-route only. No secret values, protected payloads, cookie/session exports, browser protected journey, deploy, restart, rollback, env edit, database action, account mutation, subscription mutation, API-key mutation, exchange/external-service mutation, or live-trading action occurred. Evidence: `history/evidence/luc-1769-source-read-only-app-smoke-auth-approval-2026-06-03.md`.
 
-- `LUC-1765-LIVEIMPORT-READBACK-PRINCIPAL-BINDING-2026-06-03` is blocked as a bounded Security/Ops credential/session gate for ARB-006 LIVEIMPORT_READBACK protected evidence, with first-class blocker [LUC-1768](/LUC/issues/LUC-1768) assigned for encrypted secret/env binding. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Current runner scan found all `LIVEIMPORT_READBACK_*` auth and optional OPS names missing. Paperclip agent metadata for Security Review Lead and Integration Trading Engineer exposed no existing env refs to reuse, and local Paperclip source confirms company secret list/create routes require board access. Created [LUC-1768](/LUC/issues/LUC-1768), then patched [LUC-1765](/LUC/issues/LUC-1765) to `blocked` with [LUC-1768](/LUC/issues/LUC-1768) as first-class blocker. Follow-up readback showed [LUC-1768](/LUC/issues/LUC-1768) also blocked because Portfolio Director lacks board-only secret-store access; unblock owner is now a board-capable secret owner who can bind encrypted `LIVEIMPORT_READBACK_*` refs. No secret value readback, deploy, restart, rollback, DB action, account mutation, exchange mutation, order placement, protected payload capture, cookie export, or live-trading action was performed. Evidence: `history/tasks/luc-1765-bind-liveimport-readback-read-only-production-principal-2026-06-03-task.md`.
+- `LUC-1765-LIVEIMPORT-READBACK-PRINCIPAL-BINDING-2026-06-03` is blocked as a bounded Security/Ops credential/session gate for ARB-006 LIVEIMPORT*READBACK protected evidence, with first-class blocker [LUC-1768](/LUC/issues/LUC-1768) assigned for encrypted secret/env binding. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Current runner scan found all `LIVEIMPORT_READBACK*_`auth and optional OPS names missing. Paperclip agent metadata for Security Review Lead and Integration Trading Engineer exposed no existing env refs to reuse, and local Paperclip source confirms company secret list/create routes require board access. Created [LUC-1768](/LUC/issues/LUC-1768), then patched [LUC-1765](/LUC/issues/LUC-1765) to`blocked`with [LUC-1768](/LUC/issues/LUC-1768) as first-class blocker. Follow-up readback showed [LUC-1768](/LUC/issues/LUC-1768) also blocked because Portfolio Director lacks board-only secret-store access; unblock owner is now a board-capable secret owner who can bind encrypted`LIVEIMPORT*READBACK*_`refs. No secret value readback, deploy, restart, rollback, DB action, account mutation, exchange mutation, order placement, protected payload capture, cookie export, or live-trading action was performed. Evidence:`history/tasks/luc-1765-bind-liveimport-readback-read-only-production-principal-2026-06-03-task.md`.
 
 - `LUC-1767-ROLLBACK-GUARD-RUNNER-INPUT-BINDING-2026-06-03` is blocked as the board/operator protected-input binding checkpoint for ARB-006 rollback guard proof. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Paperclip heartbeat context read `LUC-1767` as `in_progress`, critical, parent [LUC-1763](/LUC/issues/LUC-1763), and unblocked. Names-only runner scan found no `ROLLBACK_GUARD_*` variables. The board-capable secret-management read path still failed for this run with `GET /api/companies/{companyId}/secrets` -> `403 Forbidden`, so this runner cannot bind company secrets. `pnpm run -s ops:protected-inputs:check` for production SHA `6839cd6b8884e26eca735ce32cea98c1dadccfbe` returned `PARTIAL` only because unrelated `PROD_UI_AUDIT_*` names are present; `ROLLBACK_GUARD_*` remained missing (`0`). No secret values, deploy, restart, rollback execution, env edit, database action, production config mutation, account action, protected response-body capture, or live-trading mutation was performed. Evidence: `history/evidence/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.md`.
 
@@ -13336,6 +13411,7 @@ repository history.
   changes, then source-of-truth updates and final residual-risk report.
 
 ### Latest Checkpoint
+
 - `LUC-1593-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` completed as a bounded Ops read-only inventory reconciliation checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Fresh Coolify API readback at `2026-06-02T20:54:06Z` confirmed configured project/environment lookup succeeds, current selector id `0` name `LuckySparrow`, project resolves to `Soar`, production environment is `production` id `6`, and the redacted inventory remains eight resources: six applications (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. Operations source truth was updated in `docs/operations/coolify-vps-deployment-contract.md`, `docs/operations/service-topology.md`, and `docs/operations/runtime-config-ledger.csv`. No deploy/restart/rollback/env/database/team/account/live-trading mutation was performed. Evidence: `history/evidence/luc-1593-coolify-resource-inventory-reconciliation-2026-06-02.md`.
 
 - `LUC-1592-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02` completed as a bounded Ops read-only team/workspace selector checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Fresh Coolify API readback at `2026-06-02T20:51:42Z` confirmed the expected Coolify selector remains team id `0`, name `LuckySparrow`; prior UI memory called this id `0` selector `Root Team`, while current API naming is `LuckySparrow`. Under that selector, configured project/environment lookup succeeds, project resolves to `Soar`, production environment is `production` id `6`, and the redacted inventory remains eight resources: six applications (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis by established topology. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent in this runner, but the exact selector is recorded as non-secret config truth. Operations source truth was updated in `docs/operations/coolify-vps-deployment-contract.md` and `docs/operations/runtime-config-ledger.csv`. No deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-1592-coolify-team-workspace-confirmation-2026-06-02.md`.
@@ -13439,7 +13515,7 @@ repository history.
 - `LUC-784-KNOWN-STATE-REFRESH-EVIDENCE-DELTA-AND-NEXT-REPAIR-LANES-2026-05-30-HANDOFF` completed as a bounded finish-successful-run reconciliation checkpoint. Wake `finish_successful_run_handoff` was consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Concrete action: reran canonical drift recheck across mission/system/board/project/gap-register files and reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` + `docs/status/architecture-awareness-report.md`. Result stayed unchanged (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps: tests `2056`, docs `798`, disconnected entities `0`), and fail-closed blocker owner/action remains `LUC-47` (Ops Release Lead + host operator). No code/runtime/deploy mutation was performed.
 - `LUC-784-KNOWN-STATE-REFRESH-EVIDENCE-DELTA-AND-NEXT-REPAIR-LANES-2026-05-30-CONTINUATION` completed as a bounded known-state wake reconciliation checkpoint. Wake `issue_commented` with comment id `0597d0e2-ac02-49dc-8a28-5b623ccd0e82` was consumed first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`). Concrete action: reran canonical drift recheck across mission/system/board/project/gap-register files and reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` + `docs/status/architecture-awareness-report.md`. Result stayed unchanged (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps: tests `2056`, docs `798`, disconnected entities `0`), and fail-closed blocker owner/action remains `LUC-47` (Ops Release Lead + host operator). No code/runtime/deploy mutation was performed.
 - `LUC-784-KNOWN-STATE-REFRESH-EVIDENCE-DELTA-AND-NEXT-REPAIR-LANES-2026-05-30` completed as a bounded PM known-state checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`) and no new unblock evidence arrived. Canonical mission/board/state/gap-register drift recheck found no routing change. Architecture-awareness baseline remained stable (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests `2056`, docs `798`, disconnected entities `0`). Next repair lanes were republished with unchanged fail-closed order: `LUC-47` ops packet -> `GAP-L45-006` push closure -> `GAP-L45-003` QA repeatable smoke -> `GAP-L45-004` protected security packet. No code/runtime/deploy mutation was performed.
-`LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30-CONTINUATION` completed
+  `LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30-CONTINUATION` completed
   as a bounded non-production docs-memory checkpoint. Wake
   `issue_continuation_needed` was consumed from inline payload
   (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
@@ -13841,7 +13917,7 @@ repository history.
   form mapping, presets, indicator catalog, strategy API routes, controller,
   DTO/validation, service, Strategy/Bot/MarketGroupStrategyLink DB guards,
   Bot Setup and Bot Runtime consumers, tests, and docs. Current `pnpm run
-  architecture:graph:generate` passes with `261` nodes, `293` relations, and
+architecture:graph:generate` passes with `261` nodes, `293` relations, and
   `12` chains.
   `ARCH-GRAPH-MARKETS-BACKFILL-2026-05-24` backfilled Markets universe and
   catalog mapping across list/create/edit UI, Web service, market universe
@@ -13931,7 +14007,7 @@ repository history.
   `https://soar.luckysparrow.ch/api/build-info`, API `/health`, and API
   `/ready` timed out with `Failed to connect` during validation. Local
   validation for the current dirty workspace passed `pnpm run quality:guardrails`, `pnpm run
-  docs:parity:check`, `pnpm run typecheck`, and the focused runtime automation
+docs:parity:check`, `pnpm run typecheck`, and the focused runtime automation
   exchange-PnL/service/DCA parity pack (`3` files / `41` tests). Local
   transient auth/browser artifacts under `.tmp/` and `tmp/` were removed, and
   those folders are now ignored. This proves local source alignment and local
@@ -14203,24 +14279,24 @@ repository history.
 
 ## Responsibility Lanes
 
-| Lane | Owner | Source docs/state | Owned files/surfaces | Output | Validation/proof | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| Coordinator | Active chat | AGENTS, mission-control, task board, project state | Mission scope, integration, source-of-truth updates, final readiness decision | New readiness mission, lane integration, first checkpoint report | Public build-info, smoke, preflight, state updates | IN_PROGRESS |
-| Backend runtime/API parity | Backend/runtime explorer + coordinator | Runtime/execution architecture, module ledger, requirements matrix | Exchange selection, contract-size, dedupe, reconciliation surfaces | No fresh P0/P1 code blocker found; next proof is protected read-only manual/bot readback | Focused API pack before any LIVE proof | CHECKPOINTED_READONLY |
-| QA/Ops readiness | QA/Ops explorer + coordinator | System health, deploy smoke, preflight, package scripts | Public build-info/smoke/preflight and local quality gates | Validation order and blocked protected gates identified | `ops:deploy:*`, `ops:release:v1:preflight`, guardrails/docs parity | CHECKPOINTED_READONLY |
-| Documentation/State routing | Documentation/state explorer + coordinator | Active mission, task board, next steps, planning docs | State drift and continuation routing | Drift list found; active mission refreshed; follow-up state sync required | Source-of-truth diff review | IN_PROGRESS |
-| Protected production proof | Operator + future coordinator | Protected app credential context, release gate docs | Authenticated readbacks, UI clickthrough, liveimport, rollback, restore | Blocked until transient auth/context is supplied | No-secret preflight blocker list | BLOCKED_PROTECTED_INPUT |
-| LIVE mutation proof | Operator + future coordinator | LIVE safety contracts, Gate.io contract-size evidence | Any real exchange order/cancel/close mutation | Explicit approval required per exchange/symbol/side/min executable size | Separate approval-gated proof only | BLOCKED_APPROVAL |
-| Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | VERIFIED_LOCAL |
-| Documentation/Structure | Explorer lane + coordinator cleanup | AGENTS, docs source-of-truth rules | Root template folders and documentation routing | Obsolete source-of-truth cleanup and findings | Guardrails/diff/reference scans | COMPLETE |
-| Backend runtime/API parity | Explorer lane | docs/architecture runtime contracts | API/runtime/backtest/order lifecycle | Confirmed drift list or no-drift evidence | File/line evidence and test recommendations | COMPLETE |
-| Frontend/integration parity | Explorer lane + coordinator fix | docs/architecture + module docs | Web dashboard/API client/build-info surfaces | Confirmed drift list or no-drift evidence | File/line evidence and focused tests | COMPLETE |
-| Runtime lifecycle | Explorer lane | runtime lifecycle reference contracts | Engine and bot runtime read models | P1/P2 findings; DCA gates verified aligned | File/line evidence | COMPLETE |
-| Orders/exchange fill authority | Explorer lane + coordinator fix | fill/idempotency contracts | Orders and runtime dedupe | Two P0 findings fixed | Focused tests | CHECKPOINTED |
-| Backtest parity | Explorer lane + coordinator fix | Backtest replay/report parity | Backtest/reports code | Closed-candle gateway and settled-report fixes; TSL naming fixed; complete multi-strategy snapshot replay now uses runtime merge parity with primary strategy provenance and diagnostics; ambiguous snapshots fail closed; non-Binance FUTURES `ORDER_BOOK_*` strategies now fail closed when historical order-book points are unavailable | Focused tests | CHECKPOINTED |
-| Ops/deploy reality | Explorer lane + coordinator fix | Production endpoints, deployment docs | Worker readiness/deploy smoke | Deploy smoke, compose, API DB readiness, rollback readiness, durable Redis backtest queue ownership, and Redis heartbeat readiness fixed locally | Focused tests/script/compose checks | CHECKPOINTED |
-| Ops/deploy reality | Coordinator serial lane | Production endpoints, deployment docs | Public build-info, deploy smoke, split-worker readiness, restore, rollback, UI, SLO, RC gates, LIVEIMPORT-03, final gate | Production deploy `b1ba69edccc639e97943f37fb2b1e6249a62e87c` verified healthy; `LIVEIMPORT-03` passed via read-only auto-discovery for `SOLUSDT` and `BNBUSDT`; final preflight has no blockers; full production release gate is `ready` | Production proof artifacts 2026-05-23 | VERIFIED_PROD_READY |
-| Documentation/Memory | Coordinator | State files and docs | Source-of-truth updates and residual risks | Task evidence and state updates | Guardrails/diff checks | IN_PROGRESS |
+| Lane                           | Owner                                      | Source docs/state                                                  | Owned files/surfaces                                                                                                     | Output                                                                                                                                                                                                                                                                                                                                     | Validation/proof                                                   | Status                  |
+| ------------------------------ | ------------------------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ----------------------- |
+| Coordinator                    | Active chat                                | AGENTS, mission-control, task board, project state                 | Mission scope, integration, source-of-truth updates, final readiness decision                                            | New readiness mission, lane integration, first checkpoint report                                                                                                                                                                                                                                                                           | Public build-info, smoke, preflight, state updates                 | IN_PROGRESS             |
+| Backend runtime/API parity     | Backend/runtime explorer + coordinator     | Runtime/execution architecture, module ledger, requirements matrix | Exchange selection, contract-size, dedupe, reconciliation surfaces                                                       | No fresh P0/P1 code blocker found; next proof is protected read-only manual/bot readback                                                                                                                                                                                                                                                   | Focused API pack before any LIVE proof                             | CHECKPOINTED_READONLY   |
+| QA/Ops readiness               | QA/Ops explorer + coordinator              | System health, deploy smoke, preflight, package scripts            | Public build-info/smoke/preflight and local quality gates                                                                | Validation order and blocked protected gates identified                                                                                                                                                                                                                                                                                    | `ops:deploy:*`, `ops:release:v1:preflight`, guardrails/docs parity | CHECKPOINTED_READONLY   |
+| Documentation/State routing    | Documentation/state explorer + coordinator | Active mission, task board, next steps, planning docs              | State drift and continuation routing                                                                                     | Drift list found; active mission refreshed; follow-up state sync required                                                                                                                                                                                                                                                                  | Source-of-truth diff review                                        | IN_PROGRESS             |
+| Protected production proof     | Operator + future coordinator              | Protected app credential context, release gate docs                | Authenticated readbacks, UI clickthrough, liveimport, rollback, restore                                                  | Blocked until transient auth/context is supplied                                                                                                                                                                                                                                                                                           | No-secret preflight blocker list                                   | BLOCKED_PROTECTED_INPUT |
+| LIVE mutation proof            | Operator + future coordinator              | LIVE safety contracts, Gate.io contract-size evidence              | Any real exchange order/cancel/close mutation                                                                            | Explicit approval required per exchange/symbol/side/min executable size                                                                                                                                                                                                                                                                    | Separate approval-gated proof only                                 | BLOCKED_APPROVAL        |
+| Coordinator                    | Active chat                                | AGENTS, state, docs                                                | Integration, task closure, source-of-truth updates                                                                       | Mission packet, task evidence, final acceptance                                                                                                                                                                                                                                                                                            | Parent validation gate                                             | VERIFIED_LOCAL          |
+| Documentation/Structure        | Explorer lane + coordinator cleanup        | AGENTS, docs source-of-truth rules                                 | Root template folders and documentation routing                                                                          | Obsolete source-of-truth cleanup and findings                                                                                                                                                                                                                                                                                              | Guardrails/diff/reference scans                                    | COMPLETE                |
+| Backend runtime/API parity     | Explorer lane                              | docs/architecture runtime contracts                                | API/runtime/backtest/order lifecycle                                                                                     | Confirmed drift list or no-drift evidence                                                                                                                                                                                                                                                                                                  | File/line evidence and test recommendations                        | COMPLETE                |
+| Frontend/integration parity    | Explorer lane + coordinator fix            | docs/architecture + module docs                                    | Web dashboard/API client/build-info surfaces                                                                             | Confirmed drift list or no-drift evidence                                                                                                                                                                                                                                                                                                  | File/line evidence and focused tests                               | COMPLETE                |
+| Runtime lifecycle              | Explorer lane                              | runtime lifecycle reference contracts                              | Engine and bot runtime read models                                                                                       | P1/P2 findings; DCA gates verified aligned                                                                                                                                                                                                                                                                                                 | File/line evidence                                                 | COMPLETE                |
+| Orders/exchange fill authority | Explorer lane + coordinator fix            | fill/idempotency contracts                                         | Orders and runtime dedupe                                                                                                | Two P0 findings fixed                                                                                                                                                                                                                                                                                                                      | Focused tests                                                      | CHECKPOINTED            |
+| Backtest parity                | Explorer lane + coordinator fix            | Backtest replay/report parity                                      | Backtest/reports code                                                                                                    | Closed-candle gateway and settled-report fixes; TSL naming fixed; complete multi-strategy snapshot replay now uses runtime merge parity with primary strategy provenance and diagnostics; ambiguous snapshots fail closed; non-Binance FUTURES `ORDER_BOOK_*` strategies now fail closed when historical order-book points are unavailable | Focused tests                                                      | CHECKPOINTED            |
+| Ops/deploy reality             | Explorer lane + coordinator fix            | Production endpoints, deployment docs                              | Worker readiness/deploy smoke                                                                                            | Deploy smoke, compose, API DB readiness, rollback readiness, durable Redis backtest queue ownership, and Redis heartbeat readiness fixed locally                                                                                                                                                                                           | Focused tests/script/compose checks                                | CHECKPOINTED            |
+| Ops/deploy reality             | Coordinator serial lane                    | Production endpoints, deployment docs                              | Public build-info, deploy smoke, split-worker readiness, restore, rollback, UI, SLO, RC gates, LIVEIMPORT-03, final gate | Production deploy `b1ba69edccc639e97943f37fb2b1e6249a62e87c` verified healthy; `LIVEIMPORT-03` passed via read-only auto-discovery for `SOLUSDT` and `BNBUSDT`; final preflight has no blockers; full production release gate is `ready`                                                                                                   | Production proof artifacts 2026-05-23                              | VERIFIED_PROD_READY     |
+| Documentation/Memory           | Coordinator                                | State files and docs                                               | Source-of-truth updates and residual risks                                                                               | Task evidence and state updates                                                                                                                                                                                                                                                                                                            | Guardrails/diff checks                                             | IN_PROGRESS             |
 
 ## Delegation Plan
 
@@ -14247,59 +14323,58 @@ repository history.
 
 ## Checkpoint Log
 
-| Date | Checkpoint | Result | Evidence | Next action |
-| --- | --- | --- | --- | --- |
-| 2026-05-23 | Runtime DCA protection display parity | VERIFIED_LOCAL: operator screenshot showed dynamic TSL visible while loss-side DCA levels were still pending (`BNBUSDT` DCA count `2` of `3`, `SOLUSDT` DCA count `0`). The API read-model now applies side-aware DCA protection before serializing dynamic TTP/TSL, and exchange-confirmed DCA fill sync persists `executedDcaLevelIndices` from dedupe fingerprints. | `history/audits/runtime-dca-protection-display-parity-2026-05-23-task.md`; Positions serialization/read tests `32/32`; exchange-event tests `19/19` after `pnpm run go-live:infra:up`; runtime position-management/automation tests `62/62`; API typecheck PASS | Run parent guardrails/diff check, commit/push, then verify production deploy freshness and real dashboard readback. |
-| 2026-05-23 | Source-of-truth duplicate cleanup | VERIFIED_LOCAL: confirmed `docs/architecture/` is canonical and root `architecture/` plus related root template folders are obsolete competing scaffolding from 2026-05-03. Removed only tracked obsolete template files; moved referenced evidence under `docs/operations/`; moved root security report under `docs/security/`; fixed P2 legacy redirects to Dashboard Home runtime tabs. Backend parity lane confirmed one remaining P1 deferred backtest multi-strategy merge gap. | `history/tasks/repo-source-truth-cleanup-2026-05-23-task.md`; subagent reports; focused web tests `7/7`; web typecheck; web build; docs parity; guardrails; diff check | Commit/push, wait for production build-info to expose pushed SHA, then run smoke checks. |
-| 2026-05-23 | Web build-info Docker deploy proof | VERIFIED_LOCAL / PROD_REDEPLOY_PENDING: first manual Coolify redeploy of `soar-web` reached commit `b68d3464` in deployment history, but public `/api/build-info` returned `gitSha: null`. Root cause was Web build metadata being written into `.next` before Next cleared that directory. A follow-up `.git` copy approach failed in Coolify because the generated Docker context excludes `.git`; current fix writes metadata to `.build-meta/BUILD_META.json` and passes `SOURCE_COMMIT`/`SOURCE_BRANCH` build args into the Web build. Local Docker image now returns the expected SHA from `/api/build-info`. | `docker build --build-arg SOURCE_COMMIT=$(git rev-parse HEAD) --build-arg SOURCE_BRANCH=main -f apps/web/Dockerfile -t soar-web-buildmeta-check .`; `GET http://127.0.0.1:3102/api/build-info` => `4aa396333dd467bbb29a6744a043250cdaaf0c2f`; `web build`; `web typecheck`; `quality:guardrails` | Commit/push build-info metadata fix, redeploy `soar-web`, wait for public build-info freshness, then run deploy smoke. |
-| 2026-05-23 | Backtest multi-strategy merge parity | VERIFIED_LOCAL: complete immutable multi-strategy seed snapshots now replay through the runtime weighted/exit-priority merge contract, persist the winning primary strategy on backtest trades, and expose merge diagnostics in report/timeline payloads. Ambiguous link-only snapshots still fail closed. | `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalMerge.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRunJob.test.ts --run --reporter=dot` => `24/24`; `pnpm --filter api exec vitest run src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts --run --reporter=dot` => `34/34`; `pnpm --filter api run typecheck` => PASS | Run repository guardrails and diff check, then commit/push if green; continue production split-worker and runtime journey proof after deploy. |
-| 2026-05-23 | Production deploy, split-worker, and protected release proof refresh | SUPERSEDED_BY_AUTODISCOVERY_PROOF: production build-info was current for `72b547e12351e078c49807fb25d56c27f64c6567`; deploy smoke, authenticated `/workers/ready`, split-worker topology, restore drill, rollback proof, prod UI clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag objectives passed. The manually requested `ETHUSDT`/`DOGEUSDT` `LIVEIMPORT-03` payload was not visible, but this checkpoint is no longer the current blocker because the later auto-discovery proof passed. | `history/audits/v1-production-activation-evidence-audit-2026-05-23.md`; `history/plans/v1-production-activation-and-evidence-plan-2026-05-23.md`; `history/releases/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`; `history/releases/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`; restore/rollback/UI/SLO/RC artifacts from 2026-05-23 | Use the later auto-discovery proof as current release truth; keep historical fail-closed behavior documented. |
-| 2026-05-23 | LIVEIMPORT-03 auto-discovery and final production release gate | VERIFIED_PROD_READY: `LIVEIMPORT-03` was rerun read-only against deployed `b1ba69edccc639e97943f37fb2b1e6249a62e87c` with `--symbols auto`. It discovered the real open runtime symbols `SOLUSDT` and `BNBUSDT`, both `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the full non-dry-run production release gate returned `ready`. | `history/artifacts/liveimport-03-prod-readback-2026-05-23.json`; `history/releases/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`; `history/releases/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`; `history/artifacts/_artifacts-v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.json` | Commit/push source-of-truth updates and collector auto-discovery support, then monitor deployment freshness. |
-| 2026-05-28 | LUC-418 known-state evidence and architecture baseline | CHECKPOINTED: captured current architecture baseline from canonical generated artifacts and synchronized known-state routing into task/board/project context without runtime mutation. Baseline snapshot: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`; status report confirms disconnected entities `0` with remaining inferred-proof gaps (`tests=2056`, `docs=798`). Release posture unchanged: V1 remains blocked/NO-GO on protected evidence owner path (`LUC-47` and protected-input/proof owners). | `history/tasks/luc-418-known-state-evidence-architecture-baseline-2026-05-28-task.md`; `docs/graphs/architecture-awareness.json`; `docs/status/architecture-awareness-report.md` | Continue blocker-driven lanes only (protected evidence ownership path) or delegate missing proof families into explicit child issues. |
-| 2026-05-29 | LUC-579 known-state evidence and architecture baseline | CHECKPOINTED: captured current architecture baseline from canonical generated artifacts and synchronized known-state routing into task/board/project context without runtime mutation. Baseline snapshot: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`; status report confirms disconnected entities `0` with remaining inferred-proof gaps (`tests=2056`, `docs=798`). Release posture unchanged: V1 remains blocked/NO-GO on protected evidence owner path (`LUC-47` and protected-input/proof owners). | `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`; `docs/graphs/architecture-awareness.json`; `docs/status/architecture-awareness-report.md` | Continue blocker-driven lanes only (protected evidence ownership path) or delegate missing proof families into explicit child issues. |
-| 2026-05-23 | Post-push deploy freshness for release-state sync | VERIFIED_PROD_PUBLIC_DEPLOYED: commit `0ee013214ef82be61d08430e9d3338ef5c263b67` was pushed to `main`; Coolify queued the `soar-web` deployment until the coordinator clicked `Force Start`; production Web build-info then converged to `0ee01321`, and public deploy smoke passed. The follow-up smoke-truth correction `e0457b424196d8e9773b1ef402f7d1c501160ebc` was pushed to `main`; Coolify did not auto-start it, so the coordinator manually redeployed `soar-web`, clicked `Force Start` for queued deployment `iwhb44uuc5pqxixr7b9xv6ko`, waited until public Web build-info converged to `e0457b42`, and reran public deploy smoke for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke was attempted with the available Coolify credential and correctly failed application login with `401 Invalid email or password`, so `/workers/ready` is not claimed for the latest docs/state sync. | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha e0457b42 --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` => `e0457b424196d8e9773b1ef402f7d1c501160ebc` on `main` | Historical checkpoint superseded by the later `878e199d` deploy proof and public monitoring. |
-| 2026-05-23 | Coolify queue cleanup and latest docs/state deploy freshness | VERIFIED_PROD_PUBLIC_DEPLOYED: after docs/state commits reached `main`, production stayed on `76f1a5be` because Coolify had stale queued/in-progress worker/API deployments. The coordinator cancelled the stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI context, waited until public Web build-info converged to `32c145181a8740ca3d7714c7ee83b9b450a57453`, and reran public deploy smoke for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke remains unclaimed because the available Coolify credential is not a valid Soar application password. | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 32c14518 --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` => `32c145181a8740ca3d7714c7ee83b9b450a57453` on `main`; Coolify active deployment queue rechecked empty | Commit/push this source-of-truth recovery note, then verify the new pushed `HEAD` through public build-info and public deploy smoke. |
-| 2026-05-23 | Web build metadata arg-scope production proof | VERIFIED_PROD_PUBLIC_DEPLOYED: commit `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` declares `SOURCE_COMMIT`, `SOURCE_BRANCH`, and `COOLIFY_BRANCH` in the Web Docker build stage before the build command. Coolify Advanced already had source-commit injection enabled; the missing Docker ARG stage scope was the reason the deployed image imported the right commit while `/api/build-info` showed `gitSha: null`. After cancelling stale queued/in-progress deployments and triggering `soar-web`, public Web build-info converged to `878e199d`, public deploy smoke passed for API `/health`, API `/ready`, and Web `/`, and public-only post-release monitoring passed `5/5` samples. | `pnpm --filter web run build` with `SOURCE_COMMIT=$(git rev-parse HEAD)` => metadata source `env`; `pnpm run quality:guardrails`; `git diff --check`; `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 878e199d --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; public build-info => `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` on `main`; `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md` | Next continuation should choose the next bounded product/runtime task; authenticated app smoke still needs valid Soar app credentials. |
-| 2026-05-23 | Data model isolated DB proof | VERIFIED_LOCAL: local Postgres/Redis were initially unavailable; Laragon was running but did not include PostgreSQL, so Docker Desktop was started and `pnpm run go-live:infra:up` brought up repo Postgres/Redis. The representative data audit passed with Prisma schema validation, migration status, full reset/replay of `55` migrations, wallets `24/24`, backtests `15/15`, runtime repository `2/2`, and local backup/restore PASS. Production migration status and production backup/restore freshness remain protected ops proof. | `pnpm run audit:data:db-isolated`; `pnpm run ops:db:backup-restore:check-local`; `history/evidence/data-model-isolated-db-proof-2026-05-23-task.md`; `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md` | Commit/push data-proof source-of-truth updates, then select another bounded non-production product/runtime gap unless protected production ops context is available. |
-| 2026-05-23 | Protected app test credential availability | PARTIALLY_VERIFIED: operator confirmed the Soar production application account `wroblewskipatryk@gmail.com` on `https://soar.luckysparrow.ch` has an API key configured and may be used for authenticated app/API-key testing. This only records availability; no password, API key secret, token, cookie, or private header is stored, and authenticated smoke is not claimed until a future transient-secret run passes. | `history/tasks/protected-app-test-credential-availability-2026-05-23-task.md`; no-secret state update | Run authenticated smoke/API-key checks only with transient operator-approved secret context, then record pass/fail evidence. |
-| 2026-05-23 | Gate.io live bot context repair | VERIFIED_CONFIG: production readback showed `Main gateio` was saved as `BINANCE / FUTURES / USDT` while wallet `Gate.io` was `LIVE / GATEIO / FUTURES / USDT`, causing the reported wallet-market context mismatch. Gate.io stored API-key read-only futures probe passed, `Main gateio` was updated to `GATEIO / FUTURES / USDT`, and inactive bot `Gate.io RSI 20/80` was created with the Gate.io wallet and `RSI 20 / 80` strategy. No LIVE activation, order, position mutation, runtime start, or raw secret persistence occurred. | `history/tasks/gateio-live-bot-context-repair-2026-05-23-task.md`; production API readbacks | Separate explicit approval is required before activating the LIVE bot or performing any exchange-side mutation. |
-| 2026-05-23 | Gate.io ADA short under 1 USDT | VERIFIED_FAIL_CLOSED: operator approved activating the Gate.io LIVE bot and attempting `SELL MARKET ADAUSDT` with value not greater than `1 USDT`. Manual context mark price was about `0.2422`, so `quantity=4` estimated notional was `0.9688 USDT`. Activation succeeded, but `POST /dashboard/orders/open` returned `400 LIVE_PRETRADE_NOTIONAL_BELOW_MIN`. No larger retry was made; bot was immediately deactivated and final readback shows `isActive=false`, `liveOptIn=false`, `consentTextVersion=null`. | `history/tasks/gateio-live-manual-order-ada-short-2026-05-23-task.md`; production API readbacks | Ask for explicit approval for a larger minimum-notional-compliant size if the operator still wants a Gate.io ADA position. |
-| 2026-05-23 | Live exchange parity public deploy proof | PARTIALLY_VERIFIED_PROD_PUBLIC: exchange-rule repair commit `9d1a83875767cd0227be9e2a899b2170a74034cf` was pushed to `main` and deployed through approved Coolify manual redeploy/force-start for `soar-web`, `soar-api`, and `workers-execution`. Public Web build-info converged to `9d1a8387` with `metadataSource=github-branch` and build id `1tCeTjS9PmOJLsdQ6fVIG`; public smoke passed API `/health`, API `/ready`, and Web `/`. Protected Soar app/manual/bot readbacks remain blocked without transient app auth. | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 9d1a8387 --timeout-seconds 1200 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `history/audits/live-exchange-execution-parity-2026-05-23-task.md` | Obtain transient Soar app auth for read-only manual/bot production preflights, or request explicit operator approval for minimum executable live mutation parameters. |
-| 2026-05-23 | Live exchange state-sync deploy proof | VERIFIED_PROD_PUBLIC_DEPLOYED: docs/state commit `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` was pushed to `main`. Coolify did not auto-converge during the first 180-second wait, so the coordinator switched to the `LuckySparrow` team, opened the queued `soar-web` deployment, clicked `Force Start`, and waited until public Web build-info converged to `a0e4f117` with `metadataSource=github-branch` and build id `AnqfCfwjz3KEHQ-_bouFD`. Public smoke passed API `/health`, API `/ready`, and Web `/`. | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha a0e4f117 --timeout-seconds 1200 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` | Protected app readbacks remain blocked without transient Soar app auth; continue with the next local executable gap if no auth/approval is available. |
-| 2026-05-23 | Web dashboard DCA protection truth parity | VERIFIED_LOCAL: Dashboard Home no longer computes local fallback TTP protection from `trailingTakeProfitLevels` after backend dynamic TTP is gated by DCA state. The TTP resolver ignores local fallback fields as protection truth while preserving API-provided backend/prospective TTP. | `history/audits/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`; focused Web runtime table/view-model tests `45/45`; Web typecheck; guardrails; diff check | Commit/push, verify production deploy freshness, then continue backend contract-size route/e2e proof if still local-only. |
-| 2026-05-23 | Gate.io manual-order contract-size backend proof | VERIFIED_PROD_PUBLIC: DB-backed service and route proof now locks manual-order context to Gate.io futures contract semantics. The route uses a test-only connector wrapper, not production DI changes or real exchange calls, and proves `quantity=4` means four contracts with `contractSize=10`, not four base ADA units. | `apps/api/src/modules/orders/orders.manualContext.contractSize.service.test.ts`; `apps/api/src/modules/orders/orders-positions.e2e.test.ts`; focused Gate.io contract-size service and route tests passed after `pnpm run go-live:infra:up`; combined API pack `6` files / `98` tests; API typecheck; guardrails; production Web build-info `314e90ce`; public smoke API `/health`, API `/ready`, Web `/` PASS | Protected production manual/bot readbacks still require transient Soar app auth; any LIVE mutation still requires fresh explicit approval. |
-| 2026-05-23 | LIVE close dedupe submitted truth | VERIFIED_PROD_PUBLIC: fixed reused CLOSE dedupe handling so `reuseStatus=submitted` remains `submitted` even when an order and position id are linked; this prevents API/runtime responses from claiming `closed` before exchange fill completion. | `apps/api/src/modules/engine/executionOrchestrator.service.ts`; `apps/api/src/modules/engine/executionOrchestrator.service.test.ts`; `apps/api/src/modules/orders/orders-positions.e2e.test.ts`; combined API pack `6` files / `98` tests; API typecheck; guardrails; production Web build-info `314e90ce`; public smoke API `/health`, API `/ready`, Web `/` PASS | Keep close lifecycle truth protected by exchange fill completion; no local blocker remains for this slice. |
-| 2026-05-23 | Runtime execution dedupe observability | VERIFIED_LOCAL: architecture-required dedupe hit/miss/inflight/retry counters are now emitted through the existing metrics store and `/metrics` payload with per-command buckets plus retry error-class buckets. Local Postgres was unavailable for the `/metrics` auth-backed test until `pnpm run go-live:infra:up` started repo Postgres/Redis. | `history/tasks/runtime-execution-dedupe-observability-2026-05-23-task.md`; runtime dedupe service tests `13/13`; metrics route tests `5/5`; API typecheck PASS | Run guardrails/diff check, commit/push, then verify pushed `HEAD` with public build-info and smoke after Coolify deploy convergence. |
-| 2026-05-22 | Public web deploy-proof route hardening | VERIFIED_LOCALLY_SUPERSEDED_IN_PROD: converted `/auth/login`, `/auth/register`, and `/api/build-info` to static prerendered routes and removed per-request build-info time generation. Commit `1b351a51` originally had blocked production readback, but that blocker is historical and superseded by later production build-info and public smoke proof through `878e199d`. | Targeted auth cache contract `2/2`; `web build` route output shows `/auth/login`, `/auth/register`, and `/api/build-info` as `Static`; `web typecheck`; `quality:guardrails`; `git diff --check`; local production HTTP smoke `200` for all three routes; `history/plans/deploy-freshness-1b351a51-2026-05-22.md`; `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md` | Keep as historical evidence unless a fresh public route probe fails. |
-| 2026-05-22 | Architecture-code runtime audit P0/P1 closure | CHECKPOINTED locally: four read-only lanes found remaining architecture/code drift. Fixed two P0 orders/exchange findings plus safe local P1 drifts in imported LIVE dynamic stop display, backtest closed-candle windowing, reports settled-trade aggregation, deploy smoke worker readiness, VPS split-worker compose defaults, API DB readiness, and rollback worker-readiness proof. | `history/audits/architecture-code-runtime-audit-2026-05-22-task.md`; focused API pack `88/88`; readiness/backtest/report pack `20/20`; script syntax checks; VPS compose config | Run typecheck/guardrails/diff check, commit/push, then continue deeper P1 findings. |
-| 2026-05-22 | Runtime architecture DCA/close parity | VERIFIED locally: architecture audit found confirmed runtime/backtest drift where basic `TP` could close while profit-side DCA levels remained pending, and `SL`/`TSL` used an all-DCA gate instead of matching pending loss-side DCA. Fixed runtime core and backtest helper parity so `TP`/`TTP` gate on profit-side DCA and `SL`/`TSL` gate on loss-side DCA; added focused runtime automation, position-management, replay, and portfolio regressions. Production endpoints timed out from this shell and remain an ops blocker, not local code proof. | `history/audits/runtime-architecture-dca-tp-parity-2026-05-22-task.md`; focused combined pack `104/104`; SL/TSL correction pack `71/71`; API typecheck; repository guardrails; `git diff --check` with line-ending warnings only | Commit/push, then continue broader architecture audit or production availability/deploy proof as the next checkpoint. |
-| 2026-05-21 | Standards-based security hardening | VERIFIED locally: coordinated defensive lanes against OWASP/NIST/CISA guidance. Fixed API-key mass assignment, LIVE cancel entitlement fail-closed gap, frontend raw-secret/error exposure hardening, ops secret-argv/env-file policy, and avatar decoded-pixel budget. | `history/tasks/standards-based-security-hardening-2026-05-21-task.md`; Web `151` files / `533` tests; API cancel/API-key DB pack `20` tests; avatar processing `2` tests; script tests `9` tests; API/Web typecheck; production audit; compose config; build; guardrails; `git diff --check`; cleanup checks | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims. |
-| 2026-05-21 | Protected V1 app proof follow-up for deployed `dd1a1faf` | BLOCKED with progress: operator packet validation and build-info passed; protected UI clickthrough passed; rollback proof passed; Gate 4 sign-off is approved. `LIVEIMPORT-03` authenticated and found a RUNNING Binance FUTURES LIVE session, but failed closed because there are no open positions or open orders. Controlled proof preactivation failed safely because the target LIVE bot is already active. Fresh 30-minute production SLO is `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, caused by deployed `inline` worker topology (`DEPLOYED_INLINE_MODE`) rather than the canonical split-worker contract. Production DB restore drill still needs VPS/Coolify Docker access. | `history/evidence/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`; `history/plans/prod-ui-module-clickthrough-dd1a1faf-2026-05-21.md`; `history/evidence/v1-rollback-proof-prod-2026-05-21T00-00-00-000Z.md`; `history/artifacts/liveimport-03-prod-readback-dd1a1faf-2026-05-21.json`; `history/evidence/v1-slo-observation-2026-05-21T15-28-20-108Z.md`; `docs/operations/v1-rc-signoff-record.md` | Repair/verify production split-worker topology, provide a safe open runtime readback payload path, run production DB restore drill from VPS/Coolify Docker context, then rerun final non-dry-run release gate. |
-| 2026-05-21 | Supply-chain SAST ops audit | VERIFIED locally: audited dependency/supply-chain hygiene, Docker/compose, env templates, secrets handling, logging artifacts, CI/scripts, SSRF/egress surfaces, file upload/static assets, and production-readiness gates. Fixed protected ops scripts accepting secret-bearing CLI flags and added env-file/secret-argv guardrails. | `history/audits/supply-chain-sast-ops-audit-2026-05-21-task.md`; guardrail tests `9/9`; guardrails; production dependency audit; VPS/local compose config; API/Web typecheck; script syntax; manual secret-argv fail-closed checks; diff check with line-ending warnings only | Protected `AUD-19`, external VPS/cloud egress review, and operator rotation/removal of local untracked env secrets remain separate gates. |
-| 2026-05-21 | Backend permission and data-isolation review | VERIFIED locally: inspected auth/session middleware, admin guards, API-key ownership, representative user-scoped reads/writes, request DTO allowlists, and denied-access tests. Repaired API-key create DTO allowlist defect by passing parsed payloads and explicit Prisma create fields; updated auth duplicate-cookie test mock to DB-sourced user context. | `history/tasks/backend-permission-isolation-review-2026-05-21-task.md`; API-key e2e `18/18`; auth/admin/API-key pack `34/34`; isolation/reports/wallets pack `28/28`; API typecheck | Protected `AUD-19`, external penetration/VPS configuration review, and explicit LIVE exchange-side mutation proof remain separate gates. |
-| 2026-05-21 | Frontend OWASP security/UX sweep | VERIFIED locally: audited Web auth bootstrap, protected data flash prevention, admin gating, CSP/security headers, browser storage, CSRF-sensitive UI call shape, clickjacking/HSTS assumptions, secret/error exposure, and money-action confirmations. Fixed confirmed profile API-key response secret-retention risk and profile/security raw axios error exposure. | `history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md`; focused Web profile/error tests `4` files / `28` tests; broader Web auth/admin/header/money pack `7` files / `23` tests; Web typecheck; `git diff --check` with line-ending warnings only | Keep production header readback, protected `AUD-19`, external pentest/VPS review, backend-owned CSRF/trusted-origin proof, and explicit LIVE mutation proof as separate gates. |
-| 2026-05-21 | Money-flow LIVE cancel entitlement audit | VERIFIED locally: confirmed and fixed a P1 fail-closed gap where exchange-backed LIVE order cancel could reach the adapter boundary after subscription downgrade because cancel checked `riskAck` but not current `liveTrading` entitlement. Added entitlement gate before exchange cancel boundary and focused DB-backed tests for allowed/downgraded paths. | `history/tasks/money-flow-security-cancel-entitlement-2026-05-21-task.md`; parent rerun DB-backed cancel/API-key pack `2` files / `20` tests; API typecheck; guardrails; build | Protected `AUD-19` and real LIVE mutation proof remain separate gates. |
-| 2026-05-21 | Security hardening continuation | VERIFIED locally: coordinated Frontend Security, Backend Security, and Ops/Security lanes. Closed remaining frontend P2 items, added DB-backed LIVE entitlement downgrade proof, fixed entitlement-denial HTTP mapping, removed stage-rehearsal secret argv/artifact leakage, hardened VPS env template, added non-root runtime Dockerfiles with guardrail, added production HSTS, and bound local compose DB/Redis to localhost. | `history/tasks/security-red-team-hardening-2026-05-21-task.md`; Web `151` files / `530` tests; API entitlement/runtime `17` tests; API orders `38` tests; node script/guardrail `6` tests; API/Web typecheck; i18n audit `0`; build; guardrails; `git diff --check`; cleanup checks | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims. |
-| 2026-05-21 | Security red-team hardening | VERIFIED locally: second-round security agents completed reports and coordinator integrated fixes. Repaired stale admin token authorization, auth IP limiting, production ops-network default, weak secret readiness/deploy defaults, API-key lifecycle audit logs, sensitive logging redaction, runtime close `riskAck` default, execution-time LIVE entitlement checks, Gate.io swap derivative order handling, unknown LIVE status fail-closed behavior, min-notional price fail-closed behavior, production CSP, production UI error redaction, and production dependency vulnerabilities. | `history/tasks/security-red-team-hardening-2026-05-21-task.md`; `pnpm audit --prod`; guardrails; API/Web typecheck; build; focused API/Web security tests | Protected `AUD-19`, external pentest/VPS config review, and explicit LIVE exchange-side mutation proof remain separate gates. |
-| 2026-05-21 | Local certainty closure | VERIFIED locally: agents and coordinator closed the remaining executable local queue. Added `Trade.executionMode` snapshot reporting, fixed bot route i18n drift, profile mobile layout, Admin Subscriptions shared states, Wallet reset modal consistency, and Dashboard Home confirmation-aware tests. | `history/tasks/local-certainty-closure-2026-05-21-task.md`; full Web Vitest `149` files / `522` tests; full API Vitest one-worker fork mode; build; lint; go-live smoke `45` API + `18` Web tests; Prisma status/validate | Execute protected `AUD-19` operator packet only after approved protected inputs exist; no further local code blocker found in this sweep. |
-| 2026-05-21 | Remaining implementation safety sweep | VERIFIED locally: agents found no P0, but confirmed P1 local defects in Dashboard Home risk acknowledgement, Web service wrapper defaults, API LIVE manual close price fallback, and Admin Users mutation confirmation. Fixed all four. | `history/tasks/rest-implementation-sweep-2026-05-21-task.md`; focused Web `4` files / `14` tests; focused API `4` files / `99` tests; API/Web typecheck | Decide whether next local task is Reports execution-mode snapshot migration or smaller Web polish queue; protected `AUD-19` remains separate. |
-| 2026-05-21 | Frontend/engine UX+DCA sweep | VERIFIED: agents found confirmed backtest replay/portfolio TTP-vs-profit-side-DCA drift and frontend runtime UX issues. Fixed backtest DCA-first guard, bot monitoring first-open double-fetch, Dashboard Home auth-bootstrap coverage, and Reports partial failure behavior. | `history/tasks/frontend-engine-ux-dca-sweep-2026-05-21-task.md`; focused API `4` files / `99` tests; focused Web `3` files / `22` tests; API/Web typecheck; guardrails | Design explicit runtime action confirmation UX for current `riskAck: true` Dashboard Home actions; protected `AUD-19` remains separate. |
-| 2026-05-21 | Agent-assisted gap hunt for unverified paths | PARTIALLY_VERIFIED: three lanes found no new P0/P1 backend or ops code defect, but confirmed two safe local fixes/proofs: UX production proof now fails closed on runtime/console bad events, and Reports cross-mode route has DB-backed auth/user-scope e2e coverage. Protected production `AUD-19`, LIVE exchange-side mutation, assistant hot-path orchestration, native mobile, and current production authenticated clickthrough remain outside local completion. | `scripts/runProdUxA11yMobileProof.mjs`; `apps/api/src/modules/reports/reports.e2e.test.ts`; `docs/modules/api-reports.md`; `.agents/state/module-confidence-ledger.md` | Provide approved protected inputs for `AUD-19`; do not claim literal current production 100% before protected proof. |
-| 2026-05-20 | No-secret V1 preflight and protected-input readiness for deployed `dd1a1faf` | BLOCKED as expected: build-info PASS, public smoke PASS, `0` matching protected input names, required protected evidence stale for 2026-05-20 | `history/releases/v1-final-preflight-dd1a1faf-2026-05-20.md`; `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20.md` | Provide approved protected auth/context and approver fields, then execute `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`. |
-| 2026-05-20 | Current operator unblock packet published | NO-GO handoff current for the deployed target; command order and stop conditions are dated for 2026-05-20 | `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`; `history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json` | Same as above: protected inputs, current evidence, final non-dry-run release gate. |
-| 2026-05-20 | Operator packet validator added | PASS: current packet has required SHA, evidence paths, protected input families, proof steps, forbidden boundaries, and acceptance rule | `corepack pnpm run ops:operator-unblock:check:test`; `corepack pnpm run ops:operator-unblock:check -- --packet history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` | Run the packet check before executing protected operator commands. |
-| 2026-05-20 | Operator packet validator added to reusable audit tooling index | PASS: reusable tooling index now tracks `21/21` tools and `audit:manifest:verify` runs the operator unblock packet regression test and current packet validation | `corepack pnpm run audit:tooling-index:check:test`; `corepack pnpm run audit:tooling-index:check`; `corepack pnpm run audit:manifest:verify`; `history/releases/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md` | Same protected-input execution gate remains next. |
-| 2026-05-20 | Parallel agent blocker sweep | BLOCKED: Ops/Release and Planning/Queue agents independently confirmed no protected proof step or meaningful non-secret deployment task can proceed without approved protected inputs; rerun still found `0` matching protected input names; production build-info still `dd1a1faf` on `main` | `history/tasks/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md`; `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md` | Stop local prep; provide protected inputs and execute the operator packet. |
-| 2026-05-20 | Heartbeat unblock monitor created | BLOCKED unchanged: latest names-only sweep still found `0` matching protected input names; production build-info still `dd1a1faf` on `main`; operator packet validation PASS | `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`; automation `v1-protected-release-unblock-check` | Heartbeat checks every 30 minutes and proceeds only if protected inputs appear. |
-| 2026-05-24 | Architecture graph Web runtime surfaces backfill | VERIFIED_LOCAL: added Web runtime surface graph records for Dashboard Home runtime sidebar/onboarding/signals/helpers and Bots monitoring tabs, sections, future signals, protection/attribution cells, portfolio history, test proof, docs, and runtime API service links. The graph is still incremental, not full repository coverage. | `history/tasks/architecture-graph-web-runtime-surfaces-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`; `pnpm run architecture:graph:generate` => `543` nodes / `624` relations / `23` chains; `pnpm run architecture:graph:drift` => `510/796` covered / `286` missing | Continue drift reduction through remaining Web component/test surfaces, auth forms/tests, backtest Web copy/test surfaces, workers, migrations, prompts, and docs. |
-| 2026-05-24 | Architecture graph Auth Session deep backfill | VERIFIED_LOCAL: added Auth Session graph records for public auth pages, login/register forms, password visibility, auth hooks, Web auth service, AuthContext, API register/logout/controller/service/cookie/JWT/errors/types, User model, Web/API tests, docs, and `CHAIN-AUTH-SESSION-DEEP`. The graph is still incremental, not full repository coverage. | `history/tasks/architecture-graph-auth-session-deep-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-AUTH-SESSION-DEEP.md`; `pnpm run architecture:graph:generate` => `573` nodes / `659` relations / `24` chains; `pnpm run architecture:graph:drift` => `534/796` covered / `262` missing | Continue drift reduction through backtest Web utilities/copy/tests, residual Dashboard tests, Exchange/Profile Web surfaces, engine services/tests, workers, migrations, prompts, and docs. |
-| 2026-05-24 | Architecture graph full drift closure | VERIFIED_LOCAL: completed the current representative graph drift closure across engine runtime core, market data/stream adapters, residual Web/API evidence, API infrastructure residual tests, and module/architecture governance docs. | `history/tasks/architecture-graph-full-drift-closure-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-ENGINE-RUNTIME-CORE.md`; `Soar - docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md`; `pnpm run architecture:graph:generate` => `635` nodes / `781` relations / `26` chains; `pnpm run architecture:graph:drift` => `796/796` covered / `0` missing | Run guardrails/docs parity, then keep future graph updates mandatory with feature/code/doc changes. |
-| 2026-05-24 | Release audit tooling graph backfill | VERIFIED_LOCAL: mapped the current release/audit tooling slice into the architecture evidence graph across repository path resolver, operator unblock packet validator, reusable audit validators, aggregate tests, workflow node, relations, and `CHAIN-RELEASE-AUDIT-TOOLING`. | `history/tasks/release-audit-tooling-graph-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md`; `pnpm run architecture:graph:generate` => `641` nodes / `791` relations / `27` chains; `pnpm run architecture:graph:drift:strict` => `796/796` covered / `0` missing; `audit:manifest:verify`; `quality:guardrails`; `docs:parity:check`; `git diff --check` warnings only | V1 full GO remains blocked on protected input/auth/ops proof; continue only with approved protected context or the next bounded local graph/runtime gap. |
-| 2026-05-24 | V1 preflight and release gate graph refresh | PARTIALLY_VERIFIED/NO-GO: refreshed current no-secret preflight for deployed `380308d1`; build-info and public smoke pass, then preflight blocks on protected auth/context plus failed/stale release evidence. Mapped V1 final preflight and V1 release gate runners into the architecture graph and release audit tooling chain. | `history/tasks/v1-preflight-release-gate-graph-refresh-2026-05-24-task.md`; `history/releases/v1-preflight-production-no-secret-refresh-2026-05-24.md`; `Soar - docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md`; `pnpm run architecture:graph:generate` => `643` nodes / `798` relations / `27` chains; `pnpm run architecture:graph:drift:strict` => `796/796` covered / `0` missing; release/operator tests `40/40`; operator unblock check PASS with `NO-GO` | Execute protected operator packet only after approved protected inputs and real approver context exist. |
-| 2026-05-24 | Protected input readiness refresh for current V1 candidate | BLOCKED/NO-GO: refreshed the no-secret protected-input readiness artifact for deployed `380308d1` using latest preflight timestamp; current shell still has `0` matching protected input names, and the operator unblock packet still validates against the refreshed readiness JSON. | `history/tasks/v1-protected-input-readiness-refresh-380308d1-2026-05-24-task.md`; `history/evidence/v1-protected-input-readiness-380308d1-2026-05-24.md`; `history/artifacts/v1-protected-input-readiness-380308d1-2026-05-24.json`; `ops:protected-inputs:check`; `ops:operator-unblock:check` | Provide approved protected inputs and real approver context before executing protected proof commands. |
-| 2026-05-24 | Web Dashboard selected-bot load dependency closure | VERIFIED_LOCAL: fixed the current React hook lint drift with a stable `load` callback that reads current selected-bot state from a synchronized ref, avoiding reload-triggered selection regressions. This is local dependency-contract proof only; production Dashboard clickthrough and full V1 GO remain protected-input blocked. | `history/tasks/web-dashboard-selected-bot-load-deps-2026-05-24-task.md`; focused Dashboard hook tests `4/4`; focused Dashboard regression pack `26/26`; full Web tests `150` files / `534` tests; Web lint; Web typecheck; repository lint; guardrails; strict architecture graph drift `796/796` | Continue only with approved protected context or the next bounded local gap; do not claim full production readiness from this local proof. |
-| 2026-05-24 | Local integrity build sweep | VERIFIED_LOCAL: refreshed broader local gates after the recent graph/release-tooling/state and Dashboard hook updates. Full API/Web typecheck passed, docs parity passed, reusable audit/operator aggregate passed, and full workspace build passed. This is local integrity proof only; protected production release evidence is still absent. | `history/tasks/local-integrity-build-sweep-2026-05-24-task.md`; `typecheck`; `docs:parity:check`; `audit:manifest:verify`; `build` | Keep V1 at `NO-GO` until protected production proof inputs and approver context exist; otherwise continue with the next bounded local gap. |
-
+| Date       | Checkpoint                                                                   | Result                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Next action                                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-23 | Runtime DCA protection display parity                                        | VERIFIED_LOCAL: operator screenshot showed dynamic TSL visible while loss-side DCA levels were still pending (`BNBUSDT` DCA count `2` of `3`, `SOLUSDT` DCA count `0`). The API read-model now applies side-aware DCA protection before serializing dynamic TTP/TSL, and exchange-confirmed DCA fill sync persists `executedDcaLevelIndices` from dedupe fingerprints.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `history/audits/runtime-dca-protection-display-parity-2026-05-23-task.md`; Positions serialization/read tests `32/32`; exchange-event tests `19/19` after `pnpm run go-live:infra:up`; runtime position-management/automation tests `62/62`; API typecheck PASS                                                                                                                                                                                                                                                                                                                                              | Run parent guardrails/diff check, commit/push, then verify production deploy freshness and real dashboard readback.                                                                                            |
+| 2026-05-23 | Source-of-truth duplicate cleanup                                            | VERIFIED_LOCAL: confirmed `docs/architecture/` is canonical and root `architecture/` plus related root template folders are obsolete competing scaffolding from 2026-05-03. Removed only tracked obsolete template files; moved referenced evidence under `docs/operations/`; moved root security report under `docs/security/`; fixed P2 legacy redirects to Dashboard Home runtime tabs. Backend parity lane confirmed one remaining P1 deferred backtest multi-strategy merge gap.                                                                                                                                                                                                                                                                                                                                                                                                                                       | `history/tasks/repo-source-truth-cleanup-2026-05-23-task.md`; subagent reports; focused web tests `7/7`; web typecheck; web build; docs parity; guardrails; diff check                                                                                                                                                                                                                                                                                                                                                                                                                                       | Commit/push, wait for production build-info to expose pushed SHA, then run smoke checks.                                                                                                                       |
+| 2026-05-23 | Web build-info Docker deploy proof                                           | VERIFIED_LOCAL / PROD_REDEPLOY_PENDING: first manual Coolify redeploy of `soar-web` reached commit `b68d3464` in deployment history, but public `/api/build-info` returned `gitSha: null`. Root cause was Web build metadata being written into `.next` before Next cleared that directory. A follow-up `.git` copy approach failed in Coolify because the generated Docker context excludes `.git`; current fix writes metadata to `.build-meta/BUILD_META.json` and passes `SOURCE_COMMIT`/`SOURCE_BRANCH` build args into the Web build. Local Docker image now returns the expected SHA from `/api/build-info`.                                                                                                                                                                                                                                                                                                         | `docker build --build-arg SOURCE_COMMIT=$(git rev-parse HEAD) --build-arg SOURCE_BRANCH=main -f apps/web/Dockerfile -t soar-web-buildmeta-check .`; `GET http://127.0.0.1:3102/api/build-info` => `4aa396333dd467bbb29a6744a043250cdaaf0c2f`; `web build`; `web typecheck`; `quality:guardrails`                                                                                                                                                                                                                                                                                                             | Commit/push build-info metadata fix, redeploy `soar-web`, wait for public build-info freshness, then run deploy smoke.                                                                                         |
+| 2026-05-23 | Backtest multi-strategy merge parity                                         | VERIFIED_LOCAL: complete immutable multi-strategy seed snapshots now replay through the runtime weighted/exit-priority merge contract, persist the winning primary strategy on backtest trades, and expose merge diagnostics in report/timeline payloads. Ambiguous link-only snapshots still fail closed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalMerge.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRunJob.test.ts --run --reporter=dot` => `24/24`; `pnpm --filter api exec vitest run src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts --run --reporter=dot` => `34/34`; `pnpm --filter api run typecheck` => PASS                                                                                                                                                       | Run repository guardrails and diff check, then commit/push if green; continue production split-worker and runtime journey proof after deploy.                                                                  |
+| 2026-05-23 | Production deploy, split-worker, and protected release proof refresh         | SUPERSEDED_BY_AUTODISCOVERY_PROOF: production build-info was current for `72b547e12351e078c49807fb25d56c27f64c6567`; deploy smoke, authenticated `/workers/ready`, split-worker topology, restore drill, rollback proof, prod UI clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag objectives passed. The manually requested `ETHUSDT`/`DOGEUSDT` `LIVEIMPORT-03` payload was not visible, but this checkpoint is no longer the current blocker because the later auto-discovery proof passed.                                                                                                                                                                                                                                                                                                                                                                                                             | `history/audits/v1-production-activation-evidence-audit-2026-05-23.md`; `history/plans/v1-production-activation-and-evidence-plan-2026-05-23.md`; `history/releases/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`; `history/releases/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`; restore/rollback/UI/SLO/RC artifacts from 2026-05-23                                                                                                                                                                                                                                             | Use the later auto-discovery proof as current release truth; keep historical fail-closed behavior documented.                                                                                                  |
+| 2026-05-23 | LIVEIMPORT-03 auto-discovery and final production release gate               | VERIFIED_PROD_READY: `LIVEIMPORT-03` was rerun read-only against deployed `b1ba69edccc639e97943f37fb2b1e6249a62e87c` with `--symbols auto`. It discovered the real open runtime symbols `SOLUSDT` and `BNBUSDT`, both `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the full non-dry-run production release gate returned `ready`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `history/artifacts/liveimport-03-prod-readback-2026-05-23.json`; `history/releases/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`; `history/releases/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`; `history/artifacts/_artifacts-v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.json`                                                                                                                                                                                                                                                                               | Commit/push source-of-truth updates and collector auto-discovery support, then monitor deployment freshness.                                                                                                   |
+| 2026-05-28 | LUC-418 known-state evidence and architecture baseline                       | CHECKPOINTED: captured current architecture baseline from canonical generated artifacts and synchronized known-state routing into task/board/project context without runtime mutation. Baseline snapshot: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`; status report confirms disconnected entities `0` with remaining inferred-proof gaps (`tests=2056`, `docs=798`). Release posture unchanged: V1 remains blocked/NO-GO on protected evidence owner path (`LUC-47` and protected-input/proof owners).                                                                                                                                                                                                                                                                                                                                                         | `history/tasks/luc-418-known-state-evidence-architecture-baseline-2026-05-28-task.md`; `docs/graphs/architecture-awareness.json`; `docs/status/architecture-awareness-report.md`                                                                                                                                                                                                                                                                                                                                                                                                                             | Continue blocker-driven lanes only (protected evidence ownership path) or delegate missing proof families into explicit child issues.                                                                          |
+| 2026-05-29 | LUC-579 known-state evidence and architecture baseline                       | CHECKPOINTED: captured current architecture baseline from canonical generated artifacts and synchronized known-state routing into task/board/project context without runtime mutation. Baseline snapshot: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`; status report confirms disconnected entities `0` with remaining inferred-proof gaps (`tests=2056`, `docs=798`). Release posture unchanged: V1 remains blocked/NO-GO on protected evidence owner path (`LUC-47` and protected-input/proof owners).                                                                                                                                                                                                                                                                                                                                                         | `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`; `docs/graphs/architecture-awareness.json`; `docs/status/architecture-awareness-report.md`                                                                                                                                                                                                                                                                                                                                                                                                                             | Continue blocker-driven lanes only (protected evidence ownership path) or delegate missing proof families into explicit child issues.                                                                          |
+| 2026-05-23 | Post-push deploy freshness for release-state sync                            | VERIFIED_PROD_PUBLIC_DEPLOYED: commit `0ee013214ef82be61d08430e9d3338ef5c263b67` was pushed to `main`; Coolify queued the `soar-web` deployment until the coordinator clicked `Force Start`; production Web build-info then converged to `0ee01321`, and public deploy smoke passed. The follow-up smoke-truth correction `e0457b424196d8e9773b1ef402f7d1c501160ebc` was pushed to `main`; Coolify did not auto-start it, so the coordinator manually redeployed `soar-web`, clicked `Force Start` for queued deployment `iwhb44uuc5pqxixr7b9xv6ko`, waited until public Web build-info converged to `e0457b42`, and reran public deploy smoke for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke was attempted with the available Coolify credential and correctly failed application login with `401 Invalid email or password`, so `/workers/ready` is not claimed for the latest docs/state sync. | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha e0457b42 --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` => `e0457b424196d8e9773b1ef402f7d1c501160ebc` on `main`                                                                                                                                                                                   | Historical checkpoint superseded by the later `878e199d` deploy proof and public monitoring.                                                                                                                   |
+| 2026-05-23 | Coolify queue cleanup and latest docs/state deploy freshness                 | VERIFIED_PROD_PUBLIC_DEPLOYED: after docs/state commits reached `main`, production stayed on `76f1a5be` because Coolify had stale queued/in-progress worker/API deployments. The coordinator cancelled the stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI context, waited until public Web build-info converged to `32c145181a8740ca3d7714c7ee83b9b450a57453`, and reran public deploy smoke for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke remains unclaimed because the available Coolify credential is not a valid Soar application password.                                                                                                                                                                                                                                                                                                                   | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 32c14518 --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` => `32c145181a8740ca3d7714c7ee83b9b450a57453` on `main`; Coolify active deployment queue rechecked empty                                                                                                                                  | Commit/push this source-of-truth recovery note, then verify the new pushed `HEAD` through public build-info and public deploy smoke.                                                                           |
+| 2026-05-23 | Web build metadata arg-scope production proof                                | VERIFIED_PROD_PUBLIC_DEPLOYED: commit `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` declares `SOURCE_COMMIT`, `SOURCE_BRANCH`, and `COOLIFY_BRANCH` in the Web Docker build stage before the build command. Coolify Advanced already had source-commit injection enabled; the missing Docker ARG stage scope was the reason the deployed image imported the right commit while `/api/build-info` showed `gitSha: null`. After cancelling stale queued/in-progress deployments and triggering `soar-web`, public Web build-info converged to `878e199d`, public deploy smoke passed for API `/health`, API `/ready`, and Web `/`, and public-only post-release monitoring passed `5/5` samples.                                                                                                                                                                                                                                 | `pnpm --filter web run build` with `SOURCE_COMMIT=$(git rev-parse HEAD)` => metadata source `env`; `pnpm run quality:guardrails`; `git diff --check`; `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 878e199d --timeout-seconds 900 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; public build-info => `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` on `main`; `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md` | Next continuation should choose the next bounded product/runtime task; authenticated app smoke still needs valid Soar app credentials.                                                                         |
+| 2026-05-23 | Data model isolated DB proof                                                 | VERIFIED_LOCAL: local Postgres/Redis were initially unavailable; Laragon was running but did not include PostgreSQL, so Docker Desktop was started and `pnpm run go-live:infra:up` brought up repo Postgres/Redis. The representative data audit passed with Prisma schema validation, migration status, full reset/replay of `55` migrations, wallets `24/24`, backtests `15/15`, runtime repository `2/2`, and local backup/restore PASS. Production migration status and production backup/restore freshness remain protected ops proof.                                                                                                                                                                                                                                                                                                                                                                                 | `pnpm run audit:data:db-isolated`; `pnpm run ops:db:backup-restore:check-local`; `history/evidence/data-model-isolated-db-proof-2026-05-23-task.md`; `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`                                                                                                                                                                                                                                                                                                                                                                                      | Commit/push data-proof source-of-truth updates, then select another bounded non-production product/runtime gap unless protected production ops context is available.                                           |
+| 2026-05-23 | Protected app test credential availability                                   | PARTIALLY_VERIFIED: operator confirmed the Soar production application account `wroblewskipatryk@gmail.com` on `https://soar.luckysparrow.ch` has an API key configured and may be used for authenticated app/API-key testing. This only records availability; no password, API key secret, token, cookie, or private header is stored, and authenticated smoke is not claimed until a future transient-secret run passes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `history/tasks/protected-app-test-credential-availability-2026-05-23-task.md`; no-secret state update                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Run authenticated smoke/API-key checks only with transient operator-approved secret context, then record pass/fail evidence.                                                                                   |
+| 2026-05-23 | Gate.io live bot context repair                                              | VERIFIED_CONFIG: production readback showed `Main gateio` was saved as `BINANCE / FUTURES / USDT` while wallet `Gate.io` was `LIVE / GATEIO / FUTURES / USDT`, causing the reported wallet-market context mismatch. Gate.io stored API-key read-only futures probe passed, `Main gateio` was updated to `GATEIO / FUTURES / USDT`, and inactive bot `Gate.io RSI 20/80` was created with the Gate.io wallet and `RSI 20 / 80` strategy. No LIVE activation, order, position mutation, runtime start, or raw secret persistence occurred.                                                                                                                                                                                                                                                                                                                                                                                    | `history/tasks/gateio-live-bot-context-repair-2026-05-23-task.md`; production API readbacks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Separate explicit approval is required before activating the LIVE bot or performing any exchange-side mutation.                                                                                                |
+| 2026-05-23 | Gate.io ADA short under 1 USDT                                               | VERIFIED_FAIL_CLOSED: operator approved activating the Gate.io LIVE bot and attempting `SELL MARKET ADAUSDT` with value not greater than `1 USDT`. Manual context mark price was about `0.2422`, so `quantity=4` estimated notional was `0.9688 USDT`. Activation succeeded, but `POST /dashboard/orders/open` returned `400 LIVE_PRETRADE_NOTIONAL_BELOW_MIN`. No larger retry was made; bot was immediately deactivated and final readback shows `isActive=false`, `liveOptIn=false`, `consentTextVersion=null`.                                                                                                                                                                                                                                                                                                                                                                                                          | `history/tasks/gateio-live-manual-order-ada-short-2026-05-23-task.md`; production API readbacks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Ask for explicit approval for a larger minimum-notional-compliant size if the operator still wants a Gate.io ADA position.                                                                                     |
+| 2026-05-23 | Live exchange parity public deploy proof                                     | PARTIALLY_VERIFIED_PROD_PUBLIC: exchange-rule repair commit `9d1a83875767cd0227be9e2a899b2170a74034cf` was pushed to `main` and deployed through approved Coolify manual redeploy/force-start for `soar-web`, `soar-api`, and `workers-execution`. Public Web build-info converged to `9d1a8387` with `metadataSource=github-branch` and build id `1tCeTjS9PmOJLsdQ6fVIG`; public smoke passed API `/health`, API `/ready`, and Web `/`. Protected Soar app/manual/bot readbacks remain blocked without transient app auth.                                                                                                                                                                                                                                                                                                                                                                                                 | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 9d1a8387 --timeout-seconds 1200 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `history/audits/live-exchange-execution-parity-2026-05-23-task.md`                                                                                                                                                                                                                                       | Obtain transient Soar app auth for read-only manual/bot production preflights, or request explicit operator approval for minimum executable live mutation parameters.                                          |
+| 2026-05-23 | Live exchange state-sync deploy proof                                        | VERIFIED_PROD_PUBLIC_DEPLOYED: docs/state commit `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` was pushed to `main`. Coolify did not auto-converge during the first 180-second wait, so the coordinator switched to the `LuckySparrow` team, opened the queued `soar-web` deployment, clicked `Force Start`, and waited until public Web build-info converged to `a0e4f117` with `metadataSource=github-branch` and build id `AnqfCfwjz3KEHQ-_bouFD`. Public smoke passed API `/health`, API `/ready`, and Web `/`.                                                                                                                                                                                                                                                                                                                                                                                                            | `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha a0e4f117 --timeout-seconds 1200 --interval-seconds 30`; `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`; `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info`                                                                                                                                                                                                                                          | Protected app readbacks remain blocked without transient Soar app auth; continue with the next local executable gap if no auth/approval is available.                                                          |
+| 2026-05-23 | Web dashboard DCA protection truth parity                                    | VERIFIED_LOCAL: Dashboard Home no longer computes local fallback TTP protection from `trailingTakeProfitLevels` after backend dynamic TTP is gated by DCA state. The TTP resolver ignores local fallback fields as protection truth while preserving API-provided backend/prospective TTP.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `history/audits/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`; focused Web runtime table/view-model tests `45/45`; Web typecheck; guardrails; diff check                                                                                                                                                                                                                                                                                                                                                                                                                                     | Commit/push, verify production deploy freshness, then continue backend contract-size route/e2e proof if still local-only.                                                                                      |
+| 2026-05-23 | Gate.io manual-order contract-size backend proof                             | VERIFIED_PROD_PUBLIC: DB-backed service and route proof now locks manual-order context to Gate.io futures contract semantics. The route uses a test-only connector wrapper, not production DI changes or real exchange calls, and proves `quantity=4` means four contracts with `contractSize=10`, not four base ADA units.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `apps/api/src/modules/orders/orders.manualContext.contractSize.service.test.ts`; `apps/api/src/modules/orders/orders-positions.e2e.test.ts`; focused Gate.io contract-size service and route tests passed after `pnpm run go-live:infra:up`; combined API pack `6` files / `98` tests; API typecheck; guardrails; production Web build-info `314e90ce`; public smoke API `/health`, API `/ready`, Web `/` PASS                                                                                                                                                                                               | Protected production manual/bot readbacks still require transient Soar app auth; any LIVE mutation still requires fresh explicit approval.                                                                     |
+| 2026-05-23 | LIVE close dedupe submitted truth                                            | VERIFIED_PROD_PUBLIC: fixed reused CLOSE dedupe handling so `reuseStatus=submitted` remains `submitted` even when an order and position id are linked; this prevents API/runtime responses from claiming `closed` before exchange fill completion.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `apps/api/src/modules/engine/executionOrchestrator.service.ts`; `apps/api/src/modules/engine/executionOrchestrator.service.test.ts`; `apps/api/src/modules/orders/orders-positions.e2e.test.ts`; combined API pack `6` files / `98` tests; API typecheck; guardrails; production Web build-info `314e90ce`; public smoke API `/health`, API `/ready`, Web `/` PASS                                                                                                                                                                                                                                           | Keep close lifecycle truth protected by exchange fill completion; no local blocker remains for this slice.                                                                                                     |
+| 2026-05-23 | Runtime execution dedupe observability                                       | VERIFIED_LOCAL: architecture-required dedupe hit/miss/inflight/retry counters are now emitted through the existing metrics store and `/metrics` payload with per-command buckets plus retry error-class buckets. Local Postgres was unavailable for the `/metrics` auth-backed test until `pnpm run go-live:infra:up` started repo Postgres/Redis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `history/tasks/runtime-execution-dedupe-observability-2026-05-23-task.md`; runtime dedupe service tests `13/13`; metrics route tests `5/5`; API typecheck PASS                                                                                                                                                                                                                                                                                                                                                                                                                                               | Run guardrails/diff check, commit/push, then verify pushed `HEAD` with public build-info and smoke after Coolify deploy convergence.                                                                           |
+| 2026-05-22 | Public web deploy-proof route hardening                                      | VERIFIED_LOCALLY_SUPERSEDED_IN_PROD: converted `/auth/login`, `/auth/register`, and `/api/build-info` to static prerendered routes and removed per-request build-info time generation. Commit `1b351a51` originally had blocked production readback, but that blocker is historical and superseded by later production build-info and public smoke proof through `878e199d`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Targeted auth cache contract `2/2`; `web build` route output shows `/auth/login`, `/auth/register`, and `/api/build-info` as `Static`; `web typecheck`; `quality:guardrails`; `git diff --check`; local production HTTP smoke `200` for all three routes; `history/plans/deploy-freshness-1b351a51-2026-05-22.md`; `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md`                                                                                                                                                                                                                  | Keep as historical evidence unless a fresh public route probe fails.                                                                                                                                           |
+| 2026-05-22 | Architecture-code runtime audit P0/P1 closure                                | CHECKPOINTED locally: four read-only lanes found remaining architecture/code drift. Fixed two P0 orders/exchange findings plus safe local P1 drifts in imported LIVE dynamic stop display, backtest closed-candle windowing, reports settled-trade aggregation, deploy smoke worker readiness, VPS split-worker compose defaults, API DB readiness, and rollback worker-readiness proof.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `history/audits/architecture-code-runtime-audit-2026-05-22-task.md`; focused API pack `88/88`; readiness/backtest/report pack `20/20`; script syntax checks; VPS compose config                                                                                                                                                                                                                                                                                                                                                                                                                              | Run typecheck/guardrails/diff check, commit/push, then continue deeper P1 findings.                                                                                                                            |
+| 2026-05-22 | Runtime architecture DCA/close parity                                        | VERIFIED locally: architecture audit found confirmed runtime/backtest drift where basic `TP` could close while profit-side DCA levels remained pending, and `SL`/`TSL` used an all-DCA gate instead of matching pending loss-side DCA. Fixed runtime core and backtest helper parity so `TP`/`TTP` gate on profit-side DCA and `SL`/`TSL` gate on loss-side DCA; added focused runtime automation, position-management, replay, and portfolio regressions. Production endpoints timed out from this shell and remain an ops blocker, not local code proof.                                                                                                                                                                                                                                                                                                                                                                  | `history/audits/runtime-architecture-dca-tp-parity-2026-05-22-task.md`; focused combined pack `104/104`; SL/TSL correction pack `71/71`; API typecheck; repository guardrails; `git diff --check` with line-ending warnings only                                                                                                                                                                                                                                                                                                                                                                             | Commit/push, then continue broader architecture audit or production availability/deploy proof as the next checkpoint.                                                                                          |
+| 2026-05-21 | Standards-based security hardening                                           | VERIFIED locally: coordinated defensive lanes against OWASP/NIST/CISA guidance. Fixed API-key mass assignment, LIVE cancel entitlement fail-closed gap, frontend raw-secret/error exposure hardening, ops secret-argv/env-file policy, and avatar decoded-pixel budget.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `history/tasks/standards-based-security-hardening-2026-05-21-task.md`; Web `151` files / `533` tests; API cancel/API-key DB pack `20` tests; avatar processing `2` tests; script tests `9` tests; API/Web typecheck; production audit; compose config; build; guardrails; `git diff --check`; cleanup checks                                                                                                                                                                                                                                                                                                 | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims.                                                       |
+| 2026-05-21 | Protected V1 app proof follow-up for deployed `dd1a1faf`                     | BLOCKED with progress: operator packet validation and build-info passed; protected UI clickthrough passed; rollback proof passed; Gate 4 sign-off is approved. `LIVEIMPORT-03` authenticated and found a RUNNING Binance FUTURES LIVE session, but failed closed because there are no open positions or open orders. Controlled proof preactivation failed safely because the target LIVE bot is already active. Fresh 30-minute production SLO is `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, caused by deployed `inline` worker topology (`DEPLOYED_INLINE_MODE`) rather than the canonical split-worker contract. Production DB restore drill still needs VPS/Coolify Docker access.                                                                                                                                                                                                           | `history/evidence/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`; `history/plans/prod-ui-module-clickthrough-dd1a1faf-2026-05-21.md`; `history/evidence/v1-rollback-proof-prod-2026-05-21T00-00-00-000Z.md`; `history/artifacts/liveimport-03-prod-readback-dd1a1faf-2026-05-21.json`; `history/evidence/v1-slo-observation-2026-05-21T15-28-20-108Z.md`; `docs/operations/v1-rc-signoff-record.md`                                                                                                                                                                                             | Repair/verify production split-worker topology, provide a safe open runtime readback payload path, run production DB restore drill from VPS/Coolify Docker context, then rerun final non-dry-run release gate. |
+| 2026-05-21 | Supply-chain SAST ops audit                                                  | VERIFIED locally: audited dependency/supply-chain hygiene, Docker/compose, env templates, secrets handling, logging artifacts, CI/scripts, SSRF/egress surfaces, file upload/static assets, and production-readiness gates. Fixed protected ops scripts accepting secret-bearing CLI flags and added env-file/secret-argv guardrails.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `history/audits/supply-chain-sast-ops-audit-2026-05-21-task.md`; guardrail tests `9/9`; guardrails; production dependency audit; VPS/local compose config; API/Web typecheck; script syntax; manual secret-argv fail-closed checks; diff check with line-ending warnings only                                                                                                                                                                                                                                                                                                                                | Protected `AUD-19`, external VPS/cloud egress review, and operator rotation/removal of local untracked env secrets remain separate gates.                                                                      |
+| 2026-05-21 | Backend permission and data-isolation review                                 | VERIFIED locally: inspected auth/session middleware, admin guards, API-key ownership, representative user-scoped reads/writes, request DTO allowlists, and denied-access tests. Repaired API-key create DTO allowlist defect by passing parsed payloads and explicit Prisma create fields; updated auth duplicate-cookie test mock to DB-sourced user context.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `history/tasks/backend-permission-isolation-review-2026-05-21-task.md`; API-key e2e `18/18`; auth/admin/API-key pack `34/34`; isolation/reports/wallets pack `28/28`; API typecheck                                                                                                                                                                                                                                                                                                                                                                                                                          | Protected `AUD-19`, external penetration/VPS configuration review, and explicit LIVE exchange-side mutation proof remain separate gates.                                                                       |
+| 2026-05-21 | Frontend OWASP security/UX sweep                                             | VERIFIED locally: audited Web auth bootstrap, protected data flash prevention, admin gating, CSP/security headers, browser storage, CSRF-sensitive UI call shape, clickjacking/HSTS assumptions, secret/error exposure, and money-action confirmations. Fixed confirmed profile API-key response secret-retention risk and profile/security raw axios error exposure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md`; focused Web profile/error tests `4` files / `28` tests; broader Web auth/admin/header/money pack `7` files / `23` tests; Web typecheck; `git diff --check` with line-ending warnings only                                                                                                                                                                                                                                                                                                                                               | Keep production header readback, protected `AUD-19`, external pentest/VPS review, backend-owned CSRF/trusted-origin proof, and explicit LIVE mutation proof as separate gates.                                 |
+| 2026-05-21 | Money-flow LIVE cancel entitlement audit                                     | VERIFIED locally: confirmed and fixed a P1 fail-closed gap where exchange-backed LIVE order cancel could reach the adapter boundary after subscription downgrade because cancel checked `riskAck` but not current `liveTrading` entitlement. Added entitlement gate before exchange cancel boundary and focused DB-backed tests for allowed/downgraded paths.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `history/tasks/money-flow-security-cancel-entitlement-2026-05-21-task.md`; parent rerun DB-backed cancel/API-key pack `2` files / `20` tests; API typecheck; guardrails; build                                                                                                                                                                                                                                                                                                                                                                                                                               | Protected `AUD-19` and real LIVE mutation proof remain separate gates.                                                                                                                                         |
+| 2026-05-21 | Security hardening continuation                                              | VERIFIED locally: coordinated Frontend Security, Backend Security, and Ops/Security lanes. Closed remaining frontend P2 items, added DB-backed LIVE entitlement downgrade proof, fixed entitlement-denial HTTP mapping, removed stage-rehearsal secret argv/artifact leakage, hardened VPS env template, added non-root runtime Dockerfiles with guardrail, added production HSTS, and bound local compose DB/Redis to localhost.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `history/tasks/security-red-team-hardening-2026-05-21-task.md`; Web `151` files / `530` tests; API entitlement/runtime `17` tests; API orders `38` tests; node script/guardrail `6` tests; API/Web typecheck; i18n audit `0`; build; guardrails; `git diff --check`; cleanup checks                                                                                                                                                                                                                                                                                                                          | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims.                                                       |
+| 2026-05-21 | Security red-team hardening                                                  | VERIFIED locally: second-round security agents completed reports and coordinator integrated fixes. Repaired stale admin token authorization, auth IP limiting, production ops-network default, weak secret readiness/deploy defaults, API-key lifecycle audit logs, sensitive logging redaction, runtime close `riskAck` default, execution-time LIVE entitlement checks, Gate.io swap derivative order handling, unknown LIVE status fail-closed behavior, min-notional price fail-closed behavior, production CSP, production UI error redaction, and production dependency vulnerabilities.                                                                                                                                                                                                                                                                                                                              | `history/tasks/security-red-team-hardening-2026-05-21-task.md`; `pnpm audit --prod`; guardrails; API/Web typecheck; build; focused API/Web security tests                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Protected `AUD-19`, external pentest/VPS config review, and explicit LIVE exchange-side mutation proof remain separate gates.                                                                                  |
+| 2026-05-21 | Local certainty closure                                                      | VERIFIED locally: agents and coordinator closed the remaining executable local queue. Added `Trade.executionMode` snapshot reporting, fixed bot route i18n drift, profile mobile layout, Admin Subscriptions shared states, Wallet reset modal consistency, and Dashboard Home confirmation-aware tests.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `history/tasks/local-certainty-closure-2026-05-21-task.md`; full Web Vitest `149` files / `522` tests; full API Vitest one-worker fork mode; build; lint; go-live smoke `45` API + `18` Web tests; Prisma status/validate                                                                                                                                                                                                                                                                                                                                                                                    | Execute protected `AUD-19` operator packet only after approved protected inputs exist; no further local code blocker found in this sweep.                                                                      |
+| 2026-05-21 | Remaining implementation safety sweep                                        | VERIFIED locally: agents found no P0, but confirmed P1 local defects in Dashboard Home risk acknowledgement, Web service wrapper defaults, API LIVE manual close price fallback, and Admin Users mutation confirmation. Fixed all four.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `history/tasks/rest-implementation-sweep-2026-05-21-task.md`; focused Web `4` files / `14` tests; focused API `4` files / `99` tests; API/Web typecheck                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Decide whether next local task is Reports execution-mode snapshot migration or smaller Web polish queue; protected `AUD-19` remains separate.                                                                  |
+| 2026-05-21 | Frontend/engine UX+DCA sweep                                                 | VERIFIED: agents found confirmed backtest replay/portfolio TTP-vs-profit-side-DCA drift and frontend runtime UX issues. Fixed backtest DCA-first guard, bot monitoring first-open double-fetch, Dashboard Home auth-bootstrap coverage, and Reports partial failure behavior.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `history/tasks/frontend-engine-ux-dca-sweep-2026-05-21-task.md`; focused API `4` files / `99` tests; focused Web `3` files / `22` tests; API/Web typecheck; guardrails                                                                                                                                                                                                                                                                                                                                                                                                                                       | Design explicit runtime action confirmation UX for current `riskAck: true` Dashboard Home actions; protected `AUD-19` remains separate.                                                                        |
+| 2026-05-21 | Agent-assisted gap hunt for unverified paths                                 | PARTIALLY_VERIFIED: three lanes found no new P0/P1 backend or ops code defect, but confirmed two safe local fixes/proofs: UX production proof now fails closed on runtime/console bad events, and Reports cross-mode route has DB-backed auth/user-scope e2e coverage. Protected production `AUD-19`, LIVE exchange-side mutation, assistant hot-path orchestration, native mobile, and current production authenticated clickthrough remain outside local completion.                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `scripts/runProdUxA11yMobileProof.mjs`; `apps/api/src/modules/reports/reports.e2e.test.ts`; `docs/modules/api-reports.md`; `.agents/state/module-confidence-ledger.md`                                                                                                                                                                                                                                                                                                                                                                                                                                       | Provide approved protected inputs for `AUD-19`; do not claim literal current production 100% before protected proof.                                                                                           |
+| 2026-05-20 | No-secret V1 preflight and protected-input readiness for deployed `dd1a1faf` | BLOCKED as expected: build-info PASS, public smoke PASS, `0` matching protected input names, required protected evidence stale for 2026-05-20                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `history/releases/v1-final-preflight-dd1a1faf-2026-05-20.md`; `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Provide approved protected auth/context and approver fields, then execute `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`.                                                                |
+| 2026-05-20 | Current operator unblock packet published                                    | NO-GO handoff current for the deployed target; command order and stop conditions are dated for 2026-05-20                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`; `history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Same as above: protected inputs, current evidence, final non-dry-run release gate.                                                                                                                             |
+| 2026-05-20 | Operator packet validator added                                              | PASS: current packet has required SHA, evidence paths, protected input families, proof steps, forbidden boundaries, and acceptance rule                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `corepack pnpm run ops:operator-unblock:check:test`; `corepack pnpm run ops:operator-unblock:check -- --packet history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`                                                                                                                                                                                                                                                                                                                                                                | Run the packet check before executing protected operator commands.                                                                                                                                             |
+| 2026-05-20 | Operator packet validator added to reusable audit tooling index              | PASS: reusable tooling index now tracks `21/21` tools and `audit:manifest:verify` runs the operator unblock packet regression test and current packet validation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `corepack pnpm run audit:tooling-index:check:test`; `corepack pnpm run audit:tooling-index:check`; `corepack pnpm run audit:manifest:verify`; `history/releases/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`                                                                                                                                                                                                                                                                                                                                                                                   | Same protected-input execution gate remains next.                                                                                                                                                              |
+| 2026-05-20 | Parallel agent blocker sweep                                                 | BLOCKED: Ops/Release and Planning/Queue agents independently confirmed no protected proof step or meaningful non-secret deployment task can proceed without approved protected inputs; rerun still found `0` matching protected input names; production build-info still `dd1a1faf` on `main`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `history/tasks/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md`; `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Stop local prep; provide protected inputs and execute the operator packet.                                                                                                                                     |
+| 2026-05-20 | Heartbeat unblock monitor created                                            | BLOCKED unchanged: latest names-only sweep still found `0` matching protected input names; production build-info still `dd1a1faf` on `main`; operator packet validation PASS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`; automation `v1-protected-release-unblock-check`                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Heartbeat checks every 30 minutes and proceeds only if protected inputs appear.                                                                                                                                |
+| 2026-05-24 | Architecture graph Web runtime surfaces backfill                             | VERIFIED_LOCAL: added Web runtime surface graph records for Dashboard Home runtime sidebar/onboarding/signals/helpers and Bots monitoring tabs, sections, future signals, protection/attribution cells, portfolio history, test proof, docs, and runtime API service links. The graph is still incremental, not full repository coverage.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `history/tasks/architecture-graph-web-runtime-surfaces-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`; `pnpm run architecture:graph:generate` => `543` nodes / `624` relations / `23` chains; `pnpm run architecture:graph:drift` => `510/796` covered / `286` missing                                                                                                                                                                                                                                                                                        | Continue drift reduction through remaining Web component/test surfaces, auth forms/tests, backtest Web copy/test surfaces, workers, migrations, prompts, and docs.                                             |
+| 2026-05-24 | Architecture graph Auth Session deep backfill                                | VERIFIED_LOCAL: added Auth Session graph records for public auth pages, login/register forms, password visibility, auth hooks, Web auth service, AuthContext, API register/logout/controller/service/cookie/JWT/errors/types, User model, Web/API tests, docs, and `CHAIN-AUTH-SESSION-DEEP`. The graph is still incremental, not full repository coverage.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `history/tasks/architecture-graph-auth-session-deep-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-AUTH-SESSION-DEEP.md`; `pnpm run architecture:graph:generate` => `573` nodes / `659` relations / `24` chains; `pnpm run architecture:graph:drift` => `534/796` covered / `262` missing                                                                                                                                                                                                                                                                                              | Continue drift reduction through backtest Web utilities/copy/tests, residual Dashboard tests, Exchange/Profile Web surfaces, engine services/tests, workers, migrations, prompts, and docs.                    |
+| 2026-05-24 | Architecture graph full drift closure                                        | VERIFIED_LOCAL: completed the current representative graph drift closure across engine runtime core, market data/stream adapters, residual Web/API evidence, API infrastructure residual tests, and module/architecture governance docs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `history/tasks/architecture-graph-full-drift-closure-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-ENGINE-RUNTIME-CORE.md`; `Soar - docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md`; `pnpm run architecture:graph:generate` => `635` nodes / `781` relations / `26` chains; `pnpm run architecture:graph:drift` => `796/796` covered / `0` missing                                                                                                                                                                                                                              | Run guardrails/docs parity, then keep future graph updates mandatory with feature/code/doc changes.                                                                                                            |
+| 2026-05-24 | Release audit tooling graph backfill                                         | VERIFIED_LOCAL: mapped the current release/audit tooling slice into the architecture evidence graph across repository path resolver, operator unblock packet validator, reusable audit validators, aggregate tests, workflow node, relations, and `CHAIN-RELEASE-AUDIT-TOOLING`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `history/tasks/release-audit-tooling-graph-backfill-2026-05-24-task.md`; `Soar - docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md`; `pnpm run architecture:graph:generate` => `641` nodes / `791` relations / `27` chains; `pnpm run architecture:graph:drift:strict` => `796/796` covered / `0` missing; `audit:manifest:verify`; `quality:guardrails`; `docs:parity:check`; `git diff --check` warnings only                                                                                                                                                                                        | V1 full GO remains blocked on protected input/auth/ops proof; continue only with approved protected context or the next bounded local graph/runtime gap.                                                       |
+| 2026-05-24 | V1 preflight and release gate graph refresh                                  | PARTIALLY_VERIFIED/NO-GO: refreshed current no-secret preflight for deployed `380308d1`; build-info and public smoke pass, then preflight blocks on protected auth/context plus failed/stale release evidence. Mapped V1 final preflight and V1 release gate runners into the architecture graph and release audit tooling chain.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `history/tasks/v1-preflight-release-gate-graph-refresh-2026-05-24-task.md`; `history/releases/v1-preflight-production-no-secret-refresh-2026-05-24.md`; `Soar - docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md`; `pnpm run architecture:graph:generate` => `643` nodes / `798` relations / `27` chains; `pnpm run architecture:graph:drift:strict` => `796/796` covered / `0` missing; release/operator tests `40/40`; operator unblock check PASS with `NO-GO`                                                                                                                                     | Execute protected operator packet only after approved protected inputs and real approver context exist.                                                                                                        |
+| 2026-05-24 | Protected input readiness refresh for current V1 candidate                   | BLOCKED/NO-GO: refreshed the no-secret protected-input readiness artifact for deployed `380308d1` using latest preflight timestamp; current shell still has `0` matching protected input names, and the operator unblock packet still validates against the refreshed readiness JSON.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `history/tasks/v1-protected-input-readiness-refresh-380308d1-2026-05-24-task.md`; `history/evidence/v1-protected-input-readiness-380308d1-2026-05-24.md`; `history/artifacts/v1-protected-input-readiness-380308d1-2026-05-24.json`; `ops:protected-inputs:check`; `ops:operator-unblock:check`                                                                                                                                                                                                                                                                                                              | Provide approved protected inputs and real approver context before executing protected proof commands.                                                                                                         |
+| 2026-05-24 | Web Dashboard selected-bot load dependency closure                           | VERIFIED_LOCAL: fixed the current React hook lint drift with a stable `load` callback that reads current selected-bot state from a synchronized ref, avoiding reload-triggered selection regressions. This is local dependency-contract proof only; production Dashboard clickthrough and full V1 GO remain protected-input blocked.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `history/tasks/web-dashboard-selected-bot-load-deps-2026-05-24-task.md`; focused Dashboard hook tests `4/4`; focused Dashboard regression pack `26/26`; full Web tests `150` files / `534` tests; Web lint; Web typecheck; repository lint; guardrails; strict architecture graph drift `796/796`                                                                                                                                                                                                                                                                                                            | Continue only with approved protected context or the next bounded local gap; do not claim full production readiness from this local proof.                                                                     |
+| 2026-05-24 | Local integrity build sweep                                                  | VERIFIED_LOCAL: refreshed broader local gates after the recent graph/release-tooling/state and Dashboard hook updates. Full API/Web typecheck passed, docs parity passed, reusable audit/operator aggregate passed, and full workspace build passed. This is local integrity proof only; protected production release evidence is still absent.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `history/tasks/local-integrity-build-sweep-2026-05-24-task.md`; `typecheck`; `docs:parity:check`; `audit:manifest:verify`; `build`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Keep V1 at `NO-GO` until protected production proof inputs and approver context exist; otherwise continue with the next bounded local gap.                                                                     |
 
 - LUC-431-SOURCE-CONTROL-CLOSURE-CLASSIFY-LOCAL-DIRTY-STATE-2026-05-28 completed as a bounded coordination-only source-control closure checkpoint. Wake issue_assigned was consumed from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown). Current dirty tree was classified as state/control=3, task-evidence=2, runtime/product code=0; commit/push/deploy disposition is not committed / not needed / none. No code/runtime/deploy mutation was performed.
 
@@ -14324,8 +14399,6 @@ repository history.
 - `LUC-700-SOURCE-CONTROL-CLOSURE-CLASSIFY-AND-CLOSE-LOCAL-DIRTY-STATE-2026-05-29` completed as a bounded coordination-only source-control checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Current dirty tree was classified as `state/control=3`, `task-evidence=1`, `runtime/product code=0`; closure disposition is `committed locally` (`22427858`) / `not pushed` / `none`. No runtime/product/deploy mutation was performed. Evidence: `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
 
 - `LUC-732-SOURCE-CONTROL-CLOSURE-CLASSIFY-AND-CLOSE-LOCAL-DIRTY-STATE-2026-05-29` completed as a bounded coordination-only source-control checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Current dirty tree was classified as `state/control=3`, `task-evidence=1`, `runtime/product code=0`; closure disposition is `committed locally` (see latest local commit) / `not pushed` / `none`. No runtime/product/deploy mutation was performed. Evidence: `history/tasks/luc-732-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
-
-
 
 - `LUC-1256-KNOWN-STATE-EVIDENCE-ARCHITECTURE-BASELINE-2026-06-01-CONTINUATION` completed as a bounded PM known-state checkpoint. Wake `issue_commented` with comment id `865ac40f-a81c-4258-9bf8-67966a9fa07c` was consumed first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`). Baseline remained unchanged (`generated_at=2026-05-31T20:42:36.027Z`, entities `13396`, relations `20522`, inferred gaps tests `200`, docs `200`, disconnected entities `0`). Converted findings into concrete repair lanes: `KS-LANE-01-API-ROUTE-TEST-LINKS` (Backend+QA), `KS-LANE-02-API-ROUTE-DOC-LINKS` (Docs Memory+Backend), `KS-LANE-03-WEB-COMPONENT-LINKS` (Frontend+QA+Docs). Scope stayed docs/state/evidence only (no runtime/deploy mutation).
 
@@ -14384,13 +14457,14 @@ repository history.
   be closed by the delegated proof lanes. Source-control closure is not
   performed because the worktree is mixed dirty and divergent
   (`main...origin/main` `ahead 14, behind 1`).
+
 # 2026-06-28 LUC-5682 Exchange Credential And Live-Trading Boundary Review
 
 - Mission:
   `LUC-5682-EXCHANGE-CREDENTIAL-LIVE-TRADING-BOUNDARY-REVIEW-2026-06-28`.
 - Status:
   `DONE / SECURITY_REVIEW_COMPLETE / PARTIALLY_VERIFIED_LOCAL /
-  QA_TEST_CLEANUP_RESIDUAL_DELEGATED`.
+QA_TEST_CLEANUP_RESIDUAL_DELEGATED`.
 - Scope:
   SPA no-secret review of exchange API-key/configuration proof, credential
   redaction, ownership, and LIVE-trading boundary safety for child lane
@@ -14414,7 +14488,7 @@ repository history.
   `LUC-5695-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -14436,6 +14510,7 @@ repository history.
   Coolify app rows report `running:unknown`; host-level VPS pressure/log-window
   capture remains unavailable without approved read-only host credentials;
   release-grade build provenance remains separate.
+
 # 2026-06-28 LUC-5998 App-Completion Row-Level Proof Backlog
 
 - Mission:
@@ -14461,7 +14536,7 @@ repository history.
   `LUC-6003-UNCLASSIFIED-BROWSER-REVIEW-ROW-CLASSIFICATION-2026-06-28`.
 - Status:
   `DONE / VERIFIED_DOCS_CLASSIFICATION / 147_ROWS_CLASSIFIED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   DSM docs/PM classification only. No runtime, deploy, push, protected smoke,
   secret/account, exchange, subscription/payment, order, position, or
@@ -14480,7 +14555,7 @@ repository history.
   `LUC-6028-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-28`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -14510,7 +14585,7 @@ repository history.
   `LUC-6034-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -14556,13 +14631,14 @@ repository history.
   [LUC-6073](/LUC/issues/LUC-6073),
   [LUC-6074](/LUC/issues/LUC-6074), and
   [LUC-6075](/LUC/issues/LUC-6075).
+
 # 2026-06-29 LUC-6109 Authenticated Production Acceptance
 
 - Mission:
   `LUC-6109-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-29`.
 - Status:
   `BLOCKED / AUTH_LOGOUT_SESSION_INVALIDATION_REPRODUCED / RUNTIME_HEALTHY /
-  PERFORMANCE_PASS`.
+PERFORMANCE_PASS`.
 - Scope:
   QVE production acceptance only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, production DB/Redis mutation,
@@ -14585,7 +14661,7 @@ repository history.
   `LUC-6119-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-29`.
 - Status:
   `DONE / ARCHITECTURE_ACTIONABLE_CLEAN / AUTH_REPAIR_DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   TSA gap-register refresh only. No code, production mutation, push, deploy,
   restart, protected smoke, secret/account readback, exchange/payment
@@ -14608,13 +14684,14 @@ repository history.
   app-completion, release,
   protected-input, build-provenance, and host-level residuals remain on their
   current owner paths.
+
 # 2026-06-29 LUC-6139 Production Performance And Server Health Watch
 
 - Mission:
   `LUC-6139-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-06-29`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production watch only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, DB/Redis mutation, raw log
@@ -14635,13 +14712,14 @@ repository history.
   visible; host-level VPS pressure/log-window proof requires approved read-only
   host-status credentials; release-grade build provenance remains a separate
   release/source gate.
+
 # 2026-06-29 LUC-6138 No-Stall Queue Expeditor
 
 - Mission:
   `LUC-6138-NO-STALL-QUEUE-EXPEDITOR-2026-06-29`.
 - Status:
   `DONE / STALE_AUTH_BLOCKER_IDENTIFIED / CONTROL_PLANE_REWIRE_DELEGATED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Scope:
   SPM queue coordination only. No repo code, deploy, push, restart, protected
   smoke, production mutation, secret/account readback, exchange/payment action,
@@ -14671,7 +14749,7 @@ repository history.
   `LUC-6161-SOAR-PROTECTED-RECHECK-2026-06-29`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_PASS / NO_RUNTIME_MUTATION`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_PASS / NO_RUNTIME_MUTATION`.
 - Scope:
   DRE read-only protected recheck under [LUC-241](/LUC/issues/LUC-241). No
   deploy, push, restart, rollback execution, env edit, secret/account value
@@ -14688,13 +14766,14 @@ repository history.
 - Residual:
   no remaining action on [LUC-6161](/LUC/issues/LUC-6161). Build provenance
   and host-level VPS/log-window proof remain separate release/Ops gates.
+
 # 2026-06-29 LUC-6180 Authenticated Production Acceptance
 
 - Mission:
   `LUC-6180-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-29`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, production DB/Redis mutation,
@@ -14766,13 +14845,14 @@ repository history.
 - Residual:
   no remaining backend repair on [LUC-6164](/LUC/issues/LUC-6164). Source-control
   closure remains separate because the shared workspace is dirty/divergent.
+
 # 2026-06-29 LUC-6198 Coolify Production Deploy Health Sweep
 
 - Mission:
   `LUC-6198-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-29`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production deploy health sweep. No deploy, push, restart,
   rollback execution, env edit, secret/account value readback, DB/Redis
@@ -14800,13 +14880,14 @@ repository history.
   pressure/log-window proof requires approved read-only host-status
   credentials; release-grade build provenance remains a separate
   release/source gate because build-info uses `metadataSource=env-runtime`.
+
 # 2026-06-29 LUC-6248 Authenticated Production Acceptance And Performance Sweep
 
 - Mission:
   `LUC-6248-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-29`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance only. No deploy, push, restart, rollback
   execution, env edit, secret/account readback, production DB/Redis mutation,
@@ -14837,6 +14918,7 @@ repository history.
   item. No repair child is required from [LUC-6248](/LUC/issues/LUC-6248).
   Paperclip PATCH-to-done was attempted but remains unconfirmed because the
   injected control-plane API timed out on PATCH and health/readback probes.
+
 # 2026-06-29 LUC-6250 Gap Register And Repair Lane Refresh
 
 - Mission:
@@ -14864,15 +14946,16 @@ repository history.
   release-critical fail-closed gate. Release-grade source/build provenance,
   host-level VPS/log-window proof, market-catalog watch, and app-completion
   row burn-down remain on existing owner paths.
+
 ## 2026-07-02 LUC-6774 V1 Audit-To-Completion Controller
 
 - Mission:
   `LUC-6774-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -14905,9 +14988,9 @@ repository history.
   `LUC-6799-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Scope:
   DRE read-only production health watch only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -14928,15 +15011,16 @@ repository history.
   Ops Release Lead / board-approved Coolify mutation owner continues
   [LUC-6331](/LUC/issues/LUC-6331). DRE/QVE rerun production smoke and
   authenticated acceptance after restoration.
+
 ## 2026-07-02 LUC-6878 V1 Audit-To-Completion Controller
 
 - Mission:
   `LUC-6878-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`.
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
-  SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED / PROTECTED_INPUT_GATE_PARTIAL /
+SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Scope:
   TSA controller refresh only. No product code, commit, push, deploy, restart,
   rollback execution, env edit, secret/account readback, DB/Redis mutation,
@@ -14965,8 +15049,8 @@ repository history.
   `LUC-6904-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`.
 - Status:
   `DONE / VERIFIED_READ_ONLY / PUBLIC_AND_PROTECTED_SMOKE_PASS /
-  ROLLBACK_GUARD_PASS / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+ROLLBACK_GUARD_PASS / MARKET_CATALOG_COLD_SAMPLE_WATCH /
+COOLIFY_QUEUE_WATCH`.
 - Scope:
   DRE read-only production health watch only. No product code, commit, push,
   deploy, restart, rollback execution, env edit, secret/account readback,
@@ -14993,7 +15077,7 @@ repository history.
   `LUC-86-ACCOUNT-ACCESS-CLEARSESSION-DOC-LINK-2026-07-04`.
 - Status:
   `DONE / MISSING_DOC_LINK_RESOLVED / APP_COMPLETION_READBACK_HAS_DOC_TRUE /
-  PROJECT_TRUTH_REFRESHED / QA_PROOF_FOLLOWUP_CREATED`.
+PROJECT_TRUTH_REFRESHED / QA_PROOF_FOLLOWUP_CREATED`.
 - Scope:
   DSM documentation/source-of-truth linkage only. No runtime code, commit,
   push, deploy, restart, rollback, env edit, secret/account readback,
@@ -15010,3 +15094,30 @@ repository history.
 - Residual:
   the same row now routes as `implemented_needs_proof`; QA/Test Automation owns
   [LUC-93](/LUC/issues/LUC-93) for fresh behavior proof.
+## 2026-07-12 LUC-621 Account Access registerUser Proof
+
+- Mission:
+  `LUC-621-ACCOUNT-ACCESS-REGISTERUSER-PROOF-2026-07-12`.
+- Status:
+  `DONE / FOCUSED_REGISTERUSER_PROOF_PASS / TEST_LINK_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/auth/auth.service.ts#registerUser`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected credential
+  access, secret/account value disclosure, DB/Redis mutation, account mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  focused `auth.registerUser.test.ts` proof covers duplicate-email rejection,
+  password hashing, public user shape, default avatar URL, and default
+  subscription bootstrap. The service is linked through `priority-test-links.csv`
+  and a verified scanner override. Project truth advanced the first Account
+  access gap to `auth.session.ts#getSessionJwtExpiresIn` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
+  `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.
+- Residual:
+  no remaining action on [LUC-621](/LUC/issues/LUC-621). The next Account
+  access row is `auth.session.ts#getSessionJwtExpiresIn`, owned by Docs Memory
+  Lead + Project Manager as a separate documentation-link row.

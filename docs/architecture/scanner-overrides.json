@@ -131,6 +131,26 @@
         "apps/api/src/modules/auth/auth.jwt.test.ts",
         "history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.service.ts#loginUser",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access login service through focused auth.service tests covering valid credential login, invalid email and password rejection, public user response shape, sessionVersion token payload, and short versus remember-aware token TTL.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.loginUser.test.ts",
+        "history/evidence/luc-613-account-access-loginuser-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.service.ts#registerUser",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access registration service through focused auth.service tests covering duplicate-email rejection, password hashing, public user response shape, default avatar URL, and default subscription bootstrap inside the registration transaction.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.registerUser.test.ts",
+        "history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -155,6 +175,18 @@
     {
       "fromPath": "docs/modules/api-auth.md",
       "toPath": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.service.ts#loginUser",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.service.ts#registerUser",
       "type": "documents",
       "evidence": "docs/modules/api-auth.md"
     }
