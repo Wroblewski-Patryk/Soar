@@ -121,4 +121,3 @@ any remaining proof requirement to the correct owner.
 - Decisions made:
   use the existing module-doc, documentation-links, and scanner override path;
   do not introduce a new documentation mechanism.
-
