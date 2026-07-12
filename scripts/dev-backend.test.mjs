@@ -4,9 +4,11 @@ import net from 'node:net';
 import test from 'node:test';
 
 import {
+  buildLocalReadinessEnv,
   checkTcpPort,
   dockerAvailable,
   handleExit,
+  hasUsableVersionedKeyring,
   main,
   parseDatabaseUrl,
   readEnvValue,
@@ -148,6 +150,48 @@ test('dockerAvailable and run use injected process seams without invoking real c
   assert.equal(calls[1].options.shell, false);
 });
 
+test('local readiness env accepts strong keyrings and rejects missing or placeholder material', () => {
+  assert.equal(
+    hasUsableVersionedKeyring('v1:generated-local-readiness-material-32-plus'),
+    true
+  );
+  assert.equal(hasUsableVersionedKeyring(undefined), false);
+  assert.equal(hasUsableVersionedKeyring('v1:replace-with-32-byte-secret'), false);
+  assert.equal(hasUsableVersionedKeyring('malformed'), false);
+});
+
+test('buildLocalReadinessEnv injects a process-only local keyring when config is absent', () => {
+  const logs = [];
+  const overlay = buildLocalReadinessEnv({
+    env: {},
+    readEnvValueImpl: () => undefined,
+    randomBytes: () => Buffer.from('12345678901234567890123456789012'),
+    consoleImpl: { log: (value) => logs.push(value) },
+  });
+
+  assert.deepEqual(overlay, {
+    API_KEY_ENCRYPTION_ACTIVE_VERSION: 'v1',
+    API_KEY_ENCRYPTION_KEYS: 'v1:MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI',
+  });
+  assert.match(logs.join('\n'), /local-only API key encryption keyring/);
+});
+
+test('buildLocalReadinessEnv preserves explicit strong keyrings', () => {
+  const overlay = buildLocalReadinessEnv({
+    env: {
+      API_KEY_ENCRYPTION_KEYS: 'v3:generated-local-readiness-material-32-plus',
+      API_KEY_ENCRYPTION_ACTIVE_VERSION: 'v3',
+    },
+    readEnvValueImpl: () => undefined,
+    randomBytes: () => {
+      throw new Error('random bytes should not be needed');
+    },
+    consoleImpl: { log: () => {} },
+  });
+
+  assert.deepEqual(overlay, {});
+});
+
 test('run exits with the failing command status', () => {
   const recorder = createExitRecorder();
 
@@ -262,8 +306,8 @@ test('main runs the local helper path with injected ready services and disabled 
     },
     runImpl: (...args) => commands.push(args),
     runPrismaImpl: (...args) => prismaCommands.push(args),
-    spawnImpl: (command, args) => {
-      spawned.push({ command, args });
+    spawnImpl: (command, args, options) => {
+      spawned.push({ command, args, options });
       return createChild();
     },
     processImpl: {
@@ -281,7 +325,11 @@ test('main runs the local helper path with injected ready services and disabled 
     'generate',
     'migrate deploy',
   ]);
-  assert.deepEqual(spawned, [{ command: 'pnpm', args: ['--filter', 'api', 'dev'] }]);
+  assert.deepEqual(spawned.map(({ command, args }) => ({ command, args })), [
+    { command: 'pnpm', args: ['--filter', 'api', 'dev'] },
+  ]);
+  assert.equal(spawned[0].options.env.API_KEY_ENCRYPTION_ACTIVE_VERSION, 'v1');
+  assert.match(spawned[0].options.env.API_KEY_ENCRYPTION_KEYS, /^v1:/);
   assert.deepEqual(listeners, ['SIGINT', 'SIGTERM']);
   assert.equal(result.workersChild, null);
 });

@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
@@ -146,6 +147,68 @@ const redis = (redisUrl) => {
   }
 };
 
+const WEAK_SECRET_VALUES = [
+  'change-me',
+  'changeme',
+  'password',
+  'secret',
+  'replace-me',
+  'replace-with-secret',
+  'replace-with-generated-secret',
+  'change-me-32-byte-secret',
+  'replace-with-32-byte-secret',
+];
+
+const looksWeakSecret = (value, minimumLength) => {
+  const normalized = value.trim().toLowerCase();
+  if (normalized.length < minimumLength) return true;
+  if (WEAK_SECRET_VALUES.some((weak) => normalized.includes(weak))) return true;
+  if (/^(.)\1+$/.test(normalized)) return true;
+  return false;
+};
+
+const readConfiguredEnvValue = (key, { env = process.env, readEnvValueImpl = readEnvValue } = {}) =>
+  env[key] || readEnvValueImpl(key);
+
+const hasUsableVersionedKeyring = (value) => {
+  const entries = (value ?? '')
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  if (entries.length === 0) return false;
+
+  return entries.every((entry) => {
+    const separatorIndex = entry.indexOf(':');
+    const version = separatorIndex > 0 ? entry.slice(0, separatorIndex).trim() : '';
+    const material = separatorIndex > 0 ? entry.slice(separatorIndex + 1).trim() : '';
+    return Boolean(version && material && !looksWeakSecret(material, 32));
+  });
+};
+
+const buildLocalReadinessEnv = ({
+  env = process.env,
+  readEnvValueImpl = readEnvValue,
+  randomBytes = crypto.randomBytes,
+  consoleImpl = console,
+} = {}) => {
+  const overlay = {};
+  const keyring = readConfiguredEnvValue('API_KEY_ENCRYPTION_KEYS', { env, readEnvValueImpl });
+  const activeVersion =
+    readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', { env, readEnvValueImpl }) || 'v1';
+
+  if (!hasUsableVersionedKeyring(keyring)) {
+    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = activeVersion;
+    overlay.API_KEY_ENCRYPTION_KEYS = `${activeVersion}:${randomBytes(32).toString('base64url')}`;
+    consoleImpl.log(
+      '[backend/dev] Injected local-only API key encryption keyring for this process.'
+    );
+  } else if (!readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', { env, readEnvValueImpl })) {
+    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+  }
+
+  return overlay;
+};
+
 const shutdown = (apiChild, workersChild = null) => {
   if (workersChild && !workersChild.killed) workersChild.kill();
   if (apiChild && !apiChild.killed) apiChild.kill();
@@ -188,6 +251,12 @@ const main = async ({
     readEnvValueImpl('DATABASE_URL') ||
     'postgresql://postgres:password@localhost:5432/cryptosparrow?schema=public';
   const redisUrl = env.REDIS_URL || readEnvValueImpl('REDIS_URL') || 'redis://localhost:6379';
+  const localReadinessEnv = buildLocalReadinessEnv({
+    env,
+    readEnvValueImpl,
+    consoleImpl,
+  });
+  const childEnv = { ...env, ...localReadinessEnv };
 
   const db = parseDatabaseUrl(databaseUrl);
   const redisTarget = redis(redisUrl);
@@ -227,6 +296,7 @@ const main = async ({
     stdio: 'inherit',
     cwd: root,
     shell: process.platform === 'win32',
+    env: childEnv,
   });
 
   let workersChild = null;
@@ -236,6 +306,7 @@ const main = async ({
       stdio: 'inherit',
       cwd: root,
       shell: process.platform === 'win32',
+      env: childEnv,
     });
   } else {
     consoleImpl.log('[backend/dev] Workers auto-start disabled (BACKEND_DEV_START_WORKERS=false).');
@@ -272,7 +343,9 @@ const main = async ({
 export {
   checkTcpPort,
   dockerAvailable,
+  buildLocalReadinessEnv,
   handleExit,
+  hasUsableVersionedKeyring,
   main,
   parseDatabaseUrl,
   readEnvValue,
