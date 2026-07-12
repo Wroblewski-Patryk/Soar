@@ -1,115 +1,37 @@
 {
-  "generatedAt": "2026-07-12T03:56:32.124Z",
+  "generatedAt": "2026-07-12T04:35:50.437Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
   "counts": {
-    "appCompletionItems": 3558,
+    "appCompletionItems": 3560,
     "eventChains": 8,
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3527,
+    "appCompletionGaps": 3523,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3527,
+    "knownAppCompletionRiskItems": 3523,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3527
+    "totalGaps": 3523
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: getSessionJwtExpiresIn has app-completion risk missing_doc_link.",
+    "summary": "Account access: registerAndLogin has app-completion risk missing_doc_link.",
     "nextOwner": "Docs Memory Lead + Project Manager",
     "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
-      "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn"
+      "apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin"
     ],
-    "sourceItemId": "function:getsessionjwtexpiresin:301a733b15",
+    "sourceItemId": "function:registerandlogin:ae67364dcb",
     "risk": "missing_doc_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getSessionJwtExpiresIn has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn"
-      ],
-      "sourceItemId": "function:getsessionjwtexpiresin:301a733b15",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getSessionTtlMs has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs"
-      ],
-      "sourceItemId": "function:getsessionttlms:5d85c8aeea",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: makeRequest has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/sessionToken.test.ts#makeRequest"
-      ],
-      "sourceItemId": "function:makerequest:59ca4aee73",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: restoreEnv has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/sessionToken.test.ts#restoreEnv"
-      ],
-      "sourceItemId": "function:restoreenv:56fb79f8b3",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: signCandidate has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/sessionToken.test.ts#signCandidate"
-      ],
-      "sourceItemId": "function:signcandidate:6cb35ab1e4",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: tokenIssuedAt has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt"
-      ],
-      "sourceItemId": "function:tokenissuedat:2f65cf9003",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -153,14 +75,14 @@
       "kind": "app_completion_gap",
       "severity": "medium",
       "userFlow": "Account access",
-      "summary": "Account access: closeBotRuntimeSessionPosition has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
+      "summary": "Account access: closeBotRuntimeSessionPosition has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
       "evidence": [
         "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition"
       ],
       "sourceItemId": "function:closebotruntimesessionposition:0d9dc5a10d",
-      "risk": "missing_test_link"
+      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",
@@ -2630,6 +2552,84 @@
         "scripts/runProdAuthSessionBrowserProof.mjs#navigate"
       ],
       "sourceItemId": "function:navigate:06d3ef70a4",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: normalizeBaseUrl has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#normalizeBaseUrl"
+      ],
+      "sourceItemId": "function:normalizebaseurl:d5332f3949",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: readArgValue has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#readArgValue"
+      ],
+      "sourceItemId": "function:readargvalue:1414138d7c",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: readJson has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#readJson"
+      ],
+      "sourceItemId": "function:readjson:4cb15444df",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: renderMarkdown has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#renderMarkdown"
+      ],
+      "sourceItemId": "function:rendermarkdown:53cc3ef0a0",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: resolveOptions has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#resolveOptions"
+      ],
+      "sourceItemId": "function:resolveoptions:9b76e3a4e9",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: setAuthCookie has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#setAuthCookie"
+      ],
+      "sourceItemId": "function:setauthcookie:9fcb0bd3a7",
       "risk": "missing_doc_link"
     }
   ]

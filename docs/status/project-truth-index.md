@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-12T03:56:32.124Z
+Generated: 2026-07-12T04:35:50.437Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -8,23 +8,23 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Metric | Count |
 | --- | ---: |
-| appCompletionItems | 3558 |
+| appCompletionItems | 3560 |
 | eventChains | 8 |
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 3527 |
+| appCompletionGaps | 3523 |
 | indexedAppCompletionGaps | 200 |
-| knownAppCompletionRiskItems | 3527 |
+| knownAppCompletionRiskItems | 3523 |
 | appCompletionPriorityReviewItems | 200 |
 | appCompletionPriorityReviewTruncated | true |
 | operationalGateGaps | 0 |
 | indexedGaps | 200 |
-| totalGaps | 3527 |
+| totalGaps | 3523 |
 
 ## First Gap
 
-- medium: Account access: getSessionJwtExpiresIn has app-completion risk missing_doc_link.
+- medium: Account access: registerAndLogin has app-completion risk missing_doc_link.
 - Owner: Docs Memory Lead + Project Manager
 - Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
@@ -32,16 +32,10 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: getSessionJwtExpiresIn has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: getSessionTtlMs has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: makeRequest has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: restoreEnv has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: signCandidate has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: tokenIssuedAt has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: getOwnedBotRuntimeSession has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: resolveSessionWindowEnd has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: closeBotRuntimeSessionPosition has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: closeBotRuntimeSessionPosition has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: getBotRuntimeSession has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: listBotRuntimeSessionPositions has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: listBotRuntimeSessions has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
@@ -112,3 +106,9 @@ This is the routing surface agents should use before guessing whether an app wor
 | medium | app_completion_gap | Account access | Account access: listBotRuntimeSessionTrades has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: resolveSingleCanonicalStrategyId has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: shouldIncludeOpenAnchor has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: toOpenAnchorTradeSide has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: toPositiveIntOrUndefined has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: fetchAuthenticatedExchangeBalanceRaw has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: fetchAuthenticatedExchangeOpenOrdersRaw has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: fetchAuthenticatedExchangePositionsRaw has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |

@@ -1,6 +1,6 @@
 # Project Index
 
-Generated at: 2026-07-12T00:52:56.000Z
+Generated at: 2026-07-12T04:28:11.314Z
 Evidence date: 2026-07-12
 
 ## Purpose
@@ -25,7 +25,7 @@ business value.
 | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
 | 1 | Dashboard Home | PASS | P0 operator truth surface | 5 | 1 | 1 | 30 | Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough. |
 | 2 | Bot Runtime | PASS | P0 runtime truth | 5 | 2 | 2 | 30 | Production-safe Bot Runtime clickthrough on approved representative data. |
-| 3 | Auth | PASS | P0 auth/session correctness | 1 | 1 | 2 | 22 | Production-safe browser Auth clickthrough for login, logout, and expired-session redirect. |
+| 3 | Auth | PASS | P0 auth/session correctness | 1 | 1 | 2 | 24 | Production-safe browser Auth clickthrough for login, logout, and expired-session redirect. |
 | 4 | Profile API Keys | PASS | P0 secrets/exchange access | 3 | 2 | 1 | 30 | Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility. |
 | 5 | Bots | PASS | P0 bot lifecycle | 5 | 1 | 10 | 30 | Production-safe non-destructive clickthrough for bot actions; local action proof already exists. |
 | 6 | Profile | PASS | P1 user settings and validation | 1 | 1 | 1 | 14 | Production-safe Profile browser clickthrough for basic profile save and password/security update. |
@@ -86,7 +86,7 @@ business value.
 - Routes: /auth/login, /auth/register
 - Candidate scripts: `build`, `docker:app:build`, `go-live:infra:down`, `go-live:infra:up`, `obsidian:vault:build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:backtests:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
 - Candidate workers: none
-- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/auth/auth.session.test.ts`, `apps/api/src/modules/auth/sessionToken.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`
+- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.loginUser.test.ts`, `apps/api/src/modules/auth/auth.registerUser.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/auth/auth.session.test.ts`, `apps/api/src/modules/auth/sessionToken.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts`
 - Notes: Local API lifecycle proof covers registration/login cookie TTLs, logout cookie clearing with subsequent `/auth/me` fail-closed behavior, deleted-user session expiry, expired JWT cookie clearing, and duplicate token precedence. Local web tests cover AuthProvider bootstrap, logout redirect, session-expired warning cleanup, API interceptor redirect to `/auth/login?session=expired`, middleware cookie gate, and login form/session-refresh fail-closed behavior. 2026-05-14 production status-only proof for deployed `457bce05` verifies login `200`, `/auth/me` before logout `200`, logout `200`, and `/auth/me` after logout `401` without storing credentials, cookies, tokens, or response bodies. Evidence: `history/evidence/v1-production-auth-session-proof-457bce05-2026-05-14-task.md`.
 
 ### 4. Profile API Keys (PASS)
@@ -324,7 +324,7 @@ business value.
 - Routes: /auth/login, /auth/register, /admin, /admin/subscriptions, /admin/users, /dashboard/profile
 - Candidate scripts: `build`, `docker:app:build`, `go-live:infra:down`, `go-live:infra:up`, `obsidian:vault:build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:backtests:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
 - Candidate workers: none
-- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/auth/auth.session.test.ts`, `apps/api/src/modules/auth/sessionToken.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`, `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts`
+- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.loginUser.test.ts`, `apps/api/src/modules/auth/auth.registerUser.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/auth/auth.session.test.ts`, `apps/api/src/modules/auth/sessionToken.test.ts`
 - Notes: Local API/Web proof covers action-level abuse, fail-closed, secret, and ownership cases. 2026-05-14 production proof on deployed `2fc90a08` verifies protected route fail-closed behavior, ops/metrics rejection without auth, no-store authenticated reads, API-key list redaction, trusted-origin rejection, unsupported probe redaction/fail-closed behavior, security headers, and authenticated readiness details. External independent review remains a separate governance follow-up.
 
 ### 21. UX/A11y/Mobile (PASS)
@@ -347,7 +347,7 @@ business value.
 | Module | Route files | Controller files | Service files | Test files | TS files |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | admin | 2 | 2 | 2 | 2 | 10 |
-| auth | 1 | 1 | 2 | 7 | 16 |
+| auth | 1 | 1 | 2 | 9 | 18 |
 | backtests | 1 | 1 | 5 | 12 | 28 |
 | bots | 1 | 1 | 57 | 38 | 98 |
 | engine | 0 | 0 | 44 | 53 | 114 |
@@ -446,8 +446,8 @@ business value.
 
 ## Test Inventory
 
-- Total test/spec files: 451
-- API tests: 223
+- Total test/spec files: 453
+- API tests: 225
 - Web tests: 157
 - Script tests: 71
 - Other tests: 0

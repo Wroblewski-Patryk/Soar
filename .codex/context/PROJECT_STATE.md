@@ -1,3 +1,158 @@
+## 2026-07-12 LUC-637 Account Access Session-Token Proof
+
+- TAE resolved the Account access session-token proof row for
+  `apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt`.
+- Focused validation passed:
+  `sessionToken.test.ts` (`1` file / `3` tests), architecture-awareness refresh
+  (`10767` entities / `35159` relations, `entityOverridesApplied=19`),
+  app-completion refresh (`missingDocLink=1985`, `missingTestLink=973`,
+  `implementedNeedsProof=113`, `riskItems=3523`), project-truth `--apply`, and
+  strict graph drift (`853/853`, `0` missing).
+- Project truth now routes the first gap to
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` as
+  `missing_doc_link`, owned by Docs Memory Lead + Project Manager.
+- Evidence:
+  `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
+  `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production smoke, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-635 Account Access Session-Token Integration
+
+- EDL routed the current Account access session-token app-completion slice
+  instead of implementing specialist work directly.
+- [LUC-636](/LUC/issues/LUC-636) now owns DSM doc-link/source-truth closure for
+  `auth.session.ts#getSessionJwtExpiresIn`,
+  `auth.session.ts#getSessionTtlMs`, `sessionToken.ts#tokenIssuedAt`,
+  `sessionToken.test.ts#makeRequest`, `sessionToken.test.ts#restoreEnv`, and
+  `sessionToken.test.ts#signCandidate`.
+- [LUC-636](/LUC/issues/LUC-636) and [LUC-637](/LUC/issues/LUC-637) are done.
+- [LUC-635](/LUC/issues/LUC-635) integrated the child outputs and can close.
+  Generated app-completion/project-truth readback advanced past the six scoped
+  session-token rows; the first remaining Account access gap is
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-636-account-access-session-token-doc-link-closure-2026-07-12.md`;
+  `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`.
+- Boundary:
+  no code, generated status hand-edit, deploy, push, protected smoke,
+  secret/account readback, env mutation, DB/Redis mutation, exchange/payment
+  mutation, order, bot activation, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-632 Test Automation Proof Burn-Down
+
+- TAE closed one top Account access `missing_test_link` row for
+  `apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition`
+  with focused no-DB controller proof.
+- TAE also closed two top `implemented_needs_proof` rows for
+  `apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn` and
+  `#getSessionTtlMs` through existing focused `auth.session.test.ts` proof and
+  verified scanner overrides.
+- Validation passed:
+  `bots.controller.runtime-close.test.ts` (`1` file / `4` tests),
+  `auth.session.test.ts` (`1` file / `2` tests),
+  architecture-awareness refresh (`10758` entities / `35105` relations,
+  `entityOverridesApplied=18`), app-completion refresh
+  (`missingTestLink=973`, `implementedNeedsProof=113`, `riskItems=3527`), and
+  project-truth `--apply`.
+- Residual:
+  existing DB-backed route-pack proof remains blocked by unavailable local
+  PostgreSQL at `localhost:5432`; it is not claimed as proof here.
+- Current project-truth first gap:
+  `apps/api/src/modules/auth/sessionToken.test.ts#makeRequest` as
+  `missing_doc_link`, owned by Docs Memory Lead + Project Manager.
+- Evidence:
+  `history/evidence/luc-632-test-automation-proof-burndown-2026-07-12.md`;
+  `history/tasks/luc-632-test-automation-proof-burndown-2026-07-12-task.md`.
+- Boundary:
+  no runtime behavior change, production smoke, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-636 Account Access Session-Token Doc-Link Closure
+
+- DSM resolved the bounded Account access session-token doc-link batch for
+  [LUC-636](/LUC/issues/LUC-636).
+- Linked `sessionToken.test.ts#makeRequest`,
+  `sessionToken.test.ts#restoreEnv`, `sessionToken.test.ts#signCandidate`, and
+  `sessionToken.ts#tokenIssuedAt` through `docs/modules/api-auth.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- Validation passed:
+  formatter-supported docs/JSON formatting, direct source readback,
+  architecture-awareness refresh (`10764` entities / `35145` relations,
+  `relationOverridesApplied=12`), app-completion refresh
+  (`missingDocLink=1985`, `implementedNeedsProof=114`), project-truth
+  `--apply`, and strict graph drift (`853/853`, `0` missing).
+- Project truth now routes the first Account access gap to
+  `apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt` as
+  `implemented_needs_proof`.
+- Follow-up:
+  [LUC-637](/LUC/issues/LUC-637) is assigned to Test Automation Engineer for
+  focused session-token proof.
+- Evidence:
+  `history/evidence/luc-636-account-access-session-token-doc-link-closure-2026-07-12.md`;
+  `history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production smoke, protected credential readback,
+  deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-634 Protected Proof Gate Classification
+
+- CTO classified Soar V1 protected proof gates in
+  `docs/operations/v1-protected-proof-gate-classification.md`.
+- Matrix separates safe local checks, protected secret-read checks,
+  production read-only checks, production mutation checks, and
+  forbidden-until-approval actions.
+- Owner routing is now explicit for auth, exchange API-key, subscription and
+  entitlement, deploy/rollback, and production smoke gates.
+- No new child issue was created from this pass because concrete proof paths
+  already exist for auth/browser readback, trading readback vs LIVE mutation,
+  protected input inventory, VPS readiness, and ops diagnostics.
+- Validation passed:
+  `git diff --check` with line-ending warnings only; `node --test
+scripts/checkProtectedInputReadiness.test.mjs
+scripts/runProdSecurityExchangeProof.test.mjs
+scripts/runProdAuthSessionBrowserProof.test.mjs
+scripts/runProdFixtureActionProof.test.mjs` (`23/23`).
+- Evidence:
+  `history/evidence/luc-634-protected-proof-gate-classification-2026-07-12.md`;
+  `history/tasks/luc-634-protected-proof-gate-classification-2026-07-12-task.md`.
+- Boundary:
+  no protected production check, secret value readback, deploy, push, restart,
+  rollback, DB/Redis mutation, subscription/payment mutation, exchange
+  mutation, order, position, bot activation, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-633 Missing-Doc Evidence Map
+
+- CAO completed the [LUC-633](/LUC/issues/LUC-633) evidence map for the
+  app-completion `missing_doc_link` baseline.
+- Output:
+  `history/evidence/luc-633-missing-doc-evidence-map-2026-07-12.md` classifies
+  V1-critical missing-doc rows by real docs gaps, proof-link rows, test-helper
+  mapping noise, and cross-module auth-gated helpers.
+- Source-truth repair:
+  `apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn` and
+  `#getSessionTtlMs` are now linked through `docs/modules/api-auth.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- Validation:
+  `corepack pnpm run ops:project:known-state` passed; app-completion/project
+  truth regenerated at `2026-07-12T04:30`; the current first Account access gap
+  is `apps/api/src/modules/auth/sessionToken.test.ts#makeRequest` as
+  `missing_doc_link`.
+- Boundary:
+  no runtime implementation, protected proof, deploy, restart, rollback,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, bot activation, or LIVE trading action occurred.
+
 ## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
 
 - DSM resolved the bounded Account access source-truth row for
@@ -29644,6 +29799,7 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Evidence:
   `history/evidence/luc-254-arb-003-web-tests-table-expansion-2026-07-10.md`;
   `history/tasks/luc-254-arb-003-web-tests-table-expansion-2026-07-10-task.md`.
+
 ## 2026-07-12 LUC-621 Account Access registerUser Proof
 
 - TAE resolved the bounded Account access proof row for

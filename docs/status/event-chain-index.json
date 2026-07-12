@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T03:56:32.124Z",
+  "generatedAt": "2026-07-12T04:35:50.437Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4735,
-      "linkedRelationCount": 19188,
+      "entityCount": 4749,
+      "linkedRelationCount": 19267,
       "layers": {
         "frontend": {
           "count": 193,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 717,
+          "count": 718,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1199,6 +1199,54 @@
               "status": "verified"
             },
             {
+              "id": "function:getsessionjwtexpiresin:301a733b15",
+              "type": "function",
+              "name": "getSessionJwtExpiresIn",
+              "path": "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:getsessionttlms:5d85c8aeea",
+              "type": "function",
+              "name": "getSessionTtlMs",
+              "path": "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:makerequest:59ca4aee73",
+              "type": "function",
+              "name": "makeRequest",
+              "path": "apps/api/src/modules/auth/sessionToken.test.ts#makeRequest",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:restoreenv:56fb79f8b3",
+              "type": "function",
+              "name": "restoreEnv",
+              "path": "apps/api/src/modules/auth/sessionToken.test.ts#restoreEnv",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:signcandidate:6cb35ab1e4",
+              "type": "function",
+              "name": "signCandidate",
+              "path": "apps/api/src/modules/auth/sessionToken.test.ts#signCandidate",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:tokenissuedat:2f65cf9003",
+              "type": "function",
+              "name": "tokenIssuedAt",
+              "path": "apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "route:auth-session-ts:acb7f8af80",
               "type": "route",
               "name": "auth.session.ts",
@@ -1253,60 +1301,12 @@
               "path": "apps/api/src/modules/auth/auth.controller.ts#register",
               "owner": "Core Backend Engineer",
               "status": "verified"
-            },
-            {
-              "id": "function:setsessioncookie:340c605797",
-              "type": "function",
-              "name": "setSessionCookie",
-              "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
-              "owner": "Core Backend Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:restoreenv:0630ea8b3a",
-              "type": "function",
-              "name": "restoreEnv",
-              "path": "apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:expectsessioncookiecleared:9748483ec1",
-              "type": "function",
-              "name": "expectSessionCookieCleared",
-              "path": "apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:clearsession:c472493149",
-              "type": "function",
-              "name": "clearSession",
-              "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
-              "owner": "QA Regression Lead",
-              "status": "verified"
-            },
-            {
-              "id": "function:createsessioncookie:5075793e8e",
-              "type": "function",
-              "name": "createSessionCookie",
-              "path": "apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:requireauth:e044c1cd19",
-              "type": "function",
-              "name": "requireAuth",
-              "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
-              "owner": "QA Regression Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3648,
+          "count": 3660,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 176,
+          "count": 177,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2501,6 +2501,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:v1-protected-proof-gate-classification:6901327f69",
+              "type": "document",
+              "name": "V1 Protected Proof Gate Classification",
+              "path": "docs/operations/v1-protected-proof-gate-classification.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:vps-production-readiness-smoke-checklist:37e2115507",
               "type": "document",
               "name": "VPS Production Readiness Smoke Checklist",
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "Traceability Matrix",
               "path": "docs/architecture/traceability-matrix.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:guardrail-commands:b6db215154",
-              "type": "document",
-              "name": "Guardrail Commands",
-              "path": "docs/automation/guardrail-commands.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -5809,8 +5809,8 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 814,
-      "linkedRelationCount": 2973,
+      "entityCount": 815,
+      "linkedRelationCount": 2977,
       "layers": {
         "frontend": {
           "count": 28,
@@ -6689,7 +6689,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 401,
+          "count": 402,
           "sample": [
             {
               "id": "agent:procedure:f48c47c027",
@@ -7998,8 +7998,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 929,
-      "linkedRelationCount": 3444,
+      "entityCount": 933,
+      "linkedRelationCount": 3459,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8854,7 +8854,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 688,
+          "count": 692,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3244,
-      "linkedRelationCount": 11251,
+      "entityCount": 3248,
+      "linkedRelationCount": 11269,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10757,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1273,
+          "count": 1276,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11403,7 +11403,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1370,
+          "count": 1371,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9182,
-      "linkedRelationCount": 32594,
+      "entityCount": 9203,
+      "linkedRelationCount": 32679,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1570,
+          "count": 1572,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6077,
+          "count": 6095,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14619,6 +14619,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:2938289858",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:2946a33d2a",
               "type": "task",
               "name": "Task",
@@ -14641,14 +14649,6 @@
               "path": "history/tasks/luc-6380-no-stall-queue-expeditor-2026-06-30-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:2ebe72a088",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-2542-cover-engine-strategy-signal-helper-missing-test-links-2026-06-06-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
@@ -14664,7 +14664,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 837,
+          "count": 838,
           "sample": [
             {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",

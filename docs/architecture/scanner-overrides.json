@@ -151,6 +151,46 @@
         "apps/api/src/modules/auth/auth.registerUser.test.ts",
         "history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime position close controller through focused no-DB tests covering auth gate, payload normalization, service delegation, riskAck fail-closed mapping, and not-found handling.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.controller.runtime-close.test.ts",
+        "history/evidence/luc-632-runtime-close-controller-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access JWT session expiry helper through focused auth.session tests covering omitted, false, and remember-me expiry selection.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.session.test.ts",
+        "history/evidence/luc-632-auth-session-helper-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access cookie TTL helper through focused auth.session tests covering short-session and remember-me TTL selection.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.session.test.ts",
+        "history/evidence/luc-632-auth-session-helper-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access session-token issued-at ordering helper through focused sessionToken tests covering valid duplicate session candidates ordered by newest iat claim with original candidate-order fallback retained for ties.",
+      "evidence": [
+        "apps/api/src/modules/auth/sessionToken.test.ts",
+        "history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -187,6 +227,42 @@
     {
       "fromPath": "docs/modules/api-auth.md",
       "toPath": "apps/api/src/modules/auth/auth.service.ts#registerUser",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/sessionToken.test.ts#makeRequest",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/sessionToken.test.ts#restoreEnv",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/sessionToken.test.ts#signCandidate",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt",
       "type": "documents",
       "evidence": "docs/modules/api-auth.md"
     }

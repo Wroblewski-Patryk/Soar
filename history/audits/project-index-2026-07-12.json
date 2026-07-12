@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T00:52:56.000Z",
+  "generatedAt": "2026-07-12T04:28:11.314Z",
   "evidenceDate": "2026-07-12",
   "repoRoot": "C:/Personal/Projekty/Aplikacje/Soar",
   "sources": {
@@ -986,11 +986,13 @@
         "apps/api/src/modules/auth/auth.e2e.test.ts",
         "apps/api/src/modules/auth/auth.errors.test.ts",
         "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "apps/api/src/modules/auth/auth.loginUser.test.ts",
+        "apps/api/src/modules/auth/auth.registerUser.test.ts",
         "apps/api/src/modules/auth/auth.service.test.ts",
         "apps/api/src/modules/auth/auth.session.test.ts",
         "apps/api/src/modules/auth/sessionToken.test.ts"
       ],
-      "fileCount": 16
+      "fileCount": 18
     },
     {
       "name": "backtests",
@@ -2129,9 +2131,9 @@
     "apps/api/src/workers/workerOwnership.ts"
   ],
   "tests": {
-    "total": 451,
+    "total": 453,
     "byArea": {
-      "api": 223,
+      "api": 225,
       "web": 157,
       "scripts": 71,
       "other": 0
@@ -2160,6 +2162,8 @@
       "apps/api/src/modules/auth/auth.e2e.test.ts",
       "apps/api/src/modules/auth/auth.errors.test.ts",
       "apps/api/src/modules/auth/auth.jwt.test.ts",
+      "apps/api/src/modules/auth/auth.loginUser.test.ts",
+      "apps/api/src/modules/auth/auth.registerUser.test.ts",
       "apps/api/src/modules/auth/auth.service.test.ts",
       "apps/api/src/modules/auth/auth.session.test.ts",
       "apps/api/src/modules/auth/sessionToken.test.ts",
@@ -3480,11 +3484,13 @@
             "apps/api/src/modules/auth/auth.e2e.test.ts",
             "apps/api/src/modules/auth/auth.errors.test.ts",
             "apps/api/src/modules/auth/auth.jwt.test.ts",
+            "apps/api/src/modules/auth/auth.loginUser.test.ts",
+            "apps/api/src/modules/auth/auth.registerUser.test.ts",
             "apps/api/src/modules/auth/auth.service.test.ts",
             "apps/api/src/modules/auth/auth.session.test.ts",
             "apps/api/src/modules/auth/sessionToken.test.ts"
           ],
-          "testFileCount": 7
+          "testFileCount": 9
         }
       ],
       "web": [
@@ -3551,6 +3557,8 @@
         "apps/api/src/modules/auth/auth.e2e.test.ts",
         "apps/api/src/modules/auth/auth.errors.test.ts",
         "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "apps/api/src/modules/auth/auth.loginUser.test.ts",
+        "apps/api/src/modules/auth/auth.registerUser.test.ts",
         "apps/api/src/modules/auth/auth.service.test.ts",
         "apps/api/src/modules/auth/auth.session.test.ts",
         "apps/api/src/modules/auth/sessionToken.test.ts",
@@ -3575,7 +3583,7 @@
         "routes": 2,
         "candidateWorkers": 0,
         "candidateScripts": 17,
-        "candidateTests": 22
+        "candidateTests": 24
       }
     },
     {
@@ -7474,11 +7482,13 @@
             "apps/api/src/modules/auth/auth.e2e.test.ts",
             "apps/api/src/modules/auth/auth.errors.test.ts",
             "apps/api/src/modules/auth/auth.jwt.test.ts",
+            "apps/api/src/modules/auth/auth.loginUser.test.ts",
+            "apps/api/src/modules/auth/auth.registerUser.test.ts",
             "apps/api/src/modules/auth/auth.service.test.ts",
             "apps/api/src/modules/auth/auth.session.test.ts",
             "apps/api/src/modules/auth/sessionToken.test.ts"
           ],
-          "testFileCount": 7
+          "testFileCount": 9
         },
         {
           "name": "isolation",
@@ -7687,6 +7697,8 @@
         "apps/api/src/modules/auth/auth.e2e.test.ts",
         "apps/api/src/modules/auth/auth.errors.test.ts",
         "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "apps/api/src/modules/auth/auth.loginUser.test.ts",
+        "apps/api/src/modules/auth/auth.registerUser.test.ts",
         "apps/api/src/modules/auth/auth.service.test.ts",
         "apps/api/src/modules/auth/auth.session.test.ts",
         "apps/api/src/modules/auth/sessionToken.test.ts",
@@ -7707,9 +7719,7 @@
         "apps/api/src/workers/marketStreamSubscriptions.service.test.ts",
         "apps/web/src/app/(public)/auth/authPageCacheContract.test.ts",
         "apps/web/src/app/dashboard/profile/page.test.tsx",
-        "apps/web/src/context/AuthContext.test.tsx",
-        "apps/web/src/features/admin/layout/AdminLayoutShell.test.tsx",
-        "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx"
+        "apps/web/src/context/AuthContext.test.tsx"
       ],
       "counts": {
         "apiModules": 5,

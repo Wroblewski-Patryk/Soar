@@ -199,6 +199,12 @@ apps/api/src/lib/capitalAllocation.ts,docs/architecture/04_runtime-contexts.md
 apps/api/src/middleware/noStoreHeaders.ts,docs/modules/api-root.md
 apps/api/src/middleware/noStoreHeaders.ts,docs/operations/coolify-linux-vps-setup-guide.md
 apps/api/src/modules/auth/auth.session.ts,docs/modules/api-auth.md
+apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn,docs/modules/api-auth.md
+apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs,docs/modules/api-auth.md
+apps/api/src/modules/auth/sessionToken.test.ts#makeRequest,docs/modules/api-auth.md
+apps/api/src/modules/auth/sessionToken.test.ts#restoreEnv,docs/modules/api-auth.md
+apps/api/src/modules/auth/sessionToken.test.ts#signCandidate,docs/modules/api-auth.md
+apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.cookie.ts#getSessionCookieBaseOptions,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.controller.ts#login,docs/modules/api-auth.md

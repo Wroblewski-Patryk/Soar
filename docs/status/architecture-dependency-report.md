@@ -1,11 +1,11 @@
 # Dependency Report
 
-Generated: 2026-07-12T03:56:23.844Z
+Generated: 2026-07-12T04:35:38.003Z
 
 ## Summary
 
-- Dependency relations: 2171
-- Entities with dependencies: 838
+- Dependency relations: 2173
+- Entities with dependencies: 839
 
 ## Dependency Edges
 

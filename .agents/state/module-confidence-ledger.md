@@ -1,3 +1,72 @@
+## 2026-07-12 LUC-637 Account Access Session-Token Proof
+
+- Module row:
+  Account access / API auth session-token candidate ordering proof.
+- Status:
+  `verified local focused proof / implemented-proof row resolved / no runtime
+mutation`.
+- Evidence:
+  `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
+  `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.
+- Current proof:
+  `sessionToken.test.ts` verifies bearer/cookie candidate extraction,
+  invalid-claim rejection, and duplicate valid session candidates ordered by
+  newest `iat` claim. `sessionToken.ts#tokenIssuedAt` is linked through
+  `priority-test-links.csv` and marked verified in `scanner-overrides.json`.
+  App-completion reports `implementedNeedsProof=113`; project truth first gap
+  advanced to the docs-owned `backtests.e2e.test.ts#registerAndLogin`
+  `missing_doc_link` row.
+- Confidence:
+  high for the focused no-DB session-token helper proof. This does not claim
+  protected production account/session smoke.
+
+## 2026-07-12 LUC-636 Account Access Session-Token Doc-Link Closure
+
+- Module row:
+  Account access / API auth session-token source-truth documentation.
+- Status:
+  `verified local source-truth links / session-token doc-link batch resolved /
+implemented-proof follow-up required / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-636-account-access-session-token-doc-link-closure-2026-07-12.md`;
+  `history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped session-token
+  helper/test rows. Architecture-awareness regenerated with `10764` entities
+  and `35145` relations; app-completion reports `missingDocLink=1985`;
+  project-truth routes `sessionToken.ts#tokenIssuedAt` as
+  `implemented_needs_proof`.
+- Confidence:
+  high for this local source-truth/doc-link batch. Runtime/test proof is not
+  claimed here; [LUC-637](/LUC/issues/LUC-637) owns the focused proof
+  follow-up.
+
+## 2026-07-12 LUC-632 Test Automation Proof Burn-Down
+
+- Module row:
+  Account access / API bots runtime close controller and auth session helper
+  proof.
+- Status:
+  `verified local focused proof / one missing-test-link row resolved / two
+implemented-proof rows resolved / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-632-test-automation-proof-burndown-2026-07-12.md`;
+  `history/tasks/luc-632-test-automation-proof-burndown-2026-07-12-task.md`.
+- Current proof:
+  `bots.controller.runtime-close.test.ts` covers the controller auth gate,
+  close payload normalization, service delegation, custom risk-ack fail-closed
+  error mapping, and not-found handling. `auth.session.test.ts` covers short
+  versus remember-aware JWT expiry and cookie TTL helper selection.
+  Architecture-awareness regenerated with `10758` entities and `35105`
+  relations; app-completion now reports `missingTestLink=973` and
+  `implementedNeedsProof=113`; project truth first gap advanced to a docs-owned
+  `sessionToken.test.ts#makeRequest` `missing_doc_link`.
+- Confidence:
+  high for the focused no-DB controller and auth session helper proof rows.
+  DB-backed route-pack proof remains unclaimed because local PostgreSQL was
+  unavailable at `localhost:5432`.
+
 ## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
 
 - Module row:
@@ -12260,6 +12329,7 @@ mutation`.
 - Remaining:
   scanner relation count reduction remains optional architecture-awareness
   maintenance; no current module coverage blocker was found in this slice.
+
 ## 2026-07-12 LUC-621 Account Access registerUser Proof
 
 - Module row:

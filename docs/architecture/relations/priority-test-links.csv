@@ -6,6 +6,8 @@ apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry,apps/api/src/modul
 apps/api/src/modules/auth/auth.jwt.ts#signAuthToken,apps/api/src/modules/auth/auth.jwt.test.ts,LUC-577 direct JWT signing happy-path proof relation
 apps/api/src/modules/auth/auth.service.ts#loginUser,apps/api/src/modules/auth/auth.loginUser.test.ts,LUC-613 direct login service credential validation public user token payload and remember TTL proof relation
 apps/api/src/modules/auth/auth.service.ts#registerUser,apps/api/src/modules/auth/auth.registerUser.test.ts,LUC-621 direct registration service duplicate-email rejection hashing public user default avatar and subscription bootstrap proof relation
+apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition,apps/api/src/modules/bots/bots.controller.runtime-close.test.ts,LUC-632 direct runtime position close controller auth gate delegation riskAck fail-closed and not-found proof relation
+apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt,apps/api/src/modules/auth/sessionToken.test.ts,LUC-637 direct session-token issued-at newest-candidate ordering proof relation
 apps/web/src/ui/components/DataTable.tsx,apps/web/src/ui/components/DataTable.test.tsx,LUC-2164 direct shared table relation
 apps/web/src/ui/components/DataTable.tsx#applySearch,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct search submit relation
 apps/web/src/ui/components/DataTable.tsx#commitPageInput,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct page input relation

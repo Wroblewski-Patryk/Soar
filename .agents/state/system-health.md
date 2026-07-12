@@ -1,8 +1,67 @@
+## 2026-07-12 LUC-637 Account Access Session-Token Proof
+
+- Status:
+  `DONE / FOCUSED_SESSION_TOKEN_PROOF_PASS / TEST_LINK_RESOLVED /
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access `implemented_needs_proof` row was removed from
+  the priority queue. App-completion now reports `missingDocLink=1985`,
+  `missingTestLink=973`, `implementedNeedsProof=113`, and `riskItems=3523`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  protected session/account smoke, secret/account readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, or LIVE trading
+  action occurred.
+- Evidence:
+  `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
+  `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-636 Account Access Session-Token Doc-Link Closure
+
+- Status:
+  `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Health impact:
+  the current generated Account access session-token documentation-link batch
+  was removed from the priority missing-doc queue. App-completion now reports
+  `missingDocLink=1985`, `implementedNeedsProof=114`, and `riskItems=3524`;
+  project truth routes the first Account access gap to
+  `apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt` as
+  `implemented_needs_proof`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  protected session/account smoke, secret/account readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, or LIVE trading
+  action occurred.
+- Evidence:
+  `history/evidence/luc-636-account-access-session-token-doc-link-closure-2026-07-12.md`;
+  `history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-632 Test Automation Proof Burn-Down
+
+- Status:
+  `DONE / FOCUSED_CONTROLLER_PROOF_PASS / AUTH_SESSION_HELPER_PROOF_PASS /
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access `missing_test_link` row was removed and two
+  generated Account access `implemented_needs_proof` rows were removed from the
+  priority queue. App-completion now reports `missingTestLink=973`,
+  `implementedNeedsProof=113`, and `riskItems=3527`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred. Existing
+  DB-backed route-pack proof was attempted and stopped on unavailable local
+  PostgreSQL at `localhost:5432`.
+- Evidence:
+  `history/evidence/luc-632-test-automation-proof-burndown-2026-07-12.md`;
+  `history/tasks/luc-632-test-automation-proof-burndown-2026-07-12-task.md`.
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 - Status:
   `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Health impact:
   one generated Account access implemented-needs-proof gap was removed from
   the priority queue. App-completion now reports `riskItems=3530` and project
@@ -20,8 +79,8 @@
 
 - Status:
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
-  NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+NO_RUNTIME_MUTATION`.
 - Health impact:
   Account access source-truth completeness improved by resolving the current
   `missing_doc_link` row for
@@ -39,8 +98,8 @@
 
 - Status:
   `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
-  NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+NO_RUNTIME_MUTATION`.
 - Health impact:
   one generated Account access implemented-needs-proof gap was removed from
   the priority queue. App-completion now reports `implementedNeedsProof=113`
@@ -59,7 +118,7 @@
 
 - Status:
   `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
-  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Health impact:
   one generated Account access documentation-link gap was removed from the
   priority queue. App-completion now reports `missingDocLink=1993`; project
@@ -77,7 +136,7 @@
 
 - Status:
   `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
-  FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
+FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
 - Health impact:
   local source-truth/app-completion refresh removed seven Account access
   rows from the priority gap queue. Project-truth now routes the first Account
@@ -110,7 +169,7 @@
 
 - Status:
   `DONE / PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 /
-  UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
+UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
 - Production signal:
   build-info returned `200` with SHA
   `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`; unauthenticated
@@ -131,7 +190,7 @@
 
 - Status:
   `DONE / AUTH_BROWSER_PASS / TRADING_READONLY_PASS_AFTER_DRE_OPS /
-  OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
+OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
 - Production signal:
   build-info returned `200` with SHA
   `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`; auth/session browser proof
@@ -149,8 +208,8 @@
 
 - Status:
   `PASS_INDEX / TEST_LINK_RESOLVED / API_TYPECHECK_PASS /
-  ARCHITECTURE_DRIFT_PASS / DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA /
-  NO_RUNTIME_MUTATION`.
+ARCHITECTURE_DRIFT_PASS / DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA /
+NO_RUNTIME_MUTATION`.
 - Validation:
   architecture-awareness regeneration passed with `10643` entities / `34593`
   relations and `entityOverridesApplied=3`; app-completion reports
@@ -173,7 +232,7 @@
 
 - Status:
   `PASS_LOCAL / REQUIREAUTH_FOCUSED_PROOF_PASS / API_TYPECHECK_PASS /
-  APP_COMPLETION_ROW_RESOLVED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_ROW_RESOLVED / NO_RUNTIME_MUTATION`.
 - Validation:
   focused `requireAuth` middleware proof passed (`1` file / `9` tests), API
   typecheck passed, and `git diff --check` passed with line-ending warnings
@@ -191,7 +250,7 @@
 
 - Status:
   `BLOCKED / NO_SECRET_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
+SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
 - Protected-input readiness:
   checker regression passed (`7/7`); current shell readiness remains `PARTIAL`
   with `3` matching protected input names. Only `SOAR_PROD_*` is present.
@@ -214,7 +273,7 @@
 
 - Current health signal:
   `DONE / TWO_MISSING_DOC_LINK_ROWS_RESOLVED / PROJECT_TRUTH_REFRESHED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Local docs/index proof:
   architecture graph generation passed; architecture-awareness exporter passed
   with `10617` entities / `34442` relations; app-completion targeted readback
@@ -233,7 +292,7 @@
 
 - Current health signal:
   `DONE / MISSING_DOC_LINK_RESOLVED / REQUIREAUTH_HAS_DOC_TRUE /
-  PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
+PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
 - Local docs/index proof:
   architecture graph generation passed; architecture-awareness exporter passed
   with `10598` entities / `34052` relations; app-completion targeted readback
@@ -252,7 +311,7 @@
 
 - Current health signal:
   `VERIFIED / DB_FREE_RUNTIME_WORKER_MARKET_STREAM_SIGNAL_PACK_PASS /
-  NO_PRODUCT_CODE_CHANGE`.
+NO_PRODUCT_CODE_CHANGE`.
 - Local backend proof:
   focused API pack passed with `12` files / `51` tests. Coverage includes
   execution worker startup/failure metrics, market-stream worker lifecycle and
@@ -271,8 +330,8 @@
 
 - Current health signal:
   `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
-  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
-  NO_PRODUCTION_MUTATION`.
+COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+NO_PRODUCTION_MUTATION`.
 - Public production checks:
   API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` returned
   `200`; focused no-worker deploy smoke passed for
@@ -300,7 +359,7 @@
 
 - Current health signal:
   `PARTIALLY_VERIFIED / DB_FREE_WORKER_ASSISTANT_CONTRACTS_PASS /
-  DB_BACKED_RUNTIME_FRESHNESS_BLOCKED_BY_LOCAL_POSTGRES`.
+DB_BACKED_RUNTIME_FRESHNESS_BLOCKED_BY_LOCAL_POSTGRES`.
 - Local backend proof:
   DB-free focused API pack passed with `8` files / `31` tests. Coverage
   includes worker topology/ownership, heartbeat, bootstrap logging/heartbeat,
@@ -323,7 +382,7 @@
 
 - Current health signal:
   `DONE / PUBLIC_API_READY_RESTORED / PUBLIC_DEPLOY_SMOKE_PASS /
-  WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
+WEB_PUBLIC_PASS / NO_DRE_PRODUCTION_MUTATION`.
 - Production checks:
   Closure deploy smoke passed: API `/health`, API `/ready`, Web `/`, and Web
   `/api/build-info` returned `200`; Web build-info reports
@@ -353,8 +412,8 @@
 
 - Current health signal:
   `PARTIALLY_DONE / PUBLIC_PROBE_RESTORED / API_HEALTH_READY_PASS /
-  WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
-  COOLIFY_INVENTORY_500_AFTER_RESTORE`.
+WEB_ROOT_PASS / WEB_BUILD_INFO_PASS / PROTECTED_RUNTIME_PROOF_BLOCKED_BY_AUTH /
+COOLIFY_INVENTORY_500_AFTER_RESTORE`.
 - Production checks:
   after approved Coolify lifecycle restart/start, API `/health`, API `/ready`,
   Web `/`, and Web `/api/build-info` returned `200`. Web build-info reports
@@ -381,9 +440,9 @@
 
 - Current health signal:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production read-only checks:
   API `/health` and `/ready` passed; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`;
@@ -400,9 +459,9 @@
 
 - Current health signal:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production read-only checks:
   API `/health` and `/ready` passed; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`;
@@ -419,8 +478,8 @@
 
 - Current health signal:
   `ARCHITECTURE_DRIFT_PASS / PROTECTED_INPUT_CHECKER_PASS /
-  PROTECTED_INPUT_READINESS_PARTIAL / NO_NEW_TSA_REPAIR_CHILD /
-  CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
+PROTECTED_INPUT_READINESS_PARTIAL / NO_NEW_TSA_REPAIR_CHILD /
+CONTROL_TICK_UNAVAILABLE_IN_SOAR_CHECKOUT`.
 - Architecture:
   strict graph drift passed with `850/850` covered and `0` missing.
 - Protected-input readiness:
@@ -441,7 +500,7 @@
 
 - Current security gate:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Verified local boundaries:
   protected-input checker regression passed (`7/7`); ops/auth/crypto/critical
   secret tests passed (`19/19`); profile API-key, exchange authenticated-read
@@ -461,9 +520,9 @@
 
 - Current health signal:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   API `/health` and `/ready` returned `200`; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`;
@@ -505,9 +564,9 @@
 
 - Current health signal:
   `BLOCKED / API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
-  WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+WORKERS_READY_503 / SOAR_WEB_EXITED_UNHEALTHY /
+WORKERS_BACKTEST_EXITED_UNHEALTHY / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   API `/health` and `/ready` returned `200`; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`;
@@ -549,8 +608,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`.
@@ -574,8 +633,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/`, `/auth/login`, and
   `/api/build-info` returned `503`; protected `/workers/ready` returned `503`.
@@ -599,7 +658,7 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -619,7 +678,7 @@
 
 - Current health signal:
   `CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  PROTECTED_INPUT_GATE_PARTIAL / EXISTING_OWNER_PATHS_CONFIRMED`.
+PROTECTED_INPUT_GATE_PARTIAL / EXISTING_OWNER_PATHS_CONFIRMED`.
 - Control tick:
   `pnpm softwarehouse:control-tick` returned `controlDecision=supervise_active_runs`.
 - Architecture:
@@ -638,8 +697,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -663,8 +722,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -689,9 +748,9 @@
 
 - Status:
   `DONE / CONTROL_TICK_SUPERVISE_ACTIVE_RUNS / ARCHITECTURE_DRIFT_PASS /
-  NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
-  PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
+NO_NEW_TSA_REPAIR_CHILD / FAILED_CHECKS_ALREADY_ROUTED /
+PRODUCTION_WEB_WORKER_RESTORATION_BLOCKED /
+PROTECTED_INPUT_GATE_PARTIAL / SOURCE_CONTROL_CLOSURE_REQUIRED`.
 - Signal:
   strict architecture drift passed `850/850` with `0` missing; protected-input
   checker regression passed `7/7`; no-secret protected-input readiness remains
@@ -713,7 +772,7 @@
 
 - Current controller signal:
   `ARCHITECTURE_DRIFT_PASS / PROTECTED_INPUT_CHECKER_PASS /
-  PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_NO_GO`.
+PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_NO_GO`.
 - Architecture:
   strict architecture drift passed with `850/850` covered and `0` missing.
 - Protected-input readiness:
@@ -750,7 +809,7 @@
 
 - Current controller signal:
   `ARCHITECTURE_DRIFT_PASS / PROTECTED_INPUT_CHECKER_PASS /
-  PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_NO_GO`.
+PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_NO_GO`.
 - Architecture:
   strict architecture drift passed with `850/850` covered and `0` missing.
 - Protected-input readiness:
@@ -771,8 +830,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -797,8 +856,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -823,8 +882,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
-  PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
+PROTECTED_RUNTIME_AUTH_BINDING_ABSENT / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; UI clickthrough failed public, dashboard, admin, and legacy
@@ -847,7 +906,7 @@
 
 - Status:
   `BLOCKED / PROTECTED_INPUT_READINESS_PARTIAL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Security boundary proof:
   protected-input checker regression passed (`7/7`); focused API
   ops/auth/crypto/critical-secret tests passed (`19/19`); profile
@@ -868,8 +927,8 @@
 
 - Current health signal:
   `API_HEALTH_READY_PASS / PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -892,8 +951,8 @@
 
 - Current PM signal:
   `PRODUCTION_WEB_503 / BACKTEST_WORKER_RESTORATION_BLOCKED /
-  PROTECTED_INPUT_READINESS_PARTIAL / ARCHITECTURE_DRIFT_PASS /
-  APP_COMPLETION_PROOF_BACKLOG / PM_QUEUE_REFRESHED`.
+PROTECTED_INPUT_READINESS_PARTIAL / ARCHITECTURE_DRIFT_PASS /
+APP_COMPLETION_PROOF_BACKLOG / PM_QUEUE_REFRESHED`.
 - Production:
   API `/health` and `/ready` are passing in latest same-day evidence, but Web
   `/` and `/api/build-info` return `503`; Coolify read-only evidence shows
@@ -939,7 +998,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -961,7 +1020,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production endpoints:
   API `/health` and `/ready` returned `200`; Web `/` and `/api/build-info`
   returned `503`; protected `/workers/ready` returned `503`.
@@ -983,7 +1042,7 @@
 
 - Status:
   `BLOCKED / API_HEALTH_READY_PASS / WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Evidence:
   `history/evidence/luc-6489-production-performance-server-health-watch-2026-07-01.md`.
 - Current health:
@@ -1019,8 +1078,8 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   DRE reran public and protected production deploy smoke. API `/health` and
   `/ready` returned `200`; Web `/`, Web `/api/build-info`, and protected
@@ -1051,7 +1110,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/auth context:
   approved audit-login bindings are present by name and length only; no secret
   values were printed or stored. `SMOKE_AUTH_TOKEN` is absent, so checks used
@@ -1076,8 +1135,8 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+SOAR_WEB_EXITED_UNHEALTHY / WORKERS_BACKTEST_EXITED_UNHEALTHY /
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   DRE reran production deploy smoke with production URL mapping. API `/health`
   and `/ready` returned `200`; Web `/`, Web `/api/build-info`, and protected
@@ -1110,7 +1169,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   [LUC-6476](/LUC/issues/LUC-6476) found API `/health` and `/ready` reachable
   through deploy smoke. Runtime freshness passed with fresh worker heartbeat,
@@ -1139,8 +1198,8 @@
 
 - Current health signal:
   `PRODUCTION_DEGRADED / WEB_EXITED_UNHEALTHY /
-  BACKTEST_WORKER_EXITED_UNHEALTHY / HOST_SSH_PROOF_BLOCKED /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+BACKTEST_WORKER_EXITED_UNHEALTHY / HOST_SSH_PROOF_BLOCKED /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Host proof:
   direct VPS shell proof could not run because `VPS_HOST` is present but SSH
   authentication returned `Permission denied (publickey,password)` and
@@ -1192,7 +1251,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   [LUC-6445](/LUC/issues/LUC-6445) found API `/health` and `/ready` reachable
   through deploy smoke. Runtime freshness passed with fresh worker heartbeat,
@@ -1221,7 +1280,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   [LUC-6424](/LUC/issues/LUC-6424) found API `/health` and `/ready` healthy.
   Runtime freshness passed with fresh worker heartbeat, market data, runtime
@@ -1244,7 +1303,7 @@
 
 - Current health signal:
   `PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Security/account access:
   [LUC-6416](/LUC/issues/LUC-6416) reran the no-secret protected-input
   readiness checker. Current shell has `17` matching protected input names, but
@@ -1272,7 +1331,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_503 /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   [LUC-6386](/LUC/issues/LUC-6386) found API `/health` and `/ready` healthy.
   Runtime freshness passed through approved env-only auth aliases. Public Web
@@ -1291,7 +1350,7 @@
 
 - Current health signal:
   `PRODUCTION_WEB_DOWN / BACKTEST_WORKER_NOT_READY /
-  RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
+RUNTIME_FRESHNESS_PASS / ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/runtime:
   [LUC-6329](/LUC/issues/LUC-6329) found API `/health` and `/ready` healthy,
   authenticated dashboard API reads responsive, runtime freshness PASS, and
@@ -1332,7 +1391,7 @@
 
 - Current health signal:
   `PRODUCTION_RUNTIME_HEALTHY / ROLLBACK_NOT_REQUIRED /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Production/runtime:
   [LUC-6290](/LUC/issues/LUC-6290) passed read-only production deploy smoke,
   including protected `/workers/ready -> 200`; runtime freshness passed with
@@ -1357,7 +1416,7 @@
 
 - Current health signal:
   `PROTECTED_INPUT_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
-  SECURITY_ACCOUNT_ACCESS_NO_GO`.
+SECURITY_ACCOUNT_ACCESS_NO_GO`.
 - Production target:
   public build-info reports
   `c357d957741f56835f27a1fc3a948dad43a91036`, `gitRef=main`,
@@ -1388,7 +1447,7 @@
 
 - Current health signal:
   `PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
+PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
 - Production/auth:
   [LUC-6180](/LUC/issues/LUC-6180) passed authenticated production acceptance
   for Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`, including logout
@@ -1613,7 +1672,7 @@
 
 - Current health signal:
   `VERIFIED_PM_QUEUE_DISPOSITION / NO_DUPLICATE_LANE /
-  OWNER_PATH_ALREADY_ROUTED`.
+OWNER_PATH_ALREADY_ROUTED`.
 - Validation:
   Paperclip heartbeat context readback confirmed [LUC-5900](/LUC/issues/LUC-5900)
   has zero comments and no blockers; [LUC-5636](/LUC/issues/LUC-5636) remains
@@ -1636,7 +1695,7 @@
 
 - Current health signal:
   `SECURITY_GATE_FAIL_CLOSED / LOCAL_SECURITY_ACCOUNT_TESTS_PASS /
-  PROTECTED_INPUTS_PARTIAL_NO_GO`.
+PROTECTED_INPUTS_PARTIAL_NO_GO`.
 - Validation:
   public build-info readback targeted
   `3bd65e21d09f294a18d3317d2f59f7a0d4e577b4`; protected input readiness
@@ -1658,7 +1717,7 @@
 
 - Current health signal:
   `VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Validation:
   public API/Web smoke passed; protected `/workers/ready` passed through
   fresh-login after stale `SMOKE_AUTH_TOKEN` failed closed with `401`;
@@ -1713,7 +1772,7 @@
 
 - Current health signal:
   `VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Validation:
   public API/Web smoke passed; protected `/workers/ready` passed through
   fresh-login after stale `SMOKE_AUTH_TOKEN` failed closed with `401`;
@@ -1742,7 +1801,7 @@
 
 - Current health signal:
   `VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+BLOCKED_FLOW_FAIL_CLOSED / STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Validation:
   public API/Web smoke passed; protected `/workers/ready` failed closed with
   stale `SMOKE_AUTH_TOKEN` (`401`) and passed through fresh-login auth
@@ -1769,7 +1828,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - DRE protected recheck:
   public API/Web smoke passed against canonical production hosts. Protected
   `/workers/ready` failed closed with stale pre-bound `SMOKE_AUTH_TOKEN`
@@ -1795,7 +1854,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - QVE production acceptance:
   deploy smoke passed public API/Web and protected `/workers/ready`; auth
   session proof passed; UI clickthrough passed public `PASS:4`, dashboard
@@ -1818,7 +1877,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - DRE production watch:
   public API/Web smoke passed; public timing returned `200:8` for API
   `/health`, API `/ready`, Web `/`, and Web `/api/build-info` with max
@@ -1843,7 +1902,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - DRE protected recheck:
   public API/Web smoke passed against canonical production hosts. Protected
   `/workers/ready` failed closed with stale pre-bound `SMOKE_AUTH_TOKEN`
@@ -1887,7 +1946,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH`.
 - DRE production watch:
   public API/Web smoke passed; public timing returned `200:8` for API
   `/health`, API `/ready`, Web `/`, and Web `/api/build-info` with max
@@ -1911,7 +1970,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - DRE protected recheck:
   public API/Web smoke passed against canonical production hosts. Protected
   `/workers/ready` failed closed with stale pre-bound `SMOKE_AUTH_TOKEN`
@@ -1981,7 +2040,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - DRE protected recheck:
   public API/Web smoke passed against canonical production hosts. Protected
   `/workers/ready` failed closed with stale pre-bound `SMOKE_AUTH_TOKEN`
@@ -2002,7 +2061,7 @@
 
 - Current health signal:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - QA production sweep:
   public/protected deploy smoke passed, including protected `/workers/ready`
   through fresh login-derived auth; auth-session browser proof passed;
@@ -2111,7 +2170,7 @@
 - Repeatable API smoke now routes through `test:go-live:api:with-infra` and
   fails fast with evidence because Docker Desktop Linux engine is unavailable:
   `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file
-  specified`.
+specified`.
 - Local DB/cache ports remain closed: `127.0.0.1:5432` and
   `127.0.0.1:6379`.
 - Evidence:
@@ -2121,7 +2180,7 @@
 
 - Current health signal:
   `DONE / PARTIALLY_VERIFIED / SAFE_WEB_AND_PUBLIC_SMOKE_GREEN /
-  LOCAL_API_DB_SMOKE_BLOCKED`.
+LOCAL_API_DB_SMOKE_BLOCKED`.
 - Safe checks:
   repository guardrails passed; public production no-worker smoke passed for
   API `/health`, API `/ready`, Web `/`, and Web `/api/build-info`; Web smoke
@@ -2145,7 +2204,7 @@
 # 2026-06-21 LUC-5146 Protected-Route Invalid-Token Redirect Proof
 
 - Current health signal: `DONE / VERIFIED_LOCAL /
-  NO_ACTIVE_WEB_RUNTIME_DEFECT`.
+NO_ACTIVE_WEB_RUNTIME_DEFECT`.
 - Local auth/session chain proof passed:
   `pnpm --filter web test -- src/middleware.test.ts src/lib/api.test.ts src/context/AuthContext.test.tsx --run`
   returned `3` files and `12` tests passed.
@@ -2164,7 +2223,7 @@
 # 2026-06-21 LUC-5381 Read-Only Server-Health Projection
 
 - Current health signal: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  VPS_PRESSURE_LIMITED`.
+VPS_PRESSURE_LIMITED`.
 - Binding names now present without value disclosure:
   `COOLIFY_*`, `VPS_HOST`, and `SMOKE_AUTH_*`.
 - Missing for deeper host-level evidence: `SSH*`, dedicated read-only `VPS_*`
@@ -2184,7 +2243,7 @@
 # 2026-06-21 LUC-4767 Coolify/VPS Health Readback
 
 - Current health signal: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  VPS_PRESSURE_LIMITED`.
+VPS_PRESSURE_LIMITED`.
 - Binding names now present without value disclosure:
   `COOLIFY_*`, `VPS_HOST`, and `SMOKE_AUTH_*`.
 - Missing for deeper host-level evidence: `SSH*`, dedicated `VPS_*` status
@@ -2206,7 +2265,7 @@
 # 2026-06-21 LUC-5387 Production Performance And Server Health Watch
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED / APP_REACHABLE /
-  API_HEALTH_TLS_TAIL_WATCH`.
+API_HEALTH_TLS_TAIL_WATCH`.
 - Public and protected smoke: API `/health`, API `/ready`, Web `/`, Web
   `/api/build-info`, and protected `/workers/ready` passed after suppressing
   the stale pre-bound `SMOKE_AUTH_TOKEN` path and using env-bound
@@ -2237,7 +2296,7 @@
 # 2026-06-21 LUC-4929 Coolify Production Deploy Health Sweep Continuation
 
 - Status: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
-  PROVENANCE_RESIDUAL_ROUTED`.
+PROVENANCE_RESIDUAL_ROUTED`.
 - Current health signal: Coolify read-only projection works; public and
   protected app smoke pass; runtime freshness passes; rollback guard does not
   indicate rollback.
@@ -2269,7 +2328,7 @@
 # 2026-06-21 LUC-5360 API Health Latency Correlation
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED /
-  ACTIVE_API_TAIL_NOT_REPRODUCED / TLS_PROXY_VARIANCE_CLASSIFIED`.
+ACTIVE_API_TAIL_NOT_REPRODUCED / TLS_PROXY_VARIANCE_CLASSIFIED`.
 - Public production smoke passed for API `/health`, API `/ready`, Web `/`,
   and Web `/api/build-info` on deployed SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
@@ -2297,7 +2356,7 @@
 # 2026-06-21 LUC-5356 Production Performance And Server Health Watch
 
 - Current health signal: `INCIDENT_DELEGATED / PARTIALLY_VERIFIED /
-  API_HEALTH_LATENCY_TAILS`.
+API_HEALTH_LATENCY_TAILS`.
 - Public production smoke passed for API `/health`, API `/ready`, Web `/`,
   and Web `/api/build-info` on deployed SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
@@ -2324,7 +2383,7 @@
 # 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED /
-  LOW_SECOND_TLS_PROXY_TAILS / APP_REACHABLE`.
+LOW_SECOND_TLS_PROXY_TAILS / APP_REACHABLE`.
 - Follow-up from [LUC-5250](/LUC/issues/LUC-5250): public API `/health` and
   `/ready` low-second tails were rechecked with bounded public `curl.exe`
   probes.
@@ -2346,7 +2405,7 @@
 # 2026-06-20 LUC-5250 Production Performance Watch
 
 - Current health signal: `DELEGATED / PARTIALLY_VERIFIED /
-  API_LOW_SECOND_OUTLIERS / COOLIFY_VPS_BINDINGS_BLOCKED`.
+API_LOW_SECOND_OUTLIERS / COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Public production smoke passed for API `/health`, API `/ready`, Web `/`, and
   Web `/api/build-info` on deployed SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
@@ -2373,7 +2432,7 @@
 # 2026-06-20 LUC-5213 API Ready Timeout Investigation
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED /
-  ACTIVE_TIMEOUT_NOT_REPRODUCED / BACKEND_RISK_IDENTIFIED`.
+ACTIVE_TIMEOUT_NOT_REPRODUCED / BACKEND_RISK_IDENTIFIED`.
 - Source signal from [LUC-5198](/LUC/issues/LUC-5198) remains valid:
   focused API `/ready` recheck had one `000` timeout at `21048 ms` plus
   `884`, `1416`, and `1626 ms` outliers while API `/health` normalized.
@@ -2394,7 +2453,7 @@
 # 2026-06-20 LUC-5198 Production Performance Watch
 
 - Current health signal: `INCIDENT_DELEGATED / PARTIALLY_VERIFIED /
-  API_READY_TIMEOUT_SIGNAL`.
+API_READY_TIMEOUT_SIGNAL`.
 - Public production smoke passed for API `/health`, API `/ready`, Web `/`, and
   Web `/api/build-info` on deployed SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`.
@@ -2422,7 +2481,7 @@
 - Validation:
   `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
   missing); `pnpm softwarehouse:control-tick` unavailable (`Command
-  "softwarehouse:control-tick" not found`).
+"softwarehouse:control-tick" not found`).
 - No child architecture repair lane is needed from the current report. No
   runtime, deploy, push, restart, rollback, env/database/account, secret,
   protected-smoke, exchange, payment/subscription, or live-trading mutation
@@ -2445,7 +2504,7 @@
 # 2026-06-20 LUC-5143 Production Performance And Server Health Watch
 
 - Status: `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / PUBLIC_APP_HEALTHY /
-  PROTECTED_AUTH_PROOF_FAILED`.
+PROTECTED_AUTH_PROOF_FAILED`.
 - Current health signal: public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`. Build-info resolved
   `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
@@ -2484,7 +2543,7 @@
 # 2026-06-20 LUC-5088 Web Latency Coolify Runtime Correlation
 
 - Status: `DONE / PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED /
-  RUNTIME_CLUE_RECORDED`.
+RUNTIME_CLUE_RECORDED`.
 - Current health signal: [LUC-5085](/LUC/issues/LUC-5085) found a valid
   intermittent Web `/` latency spike, but the DRE recheck for
   [LUC-5088](/LUC/issues/LUC-5088) did not reproduce it. Five current samples
@@ -2515,7 +2574,7 @@
 # 2026-06-20 LUC-5087 Web Home Latency Investigation
 
 - Status: `DONE_WITH_DRE_FOLLOW_UP / PARTIALLY_VERIFIED /
-  NO_CODE_FIX_IDENTIFIED`.
+NO_CODE_FIX_IDENTIFIED`.
 - Current health signal: the [LUC-5085](/LUC/issues/LUC-5085) Web `/` latency
   spike remains a real intermittent production signal, but it did not reproduce
   during the CTO recheck. Eight current public samples for Web `/` returned
@@ -2542,7 +2601,7 @@
 # 2026-06-20 LUC-5032 Production Acceptance Health
 
 - Status: `PARTIALLY_VERIFIED / PRODUCTION_APP_HEALTHY /
-  COOLIFY_VPS_READBACK_BLOCKED`.
+COOLIFY_VPS_READBACK_BLOCKED`.
 - Public smoke: PASS for API `/health`, API `/ready`, Web `/`, and Web
   `/api/build-info`.
 - Build-info: `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`,
@@ -2558,7 +2617,7 @@
 # 2026-06-20 LUC-5022 Production Performance And Server Health Watch
 
 - Status: `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Current health signal: public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`; protected auth/session browser
   proof passed using approved audit env names mapped process-locally to the
@@ -2612,7 +2671,7 @@
 ## 2026-06-20 LUC-4959 Production Performance And Server Health Watch
 
 - Status: `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Current health signal: public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`; protected auth/session browser
   proof passed using approved audit env names mapped process-locally to the
@@ -2649,7 +2708,7 @@
 ## 2026-06-20 LUC-4945 Stripe Webhook Graph Drift Repair
 
 - Status: `VERIFIED_LOCAL / ARCHITECTURE_GRAPH_DRIFT_REPAIRED /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Repair scope: source architecture registry coverage for the two Stripe
   webhook paths reported by [LUC-4939](/LUC/issues/LUC-4939):
   `apps/api/src/modules/subscriptions/payments/stripeWebhook.routes.ts` and
@@ -2672,7 +2731,7 @@
 ## 2026-06-20 LUC-4939 Regression Evidence Sweep
 
 - Status: `PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
-  ARCHITECTURE_GRAPH_DRIFT_DELEGATED`.
+ARCHITECTURE_GRAPH_DRIFT_DELEGATED`.
 - Current health signal: repeatable local QA smoke passed for Web/API/backtests;
   public production Web/API smoke passed for API `/health`, API `/ready`, Web
   `/`, and Web `/api/build-info` with workers skipped; docs parity passed.
@@ -2700,7 +2759,7 @@
 ## 2026-06-20 LUC-4929 Coolify Production Deploy Health Sweep
 
 - Status: `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
-  DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
+DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
 - Current health signal: public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`; protected auth/session browser
   proof passed using approved audit env names.
@@ -2737,7 +2796,7 @@
 ## 2026-06-20 LUC-4928 Daily Project Status Refresh
 
 - Status: `PARTIALLY_VERIFIED / APP_HEALTHY /
-  RELEASE_GATES_STILL_BLOCKED`.
+RELEASE_GATES_STILL_BLOCKED`.
 - Current health signal: public and authenticated production app checks from
   today's DRE/QVE lanes passed on production SHA
   `42177530f2a2ddc22832133b545bccab6ab404eb`, but full release readiness is
@@ -2764,7 +2823,7 @@
 ## 2026-06-20 LUC-4912 Web Build-Info Env-Runtime Provenance Gate Mismatch
 
 - Status: `DONE / VERIFIED_NO_CODE_CHANGE /
-  DEPLOY_APPROVAL_STILL_REQUIRED`.
+DEPLOY_APPROVAL_STILL_REQUIRED`.
 - Current health signal: public Web build-info is source-fresh relative to
   `origin/main` but not release-provenance verified because it reports
   `metadataSource=env-runtime`.
@@ -2789,7 +2848,7 @@
 ## 2026-06-20 LUC-4893 Production Performance And Server Health Watch
 
 - Status: `DONE / PARTIALLY_VERIFIED / APP_HEALTHY /
-  COOLIFY_VPS_BINDINGS_BLOCKED`.
+COOLIFY_VPS_BINDINGS_BLOCKED`.
 - Current health signal: public production smoke passed for API `/health`, API
   `/ready`, Web `/`, and Web `/api/build-info`; protected auth/session browser
   proof passed using approved audit env names.
@@ -2819,7 +2878,7 @@
 ## 2026-06-20 LUC-4854 Implementation-Without-Tests Health Signal Classification
 
 - Status: `VERIFIED_CLASSIFICATION / NO_NEW_ACTIONABLE_GAP /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Current health signal: [LUC-4849](/LUC/issues/LUC-4849) generated
   `docs/graphs/architecture-health.json` at `2026-06-20T05:14:22.302Z` with
   raw `implementation_without_tests=1288`, but the current actionable
@@ -3265,7 +3324,7 @@
 ## 2026-06-11 LUC-3515 Coolify Production Deploy Health Sweep
 
 - Status: `PARTIALLY_VERIFIED / PUBLIC_SMOKE_PASS / DEEPER_LOGS_BLOCKED /
-  NO_MUTATION`.
+NO_MUTATION`.
 - Current health signal: public production no-worker smoke passed for API
   `/health`, API `/ready`, Web `/`, and Web `/api/build-info` on expected SHA
   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`. Direct public probes also
@@ -3291,7 +3350,7 @@
 ## 2026-06-11 LUC-3513 Autonomous Idle And Map Drift Sweep
 
 - Status: `VERIFIED_LOCAL / KNOWN_STATE_REFRESHED / PROTECTED_GATE_HOLD /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Current health signal: local known-state evidence is refreshed and green.
   `corepack pnpm run ops:project:known-state` passed with graph `653` nodes /
   `842` relations / `27` chains, strict graph drift `846/846`, journey indexes
@@ -3308,7 +3367,7 @@
 - Residual: protected/operator review paths remain
   [LUC-2755](/LUC/issues/LUC-2755), [LUC-2880](/LUC/issues/LUC-2880), and
   [LUC-3409](/LUC/issues/LUC-3409). `corepack pnpm
-  softwarehouse:control-tick` remains unavailable in this checkout.
+softwarehouse:control-tick` remains unavailable in this checkout.
 - Evidence:
   `history/tasks/luc-3513-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`.
 
@@ -3539,7 +3598,7 @@
   `node --check scripts/runRestoreDrillEvidence.test.mjs` PASS; safe
   `--help` PASS; `node --test scripts/runRestoreDrillEvidence.test.mjs` PASS
   (`7/7`); direct relation readback PASS (`7` rows); `pnpm run
-  architecture:graph:generate` PASS (`653` nodes / `842` relations / `27`
+architecture:graph:generate` PASS (`653` nodes / `842` relations / `27`
   chains); `pnpm run quality:guardrails` PASS.
 - Residual: architecture-awareness refresh/top-list disappearance could not be
   observed locally because `scripts/build-architecture-awareness-index.mjs` is
@@ -3558,10 +3617,10 @@
   ownerless entities, and `0` disconnected entities. The previous
   `scripts/goLiveSmoke.mjs` top rows are no longer listed.
 - Validation: `node --check scripts/goLiveSmoke.mjs` PASS; `node --check
-  scripts/goLiveSmoke.test.mjs` PASS; `node --test scripts/goLiveSmoke.test.mjs`
+scripts/goLiveSmoke.test.mjs` PASS; `node --test scripts/goLiveSmoke.test.mjs`
   PASS (`11/11`); direct relation readback PASS (`7`
   [LUC-2989](/LUC/issues/LUC-2989) rows); `pnpm run
-  architecture:graph:generate` PASS (`653` nodes / `842` relations / `27`
+architecture:graph:generate` PASS (`653` nodes / `842` relations / `27`
   chains); architecture-awareness refresh PASS (`9344` entities / `29497`
   relations / `9739` files); `pnpm run quality:guardrails` PASS; no
   `chrome-headless-shell` processes found.
@@ -3699,8 +3758,8 @@
   Focused proof passed: `node --check scripts/runProdSecurityExchangeProof.mjs`,
   `node --check scripts/runProdSecurityExchangeProof.test.mjs`, safe `--help`,
   direct `LUC-2956` relation readback (`14` rows), `node --test
-  scripts/runProdSecurityExchangeProof.test.mjs` (`4/4`), `pnpm run
-  architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
+scripts/runProdSecurityExchangeProof.test.mjs` (`4/4`), `pnpm run
+architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
   Softwarehouse architecture-awareness refresh (`15087` entities / `34684`
   relations / `9760` files; report generated `2026-06-07T22:24:06.213Z`), and
   `pnpm run quality:guardrails`. Refreshed actionable missing-test links are
@@ -3716,10 +3775,10 @@
   `scripts/runProdAuthSessionBrowserProof.mjs` is now import-safe for local
   helper proof while preserving direct CLI behavior. Focused proof passed:
   `node --check scripts/runProdAuthSessionBrowserProof.mjs`, `node --check
-  scripts/runProdAuthSessionBrowserProof.test.mjs`, `node --test
-  scripts/runProdAuthSessionBrowserProof.test.mjs` (`5/5`), safe `--help`,
+scripts/runProdAuthSessionBrowserProof.test.mjs`, `node --test
+scripts/runProdAuthSessionBrowserProof.test.mjs` (`5/5`), safe `--help`,
   direct `LUC-2939` relation readback (`13` rows), `pnpm run
-  architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
+architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
   Softwarehouse architecture-awareness refresh (`15062` entities / `34562`
   relations / `9747` files; report generated `2026-06-07T21:06:25.826Z`), and
   `pnpm run quality:guardrails`. Refreshed actionable missing-test links are
@@ -3736,10 +3795,10 @@
   `scripts/runLocalExternalGatesPipeline.mjs` is now import-safe/injectable for
   local helper proof while preserving direct CLI behavior. Focused proof
   passed: `node --check scripts/runLocalExternalGatesPipeline.mjs`, `node
-  --check scripts/runLocalExternalGatesPipeline.test.mjs`, `node --test
-  scripts/runLocalExternalGatesPipeline.test.mjs` (`7/7`), safe `--help`,
+--check scripts/runLocalExternalGatesPipeline.test.mjs`, `node --test
+scripts/runLocalExternalGatesPipeline.test.mjs` (`7/7`), safe `--help`,
   direct `LUC-2931` relation readback (`12` rows), `pnpm run
-  architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
+architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
   Softwarehouse architecture-awareness refresh (`15050` entities / `34488`
   relations / `9741` files; report generated `2026-06-07T20:42:55.740Z`), and
   `pnpm run quality:guardrails`. Refreshed actionable missing-test links are
@@ -3756,7 +3815,7 @@
   local child-command proof while preserving the production CLI command order.
   Focused proof passed: `node --check scripts/runKnownStateRefresh.mjs`,
   `node --check scripts/runKnownStateRefresh.test.mjs`, `node --test
-  scripts/runKnownStateRefresh.test.mjs` (`5/5`), direct `LUC-2920` relation
+scripts/runKnownStateRefresh.test.mjs` (`5/5`), direct `LUC-2920` relation
   readback (`1` row), `pnpm run architecture:graph:generate` (`653` nodes /
   `842` relations / `27` chains), Softwarehouse architecture-awareness refresh
   (`15046` entities / `34456` relations / `9738` files; report generated
@@ -4195,8 +4254,8 @@
   Current public production health is green: API `/health` `200`, API
   `/ready` `200`, Web `/` `200`, Web `/api/build-info` `200`, and
   `node scripts/deploySmokeCheck.mjs --api-base-url
-  https://api.soar.luckysparrow.ch --web-base-url
-  https://soar.luckysparrow.ch --skip-workers` passed all public checks.
+https://api.soar.luckysparrow.ch --web-base-url
+https://soar.luckysparrow.ch --skip-workers` passed all public checks.
   Production Web build-info reports
   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, matching local
   `origin/main`; local dirty `HEAD` remains
@@ -4267,7 +4326,7 @@
 
 - 2026-06-07 `LUC-2631` completed a Frontend Web local PWA proof and
   architecture relation repair. Status: `verified_local / no production
-  claim`. Focused Web PWA Vitest proof passed (`2` files / `8` tests),
+claim`. Focused Web PWA Vitest proof passed (`2` files / `8` tests),
   architecture graph generation passed (`653` nodes / `842` relations /
   `27` chains), and repository guardrails passed. Added direct
   `priority-test-links.csv` rows for service-worker registration anchors:
@@ -4423,7 +4482,7 @@
   [LUC-2372](/LUC/issues/LUC-2372), [LUC-241](/LUC/issues/LUC-241),
   [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
   [LUC-2378](/LUC/issues/LUC-2378). `corepack pnpm
-  softwarehouse:control-tick` remains unavailable, and
+softwarehouse:control-tick` remains unavailable, and
   `scripts/run-live-run-janitor.mjs` is absent. No duplicate child issue or
   production/runtime mutation occurred. Evidence:
   `history/tasks/luc-2591-no-stall-queue-expeditor-2026-06-07-task.md`.
@@ -4563,7 +4622,7 @@
   [LUC-244](/LUC/issues/LUC-244). [LUC-2506](/LUC/issues/LUC-2506),
   [LUC-2507](/LUC/issues/LUC-2507), and [LUC-2520](/LUC/issues/LUC-2520) read
   back as `done`, so no duplicate specialist lane is needed. `pnpm
-  softwarehouse:control-tick` is not exposed in this checkout, and
+softwarehouse:control-tick` is not exposed in this checkout, and
   `scripts/run-live-run-janitor.mjs` is absent. No code/runtime/deploy/push/
   restart/rollback/env/account/secret/exchange/protected-smoke/live-trading
   mutation occurred. Evidence:
@@ -4793,7 +4852,7 @@
   (`831/831`, `0` missing) and docs parity passed (API `22/22`, Web `16/16`,
   Routes `39/39`). No current route-map or architecture graph drift was found,
   so no duplicate map or specialist lane was opened. `pnpm
-  softwarehouse:control-tick` remains unavailable as a direct Soar command and
+softwarehouse:control-tick` remains unavailable as a direct Soar command and
   `scripts/run-live-run-janitor.mjs` remains absent; this is tooling drift, not
   release evidence. No code/runtime/deploy/push/restart/rollback/env/account/
   secret/exchange/protected-smoke/live-trading mutation occurred. Evidence:
@@ -5120,7 +5179,7 @@
   `200`, API `/ready` `200`, Web `/` `503`, Web `/api/build-info` `503`.
   Coolify reports `soar-web` `restarting:unknown`, `last_restart_type=crash`,
   `last_restart_at=2026-06-05T21:18:51Z`, and app logs endpoint `400 Bad
-  Request`. Approved read-only `codex-vps` Docker log tail confirms repeated
+Request`. Approved read-only `codex-vps` Docker log tail confirms repeated
   `MODULE_NOT_FOUND` for `[APP_ROOT]/scripts/runWebNextProductionCommand.mjs`,
   pnpm recursive start failure, and exit `1`. Classification:
   `web image/startup packaging`. `pnpm run ops:coolify-stack:env-check:test`
@@ -5139,7 +5198,7 @@
   `/health` `200`, API `/ready` `200`, Web `/` `503`, and Web
   `/api/build-info` `503` for expected rollback SHA
   `b894e5dd30614dfd2035e91e3d848c842d3ff380`; `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). No deploy, restart,
+ops:coolify-stack:env-check:test` passed (`8/8`). No deploy, restart,
   rollback, force-start, env/database/team/account/protected-smoke, secret,
   exchange, or live-trading mutation occurred. [LUC-2305](/LUC/issues/LUC-2305)
   owns the redacted container/runtime/proxy classification before any new
@@ -5217,10 +5276,10 @@
   Precheck at `2026-06-05T20:40:02Z` showed API `/health` and `/ready` both
   `200`, while Web `/` and `/api/build-info` returned `503`; the deploy smoke
   failed only Web checks. Source state matched the permit (`HEAD == origin/main
-  == 6e31d814046b640ad529d1cd57f968ba6f67b05e`) and the dirty tree contained
+== 6e31d814046b640ad529d1cd57f968ba6f67b05e`) and the dirty tree contained
   only a pre-existing history task note from another recovery path. One
   `soar-web` restart request at `2026-06-05T20:40:31Z` returned `Deployment
-  already queued for this commit.` After roughly 90 seconds of polling,
+already queued for this commit.` After roughly 90 seconds of polling,
   `soar-web` remained `restarting:unknown`, final public smoke remained API
   `200/200` and Web `503/503`, and no additional restart/deploy/rollback/env/
   database/team/account/protected-smoke/secret/live-trading mutation occurred.
@@ -5515,8 +5574,8 @@
   `2026-06-05T10:58:31.707Z` with `14282` entities and `22292` relations,
   improving actionable missing docs from `72` to `32`. Validation passed:
   `pnpm run architecture:graph:generate`, `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
-  docs:parity:check`, and targeted diff check with CRLF warnings only. Scope
+architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm run
+docs:parity:check`, and targeted diff check with CRLF warnings only. Scope
   stayed docs/graph/state only; no runtime behavior, deploy, restart,
   rollback, env/database/account/secret/exchange/live-trading mutation was
   performed. Evidence:
@@ -5555,7 +5614,7 @@
   `running:unknown`; PostgreSQL and Redis report `running:healthy` from the
   production environment readback. `GET /api/v1/resources` returned `17`
   visible rows and was not used as release authority. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only
+ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only
   docs/evidence/state only; no deploy/restart/rollback/env/database/team/
   account/secret/live-trading mutation was performed. Evidence:
   `history/evidence/luc-2173-coolify-read-only-production-status-access-2026-06-05.md`,
@@ -5595,7 +5654,7 @@
   `running:unknown`; PostgreSQL and Redis report `running:healthy` from the
   global status projection. `GET /api/v1/resources` returned `17` visible rows
   and was not used as release authority. `pnpm run
-  ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only
+ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only
   docs/evidence/state only; no deploy/restart/rollback/env/database/team/
   account/secret/live-trading mutation was performed. Evidence:
   `history/evidence/luc-2162-coolify-read-only-production-status-access-2026-06-05.md`,
@@ -5628,7 +5687,7 @@
   sample graph readback (`documents=1` for five scripts plus two backend model
   entities), exporter `node --check`, `pnpm run architecture:graph:generate`,
   `pnpm run architecture:graph:drift:strict` (`822/822`, `0` missing), `pnpm
-  run docs:parity:check`, and diff checks with CRLF warnings only. No runtime
+run docs:parity:check`, and diff checks with CRLF warnings only. No runtime
   behavior, route behavior, deploy, restart, rollback, env/database/account,
   protected-smoke, secret, exchange, or live-trading action occurred. Evidence:
   `history/tasks/luc-2155-repair-documentation-links-ingestion-actionable-missing-docs-2026-06-05-task.md`.
@@ -5643,7 +5702,7 @@
   aggregate evidence builders, and protected/readback collectors. No new
   focused coverage gap or runtime/tooling defect was isolated. Validation
   passed: focused/aggregate script test pack (`136/136`), `pnpm run
-  architecture:graph:drift:strict` (`822/822`, `0` missing), and targeted
+architecture:graph:drift:strict` (`822/822`, `0` missing), and targeted
   `git diff --check`. Scope stayed docs/classification/state/evidence only; no
   code/runtime behavior, route behavior, deploy, restart, rollback,
   env/database/account/protected-smoke, secret, exchange, or live-trading
@@ -5680,7 +5739,7 @@
   was not repeated. The existing local protected action harness now covers
   wallets, strategies, markets, bots, and backtests. Validation passed:
   `node --check scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`; readback
+qa:local-protected-route-actions:proof -- --today 2026-06-05`; readback
   confirms `19/19` PASS rows, static mapping `PASS`, and blockers `0`. Cleanup
   found no matching owned Node/Chrome/cmd validation processes; only
   `TIME_WAIT` sockets on ports `3217` and `9347` with owning process `0`. No
@@ -5770,8 +5829,8 @@
   cookie gate, wallet list create action navigates to create, strategies
   list/create routes render behind the local cookie gate, and strategies list
   create action navigates to create. Validation passed: `node --check
-  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
-  qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
+scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup found
   only `TIME_WAIT` sockets on port `3217` with owning process `0` and no
   matching browser process on CDP port `9347`. Scope stayed local-only and
   non-mutating; no production auth/session, form submit, wallet/strategy
@@ -5963,7 +6022,7 @@
   `AssistantDryRunSchema` accepts `BACKTEST`/`PAPER` and rejects `LIVE`.
   Final strict drift also mapped adjacent same-gate API test omissions to
   existing middleware/auth owner nodes. Validation passed: `pnpm run
-  architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
+architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
   `pnpm run architecture:graph:drift:strict` (`820/820` covered / `0`
   missing), and focused API tests for the four newly mapped files (`4` files /
   `10` tests). Scope stayed docs/graph/state
@@ -6512,7 +6571,7 @@ Last updated: 2026-06-02
   `ARCH-GRAPH-MANUAL-ORDER-BACKFILL-2026-05-24` backfilled the manual-order
   P0 slice and graph generation now passes with `67` nodes, `51` relations,
   and `5` chains; `pnpm run quality:guardrails` passed; `pnpm run
-  docs:parity:check` passed; and `git diff --check` found no whitespace
+docs:parity:check` passed; and `git diff --check` found no whitespace
   errors, only existing Windows LF/CRLF warnings. No dev server, browser,
   Docker, database, or production process was started for this graph task.
 
@@ -6526,7 +6585,7 @@ Last updated: 2026-06-02
   to `https://soar.luckysparrow.ch/api/build-info`,
   `https://api.soar.luckysparrow.ch/health`, and
   `https://api.soar.luckysparrow.ch/ready` each timed out with `Failed to
-  connect` after roughly `21` seconds. Current production deploy identity and
+connect` after roughly `21` seconds. Current production deploy identity and
   health are therefore not verified by this cleanup checkpoint.
 - DNS resolves `soar.luckysparrow.ch`, `api.soar.luckysparrow.ch`, and
   `vps-9a62b0a4.vps.ovh.net` to `141.227.149.67`, but TCP checks fail on
@@ -6536,7 +6595,7 @@ Last updated: 2026-06-02
   users times out. No `OVH`/`COOLIFY`/VPS deploy token env var is available in
   this local session, so provider/Coolify restart remains operator-blocked.
 - Local source checks passed on the current dirty workspace: `pnpm run
-  quality:guardrails`, `pnpm run docs:parity:check`, `pnpm run typecheck`, and
+quality:guardrails`, `pnpm run docs:parity:check`, `pnpm run typecheck`, and
   the focused runtime automation exchange-PnL/service/DCA parity pack (`3`
   files / `41` tests).
 - Web route cleanup checks passed after removing the stale `/dashboard/exchanges`
@@ -6619,7 +6678,7 @@ Last updated: 2026-06-02
 - Validation passed: exact moved-path scan found `0` stale old paths, markdown
   relative-link check covered `1732` files in `docs/` and `history/` with `0`
   missing targets, `pnpm run quality:guardrails` passed, and `pnpm run
-  docs:parity:check` passed.
+docs:parity:check` passed.
 - Runtime impact: none. No deployment, production data access, secrets, or
   LIVE exchange mutation was involved.
 
@@ -6695,7 +6754,7 @@ Last updated: 2026-06-02
   `/metrics` route tests `5/5`.
 - Local environment note: the first `/metrics` route test run failed because
   local Postgres on `localhost:5432` was unavailable; `pnpm run
-  go-live:infra:up` started repo Postgres/Redis and the rerun passed.
+go-live:infra:up` started repo Postgres/Redis and the rerun passed.
   Production LIVE order, position, exchange, or bot activation mutation was not
   performed.
 
@@ -6966,7 +7025,7 @@ Last updated: 2026-06-02
 - Full reusable audit handoff validation now requires the handoff Markdown and
   JSON self-source paths in the handoff source-of-truth chain.
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
-  run` commands against `package.json` scripts and reports missing package
+run` commands against `package.json` scripts and reports missing package
   scripts separately.
 - Reusable audit manifest validation now checks declared summary counts and
   `manifestValidation` path metadata against actual audit rows and collected
@@ -7442,7 +7501,7 @@ Last updated: 2026-06-02
   separates commands actually run today from historical/current evidence.
   Today-run validation: `pnpm run ops:project:index` PASS with V1 statuses
   `PASS:21` and tests indexed `335`; `pnpm run ops:project:scan -- --index
-  history/artifacts/project-index-2026-05-18.json` PASS with static findings
+history/artifacts/project-index-2026-05-18.json` PASS with static findings
   `0`; guardrails PASS; docs parity PASS; typecheck PASS; lint PASS; build
   PASS. Evidence: `docs/analysis/reusable-audit-registry.md`,
   `history/audits/audit-baseline-2026-05-18.md`, and
@@ -7459,7 +7518,7 @@ Last updated: 2026-06-02
   architecture, and older architecture overview/domain wording still implies
   Binance-only or one-exchange-family baseline. The exchange capability
   granularity lane was repaired on 2026-05-19 with exact `(exchange,
-  marketType, operation)` support. Evidence:
+marketType, operation)` support. Evidence:
   `history/audits/architecture-code-discrepancy-audit-2026-05-17.md` and
   `history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
@@ -8233,7 +8292,7 @@ Last updated: 2026-06-02
   added `ops:project:scorecard` and generated
   `history/releases/v1-completion-scorecard-2026-05-11.md` plus JSON from the
   master ledger. Validation passed: `node --check
-  scripts/buildV1CompletionScorecard.mjs`, script help, and scorecard
+scripts/buildV1CompletionScorecard.mjs`, script help, and scorecard
   generation for `2026-05-11`. Current derived status remains `NO-GO`:
   implementation estimate `61.4%`, evidence coverage `25.4%`, release
   readiness `17.6%`, and all 13 P0 modules not release-ready.
@@ -8262,7 +8321,7 @@ Last updated: 2026-06-02
   the project index now includes a prioritized V1 audit work map for all 21
   module action rows, with per-row risk, next proof, API/Web/route/worker/
   script/test surfaces. Validation passed: `node --check
-  scripts/buildProjectIndex.mjs`, script help, report generation, repository
+scripts/buildProjectIndex.mjs`, script help, report generation, repository
   guardrails, and `git diff --check`.
 
 - `V1-STATIC-ISSUE-SCAN-2026-05-10` LOCAL PASS/SCAN COMPLETE: added
@@ -9358,9 +9417,9 @@ evidence collection. It requires authenticated read-only production evidence,
 protected production rollback proof, and real RC approval inputs; the current
 shell still lacks those credentials and approvals.
 
-
 - `LUC-1371-COOLIFY-RESOURCE-INVENTORY-2026-06-02` VERIFIED for read-only production resource inventory. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Read-only Coolify API list endpoints confirmed the resolved Soar production environment contains 8 canonical resources: API, Web, four worker applications, PostgreSQL, and Redis. No production mutation occurred and no secret/full UUID values were stored. Config caveat: `COOLIFY_SOAR_PROJECT_ID` in this shell is a placeholder and direct project-scoped lookup returns `404`; future project-scoped automation should correct the binding before relying on it directly. Evidence: `history/evidence/luc-1371-coolify-resource-inventory-2026-06-02.md`.
 - `LUC-1482-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` VERIFIED for read-only production resource inventory. Fresh authenticated Coolify API readback at `2026-06-02T10:03:06Z` confirmed configured project `Soar`, production environment id `6`, and eight canonical resources: API, Web, four worker applications, PostgreSQL, and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret value disclosure occurred. Evidence: `history/evidence/luc-1482-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
 ## 2026-06-02 LUC-1565 Coolify Resource Inventory Reconciliation
 
 - `LUC-1565-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` VERIFIED for read-only production resource inventory. Fresh authenticated Coolify API readback at `2026-06-02T17:34:56Z` confirmed configured project `Soar`, production environment `production`, current selector id `0` name `LuckySparrow`, and eight canonical resources: API, Web, four worker applications, PostgreSQL, and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret value disclosure occurred. Evidence: `history/evidence/luc-1565-coolify-resource-inventory-reconciliation-2026-06-02.md`; task packet: `history/tasks/luc-1565-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
@@ -9378,6 +9437,7 @@ shell still lacks those credentials and approvals.
   assistant protocol scenarios, invalid assistant dry-run `LIVE` rejection,
   and default LIVE assistant hot-path fail-closed behavior. This is local
   regression proof only and does not claim production, protected-auth, or LIVE
+
 ## 2026-06-06 LUC-2408 Coolify Read-Only Production Status Access
 
 - Status: `VERIFIED` for DRE-owned Coolify read-only production status access.
@@ -9405,6 +9465,7 @@ shell still lacks those credentials and approvals.
 
   hot-path parity evidence. Evidence:
   `history/tasks/luc-1945-adversarial-api-assistant-regression-proof-2026-06-04-task.md`.
+
 - 2026-06-04 `LUC-1952` closes the local source-control state for the
   LUC-1933/LUC-1939/LUC-1940/LUC-1941/LUC-1944/LUC-1945/LUC-1946/LUC-1948/
   LUC-1951 cluster. In-scope dirty paths were current and coherent; stale and
@@ -9509,6 +9570,7 @@ shell still lacks those credentials and approvals.
   [LUC-2665](/LUC/issues/LUC-2665), `2` in_review, and `0` todo.
 - Architecture-awareness is fresh at `2026-06-07T04:12:30.440Z`:
   `14796` entities, `23696` relations, `0` ownerless entities,
+
 # 2026-06-20 LUC-5043 Architecture Gap Register Health
 
 - Current health signal: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP`.
@@ -9530,7 +9592,7 @@ shell still lacks those credentials and approvals.
 # 2026-06-20 LUC-5085 Production Performance Watch
 
 - Current health signal: `INCIDENT_DELEGATED / PARTIALLY_VERIFIED /
-  WEB_HOME_LATENCY_SPIKES`. Public production smoke returned `200` for API
+WEB_HOME_LATENCY_SPIKES`. Public production smoke returned `200` for API
   `/health`, API `/ready`, Web `/`, and Web `/api/build-info`, and protected
   auth/session proof passed with redacted artifacts.
 - Regression signal: public Web `/` returned `200` but repeatedly spiked:
@@ -9551,7 +9613,7 @@ shell still lacks those credentials and approvals.
 # 2026-06-21 LUC-5362 Production Acceptance Health
 
 - Current health signal: `AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PARTIALLY_VERIFIED`.
+PERFORMANCE_PARTIALLY_VERIFIED`.
 - Production build-info SHA: `42177530f2a2ddc22832133b545bccab6ab404eb`.
 - Public smoke: PASS for API `/health`, API `/ready`, Web `/`, and Web
   `/api/build-info`.
@@ -9570,12 +9632,14 @@ shell still lacks those credentials and approvals.
 
   `0` disconnected entities, `583` actionable missing-test links, and
   `0` actionable missing-doc links.
+
 - Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is not
   exposed in this checkout, and `scripts/run-live-run-janitor.mjs` is absent.
 - No product code, runtime, deploy, push, restart, rollback, env/account,
   secret, protected-smoke, exchange, database, or live-trading mutation
   occurred. Evidence:
   `history/tasks/luc-2665-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+
 # 2026-06-07 LUC-2949 Prod Positions Proof Helper Missing-Test Links
 
 - Status: `VERIFIED_LOCAL`. `scripts/runProdPositionsProof.mjs` now has
@@ -9608,8 +9672,8 @@ shell still lacks those credentials and approvals.
   are import-safe and locally testable while preserving direct CLI/package
   script behavior.
 - Focused local proof passed: syntax checks, `node --test
-  scripts/startLocalProdLike.test.mjs scripts/startWorkersProd.test.mjs
-  scripts/releaseOpsScriptContracts.test.mjs` (`17/17`), direct
+scripts/startLocalProdLike.test.mjs scripts/startWorkersProd.test.mjs
+scripts/releaseOpsScriptContracts.test.mjs` (`17/17`), direct
   [LUC-3008](/LUC/issues/LUC-3008) relation readback (`10` rows),
   architecture graph generation (`653` nodes / `842` relations / `27`
   chains), repository guardrails, and no leftover `chrome-headless-shell`
@@ -9622,6 +9686,7 @@ shell still lacks those credentials and approvals.
   full prod-like startup and worker runtime smoke remain separate runtime gates.
 - Evidence:
   `history/tasks/luc-3008-prod-like-worker-startup-wrapper-missing-test-rows-2026-06-08-task.md`.
+
 # 2026-06-11 LUC-3405 Public Browser Proof Process Anchor Classification
 
 - Current health signal: public read-only browser proof safe helpers remain
@@ -9674,11 +9739,12 @@ shell still lacks those credentials and approvals.
   is repaired in `apps/api/src/modules/backtests/backtests.e2e.test.ts`.
 - Validation:
   focused backtests e2e PASS (`15/15`); API go-live smoke with infra PASS
+
 # 2026-06-28 LUC-5736 Protected Recheck
 
 - Current health signal:
   `VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production smoke:
   `/health`, `/ready`, Web `/`, and Web `/api/build-info` returned `200`.
   Protected `/workers/ready` returned `401` with the stale pre-bound
@@ -9700,6 +9766,7 @@ shell still lacks those credentials and approvals.
   live-trading action occurred.
 
   (`45/45`); repeatable `api,backtests` PASS (`2/2` selected checks).
+
 - Evidence:
   `history/evidence/luc-5604-api-backtests-shared-db-cleanup-repair-2026-06-27.md`;
   `history/artifacts/qa-repeatable-smoke-e2e-2026-06-27.json`.
@@ -9711,7 +9778,7 @@ shell still lacks those credentials and approvals.
 ## 2026-06-27 LUC-5622 Known-State Baseline
 
 - Current health signal: `VERIFIED_LOCAL / ARCHITECTURE_BASELINE_CLEAN /
-  APP_COMPLETION_PROOF_BACKLOG_ROUTED`.
+APP_COMPLETION_PROOF_BACKLOG_ROUTED`.
 - Architecture health:
   architecture-awareness refresh passed at `2026-06-27T19:10:41.841Z` with
   `9872` entities, `31955` relations, and `10584` scanned files. Actionable
@@ -9731,7 +9798,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `VERIFIED_PRODUCTION / PROTECTED_WORKERS_READY_PASS /
-  STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
+STALE_SMOKE_AUTH_TOKEN_RESIDUAL`.
 - Production smoke:
   `/health`, `/ready`, Web `/`, and Web `/api/build-info` returned `200`.
   Protected `/workers/ready` failed closed with stale `SMOKE_AUTH_TOKEN`
@@ -9756,7 +9823,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `APP_HEALTHY / PROTECTED_WORKERS_READY_PASS_VIA_FRESH_LOGIN /
-  STALE_TOKEN_BINDING_BLOCKED`.
+STALE_TOKEN_BINDING_BLOCKED`.
 - Validation:
   current-binding smoke passed public API/Web rows but failed protected
   `/workers/ready` with `401`; fresh-login smoke after process-local
@@ -9777,7 +9844,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
+RUNTIME_HEALTHY / TRANSIENT_LOGOUT_502_RETRIED_PASS`.
 - Production smoke:
   `/health`, `/ready`, Web `/`, Web `/api/build-info`, and protected
   `/workers/ready` returned `200` through approved audit-login env mapping.
@@ -9806,7 +9873,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
+PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
 - Production/auth:
   [LUC-6180](/LUC/issues/LUC-6180) passed authenticated production acceptance
   for Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`, including logout
@@ -9882,7 +9949,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `ARCHITECTURE_ACTIONABLE_CLEAN / PRODUCTION_AUTH_ACCEPTANCE_PASS /
-  PROTECTED_INPUT_READINESS_NO_GO / V1_BLOCKED`.
+PROTECTED_INPUT_READINESS_NO_GO / V1_BLOCKED`.
 - Production/auth:
   [LUC-6248](/LUC/issues/LUC-6248) passed authenticated production acceptance
   for Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`.
@@ -9910,7 +9977,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `APP_HEALTHY / CURRENT_BINDING_SMOKE_PASS / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_NOT_REQUIRED`.
+ROLLBACK_NOT_REQUIRED`.
 - Validation:
   production smoke passed public API/Web and protected `/workers/ready -> 200`;
   runtime freshness passed with worker heartbeat and market data age `8270 ms`;
@@ -9978,7 +10045,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS /
-  RUNTIME_HEALTHY`.
+RUNTIME_HEALTHY`.
 - Production smoke:
   `/health`, `/ready`, Web `/`, Web `/api/build-info`, and protected
   `/workers/ready` returned `200` through fresh-login auth.
@@ -10060,7 +10127,7 @@ shell still lacks those credentials and approvals.
   `LUC-6034-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-28`.
 - Status:
   `DONE / VERIFIED_PRODUCTION / AUTHENTICATED_ACCEPTANCE_PASS /
-  PERFORMANCE_PASS / RUNTIME_HEALTHY`.
+PERFORMANCE_PASS / RUNTIME_HEALTHY`.
 - Scope:
   QVE read-only production acceptance and performance verification only. No
   deploy, push, restart, rollback execution, env edit, secret/account readback,
@@ -10086,7 +10153,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `VERIFIED_READ_ONLY / APP_HEALTHY / MARKET_CATALOG_COLD_SAMPLE_WATCH /
-  COOLIFY_QUEUE_WATCH`.
+COOLIFY_QUEUE_WATCH`.
 - Validation:
   public API/Web smoke passed; protected `/workers/ready` passed through
   fresh-login after stale `SMOKE_AUTH_TOKEN` failed closed with `401`;
@@ -10109,11 +10176,12 @@ shell still lacks those credentials and approvals.
   readback, DB/Redis mutation, raw log capture, production account mutation,
   subscription/payment mutation, exchange mutation, order, position, or
   live-trading action occurred.
+
 ## 2026-06-29 LUC-6106 User Configuration Doc-Link Health
 
 - Current health signal:
   `DOC_LINK_ROWS_RECONCILED / USER_CONFIGURATION_MISSING_DOC_LINK_49_TO_30 /
-  NO_RUNTIME_MUTATION`.
+NO_RUNTIME_MUTATION`.
 - Validation:
   architecture-awareness regeneration passed (`entities=10086`,
   `relations=32917`, `files=11479`) and app-completion regeneration passed
@@ -10125,6 +10193,7 @@ shell still lacks those credentials and approvals.
   remaining User configuration missing-doc-link rows are outside this DSM
   API/support closure (`2` Backend/API platform, `28` Frontend/Web profile or
   Web platform). No product/runtime health claim changed.
+
 ## 2026-06-29 LUC-6109 Authenticated Production Acceptance
 
 - Current health signal:
@@ -10145,6 +10214,7 @@ shell still lacks those credentials and approvals.
 - Residual:
   Backend/Auth repair is required before QVE can close the production
   acceptance gate.
+
 ## 2026-06-29 LUC-6123 Production Auth Proof Rerun
 
 - Current health signal:
@@ -10175,7 +10245,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `PROTECTED_WORKERS_READY_PASS / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_PASS`.
+ROLLBACK_GUARD_PASS`.
 - Validation:
   deploy smoke passed public API/Web and protected `/workers/ready -> 200`;
   runtime freshness passed with worker heartbeat and market-data age near
@@ -10208,6 +10278,7 @@ shell still lacks those credentials and approvals.
   No deploy, push, production smoke, protected account proof, secret readback,
   production DB/Redis mutation, exchange/payment mutation, order, position, or
   live-trading action occurred.
+
 ## 2026-06-29 LUC-6245 Controller Disposition Retry
 
 - Current health signal:
@@ -10233,7 +10304,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `PM_STATUS_REFRESHED / PRODUCTION_AUTH_ACCEPTANCE_RECOVERED /
-  PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
+PROTECTED_RUNTIME_GREEN / RELEASE_GATES_REMAIN`.
 - Production/auth:
   [LUC-6180](/LUC/issues/LUC-6180) passed authenticated production acceptance
   for Web SHA `c357d957741f56835f27a1fc3a948dad43a91036`, including logout
@@ -10257,6 +10328,7 @@ shell still lacks those credentials and approvals.
 - Residual:
   release-grade build provenance, host-level VPS/log-window proof, and
   app-completion row burn-down remain open on existing owner paths.
+
 ## 2026-06-29 LUC-6198 Production Health Sweep
 
 - Status:
@@ -10267,11 +10339,12 @@ shell still lacks those credentials and approvals.
   API `/health`, API `/ready`, Web `/`, Web `/api/build-info`, and protected
   API `/workers/ready` returned `200`.
 - Runtime:
+
 ## 2026-06-30 LUC-6271 Production Watch Health Signal
 
 - Current health signal:
   `PRODUCTION_RUNTIME_HEALTHY / ROLLBACK_NOT_REQUIRED /
-  MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
+MARKET_CATALOG_COLD_SAMPLE_WATCH / COOLIFY_QUEUE_WATCH`.
 - Production/runtime:
   [LUC-6271](/LUC/issues/LUC-6271) passed read-only production deploy smoke,
   including protected `/workers/ready -> 200`; runtime freshness passed with
@@ -10295,6 +10368,7 @@ shell still lacks those credentials and approvals.
 
   runtime freshness PASS; worker/market heartbeat age `13474 ms`; runtime
   sessions healthy with `5` running and no stale session ids.
+
 - Rollback:
   `shouldRollback=false`, reasons `[]`, alerts `[]`.
 - Coolify:
@@ -10306,6 +10380,7 @@ shell still lacks those credentials and approvals.
   market-catalog cold sample watch, queued deployment row watch,
   `metadataSource=env-runtime` provenance gate, and host-level log/pressure
   proof gate remain open on existing owner paths.
+
 ## 2026-06-29 LUC-6234 Security Account-Access Gate Health Signal
 
 - Current health signal:
@@ -10325,11 +10400,12 @@ shell still lacks those credentials and approvals.
 - Control-plane caveat:
   Paperclip issue PATCH to `blocked` is unconfirmed because the injected API
   URL timed out on issue PATCH and health/me probes.
+
 ## 2026-06-29 LUC-6248 Production Acceptance Health Signal
 
 - Current health signal:
   `AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PASS / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_NOT_REQUIRED`.
+ROLLBACK_NOT_REQUIRED`.
 - Production/auth:
   [LUC-6248](/LUC/issues/LUC-6248) passed production auth proof for Web SHA
   `c357d957741f56835f27a1fc3a948dad43a91036`, including logout `200` and
@@ -10373,12 +10449,13 @@ shell still lacks those credentials and approvals.
   is already reflected as `blocked`. The product unblock remains
   Security/Ops binding missing protected families through approved encrypted
   runtime paths, then rerunning protected release/account proof.
+
 # 2026-07-01 LUC-6551 Production Acceptance Health Signal
 
 - Current health signal:
   `PRODUCTION_WEB_503 / WORKERS_READY_NOT_ACCEPTABLE /
-  AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
-  ROLLBACK_GUARD_ACTION_REQUIRED`.
+AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE / RUNTIME_FRESHNESS_PASS /
+ROLLBACK_GUARD_ACTION_REQUIRED`.
 - Production/API:
   deploy smoke returned API `/health -> 200` and `/ready -> 200`.
 - Production/Web:
@@ -10401,7 +10478,7 @@ shell still lacks those credentials and approvals.
 
 - Current health signal:
   `PRODUCTION_WEB_503 / AUTHENTICATED_ACCEPTANCE_NOT_EXECUTABLE /
-  API_HEALTH_READY_PASS / DEFAULT_SMOKE_BINDINGS_ABSENT`.
+API_HEALTH_READY_PASS / DEFAULT_SMOKE_BINDINGS_ABSENT`.
 - Wake/comment:
   comment `467b06f9-89bf-427a-bc34-d2cb727070be` confirmed the blocked
   disposition and did not provide an unblock signal.
@@ -10417,6 +10494,7 @@ shell still lacks those credentials and approvals.
 - Residual:
   [LUC-6331](/LUC/issues/LUC-6331) remains the live unblock path before QVE can
   run authenticated browser acceptance or Web performance.
+
 # 2026-07-01 LUC-6548 Production Watch
 
 - Status:
@@ -10433,6 +10511,7 @@ shell still lacks those credentials and approvals.
   read-only projection returned `200`; `soar-web` and `workers-backtest` are
   `exited:unhealthy`, Postgres/Redis are `running:healthy`, and `8`
   deployment rows remain queued.
+
 # 2026-07-02 LUC-6820 Regression Evidence Sweep
 
 - Status:
@@ -10560,11 +10639,12 @@ shell still lacks those credentials and approvals.
   queued.
 - Evidence:
   `history/evidence/luc-6904-production-performance-server-health-watch-2026-07-02.md`.
+
 ## 2026-07-12 LUC-621 Account Access registerUser Proof
 
 - Status:
   `DONE / FOCUSED_REGISTERUSER_PROOF_PASS / TEST_LINK_RESOLVED /
-  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Health impact:
   one generated Account access implemented-needs-proof gap was removed from
   the priority queue. App-completion now reports `implementedNeedsProof=113`

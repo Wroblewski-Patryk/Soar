@@ -1,3 +1,38 @@
+## 2026-07-12 LUC-637 Account Access Session-Token Proof
+
+- [LUC-637](/LUC/issues/LUC-637) can close as
+  `DONE / FOCUSED_SESSION_TOKEN_PROOF_PASS / TEST_LINK_RESOLVED /
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt` is directly linked
+  to `apps/api/src/modules/auth/sessionToken.test.ts` and the focused proof
+  passed (`1` file / `3` tests).
+- Next owner/action:
+  Docs Memory Lead + Project Manager owns the current project-truth first gap,
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
+  `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-636 Account Access Session-Token Doc-Link Closure
+
+- [LUC-636](/LUC/issues/LUC-636) can close as
+  `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Verified:
+  the scoped Account access session-token rows are no longer priority
+  `missing_doc_link` rows after docs/link/override refresh and generated
+  readback. Project truth now routes
+  `apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt` as
+  `implemented_needs_proof`.
+- Next owner/action:
+  [LUC-637](/LUC/issues/LUC-637) is assigned to Test Automation Engineer for
+  focused proof of session-token candidate ordering/extraction behavior.
+- Evidence:
+  `history/evidence/luc-636-account-access-session-token-doc-link-closure-2026-07-12.md`;
+  `history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md`.
+
 ## 2026-07-12 LUC-618 Account Access registerUser Doc-Link
 
 - [LUC-618](/LUC/issues/LUC-618) can close as
@@ -12518,6 +12553,7 @@ COOLIFY_QUEUE_WATCH`.
 - Evidence:
   `history/evidence/luc-6904-production-performance-server-health-watch-2026-07-02.md`;
   `history/tasks/luc-6904-production-performance-server-health-watch-2026-07-02-task.md`.
+
 ## 2026-07-12 LUC-621 Account Access registerUser Proof
 
 - [LUC-621](/LUC/issues/LUC-621) can close as
