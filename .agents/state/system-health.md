@@ -1,3 +1,78 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+- Status:
+  `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access implemented-needs-proof gap was removed from
+  the priority queue. App-completion now reports `riskItems=3530` and project
+  truth routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken` as `missing_doc_link`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+- Evidence:
+  `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`;
+  `history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-547 Account Access getPreviousSecretExpiry Doc-Link
+
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Health impact:
+  Account access source-truth completeness improved by resolving the current
+  `missing_doc_link` row for
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`.
+- Evidence:
+  architecture-awareness refresh passed (`10715` entities, `34925` relations);
+  app-completion `missingDocLink=1991`; project-truth first gap is now the same
+  helper as `implemented_needs_proof`; strict graph drift passed (`850/850`,
+  `0` missing).
+- Residual:
+  [LUC-549](/LUC/issues/LUC-549) owns the focused Test Automation proof. No
+  runtime/prod/protected/secret/account/live-trading mutation occurred.
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+- Status:
+  `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+  NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access implemented-needs-proof gap was removed from
+  the priority queue. App-completion now reports `implementedNeedsProof=113`
+  and project truth routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry` as
+  `missing_doc_link`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+- Evidence:
+  `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
+  `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access documentation-link gap was removed from the
+  priority queue. App-completion now reports `missingDocLink=1993`; project
+  truth now routes the first Account access gap to
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+- Evidence:
+  `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
+  `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
+
 ## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
 
 - Status:

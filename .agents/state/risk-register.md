@@ -1,8 +1,35 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could continue routing `getPreviousSecretExpiry` as unproven after focused JWT rotation-window tests exist. | P1 | mitigated | `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`; `auth.jwt.test.ts` passed (`5/5`); project truth first gap advanced to `auth.jwt.ts#signAuthToken`. | No remaining action on [LUC-549](/LUC/issues/LUC-549); keep protected auth/session acceptance and remaining doc-link rows on separate owner paths. | 2026-07-12 |
+| Local JWT helper proof could be overclaimed as protected production auth/session proof or secret-value inspection. | P0 | mitigated_by_boundary | Focused local test only; no protected credential access, secret/account readback, DB/Redis mutation, deploy, production session readback, exchange mutation, order, position, or LIVE trading action occurred. | Treat this as local source-truth proof only; protected auth/session acceptance remains separate approved QA/Ops scope. | 2026-07-12 |
+
+## 2026-07-12 LUC-547 Account Access getPreviousSecretExpiry Doc-Link Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could continue routing `getPreviousSecretExpiry` as missing documentation after the owner doc exists. | P2 | mitigated | `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`; app-completion `missingDocLink=1991`; project-truth first gap advanced to `implemented_needs_proof` for the same helper. | [LUC-549](/LUC/issues/LUC-549) owns remaining focused proof; no remaining DSM action on [LUC-547](/LUC/issues/LUC-547). | 2026-07-12 |
+| Local documentation repair could be overclaimed as executable JWT proof or protected production auth/session proof. | P1 | mitigated_by_boundary | DSM changed source-truth docs/indexes only and created [LUC-549](/LUC/issues/LUC-549) for TAE proof; no runtime code, protected credential access, secret/account readback, DB/Redis mutation, deploy, or LIVE trading action occurred. | Treat [LUC-547](/LUC/issues/LUC-547) as doc-link closure only; proof remains separate. | 2026-07-12 |
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could continue routing `getJwtSecrets` as unproven after focused JWT primary/rotation-window tests exist. | P1 | mitigated | `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`; app-completion `implementedNeedsProof=113`; project-truth first gap advanced to `auth.jwt.ts#getPreviousSecretExpiry`. | No remaining action on [LUC-541](/LUC/issues/LUC-541); keep production protected auth acceptance and remaining doc-link rows on separate owner paths. | 2026-07-12 |
+| Local proof could be overclaimed as protected production auth/session proof or secret-value inspection. | P0 | mitigated_by_boundary | Focused local test only; no protected credential access, secret/account readback, DB/Redis mutation, deploy, production session readback, exchange mutation, order, position, or LIVE trading action occurred. | Treat this as local source-truth proof only; protected auth/session acceptance remains separate approved QA/Ops scope. | 2026-07-12 |
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could continue routing the auth e2e `restoreEnv` test helper as a missing documentation link after the owner doc exists. | P2 | mitigated | `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`; app-completion `missingDocLink=1993`; project-truth first gap advanced to `auth.jwt.ts#getJwtSecrets`. | No remaining action on [LUC-528](/LUC/issues/LUC-528); Docs Memory Lead + Project Manager owns the next Account access doc-link row for `auth.jwt.ts#getJwtSecrets`. | 2026-07-11 |
+
 ## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |
 | --- | --- | --- | --- | --- | --- |
-| Project truth could keep routing proven auth-controller behavior as missing test coverage even though DB-backed auth e2e tests already cover the route/session contract. | P1 | mitigated | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; app-completion `missingTestLink=974`, down from `980`; first gap advanced to `auth.e2e.test.ts#restoreEnv` as `missing_doc_link`. | Docs Memory Lead + Project Manager owns the remaining doc-link row; CBE/QA can rerun DB-backed auth e2e once local Docker/Postgres is available. | 2026-07-11 |
+| Project truth could keep routing proven auth-controller behavior as missing test coverage even though DB-backed auth e2e tests already cover the route/session contract. | P1 | mitigated | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; app-completion `missingTestLink=974`, down from `980`; follow-up doc-link row `auth.e2e.test.ts#restoreEnv` was closed by [LUC-528](/LUC/issues/LUC-528). | No remaining CBE/QA action for the six auth-controller rows; CBE/QA can rerun DB-backed auth e2e once local Docker/Postgres is available. | 2026-07-11 |
 | Fresh DB-backed auth route proof could be falsely claimed from this runner while Docker/Postgres is unavailable. | P2 | mitigated_by_boundary | Docker probe failed on the Docker Desktop Linux engine pipe; no fresh DB-backed test pass was claimed. | Treat prior [LUC-171](/LUC/issues/LUC-171) DB-backed proof as linked evidence for this metadata row; rerun locally only after infra is available. | 2026-07-11 |
 
 ## 2026-07-11 LUC-264 Protected Input Binding Closure Risk

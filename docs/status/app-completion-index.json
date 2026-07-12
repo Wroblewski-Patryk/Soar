@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T17:29:26.610Z",
+  "generatedAt": "2026-07-11T23:34:45.309Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 974,
-    "missingDocLink": 1994,
+    "missingDocLink": 1991,
     "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3533,
-    "appCompletionRiskItems": 3533,
+    "riskItems": 3530,
+    "appCompletionRiskItems": 3530,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,8 +22,8 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 17,
-        "missing_doc_link": 144,
+        "ok": 20,
+        "missing_doc_link": 141,
         "missing_test_link": 70,
         "implemented_needs_proof": 3,
         "needs_browser_review": 31
@@ -137,71 +137,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "function:restoreenv:0630ea8b3a",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "restoreEnv",
-      "path": "apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 5,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:getjwtsecrets:430243a682",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "getJwtSecrets",
-      "path": "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:getprevioussecretexpiry:5d466d5a62",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "getPreviousSecretExpiry",
-      "path": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "function:signauthtoken:874ab1752c",
       "type": "function",
@@ -4351,6 +4286,69 @@
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createpage:5ad8777b4d",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createPage",
+      "path": "scripts/runProdAuthSessionBrowserProof.mjs#createPage",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:evaluate:cffb497c92",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "evaluate",
+      "path": "scripts/runProdAuthSessionBrowserProof.mjs#evaluate",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:findbrowserpath:8c7f77ab9b",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "findBrowserPath",
+      "path": "scripts/runProdAuthSessionBrowserProof.mjs#findBrowserPath",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
       "risk": "missing_doc_link"
     }
   ]

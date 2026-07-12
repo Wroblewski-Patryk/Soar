@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T17:29:26.932Z",
+  "generatedAt": "2026-07-11T23:34:45.308Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,68 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3533,
+    "appCompletionGaps": 3530,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3533,
+    "knownAppCompletionRiskItems": 3530,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3533
+    "totalGaps": 3530
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: restoreEnv has app-completion risk missing_doc_link.",
+    "summary": "Account access: signAuthToken has app-completion risk missing_doc_link.",
     "nextOwner": "Docs Memory Lead + Project Manager",
     "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
-      "apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv"
+      "apps/api/src/modules/auth/auth.jwt.ts#signAuthToken"
     ],
-    "sourceItemId": "function:restoreenv:0630ea8b3a",
+    "sourceItemId": "function:signauthtoken:874ab1752c",
     "risk": "missing_doc_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: restoreEnv has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv"
-      ],
-      "sourceItemId": "function:restoreenv:0630ea8b3a",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getJwtSecrets has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets"
-      ],
-      "sourceItemId": "function:getjwtsecrets:430243a682",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getPreviousSecretExpiry has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry"
-      ],
-      "sourceItemId": "function:getprevioussecretexpiry:5d466d5a62",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2591,45 @@
         "scripts/runProdAuthSessionBrowserProof.mjs#collectLocation"
       ],
       "sourceItemId": "function:collectlocation:5f6f98a53e",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: createPage has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#createPage"
+      ],
+      "sourceItemId": "function:createpage:5ad8777b4d",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: evaluate has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#evaluate"
+      ],
+      "sourceItemId": "function:evaluate:cffb497c92",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: findBrowserPath has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdAuthSessionBrowserProof.mjs#findBrowserPath"
+      ],
+      "sourceItemId": "function:findbrowserpath:8c7f77ab9b",
       "risk": "missing_doc_link"
     }
   ]

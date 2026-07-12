@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T17:29:26.932Z",
+  "generatedAt": "2026-07-11T23:34:45.308Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4695,
-      "linkedRelationCount": 18990,
+      "entityCount": 4710,
+      "linkedRelationCount": 19067,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1159,6 +1159,22 @@
               "status": "verified"
             },
             {
+              "id": "function:getjwtsecrets:430243a682",
+              "type": "function",
+              "name": "getJwtSecrets",
+              "path": "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:getprevioussecretexpiry:5d466d5a62",
+              "type": "function",
+              "name": "getPreviousSecretExpiry",
+              "path": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "route:auth-session-ts:acb7f8af80",
               "type": "route",
               "name": "auth.session.ts",
@@ -1223,6 +1239,14 @@
               "status": "verified"
             },
             {
+              "id": "function:restoreenv:0630ea8b3a",
+              "type": "function",
+              "name": "restoreEnv",
+              "path": "apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "function:expectsessioncookiecleared:9748483ec1",
               "type": "function",
               "name": "expectSessionCookieCleared",
@@ -1277,36 +1301,12 @@
               "path": "history/tasks/luc-4893-production-performance-health-watch-2026-06-20-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
-              "type": "task",
-              "name": "LUC-2057 Local Protected Wallet Route Action Proof Task",
-              "path": "history/tasks/luc-2057-local-protected-wallet-route-action-proof-2026-06-05-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-244-route-browser-review-slice-checklist-task:9250ac393e",
-              "type": "task",
-              "name": "LUC-244 Route Browser-Review Slice Checklist Task",
-              "path": "history/tasks/luc-244-route-browser-review-slice-checklist-2026-07-10-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-501-browser-review-owner-route-bundles-task:26a0e3a5fc",
-              "type": "task",
-              "name": "LUC-501 Browser-Review Owner Route Bundles Task",
-              "path": "history/tasks/luc-501-browser-review-owner-route-bundles-2026-07-11-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3610,
+          "count": 3625,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -5809,8 +5809,8 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 803,
-      "linkedRelationCount": 2929,
+      "entityCount": 814,
+      "linkedRelationCount": 2973,
       "layers": {
         "frontend": {
           "count": 28,
@@ -6043,7 +6043,7 @@
           "truncated": false
         },
         "backend": {
-          "count": 296,
+          "count": 300,
           "sample": [
             {
               "id": "route:profilepage-tsx:f1dab93865",
@@ -6689,7 +6689,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 395,
+          "count": 401,
           "sample": [
             {
               "id": "agent:procedure:f48c47c027",
@@ -7345,7 +7345,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 83,
+          "count": 84,
           "sample": [
             {
               "id": "document:exchange-adapter-deep-capability-and-connector-chain:ff7b60c4a6",
@@ -7916,6 +7916,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:project-truth-index:df4eb1672a",
+              "type": "document",
+              "name": "Project Truth Index",
+              "path": "docs/status/project-truth-index.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:security-and-risk:8e7a0538c9",
               "type": "document",
               "name": "Security and Risk",
@@ -7976,14 +7984,6 @@
               "type": "document",
               "name": "Execution Lifecycle Parity Contract",
               "path": "docs/architecture/reference/execution-lifecycle-parity-contract.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:web-deep-dive-dashboard-home-module:981f082e16",
-              "type": "document",
-              "name": "Web Deep-Dive: Dashboard Home Module",
-              "path": "docs/modules/web-dashboard-home.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3243,
-      "linkedRelationCount": 11242,
+      "entityCount": 3244,
+      "linkedRelationCount": 11249,
       "layers": {
         "frontend": {
           "count": 390,
@@ -11403,7 +11403,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1369,
+          "count": 1370,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9136,
-      "linkedRelationCount": 32415,
+      "entityCount": 9155,
+      "linkedRelationCount": 32490,
       "layers": {
         "frontend": {
           "count": 697,
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6033,
+          "count": 6052,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

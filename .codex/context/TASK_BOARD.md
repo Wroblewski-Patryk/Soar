@@ -1,3 +1,141 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+- [LUC-549](/LUC/issues/LUC-549) can close as
+  `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  TAE extended `auth.jwt.test.ts` to prove previous-secret acceptance when no
+  expiry is configured and invalid previous-secret expiry fail-closed behavior,
+  then linked `auth.jwt.ts#getPreviousSecretExpiry` through
+  `priority-test-links.csv` and `scanner-overrides.json`.
+- Validation:
+  `corepack pnpm --filter api exec vitest run src/modules/auth/auth.jwt.test.ts`
+  passed (`1` file / `5` tests); Prettier check passed; CSV readback confirmed
+  the direct proof row; architecture-awareness refresh passed (`10718`
+  entities / `34938` relations, `entityOverridesApplied=12`);
+  app-completion refresh passed (`riskItems=3530`); project-truth `--apply`
+  passed and advanced the first Account access gap to `auth.jwt.ts#signAuthToken`
+  as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`;
+  `history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md`.
+- Boundary:
+  no runtime implementation, production smoke, protected credential access,
+  secret/account readback, deploy, restart, rollback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
+## 2026-07-12 LUC-547 Account Access Auth JWT getPreviousSecretExpiry Doc-Link
+
+- [LUC-547](/LUC/issues/LUC-547) should move to `done` as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added the `auth.jwt.ts#getPreviousSecretExpiry` Account access
+  classification to `docs/modules/api-auth.md`, linked it through
+  `docs/architecture/relations/documentation-links.csv`, and added the scanner
+  `documents` override in `docs/architecture/scanner-overrides.json`.
+- Validation:
+  architecture-awareness generation passed (`10715` entities / `34925`
+  relations, `relationOverridesApplied=3`); app-completion refresh passed
+  (`missingDocLink=1991`, `implementedNeedsProof=114`, `riskItems=3531`);
+  project-truth `--apply` passed and changed the first gap to
+  `implemented_needs_proof` for `auth.jwt.ts#getPreviousSecretExpiry`;
+  architecture drift strict passed (`850/850`, `0` missing); `git diff --check`
+  passed with CRLF warnings only.
+- Follow-up:
+  [LUC-549](/LUC/issues/LUC-549) is assigned to Test Automation Engineer for
+  the focused proof row.
+- Evidence:
+  `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`;
+  `history/tasks/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12-task.md`.
+- Boundary:
+  no runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, account mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+
+## 2026-07-11 LUC-539 Account Access Auth JWT getJwtSecrets Doc-Link
+
+- [LUC-539](/LUC/issues/LUC-539) should move to `done` as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added the `auth.jwt.ts#getJwtSecrets` Account access classification to
+  `docs/modules/api-auth.md`, linked it through
+  `docs/architecture/relations/documentation-links.csv`, and added the
+  scanner `documents` override in `docs/architecture/scanner-overrides.json`.
+- Validation:
+  architecture-awareness generation passed (`10706` entities / `34882`
+  relations, `relationOverridesApplied=2`); app-completion refresh passed
+  (`missingDocLink=1992`, `riskItems=3532`); project-truth `--apply` passed
+  and changed the first gap to `implemented_needs_proof` for
+  `auth.jwt.ts#getJwtSecrets`; architecture drift strict passed (`850/850`,
+  `0` missing); `git diff --check` passed with CRLF warnings only.
+- Follow-up:
+  [LUC-541](/LUC/issues/LUC-541) is assigned to Test Automation Engineer for
+  the focused proof row. DSM attempted the focused API JWT test command, but
+  it timed out after 120 seconds and is not claimed as proof.
+- Evidence:
+  `history/evidence/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11.md`;
+  `history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md`.
+- Boundary:
+  no runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, account mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+- [LUC-541](/LUC/issues/LUC-541) should move to `done` as
+  `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  TAE linked the existing focused auth JWT proof to
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets` through
+  `docs/architecture/scanner-overrides.json` and
+  `docs/architecture/relations/priority-test-links.csv`.
+- Validation:
+  `corepack pnpm --filter api exec vitest run src/modules/auth/auth.jwt.test.ts`
+  passed (`1` file / `3` tests); scanner override JSON formatting passed; CSV
+  readback confirmed the direct proof row; architecture-awareness refresh
+  passed (`10712` entities / `34911` relations); app-completion refresh passed
+  (`implementedNeedsProof=113`, `missingDocLink=1992`, `riskItems=3531`);
+  project-truth `--apply` passed and first gap advanced to
+  `auth.jwt.ts#getPreviousSecretExpiry`.
+- Evidence:
+  `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
+  `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
+- Boundary:
+  no runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, account mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+- [LUC-528](/LUC/issues/LUC-528) should move to `done` as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added the `auth.e2e.test.ts#restoreEnv` Account access classification to
+  `docs/modules/api-auth.md` and linked it through
+  `docs/architecture/relations/documentation-links.csv`.
+- Validation:
+  architecture-awareness generation passed (`10699` entities / `34855`
+  relations); app-completion refresh passed (`missingDocLink=1993`,
+  `riskItems=3532`); project-truth `--apply` passed and first gap advanced to
+  `auth.jwt.ts#getJwtSecrets`; targeted readback confirmed the selected row is
+  no longer in project-truth priority rows; `git diff --check` passed with
+  CRLF warnings only.
+- Evidence:
+  `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
+  `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
+- Boundary:
+  no runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, account mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+
 ## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
 
 - [LUC-498](/LUC/issues/LUC-498) should move to `done` as

@@ -1,3 +1,116 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+- Mission:
+  `LUC-549-ACCOUNT-ACCESS-GETPREVIOUSSECRETEXPIRY-PROOF-2026-07-12`.
+- Status:
+  `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
+  implementation, deploy, push, restart, rollback, env edit, migration,
+  protected credential access, secret/account value disclosure, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or live-trading action.
+- Result:
+  focused `auth.jwt.test.ts` proof now covers previous-secret acceptance with a
+  future expiry, no configured expiry, expired-window rejection, and invalid
+  expiry fail-closed behavior. The helper is linked through
+  `priority-test-links.csv` and a verified scanner override. Project truth
+  advanced the first Account access gap to `auth.jwt.ts#signAuthToken` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`;
+  `history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md`.
+- Residual:
+  no remaining action on [LUC-549](/LUC/issues/LUC-549). The next Account
+  access row is `auth.jwt.ts#signAuthToken`, owned by Docs Memory Lead +
+  Project Manager as a separate documentation-link row.
+
+## 2026-07-12 LUC-547 Account Access Auth JWT getPreviousSecretExpiry Doc-Link
+
+- Module row:
+  Account access / API auth JWT source-truth documentation.
+- Status:
+  `verified local source-truth link / one doc-link row resolved /
+  implemented-proof follow-up delegated / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`;
+  `history/tasks/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`.
+  Architecture-awareness regenerated with `10715` entities and `34925`
+  relations; app-completion reports `missingDocLink=1991`; project truth now
+  routes the same entity as `implemented_needs_proof`.
+- Confidence:
+  high for this local source-truth/doc-link row. Runtime/test proof is not
+  claimed here; [LUC-549](/LUC/issues/LUC-549) owns the focused QA proof.
+
+## 2026-07-11 LUC-539 Account Access Auth JWT getJwtSecrets Doc-Link
+
+- Module row:
+  Account access / API auth JWT source-truth documentation.
+- Status:
+  `verified local source-truth link / one doc-link row resolved /
+  implemented-proof follow-up delegated / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11.md`;
+  `history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`.
+  Architecture-awareness regenerated with `10706` entities and `34882`
+  relations; app-completion reports `missingDocLink=1992`; project-truth now
+  routes the same entity as `implemented_needs_proof`.
+- Confidence:
+  high for this local source-truth/doc-link row. Runtime/test proof is not
+  claimed here; [LUC-541](/LUC/issues/LUC-541) owns the focused QA proof.
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+- Module row:
+  Account access / API auth JWT secret resolution / app-completion proof.
+- Status:
+  `verified local focused proof / one implemented-needs-proof row resolved /
+  no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
+  `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
+- Current proof:
+  `apps/api/src/modules/auth/auth.jwt.test.ts` verifies primary token
+  signing/verification, previous secret acceptance during an open rotation
+  window, and previous secret rejection after expiry. Architecture-awareness
+  regenerated with `10712` entities and `34911` relations; app-completion
+  reports `implementedNeedsProof=113`; project truth first Account access gap
+  advanced to `auth.jwt.ts#getPreviousSecretExpiry`.
+- Confidence:
+  high for this local Account access JWT proof row. This does not claim
+  protected production auth/session acceptance or secret-value readback.
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+- Module row:
+  Account access / API auth e2e source-truth documentation.
+- Status:
+  `verified local source-truth link / one doc-link row resolved / no runtime
+  mutation`.
+- Evidence:
+  `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
+  `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md` and `documentation-links.csv` now document
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv`.
+  Architecture-awareness regenerated with `10699` entities and `34855`
+  relations; app-completion reports `missingDocLink=1993`; project-truth first
+  Account access gap advanced to
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`.
+- Confidence:
+  high for this local source-truth/doc-link row. This does not claim new
+  runtime behavior or protected production auth acceptance.
+
 ## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
 
 - Module row:

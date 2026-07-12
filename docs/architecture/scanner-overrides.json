@@ -101,12 +101,44 @@
         "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
         "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access JWT secret resolution through focused auth.jwt tests covering primary signing/verification, previous secret acceptance during the rotation window, and previous secret rejection after expiry.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access JWT previous-secret expiry parsing through focused auth.jwt tests covering open-ended previous-secret rotation, valid future expiry acceptance, expired-window rejection, and invalid expiry fail-closed behavior.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md"
+      ]
     }
   ],
   "relationOverrides": [
     {
       "fromPath": "docs/modules/api-auth.md",
       "toPath": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
       "type": "documents",
       "evidence": "docs/modules/api-auth.md"
     }

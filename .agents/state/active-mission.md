@@ -1,3 +1,142 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+- Mission:
+  `LUC-549-ACCOUNT-ACCESS-GETPREVIOUSSECRETEXPIRY-PROOF-2026-07-12`.
+- Status:
+  `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  TAE local automated proof and project-truth linkage for
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
+  implementation, deploy, push, restart, rollback, env edit, migration,
+  protected credential access, secret/account value disclosure, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or live-trading action.
+- Result:
+  `auth.jwt.test.ts` passed (`5/5`) with previous-secret expiry edge-case
+  coverage; generated source-truth outputs refreshed; project truth advanced
+  the first Account access gap to `auth.jwt.ts#signAuthToken`.
+- Evidence:
+  `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`;
+  `history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md`.
+- Residual:
+  no remaining action on [LUC-549](/LUC/issues/LUC-549). The next Account
+  access row is a Docs Memory Lead + Project Manager documentation-link row
+  for `auth.jwt.ts#signAuthToken`.
+
+## 2026-07-12 LUC-547 Account Access Auth JWT getPreviousSecretExpiry Doc-Link
+
+- Mission:
+  `LUC-547-ACCOUNT-ACCESS-AUTH-JWT-GETPREVIOUSSECRETEXPIRY-DOC-LINK-2026-07-12`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`. No runtime
+  code, deploy, push, restart, rollback, env edit, migration, protected
+  credential access, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  the JWT previous-secret expiry helper is documented in
+  `docs/modules/api-auth.md`, linked through `documentation-links.csv`, and
+  connected with a scanner `documents` override. App-completion `missingDocLink`
+  dropped to `1991`; project-truth now reports the same row as
+  `implemented_needs_proof`, which is outside DSM ownership.
+- Evidence:
+  `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`;
+  `history/tasks/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12-task.md`.
+- Residual:
+  no remaining DSM action on [LUC-547](/LUC/issues/LUC-547).
+  [LUC-549](/LUC/issues/LUC-549) is assigned to Test Automation Engineer for
+  the focused proof row.
+
+## 2026-07-11 LUC-539 Account Access Auth JWT getJwtSecrets Doc-Link
+
+- Mission:
+  `LUC-539-ACCOUNT-ACCESS-AUTH-JWT-GETJWTSECRETS-DOC-LINK-2026-07-11`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected credential
+  access, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  the JWT `getJwtSecrets` helper is documented in `docs/modules/api-auth.md`,
+  linked through `documentation-links.csv`, and connected with a scanner
+  `documents` override. App-completion `missingDocLink` dropped to `1992`;
+  project-truth now reports the same row as `implemented_needs_proof`, which is
+  outside DSM ownership.
+- Evidence:
+  `history/evidence/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11.md`;
+  `history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md`.
+- Residual:
+  no remaining DSM action on [LUC-539](/LUC/issues/LUC-539). [LUC-541](/LUC/issues/LUC-541)
+  is assigned to Test Automation Engineer for the focused proof row.
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+- Mission:
+  `LUC-541-ACCOUNT-ACCESS-GETJWTSECRETS-PROOF-2026-07-12`.
+- Status:
+  `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+  NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer source-truth/proof closure for
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`. No runtime code,
+  test logic, schema/migration, protected credential access, secret/account
+  readback, deploy, restart, rollback, DB/Redis mutation, account mutation,
+  exchange/payment/subscription mutation, order, position, or LIVE trading
+  action.
+- Result:
+  focused `auth.jwt.test.ts` proof passed (`1` file / `3` tests) and the
+  existing scanner/test-link mechanisms now connect the row to executable JWT
+  primary/rotation-window proof. App-completion reports
+  `implementedNeedsProof=113`; project truth advanced the first Account
+  access gap to `auth.jwt.ts#getPreviousSecretExpiry` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
+  `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
+- Residual:
+  no remaining action on [LUC-541](/LUC/issues/LUC-541). The next Account
+  access row is `auth.jwt.ts#getPreviousSecretExpiry`, owned by Docs Memory
+  Lead + Project Manager as a separate documentation-link row.
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+- Mission:
+  `LUC-528-ACCOUNT-ACCESS-AUTH-E2E-RESTOREENV-DOC-LINK-2026-07-11`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected credential
+  access, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  the auth e2e `restoreEnv` helper is documented in `docs/modules/api-auth.md`
+  and linked through `documentation-links.csv`. App-completion
+  `missingDocLink` dropped to `1993`; project-truth first Account access gap
+  advanced to `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`.
+- Evidence:
+  `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
+  `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
+- Residual:
+  no remaining action on [LUC-528](/LUC/issues/LUC-528). The next Account
+  access doc-link row is `auth.jwt.ts#getJwtSecrets` and should be handled as
+  a separate source-truth row.
+
 ## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
 
 - Mission:

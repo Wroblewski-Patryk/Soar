@@ -1,3 +1,93 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+- [LUC-549](/LUC/issues/LUC-549) can close as
+  `DONE / FOCUSED_JWT_EXPIRY_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry` is now
+  linked to executable focused proof in
+  `apps/api/src/modules/auth/auth.jwt.test.ts`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager owns the next Account access
+  `missing_doc_link` row:
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`.
+- Evidence:
+  `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`;
+  `history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-547 Account Access getPreviousSecretExpiry Doc-Link
+
+- [LUC-547](/LUC/issues/LUC-547) can close as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-549_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry` is now
+  documented by `docs/modules/api-auth.md`, linked in
+  `docs/architecture/relations/documentation-links.csv`, and connected through
+  `docs/architecture/scanner-overrides.json`.
+- Next owner/action:
+  Test Automation Engineer owns [LUC-549](/LUC/issues/LUC-549) for the
+  remaining `implemented_needs_proof` row. Start from
+  `corepack pnpm --filter api exec vitest run src/modules/auth/auth.jwt.test.ts`.
+- Evidence:
+  `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`;
+  `history/tasks/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+- [LUC-541](/LUC/issues/LUC-541) can close as
+  `DONE / FOCUSED_JWT_PROOF_PASS / TEST_LINK_RESOLVED /
+  APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets` is now linked to
+  executable focused proof in `apps/api/src/modules/auth/auth.jwt.test.ts`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager owns the next Account access
+  `missing_doc_link` row:
+  `apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry`.
+- Evidence:
+  `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`;
+  `history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md`.
+
+## 2026-07-11 LUC-539 Account Access Auth JWT getJwtSecrets Doc-Link
+
+- [LUC-539](/LUC/issues/LUC-539) can close as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / FOLLOW_UP_LUC-541_CREATED /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets` is now documented by
+  `docs/modules/api-auth.md`, linked in
+  `docs/architecture/relations/documentation-links.csv`, and connected through
+  `docs/architecture/scanner-overrides.json`.
+- Next owner/action:
+  Test Automation Engineer owns [LUC-541](/LUC/issues/LUC-541) for the
+  remaining `implemented_needs_proof` row. Start from
+  `corepack pnpm --filter api test -- src/modules/auth/auth.jwt.test.ts` or
+  diagnose the focused-test timeout and record the working proof command.
+- Evidence:
+  `history/evidence/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11.md`;
+  `history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md`.
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+- [LUC-528](/LUC/issues/LUC-528) can close as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv` is now documented by
+  `docs/modules/api-auth.md` and linked in
+  `docs/architecture/relations/documentation-links.csv`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager owns the next Account access
+  `missing_doc_link` row:
+  `apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets`.
+- Evidence:
+  `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`;
+  `history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md`.
+
 ## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down Next Step
 
 - [LUC-498](/LUC/issues/LUC-498) can close as

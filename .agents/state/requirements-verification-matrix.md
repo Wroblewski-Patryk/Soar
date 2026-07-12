@@ -1,8 +1,32 @@
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access JWT previous-secret expiry behavior must have linked automated proof before leaving `implemented_needs_proof`. | verified locally | `history/evidence/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12.md`; `apps/api/src/modules/auth/auth.jwt.test.ts` passed (`5/5`); direct `priority-test-links.csv` row exists; project truth advanced to `auth.jwt.ts#signAuthToken`. | No remaining action on [LUC-549](/LUC/issues/LUC-549); Docs Memory Lead + Project Manager handles the next Account access doc-link row for `auth.jwt.ts#signAuthToken`. | 2026-07-12 |
+
+## 2026-07-12 LUC-547 Account Access getPreviousSecretExpiry Doc-Link
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access JWT previous-secret expiry helper must have a source-truth documentation link before leaving `missing_doc_link`. | verified locally | `history/evidence/luc-547-account-access-auth-jwt-getprevioussecretexpiry-doc-link-2026-07-12.md`; `docs/modules/api-auth.md`; `docs/architecture/relations/documentation-links.csv`; app-completion `missingDocLink=1991`; project truth advanced the helper to `implemented_needs_proof`. | [LUC-549](/LUC/issues/LUC-549) owns the focused Test Automation proof for `auth.jwt.ts#getPreviousSecretExpiry`. | 2026-07-12 |
+
+## 2026-07-12 LUC-541 Account Access getJwtSecrets Proof
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access JWT secret resolution must have linked automated proof before leaving `implemented_needs_proof`. | verified locally | `history/evidence/luc-541-account-access-getjwtsecrets-proof-2026-07-12.md`; `apps/api/src/modules/auth/auth.jwt.test.ts`; app-completion `implementedNeedsProof=113`; project truth advanced to `auth.jwt.ts#getPreviousSecretExpiry`. | No remaining action on [LUC-541](/LUC/issues/LUC-541); Docs Memory Lead + Project Manager handles the next Account access doc-link row for `auth.jwt.ts#getPreviousSecretExpiry`. | 2026-07-12 |
+
+## 2026-07-11 LUC-528 Account Access Auth E2E RestoreEnv Doc-Link
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access auth e2e helper rows that appear in app-completion must have an owner documentation link before leaving `missing_doc_link`. | verified locally | `history/evidence/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11.md`; `docs/modules/api-auth.md`; `docs/architecture/relations/documentation-links.csv`; app-completion `missingDocLink=1993`; project truth advanced to `auth.jwt.ts#getJwtSecrets`. | No remaining action on [LUC-528](/LUC/issues/LUC-528); Docs Memory Lead + Project Manager handles the next Account access doc-link row for `auth.jwt.ts#getJwtSecrets`. | 2026-07-11 |
+
 ## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
 
 | Requirement | Status | Evidence | Next action | Last updated |
 | --- | --- | --- | --- | --- |
-| Account access auth-controller route/session rows must have linked automated backend proof before leaving `missing_test_link`. | verified locally by existing DB-backed proof link | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; prior DB-backed auth route proof in `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`; app-completion `missingTestLink=974`, down from `980`. | Docs Memory Lead + Project Manager handles the remaining `auth.e2e.test.ts#restoreEnv` doc-link row; DB-backed rerun can be repeated when local Docker/Postgres is available. | 2026-07-11 |
+| Account access auth-controller route/session rows must have linked automated backend proof before leaving `missing_test_link`. | verified locally by existing DB-backed proof link | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; prior DB-backed auth route proof in `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`; app-completion `missingTestLink=974`, down from `980`; follow-up `auth.e2e.test.ts#restoreEnv` doc-link row closed by [LUC-528](/LUC/issues/LUC-528). | No remaining LUC-499 action; DB-backed rerun can be repeated when local Docker/Postgres is available. | 2026-07-11 |
 
 ## 2026-07-11 LUC-264 Protected Input Binding Closure
 
