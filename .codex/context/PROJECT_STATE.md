@@ -1,3 +1,32 @@
+## 2026-07-12 LUC-586 Stale signAuthToken Classifier Blocker Reconciliation
+
+- `LUC-586` is closed as a stale blocker in the current snapshot.
+- The live graph marks `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`
+  as `verified`, and the current generated project-truth/app-completion outputs
+  already route past this row to `apps/api/src/modules/auth/auth.service.ts#loginUser`
+  as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-586-signauthtoken-classifier-reconciliation-2026-07-12.md`.
+- Boundary:
+  no runtime auth change, deploy, protected credential access, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-583 Account Access signAuthToken Proof Classifier Closure
+
+- QVE revalidated the Account access `signAuthToken` proof row for
+  [LUC-583](/LUC/issues/LUC-583): focused `auth.jwt.test.ts` passed
+  (`1` file / `5` tests), and app-completion/project-truth generation passed.
+- The generated graph includes doc and test relations for
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`, and the current
+  generated project-truth/app-completion outputs already route past this row to
+  `apps/api/src/modules/auth/auth.service.ts#loginUser` as `missing_doc_link`.
+- Disposition: QA proof is present and the earlier classifier blocker is
+  stale; no additional repair is required for this row unless a future
+  regression reintroduces it. No runtime, deploy, protected credential,
+  secret/account, DB/Redis, exchange/payment/subscription, order, position,
+  bot activation, or LIVE trading mutation occurred.
+
 ## 2026-07-12 LUC-572 Source-Control Closure for LUC-564
 
 - SPM classified the current dirty worktree as the coherent

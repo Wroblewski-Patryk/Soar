@@ -7,7 +7,7 @@
   one generated Account access implemented-needs-proof gap was removed from
   the priority queue. App-completion now reports `riskItems=3530` and project
   truth routes the first Account access gap to
-  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken` as `missing_doc_link`.
+  `apps/api/src/modules/auth/auth.service.ts#loginUser` as `missing_doc_link`.
 - Environment hygiene:
   no browser, server, deploy, restart, rollback, protected credential access,
   secret/account readback, DB/Redis mutation, exchange/payment/subscription

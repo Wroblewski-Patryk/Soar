@@ -1,3 +1,10 @@
+## 2026-07-12 LUC-583 Account Access signAuthToken Proof Classifier Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could continue routing verified `signAuthToken` as unproven after focused JWT tests and doc/test graph relations exist. | P1 | mitigated | `history/evidence/luc-583-account-access-signauthtoken-proof-classifier-blocker-2026-07-12.md`; focused `auth.jwt.test.ts` passed (`5/5`); current project-truth/app-completion outputs already route past `signAuthToken`. | No remaining action on [LUC-583](/LUC/issues/LUC-583); keep [LUC-586](/LUC/issues/LUC-586) closed unless a fresh regression reintroduces the row. | 2026-07-12 |
+| Local JWT helper proof could be overclaimed as protected production auth/session proof or secret-value inspection. | P0 | mitigated_by_boundary | Focused local test only; no protected credential access, secret/account readback, DB/Redis mutation, deploy, production session readback, exchange mutation, order, position, bot activation, or LIVE trading action occurred. | Treat [LUC-583](/LUC/issues/LUC-583) as local proof/classifier-blocker only; protected auth/session acceptance remains separate approved QA/Ops scope. | 2026-07-12 |
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |

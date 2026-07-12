@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T00:30:53.500Z",
+  "generatedAt": "2026-07-12T01:17:15.450Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4710,
-      "linkedRelationCount": 19068,
+      "entityCount": 4719,
+      "linkedRelationCount": 19106,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1171,8 +1171,8 @@
               "type": "function",
               "name": "signAuthToken",
               "path": "apps/api/src/modules/auth/auth.jwt.ts#signAuthToken",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "Test Automation Engineer",
+              "status": "verified"
             },
             {
               "id": "function:getprevioussecretexpiry:5d466d5a62",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3625,
+          "count": 3634,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9155,
-      "linkedRelationCount": 32490,
+      "entityCount": 9166,
+      "linkedRelationCount": 32527,
       "layers": {
         "frontend": {
           "count": 697,
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6052,
+          "count": 6063,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

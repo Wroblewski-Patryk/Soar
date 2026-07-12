@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-12T00:30:43.768Z",
+  "generated_at": "2026-07-12T01:16:28.776Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10718,
-    "relations": 34939,
+    "entities": 10729,
+    "relations": 34980,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4734,
+      "document": 4742,
       "feature": 216,
       "function": 2836,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1756,
+      "task": 1759,
       "test": 452
     },
     "by_status": {
       "blocked": 46,
       "deprecated": 10,
-      "implemented": 8084,
+      "implemented": 8091,
       "in_progress": 15,
       "tested": 833,
-      "verified": 1730
+      "verified": 1734
     }
   },
   "signals": {
@@ -5074,7 +5074,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 138,
+      "count": 139,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5777,6 +5777,14 @@
           "type": "task",
           "name": "LUC-5598 Gap Register And Repair Lane Refresh",
           "path": "history/tasks/luc-5598-gap-register-and-repair-lane-refresh-2026-06-27-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:44e4ea769f",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-572-source-control-closure-for-luc-564-2026-07-12-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -7792,11 +7800,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 456,
+      "count": 457,
       "by_reason": {
         "config_only_file": 33,
         "curated_graph_covered": 284,
-        "historical_task_archive": 138,
+        "historical_task_archive": 139,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8588,6 +8596,15 @@
           "type": "task",
           "name": "LUC-5598 Gap Register And Repair Lane Refresh",
           "path": "history/tasks/luc-5598-gap-register-and-repair-lane-refresh-2026-06-27-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:44e4ea769f",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-572-source-control-closure-for-luc-564-2026-07-12-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -9587,15 +9604,6 @@
           "type": "feature",
           "name": "next-env.d.ts",
           "path": "apps/web/next-env.d.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:postcss-config-mjs:1722693213",
-          "type": "feature",
-          "name": "postcss.config.mjs",
-          "path": "apps/web/postcss.config.mjs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"

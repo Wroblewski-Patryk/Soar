@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-12T00:30:50.246Z
+Generated: 2026-07-12T01:16:49.361Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -17,10 +17,10 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Needs browser/screenshot review: 452
 - Missing test link: 974
 - Missing doc link: 1990
-- Implemented, needs proof: 114
+- Implemented, needs proof: 113
 - Blocked: 0
-- Known non-ok risk items: 3530
-- Priority review items indexed: 200/3530
+- Known non-ok risk items: 3529
+- Priority review items indexed: 200/3529
 - Priority review truncated: true
 
 ## Flow Summary
@@ -28,7 +28,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Unclassified user workflow: 1607 entities; risks {"missing_test_link":218,"missing_doc_link":1149,"implemented_needs_proof":90,"ok":3,"needs_browser_review":147}; gates {"auth":29,"configuration":2}
 - Trading operation: 942 entities; risks {"missing_doc_link":391,"missing_test_link":404,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":39,"auth":8}
 - Dashboard overview: 285 entities; risks {"missing_test_link":126,"missing_doc_link":107,"implemented_needs_proof":1,"needs_browser_review":51}; gates {"configuration":5,"auth":5}
-- Account access: 265 entities; risks {"ok":20,"implemented_needs_proof":4,"missing_doc_link":140,"missing_test_link":70,"needs_browser_review":31}; gates {"auth":265,"configuration":16,"subscription":2,"gateio":1}
+- Account access: 265 entities; risks {"ok":21,"missing_doc_link":140,"missing_test_link":70,"implemented_needs_proof":3,"needs_browser_review":31}; gates {"auth":265,"configuration":17,"subscription":2,"gateio":1}
 - Exchange connection and configuration: 185 entities; risks {"missing_doc_link":111,"missing_test_link":42,"implemented_needs_proof":2,"needs_browser_review":30}; gates {"gateio":15,"configuration":164,"binance":18,"auth":6}
 - User configuration: 155 entities; risks {"ok":5,"implemented_needs_proof":10,"missing_test_link":73,"missing_doc_link":43,"needs_browser_review":24}; gates {"configuration":94,"auth":8}
 - Subscription and entitlement: 82 entities; risks {"missing_test_link":24,"missing_doc_link":38,"needs_browser_review":20}; gates {"subscription":82,"auth":5,"configuration":2}
@@ -38,7 +38,6 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | implemented_needs_proof | feature_or_capability | signAuthToken | Engineering Delivery Lead | apps/api/src/modules/auth/auth.jwt.ts#signAuthToken | auth |
 | Account access | missing_doc_link | feature_or_capability | loginUser | Engineering Delivery Lead | apps/api/src/modules/auth/auth.service.ts#loginUser | auth |
 | Account access | missing_doc_link | feature_or_capability | registerUser | Engineering Delivery Lead | apps/api/src/modules/auth/auth.service.ts#registerUser | auth |
 | Account access | missing_doc_link | feature_or_capability | getSessionJwtExpiresIn | Engineering Delivery Lead | apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn | auth |
@@ -118,6 +117,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_test_link | feature_or_capability | compareStrings | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#compareStrings | auth |
 | Account access | missing_test_link | feature_or_capability | emptyRuntimeTradesResponse | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#emptyRuntimeTradesResponse | auth |
 | Account access | missing_test_link | feature_or_capability | isPersistedImportedOpenAnchorTrade | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#isPersistedImportedOpenAnchorTrade | auth |
+| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessionTrades | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades | auth |
 
 ## Agent Rule
 

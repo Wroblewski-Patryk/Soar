@@ -103,6 +103,16 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/auth/auth.jwt.ts#signAuthToken",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access JWT signing helper through focused auth.jwt tests covering primary-secret signing and round-trip verification.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.jwt.test.ts",
+        "history/evidence/luc-577-account-access-signauthtoken-proof-2026-07-12.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets",
       "status": "verified",
       "owner": "Test Automation Engineer",

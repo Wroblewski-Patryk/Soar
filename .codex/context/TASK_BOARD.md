@@ -1,3 +1,48 @@
+## 2026-07-12 LUC-586 Stale signAuthToken Classifier Blocker Reconciliation
+
+- [LUC-586](/LUC/issues/LUC-586) remains closed in the current snapshot as a
+  stale blocker.
+- Concrete action:
+  reviewed the live source-truth graph and generated indexes for
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`; the entity is already
+  `verified`, and the generated project-truth/app-completion outputs route the
+  first Account access gap to `apps/api/src/modules/auth/auth.service.ts#loginUser`
+  as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-586-signauthtoken-classifier-reconciliation-2026-07-12.md`.
+- Boundary:
+  no runtime auth change, deploy, protected credential access, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-583 Account Access signAuthToken Proof Classifier Closure
+
+- [LUC-583](/LUC/issues/LUC-583) is verified locally as
+  `DONE / PROOF_PASS / GENERATED_INDEX_REFRESHED / SOURCE_TRUTH_ADVANCED /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  QVE reran the focused JWT proof for
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`; it passed
+  (`1` file / `5` tests). The current generated project-truth/app-completion
+  outputs already route past this row to
+  `apps/api/src/modules/auth/auth.service.ts#loginUser` as
+  `missing_doc_link`, so the earlier classifier blocker is stale.
+- Diagnosis:
+  the graph has doc and test relations for `signAuthToken`, and the current
+  generated indexes no longer keep it in the priority gap queue.
+- Follow-up:
+  no additional QA proof or classifier repair is required for this row; keep
+  [LUC-586](/LUC/issues/LUC-586) closed unless a fresh regression reintroduces
+  `signAuthToken` into the first-gap queue.
+- Evidence:
+  `history/evidence/luc-583-account-access-signauthtoken-proof-classifier-blocker-2026-07-12.md`;
+  `history/evidence/luc-583-account-access-signauthtoken-proof-closure-2026-07-12.md`;
+  `history/tasks/luc-583-account-access-signauthtoken-proof-classifier-blocker-2026-07-12-task.md`.
+- Boundary:
+  no runtime auth change, production deploy, protected credential access,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, bot activation, or LIVE trading action occurred.
+
 ## 2026-07-12 LUC-572 Source-Control Closure for LUC-564
 
 - [LUC-572](/LUC/issues/LUC-572) can close as
