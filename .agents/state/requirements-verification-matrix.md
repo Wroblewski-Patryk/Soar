@@ -1,3 +1,9 @@
+## 2026-07-12 LUC-564 Account Access signAuthToken Doc-Link
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access JWT signAuthToken behavior must have a source-truth documentation link before leaving `missing_doc_link`. | verified locally | `history/evidence/luc-564-account-access-signauthtoken-doc-link-2026-07-12.md`; `docs/modules/api-auth.md`; `docs/architecture/relations/documentation-links.csv`; app-completion `missingDocLink=1990`; project truth advanced `signAuthToken` to `implemented_needs_proof`. | QA Regression Lead + Project Manager owns next proof row for `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`; no remaining doc-link action on this row. | 2026-07-12 |
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 | Requirement | Status | Evidence | Next action | Last updated |

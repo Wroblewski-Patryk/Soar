@@ -138,6 +138,12 @@
     },
     {
       "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.jwt.ts#signAuthToken",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-auth.md",
       "toPath": "apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry",
       "type": "documents",
       "evidence": "docs/modules/api-auth.md"

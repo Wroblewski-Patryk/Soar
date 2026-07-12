@@ -1,3 +1,30 @@
+## 2026-07-12 LUC-572 Source-Control Closure for LUC-564
+
+- SPM classified the current dirty worktree as the coherent
+  [LUC-564](/LUC/issues/LUC-564) Account access `signAuthToken` doc-link
+  source-truth package plus [LUC-572](/LUC/issues/LUC-572) closure evidence.
+- Dirty groups were docs, generated architecture/status indexes, project state,
+  requirements state, and history evidence/task files only; no runtime/product
+  code paths were dirty.
+- Local validation for closure: `git diff --check` passed with CRLF
+  normalization warnings only; targeted redaction scan passed.
+- Disposition: local source-control closure commit made; no push/deploy/runtime
+  operation performed.
+
+## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
+
+## 2026-07-12 LUC-564 Account Access signAuthToken Doc-Link
+
+- DSM linked the first Account access app-completion row
+  `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken` through
+  `docs/modules/api-auth.md` and `docs/architecture/relations/documentation-links.csv`.
+- app-completion `missingDocLink` dropped to `1990`.
+- project truth now routes `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`
+  to `implemented_needs_proof` with owner `QA Regression Lead + Project Manager`.
+- scope: source-truth linkage only; no runtime, deploy, restart, rollback, DB/Redis
+  mutation, protected secret/account readback, exchange/payment/subscription,
+  order, position, bot activation, or LIVE trading action.
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 - [LUC-549](/LUC/issues/LUC-549) is verified locally as

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T23:34:45.308Z",
+  "generatedAt": "2026-07-12T00:30:53.500Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -11,7 +11,7 @@
     {
       "userFlow": "Account access",
       "entityCount": 4710,
-      "linkedRelationCount": 19067,
+      "linkedRelationCount": 19068,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1167,6 +1167,14 @@
               "status": "verified"
             },
             {
+              "id": "function:signauthtoken:874ab1752c",
+              "type": "function",
+              "name": "signAuthToken",
+              "path": "apps/api/src/modules/auth/auth.jwt.ts#signAuthToken",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "function:getprevioussecretexpiry:5d466d5a62",
               "type": "function",
               "name": "getPreviousSecretExpiry",
@@ -1291,14 +1299,6 @@
               "type": "task",
               "name": "LUC-4819 Production Performance And Server Health Watch Task",
               "path": "history/tasks/luc-4819-production-performance-health-watch-2026-06-20-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-4893-production-performance-and-server-health-watch-task:dfe492c96f",
-              "type": "task",
-              "name": "LUC-4893 Production Performance And Server Health Watch Task",
-              "path": "history/tasks/luc-4893-production-performance-health-watch-2026-06-20-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }

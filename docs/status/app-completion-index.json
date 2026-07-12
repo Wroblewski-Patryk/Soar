@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T23:34:45.309Z",
+  "generatedAt": "2026-07-12T00:30:50.246Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,8 +8,8 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 974,
-    "missingDocLink": 1991,
-    "implementedNeedsProof": 113,
+    "missingDocLink": 1990,
+    "implementedNeedsProof": 114,
     "blocked": 0,
     "riskItems": 3530,
     "appCompletionRiskItems": 3530,
@@ -23,9 +23,9 @@
       "total": 265,
       "risks": {
         "ok": 20,
-        "missing_doc_link": 141,
+        "implemented_needs_proof": 4,
+        "missing_doc_link": 140,
         "missing_test_link": 70,
-        "implemented_needs_proof": 3,
         "needs_browser_review": 31
       },
       "gates": {
@@ -151,12 +151,12 @@
       ],
       "evidence": {
         "hasTest": true,
-        "hasDoc": false,
+        "hasDoc": true,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
+      "relatedEntityCount": 3,
+      "risk": "implemented_needs_proof"
     },
     {
       "id": "function:loginuser:bd88f35cc6",

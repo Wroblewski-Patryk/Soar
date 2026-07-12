@@ -1,6 +1,6 @@
 # User Action Evidence Index
 
-Last generated: 2026-06-28
+Last generated: 2026-07-12
 
 This generated index maps user-visible web entrypoints and explicit UI controls to API routes, function chains, backend functions, data models, tests, docs, evidence, safety boundaries, and proof gaps.
 
@@ -8,7 +8,7 @@ This generated index maps user-visible web entrypoints and explicit UI controls 
 
 - `docs/architecture/indices/user-action-index.csv`
 - `docs/graphs/user-action-index.json`
-- `history/artifacts/user-action-index-2026-06-28.json`
+- `history/artifacts/user-action-index-2026-07-12.json`
 
 ## Summary
 

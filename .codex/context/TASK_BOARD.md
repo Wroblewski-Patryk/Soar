@@ -1,3 +1,47 @@
+## 2026-07-12 LUC-572 Source-Control Closure for LUC-564
+
+- [LUC-572](/LUC/issues/LUC-572) can close as
+  `DONE / LOCAL_DIRTY_STATE_CLASSIFIED / LUC-564_DOCS_STATE_COMMITTED /
+  NO_PUSH_OR_DEPLOY`.
+- Concrete action:
+  SPM classified the local dirty set left by [LUC-564](/LUC/issues/LUC-564) as
+  current docs/state/evidence-only source-truth work, with no runtime/product
+  code paths in the dirty list.
+- Validation:
+  `git diff --check` passed with CRLF normalization warnings only; targeted
+  redaction scan passed; final local commit recorded the closure package.
+- Evidence:
+  `history/evidence/luc-572-source-control-closure-for-luc-564-2026-07-12.md`;
+  `history/tasks/luc-572-source-control-closure-for-luc-564-2026-07-12-task.md`.
+- Boundary:
+  no push, deploy, restart, rollback, protected smoke, secret/account readback,
+  env mutation, DB/Redis mutation, exchange/payment/subscription mutation,
+  order, position, bot activation, or LIVE trading action occurred.
+
+## 2026-07-12 LUC-564 Account Access signAuthToken Doc-Link
+
+- [LUC-564](/LUC/issues/LUC-564) can close as
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken` to
+  `docs/modules/api-auth.md`, linked it through
+  `docs/architecture/relations/documentation-links.csv`, and connected it with a
+  scanner `documents` override in
+  `docs/architecture/scanner-overrides.json`.
+- Validation:
+  `build-architecture-awareness-index.mjs` passed with `10718` entities and
+  `34939` relations; app-completion reported `missingDocLink=1990`;
+  project-truth `--apply` advanced the same row to
+  `implemented_needs_proof` for `apps/api/src/modules/auth/auth.jwt.ts#signAuthToken`.
+- Evidence:
+  `history/evidence/luc-564-account-access-signauthtoken-doc-link-2026-07-12.md`.
+- Boundary:
+  no runtime implementation, production smoke/protected readback, secret/account
+  access, environment mutation, deploy/restart/rollback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action occurred.
+
 ## 2026-07-12 LUC-549 Account Access getPreviousSecretExpiry Proof
 
 - [LUC-549](/LUC/issues/LUC-549) can close as
