@@ -1,3 +1,22 @@
+## 2026-07-13 LUC-910 workers-backtest production recovery
+
+- Live Coolify production state is explicitly evidenced, not inferred:
+  `workers-backtest` recovered to `running:unknown` while public API/Web
+  reachability stayed healthy (`/health`, `/ready`, `/` all `200`).
+- A bounded recovery mutation was executed against the isolated resource only:
+  Coolify accepted `start` and queued deployment
+  `p11k3l25xywflt0z0f3dpm32`. Two later control-plane reconciler reads report
+  the app running and the 8/8 resource inventory ready.
+- Config drift remains an observation, not a proven root cause:
+  the API app exposes split-worker topology keys, but the standalone worker
+  apps do not expose `WORKER_MODE`, `WORKER_BACKTEST_OWNERSHIP`, or
+  `WORKER_BACKTEST_QUEUE` by key-presence readback.
+- Proof commands were executed from the Paperclip control-plane workspace;
+  `coolify_resources_reconciled` now passes in the Soar acceptance ledger.
+- Evidence:
+  `history/evidence/luc-910-workers-backtest-exited-unhealthy-2026-07-13.md`;
+  `history/tasks/luc-910-soar-coolify-diagnose-and-recover-workers-backtest-exited-unhealthy-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-903 source-control closure for LUC-896-LUC-897
 
 - Local source-control closure classified the current dirty tree as one coherent

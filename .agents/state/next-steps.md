@@ -1,3 +1,16 @@
+## 2026-07-13 LUC-910 workers-backtest recovered
+
+- Two independent Paperclip control-plane reconciler reads after the targeted
+  start report `workers-backtest -> running:unknown`, all 8/8 expected Soar
+  resources present, and `overall: ready`.
+- The Soar acceptance ledger now passes `coolify_resources_reconciled`; public
+  Soar remained reachable throughout the recovery.
+- Continue ordinary monitoring. The observed standalone-worker env-key
+  difference remains a configuration-review note, not a proven recovery
+  blocker or root cause.
+- Evidence:
+  `history/evidence/luc-910-workers-backtest-exited-unhealthy-2026-07-13.md`.
+
 ## 2026-07-12 LUC-798 getBotRuntimeSession classifier drift closure
 
 - `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession` is no

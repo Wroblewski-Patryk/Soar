@@ -1,3 +1,24 @@
+## 2026-07-13 LUC-910 workers-backtest Coolify recovery confirmed
+
+- Status:
+  `RECOVERED / WORKERS-BACKTEST-RUNNING / COOLIFY-8-OF-8-READY / PUBLIC-WEB-API-HEALTHY`.
+- Health impact:
+  Soar public API/Web remained healthy (`/health`, `/ready`, `/` all `200`),
+  and unauthenticated `/workers/ready` still failed closed with `401` during
+  diagnosis. The dedicated Coolify `workers-backtest` resource is running.
+- Verification:
+  a targeted Coolify `start` queued deployment `p11k3l25xywflt0z0f3dpm32`.
+  Independent reconciler reads at `2026-07-13T14:48:30Z` and
+  `2026-07-13T14:50:08Z` both reported `workers-backtest -> running:unknown`,
+  8/8 expected resources, and `overall: ready`. The acceptance ledger passes
+  the Coolify resource check.
+- Follow-up:
+  retain normal monitoring. Review the observed standalone-worker env-key
+  difference separately only if runtime evidence links it to another failure.
+- Evidence:
+  `history/evidence/luc-910-workers-backtest-exited-unhealthy-2026-07-13.md`;
+  `history/tasks/luc-910-soar-coolify-diagnose-and-recover-workers-backtest-exited-unhealthy-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-896 Account Access resolveSessionWindowEnd Proof Deferred
 
 - Status:

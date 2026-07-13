@@ -1,3 +1,31 @@
+## 2026-07-13 LUC-910 [Soar][Coolify] Diagnose and recover workers-backtest exited:unhealthy
+
+- Status: `RECOVERED / READY FOR CLOSURE`.
+- Scope: diagnose the live production `workers-backtest` Coolify failure and
+  attempt the smallest governed recovery without broad Soar redeploy or secret
+  disclosure.
+- Result:
+  direct Coolify readback confirmed `workers-backtest -> exited:unhealthy`
+  while public API/Web stayed healthy. A targeted Coolify `start` was accepted
+  and queued deployment `p11k3l25xywflt0z0f3dpm32`. Two later Paperclip
+  control-plane readbacks reported the resource `running:unknown`, 8/8 expected
+  resources, and reconciler `overall: ready`.
+- Verification:
+  Paperclip heartbeat-context; Coolify production inventory; Coolify app/env
+  readbacks; deployment queue readback; `curl` probes for API `/health`,
+  API `/ready`, Web `/`, and unauthenticated API `/workers/ready`.
+- Key finding:
+  the API app exposes split-worker env keys
+  (`WORKER_MODE`, `WORKER_BACKTEST_OWNERSHIP`, `WORKER_BACKTEST_QUEUE`, etc.),
+  but the standalone worker apps, including `workers-backtest`, do not.
+- Residual observation:
+  standalone worker env-key presence differs from the API app, but the worker
+  recovered without an env mutation. Treat this as a monitored configuration
+  review item unless a later failure proves causal impact.
+- Evidence:
+  `history/tasks/luc-910-soar-coolify-diagnose-and-recover-workers-backtest-exited-unhealthy-2026-07-13-task.md`;
+  `history/evidence/luc-910-workers-backtest-exited-unhealthy-2026-07-13.md`.
+
 ## 2026-07-13 LUC-903 [Soar][Source Control Closure] Classify and close local dirty state for LUC-896-LUC-897
 
 - Status: `DONE`.
