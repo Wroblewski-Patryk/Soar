@@ -1,3 +1,27 @@
+## 2026-07-13 LUC-898 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listBotRuntimeSessionPositions
+
+- Status: `DONE`.
+- Scope: close the Account access missing-test-link proof row for
+  `listBotRuntimeSessionPositions` across the controller and read-model service
+  surfaces using the smallest focused local verification.
+- Result:
+  controller proof is now linked to existing runtime positions route ownership
+  e2e coverage, the read-model service has a new focused no-DB spec, and the
+  generated truth chain now classifies both scoped rows as `missing_doc_link`
+  instead of `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionPositionsRead.list.test.ts --run --reporter=dot`;
+  `corepack pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run -t "lists and returns runtime session monitoring summary with ownership isolation" --reporter=dot --test-timeout 30000`;
+  sequential `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for both scoped `listBotRuntimeSessionPositions` entities.
+- Evidence:
+  `history/tasks/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13-task.md`;
+  `history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md`.
+
 ## 2026-07-13 LUC-910 [Soar][Coolify] Diagnose and recover workers-backtest exited:unhealthy
 
 - Status: `RECOVERED / READY FOR CLOSURE`.

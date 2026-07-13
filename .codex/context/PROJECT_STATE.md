@@ -1,3 +1,23 @@
+## 2026-07-13 LUC-898 listBotRuntimeSessionPositions missing-test-link proof
+
+- Account access `missing_test_link` is closed locally for both
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions`
+  and
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions`.
+- Proof packet:
+  existing positions-route ownership e2e now links directly to the controller,
+  and a new focused no-DB spec proves the read-model owned-session gate plus
+  `BOT_MANAGED` scoping for position/open-order reads.
+- Sequential generated readback is authoritative:
+  both scoped rows now read `status=verified`, `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining doc-link closure for
+  both scoped entities.
+- Evidence:
+  `history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md`;
+  `history/tasks/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-910 workers-backtest production recovery
 
 - Live Coolify production state is explicitly evidenced, not inferred:

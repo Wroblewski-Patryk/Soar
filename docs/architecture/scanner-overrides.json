@@ -211,6 +211,26 @@
         "apps/api/src/modules/bots/bots.e2e.test.ts",
         "history/evidence/luc-791-account-access-getbotruntimesession-proof-2026-07-12.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime session positions controller through focused bot runtime e2e coverage proving owner readback for the positions route and fail-closed 404 isolation for a non-owner against the same bot/session path.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime session positions read model through focused no-DB tests covering fail-closed owned-session gating and BOT_MANAGED-only position and open-order read scopes.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts",
+        "history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -309,6 +329,18 @@
       "toPath": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts"
     }
   ]
 }

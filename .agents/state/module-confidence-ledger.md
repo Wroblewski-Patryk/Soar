@@ -1,3 +1,24 @@
+## 2026-07-13 LUC-898 Account Access listBotRuntimeSessionPositions Proof
+
+- Module row:
+  Account access / API bots runtime session positions controller and read-model
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link rows resolved / docs follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md`;
+  `history/tasks/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/bots.e2e.test.ts` now directly proves the owned
+  positions route and non-owner `404` isolation for the controller row. The new
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts` proves
+  fail-closed owned-session gating plus `BOT_MANAGED` position/open-order scope
+  for the read-model service row. Final app-completion readback for both rows
+  is `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local proof lane. Direct source-truth documentation for both
+  scoped entities remains a separate docs-owned follow-up.
+
 ## 2026-07-13 LUC-896 Account Access resolveSessionWindowEnd Proof
 
 - Module row:

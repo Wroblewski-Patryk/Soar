@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T13:30:50.078Z",
+  "generatedAt": "2026-07-13T15:00:10.255Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,8 +7,8 @@
     "items": 3564,
     "flows": 8,
     "needsBrowserReview": 452,
-    "missingTestLink": 976,
-    "missingDocLink": 1981,
+    "missingTestLink": 974,
+    "missingDocLink": 1983,
     "implementedNeedsProof": 114,
     "blocked": 0,
     "riskItems": 3523,
@@ -24,8 +24,8 @@
       "risks": {
         "ok": 33,
         "implemented_needs_proof": 4,
-        "missing_test_link": 68,
-        "missing_doc_link": 129,
+        "missing_doc_link": 131,
+        "missing_test_link": 66,
         "needs_browser_review": 31
       },
       "gates": {
@@ -155,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 9,
+      "relatedEntityCount": 12,
       "risk": "implemented_needs_proof"
     },
     {
@@ -164,20 +164,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessionPositions",
       "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:listbotruntimesessions:90b67e00aa",
@@ -837,20 +837,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessionPositions",
       "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:nullableidentitymatches:7d7f55b4bf",
