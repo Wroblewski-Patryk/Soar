@@ -1,3 +1,27 @@
+## 2026-07-13 LUC-960 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listbotruntimesessionsymbolstats
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped controller, and
+  the authoritative sequential generator chain no longer routes that row as
+  `missing_doc_link`.
+- Verification:
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  `pnpm run architecture:graph:drift:strict`.
+- Readback:
+  `missingDocLink` dropped from `1987` to `1986`, and project truth advanced
+  the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`.
+- Evidence:
+  `history/tasks/luc-960-account-access-listbotruntimesessionsymbolstats-doc-link-2026-07-13-task.md`;
+  `history/evidence/luc-960-account-access-listbotruntimesessionsymbolstats-doc-link-2026-07-13.md`.
+
 ## 2026-07-13 LUC-957 [Soar][Source Control Closure] Classify and close local dirty state for LUC-950-LUC-956
 
 - Status: `DONE`.

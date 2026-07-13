@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T17:05:08.272Z",
+  "generatedAt": "2026-07-13T17:36:12.189Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4847,
-      "linkedRelationCount": 19828,
+      "entityCount": 4859,
+      "linkedRelationCount": 19899,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3751,
+          "count": 3763,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3289,
-      "linkedRelationCount": 11542,
+      "entityCount": 3293,
+      "linkedRelationCount": 11575,
       "layers": {
         "frontend": {
           "count": 390,
@@ -11256,6 +11256,14 @@
               "status": "verified"
             },
             {
+              "id": "function:listbotruntimesessionsymbolstats:56ec5fe963",
+              "type": "function",
+              "name": "listBotRuntimeSessionSymbolStats",
+              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "function:resolvesessionwindowend:7ec1d2752b",
               "type": "function",
               "name": "resolveSessionWindowEnd",
@@ -11390,20 +11398,12 @@
               "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "model:orderdomainerror:6dc45325a6",
-              "type": "model",
-              "name": "OrderDomainError",
-              "path": "apps/api/src/modules/orders/orders.errors.ts#OrderDomainError",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1406,
+          "count": 1410,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9306,
-      "linkedRelationCount": 33197,
+      "entityCount": 9319,
+      "linkedRelationCount": 33272,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1579,
+          "count": 1580,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6191,
+          "count": 6203,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

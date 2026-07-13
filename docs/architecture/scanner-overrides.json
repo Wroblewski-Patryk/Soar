@@ -408,6 +408,12 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"

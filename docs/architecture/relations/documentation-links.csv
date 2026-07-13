@@ -238,6 +238,7 @@ apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition,docs
 apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions,docs/modules/api-bots.md

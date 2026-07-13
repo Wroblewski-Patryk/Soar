@@ -1,3 +1,22 @@
+## 2026-07-13 LUC-960 listBotRuntimeSessionSymbolStats missing-doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the controller
+  contract and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1986`, and project truth no
+  longer routes the controller as the first Account access docs gap.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the next Account access docs gap,
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`.
+- Evidence:
+  `history/evidence/luc-960-account-access-listbotruntimesessionsymbolstats-doc-link-2026-07-13.md`;
+  `history/tasks/luc-960-account-access-listbotruntimesessionsymbolstats-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-957 source-control closure for LUC-950-LUC-956
 
 - Source-control closure reclassified the current local worktree after

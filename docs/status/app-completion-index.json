@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T17:04:53.818Z",
+  "generatedAt": "2026-07-13T17:36:08.474Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 966,
-    "missingDocLink": 1987,
+    "missingDocLink": 1986,
     "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3518,
-    "appCompletionRiskItems": 3518,
+    "riskItems": 3517,
+    "appCompletionRiskItems": 3517,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,8 +22,8 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 38,
-        "missing_doc_link": 135,
+        "ok": 39,
+        "missing_doc_link": 134,
         "missing_test_link": 58,
         "implemented_needs_proof": 3,
         "needs_browser_review": 31
@@ -138,27 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:listbotruntimesessionsymbolstats:56ec5fe963",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "listBotRuntimeSessionSymbolStats",
-      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 6,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:listbotruntimesessiontrades:1852c0d2bc",
       "type": "function",
       "kind": "feature_or_capability",
@@ -176,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 4,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4350,6 +4329,27 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:auth-jwt-ts:c67f34e18f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "auth.jwt.ts",
+      "path": "apps/api/src/modules/auth/auth.jwt.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 27,
       "risk": "needs_browser_review"
     }
   ]
