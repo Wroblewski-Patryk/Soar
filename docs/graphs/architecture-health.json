@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-13T16:16:33.621Z",
+  "generated_at": "2026-07-13T16:41:20.732Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10855,
-    "relations": 35653,
+    "entities": 10864,
+    "relations": 35701,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4820,
+      "document": 4826,
       "feature": 216,
       "function": 2842,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1794,
+      "task": 1797,
       "test": 459
     },
     "by_status": {
       "blocked": 47,
       "deprecated": 10,
-      "implemented": 8155,
-      "in_progress": 15,
+      "implemented": 8161,
+      "in_progress": 16,
       "tested": 842,
-      "verified": 1786
+      "verified": 1788
     }
   },
   "signals": {

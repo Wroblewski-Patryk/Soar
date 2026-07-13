@@ -1,3 +1,29 @@
+## 2026-07-13 LUC-944 Account Access listBotRuntimeSessionPositions Doc-Link Closure
+
+- Module row:
+  Account access / API bots runtime session positions controller and read-model
+  source-of-truth documentation.
+- Status:
+  `verified local docs closure / missing-doc-link rows resolved / project truth
+  advanced / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-944-account-access-listbotruntimesessionpositions-doc-link-2026-07-13.md`;
+  `history/tasks/luc-944-account-access-listbotruntimesessionpositions-doc-link-2026-07-13-task.md`.
+- Current proof:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now document and link
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions`
+  plus
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions`.
+  Fresh generated readback removed both scoped rows from app-completion
+  `missing_doc_link`, and project truth advanced the first Account access gap
+  to `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`.
+- Confidence:
+  high for source-of-truth coverage of the runtime session positions route
+  contract. Remaining runtime sessions, symbol-stats, and trades docs rows are
+  separate follow-ups.
+
 ## 2026-07-13 LUC-934 Account Access dedupeRuntimeOpenOrders Readback Closure
 
 - Module row:

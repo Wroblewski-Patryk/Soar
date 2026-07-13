@@ -236,8 +236,10 @@ apps/api/src/modules/bots/bots.repository.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/botsRuntimeRead.repository.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd,docs/modules/api-bots.md
+apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionWindow.ts,docs/modules/api-bots.md

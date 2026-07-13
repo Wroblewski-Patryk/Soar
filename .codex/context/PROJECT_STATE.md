@@ -1,3 +1,43 @@
+## 2026-07-13 LUC-947 source-control closure for LUC-944
+
+- Local source-control closure classified the current dirty tree as one
+  coherent [LUC-944](/LUC/issues/LUC-944) documentation plus generated
+  source-truth bundle.
+- Baseline before `LUC-947` artifact mutation: `28` dirty paths
+  (`3` state/control, `2` task/evidence, `23` docs/generated, `0`
+  runtime/product, `0` stale).
+- Focused verification for the preserved bundle passed:
+  `pnpm run architecture:graph:drift:strict` (`857/857`, `0` missing), and
+  targeted docs/status readback still advances the first Account access docs
+  gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`.
+- Local source-control decision: `commit`; push remains intentionally held
+  because this sidecar does not own deployment-triggering actions from `main`.
+- Evidence:
+  `history/tasks/luc-947-source-control-closure-classify-and-close-local-dirty-state-for-luc-944-2026-07-13-task.md`;
+  `history/evidence/luc-947-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-944 listBotRuntimeSessionPositions missing-doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for both
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions`
+  and
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the route contract
+  and matching `documents` relations.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1989`, and project truth no
+  longer routes runtime session positions as the first Account access gap.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the next Account access docs gap,
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`.
+- Evidence:
+  `history/evidence/luc-944-account-access-listbotruntimesessionpositions-doc-link-2026-07-13.md`;
+  `history/tasks/luc-944-account-access-listbotruntimesessionpositions-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-942 source-control closure for LUC-902-LUC-927-LUC-929-LUC-932-plus-3
 
 - Local source-control closure classified the current dirty tree as one
