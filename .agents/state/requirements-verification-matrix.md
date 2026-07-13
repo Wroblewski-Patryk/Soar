@@ -1,3 +1,15 @@
+## 2026-07-13 LUC-896 Account Access resolveSessionWindowEnd Proof
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access session-window ownership behavior must have fresh proof evidence before leaving `implemented_needs_proof`. | blocked | `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13.md`; `docs/status/project-truth-index.json`; board comment `4f4e81b5-975f-436d-9a88-b4975c210e46` deferred execution without changing the scoped gap. | Resume after one active Soar or Roost worker reaches terminal disposition, then run the smallest focused proof for `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`. | 2026-07-13 |
+
+## 2026-07-13 LUC-897 Account Access getBotRuntimeSession Doc-Link
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access runtime-session detail controller must have a source-truth documentation link before leaving `missing_doc_link`. | verified locally | `history/evidence/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13.md`; `docs/modules/api-bots.md`; `docs/architecture/relations/documentation-links.csv`; `docs/architecture/scanner-overrides.json`; app-completion no longer lists the controller in `priorityReviewItems`; project truth advanced to `botOwnership.service.ts#resolveSessionWindowEnd`. | QA Regression Lead + Project Manager owns the next proof row for `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`; no remaining doc-link action on this controller row. | 2026-07-13 |
+
 ## 2026-07-12 LUC-564 Account Access signAuthToken Doc-Link
 
 | Requirement | Status | Evidence | Next action | Last updated |

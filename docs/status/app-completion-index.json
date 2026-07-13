@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T18:05:41.005Z",
+  "generatedAt": "2026-07-13T13:30:50.078Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 976,
-    "missingDocLink": 1982,
+    "missingDocLink": 1981,
     "implementedNeedsProof": 114,
     "blocked": 0,
-    "riskItems": 3524,
-    "appCompletionRiskItems": 3524,
+    "riskItems": 3523,
+    "appCompletionRiskItems": 3523,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,10 +22,10 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 32,
+        "ok": 33,
         "implemented_needs_proof": 4,
-        "missing_doc_link": 130,
         "missing_test_link": 68,
+        "missing_doc_link": 129,
         "needs_browser_review": 31
       },
       "gates": {
@@ -155,29 +155,8 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 8,
+      "relatedEntityCount": 9,
       "risk": "implemented_needs_proof"
-    },
-    {
-      "id": "function:getbotruntimesession:31527b2117",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "getBotRuntimeSession",
-      "path": "apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession",
-      "owner": "QA Regression Lead",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 6,
-      "risk": "missing_doc_link"
     },
     {
       "id": "function:listbotruntimesessionpositions:6fbe0a6853",
@@ -4338,6 +4317,27 @@
       "path": "scripts/runProdAuthSessionBrowserProof.test.mjs#importHarness",
       "owner": "Engineering Delivery Lead",
       "status": "tested",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:setauthcookie:605c218854",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "setAuthCookie",
+      "path": "scripts/runProdUxA11yMobileProof.mjs#setAuthCookie",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
       "userFlow": "Account access",
       "gates": [
         "auth"

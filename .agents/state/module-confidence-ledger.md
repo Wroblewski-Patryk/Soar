@@ -1,3 +1,22 @@
+## 2026-07-13 LUC-896 Account Access resolveSessionWindowEnd Proof
+
+- Module row:
+  Account access / API bots runtime session-window helper executable proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / no
+  runtime mutation`.
+- Evidence:
+  `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-2026-07-13.md`;
+  `history/tasks/luc-896-account-access-resolvesessionwindowend-proof-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/botOwnership.service.test.ts` now directly covers
+  `resolveSessionWindowEnd` for `finishedAt`, `RUNNING` wall-clock fallback,
+  and stale-session `lastHeartbeatAt`/`startedAt` fallback behavior. Focused
+  Vitest passed (`1` file / `7` tests).
+- Confidence:
+  high for the local helper behavior proof. This does not claim any deploy or
+  protected production account/session smoke.
+
 ## 2026-07-12 LUC-799 Account Access resolveSessionWindowEnd doc-link ingestion repair
 
 - Module row:

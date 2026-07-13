@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T18:05:41.361Z",
+  "generatedAt": "2026-07-13T13:30:50.660Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3524,
+    "appCompletionGaps": 3523,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3524,
+    "knownAppCompletionRiskItems": 3523,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3524
+    "totalGaps": 3523
   },
   "firstGap": {
     "kind": "app_completion_gap",
@@ -44,19 +44,6 @@
       ],
       "sourceItemId": "function:resolvesessionwindowend:7ec1d2752b",
       "risk": "implemented_needs_proof"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getBotRuntimeSession has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession"
-      ],
-      "sourceItemId": "function:getbotruntimesession:31527b2117",
-      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",
@@ -2630,6 +2617,19 @@
         "scripts/runProdAuthSessionBrowserProof.test.mjs#importHarness"
       ],
       "sourceItemId": "function:importharness:e5115b581f",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: setAuthCookie has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runProdUxA11yMobileProof.mjs#setAuthCookie"
+      ],
+      "sourceItemId": "function:setauthcookie:605c218854",
       "risk": "missing_doc_link"
     }
   ]

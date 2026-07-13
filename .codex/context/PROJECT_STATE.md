@@ -1,3 +1,67 @@
+## 2026-07-13 LUC-903 source-control closure for LUC-896-LUC-897
+
+- Local source-control closure classified the current dirty tree as one coherent
+  `LUC-896` proof plus `LUC-897` doc-link/generated-truth bundle.
+- Baseline before `LUC-903` artifact mutation: `35` dirty paths
+  (`5` state/control, `6` task/evidence, `23` docs/generated, `1`
+  runtime/product, `0` stale).
+- Focused verification for the preserved bundle passed:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/botOwnership.service.test.ts`
+  (`7/7`) and `pnpm run architecture:graph:drift:strict` (`853/853`,
+  `0` missing).
+- Local source-control decision: `commit`; push remains intentionally held
+  because this sidecar does not own deployment-triggering actions from `main`.
+- Evidence:
+  `history/tasks/luc-903-source-control-closure-classify-and-close-local-dirty-state-for-luc-896-luc-897-2026-07-13-task.md`;
+  `history/evidence/luc-903-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-896 resolveSessionWindowEnd proof deferred by board WIP guard
+
+- `LUC-896` remains the current QA-owned Account access proof row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`.
+- Repo truth is unchanged:
+  `docs/status/project-truth-index.{md,json}`,
+  `.codex/context/TASK_BOARD.md`, and `.agents/state/system-health.md` all
+  still route the same helper as the first Account access
+  `implemented_needs_proof` gap.
+- Execution changed because of board comment
+  `4f4e81b5-975f-436d-9a88-b4975c210e46`, which deferred CPU-heavy proof work
+  so one Soar and one Roost worker can finish without duplicate fan-out.
+- Resume condition:
+  continue only after one currently active Soar or Roost worker reaches a
+  terminal disposition, then run the smallest focused proof path.
+- Unblock owner/action:
+  `local-board` owns release of the temporary WIP guard once one active Soar
+  or Roost worker reaches terminal disposition.
+- Evidence:
+  `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13.md`;
+  `history/tasks/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-897 Account access getBotRuntimeSession doc-link closure
+
+- `LUC-897` closed the remaining docs-owned Account access gap for
+  `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession`.
+- Source-of-truth changes:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the controller
+  linkage.
+- Sequential generator-chain readback is authoritative:
+  `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Current generated truth:
+  `architecture-awareness.json` now has the `documents` relation for the
+  controller; the controller no longer appears in
+  `app-completion-index` priority review or `project-truth` gaps.
+- Next owner/action:
+  QA Regression Lead + Project Manager owns the new first Account access gap,
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  as `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13.md`;
+  `history/tasks/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-826 source-control closure classification for the LUC-722 dirty bundle
 
 - `LUC-826` consumed the board comment sidecar wake and kept `LUC-722` blocked for product delivery while executing only local source-control closure work.

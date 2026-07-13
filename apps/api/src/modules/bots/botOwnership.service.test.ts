@@ -1,6 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { getOwnedBotRuntimeSession, validateSymbolGroupForBot } from './botOwnership.service';
+import {
+  getOwnedBotRuntimeSession,
+  resolveSessionWindowEnd,
+  validateSymbolGroupForBot,
+} from './botOwnership.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -225,5 +229,59 @@ describe('getOwnedBotRuntimeSession', () => {
 
     await expect(getOwnedBotRuntimeSession(otherUser.id, otherBot.id, session.id)).resolves.toBeNull();
     await expect(getOwnedBotRuntimeSession(owner.id, otherBot.id, session.id)).resolves.toBeNull();
+  });
+});
+
+describe('resolveSessionWindowEnd', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('prefers finishedAt when the session is already closed', () => {
+    const finishedAt = new Date('2026-07-13T10:00:00.000Z');
+
+    expect(
+      resolveSessionWindowEnd({
+        status: 'COMPLETED',
+        finishedAt,
+        lastHeartbeatAt: new Date('2026-07-13T09:58:00.000Z'),
+        startedAt: new Date('2026-07-13T09:00:00.000Z'),
+      })
+    ).toBe(finishedAt);
+  });
+
+  it('uses the current wall clock for running sessions with no finishedAt', () => {
+    const now = new Date('2026-07-13T11:00:00.000Z');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+
+    expect(
+      resolveSessionWindowEnd({
+        status: 'RUNNING',
+        finishedAt: null,
+        lastHeartbeatAt: new Date('2026-07-13T10:58:00.000Z'),
+        startedAt: new Date('2026-07-13T10:00:00.000Z'),
+      })
+    ).toEqual(now);
+  });
+
+  it('falls back to the last heartbeat and then the start time for stale sessions', () => {
+    expect(
+      resolveSessionWindowEnd({
+        status: 'FAILED',
+        finishedAt: null,
+        lastHeartbeatAt: new Date('2026-07-13T10:20:00.000Z'),
+        startedAt: new Date('2026-07-13T10:00:00.000Z'),
+      })
+    ).toEqual(new Date('2026-07-13T10:20:00.000Z'));
+
+    expect(
+      resolveSessionWindowEnd({
+        status: 'CANCELED',
+        finishedAt: null,
+        lastHeartbeatAt: null,
+        startedAt: new Date('2026-07-13T10:00:00.000Z'),
+      })
+    ).toEqual(new Date('2026-07-13T10:00:00.000Z'));
   });
 });

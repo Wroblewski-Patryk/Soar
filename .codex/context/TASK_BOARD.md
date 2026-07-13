@@ -1,3 +1,99 @@
+## 2026-07-13 LUC-903 [Soar][Source Control Closure] Classify and close local dirty state for LUC-896-LUC-897
+
+- Status: `DONE`.
+- Scope: classify the current local dirty tree and make the source-control
+  closure decision for the linked `LUC-896` and `LUC-897` implementation
+  bundle.
+- Result:
+  baseline classification captured `35` dirty paths with one verified
+  runtime-proof file, matching source-truth docs/generated outputs, and six
+  linked issue evidence/task artifacts.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, explicit per-path
+  issue scans, lightweight dirty-path secret-pattern scan,
+  `corepack pnpm --filter api exec vitest run src/modules/bots/botOwnership.service.test.ts`,
+  and `pnpm run architecture:graph:drift:strict`.
+- Residual state:
+  protected delivery-gate closure remains outside this sidecar; this issue
+  closes only the local source-control requirement.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live
+  trading action in this lane.
+- Evidence:
+  `history/tasks/luc-903-source-control-closure-classify-and-close-local-dirty-state-for-luc-896-luc-897-2026-07-13-task.md`;
+  `history/evidence/luc-903-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-896 [Soar][Project Truth][App Completion] resolveSessionWindowEnd proof deferred by board WIP guard
+
+- Status: `BLOCKED`.
+- Scope: confirm whether the current QA-owned `implemented_needs_proof` row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  should execute in this heartbeat.
+- Result:
+  the lane remains legitimate app-completion evidence work, but board comment
+  `4f4e81b5-975f-436d-9a88-b4975c210e46` deferred execution so one Soar and one
+  Roost worker can finish without duplicate CPU-heavy fan-out.
+- Verification:
+  targeted readback only: current `project-truth`, `PROJECT_STATE`,
+  `TASK_BOARD`, and `system-health` all still route the same helper as the next
+  Account access proof row. No tests or generator reruns were executed by
+  design.
+- Resume gate:
+  resume after one currently active Soar or Roost worker reaches a terminal
+  disposition, then run the smallest focused proof path.
+- Unblock owner/action:
+  `local-board` must release the WIP guard after one active Soar or Roost
+  worker reaches terminal disposition, then wake this QA proof lane.
+- Evidence:
+  `history/tasks/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13-task.md`;
+  `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13.md`.
+
+## 2026-07-13 LUC-896 [Soar][App Completion][QA] resolveSessionWindowEnd proof closure
+
+- Status: `DONE`.
+- Scope: prove the Account access helper row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  with focused executable coverage only.
+- Result:
+  the bot ownership spec now directly exercises `resolveSessionWindowEnd` for
+  finished sessions, running sessions, and stale fallbacks. The prior
+  control-plane cancellation was external; the local proof run passed.
+- Verification:
+  focused Vitest on `apps/api/src/modules/bots/botOwnership.service.test.ts`
+  passed (`7/7`); no runtime mutation occurred.
+- Next owner/action:
+  no remaining local proof action on [LUC-896](/LUC/issues/LUC-896). If the
+  bridge needs to reflect this result upstream, sync the proof evidence into
+  the active Paperclip issue lane.
+- Evidence:
+  `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-2026-07-13.md`;
+  `history/tasks/luc-896-account-access-resolvesessionwindowend-proof-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-897 [Soar][App Completion][Docs] getBotRuntimeSession doc-link closure
+
+- Status: `DONE`.
+- Scope: resolve the Account access source-truth doc-link row for
+  `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession` and
+  refresh the generated graph/status chain.
+- Result:
+  the controller is now documented in `docs/modules/api-bots.md`, linked
+  through `documentation-links.csv`, connected through a `documents` relation
+  override, and removed from generated app-completion/project-truth gaps after
+  a sequential generator rerun.
+- Verification:
+  sequential `architecture-awareness -> app-completion -> project-truth`
+  readback passed; `pnpm run architecture:graph:drift:strict` passed
+  (`853/853`, `0` missing); `git diff --check` reported line-ending warnings
+  only.
+- Next owner/action:
+  no remaining DSM action on [LUC-897](/LUC/issues/LUC-897). QA Regression Lead
+  + Project Manager owns the new first Account access gap:
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  as `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13.md`;
+  `history/tasks/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-826 [Soar][Source Control Closure] Classify and close local dirty state for LUC-722-LUC-734-LUC-743-LUC-755-plus-6
 
 - Status: `DONE`.

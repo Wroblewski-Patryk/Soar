@@ -1,3 +1,45 @@
+## 2026-07-13 LUC-896 Account Access resolveSessionWindowEnd Proof Deferred
+
+- Status:
+  `BLOCKED / BOARD_WIP_GUARD / REPO_TRUTH_UNCHANGED / NO_RUNTIME_MUTATION`.
+- Health impact:
+  the first Account access proof gap remains
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  as `implemented_needs_proof`; no new technical regression was detected, but
+  verification is intentionally deferred by board concurrency control.
+- Unblock owner/action:
+  `local-board` must release the WIP guard after one active Soar or Roost
+  worker reaches terminal disposition, then this QA proof lane can resume.
+- Environment hygiene:
+  no tests, generator reruns, browser, server, deploy, restart, rollback,
+  protected credential access, protected session/account smoke,
+  secret/account readback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or LIVE trading action occurred.
+- Evidence:
+  `history/evidence/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13.md`;
+  `history/tasks/luc-896-account-access-resolvesessionwindowend-proof-deferred-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-897 Account Access getBotRuntimeSession Doc-Link Closure
+
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Health impact:
+  one generated Account access `missing_doc_link` controller row was removed
+  from the priority queue. App-completion now reports `missingDocLink=1982`,
+  `missingTestLink=976`, `implementedNeedsProof=114`, and `riskItems=3524`;
+  project truth routes the first Account access gap to
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  as `implemented_needs_proof`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, protected credential access,
+  protected session/account smoke, secret/account readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, or LIVE trading
+  action occurred.
+- Evidence:
+  `history/evidence/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13.md`;
+  `history/tasks/luc-897-account-access-getbotruntimesession-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-12 LUC-637 Account Access Session-Token Proof
 
 - Status:
