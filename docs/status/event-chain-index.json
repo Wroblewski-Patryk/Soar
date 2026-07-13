@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T16:42:28.989Z",
+  "generatedAt": "2026-07-13T17:05:08.272Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4844,
-      "linkedRelationCount": 19807,
+      "entityCount": 4847,
+      "linkedRelationCount": 19828,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3748,
+          "count": 3751,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3287,
-      "linkedRelationCount": 11532,
+      "entityCount": 3289,
+      "linkedRelationCount": 11542,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10757,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1281,
+          "count": 1282,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11240,6 +11240,14 @@
               "status": "verified"
             },
             {
+              "id": "function:listbotruntimesessions:90b67e00aa",
+              "type": "function",
+              "name": "listBotRuntimeSessions",
+              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "function:listbotruntimesessionpositions:6fbe0a6853",
               "type": "function",
               "name": "listBotRuntimeSessionPositions",
@@ -11253,6 +11261,14 @@
               "name": "resolveSessionWindowEnd",
               "path": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
               "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "function:listbotruntimesessions:6ead446538",
+              "type": "function",
+              "name": "listBotRuntimeSessions",
+              "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
+              "owner": "Test Automation Engineer",
               "status": "verified"
             },
             {
@@ -11382,28 +11398,12 @@
               "path": "apps/api/src/modules/orders/orders.errors.ts#OrderDomainError",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:orders-errors-ts:8cfc896c41",
-              "type": "route",
-              "name": "orders.errors.ts",
-              "path": "apps/api/src/modules/orders/orders.errors.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:orders-positionscope-ts:5f4aa50b35",
-              "type": "route",
-              "name": "orders.positionScope.ts",
-              "path": "apps/api/src/modules/orders/orders.positionScope.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1405,
+          "count": 1406,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9302,
-      "linkedRelationCount": 33173,
+      "entityCount": 9306,
+      "linkedRelationCount": 33197,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1578,
+          "count": 1579,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6188,
+          "count": 6191,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

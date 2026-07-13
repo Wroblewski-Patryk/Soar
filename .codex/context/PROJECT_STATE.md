@@ -1,3 +1,83 @@
+## 2026-07-13 LUC-957 source-control closure for LUC-950-LUC-956
+
+- Source-control closure reclassified the current local worktree after
+  [LUC-956](/LUC/issues/LUC-956) added its own sidecar artifacts and confirmed
+  the packet is still one coherent `LUC-950` docs/generated/state bundle.
+- Baseline before `LUC-957` artifact mutation was `29` dirty paths:
+  `2` state/control, `4` task/evidence, `23` docs/generated state, `0`
+  runtime/product code, `0` stale/out-of-scope.
+- Explicit dirty-path attribution readback found `18` paths with direct
+  [LUC-950](/LUC/issues/LUC-950) or `listBotRuntimeSessions` refs and `5`
+  paths with direct [LUC-956](/LUC/issues/LUC-956) refs.
+- `git diff --check` passed with CRLF normalization warnings only.
+  `pnpm run architecture:graph:drift:strict` passed (`857/857` covered,
+  `0` missing).
+- Targeted docs/status readback still routes the next Account access docs gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Added-line redaction scan produced only safe false-positive terminology hits
+  in `docs/graphs/architecture-awareness.csv` (`api key`, `secret`,
+  `bearer`) with no credential values or token material.
+- Source-control decision advanced from sidecar evidence-only to
+  `local commit required and created` for the docs/history/context-only packet.
+- Evidence:
+  `history/evidence/luc-957-source-control-closure-2026-07-13.md`;
+  `history/tasks/luc-957-source-control-closure-classify-and-close-local-dirty-state-for-luc-950-luc-956-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-956 source-control closure for LUC-950
+
+- Local source-control closure classified the current dirty tree as one
+  coherent `LUC-950` documentation-closure bundle with `27` baseline dirty
+  paths: `2` state/control, `2` task/evidence, `23` docs/generated, `0`
+  runtime/product, `0` stale/out-of-scope.
+- Direct attribution is preserved:
+  `12` dirty paths carry [LUC-950](/LUC/issues/LUC-950) or
+  `listBotRuntimeSessions` refs, `7` carry
+  [LUC-902](/LUC/issues/LUC-902) proof provenance, and `3` baseline paths
+  already route follow-up to [LUC-956](/LUC/issues/LUC-956).
+- Validation:
+  `git status --porcelain=v1 -uall`,
+  `git diff --check`,
+  targeted dirty-path issue scans,
+  added-line secret-pattern scan,
+  targeted `docs/status` readback, and
+  `pnpm run architecture:graph:drift:strict` all passed within closure
+  boundaries; `git diff --check` reported only line-ending normalization
+  warnings.
+- Current readback:
+  app-completion `missingDocLink` remains `1987`, and project truth now routes
+  the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Source-control decision:
+  local decision is `commit`; push/deploy remains intentionally out of scope
+  for this sidecar.
+- Evidence:
+  `history/evidence/luc-956-source-control-closure-2026-07-13.md`;
+  `history/tasks/luc-956-source-control-closure-classify-and-close-local-dirty-state-for-luc-950-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-950 listBotRuntimeSessions missing-doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for both
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`
+  and
+  `apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the runtime
+  sessions route contract and matching `documents` relations.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1987`, and project truth no
+  longer routes runtime sessions as the first Account access gap.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the next Account access docs gap,
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Source-control closure:
+  [LUC-956](/LUC/issues/LUC-956) owns local dirty-bundle classification and
+  commit/no-commit evidence for this scoped docs/generated packet.
+- Evidence:
+  `history/evidence/luc-950-account-access-listbotruntimesessions-doc-link-2026-07-13.md`;
+  `history/tasks/luc-950-account-access-listbotruntimesessions-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-947 source-control closure for LUC-944
 
 - Local source-control closure classified the current dirty tree as one

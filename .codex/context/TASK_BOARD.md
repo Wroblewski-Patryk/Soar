@@ -1,3 +1,81 @@
+## 2026-07-13 LUC-957 [Soar][Source Control Closure] Classify and close local dirty state for LUC-950-LUC-956
+
+- Status: `DONE`.
+- Scope: classify the current local dirty tree after
+  [LUC-956](/LUC/issues/LUC-956) and make the final local source-control
+  closure decision for the linked [LUC-950](/LUC/issues/LUC-950) plus
+  [LUC-956](/LUC/issues/LUC-956) documentation-closure bundle.
+- Result:
+  baseline classification captured `29` dirty paths with no runtime/product
+  code, matching doc-link/source-truth registry updates, and four linked issue
+  evidence/task artifacts before `LUC-957` added its own packet. The bundle
+  qualified for one docs/history/context-only local closure commit.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, explicit per-path
+  issue scans, added-line redaction scan plus manual false-positive review,
+  targeted `docs/status` readback, and
+  `pnpm run architecture:graph:drift:strict`.
+- Residual state:
+  this sidecar closes the local source-control requirement and preserves the
+  packet locally; it does not claim push or deploy ownership.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live
+  trading action in this lane.
+- Evidence:
+  `history/tasks/luc-957-source-control-closure-classify-and-close-local-dirty-state-for-luc-950-luc-956-2026-07-13-task.md`;
+  `history/evidence/luc-957-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-956 [Soar][Source Control Closure] Classify and close local dirty state for LUC-950
+
+- Status: `DONE`.
+- Scope: classify the current local dirty tree and make the source-control
+  closure decision for the linked [LUC-950](/LUC/issues/LUC-950)
+  documentation-closure bundle.
+- Result:
+  baseline classification captured `27` dirty paths with no runtime/product
+  code, matching doc-link/source-truth registry updates, and two linked issue
+  evidence/task artifacts.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, explicit per-path
+  issue scans, added-line dirty-path secret scan, targeted `docs/status`
+  readback, and `pnpm run architecture:graph:drift:strict`.
+- Residual state:
+  this sidecar closes only the local source-control requirement; it does not
+  claim push or deploy ownership.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live
+  trading action in this lane.
+- Evidence:
+  `history/tasks/luc-956-source-control-closure-classify-and-close-local-dirty-state-for-luc-950-2026-07-13-task.md`;
+  `history/evidence/luc-956-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-950 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listbotruntimesessions
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `listBotRuntimeSessions` across the controller and paired read-service
+  surfaces using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link both scoped entities, and the
+  authoritative sequential generator chain no longer routes either row as
+  `missing_doc_link`.
+- Verification:
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  `pnpm run architecture:graph:drift:strict`.
+- Readback:
+  `missingDocLink` dropped from `1989` to `1987`, and project truth advanced
+  the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Follow-up:
+  local source-control closure is routed through
+  [LUC-956](/LUC/issues/LUC-956) for this dirty docs/generated bundle.
+- Evidence:
+  `history/tasks/luc-950-account-access-listbotruntimesessions-doc-link-2026-07-13-task.md`;
+  `history/evidence/luc-950-account-access-listbotruntimesessions-doc-link-2026-07-13.md`.
+
 ## 2026-07-13 LUC-947 [Soar][Source Control Closure] Classify and close local dirty state for LUC-944
 
 - Status: `DONE`.

@@ -396,6 +396,12 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
@@ -403,6 +409,12 @@
     {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
     },
