@@ -231,6 +231,8 @@ apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/modules/api-backte
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/architecture/05_strategy-signal-and-decision-flow.md
 apps/api/src/modules/bots/bots.e2e.fixtures.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.e2e.shared.ts,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.errors.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.repository.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/botsRuntimeRead.repository.ts,docs/modules/api-bots.md
@@ -239,10 +241,12 @@ apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession,docs/modules/a
 apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession,docs/modules/api-bots.md
 apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions,docs/modules/api-bots.md
+apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionWindow.ts,docs/modules/api-bots.md

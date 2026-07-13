@@ -1,3 +1,100 @@
+## 2026-07-13 LUC-980 source-control closure for LUC-975 and LUC-978
+
+- Local dirty-state classification after [LUC-975](/LUC/issues/LUC-975) and
+  [LUC-978](/LUC/issues/LUC-978) is complete.
+- Baseline before LUC-980 artifacts: `36` dirty paths, all state/control,
+  docs/generated source-truth, or task/evidence. Runtime/product code,
+  package/script/workflow/deploy files, and stale/out-of-scope paths were `0`.
+- The packet also includes directly related uncommitted
+  [LUC-963](/LUC/issues/LUC-963), [LUC-969](/LUC/issues/LUC-969), and
+  [LUC-970](/LUC/issues/LUC-970) artifacts; those feed the same Account access
+  generated-truth progression into the bots `registerAndLogin` closure.
+- Verification passed:
+  `git diff --check` with expected LF-to-CRLF warnings only,
+  `pnpm run architecture:graph:drift:strict` (`857/857`, `0` missing),
+  strict value-shaped credential scan, targeted registerAndLogin readback, and
+  dirty runtime/product path check.
+- Source-control decision:
+  create one local closure commit; hold push for a later batch; deploy impact
+  none.
+- Evidence:
+  `history/evidence/luc-980-source-control-closure-2026-07-13.md`;
+  `history/tasks/luc-980-source-control-closure-luc-975-luc-978-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-978 registerAndLogin proof sync
+
+- The Account access `implemented_needs_proof` gap for
+  `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin` was stale
+  after [LUC-975](/LUC/issues/LUC-975) closed the docs lane.
+- Fresh focused rerun of
+  `corepack pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts --run --reporter=dot --test-timeout 30000`
+  reconfirmed the shared auth bootstrap helper is already executed by the
+  duplicate-guard e2e pack.
+- `docs/architecture/scanner-overrides.json` now marks the shared helper
+  verified, and the sequential generated truth no longer treats it as the
+  first Account access proof gap.
+- Evidence:
+  `history/evidence/luc-978-account-access-registerandlogin-proof-sync-2026-07-13.md`;
+  `history/tasks/luc-978-account-access-registerandlogin-proof-sync-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-969 listBotRuntimeSessionTrades proof-to-doc mapping closure
+
+- Account access `missing_doc_link` is now closed locally for both
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`
+  and
+  `apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the runtime
+  session trades route contract and matching `documents` relations.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1984`, and project truth no
+  longer routes runtime session trades as the first Account access docs gap.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the next Account access docs gap,
+  starting with `registerAndLogin` helper rows.
+- Residual:
+  the local worktree already contained unrelated dirty state, including the
+  uncommitted [LUC-970](/LUC/issues/LUC-970) readback packet, so this issue
+  does not claim source-control closure for the broader repo.
+- Evidence:
+  `history/evidence/luc-969-account-access-listbotruntimesessiontrades-doc-link-2026-07-13.md`;
+  `history/tasks/luc-969-account-access-listbotruntimesessiontrades-doc-link-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-970 runtime session trades read-path proof readback
+
+- The runtime session trades read-path proof requested by [LUC-970](/LUC/issues/LUC-970)
+  was already present locally from [LUC-938](/LUC/issues/LUC-938); no second
+  implementation lane was needed.
+- Fresh verification reran
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionTradesRead.list.test.ts --run --reporter=dot`
+  and passed (`1` file / `2` tests).
+- Current truth for the scoped runtime session trades controller/read-service
+  rows remains `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-970-runtime-session-trades-read-path-proof-readback-2026-07-13.md`;
+  `history/tasks/luc-970-runtime-session-trades-read-path-proof-readback-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-963 listBotRuntimeSessionTrades missing-doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the runtime
+  session trades route contract and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1984`, and project truth no
+  longer routes the trades lane as the first Account access docs gap.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the next Account access docs gap,
+  `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin`.
+- Evidence:
+  `history/evidence/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13.md`;
+  `history/tasks/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-960 listBotRuntimeSessionSymbolStats missing-doc-link closure
 
 - Account access `missing_doc_link` is now closed locally for
@@ -30454,3 +30551,24 @@ QA_PROOF_FOLLOWUP_CREATED`.
   deploy, push, restart, rollback, env edit, migration, DB/Redis mutation,
   account mutation, exchange/payment/subscription mutation, order, position,
   bot activation, or LIVE trading action occurred.
+## 2026-07-13 LUC-975 bots registerAndLogin doc-link closure
+
+- DSM resolved the scoped Account access source-truth rows for
+  `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin` and
+  `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin`.
+- Linked both helpers through `docs/modules/api-bots.md` and
+  `docs/architecture/relations/documentation-links.csv`, then regenerated the
+  architecture-awareness, app-completion, and project-truth outputs in strict
+  sequence.
+- Current generated truth no longer routes either bots helper as
+  `missing_doc_link`.
+- Project truth now routes the shared helper
+  `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin` as
+  `implemented_needs_proof`, which moves the remaining first gap to QA-owned
+  proof rather than docs repair.
+- Evidence:
+  `history/evidence/luc-975-account-access-registerandlogin-doc-link-closure-2026-07-13.md`;
+  `history/tasks/luc-975-account-access-registerandlogin-doc-link-closure-2026-07-13-task.md`.
+- Residual:
+  the next docs-owned Account access gap is now
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.

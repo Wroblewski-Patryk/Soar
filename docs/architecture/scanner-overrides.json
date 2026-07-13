@@ -263,6 +263,16 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access shared bots auth bootstrap helper through focused duplicate-guard bot e2e coverage that executes the real /auth/register route, upgrades the owner account to PROFESSIONAL, and reuses the authenticated agent across protected bot setup paths.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts",
+        "history/evidence/luc-978-account-access-registerandlogin-proof-sync-2026-07-13.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
       "status": "verified",
       "owner": "Test Automation Engineer",
@@ -384,6 +394,18 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
@@ -414,6 +436,12 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
@@ -427,6 +455,12 @@
     {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
     },

@@ -71,6 +71,10 @@ Out of scope:
   - runtime sessions list reads are fail-closed on authenticated selected-bot
     ownership, forward status and limit filters into the runtime-session
     summary query, and return `404` for cross-owner or missing bot reads.
+  - runtime session trades reads are fail-closed on authenticated selected-bot
+    ownership, return the scoped session trade-history payload for the owned
+    bot/session pair, and return `404` for cross-owner or missing bot/session
+    reads.
   - runtime session symbol-stats reads are fail-closed on authenticated
     selected-bot ownership, return the scoped session symbol rows plus summary
     for the owned bot/session pair, and return `404` for cross-owner or
@@ -79,6 +83,11 @@ Out of scope:
     ownership and return only `BOT_MANAGED` rows from the scoped session,
     while exchange-synced takeover visibility remains non-actionable unless
     deterministic selected-bot ownership resolves.
+  - runtime session trades reads are fail-closed on authenticated selected-bot
+    ownership, intersect explicit `symbol` filters with the selected bot's
+    active configured symbol scope, and return an empty paginated response for
+    cross-owner, missing bot/session, or off-scope symbol reads instead of
+    stale persisted trade rows.
   - dynamic TTP stop rows include source metadata so clients can distinguish
     canonical runtime-state protection from strategy-derived prospective
     display fallback.
@@ -123,6 +132,10 @@ Out of scope:
 - Runtime session/event/symbol stat telemetry integrated with engine services.
 - Read models include stale/fallback handling for runtime market context.
 - Extensive e2e coverage across create/update/runtime/entitlement scenarios.
+- Bot e2e auth bootstrap helpers use the real `/auth/register` flow plus an
+  explicit `PROFESSIONAL` subscription upgrade before protected bot create,
+  duplicate-guard, entitlement, and runtime-monitoring scenarios reuse the
+  authenticated agent.
 - Drift triage/repair operation path for dashboard parity incidents:
   - audit: `GET /dashboard/bots/strategy-drift`
   - repair: `POST /dashboard/bots/strategy-drift/repair` (idempotent, ownership-scoped)
@@ -164,6 +177,8 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 | `apps/api/src/modules/bots/bots.errors.ts#BotDomainError`                     | `docs/modules/api-bots.md` | Bot-domain error taxonomy and controller mapping contract owned by the API bots module.                                          | Architecture-awareness `documents` relation from this doc plus existing bot runtime/API test packs when behavior changes. |
 | `apps/api/src/modules/bots/bots.e2e.fixtures.ts`                              | `docs/modules/api-bots.md` | Bot API e2e fixture factory surface used by bot lifecycle/runtime proof packs.                                                   | Direct doc relation plus focused bot e2e tests when fixture contracts change.                                             |
 | `apps/api/src/modules/bots/bots.e2e.shared.ts`                                | `docs/modules/api-bots.md` | Shared bot e2e setup/assertion helpers for lifecycle, entitlement, runtime, and topology tests.                                  | Direct doc relation plus focused bot e2e tests when helper semantics change.                                              |
+| `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin`               | `docs/modules/api-bots.md` | Shared bot e2e auth bootstrap helper that registers the owner through the real `/auth/register` route, upgrades the account to the `PROFESSIONAL` plan, and returns the authenticated agent reused across protected bot lifecycle and runtime route proof. | Direct doc relation plus focused bot e2e tests when auth bootstrap or subscription-upgrade semantics change.             |
+| `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin` | `docs/modules/api-bots.md` | Duplicate-guard bot e2e auth bootstrap helper that registers the owner through the real `/auth/register` route, upgrades the account to the `PROFESSIONAL` plan, and returns the authenticated agent reused for duplicate active-bot protection and live-versus-paper ownership guard scenarios. | Direct doc relation plus focused duplicate-guard bot e2e tests when auth bootstrap or duplicate-guard setup semantics change. |
 | `apps/api/src/modules/bots/bots.errors.ts`                                    | `docs/modules/api-bots.md` | File-level bot-domain error taxonomy and fail-closed controller mapping.                                                         | Direct doc relation plus bot command/read error tests when errors change.                                                 |
 | `apps/api/src/modules/bots/bots.repository.ts`                                | `docs/modules/api-bots.md` | Bot persistence repository boundary for bot lifecycle and topology reads/writes.                                                 | Direct doc relation plus bot lifecycle/repository-facing e2e tests when persistence behavior changes.                     |
 | `apps/api/src/modules/bots/botsRuntimeRead.repository.ts`                     | `docs/modules/api-bots.md` | Runtime read repository boundary for bot monitoring/session read models.                                                         | Direct doc relation plus bot runtime monitoring tests when read shape changes.                                            |
@@ -172,11 +187,13 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 | `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`         | `docs/modules/api-bots.md` | Runtime sessions controller that returns the selected bot's scoped session summaries for the authenticated owner, forwards status and limit filters into the list query, and fails closed with `404` for cross-owner or missing bot reads. | Direct doc relation plus focused bot runtime session ownership-isolation tests when list access or filter semantics change. |
 | `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions` | `docs/modules/api-bots.md` | Runtime session positions controller that returns the selected bot's scoped positions payload for the authenticated owner and fails closed with `404` for cross-owner or missing bot/session reads. | Direct doc relation plus focused bot runtime positions ownership-isolation tests when route access semantics change.      |
 | `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats` | `docs/modules/api-bots.md` | Runtime session symbol-stats controller that returns the selected bot's scoped symbol-stat rows and summary for the authenticated owner and fails closed with `404` for cross-owner or missing bot/session reads. | Direct doc relation plus focused bot runtime symbol-stats ownership-isolation tests when route access semantics change. |
+| `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades` | `docs/modules/api-bots.md` | Runtime session trades controller that returns the selected bot's scoped paginated trade history for the authenticated owner, intersects explicit symbol filters with the selected bot's active configured scope, and fails closed with `404` for cross-owner or missing bot/session reads. | Direct doc relation plus focused bot runtime trades ownership-isolation tests when route access or symbol-scope semantics change. |
 | `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession` | `docs/modules/api-bots.md` | Runtime ownership helper for resolving the selected bot's session ownership context and fail-closed access gate.                 | Direct doc relation plus focused bot runtime ownership/session read tests when gate behavior changes.                     |
 | `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`   | `docs/modules/api-bots.md` | Runtime session-window boundary helper that resolves completed sessions to `finishedAt`, running sessions to the current wall clock, and stale non-running sessions to the last heartbeat or start time. | Direct doc relation plus focused runtime session read/ownership tests when session-window fallback semantics change.      |
 | `apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions` | `docs/modules/api-bots.md` | Runtime sessions read service that fail-closes on owned-bot lookup and forwards the selected status plus limit filters into the runtime session summary query for the authenticated owner. | Direct doc relation plus focused no-DB runtime sessions read-service tests when ownership or list-filter semantics change. |
 | `apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts`             | `docs/modules/api-bots.md` | Bot runtime helper for exchange-synced position price truth in selected-bot monitoring.                                          | Direct doc relation plus runtime monitoring/takeover tests when price-source behavior changes.                            |
 | `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions` | `docs/modules/api-bots.md` | Runtime session positions read model that fail-closes on owned-session lookup and scopes returned positions plus open orders to `BOT_MANAGED` runtime rows for the selected bot session. | Direct doc relation plus focused no-DB runtime positions read-model tests when ownership or scoped position/open-order semantics change. |
+| `apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades` | `docs/modules/api-bots.md` | Runtime session trades read service that fail-closes on owned-session lookup, applies the selected bot's active configured symbol scope to default and explicit-symbol reads, and returns an empty paginated response for off-scope symbols instead of stale persisted trade rows. | Direct doc relation plus focused no-DB runtime trades read-service tests when ownership or symbol-scope semantics change. |
 | `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts`                 | `docs/modules/api-bots.md` | Runtime session helper for DCA count display/automation context.                                                                 | Direct doc relation plus runtime position monitoring tests when DCA count semantics change.                               |
 | `apps/api/src/modules/bots/runtimeSessionPositionWindow.ts`                   | `docs/modules/api-bots.md` | Runtime session window helper for selected-bot position/trade read boundaries.                                                   | Direct doc relation plus runtime session read tests when window semantics change.                                         |
 | `apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts`               | `docs/modules/api-bots.md` | Trade fallback scope helper for botless wallet/runtime readback cases.                                                           | Direct doc relation plus runtime session positions/read tests when fallback scope changes.                                |

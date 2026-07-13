@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T17:36:08.474Z",
+  "generatedAt": "2026-07-13T19:06:30.463Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 966,
-    "missingDocLink": 1986,
+    "missingDocLink": 1982,
     "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3517,
-    "appCompletionRiskItems": 3517,
+    "riskItems": 3513,
+    "appCompletionRiskItems": 3513,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,8 +22,8 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 39,
-        "missing_doc_link": 134,
+        "ok": 43,
+        "missing_doc_link": 130,
         "missing_test_link": 58,
         "implemented_needs_proof": 3,
         "needs_browser_review": 31
@@ -138,69 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:listbotruntimesessiontrades:1852c0d2bc",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "listBotRuntimeSessionTrades",
-      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
-      "owner": "Core Backend Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 6,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:registerandlogin:fb587cbc76",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "registerAndLogin",
-      "path": "apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:registerandlogin:d16ee9a69d",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "registerAndLogin",
-      "path": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 3,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:createbotwithruntimesession:8834fe54e3",
       "type": "function",
       "kind": "feature_or_capability",
@@ -282,7 +219,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
@@ -1420,27 +1357,6 @@
       },
       "relatedEntityCount": 1,
       "risk": "missing_test_link"
-    },
-    {
-      "id": "function:listbotruntimesessiontrades:9af95ff6aa",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "listBotRuntimeSessionTrades",
-      "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
-      "owner": "Core Backend Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 4,
-      "risk": "missing_doc_link"
     },
     {
       "id": "function:resolvesinglecanonicalstrategyid:e3d52451f3",
@@ -4350,6 +4266,90 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 27,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:auth-routes-ts:43795fdb27",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "auth.routes.ts",
+      "path": "apps/api/src/modules/auth/auth.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 21,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:auth-service-ts:575a5aa904",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "auth.service.ts",
+      "path": "apps/api/src/modules/auth/auth.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 32,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:auth-session-ts:acb7f8af80",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "auth.session.ts",
+      "path": "apps/api/src/modules/auth/auth.session.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:sessiontoken-ts:0f23b09856",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "sessionToken.ts",
+      "path": "apps/api/src/modules/auth/sessionToken.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
       "risk": "needs_browser_review"
     }
   ]

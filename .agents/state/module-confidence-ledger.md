@@ -1,3 +1,70 @@
+## 2026-07-13 LUC-980 Source Control Closure for Account Access Source Truth
+
+- Status:
+  `verified`.
+- Affected module:
+  Account access / API bots source-truth evidence, not runtime behavior.
+- Evidence:
+  [LUC-980](/LUC/issues/LUC-980) classified the local dirty packet after
+  [LUC-975](/LUC/issues/LUC-975) and [LUC-978](/LUC/issues/LUC-978) as
+  coherent docs/generated source truth plus task/evidence, with no dirty
+  runtime/product code.
+- Proof:
+  `git diff --check` passed with expected LF-to-CRLF warnings only,
+  `pnpm run architecture:graph:drift:strict` passed (`857/857`, `0` missing),
+  strict added-line credential scan passed, and runtime/product dirty-path
+  check returned no application/script/package/workflow paths.
+- Next proof/fix:
+  no remaining source-control action for the LUC-975/LUC-978 packet. The next
+  Account access docs row remains separate Docs Memory Lead + Project Manager
+  ownership.
+
+## 2026-07-13 LUC-978 Account Access registerAndLogin Proof Sync
+
+- Module row:
+  Account access / API bots shared auth bootstrap helper executable proof.
+- Status:
+  `verified local focused proof sync / implemented-needs-proof row resolved / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-978-account-access-registerandlogin-proof-sync-2026-07-13.md`;
+  `history/tasks/luc-978-account-access-registerandlogin-proof-sync-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts` already
+  executes `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin`
+  through duplicate-active and live-overlap scenarios that bootstrap the owner
+  via the real `/auth/register` route and `PROFESSIONAL` subscription upgrade.
+  `docs/architecture/scanner-overrides.json` now marks the shared helper
+  `verified`, and refreshed generated truth no longer routes it as the first
+  Account access proof gap.
+- Confidence:
+  high for the local helper proof-sync lane. This does not claim deploy,
+  protected production auth/session smoke, or closure of adjacent
+  `registerAndLogin` helpers in other modules.
+
+## 2026-07-13 LUC-963 Account Access listBotRuntimeSessionTrades Doc-Link Closure
+
+- Module row:
+  Account access / API bots runtime session trades source-of-truth
+  documentation.
+- Status:
+  `verified local docs closure / missing-doc-link row resolved / project truth
+  advanced / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13.md`;
+  `history/tasks/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13-task.md`.
+- Current proof:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now document and link
+  the runtime session trades route. Fresh generated readback removed both
+  scoped `listBotRuntimeSessionTrades` rows from app-completion
+  `missing_doc_link`, and project truth advanced to
+  `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin`
+  as the first Account access docs gap.
+- Confidence:
+  high for source-of-truth coverage of the runtime session trades route
+  contract. No remaining priority trades docs row stays open after refresh.
+
 ## 2026-07-13 LUC-944 Account Access listBotRuntimeSessionPositions Doc-Link Closure
 
 - Module row:
@@ -12601,3 +12668,28 @@ no runtime mutation`.
   high for this local Account access registration service proof row. This does
   not claim protected production auth/session acceptance or broader Account
   access browser proof.
+## 2026-07-13 LUC-975 Account Access bots registerAndLogin Doc-Link Closure
+
+- Module row:
+  Account access / API bots auth bootstrap helper source-of-truth
+  documentation.
+- Status:
+  `verified local docs closure / missing-doc-link rows resolved / project truth
+  advanced / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-975-account-access-registerandlogin-doc-link-closure-2026-07-13.md`;
+  `history/tasks/luc-975-account-access-registerandlogin-doc-link-closure-2026-07-13-task.md`.
+- Current proof:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now document and link
+  `apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin` plus
+  `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin`.
+  Fresh generated readback removed both scoped rows from app-completion
+  `missing_doc_link`. Project truth now classifies the shared helper as
+  `implemented_needs_proof`, and the next docs-owned Account access gap is
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Confidence:
+  high for source-of-truth coverage of the bots auth bootstrap helper
+  contract. Remaining `registerAndLogin` helper rows in adjacent modules are
+  separate follow-ups.

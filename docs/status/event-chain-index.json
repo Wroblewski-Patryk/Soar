@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T17:36:12.189Z",
+  "generatedAt": "2026-07-13T19:06:40.693Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4859,
-      "linkedRelationCount": 19899,
+      "entityCount": 4874,
+      "linkedRelationCount": 20015,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3763,
+          "count": 3778,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1338,7 +1338,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -3095,7 +3095,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:learning-journal:c5626339c3",
@@ -4748,7 +4748,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:dashboard-runtime-current-state-aggregate-task-2026-05-09:04d02141e9",
@@ -6881,7 +6881,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728",
@@ -7998,8 +7998,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 933,
-      "linkedRelationCount": 3462,
+      "entityCount": 934,
+      "linkedRelationCount": 3480,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8854,7 +8854,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 692,
+          "count": 693,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -9054,7 +9054,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:luc-3885-stripe-webhook-subscription-lifecycle-reconciliation:d429702abc",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3293,
-      "linkedRelationCount": 11575,
+      "entityCount": 3298,
+      "linkedRelationCount": 11639,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10757,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1282,
+          "count": 1283,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11224,6 +11224,22 @@
               "status": "implemented"
             },
             {
+              "id": "function:registerandlogin:d16ee9a69d",
+              "type": "function",
+              "name": "registerAndLogin",
+              "path": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "function:registerandlogin:fb587cbc76",
+              "type": "function",
+              "name": "registerAndLogin",
+              "path": "apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "function:closebotruntimesessionposition:0d9dc5a10d",
               "type": "function",
               "name": "closeBotRuntimeSessionPosition",
@@ -11264,6 +11280,14 @@
               "status": "verified"
             },
             {
+              "id": "function:listbotruntimesessiontrades:1852c0d2bc",
+              "type": "function",
+              "name": "listBotRuntimeSessionTrades",
+              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
+              "owner": "Core Backend Engineer",
+              "status": "verified"
+            },
+            {
               "id": "function:resolvesessionwindowend:7ec1d2752b",
               "type": "function",
               "name": "resolveSessionWindowEnd",
@@ -11285,6 +11309,14 @@
               "name": "listBotRuntimeSessionPositions",
               "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
               "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listbotruntimesessiontrades:9af95ff6aa",
+              "type": "function",
+              "name": "listBotRuntimeSessionTrades",
+              "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
+              "owner": "Core Backend Engineer",
               "status": "verified"
             },
             {
@@ -11366,44 +11398,12 @@
               "path": "apps/api/src/modules/bots/runtimeSessionPositionWindow.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:runtimesessiontradefallbackscope-ts:ed10e149dc",
-              "type": "route",
-              "name": "runtimeSessionTradeFallbackScope.ts",
-              "path": "apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:runtimestrategyprotectionfallbackdisplay-ts:5082b77398",
-              "type": "route",
-              "name": "runtimeStrategyProtectionFallbackDisplay.ts",
-              "path": "apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "task:task:9244ec0c29",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-2177-semantic-route-api-dto-response-parity-audit-2026-06-05-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "route:gateiomarketstreamsourcesmoke-ts:161c99d8d6",
-              "type": "route",
-              "name": "gateioMarketStreamSourceSmoke.ts",
-              "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1410,
+          "count": 1414,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -11443,7 +11443,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9319,
-      "linkedRelationCount": 33272,
+      "entityCount": 9334,
+      "linkedRelationCount": 33371,
       "layers": {
         "frontend": {
           "count": 697,
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6203,
+          "count": 6218,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14627,6 +14627,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:22b043d44f",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:24ecdab8fa",
               "type": "task",
               "name": "Task",
@@ -14639,14 +14647,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:2946a33d2a",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-3437-coolify-resource-inventory-reconciliation-2026-06-11-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -16661,7 +16661,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:backend-permission-and-data-isolation-review-task:6bbc4f70d1",
