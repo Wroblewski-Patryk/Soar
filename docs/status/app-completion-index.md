@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-13T15:00:10.255Z
+Generated: 2026-07-13T16:16:33.616Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,12 +15,12 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Items: 3564
 - User flows: 8
 - Needs browser/screenshot review: 452
-- Missing test link: 974
-- Missing doc link: 1983
-- Implemented, needs proof: 114
+- Missing test link: 966
+- Missing doc link: 1991
+- Implemented, needs proof: 113
 - Blocked: 0
-- Known non-ok risk items: 3523
-- Priority review items indexed: 200/3523
+- Known non-ok risk items: 3522
+- Priority review items indexed: 200/3522
 - Priority review truncated: true
 
 ## Flow Summary
@@ -28,7 +28,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Unclassified user workflow: 1610 entities; risks {"missing_test_link":221,"missing_doc_link":1149,"implemented_needs_proof":90,"ok":3,"needs_browser_review":147}; gates {"auth":29,"configuration":3}
 - Trading operation: 944 entities; risks {"missing_doc_link":393,"missing_test_link":404,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":39,"auth":8}
 - Dashboard overview: 285 entities; risks {"missing_test_link":126,"missing_doc_link":107,"implemented_needs_proof":1,"needs_browser_review":51}; gates {"configuration":5,"auth":5}
-- Account access: 265 entities; risks {"ok":33,"implemented_needs_proof":4,"missing_doc_link":131,"missing_test_link":66,"needs_browser_review":31}; gates {"auth":265,"configuration":18,"subscription":3,"gateio":1}
+- Account access: 265 entities; risks {"ok":34,"missing_doc_link":139,"missing_test_link":58,"implemented_needs_proof":3,"needs_browser_review":31}; gates {"auth":265,"configuration":19,"subscription":3,"gateio":1}
 - Exchange connection and configuration: 185 entities; risks {"missing_doc_link":111,"missing_test_link":42,"implemented_needs_proof":2,"needs_browser_review":30}; gates {"gateio":15,"configuration":164,"binance":18,"auth":6}
 - User configuration: 156 entities; risks {"ok":5,"implemented_needs_proof":10,"missing_test_link":74,"missing_doc_link":43,"needs_browser_review":24}; gates {"configuration":95,"auth":8}
 - Subscription and entitlement: 82 entities; risks {"missing_test_link":24,"missing_doc_link":38,"needs_browser_review":20}; gates {"subscription":82,"auth":5,"configuration":2}
@@ -38,11 +38,10 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | implemented_needs_proof | feature_or_capability | resolveSessionWindowEnd | Engineering Delivery Lead | apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd | auth |
 | Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessionPositions | Test Automation Engineer | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions | auth |
-| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessions | Engineering Delivery Lead | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions | auth |
-| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessionSymbolStats | Engineering Delivery Lead | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats | auth |
-| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessionTrades | Engineering Delivery Lead | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades | auth |
+| Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessions | Test Automation Engineer | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions | auth |
+| Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessionSymbolStats | Test Automation Engineer | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats | auth |
+| Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessionTrades | Core Backend Engineer | apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades | auth |
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts#registerAndLogin | auth |
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin | auth |
 | Account access | missing_doc_link | feature_or_capability | createBotWithRuntimeSession | Engineering Delivery Lead | apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession | auth |
@@ -50,9 +49,9 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_doc_link | feature_or_capability | seedTicker | Engineering Delivery Lead | apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker | auth |
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin | auth, subscription |
 | Account access | missing_test_link | feature_or_capability | resolveAggregateSessionWindowEnd | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd | auth |
-| Account access | missing_test_link | feature_or_capability | dedupeRuntimeOpenOrders | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders | auth |
-| Account access | missing_test_link | feature_or_capability | resolveRuntimeTakeoverStatus | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus | auth |
-| Account access | missing_test_link | feature_or_capability | selectRuntimeOpenOrders | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders | auth |
+| Account access | missing_doc_link | feature_or_capability | dedupeRuntimeOpenOrders | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders | auth |
+| Account access | missing_doc_link | feature_or_capability | resolveRuntimeTakeoverStatus | Test Automation Engineer | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus | auth, configuration |
+| Account access | missing_doc_link | feature_or_capability | selectRuntimeOpenOrders | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders | auth |
 | Account access | missing_doc_link | feature_or_capability | resolveClosedResult | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult | auth |
 | Account access | missing_doc_link | feature_or_capability | resolveSingleCanonicalStrategyId | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId | auth |
 | Account access | missing_doc_link | feature_or_capability | resolveRuntimePositionDcaCount | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount | auth |
@@ -84,7 +83,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_test_link | feature_or_capability | tradeBelongsToRuntimePositionContinuityBoundary | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#tradeBelongsToRuntimePositionContinuityBoundary | auth |
 | Account access | missing_test_link | feature_or_capability | tradeBelongsToRuntimePositionIdentity | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#tradeBelongsToRuntimePositionIdentity | auth |
 | Account access | missing_test_link | feature_or_capability | getBotRuntimeSession | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionRead.service.ts#getBotRuntimeSession | auth |
-| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessions | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions | auth |
+| Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessions | Test Automation Engineer | apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions | auth |
 | Account access | missing_test_link | feature_or_capability | getRuntimeSessionSummaryMetrics | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionsRead.service.ts#getRuntimeSessionSummaryMetrics | auth |
 | Account access | missing_test_link | feature_or_capability | listRuntimeSessionsWithSummary | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionsRead.service.ts#listRuntimeSessionsWithSummary | auth |
 | Account access | missing_test_link | feature_or_capability | resolveSessionWindowEnd | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionsRead.service.ts#resolveSessionWindowEnd | auth |
@@ -105,7 +104,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_test_link | feature_or_capability | compareStrings | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#compareStrings | auth |
 | Account access | missing_test_link | feature_or_capability | emptyRuntimeTradesResponse | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#emptyRuntimeTradesResponse | auth |
 | Account access | missing_test_link | feature_or_capability | isPersistedImportedOpenAnchorTrade | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#isPersistedImportedOpenAnchorTrade | auth |
-| Account access | missing_test_link | feature_or_capability | listBotRuntimeSessionTrades | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades | auth |
+| Account access | missing_doc_link | feature_or_capability | listBotRuntimeSessionTrades | Core Backend Engineer | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades | auth |
 | Account access | missing_test_link | feature_or_capability | resolveSingleCanonicalStrategyId | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#resolveSingleCanonicalStrategyId | auth |
 | Account access | missing_test_link | feature_or_capability | shouldIncludeOpenAnchor | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#shouldIncludeOpenAnchor | auth |
 | Account access | missing_test_link | feature_or_capability | toOpenAnchorTradeSide | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#toOpenAnchorTradeSide | auth |
@@ -118,6 +117,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_doc_link | feature_or_capability | resolveAuthenticatedExchangeReadSource | Engineering Delivery Lead | apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.ts#resolveAuthenticatedExchangeReadSource | auth, configuration |
 | Account access | missing_doc_link | feature_or_capability | supportsAuthenticatedExchangeRead | Engineering Delivery Lead | apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.ts#supportsAuthenticatedExchangeRead | auth, configuration |
 | Account access | missing_doc_link | feature_or_capability | createAuthenticatedExchangeConnector | Engineering Delivery Lead | apps/api/src/modules/exchange/exchangeConnectorFactory.service.ts#createAuthenticatedExchangeConnector | auth, configuration |
+| Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/icons/icons.e2e.test.ts#registerAndLogin | auth |
 
 ## Agent Rule
 

@@ -1,3 +1,210 @@
+## 2026-07-13 LUC-942 [Soar][Source Control Closure] Classify and close local dirty state for LUC-902-LUC-927-LUC-929-LUC-932-plus-3
+
+- Status: `DONE`.
+- Scope: classify the current local dirty tree and make the source-control
+  closure decision for the linked
+  [LUC-902](/LUC/issues/LUC-902),
+  [LUC-927](/LUC/issues/LUC-927),
+  [LUC-929](/LUC/issues/LUC-929),
+  [LUC-932](/LUC/issues/LUC-932),
+  [LUC-933](/LUC/issues/LUC-933),
+  [LUC-934](/LUC/issues/LUC-934), and
+  [LUC-938](/LUC/issues/LUC-938)
+  implementation bundle.
+- Result:
+  baseline classification captured `43` dirty paths with three verified
+  proof-test files, matching proof-link/source-truth registry updates, and
+  fourteen linked issue evidence/task artifacts.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, explicit per-path
+  issue scans, added-line dirty-path secret scan,
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionRead.list.test.ts src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts src/modules/bots/runtimeSessionTradesRead.list.test.ts --run --reporter=dot`,
+  and `pnpm run architecture:graph:drift:strict`.
+- Residual state:
+  direct doc-link closure remains outside this sidecar; this issue closes only
+  the local source-control requirement.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live
+  trading action in this lane.
+- Evidence:
+  `history/tasks/luc-942-source-control-closure-classify-and-close-local-dirty-state-for-luc-902-luc-927-luc-929-luc-932-plus-3-2026-07-13-task.md`;
+  `history/evidence/luc-942-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-934 [Soar][Project Truth][App Completion] Read back Account access dedupeRuntimeOpenOrders stale missing-test-link
+
+- Status: `DONE`.
+- Scope: verify whether the wake-title `missing_test_link` claim for
+  `dedupeRuntimeOpenOrders` still required new Test Automation work.
+- Result:
+  no new proof implementation was needed. Fresh focused-helper verification and
+  serial generator readback confirm the helper is already covered by executable
+  proof and now classifies as `missing_doc_link`, not `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts --run --reporter=dot`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`.
+- Evidence:
+  `history/tasks/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13-task.md`;
+  `history/evidence/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13.md`.
+
+## 2026-07-13 LUC-938 [Soar][App Completion] Prove runtime session trades and symbol-stats backend reads
+
+- Status: `DONE`.
+- Scope: close the backend-read proof gaps for runtime session `trades` and
+  confirm the paired `symbol-stats` backend read lane remains synchronized in
+  generated truth.
+- Result:
+  added a focused no-DB proof for
+  `runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades`, linked the
+  controller row to the existing runtime monitoring e2e coverage, and refreshed
+  generated truth so scoped runtime `trades` and `symbol-stats` backend rows
+  now classify as `missing_doc_link` instead of `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionTradesRead.list.test.ts --run --reporter=dot`;
+  `corepack pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run -t "lists and returns runtime session monitoring summary with ownership isolation" --reporter=dot --test-timeout 30000`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for the scoped runtime `trades` and `symbol-stats` controller/read-service
+  entities.
+- Evidence:
+  `history/tasks/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13-task.md`;
+  `history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md`.
+
+## 2026-07-13 LUC-933 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for resolveruntimetakeoverstatus
+
+- Status: `DONE`.
+- Scope: close the Account access missing-test-link proof row for
+  `resolveRuntimeTakeoverStatus` on the runtime open-orders helper surface
+  using the smallest focused local verification.
+- Result:
+  helper proof is now linked to direct focused executable coverage, and the
+  generated truth chain now classifies the helper row as `missing_doc_link`
+  instead of `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts --run --reporter=dot`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  and the adjacent open-orders helper rows that now route as docs gaps.
+- Evidence:
+  `history/tasks/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13-task.md`;
+  `history/evidence/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13.md`.
+
+## 2026-07-13 LUC-932 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listbotruntimesessionsymbolstats
+
+- Status: `DONE`.
+- Scope: close the Account access missing-test-link proof row for
+  `listBotRuntimeSessionSymbolStats` on the controller surface using the
+  smallest focused local verification.
+- Result:
+  controller proof is now linked to the existing runtime symbol-stats route
+  ownership e2e coverage, and the generated truth chain now classifies the
+  controller row as `missing_doc_link` instead of `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run -t "lists and returns runtime session monitoring summary with ownership isolation" --reporter=dot --test-timeout 30000`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`
+  and the existing read-service docs row.
+- Evidence:
+  `history/tasks/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13-task.md`;
+  `history/evidence/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13.md`.
+
+## 2026-07-13 LUC-929 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for resolvesessionwindowend
+
+- Status: `DONE`.
+- Scope: close the stale Account access `implemented_needs_proof` row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  by syncing existing focused proof into the canonical status pipeline.
+- Result:
+  [LUC-896](/LUC/issues/LUC-896) already provided the passing focused helper
+  proof; this heartbeat added the missing verified scanner override and reran
+  the generator chain serially so generated truth now reflects that proof.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/botOwnership.service.test.ts --run --reporter=dot`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Readback:
+  `implementedNeedsProof` dropped from `114` to `113`; project truth no longer
+  routes `resolveSessionWindowEnd` as the first Account access gap and now
+  advances to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions`
+  as `missing_doc_link`.
+- Source-control note:
+  no commit or push occurred in this QA lane; shared dirty-bundle handling
+  remains outside this issue scope.
+- Evidence:
+  `history/tasks/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13-task.md`;
+  `history/evidence/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13.md`.
+
+## 2026-07-13 LUC-927 [Soar][Source Control Closure] Classify and close local dirty state for LUC-902
+
+- Status: `DONE`.
+- Scope: classify the current local dirty tree and make the source-control
+  closure decision for the linked [LUC-902](/LUC/issues/LUC-902)
+  implementation bundle.
+- Result:
+  baseline classification captured `27` dirty paths with one verified
+  proof-test file, matching proof-link/source-truth registry updates, and two
+  linked issue evidence/task artifacts.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, explicit per-path
+  issue scans, lightweight dirty-path live-secret scan,
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionRead.list.test.ts`,
+  and `pnpm run architecture:graph:drift:strict`.
+- Residual state:
+  direct doc-link closure remains outside this sidecar; this issue closes only
+  the local source-control requirement.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live
+  trading action in this lane.
+- Evidence:
+  `history/tasks/luc-927-source-control-closure-classify-and-close-local-dirty-state-for-luc-902-2026-07-13-task.md`;
+  `history/evidence/luc-927-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-902 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listBotRuntimeSessions
+
+- Status: `DONE`.
+- Scope: close the Account access missing-test-link proof row for
+  `listBotRuntimeSessions` across the controller and read-service surfaces
+  using the smallest focused local verification.
+- Result:
+  controller proof is now linked to existing runtime-session route ownership
+  e2e coverage, the read service has a new focused no-DB spec, and the
+  generated truth chain now classifies both scoped rows as `missing_doc_link`
+  instead of `missing_test_link`.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionRead.list.test.ts --run --reporter=dot`;
+  `corepack pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run -t "lists and returns runtime session monitoring summary with ownership isolation" --reporter=dot --test-timeout 30000`;
+  serial `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for both scoped `listBotRuntimeSessions` entities.
+- Source-control closure:
+  [LUC-927](/LUC/issues/LUC-927) classifies the shared dirty bundle as a
+  coherent local proof/source-truth packet and closes the checkout-hygiene
+  sidecar for this issue.
+- Evidence:
+  `history/tasks/luc-902-account-access-listbotruntimesessions-proof-2026-07-13-task.md`;
+  `history/evidence/luc-902-account-access-listbotruntimesessions-proof-2026-07-13.md`;
+  `history/evidence/luc-927-source-control-closure-2026-07-13.md`.
+
 ## 2026-07-13 LUC-898 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listBotRuntimeSessionPositions
 
 - Status: `DONE`.

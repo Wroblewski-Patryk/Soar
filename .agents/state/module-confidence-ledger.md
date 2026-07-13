@@ -1,3 +1,143 @@
+## 2026-07-13 LUC-934 Account Access dedupeRuntimeOpenOrders Readback Closure
+
+- Module row:
+  Account access / API bots runtime open-orders dedupe helper proof-status
+  readback.
+- Status:
+  `verified local readback / stale missing-test-link title closed / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13.md`;
+  `history/tasks/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`
+  remains the direct executable proof file linked to
+  `dedupeRuntimeOpenOrders` through generated architecture awareness. Fresh
+  app-completion readback for the helper is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high that no further Test Automation work is needed for
+  `dedupeRuntimeOpenOrders`. Direct source-of-truth documentation remains a
+  separate docs-owned follow-up.
+
+## 2026-07-13 LUC-938 Account Access runtime trades and symbol-stats backend reads
+
+- Module row:
+  Account access / API bots runtime trades and symbol-stats backend reads.
+- Status:
+  `verified local focused proof / missing-test-link rows resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md`;
+  `history/tasks/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/bots.e2e.test.ts` now directly backs
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`
+  and continues to back
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+  `apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts` now
+  directly proves the trades read-service ownership gate and canonical
+  symbol-filter forwarding. Final app-completion readback for the scoped
+  `trades` and `symbol-stats` backend rows is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local backend-read proof lane. Direct source-of-truth
+  documentation for the scoped `trades` and `symbol-stats` controller/read
+  service rows remains a separate docs-owned follow-up.
+
+## 2026-07-13 LUC-933 Account Access resolveRuntimeTakeoverStatus Proof
+
+- Module row:
+  Account access / API bots runtime open-orders takeover helper executable
+  proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13.md`;
+  `history/tasks/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`
+  now directly proves the helper's fail-closed non-exchange path plus
+  manual-only, owned, ambiguous, and unowned exchange-synced projections.
+  Final app-completion readback for
+  `resolveRuntimeTakeoverStatus` is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local helper proof lane. Direct source-of-truth documentation
+  for `resolveRuntimeTakeoverStatus`, `dedupeRuntimeOpenOrders`, and
+  `selectRuntimeOpenOrders` remains a separate docs-owned follow-up.
+
+## 2026-07-13 LUC-932 Account Access listBotRuntimeSessionSymbolStats Proof
+
+- Module row:
+  Account access / API bots runtime session symbol-stats controller executable
+  proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13.md`;
+  `history/tasks/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/bots.e2e.test.ts` now directly backs
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`
+  through canonical proof-link and scanner overrides. Final app-completion
+  readback for the controller row is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local controller proof lane. Direct source-truth documentation
+  for the controller and the existing
+  `runtimeSessionSymbolStatsRead.service.ts#listBotRuntimeSessionSymbolStats`
+  row remains a separate docs-owned follow-up.
+
+## 2026-07-13 LUC-929 Account Access resolveSessionWindowEnd Proof Sync
+
+- Module row:
+  Account access / API bots runtime session-window helper executable proof.
+- Status:
+  `verified local focused proof / generated truth synchronized / no runtime
+  mutation`.
+- Evidence:
+  `history/evidence/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13.md`;
+  `history/tasks/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/botOwnership.service.test.ts` remains the direct
+  executable proof for finished, RUNNING, and stale-session fallback behavior.
+  `docs/architecture/scanner-overrides.json` now marks the helper `verified`,
+  and the serial generator refresh removed it from app-completion/project-truth
+  open proof gaps.
+- Confidence:
+  high for the local helper proof and generated-truth synchronization. This
+  does not claim deploy, push, or protected production account/session smoke.
+
+## 2026-07-13 LUC-902 Account Access listBotRuntimeSessions Proof
+
+- Module row:
+  Account access / API bots runtime sessions controller and read-service
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link rows resolved / docs
+  follow-up remains / local source-control closure classified complete in
+  LUC-927 / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-902-account-access-listbotruntimesessions-proof-2026-07-13.md`;
+  `history/tasks/luc-902-account-access-listbotruntimesessions-proof-2026-07-13-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/bots.e2e.test.ts` now directly proves the owned
+  runtime-sessions route, status-filtered empty result, and non-owner `404`
+  isolation for the controller row. The new
+  `apps/api/src/modules/bots/runtimeSessionRead.list.test.ts` proves
+  fail-closed owned-bot gating plus status/limit forwarding for the read
+  service row. Final app-completion readback for both rows is `hasTest=true`,
+  `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local proof lane. Direct source-truth documentation for both
+  scoped entities remains a separate docs-owned follow-up. Local dirty-bundle
+  classification is closed by
+  `history/evidence/luc-927-source-control-closure-2026-07-13.md`; commit/push
+  readiness remains a separate batching decision.
+
 ## 2026-07-13 LUC-898 Account Access listBotRuntimeSessionPositions Proof
 
 - Module row:

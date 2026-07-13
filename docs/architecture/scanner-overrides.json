@@ -203,6 +203,16 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access runtime session-window helper through focused bot ownership tests covering finishedAt precedence, RUNNING wall-clock fallback, and stale-session lastHeartbeatAt then startedAt fallback behavior.",
+      "evidence": [
+        "apps/api/src/modules/bots/botOwnership.service.test.ts",
+        "history/evidence/luc-896-account-access-resolvesessionwindowend-proof-2026-07-13.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -210,6 +220,16 @@
       "evidence": [
         "apps/api/src/modules/bots/bots.e2e.test.ts",
         "history/evidence/luc-791-account-access-getbotruntimesession-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime sessions controller through focused bot runtime e2e coverage proving owner list readback, status-filtered list behavior, and fail-closed 404 isolation for a non-owner against the same bot path.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-902-account-access-listbotruntimesessions-proof-2026-07-13.md"
       ]
     },
     {
@@ -223,6 +243,36 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime session symbol-stats controller through focused bot runtime e2e coverage proving owner readback for the symbol-stats route and fail-closed 404 isolation for a non-owner against the same bot/session path.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified Account access runtime session trades controller through focused bot runtime e2e coverage proving owner readback for the trades route and fail-closed 404 isolation for a non-owner against the same bot/session path.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime sessions read service through focused no-DB tests covering fail-closed owned-bot gating and status plus limit forwarding into the runtime session summary query.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionRead.list.test.ts",
+        "history/evidence/luc-902-account-access-listbotruntimesessions-proof-2026-07-13.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
       "status": "verified",
       "owner": "Test Automation Engineer",
@@ -230,6 +280,26 @@
       "evidence": [
         "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts",
         "history/evidence/luc-898-account-access-listbotruntimesessionpositions-proof-2026-07-13.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime takeover status helper through focused tests covering fail-closed non-exchange rows plus manual-only, owned, ambiguous, and unowned exchange-synced projections.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts",
+        "history/evidence/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified Account access runtime session trades read service through focused no-DB tests covering fail-closed owned-session gating and canonical symbol-filter forwarding into the scoped runtime trade query.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts",
+        "history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md"
       ]
     }
   ],
@@ -332,15 +402,51 @@
     },
     {
       "fromPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
       "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
       "type": "tests",
       "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/runtimeSessionRead.list.test.ts",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/runtimeSessionRead.list.test.ts"
     },
     {
       "fromPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts",
       "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
       "type": "tests",
       "evidence": "apps/api/src/modules/bots/runtimeSessionPositionsRead.list.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts"
     }
   ]
 }

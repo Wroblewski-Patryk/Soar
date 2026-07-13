@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T15:00:10.255Z",
+  "generatedAt": "2026-07-13T16:16:33.616Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,12 +7,12 @@
     "items": 3564,
     "flows": 8,
     "needsBrowserReview": 452,
-    "missingTestLink": 974,
-    "missingDocLink": 1983,
-    "implementedNeedsProof": 114,
+    "missingTestLink": 966,
+    "missingDocLink": 1991,
+    "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3523,
-    "appCompletionRiskItems": 3523,
+    "riskItems": 3522,
+    "appCompletionRiskItems": 3522,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,15 +22,15 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 33,
-        "implemented_needs_proof": 4,
-        "missing_doc_link": 131,
-        "missing_test_link": 66,
+        "ok": 34,
+        "missing_doc_link": 139,
+        "missing_test_link": 58,
+        "implemented_needs_proof": 3,
         "needs_browser_review": 31
       },
       "gates": {
         "auth": 265,
-        "configuration": 18,
+        "configuration": 19,
         "subscription": 3,
         "gateio": 1
       }
@@ -138,27 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:resolvesessionwindowend:7ec1d2752b",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveSessionWindowEnd",
-      "path": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 12,
-      "risk": "implemented_needs_proof"
-    },
-    {
       "id": "function:listbotruntimesessionpositions:6fbe0a6853",
       "type": "function",
       "kind": "feature_or_capability",
@@ -176,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
@@ -185,20 +164,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessions",
       "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:listbotruntimesessionsymbolstats:56ec5fe963",
@@ -206,20 +185,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessionSymbolStats",
       "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 6,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:listbotruntimesessiontrades:1852c0d2bc",
@@ -227,20 +206,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessionTrades",
       "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Core Backend Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:registerandlogin:fb587cbc76",
@@ -403,13 +382,13 @@
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:resolveruntimetakeoverstatus:6aaaed7982",
@@ -417,20 +396,21 @@
       "kind": "feature_or_capability",
       "name": "resolveRuntimeTakeoverStatus",
       "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
-        "auth"
+        "auth",
+        "configuration"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:selectruntimeopenorders:d5ee91ce67",
@@ -445,13 +425,13 @@
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:resolveclosedresult:14c437ff28",
@@ -849,7 +829,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 4,
       "risk": "missing_doc_link"
     },
     {
@@ -1110,20 +1090,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessions",
       "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:getruntimesessionsummarymetrics:c85cddda3d",
@@ -1248,7 +1228,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -1552,20 +1532,20 @@
       "kind": "feature_or_capability",
       "name": "listBotRuntimeSessionTrades",
       "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Core Backend Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:resolvesinglecanonicalstrategyid:e3d52451f3",
@@ -4349,6 +4329,27 @@
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:buildauthenv:ad5ab69b2e",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "buildAuthEnv",
+      "path": "scripts/runV1ReleaseGate.mjs#buildAuthEnv",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
       "risk": "missing_doc_link"
     }
   ]

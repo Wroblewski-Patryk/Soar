@@ -1,3 +1,159 @@
+## 2026-07-13 LUC-942 source-control closure for LUC-902-LUC-927-LUC-929-LUC-932-plus-3
+
+- Local source-control closure classified the current dirty tree as one
+  coherent runtime-session proof plus generated source-truth bundle spanning
+  [LUC-902](/LUC/issues/LUC-902), [LUC-927](/LUC/issues/LUC-927),
+  [LUC-929](/LUC/issues/LUC-929), [LUC-932](/LUC/issues/LUC-932),
+  [LUC-933](/LUC/issues/LUC-933), [LUC-934](/LUC/issues/LUC-934), and
+  [LUC-938](/LUC/issues/LUC-938).
+- Baseline before `LUC-942` artifact mutation: `43` dirty paths
+  (`3` state/control, `14` task/evidence, `23` docs/generated, `3`
+  runtime/product, `0` stale).
+- Focused verification for the preserved bundle passed:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionRead.list.test.ts src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts src/modules/bots/runtimeSessionTradesRead.list.test.ts --run --reporter=dot`
+  (`9/9`) and `pnpm run architecture:graph:drift:strict` (`857/857`,
+  `0` missing).
+- Local source-control decision: `commit`; push remains intentionally held
+  because this sidecar does not own deployment-triggering actions from `main`.
+- Evidence:
+  `history/tasks/luc-942-source-control-closure-classify-and-close-local-dirty-state-for-luc-902-luc-927-luc-929-luc-932-plus-3-2026-07-13-task.md`;
+  `history/evidence/luc-942-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-934 dedupeRuntimeOpenOrders stale missing-test-link readback
+
+- Fresh local readback confirms
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`
+  is no longer an Account access `missing_test_link` row.
+- Focused helper verification and the serial generator chain both passed on
+  July 13, 2026.
+- Sequential generated readback is authoritative:
+  the helper now reads `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining direct doc-link closure
+  for `dedupeRuntimeOpenOrders`.
+- Evidence:
+  `history/evidence/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13.md`;
+  `history/tasks/luc-934-account-access-deduperuntimeopenorders-readback-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-938 runtime session trades and symbol-stats backend reads
+
+- Account access backend-read proof is now locally closed for
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades`
+  and
+  `apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades`.
+- Existing local `symbol-stats` proof from [LUC-932](/LUC/issues/LUC-932)
+  remains synchronized in generated truth.
+- Sequential generated readback is authoritative:
+  `missingTestLink` dropped to `969`, and all scoped runtime `trades` and
+  `symbol-stats` backend rows now read `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining doc-link closure for
+  the scoped runtime `trades` and `symbol-stats` controller/read-service
+  entities.
+- Evidence:
+  `history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md`;
+  `history/tasks/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-933 resolveRuntimeTakeoverStatus missing-test-link proof
+
+- Account access `missing_test_link` is closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`.
+- Proof packet:
+  a new focused helper test now links directly through
+  `priority-test-links.csv` and `scanner-overrides.json`.
+- Sequential generated readback is authoritative:
+  the helper row now reads `status=verified`, `hasTest=true`,
+  `hasDoc=false`, `risk=missing_doc_link`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining doc-link closure for
+  `resolveRuntimeTakeoverStatus` plus adjacent open-orders helpers that now
+  also route as docs gaps.
+- Evidence:
+  `history/evidence/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13.md`;
+  `history/tasks/luc-933-account-access-resolveruntimetakeoverstatus-proof-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-932 listBotRuntimeSessionSymbolStats missing-test-link proof
+
+- Account access `missing_test_link` is closed locally for
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats`.
+- Proof packet:
+  existing symbol-stats route ownership e2e now links directly to the
+  controller through `priority-test-links.csv` and
+  `scanner-overrides.json`.
+- Sequential generated readback is authoritative:
+  the controller row now reads `status=verified`, `hasTest=true`,
+  `hasDoc=false`, `risk=missing_doc_link`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining doc-link closure for
+  the controller row and the existing
+  `runtimeSessionSymbolStatsRead.service.ts#listBotRuntimeSessionSymbolStats`
+  docs gap.
+- Evidence:
+  `history/evidence/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13.md`;
+  `history/tasks/luc-932-account-access-listbotruntimesessionsymbolstats-proof-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-929 resolveSessionWindowEnd proof sync
+
+- Account access generated truth now matches the existing local proof for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`.
+- Root cause was metadata drift, not a missing executable test:
+  [LUC-896](/LUC/issues/LUC-896) had already proven the helper, but
+  `scanner-overrides.json` had not marked the entity `verified`.
+- Serial generator refresh is authoritative:
+  `implementedNeedsProof` dropped from `114` to `113`, and project truth
+  advanced the first Account access gap to
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions`
+  as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13.md`;
+  `history/tasks/luc-929-account-access-resolvesessionwindowend-proof-sync-2026-07-13-task.md`.
+
+## 2026-07-13 LUC-927 source-control closure for LUC-902
+
+- Local source-control closure classified the current dirty tree as one
+  coherent [LUC-902](/LUC/issues/LUC-902) proof plus generated source-truth
+  bundle.
+- Baseline before `LUC-927` artifact mutation: `27` dirty paths
+  (`3` state/control, `2` task/evidence, `21` docs/generated, `1`
+  runtime/product, `0` stale).
+- Focused verification for the preserved bundle passed:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionRead.list.test.ts`
+  (`2/2`) and `pnpm run architecture:graph:drift:strict` (`855/855`,
+  `0` missing).
+- Local source-control decision: `commit`; push remains intentionally held
+  because this sidecar does not own deployment-triggering actions from `main`.
+- Evidence:
+  `history/tasks/luc-927-source-control-closure-classify-and-close-local-dirty-state-for-luc-902-2026-07-13-task.md`;
+  `history/evidence/luc-927-source-control-closure-2026-07-13.md`.
+
+## 2026-07-13 LUC-902 listBotRuntimeSessions missing-test-link proof
+
+- Account access `missing_test_link` is closed locally for both
+  `apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions`
+  and
+  `apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions`.
+- Proof packet:
+  existing runtime-session ownership e2e now links directly to the controller,
+  and a new focused no-DB spec proves the read-service owned-bot gate plus
+  status/limit forwarding into the runtime session summary query.
+- Sequential generated readback is authoritative:
+  both scoped rows now read `status=verified`, `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Source-control closure:
+  [LUC-927](/LUC/issues/LUC-927) now classifies the shared dirty bundle as a
+  coherent local proof/source-truth packet. The remaining follow-up is direct
+  docs ownership for the two scoped `missing_doc_link` rows, not checkout
+  hygiene.
+- Next owner/action:
+  Docs Memory Lead + Project Manager own the remaining doc-link closure for
+  both scoped entities.
+- Evidence:
+  `history/evidence/luc-902-account-access-listbotruntimesessions-proof-2026-07-13.md`;
+  `history/tasks/luc-902-account-access-listbotruntimesessions-proof-2026-07-13-task.md`;
+  `history/evidence/luc-927-source-control-closure-2026-07-13.md`.
+
 ## 2026-07-13 LUC-898 listBotRuntimeSessionPositions missing-test-link proof
 
 - Account access `missing_test_link` is closed locally for both

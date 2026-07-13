@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-13T15:00:02.508Z",
+  "generated_at": "2026-07-13T16:16:33.621Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10831,
-    "relations": 35504,
+    "entities": 10855,
+    "relations": 35653,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4806,
+      "document": 4820,
       "feature": 216,
       "function": 2842,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1787,
-      "test": 456
+      "task": 1794,
+      "test": 459
     },
     "by_status": {
       "blocked": 47,
       "deprecated": 10,
-      "implemented": 8148,
-      "in_progress": 16,
-      "tested": 839,
-      "verified": 1771
+      "implemented": 8155,
+      "in_progress": 15,
+      "tested": 842,
+      "verified": 1786
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1292,
+      "count": 1284,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 302,
+      "count": 301,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3284,10 +3284,10 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1507,
+      "count": 1498,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1324,
+        "curated_graph_covered": 1315,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6228,7 +6228,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 316,
+      "count": 315,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -7833,10 +7833,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 455,
+      "count": 454,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 282,
+        "curated_graph_covered": 281,
         "historical_task_archive": 139,
         "top_level_app_mount": 1
       },
