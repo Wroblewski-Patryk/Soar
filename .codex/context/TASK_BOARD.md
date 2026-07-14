@@ -1,3 +1,30 @@
+## 2026-07-15 LUC-1166 Admin Operation USE /admin Missing-Test-Link Closure
+
+- Status: `DONE`.
+- Scope: close the generated `missing_test_link` routing for
+  `apps/api/src/router/index.ts#/admin` using the smallest existing admin API
+  proof link.
+- Result:
+  `priority-test-links.csv` and `scanner-overrides.json` now link the admin
+  router mount directly to `apps/api/src/modules/admin/users/users.e2e.test.ts`,
+  and the refreshed app-completion/project-truth chain no longer dispatches
+  `USE /admin` as a test-link gap.
+- Verification:
+  focused `users.e2e.test.ts` ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  `USE /admin` now advances to an Account access `missing_doc_link` row under
+  Docs/PM ownership; the remaining visible Admin operation gaps stay in the
+  browser-review queue.
+- Evidence:
+  `history/tasks/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15-task.md`;
+  `history/evidence/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1162 Account Access USE /users Doc-Link Closure
 
 - Status: `DONE`.

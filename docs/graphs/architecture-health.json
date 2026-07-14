@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-14T22:05:41.593Z",
+  "generated_at": "2026-07-14T22:28:34.733Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 11109,
-    "relations": 37002,
+    "entities": 11112,
+    "relations": 37014,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4949,
+      "document": 4951,
       "feature": 216,
       "function": 2845,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1856,
+      "task": 1857,
       "test": 519
     },
     "by_status": {
       "blocked": 181,
       "deprecated": 10,
-      "implemented": 8255,
+      "implemented": 8256,
       "in_progress": 29,
       "tested": 926,
-      "verified": 1708
+      "verified": 1710
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1265,
+      "count": 1264,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -200,14 +200,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-admin:9b16797c60",
-          "type": "api_endpoint",
-          "name": "USE /admin",
-          "path": "apps/api/src/router/index.ts#/admin",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,6 +1626,14 @@
           "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
           "status": "verified",
           "owner": "Core Backend Engineer"
+        },
+        {
+          "id": "function:cachekeyforcandles:6d4944d0b8",
+          "type": "function",
+          "name": "cacheKeyForCandles",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#cacheKeyForCandles",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -3284,10 +3284,10 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1475,
+      "count": 1474,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1292,
+        "curated_graph_covered": 1291,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -3477,15 +3477,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-admin:9b16797c60",
-          "type": "api_endpoint",
-          "name": "USE /admin",
-          "path": "apps/api/src/router/index.ts#/admin",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -5090,6 +5081,15 @@
           "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
           "status": "verified",
           "owner": "Core Backend Engineer",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:cachekeyforcandles:6d4944d0b8",
+          "type": "function",
+          "name": "cacheKeyForCandles",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#cacheKeyForCandles",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
         }
       ]

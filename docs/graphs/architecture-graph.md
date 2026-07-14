@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T22:05:41.593Z
+Generated: 2026-07-14T22:28:34.733Z
 
 ## Canonical Exports
 
@@ -91,7 +91,7 @@ Generated: 2026-07-14T22:05:41.593Z
 | api_endpoint | implemented | USE /strategies | apps/api/src/router/dashboard.routes.ts#/strategies | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /wallets | apps/api/src/router/dashboard.routes.ts#/wallets | Engineering Delivery Lead |
 | api_endpoint | implemented | GET / | apps/api/src/router/index.ts#/ | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /admin | apps/api/src/router/index.ts#/admin | Engineering Delivery Lead |
+| api_endpoint | verified | USE /admin | apps/api/src/router/index.ts#/admin | QA Regression Lead |
 | api_endpoint | implemented | GET /alerts | apps/api/src/router/index.ts#/alerts | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /auth | apps/api/src/router/index.ts#/auth | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /dashboard | apps/api/src/router/index.ts#/dashboard | Engineering Delivery Lead |
@@ -815,6 +815,7 @@ Generated: 2026-07-14T22:05:41.593Z
 | connected_to | project:soar:7c70e892d7 | task:task:c4f3320f75 | history/tasks/luc-1163-workers-ready-smoke-recheck-with-decision-matrix-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c1f1f1fc29 | history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1165-gate-io-position-ingestion-and-exchange-sync-fix:dabee5ce03 | history/tasks/luc-1165-soar-gateio-fix-production-position-ingestion-and-exchange-sync-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1166-admin-operation-use-admin-missing-test-link-closure:a05de8c133 | history/tasks/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1166:57642cdf7c | history/tasks/luc-1166-soar-gateio-qa-verify-position-ingestion-readiness-after-adapter-fix-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1167:58cfdbcac5 | history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e8b013b371 | history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T22:05:41.593Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2264-operator-coolify-bind-read-only-production-status-access:996cff8193 | history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2269-operator-coolify-bind-read-only-production-status-access:1d38b3fd79 | history/tasks/luc-2269-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:697d458166 | history/tasks/luc-227-autonomous-idle-and-map-drift-sweep-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:8a3441a880 | history/tasks/luc-2278-recover-soar-production-web-deploy-after-6e31d814-2026-06-05-task.md |

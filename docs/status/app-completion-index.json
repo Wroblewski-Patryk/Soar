@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T22:06:10.208Z",
+  "generatedAt": "2026-07-14T22:34:34.183Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,8 +8,8 @@
     "items": 86,
     "flows": 7,
     "needsBrowserReview": 44,
-    "missingTestLink": 28,
-    "missingDocLink": 3,
+    "missingTestLink": 27,
+    "missingDocLink": 4,
     "implementedNeedsProof": 0,
     "blocked": 0,
     "riskItems": 75,
@@ -21,21 +21,21 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 10,
+      "total": 11,
       "risks": {
-        "ok": 10
+        "ok": 10,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 10,
+        "auth": 11,
         "subscription": 1
       }
     },
     {
       "userFlow": "Admin operation",
-      "total": 5,
+      "total": 4,
       "risks": {
         "ok": 1,
-        "missing_test_link": 1,
         "needs_browser_review": 3
       },
       "gates": {
@@ -101,18 +101,20 @@
       "kind": "api_endpoint",
       "name": "USE /admin",
       "path": "apps/api/src/router/index.ts#/admin",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Admin operation",
-      "gates": [],
+      "owner": "QA Regression Lead",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 5,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 8,
+      "risk": "missing_doc_link"
     },
     {
       "id": "route:page-tsx:36cbd2cd9b",

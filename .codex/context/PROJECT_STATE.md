@@ -1,3 +1,31 @@
+## 2026-07-15 LUC-1166 admin root test-link closure
+
+- Account access/Admin operation `missing_test_link` is now closed locally for
+  `apps/api/src/router/index.ts#/admin`.
+- Proof packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15.md`
+  now give the admin router mount direct generator-readable test proof backed
+  by the existing `apps/api/src/modules/admin/users/users.e2e.test.ts`
+  surface.
+- Verification:
+  focused `users.e2e.test.ts` Vitest run PASS ->
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  sequential `build-app-completion-index.mjs` PASS ->
+  sequential `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/*`.
+- Readback:
+  `USE /admin` no longer routes as `missing_test_link`; the same endpoint now
+  advances to an Account access docs-owned `missing_doc_link` row, while the
+  visible Admin operation browser-review rows remain open.
+- Residual:
+  no runtime mutation, deploy, push, or protected browser proof is claimed
+  here.
+
 ## 2026-07-15 LUC-1162 admin users doc-link closure
 
 - Account access `missing_doc_link` is now closed locally for
