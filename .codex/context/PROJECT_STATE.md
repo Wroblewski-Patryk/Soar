@@ -1,3 +1,29 @@
+## 2026-07-15 LUC-1162 admin users doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/router/admin.routes.ts#/users`.
+- Source-truth packet:
+  `docs/modules/api-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1162-account-access-use-users-doc-link-2026-07-15.md`
+  now give the admin users router mount direct documentation coverage and a
+  generator-readable relation.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  sequential `build-app-completion-index.mjs` PASS ->
+  sequential `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/*`.
+- Readback:
+  `USE /users` no longer routes as `missing_doc_link`; the next docs-owned
+  first gap advances to `apps/api/src/router/dashboard.routes.ts#/backtests`,
+  while the remaining Admin operation proof-owned row is `USE /admin`.
+- Residual:
+  no runtime mutation, deploy, push, or protected proof is claimed here.
+
 ## 2026-07-14 LUC-1155 admin users test-link closure
 
 - Admin operation `missing_test_link` is now closed locally for

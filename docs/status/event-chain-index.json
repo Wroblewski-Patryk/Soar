@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T21:38:25.258Z",
+  "generatedAt": "2026-07-14T22:06:10.895Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5066,
-      "linkedRelationCount": 21022,
+      "entityCount": 5069,
+      "linkedRelationCount": 21046,
       "layers": {
         "frontend": {
           "count": 202,
@@ -684,7 +684,7 @@
               "name": "LUC-5590 Repair QA Repeatable API/Backtests Infra Teardown Sequencing",
               "path": "history/tasks/luc-5590-repair-qa-repeatable-api-backtests-infra-teardown-sequencing-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:luc-5608-production-performance-and-server-health-watch:967060d4cf",
@@ -716,7 +716,7 @@
               "name": "LUC-5796 V1 Audit-To-Completion Controller - 2026-06-28",
               "path": "history/tasks/luc-5796-v1-audit-to-completion-controller-2026-06-28-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-5905-v1-audit-to-completion-controller-2026-06-28:7c04df8d71",
@@ -724,7 +724,7 @@
               "name": "LUC-5905 V1 Audit-To-Completion Controller - 2026-06-28",
               "path": "history/tasks/luc-5905-v1-audit-to-completion-controller-2026-06-28-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-6025-v1-audit-to-completion-controller:d611f47f09",
@@ -788,7 +788,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6285-v1-audit-to-completion-controller-2026-06-30-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:21efa68e39",
@@ -820,7 +820,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6824-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:5030d797d2",
@@ -860,7 +860,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:8a21195e54",
@@ -884,7 +884,7 @@
               "name": "Task",
               "path": "history/tasks/luc-94-v1-audit-to-completion-controller-2026-05-26-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:af76cf07ae",
@@ -900,7 +900,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:bcc5c35fac",
@@ -916,7 +916,7 @@
               "name": "Task",
               "path": "history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:c83a8d66fa",
@@ -932,7 +932,7 @@
               "name": "Task",
               "path": "history/tasks/luc-151-v1-audit-to-completion-controller-2026-05-26-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:d5dd973ede",
@@ -972,7 +972,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6245-v1-audit-to-completion-controller-2026-06-29-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "api_endpoint:post-login:66031e164c",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3944,
+          "count": 3947,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1538,7 +1538,7 @@
               "name": "LUC-1755 ROLLBACK_GUARD Protected Evidence",
               "path": "history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-176-account-access-clearsession-project-truth-proof:402d42c4ac",
@@ -1554,7 +1554,7 @@
               "name": "LUC-1767 Bind ROLLBACK_GUARD Protected Runner Inputs",
               "path": "history/tasks/luc-1767-bind-rollback-guard-protected-runner-inputs-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-1769-approve-source-read-only-app-smoke-auth-class:da836da80f",
@@ -1746,7 +1746,7 @@
               "name": "LUC-2280 Controlled soar-web Restart",
               "path": "history/tasks/luc-2280-controlled-soar-web-restart-503-restarting-state-2026-06-05-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-2302-task-contract-select-next-soar-web-recovery-path-after-rollback-failed-closed:bcffbc9bd6",
@@ -1826,7 +1826,7 @@
               "name": "LUC-2461 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-2461-security-account-access-gate-sweep-2026-06-06-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-2463-autonomous-idle-and-map-drift-sweep:d845255bd4",
@@ -1969,6 +1969,14 @@
               "type": "document",
               "name": "API Deep-Dive: Auth Module",
               "path": "docs/modules/api-auth.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-admin-module:9d48a83d1e",
+              "type": "document",
+              "name": "API Deep-Dive: Admin Module",
+              "path": "docs/modules/api-admin.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -2509,14 +2517,6 @@
               "status": "implemented"
             },
             {
-              "id": "document:api-deep-dive-admin-module:9d48a83d1e",
-              "type": "document",
-              "name": "API Deep-Dive: Admin Module",
-              "path": "docs/modules/api-admin.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
               "id": "document:app-completion-index:507f64f96f",
               "type": "document",
               "name": "App Completion Index",
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 76,
-      "linkedRelationCount": 216,
+      "entityCount": 77,
+      "linkedRelationCount": 224,
       "layers": {
         "frontend": {
           "count": 17,
@@ -2820,6 +2820,14 @@
               "status": "implemented"
             },
             {
+              "id": "api_endpoint:use-users:2f4d7609a6",
+              "type": "api_endpoint",
+              "name": "USE /users",
+              "path": "apps/api/src/router/admin.routes.ts#/users",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "task:task:7438e4ac09",
               "type": "task",
               "name": "Task",
@@ -2906,14 +2914,6 @@
               "path": "apps/api/src/router/admin.routes.ts#/subscriptions/plans",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "api_endpoint:use-users:2f4d7609a6",
-              "type": "api_endpoint",
-              "name": "USE /users",
-              "path": "apps/api/src/router/admin.routes.ts#/users",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
             },
             {
               "id": "route:requireauth-ts:a35ca0619a",
@@ -3007,7 +3007,7 @@
           "truncated": false
         },
         "worker": {
-          "count": 22,
+          "count": 23,
           "sample": [
             {
               "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
@@ -3047,7 +3047,7 @@
               "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
               "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:luc-6925-source-control-closure-dirty-state-classification-2026-07-02:bd2ee0af67",
@@ -3071,7 +3071,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6461-release-source-build-provenance-dirty-divergent-main-2026-06-30-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "module:docs:5ee73d9114",
@@ -3086,6 +3086,14 @@
               "type": "task",
               "name": "Backend Permission And Data-Isolation Review Task",
               "path": "history/tasks/backend-permission-isolation-review-2026-05-21-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1162-account-access-use-users-doc-link-closure:f46f93f7f3",
+              "type": "task",
+              "name": "LUC-1162 Account Access `USE /users` Doc-Link Closure",
+              "path": "history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -3260,8 +3268,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 843,
-      "linkedRelationCount": 2646,
+      "entityCount": 844,
+      "linkedRelationCount": 2650,
       "layers": {
         "frontend": {
           "count": 331,
@@ -4556,7 +4564,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 269,
+          "count": 270,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -4589,6 +4597,14 @@
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "in_progress"
+            },
+            {
+              "id": "task:luc-1162-account-access-use-users-doc-link-closure:f46f93f7f3",
+              "type": "task",
+              "name": "LUC-1162 Account Access `USE /users` Doc-Link Closure",
+              "path": "history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -5108,7 +5124,7 @@
               "name": "Task",
               "path": "history/tasks/luc-37-c-journey-verification-and-qa-2026-05-25-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:task:7b77c84489",
@@ -5189,14 +5205,6 @@
               "path": "history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "document:dashboard-runtime-helper-tests:d93a65376c",
-              "type": "document",
-              "name": "Dashboard runtime helper tests",
-              "path": "docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-HELPERS.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -6801,7 +6809,7 @@
               "name": "Task",
               "path": "history/tasks/luc-45-d-security-boundary-readonly-proof-2026-05-25-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:task:b5e9d03948",
@@ -6865,7 +6873,7 @@
               "name": "Task",
               "path": "history/tasks/luc-5310-runtime-dca-pnl-paper-first-proof-triage-2026-06-20-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:task:b29463d26f",
@@ -6961,7 +6969,7 @@
               "name": "EXCHANGE2-01 Gate.io Fail-Closed Placeholder Task (2026-05-08)",
               "path": "history/tasks/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:exchange2-02-gate-io-public-market-catalog-task-2026-05-08:c055b19c65",
@@ -7137,7 +7145,7 @@
               "name": "LUC-174 Protected Trading Readback vs LIVE Mutation Approval Packet",
               "path": "history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:luc-2734-security-and-account-access-gate-sweep:fed5e275d5",
@@ -7257,7 +7265,7 @@
               "name": "Task",
               "path": "history/tasks/v1live-prod-position-truth-repair-task-2026-04-26.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:task:b2b9a8cb7c",
@@ -7297,7 +7305,7 @@
               "name": "Task",
               "path": "history/tasks/v1live-prod-position-truth-followup-task-2026-04-26.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:task:fba00896e5",
@@ -8055,7 +8063,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 939,
-      "linkedRelationCount": 3514,
+      "linkedRelationCount": 3516,
       "layers": {
         "frontend": {
           "count": 25,
@@ -10853,7 +10861,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6824-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:8a21195e54",
@@ -10869,7 +10877,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:b6483f11b2",
@@ -10877,7 +10885,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6245-v1-audit-to-completion-controller-2026-06-29-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:f24fc2517f",
@@ -11571,7 +11579,7 @@
               "name": "LUC-1755 ROLLBACK_GUARD Protected Evidence",
               "path": "history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-1767-bind-rollback-guard-protected-runner-inputs:d7b4d105ae",
@@ -11579,7 +11587,7 @@
               "name": "LUC-1767 Bind ROLLBACK_GUARD Protected Runner Inputs",
               "path": "history/tasks/luc-1767-bind-rollback-guard-protected-runner-inputs-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-1925-source-control-closure-task:9373aeee9f",
@@ -11715,7 +11723,7 @@
               "name": "LUC-2280 Controlled soar-web Restart",
               "path": "history/tasks/luc-2280-controlled-soar-web-restart-503-restarting-state-2026-06-05-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-2302-task-contract-select-next-soar-web-recovery-path-after-rollback-failed-closed:bcffbc9bd6",
@@ -11763,7 +11771,7 @@
               "name": "LUC-2461 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-2461-security-account-access-gate-sweep-2026-06-06-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-2463-autonomous-idle-and-map-drift-sweep:d845255bd4",
@@ -11883,7 +11891,7 @@
               "name": "LUC-3515 Coolify Production Deploy Health Sweep",
               "path": "history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-06-11-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:luc-3520-waitforwebbuildinfo-fetchjsonwithtimeout-relation-row:01aa175d43",
@@ -11963,7 +11971,7 @@
               "name": "LUC-5886 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-5886-security-account-access-gate-sweep-2026-06-28-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-5915-authenticated-production-acceptance-and-performance-sweep:336237740f",
@@ -11979,7 +11987,7 @@
               "name": "LUC-6234 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-6234-security-account-access-gate-sweep-2026-06-29-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-6269-no-stall-queue-expeditor:1450477e57",
@@ -11995,7 +12003,7 @@
               "name": "LUC-6416 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-6416-security-account-access-gate-sweep-2026-06-30-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:prod-promote-preq-2026-05-07-production-promotion-prerequisite-sweep:05ee440d8c",
@@ -12768,8 +12776,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9549,
-      "linkedRelationCount": 34330,
+      "entityCount": 9552,
+      "linkedRelationCount": 34354,
       "layers": {
         "frontend": {
           "count": 706,
@@ -13450,7 +13458,7 @@
               "name": "LUC-5796 V1 Audit-To-Completion Controller - 2026-06-28",
               "path": "history/tasks/luc-5796-v1-audit-to-completion-controller-2026-06-28-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-6271-production-performance-and-server-health-watch-task-contract:1f7c928026",
@@ -13546,7 +13554,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:8a21195e54",
@@ -13586,7 +13594,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:bcc5c35fac",
@@ -13682,7 +13690,7 @@
               "name": "LUC-5905 V1 Audit-To-Completion Controller - 2026-06-28",
               "path": "history/tasks/luc-5905-v1-audit-to-completion-controller-2026-06-28-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:luc-6025-v1-audit-to-completion-controller:d611f47f09",
@@ -13698,7 +13706,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6285-v1-audit-to-completion-controller-2026-06-30-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:30fae0d53d",
@@ -13754,7 +13762,7 @@
               "name": "LUC-5590 Repair QA Repeatable API/Backtests Infra Teardown Sequencing",
               "path": "history/tasks/luc-5590-repair-qa-repeatable-api-backtests-infra-teardown-sequencing-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:luc-6170-production-performance-and-server-health-watch-task-contract:57a8fdd845",
@@ -13786,7 +13794,7 @@
               "name": "Task",
               "path": "history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:cdf4c9dc48",
@@ -13794,7 +13802,7 @@
               "name": "Task",
               "path": "history/tasks/luc-151-v1-audit-to-completion-controller-2026-05-26-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:d5dd973ede",
@@ -14064,7 +14072,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6407,
+          "count": 6410,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14256,7 +14264,7 @@
               "name": "Task",
               "path": "history/tasks/deploy-lag-d355df93-follow-up-task-2026-05-09.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:ux-ui-memory-autonomy-2026-05-08:816850b88f",
@@ -14496,7 +14504,7 @@
               "name": "LUC-6930 Runtime/AI Worker Contract Proof Slice",
               "path": "history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:money-flow-security-cancel-entitlement-task:a28dade859",
@@ -14608,7 +14616,7 @@
               "name": "Task",
               "path": "history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "tested"
             },
             {
               "id": "task:task:13ca9ff661",
@@ -14664,7 +14672,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6331-production-web-backtest-worker-restoration-recheck-2026-07-01-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:1dc44f2e09",
@@ -16765,7 +16773,7 @@
               "name": "Task",
               "path": "history/tasks/luc-6594-security-and-account-access-gate-sweep-2026-07-01-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:a9c4d9e3f1",
@@ -16949,7 +16957,7 @@
               "name": "Task",
               "path": "history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "task:task:c6e13a084a",
@@ -16957,7 +16965,7 @@
               "name": "Task",
               "path": "history/tasks/luc-1757-prod-db-check-protected-evidence-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "blocked"
             },
             {
               "id": "module:scripts:356acdec23",

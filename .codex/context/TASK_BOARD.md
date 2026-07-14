@@ -1,3 +1,29 @@
+## 2026-07-15 LUC-1162 Account Access USE /users Doc-Link Closure
+
+- Status: `DONE`.
+- Scope: close the generated Account access `missing_doc_link` routing for
+  `apps/api/src/router/admin.routes.ts#/users` using the smallest
+  source-of-truth repair only.
+- Result:
+  `docs/modules/api-admin.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the admin users router mount,
+  and generated readback no longer routes `USE /users` as `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  the first docs-owned generated gap is now
+  `apps/api/src/router/dashboard.routes.ts#/backtests` as `missing_doc_link`,
+  while the remaining Admin operation proof-owned row is `USE /admin` as
+  `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1162-account-access-use-users-doc-link-2026-07-15.md`.
+
 ## 2026-07-14 LUC-1155 Admin Operation USE /users Missing-Test-Link Closure
 
 - Status: `DONE`.

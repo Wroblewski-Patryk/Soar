@@ -57,6 +57,10 @@ Out of scope:
   - `PATCH /admin/users/:userId`
   - `GET /admin/subscriptions/plans`
   - `PUT /admin/subscriptions/plans/:code`
+- Router mounts:
+  - `USE /admin/users` delegates into `usersRouter` only after the shared
+    `requireAuth` + `requireRole('ADMIN')` boundary is enforced at
+    `apps/api/src/router/admin.routes.ts`.
 
 ## 6. Security and Risk Guardrails
 - Admin-only authorization enforced at router level.

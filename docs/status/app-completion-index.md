@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-14T21:38:16.101Z
+Generated: 2026-07-14T22:06:10.208Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -17,18 +17,18 @@ Internal functions and modules are implementation details: they receive proof th
 - User flows: 7
 - Needs browser/screenshot review: 44
 - Missing test link: 28
-- Missing doc link: 4
+- Missing doc link: 3
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 76
-- Priority review items indexed: 76/76
+- Known non-ok risk items: 75
+- Priority review items indexed: 75/75
 - Priority review truncated: false
 
 ## Flow Summary
 
 - Dashboard overview: 46 entities; risks {"missing_test_link":15,"missing_doc_link":1,"needs_browser_review":30}; gates {"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
-- Account access: 10 entities; risks {"ok":9,"missing_doc_link":1}; gates {"auth":10,"subscription":1}
+- Account access: 10 entities; risks {"ok":10}; gates {"auth":10,"subscription":1}
 - Admin operation: 5 entities; risks {"ok":1,"missing_test_link":1,"needs_browser_review":3}; gates {"auth":2}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Exchange connection and configuration: 1 entities; risks {"needs_browser_review":1}; gates {"configuration":1}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | missing_doc_link | api_endpoint | USE /users | Test Automation Engineer | apps/api/src/router/admin.routes.ts#/users | auth, subscription |
 | Admin operation | missing_test_link | api_endpoint | USE /admin | Engineering Delivery Lead | apps/api/src/router/index.ts#/admin | - |
 | Admin operation | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/admin/page.tsx | - |
 | Admin operation | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/admin/users/page.tsx | auth |

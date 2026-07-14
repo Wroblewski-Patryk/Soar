@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T21:36:33.971Z
+Generated: 2026-07-14T22:05:41.593Z
 
 ## Canonical Exports
 
@@ -810,6 +810,7 @@ Generated: 2026-07-14T21:36:33.971Z
 | connected_to | project:soar:7c70e892d7 | task:task:77461ff0cc | history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2:165294b858 | history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0430bdb08e | history/tasks/luc-1161-soar-qa-reconcile-public-green-endpoints-with-restart-evidence-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1162-account-access-use-users-doc-link-closure:f46f93f7f3 | history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e9d28a35b2 | history/tasks/luc-1162-soar-luc-241-security-validate-workers-ready-principal-permission-path-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c4f3320f75 | history/tasks/luc-1163-workers-ready-smoke-recheck-with-decision-matrix-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c1f1f1fc29 | history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T21:36:33.971Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2269-operator-coolify-bind-read-only-production-status-access:1d38b3fd79 | history/tasks/luc-2269-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:697d458166 | history/tasks/luc-227-autonomous-idle-and-map-drift-sweep-2026-05-27-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8a3441a880 | history/tasks/luc-2278-recover-soar-production-web-deploy-after-6e31d814-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart:47d83a752d | history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md |

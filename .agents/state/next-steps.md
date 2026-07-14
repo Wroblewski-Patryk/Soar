@@ -1,3 +1,17 @@
+## 2026-07-15 LUC-1162 Account Access USE /users Doc-Link Follow-Up
+
+- The scoped Account access `missing_doc_link` row for
+  `apps/api/src/router/admin.routes.ts#/users` is no longer active after
+  refreshed generated readback.
+- The next docs-owned first gap in generated project truth is now
+  `apps/api/src/router/dashboard.routes.ts#/backtests` as `missing_doc_link`,
+  owned by Docs Memory Lead + Project Manager.
+- The remaining Admin operation proof-owned row is now
+  `apps/api/src/router/admin.routes.ts#/` as `missing_test_link`, owned by
+  Test Automation Engineer + QA Regression Lead.
+- Evidence:
+  `history/evidence/luc-1162-account-access-use-users-doc-link-2026-07-15.md`.
+
 ## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Follow-Up
 
 - The scoped Admin operation `missing_doc_link` row for

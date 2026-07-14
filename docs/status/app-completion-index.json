@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T21:38:16.101Z",
+  "generatedAt": "2026-07-14T22:06:10.208Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 44,
     "missingTestLink": 28,
-    "missingDocLink": 4,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 76,
-    "appCompletionRiskItems": 76,
-    "priorityReviewItems": 76,
+    "riskItems": 75,
+    "appCompletionRiskItems": 75,
+    "priorityReviewItems": 75,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -23,8 +23,7 @@
       "userFlow": "Account access",
       "total": 10,
       "risks": {
-        "ok": 9,
-        "missing_doc_link": 1
+        "ok": 10
       },
       "gates": {
         "auth": 10,
@@ -96,28 +95,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "api_endpoint:use-users:2f4d7609a6",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /users",
-      "path": "apps/api/src/router/admin.routes.ts#/users",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "subscription"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 11,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "api_endpoint:use-admin:9b16797c60",
       "type": "api_endpoint",
@@ -233,7 +210,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 5,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
