@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-14T21:09:34.915Z
+Generated: 2026-07-14T21:36:33.971Z
 
 ## Contract
 
@@ -11,14 +11,14 @@ Every task should identify the feature/module it changes, dependency expectation
 - Actionable tasks without architecture links: 0
 - Raw tasks without architecture links: 140
 - Actionable implementation entities without task links: 0
-- Raw implementation entities without task links: 311
-- Classified task-linkage noise: 451
+- Raw implementation entities without task links: 310
+- Classified task-linkage noise: 450
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 277
+- curated_graph_covered: 276
 - historical_task_archive: 140
 - top_level_app_mount: 1
 
@@ -78,7 +78,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
 - api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
-- api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
 - api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
 - api_endpoint: USE /icons (apps/api/src/router/dashboard.routes.ts#/icons)
 - api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
@@ -115,3 +114,4 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: RuntimeOnboardingSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx)
 - component: ExchangeConnectionsView.tsx (apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx)
 - component: AuditTrailView.tsx (apps/web/src/features/logs/components/AuditTrailView.tsx)
+- component: MarketUniversesTable.tsx (apps/web/src/features/markets/components/MarketUniversesTable.tsx)

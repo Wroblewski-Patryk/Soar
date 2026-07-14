@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-14T21:09:34.915Z",
+  "generated_at": "2026-07-14T21:36:33.971Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 11103,
-    "relations": 36950,
+    "entities": 11106,
+    "relations": 36978,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4945,
+      "document": 4947,
       "feature": 216,
       "function": 2845,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1854,
+      "task": 1855,
       "test": 519
     },
     "by_status": {
-      "blocked": 48,
+      "blocked": 47,
       "deprecated": 10,
-      "implemented": 8252,
-      "in_progress": 15,
+      "implemented": 8253,
+      "in_progress": 16,
       "tested": 905,
-      "verified": 1873
+      "verified": 1875
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1266,
+      "count": 1265,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -64,14 +64,6 @@
           "type": "api_endpoint",
           "name": "USE /subscriptions/plans",
           "path": "apps/api/src/router/admin.routes.ts#/subscriptions/plans",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-users:2f4d7609a6",
-          "type": "api_endpoint",
-          "name": "USE /users",
-          "path": "apps/api/src/router/admin.routes.ts#/users",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1626,19 @@
           "path": "apps/api/src/modules/auth/auth.controller.ts#register",
           "status": "verified",
           "owner": "Core Backend Engineer"
+        },
+        {
+          "id": "function:setsessioncookie:340c605797",
+          "type": "function",
+          "name": "setSessionCookie",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
+          "status": "verified",
+          "owner": "Core Backend Engineer"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 297,
+      "count": 296,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1661,14 +1661,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/dashboard.routes.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-backtests:1db01efff8",
-          "type": "api_endpoint",
-          "name": "USE /backtests",
-          "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3239,6 +3231,14 @@
           "path": "apps/api/src/modules/bots/botLiveConsent.service.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:botreadprojection-service-ts:ebe8b54781",
+          "type": "route",
+          "name": "botReadProjection.service.ts",
+          "path": "apps/api/src/modules/bots/botReadProjection.service.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -3284,10 +3284,10 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1476,
+      "count": 1475,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1293,
+        "curated_graph_covered": 1292,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -3324,15 +3324,6 @@
           "type": "api_endpoint",
           "name": "USE /subscriptions/plans",
           "path": "apps/api/src/router/admin.routes.ts#/subscriptions/plans",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-users:2f4d7609a6",
-          "type": "api_endpoint",
-          "name": "USE /users",
-          "path": "apps/api/src/router/admin.routes.ts#/users",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -5091,6 +5082,15 @@
           "status": "verified",
           "owner": "Core Backend Engineer",
           "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:setsessioncookie:340c605797",
+          "type": "function",
+          "name": "setSessionCookie",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
+          "reason": "curated_graph_covered"
         }
       ]
     },
@@ -6236,7 +6236,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 311,
+      "count": 310,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6259,14 +6259,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/dashboard.routes.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-backtests:1db01efff8",
-          "type": "api_endpoint",
-          "name": "USE /backtests",
-          "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -7837,14 +7829,22 @@
           "path": "apps/api/src/lib/errors.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:symbols-ts:c57835b31d",
+          "type": "route",
+          "name": "symbols.ts",
+          "path": "apps/api/src/lib/symbols.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 451,
+      "count": 450,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 277,
+        "curated_graph_covered": 276,
         "historical_task_archive": 140,
         "top_level_app_mount": 1
       },
@@ -9137,15 +9137,6 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:use-backtests:1db01efff8",
-          "type": "api_endpoint",
-          "name": "USE /backtests",
-          "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-bots:d49fee56cc",
           "type": "api_endpoint",
           "name": "USE /bots",
@@ -9645,6 +9636,15 @@
           "type": "feature",
           "name": "eslint.config.mjs",
           "path": "apps/web/eslint.config.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "config_only_file"
+        },
+        {
+          "id": "feature:next-env-d-ts:1458448cd1",
+          "type": "feature",
+          "name": "next-env.d.ts",
+          "path": "apps/web/next-env.d.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"

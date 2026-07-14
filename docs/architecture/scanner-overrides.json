@@ -585,6 +585,16 @@
         "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts",
         "history/evidence/luc-938-runtime-session-trades-and-symbol-stats-backend-reads-2026-07-13.md"
       ]
+    },
+    {
+      "path": "apps/api/src/router/admin.routes.ts#/users",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Admin operation users router mount through focused admin users API e2e coverage for unauthenticated and non-admin fail-closed behavior, admin list readback, role mutation, subscription assignment, and stale-session demotion rejection.",
+      "evidence": [
+        "apps/api/src/modules/admin/users/users.e2e.test.ts",
+        "history/evidence/luc-1155-admin-operation-use-users-missing-test-link-2026-07-14.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -920,6 +930,12 @@
     },
     {
       "fromId": "api_endpoint:get:6708703663",
+      "toPath": "apps/api/src/modules/admin/users/users.e2e.test.ts",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/admin/users/users.e2e.test.ts"
+    },
+    {
+      "fromId": "api_endpoint:use-users:2f4d7609a6",
       "toPath": "apps/api/src/modules/admin/users/users.e2e.test.ts",
       "type": "tests",
       "evidence": "apps/api/src/modules/admin/users/users.e2e.test.ts"

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T21:09:53.505Z",
+  "generatedAt": "2026-07-14T21:38:16.101Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,8 +8,8 @@
     "items": 86,
     "flows": 7,
     "needsBrowserReview": 44,
-    "missingTestLink": 29,
-    "missingDocLink": 3,
+    "missingTestLink": 28,
+    "missingDocLink": 4,
     "implementedNeedsProof": 0,
     "blocked": 0,
     "riskItems": 76,
@@ -21,24 +21,26 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 9,
+      "total": 10,
       "risks": {
-        "ok": 9
+        "ok": 9,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 9
+        "auth": 10,
+        "subscription": 1
       }
     },
     {
       "userFlow": "Admin operation",
-      "total": 6,
+      "total": 5,
       "risks": {
         "ok": 1,
-        "missing_test_link": 2,
+        "missing_test_link": 1,
         "needs_browser_review": 3
       },
       "gates": {
-        "auth": 3
+        "auth": 2
       }
     },
     {
@@ -100,20 +102,21 @@
       "kind": "api_endpoint",
       "name": "USE /users",
       "path": "apps/api/src/router/admin.routes.ts#/users",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Admin operation",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
       "gates": [
-        "auth"
+        "auth",
+        "subscription"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 6,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 11,
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:use-admin:9b16797c60",
@@ -230,7 +233,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 3,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
