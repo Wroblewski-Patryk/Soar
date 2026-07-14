@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T20:22:41.466Z",
+  "generatedAt": "2026-07-14T21:09:53.505Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 44,
     "missingTestLink": 29,
-    "missingDocLink": 4,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 77,
-    "appCompletionRiskItems": 77,
-    "priorityReviewItems": 77,
+    "riskItems": 76,
+    "appCompletionRiskItems": 76,
+    "priorityReviewItems": 76,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -33,7 +33,7 @@
       "userFlow": "Admin operation",
       "total": 6,
       "risks": {
-        "missing_doc_link": 1,
+        "ok": 1,
         "missing_test_link": 2,
         "needs_browser_review": 3
       },
@@ -95,25 +95,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "api_endpoint:get:6708703663",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "GET /",
-      "path": "apps/api/src/router/admin.routes.ts#/",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Admin operation",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 7,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "api_endpoint:use-users:2f4d7609a6",
       "type": "api_endpoint",
       "kind": "api_endpoint",
@@ -131,7 +112,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 5,
+      "relatedEntityCount": 6,
       "risk": "missing_test_link"
     },
     {

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T20:22:27.122Z
+Generated: 2026-07-14T21:09:34.915Z
 
 ## Canonical Exports
 
@@ -804,6 +804,7 @@ Generated: 2026-07-14T20:22:27.122Z
 | connected_to | project:soar:7c70e892d7 | task:task:ededfd1508 | history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:938e4124be | history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-115-luc-86-ops-evidence-closure-2026-05-26:c22069664f | history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b | history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:03b4397f6d | history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:77461ff0cc | history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2:165294b858 | history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T20:22:27.122Z
 | connected_to | project:soar:7c70e892d7 | task:task:8a3441a880 | history/tasks/luc-2278-recover-soar-production-web-deploy-after-6e31d814-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart:47d83a752d | history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-228-v1-audit-to-completion-controller-2026-05-27:06b4ec96fb | history/tasks/luc-228-v1-audit-to-completion-controller-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2280-controlled-soar-web-restart:cc08910835 | history/tasks/luc-2280-controlled-soar-web-restart-503-restarting-state-2026-06-05-task.md |

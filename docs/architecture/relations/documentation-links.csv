@@ -226,6 +226,7 @@ apps/api/src/modules/auth/auth.routes.ts#/register,docs/modules/api-auth.md
 apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared,docs/modules/api-auth.md
 apps/api/src/middleware/requireAuth.ts#clearSession,docs/modules/api-auth.md
 apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie,docs/modules/api-auth.md
+apps/api/src/router/admin.routes.ts#/,docs/modules/api-admin.md
 apps/api/src/router/index.ts#/auth,docs/modules/api-auth.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/modules/api-backtests.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/architecture/05_strategy-signal-and-decision-flow.md

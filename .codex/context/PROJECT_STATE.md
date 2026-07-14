@@ -1,3 +1,30 @@
+## 2026-07-14 LUC-1152 admin root doc-link closure
+
+- Admin operation `missing_doc_link` is now closed locally for
+  `apps/api/src/router/admin.routes.ts#/`.
+- Source-truth packet:
+  `docs/modules/api-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1152-admin-operation-get-doc-link-2026-07-14.md`
+  now give the admin root reachability probe direct documentation coverage and
+  generator-readable relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `apps/api/src/router/admin.routes.ts#/` as
+  `missing_doc_link`; project truth now advances the first overall gap to
+  `apps/api/src/router/admin.routes.ts#/users` as `missing_test_link`, while
+  the next docs-owned first gap is
+  `apps/api/src/router/dashboard.routes.ts#/backtests`.
+- Residual:
+  no runtime mutation, deploy, push, or protected proof is claimed here.
+
 ## 2026-07-14 LUC-1116 sumRuntimeManagedPositionRealizedPnl proof
 
 - `apps/api/src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`

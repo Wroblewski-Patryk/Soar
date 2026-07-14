@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T20:22:41.880Z",
+  "generatedAt": "2026-07-14T21:10:24.275Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5058,
-      "linkedRelationCount": 20974,
+      "entityCount": 5059,
+      "linkedRelationCount": 20981,
       "layers": {
         "frontend": {
           "count": 202,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3938,
+          "count": 3939,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1489,6 +1489,14 @@
               "type": "task",
               "name": "LUC-1108 Account Access sumRuntimeManagedPositionQuantity Proof",
               "path": "history/tasks/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b",
+              "type": "task",
+              "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
+              "path": "history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1937,14 +1945,6 @@
               "type": "task",
               "name": "LUC-2773 - SOAR-ASSISTANT-AI-001 V1 Scope Decision",
               "path": "history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2775-dev-backend-helper-missing-test-links:a354b3636f",
-              "type": "task",
-              "name": "LUC-2775 Dev Backend Helper Missing-Test Links",
-              "path": "history/tasks/luc-2775-dev-backend-helper-missing-test-links-2026-06-07-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 69,
-      "linkedRelationCount": 174,
+      "entityCount": 75,
+      "linkedRelationCount": 198,
       "layers": {
         "frontend": {
           "count": 17,
@@ -3007,8 +3007,16 @@
           "truncated": false
         },
         "worker": {
-          "count": 15,
+          "count": 21,
           "sample": [
+            {
+              "id": "task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b",
+              "type": "task",
+              "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
+              "path": "history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
               "type": "task",
@@ -3066,10 +3074,10 @@
               "status": "verified"
             },
             {
-              "id": "document:luc-5591-v1-app-completion-admin-operation-proof-lane:dbc28f4857",
+              "id": "document:luc-1152-evidence:7e5a49d627",
               "type": "document",
-              "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
-              "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
+              "name": "LUC-1152 Evidence",
+              "path": "history/evidence/luc-1152-admin-operation-get-doc-link-2026-07-14.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -3078,6 +3086,22 @@
               "type": "module",
               "name": "history",
               "path": "history",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:luc-1152-admin-operation-get-root-doc-link-closure:dc48f5fdc0",
+              "type": "document",
+              "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
+              "path": "history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:luc-5591-v1-app-completion-admin-operation-proof-lane:dbc28f4857",
+              "type": "document",
+              "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
+              "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -3122,6 +3146,30 @@
               "status": "verified"
             },
             {
+              "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
+              "type": "agent",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".agents/state/active-mission.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:2026-06-29-luc-6102-production-watch-closure:d30e53a189",
+              "type": "agent",
+              "name": "2026-06-29 LUC-6102 Production Watch Closure",
+              "path": ".agents/state/next-steps.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:2026-06-28-luc-5862-app-completion-browser-review-triage:027556664d",
+              "type": "agent",
+              "name": "2026-06-28 LUC-5862 App-Completion Browser Review Triage",
+              "path": ".agents/state/module-confidence-ledger.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:production-ui-module-clickthrough-audit:0910c6e73d",
               "type": "document",
               "name": "Production UI Module Clickthrough Audit",
@@ -3146,6 +3194,14 @@
           "count": 6,
           "sample": [
             {
+              "id": "document:api-deep-dive-admin-module:9d48a83d1e",
+              "type": "document",
+              "name": "API Deep-Dive: Admin Module",
+              "path": "docs/modules/api-admin.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:adminlayoutshell:21d505134f",
               "type": "document",
               "name": "AdminLayoutShell",
@@ -3166,14 +3222,6 @@
               "type": "document",
               "name": "Web admin module documentation",
               "path": "docs/architecture/nodes/SOAR-DOC-WEB-ADMIN.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:api-deep-dive-admin-module:9d48a83d1e",
-              "type": "document",
-              "name": "API Deep-Dive: Admin Module",
-              "path": "docs/modules/api-admin.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -12712,8 +12760,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9543,
-      "linkedRelationCount": 34287,
+      "entityCount": 9546,
+      "linkedRelationCount": 34302,
       "layers": {
         "frontend": {
           "count": 706,
@@ -14008,7 +14056,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6401,
+          "count": 6404,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

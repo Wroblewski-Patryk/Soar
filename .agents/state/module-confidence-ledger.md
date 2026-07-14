@@ -1,3 +1,22 @@
+## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Closure
+
+- Module row:
+  `api-admin` / Admin operation root reachability probe.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1152](/LUC/issues/LUC-1152) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/admin.routes.ts#/`, so
+  generated app-completion now classifies the Admin operation root probe as
+  `ok` instead of `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1152-admin-operation-get-doc-link-2026-07-14.md`.
+- Residual:
+  Admin operation remains blocked on proof/browser lanes, with
+  `apps/api/src/router/admin.routes.ts#/users` now the first overall gap as
+  `missing_test_link`.
+
 ## 2026-07-14 LUC-1124 Account Access Public Browser Proof
 
 - Module row:

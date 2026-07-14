@@ -1,3 +1,17 @@
+## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Follow-Up
+
+- The scoped Admin operation `missing_doc_link` row for
+  `apps/api/src/router/admin.routes.ts#/` is no longer active after refreshed
+  generated readback.
+- The next overall Admin operation front row is now
+  `apps/api/src/router/admin.routes.ts#/users` as `missing_test_link`, owned
+  by Test Automation Engineer + QA Regression Lead.
+- The next docs-owned first gap in generated project truth is now
+  `apps/api/src/router/dashboard.routes.ts#/backtests` as `missing_doc_link`,
+  owned by Docs Memory Lead + Project Manager.
+- Evidence:
+  `history/evidence/luc-1152-admin-operation-get-doc-link-2026-07-14.md`.
+
 ## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Follow-Up
 
 - Docs Memory Lead + Project Manager owns the remaining

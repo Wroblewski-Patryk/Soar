@@ -1,3 +1,31 @@
+## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Closure
+
+- Mission:
+  `LUC-1152-ADMIN-OPERATION-GET-ROOT-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_PROOF_AND_NEXT_DOC_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  Documentation Steward source-truth repair for
+  `apps/api/src/router/admin.routes.ts#/`. No runtime code, deploy, push,
+  restart, rollback, env edit, migration, protected account/session smoke,
+  secret/account value readback, DB/Redis mutation, exchange/payment/
+  subscription mutation, or browser proof.
+- Result:
+  `docs/modules/api-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the admin root probe
+  direct documentation coverage, and the authoritative sequential generator
+  chain no longer routes `GET /admin` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1152-admin-operation-get-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Admin operation front row is
+  `apps/api/src/router/admin.routes.ts#/users` as `missing_test_link`, while
+  the next docs-owned first gap in generated project truth is
+  `apps/api/src/router/dashboard.routes.ts#/backtests` as `missing_doc_link`.
+
 ## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Proof
 
 - Mission:
