@@ -1,3 +1,206 @@
+## 2026-07-14 LUC-1031 Account Access fetchAuthenticatedBalancePreview Proof
+
+- Mission:
+  `LUC-1031-ACCOUNT-ACCESS-FETCHAUTHENTICATEDBALANCEPREVIEW-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Integration Domain Engineer proof closure for
+  `apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview`.
+  No deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `apps/api/src/modules/wallets/wallets.service.test.ts` now directly proves
+  the helper's test-runtime fallback, free-balance capping, normalized
+  base-currency lookup, and authenticated exchange payload extraction.
+  `priority-test-links.csv` and `scanner-overrides.json` now promote the
+  helper as verified local proof, and refreshed generated truth no longer
+  routes it as `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14.md`;
+  `history/tasks/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview`
+  as `missing_doc_link`. No remaining IDE action stays open on
+  [LUC-1031](/LUC/issues/LUC-1031).
+
+## 2026-07-14 LUC-1023 Account Access dedupeRuntimeOpenOrders Proof
+
+- Mission:
+  `LUC-1023-ACCOUNT-ACCESS-DEDUPERUNTIMEOPENORDERS-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / IMPLEMENTED_NEEDS_PROOF_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  QA Verification Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`.
+  No runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`
+  now directly proves exchange-id trimming, exchange-synced preference over
+  bot duplicates, same-origin latest-update winner selection, newest-first
+  ordering, and limit-preserving selection. `priority-test-links.csv` and
+  `scanner-overrides.json` now promote the helper as verified local proof, and
+  refreshed generated truth no longer routes it as
+  `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  as `missing_doc_link`. No remaining QVE action stays open on
+  [LUC-1023](/LUC/issues/LUC-1023).
+
+## 2026-07-14 LUC-1030 Account Access PasswordVisibilityToggle and useHydrationReady Frontend Proof
+
+- Mission:
+  `LUC-1030-ACCOUNT-ACCESS-PASSWORD-VISIBILITY-AND-HYDRATION-FRONTEND-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_PROOF_LINKS_ADDED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Frontend Web Engineer proof closure for
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx#PasswordVisibilityToggle`,
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts`, and
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady`.
+  No runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.test.tsx`
+  and `apps/web/src/features/auth/hooks/useHydrationReady.test.tsx` now carry
+  direct focused proof, `priority-test-links.csv` points directly at those
+  tests, and `scanner-overrides.json` promotes the scoped entities as verified.
+  Refreshed app-completion/project-truth now record the scoped rows as
+  `hasTest=true` with `risk=missing_doc_link`, not `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14.md`;
+  `history/tasks/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  documentation-link follow-up on the same scoped entities. No remaining
+  frontend proof action stays open on [LUC-1030](/LUC/issues/LUC-1030).
+
+## 2026-07-14 LUC-1026 Account Access useAuth Local Proof
+
+- Mission:
+  `LUC-1026-ACCOUNT-ACCESS-USEAUTH-LOCAL-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_PROOF_LINK_ADDED / APP_COMPLETION_REFRESHED /
+PROOF_GAP_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/web/src/context/AuthContext.tsx#useAuth`. No runtime code, protected
+  smoke, secret/account readback, deploy, restart, rollback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, or LIVE
+  trading action.
+- Result:
+  `apps/web/src/context/AuthContext.test.tsx` now contains a providerless
+  default-contract regression for `useAuth`,
+  `docs/architecture/relations/priority-test-links.csv` directly links the
+  hook to that test, and `docs/architecture/scanner-overrides.json` promotes
+  the hook as verified local proof. Refreshed app-completion now records
+  `hasTest=true` and `risk=missing_doc_link`, not `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1026-account-access-useauth-local-proof-2026-07-14.md`;
+  `history/tasks/luc-1026-account-access-useauth-local-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  `useAuth` documentation-link follow-up. No remaining Test Automation action
+  stays open on [LUC-1026](/LUC/issues/LUC-1026).
+
+## 2026-07-14 LUC-1019 Account Access dedupeRuntimeOpenOrders Doc-Link Closure
+
+- Mission:
+  `LUC-1019-ACCOUNT-ACCESS-DEDUPERUNTIMEOPENORDERS-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`.
+  No runtime code, deploy, push, restart, rollback, env edit, protected
+  account/session smoke, secret/account value readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/status/app-completion-index.md`, and
+  `docs/status/project-truth-index.md` now reflect the helper as
+  `implemented_needs_proof`, not `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager for the same
+  helper's focused proof follow-up. No remaining DSM action stays open on
+  [LUC-1019](/LUC/issues/LUC-1019).
+
+## 2026-07-14 LUC-1016 Account Access resolveAggregateSessionWindowEnd Proof
+
+- Mission:
+  `LUC-1016-ACCOUNT-ACCESS-RESOLVEAGGREGATESESSIONWINDOWEND-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / TEST_LINK_RESOLVED /
+APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`.
+  No runtime code, protected smoke, secret/account readback, deploy, restart,
+  rollback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  added focused no-DB proof in
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.test.ts`,
+  linked it through `priority-test-links.csv`, marked the helper verified in
+  `scanner-overrides.json`, and refreshed the generator chain so the helper now
+  routes as `missing_doc_link`, not `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14.md`;
+  `history/tasks/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper's `missing_doc_link` follow-up. No remaining Test Automation action
+  stays open on [LUC-1016](/LUC/issues/LUC-1016).
+
+## 2026-07-14 LUC-1011 Account Access registerAndLogin Doc-Link Closure
+
+- Mission:
+  `LUC-1011-ACCOUNT-ACCESS-REGISTERANDLOGIN-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/graphs/architecture-awareness.json`,
+  `docs/status/app-completion-index.md`, and
+  `docs/status/project-truth-index.md` now reflect the scoped helper as
+  documented, not `missing_doc_link`. The next owner/action is
+  Test Automation Engineer + QA Regression Lead for
+  `runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`
+  as the first proof gap.
+- Evidence:
+  `history/evidence/luc-1011-account-access-registerandlogin-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1011-account-access-registerandlogin-doc-link-2026-07-14-task.md`.
+- Residual:
+  no remaining DSM action on [LUC-1011](/LUC/issues/LUC-1011).
+
 ## 2026-07-12 LUC-798 getBotRuntimeSession Test-Link Drift Readback
 
 - Mission:

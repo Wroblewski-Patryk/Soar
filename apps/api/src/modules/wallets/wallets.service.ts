@@ -500,7 +500,7 @@ const extractBalanceForCurrency = (payload: unknown, currency: string) => {
   };
 };
 
-const fetchAuthenticatedBalancePreview = async (params: {
+export const fetchAuthenticatedBalancePreview = async (params: {
   exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   apiKey: string;
   apiSecret: string;

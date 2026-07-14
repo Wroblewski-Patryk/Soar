@@ -17,6 +17,14 @@ apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeS
 apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades,apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts,LUC-938 direct runtime session trades read service owned-session gate and canonical symbol-filter proof relation
 apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt,apps/api/src/modules/auth/sessionToken.test.ts,LUC-637 direct session-token issued-at newest-candidate ordering proof relation
 apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession,apps/api/src/modules/bots/botOwnership.service.test.ts,LUC-755 direct bot runtime session ownership gate proof relation
+apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd,apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.test.ts,LUC-1016 direct aggregate runtime session-window helper finishedAt heartbeat and startedAt fallback proof relation
+apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders,apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts,LUC-1023 direct runtime open-orders dedupe helper exchange-preference latest-update and newest-first ordering proof relation
+apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview,apps/api/src/modules/wallets/wallets.service.test.ts,LUC-1031 direct wallet authenticated balance preview helper test-runtime fallback and normalized exchange payload proof relation
+apps/web/src/context/AuthContext.tsx#useAuth,apps/web/src/context/AuthContext.test.tsx,LUC-1026 direct auth hook default contract and provider-backed session state proof relation
+apps/web/src/features/auth/pages/RegisterPage.tsx#RegisterPage,apps/web/src/features/auth/pages/RegisterPage.test.tsx,LUC-1027 direct register page signed-out render and authenticated redirect proof relation
+apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx#PasswordVisibilityToggle,apps/web/src/features/auth/components/PasswordVisibilityToggle.test.tsx,LUC-1030 direct password visibility toggle label and disabled fail-closed proof relation
+apps/web/src/features/auth/hooks/useHydrationReady.ts,apps/web/src/features/auth/hooks/useHydrationReady.test.tsx,LUC-1030 direct hydration-ready feature fail-closed server render and client hydration proof relation
+apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady,apps/web/src/features/auth/hooks/useHydrationReady.test.tsx,LUC-1030 direct hydration-ready hook fail-closed server render and client hydration proof relation
 apps/web/src/ui/components/DataTable.tsx,apps/web/src/ui/components/DataTable.test.tsx,LUC-2164 direct shared table relation
 apps/web/src/ui/components/DataTable.tsx#applySearch,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct search submit relation
 apps/web/src/ui/components/DataTable.tsx#commitPageInput,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct page input relation
@@ -240,6 +248,7 @@ scripts/goLiveSmoke.mjs#main,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-liv
 scripts/goLiveSmoke.mjs#printLocalMigrationGuidance,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke local migration guidance relation
 scripts/goLiveSmoke.mjs#run,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke injected child command runner relation
 scripts/resolveOpsAuthToken.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 ops auth release-gate relation
+scripts/resolveOpsAuthToken.mjs,scripts/resolveOpsAuthToken.test.mjs,LUC-1032 direct ops auth feature-level proof refresh relation
 scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth cookie token parser relation
 scripts/resolveOpsAuthToken.mjs#readSetCookieHeaders,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth set-cookie header reader relation
 scripts/resolveOpsAuthToken.mjs#resolveOpsAuthToken,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth login token extraction relation
@@ -249,6 +258,7 @@ scripts/runAud07IsolatedDbPacks.mjs#pnpmArgs,scripts/runAud07IsolatedDbPacks.tes
 scripts/runAud07IsolatedDbPacks.mjs#run,scripts/runAud07IsolatedDbPacks.test.mjs,LUC-2820 direct child exit fail-closed relation
 scripts/runBackupVerificationProfile.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 backup verification release-gate relation
 scripts/runControlledLiveSessionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 controlled live proof release-gate relation
+scripts/runControlledLiveSessionProof.mjs,scripts/runControlledLiveSessionProof.test.mjs,LUC-1032 direct controlled live feature-level proof refresh relation
 scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live no-order guard readiness relation
 scripts/runControlledLiveSessionProof.mjs#assertOptions,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live proof fail-closed options relation
 scripts/runControlledLiveSessionProof.mjs#assertTargetBotSafe,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live target bot safety relation

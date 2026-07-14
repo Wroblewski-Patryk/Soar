@@ -1,0 +1,35 @@
+{
+    "completionEvidence":  {
+                               "summary":  "Closed the Account access missing-test-link for fetchAuthenticatedBalancePreview with focused helper proof, source-truth linkage, and generator readback.",
+                               "riskLevel":  "standard",
+                               "documentationEvidence":  {
+                                                             "summary":  "Recorded durable task and evidence packets plus project state updates; the remaining gap is the direct missing_doc_link follow-up.",
+                                                             "refs":  [
+                                                                          {
+                                                                              "kind":  "request_comment",
+                                                                              "label":  "Closeout comment"
+                                                                          }
+                                                                      ]
+                                                         },
+                               "testEvidence":  {
+                                                    "summary":  "Focused Vitest proof passed for wallets.service.test.ts, and generator readback moved the helper from missing_test_link to missing_doc_link.",
+                                                    "refs":  [
+                                                                 {
+                                                                     "kind":  "request_comment",
+                                                                     "label":  "Closeout comment"
+                                                                 }
+                                                             ]
+                                                },
+                               "reviewEvidence":  {
+                                                      "summary":  "Reviewed the helper contract against the generated app-completion and project-truth readback after updating priority-test-links and scanner overrides.",
+                                                      "refs":  [
+                                                                   {
+                                                                       "kind":  "request_comment",
+                                                                       "label":  "Closeout comment"
+                                                                   }
+                                                               ]
+                                                  }
+                           },
+    "status":  "done",
+    "comment":  "Done\n\n- Added focused proof for \u0007pps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview in \u0007pps/api/src/modules/wallets/wallets.service.test.ts.\n- Linked the helper in docs/architecture/relations/priority-test-links.csv and marked it verified in docs/architecture/scanner-overrides.json.\n- Refreshed architecture-awareness, app-completion, and project-truth readback. The helper now resolves to hasTest=true, hasDoc=false, \risk=missing_doc_link.\n\nVerification\n\n- corepack pnpm --filter api exec vitest run src/modules/wallets/wallets.service.test.ts --run --reporter=dot -\u003e PASS (1 file / 7 tests)\n- pnpm run architecture:graph:drift:strict -\u003e PASS (859/859, \u0000 missing)\n- \build-app-completion-index.mjs -\u003e PASS (missingTestLink=962, down from 963)\n- \build-project-truth-indexes.mjs --apply -\u003e PASS\n\nEvidence\n\n- history/tasks/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14-task.md\n- history/evidence/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14.md\n- history/artifacts/luc-1031-build-architecture-awareness-log.txt\n\nResidual\n\n- Next owner/action: Docs Memory Lead + Project Manager for the direct doc-link follow-up on \fetchAuthenticatedBalancePreview."
+}

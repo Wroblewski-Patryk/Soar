@@ -1,3 +1,386 @@
+## 2026-07-14 LUC-1042 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1011-LUC-1016-LUC-1019-LUC-1023-plus-7
+
+- Status: `DONE`.
+- Scope: classify the current local dirty state produced by the Account access
+  proof/doc-link packet for [LUC-1011](/LUC/issues/LUC-1011),
+  [LUC-1016](/LUC/issues/LUC-1016), [LUC-1019](/LUC/issues/LUC-1019),
+  [LUC-1023](/LUC/issues/LUC-1023), [LUC-1026](/LUC/issues/LUC-1026),
+  [LUC-1027](/LUC/issues/LUC-1027), [LUC-1030](/LUC/issues/LUC-1030),
+  [LUC-1031](/LUC/issues/LUC-1031), [LUC-1032](/LUC/issues/LUC-1032),
+  [LUC-1035](/LUC/issues/LUC-1035), and [LUC-1039](/LUC/issues/LUC-1039),
+  then make a local commit/no-commit decision with non-protected evidence only.
+- Result:
+  the baseline dirty set before LUC-1042 artifacts was `73` paths
+  (`4` state/context, `8` code/tests, `27` docs/generated truth, `34`
+  history artifacts/evidence/tasks, `0` out-of-scope). Focused API proof,
+  focused Web proof, web typecheck, drift strict, and dirty-file secret scan
+  all passed, so the packet qualified for one local source-control closure
+  commit.
+- Verification:
+  `git status --short --branch`;
+  `git diff --check`;
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateFallbacks.service.test.ts src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts src/modules/wallets/wallets.service.test.ts --run --reporter=dot`;
+  `corepack pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/features/auth/components/PasswordVisibilityToggle.test.tsx src/features/auth/hooks/useHydrationReady.test.tsx src/features/auth/pages/RegisterPage.test.tsx`;
+  `corepack pnpm --filter web run typecheck`;
+  `pnpm run architecture:graph:drift:strict`;
+  targeted dirty-file secret scan.
+- Source-control decision:
+  one local commit is required and appropriate for the coherent proof +
+  source-truth packet; push remains held for batch and deploy impact is none.
+- Evidence:
+  `history/tasks/luc-1042-source-control-closure-luc-1011-luc-1016-luc-1019-luc-1023-plus-7-2026-07-14-task.md`;
+  `history/evidence/luc-1042-source-control-closure-2026-07-14.md`.
+
+## 2026-07-14 LUC-1039 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for selectruntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check` with line-ending warnings only.
+- Readback:
+  app-completion `missingDocLink` dropped from `1985` to `1984`, the Account
+  access flow moved from `ok=52` / `implemented_needs_proof=1` /
+  `missing_doc_link=132` to `ok=52` / `implemented_needs_proof=2` /
+  `missing_doc_link=131`, and project truth advanced the first Account access
+  gap to the same helper as `implemented_needs_proof`.
+- Evidence:
+  `history/tasks/luc-1039-account-access-selectruntimeopenorders-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1039-account-access-selectruntimeopenorders-doc-link-2026-07-14.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager through
+  [LUC-1040](/LUC/issues/LUC-1040) for the direct `selectRuntimeOpenOrders`
+  proof follow-up, while the next docs-owned gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`.
+  No remaining DSM action stays open on [LUC-1039](/LUC/issues/LUC-1039).
+
+## 2026-07-14 LUC-1035 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for resolveruntimetakeoverstatus
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check` with line-ending warnings only.
+- Readback:
+  app-completion `missingDocLink` dropped from `1986` to `1985`, the Account
+  access flow moved from `ok=51` / `missing_doc_link=133` to `ok=52` /
+  `missing_doc_link=132`, and project truth advanced the first Account access
+  docs gap to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`.
+- Evidence:
+  `history/tasks/luc-1035-account-access-resolveruntimetakeoverstatus-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1035-account-access-resolveruntimetakeoverstatus-doc-link-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  `selectRuntimeOpenOrders` documentation-link follow-up. No remaining DSM
+  action stays open on [LUC-1035](/LUC/issues/LUC-1035).
+
+## 2026-07-14 LUC-1032 [Soar][Account access][Runtime Proof] Refresh local proof for resolveOpsAuthToken and runControlledLiveSessionProof
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `scripts/resolveOpsAuthToken.mjs` and
+  `scripts/runControlledLiveSessionProof.mjs` using the smallest focused local
+  proof slice only.
+- Result:
+  `scripts/resolveOpsAuthToken.test.mjs` and
+  `scripts/runControlledLiveSessionProof.test.mjs` already carried the
+  executable proof, and
+  `docs/architecture/relations/priority-test-links.csv` plus
+  `docs/architecture/scanner-overrides.json` now expose that proof directly to
+  the generated truth pipeline for both script feature entities.
+- Verification:
+  `node --check scripts/resolveOpsAuthToken.mjs` -> PASS;
+  `node --check scripts/runControlledLiveSessionProof.mjs` -> PASS;
+  `node --test scripts/resolveOpsAuthToken.test.mjs scripts/runControlledLiveSessionProof.test.mjs`
+  -> PASS (`34` tests);
+  `node scripts/runControlledLiveSessionProof.mjs --help` -> PASS;
+  `build-architecture-awareness-index.mjs` -> PASS (`10937` entities /
+  `36176` relations / `entityOverridesApplied=40` /
+  `relationOverridesApplied=39`);
+  `build-app-completion-index.mjs` -> PASS (`implementedNeedsProof=111`, down
+  from `113`);
+  `build-project-truth-indexes.mjs --apply` -> PASS.
+- Readback:
+  project truth no longer routes either script feature as
+  `implemented_needs_proof`. The first Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1032-runtime-proof-refresh-2026-07-14-task.md`;
+  `history/evidence/luc-1032-runtime-proof-refresh-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  documentation-link follow-up on `resolveRuntimeTakeoverStatus`. No remaining
+  runtime-proof action stays open on [LUC-1032](/LUC/issues/LUC-1032).
+
+## 2026-07-14 LUC-1031 [Soar][Account access][Integration Proof] Link or extend local proof for fetchAuthenticatedBalancePreview
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview`
+  using the smallest focused helper-proof slice only.
+- Result:
+  `apps/api/src/modules/wallets/wallets.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now carry the helper proof and
+  promote the helper as verified local evidence.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/wallets/wallets.service.test.ts --run --reporter=dot`
+  -> PASS (`1` file / `7` tests);
+  `build-architecture-awareness-index.mjs` -> PASS (`10928` entities /
+  `36130` relations / `entityOverridesApplied=35`);
+  `pnpm run architecture:graph:drift:strict` -> PASS (`859/859`, `0`
+  missing);
+  `build-app-completion-index.mjs` -> PASS (`missingTestLink=962`, down from
+  `963`);
+  `build-project-truth-indexes.mjs --apply` -> PASS.
+- Readback:
+  `apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview`
+  now resolves to `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`, and
+  project truth no longer routes it as a proof gap.
+- Evidence:
+  `history/tasks/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  documentation-link follow-up. No remaining IDE action stays open on
+  [LUC-1031](/LUC/issues/LUC-1031).
+
+## 2026-07-14 LUC-1023 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for deduperuntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`
+  using the smallest focused proof slice only.
+- Result:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now carry the helper proof and
+  promote the helper as verified local evidence.
+- Verification:
+  `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts --run --reporter=dot`
+  -> PASS (`1` file / `7` tests);
+  `build-architecture-awareness-index.mjs` -> PASS (`10928` entities /
+  `36128` relations / `entityOverridesApplied=34`);
+  `pnpm run architecture:graph:drift:strict` -> PASS (`859/859`, `0`
+  missing);
+  `build-app-completion-index.mjs` -> PASS on rerun (`implementedNeedsProof=113`,
+  down from `114`);
+  `build-project-truth-indexes.mjs --apply` -> PASS.
+- Readback:
+  project truth no longer routes `dedupeRuntimeOpenOrders` as the first
+  Account access proof gap. The queue advances to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the adjacent
+  `resolveRuntimeTakeoverStatus` doc-link closure. No remaining QVE action
+  stays open on [LUC-1023](/LUC/issues/LUC-1023).
+
+## 2026-07-14 LUC-1030 [Soar][Account access][Frontend Proof] Add focused local proof for PasswordVisibilityToggle and useHydrationReady
+
+- Status: `DONE`.
+- Scope: close the frontend-owned Account access `missing_test_link` routing
+  for `apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx#PasswordVisibilityToggle`,
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts`, and
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady`
+  using the smallest focused proof slice only.
+- Result:
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.test.tsx`
+  now directly proves localized show/hide labels plus disabled fail-closed
+  behavior, `apps/web/src/features/auth/hooks/useHydrationReady.test.tsx`
+  now directly proves fail-closed server rendering and client hydration
+  readiness, `priority-test-links.csv` points both scoped entities directly at
+  those tests, and `scanner-overrides.json` promotes the scoped rows to
+  verified.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/features/auth/components/PasswordVisibilityToggle.test.tsx src/features/auth/hooks/useHydrationReady.test.tsx`
+  -> PASS (`2` files / `4` tests);
+  `corepack pnpm --filter web run typecheck` -> PASS;
+  `build-architecture-awareness-index.mjs` -> PASS (`10934` entities /
+  `36157` relations / `entityOverridesApplied=40`);
+  `build-app-completion-index.mjs` -> PASS (`missingTestLink=959`);
+  `build-project-truth-indexes.mjs --apply` -> PASS.
+- Readback:
+  `PasswordVisibilityToggle`,
+  `useHydrationReady.ts`, and `useHydrationReady` now resolve to
+  `status=verified`, `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`, and the same rows no longer appear in
+  `project-truth-index.json` as `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  docs-link closure on the same scoped entities. No remaining frontend proof
+  work stays open on [LUC-1030](/LUC/issues/LUC-1030).
+
+## 2026-07-14 LUC-1026 [Soar][Account access][Frontend Proof] Link or extend local proof for useAuth
+
+- Status: `DONE`.
+- Scope: close the frontend-owned Account access `missing_test_link` routing
+  for `apps/web/src/context/AuthContext.tsx#useAuth` using the smallest local
+  hook-proof slice only.
+- Result:
+  `apps/web/src/context/AuthContext.test.tsx` now directly proves the
+  providerless default contract for `useAuth`,
+  `docs/architecture/relations/priority-test-links.csv` links the hook to that
+  test, and `docs/architecture/scanner-overrides.json` promotes the hook as a
+  verified local proof row.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/context/AuthContext.test.tsx`
+  -> PASS (`1` file / `5` tests);
+  `corepack pnpm --filter web run typecheck` -> PASS;
+  `build-architecture-awareness-index.mjs` -> PASS (`10928` entities /
+  `36121` relations / `entityOverridesApplied=33`);
+  `build-app-completion-index.mjs` -> PASS (`missingTestLink=963`, down from
+  `964`);
+  `build-project-truth-indexes.mjs --apply` -> PASS.
+- Readback:
+  `apps/web/src/context/AuthContext.tsx#useAuth` now resolves to
+  `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`, and the same hook
+  no longer appears in targeted `project-truth-index.md` grep as a proof gap.
+- Evidence:
+  `history/tasks/luc-1026-account-access-useauth-local-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1026-account-access-useauth-local-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  `useAuth` documentation-link follow-up. No remaining Test Automation action
+  stays open on [LUC-1026](/LUC/issues/LUC-1026).
+
+## 2026-07-14 LUC-1027 [Soar][Account access][Frontend Proof] Add focused local proof for RegisterPage
+
+- Status: `DONE`.
+- Scope: close the frontend-owned Account access `missing_test_link` routing
+  for `apps/web/src/features/auth/pages/RegisterPage.tsx#RegisterPage` using
+  the smallest page-level proof slice only.
+- Result:
+  `apps/web/src/features/auth/pages/RegisterPage.test.tsx` now directly proves
+  the signed-out render and authenticated redirect contract, and
+  `docs/architecture/relations/priority-test-links.csv` now points the page
+  function to that test.
+- Verification:
+  `pnpm --filter web exec vitest run src/features/auth/pages/RegisterPage.test.tsx`;
+  `pnpm --filter web exec vitest run src/features/auth/pages/RegisterPage.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/auth/hooks/useRegisterForm.test.tsx`.
+- Readback:
+  direct source-truth linkage is now in place, and the generated
+  `app-completion/project-truth` refresh completed in this heartbeat. The page
+  now reads back as `missing_doc_link`, not `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1027-registerpage-frontend-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1027-registerpage-frontend-proof-2026-07-14.md`.
+
+## 2026-07-14 LUC-1019 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for deduperuntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1979` to `1978`, and project
+  truth advanced the same helper to
+  `implemented_needs_proof`, owned by QA Regression Lead + Project Manager.
+- Evidence:
+  `history/tasks/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14.md`.
+
+## 2026-07-14 LUC-1016 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for resolveaggregatesessionwindowend
+
+- Status: `DONE`.
+- Scope: close the Test Automation-owned Account access `missing_test_link`
+  routing for
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`
+  using the smallest focused proof slice only.
+- Result:
+  `runtimeMonitoringAggregateFallbacks.service.test.ts`,
+  `priority-test-links.csv`, and `scanner-overrides.json` now carry the scoped
+  helper proof, and the authoritative sequential generator chain no longer
+  routes it as `missing_test_link`.
+- Verification:
+  focused Vitest helper proof ->
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply` ->
+  targeted `Get-Content` and `rg` readback ->
+  `git diff --check`.
+- Readback:
+  app-completion `missingTestLink` dropped from `965` to `964`, and project
+  truth advanced the first Account access gap to the same helper as
+  `missing_doc_link`, owned by Docs Memory Lead + Project Manager.
+- Handoff:
+  this older dispatch snapshot is superseded by the current first-gap lane and
+  should not be treated as an active dispatch target. The durable owner path
+  now sits with the newer dispatcher-issued issue.
+- Evidence:
+  `history/tasks/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14.md`.
+
+## 2026-07-14 LUC-1011 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for registerandlogin
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1979` to `1978`, and project
+  truth advanced the first Account access gap to
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`
+  as `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1011-account-access-registerandlogin-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1011-account-access-registerandlogin-doc-link-2026-07-14.md`.
+
 ## 2026-07-14 LUC-1009 [Soar][Source Control Closure] Classify and close local dirty state for LUC-983-LUC-994-LUC-1004
 
 - Status: `DONE`.

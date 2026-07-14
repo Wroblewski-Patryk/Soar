@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-14T00:37:05.833Z",
+  "generatedAt": "2026-07-14T03:23:45.217Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
   "counts": {
-    "items": 3564,
+    "items": 3567,
     "flows": 8,
     "needsBrowserReview": 452,
-    "missingTestLink": 966,
-    "missingDocLink": 1979,
-    "implementedNeedsProof": 113,
+    "missingTestLink": 959,
+    "missingDocLink": 1984,
+    "implementedNeedsProof": 112,
     "blocked": 0,
-    "riskItems": 3510,
-    "appCompletionRiskItems": 3510,
+    "riskItems": 3507,
+    "appCompletionRiskItems": 3507,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -20,17 +20,17 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 265,
+      "total": 268,
       "risks": {
-        "ok": 46,
-        "missing_doc_link": 127,
-        "missing_test_link": 58,
-        "implemented_needs_proof": 3,
+        "ok": 52,
+        "implemented_needs_proof": 2,
+        "missing_doc_link": 131,
+        "missing_test_link": 52,
         "needs_browser_review": 31
       },
       "gates": {
-        "auth": 265,
-        "configuration": 19,
+        "auth": 268,
+        "configuration": 21,
         "subscription": 3,
         "gateio": 1
       }
@@ -95,8 +95,8 @@
       "userFlow": "Trading operation",
       "total": 944,
       "risks": {
-        "missing_doc_link": 393,
-        "missing_test_link": 404,
+        "missing_doc_link": 394,
+        "missing_test_link": 403,
         "implemented_needs_proof": 7,
         "needs_browser_review": 140
       },
@@ -138,92 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:registerandlogin:f4ce0d6384",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "registerAndLogin",
-      "path": "apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "subscription"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 6,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:resolveaggregatesessionwindowend:25b0d78e7b",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveAggregateSessionWindowEnd",
-      "path": "apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
-    },
-    {
-      "id": "function:deduperuntimeopenorders:19e555ce7c",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "dedupeRuntimeOpenOrders",
-      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 5,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:resolveruntimetakeoverstatus:6aaaed7982",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveRuntimeTakeoverStatus",
-      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 5,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:selectruntimeopenorders:d5ee91ce67",
       "type": "function",
       "kind": "feature_or_capability",
@@ -237,12 +151,12 @@
       ],
       "evidence": {
         "hasTest": true,
-        "hasDoc": false,
+        "hasDoc": true,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
+      "relatedEntityCount": 7,
+      "risk": "implemented_needs_proof"
     },
     {
       "id": "function:resolveclosedresult:14c437ff28",
@@ -2089,20 +2003,21 @@
       "kind": "feature_or_capability",
       "name": "fetchAuthenticatedBalancePreview",
       "path": "apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Integration Domain Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
-        "auth"
+        "auth",
+        "configuration"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:createauthheader:a0cef7b61c",
@@ -2189,6 +2104,27 @@
       "risk": "missing_doc_link"
     },
     {
+      "id": "function:defaultauthprobe:be6af92e71",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "DefaultAuthProbe",
+      "path": "apps/web/src/context/AuthContext.test.tsx#DefaultAuthProbe",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
       "id": "function:logoutprobe:6ab97e0960",
       "type": "function",
       "kind": "feature_or_capability",
@@ -2243,13 +2179,13 @@
         "auth"
       ],
       "evidence": {
-        "hasTest": true,
+        "hasTest": false,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
     },
     {
       "id": "function:logout:f5a7764c1c",
@@ -2278,20 +2214,20 @@
       "kind": "feature_or_capability",
       "name": "useAuth",
       "path": "apps/web/src/context/AuthContext.tsx#useAuth",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:renderwithi18n:26cb8c4855",
@@ -2362,20 +2298,20 @@
       "kind": "feature_or_capability",
       "name": "PasswordVisibilityToggle",
       "path": "apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx#PasswordVisibilityToggle",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Frontend Web Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 5,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:renderwithi18n:51c19dc306",
@@ -2441,25 +2377,46 @@
       "risk": "missing_doc_link"
     },
     {
-      "id": "feature:usehydrationready-ts:3f38a9a330",
-      "type": "feature",
+      "id": "function:hydrationprobe:ff7aa55781",
+      "type": "function",
       "kind": "feature_or_capability",
-      "name": "useHydrationReady.ts",
-      "path": "apps/web/src/features/auth/hooks/useHydrationReady.ts",
+      "name": "HydrationProbe",
+      "path": "apps/web/src/features/auth/hooks/useHydrationReady.test.tsx#HydrationProbe",
       "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "status": "tested",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 6,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:usehydrationready-ts:3f38a9a330",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useHydrationReady.ts",
+      "path": "apps/web/src/features/auth/hooks/useHydrationReady.ts",
+      "owner": "Frontend Web Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 10,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:usehydrationready:8e5fe7f6cd",
@@ -2467,20 +2424,20 @@
       "kind": "feature_or_capability",
       "name": "useHydrationReady",
       "path": "apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Frontend Web Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 5,
+      "risk": "missing_doc_link"
     },
     {
       "id": "feature:useloginform-ts:d2e7d70587",
@@ -2630,6 +2587,27 @@
       "risk": "missing_doc_link"
     },
     {
+      "id": "function:renderpage:3af1a39e43",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "renderPage",
+      "path": "apps/web/src/features/auth/pages/RegisterPage.test.tsx#renderPage",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
       "id": "function:registerpage:7d1594339f",
       "type": "function",
       "kind": "feature_or_capability",
@@ -2642,13 +2620,13 @@
         "auth"
       ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 5,
+      "risk": "missing_doc_link"
     },
     {
       "id": "feature:auth-service-ts:6429778519",
@@ -3051,27 +3029,6 @@
       "risk": "missing_doc_link"
     },
     {
-      "id": "feature:resolveopsauthtoken-mjs:88436883b4",
-      "type": "feature",
-      "kind": "feature_or_capability",
-      "name": "resolveOpsAuthToken.mjs",
-      "path": "scripts/resolveOpsAuthToken.mjs",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 35,
-      "risk": "implemented_needs_proof"
-    },
-    {
       "id": "function:extracttokenfromsetcookie:503ea6b00f",
       "type": "function",
       "kind": "feature_or_capability",
@@ -3175,27 +3132,6 @@
       },
       "relatedEntityCount": 2,
       "risk": "missing_doc_link"
-    },
-    {
-      "id": "feature:runcontrolledlivesessionproof-mjs:90b8eb48a2",
-      "type": "feature",
-      "kind": "feature_or_capability",
-      "name": "runControlledLiveSessionProof.mjs",
-      "path": "scripts/runControlledLiveSessionProof.mjs",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 75,
-      "risk": "implemented_needs_proof"
     },
     {
       "id": "function:assertnoorderguardactive:fb66e81e87",
@@ -4307,7 +4243,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 15,
+      "relatedEntityCount": 20,
       "risk": "needs_browser_review"
     },
     {
@@ -4350,6 +4286,69 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 6,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionpositionsread-repository-ts:3d4e5e2ccd",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionPositionsRead.repository.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 37,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionpositionsread-service-ts:1db1659112",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionPositionsRead.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 116,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionpositionwindow-ts:ebec174dab",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionPositionWindow.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionWindow.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 5,
       "risk": "needs_browser_review"
     }
   ]

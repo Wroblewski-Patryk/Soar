@@ -1,0 +1,201 @@
+﻿node : {"event":"architecture_awareness_progress","project":"Soar","phase":"load_inputs","elapsedMs":1,"root":"C:/Perso
+nal/Projekty/Aplikacje/Soar","output":"C:/Personal/Projekty/Aplikacje/Soar/docs","overrides":"C:/Personal/Projekty/Apli
+kacje/Soar/docs/architecture/scanner-overrides.json"}
+At line:2 char:1
++ node C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse\scripts\b ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ({"event":"archi...verrides.json"}:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+{"event":"architecture_awareness_progress","project":"Soar","phase":"walk_start","elapsedMs":17}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"walk_complete","elapsedMs":1126,"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1127,"scannedFiles":1,"fil
+es":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1178,"scannedFiles":250,"f
+iles":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1191,"scannedFiles":500,"f
+iles":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1206,"scannedFiles":750,"f
+iles":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1221,"scannedFiles":1000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1238,"scannedFiles":1250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1252,"scannedFiles":1500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1268,"scannedFiles":1750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1281,"scannedFiles":2000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1296,"scannedFiles":2250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1312,"scannedFiles":2500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1331,"scannedFiles":2750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1346,"scannedFiles":3000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1362,"scannedFiles":3250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1376,"scannedFiles":3500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1389,"scannedFiles":3750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1402,"scannedFiles":4000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1415,"scannedFiles":4250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1428,"scannedFiles":4500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1444,"scannedFiles":4750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1457,"scannedFiles":5000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1470,"scannedFiles":5250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1482,"scannedFiles":5500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1495,"scannedFiles":5750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1509,"scannedFiles":6000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1522,"scannedFiles":6250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1535,"scannedFiles":6500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1549,"scannedFiles":6750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1587,"scannedFiles":7000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1691,"scannedFiles":7250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1798,"scannedFiles":7500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1886,"scannedFiles":7750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":1990,"scannedFiles":8000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2057,"scannedFiles":8250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2139,"scannedFiles":8500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2214,"scannedFiles":8750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2276,"scannedFiles":9000,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2333,"scannedFiles":9250,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2347,"scannedFiles":9500,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2359,"scannedFiles":9750,"
+files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2434,"scannedFiles":10000,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2505,"scannedFiles":10250,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2575,"scannedFiles":10500,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2652,"scannedFiles":10750,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2727,"scannedFiles":11000,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2802,"scannedFiles":11250,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2869,"scannedFiles":11500,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":2937,"scannedFiles":11750,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3033,"scannedFiles":12000,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3131,"scannedFiles":12250,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3235,"scannedFiles":12500,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3325,"scannedFiles":12750,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3424,"scannedFiles":13000,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3535,"scannedFiles":13250,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3666,"scannedFiles":13500,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3823,"scannedFiles":13750,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"scan_files","elapsedMs":3825,"scannedFiles":13760,
+"files":13760}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"resolve_dependencies_start","elapsedMs":3827,"enti
+ties":9102,"relations":14091}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"resolve_dependencies_complete","elapsedMs":3859,"e
+ntities":9102,"relations":16269}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"infer_test_links_start","elapsedMs":3859,"testEnti
+ties":460}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"infer_test_links_complete","elapsedMs":3924,"relat
+ions":17866}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"collect_tasks_start","elapsedMs":3924}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"collect_tasks_complete","elapsedMs":3932,"taskFile
+s":1814}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"collect_paperclip_issue_tasks_start","elapsedMs":3
+932}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"collect_paperclip_issue_tasks_complete","elapsedMs
+":3932,"local_task_files":1814,"paperclip_issue_source":"","paperclip_issue_tasks":0,"paperclip_issue_comments":0}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_start","elapsedMs":4965,"entities":10916,"r
+elations":36061}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5161,"label":"architec
+ture-awareness.json","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-awareness.json"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5216,"label":"architec
+ture-awareness.csv","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-awareness.csv"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5252,"label":"architec
+ture-proof-register.csv","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-proof-register.csv"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5257,"label":"architec
+ture-graph.mmd","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.mmd"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5260,"label":"architec
+ture-graph.md","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.md"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5291,"label":"architec
+ture-health.json","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-health.json"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5311,"label":"architec
+ture-awareness-report.md","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-awareness-report.md"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5315,"label":"architec
+ture-dependency-report.md","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-dependency-report.md"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5319,"label":"architec
+ture-ownership-report.md","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-ownership-report.md"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"export_written","elapsedMs":5339,"label":"task-syn
+chronization-report.md","file":"C:/Personal/Projekty/Aplikacje/Soar/docs/status/task-synchronization-report.md"}
+{"event":"architecture_awareness_progress","project":"Soar","phase":"complete","elapsedMs":5339,"entities":10916,"relat
+ions":36061}
+{
+  "completed": true,
+  "project": "Soar",
+  "root": "C:/Personal/Projekty/Aplikacje/Soar",
+  "output": "C:/Personal/Projekty/Aplikacje/Soar/docs",
+  "generatedAt": "2026-07-14T02:10:53.688Z",
+  "elapsedMs": 5339,
+  "entities": 10916,
+  "relations": 36061,
+  "files": 13760,
+  "overrides": {
+    "file": "C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json",
+    "exclude_paths": [],
+    "exclude_path_prefixes": [],
+    "entity_override_entries": 32,
+    "relation_override_entries": 39,
+    "applied": {
+      "excludedFiles": 0,
+      "excludedFilesByPrefix": 0,
+      "entityOverridesApplied": 32,
+      "relationOverridesApplied": 39,
+      "criticalEntitiesTagged": 0
+    }
+  },
+  "exports": [
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-awareness.json",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-awareness.csv",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-proof-register.csv",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.md",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.mmd",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-health.json",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-awareness-report.md",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-dependency-report.md",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/status/architecture-ownership-report.md",
+    "C:/Personal/Projekty/Aplikacje/Soar/docs/status/task-synchronization-report.md"
+  ]
+}

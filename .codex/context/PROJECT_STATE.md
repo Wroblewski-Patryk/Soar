@@ -1,3 +1,290 @@
+## 2026-07-14 LUC-1042 source-control closure for LUC-1011, LUC-1016, LUC-1019, LUC-1023, and adjacent Account access slices
+
+- Local dirty-state classification is now complete for the current Account
+  access proof/doc-link packet:
+  [LUC-1011](/LUC/issues/LUC-1011), [LUC-1016](/LUC/issues/LUC-1016),
+  [LUC-1019](/LUC/issues/LUC-1019), [LUC-1023](/LUC/issues/LUC-1023),
+  [LUC-1026](/LUC/issues/LUC-1026), [LUC-1027](/LUC/issues/LUC-1027),
+  [LUC-1030](/LUC/issues/LUC-1030), [LUC-1031](/LUC/issues/LUC-1031),
+  [LUC-1032](/LUC/issues/LUC-1032), [LUC-1035](/LUC/issues/LUC-1035), and
+  [LUC-1039](/LUC/issues/LUC-1039).
+- Classified packet before LUC-1042 artifacts: `73` dirty paths
+  (`4` state/context, `8` code/tests, `27` docs/generated truth, `34`
+  history artifacts/evidence/tasks, `0` out-of-scope).
+- Verification:
+  focused API proof PASS (`3` files / `17` tests),
+  focused Web proof PASS (`4` files / `11` tests),
+  web typecheck PASS,
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  and dirty-file secret scan PASS.
+- Closure decision:
+  the packet is one coherent local proof/source-truth bundle and must be kept
+  as one local commit; push remains held for batch and deploy impact remains
+  `none`.
+
+## 2026-07-14 LUC-1039 selectRuntimeOpenOrders doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  documentation path through the API bots module and graph relation overrides.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS (`10949` entities /
+  `36250` relations / `relationOverridesApplied=41`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`missingDocLink=1984`, down
+  from `1985`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3507`).
+- Readback:
+  app-completion no longer lists `selectRuntimeOpenOrders` as
+  `missing_doc_link`; project truth now advances the same helper to
+  `implemented_needs_proof`, and the next Account access docs gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is QA Regression Lead + Project Manager through
+  [LUC-1040](/LUC/issues/LUC-1040) for the adjacent
+  `selectRuntimeOpenOrders` proof closure; no remaining action stays open on
+  [LUC-1039](/LUC/issues/LUC-1039).
+
+## 2026-07-14 LUC-1035 resolveRuntimeTakeoverStatus doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  documentation path through the API bots module and graph relation overrides.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS (`10943` entities /
+  `36224` relations / `relationOverridesApplied=40`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`missingDocLink=1985`, down
+  from `1986`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3507`, down from
+  `3508`).
+- Readback:
+  app-completion no longer lists `resolveRuntimeTakeoverStatus` in the
+  priority queue, and project truth advances the first Account access docs
+  gap to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the adjacent
+  `selectRuntimeOpenOrders` doc-link closure; no remaining action stays open
+  on [LUC-1035](/LUC/issues/LUC-1035).
+
+## 2026-07-14 LUC-1032 resolveOpsAuthToken and runControlledLiveSessionProof proof refresh
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `scripts/resolveOpsAuthToken.mjs` and
+  `scripts/runControlledLiveSessionProof.mjs`.
+- Proof packet:
+  `scripts/resolveOpsAuthToken.test.mjs`,
+  `scripts/runControlledLiveSessionProof.test.mjs`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give both script features a
+  direct generator-readable proof path.
+- Verification:
+  `node --check` for both scripts PASS,
+  `node --test scripts/resolveOpsAuthToken.test.mjs scripts/runControlledLiveSessionProof.test.mjs`
+  PASS (`34` tests),
+  `node scripts/runControlledLiveSessionProof.mjs --help` PASS,
+  `build-architecture-awareness-index.mjs` PASS (`10937` entities / `36176`
+  relations / `entityOverridesApplied=40` / `relationOverridesApplied=39`),
+  `build-app-completion-index.mjs` PASS (`implementedNeedsProof=111`, down
+  from `113`), and `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  generated truth no longer routes either script feature as
+  `implemented_needs_proof`; the first Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the new
+  documentation-gap front row; no remaining RTE action stays open on
+  [LUC-1032](/LUC/issues/LUC-1032).
+
+## 2026-07-14 LUC-1023 dedupeRuntimeOpenOrders proof
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`.
+- Proof packet:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  local proof path for exchange-id trimming, exchange-synced preference over
+  bot duplicates, latest-update winner selection, newest-first ordering, and
+  limit-preserving selection.
+- Verification:
+  focused Vitest PASS (`1` file / `7` tests),
+  `build-architecture-awareness-index.mjs` PASS (`10928` entities / `36128`
+  relations / `entityOverridesApplied=34`),
+  `pnpm run architecture:graph:drift:strict` PASS (`859/859`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`implementedNeedsProof=113`,
+  down from `114`), and `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer routes `dedupeRuntimeOpenOrders` as
+  `implemented_needs_proof`, and the first Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the adjacent docs
+  gap; no remaining QVE action stays open on [LUC-1023](/LUC/issues/LUC-1023).
+
+## 2026-07-14 LUC-1031 fetchAuthenticatedBalancePreview proof
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview`.
+- Proof packet:
+  `apps/api/src/modules/wallets/wallets.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  local proof path through focused no-DB coverage for the test-runtime
+  fallback and normalized authenticated payload extraction.
+- Verification:
+  focused Vitest PASS (`1` file / `7` tests),
+  `build-architecture-awareness-index.mjs` PASS (`10928` entities / `36130`
+  relations / `entityOverridesApplied=35`),
+  `pnpm run architecture:graph:drift:strict` PASS (`859/859`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`missingTestLink=962`, down
+  from `963`), and `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion now records the helper as `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`, and project truth no longer routes it as a
+  missing-test-link gap.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the direct
+  documentation-link follow-up; no remaining IDE proof action stays open on
+  [LUC-1031](/LUC/issues/LUC-1031).
+
+## 2026-07-14 LUC-1030 PasswordVisibilityToggle and useHydrationReady frontend proof
+
+- Status:
+  `DONE`.
+- Scope:
+  close the frontend-owned Account access `missing_test_link` routing for
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx#PasswordVisibilityToggle`,
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts`, and
+  `apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady`
+  using the smallest focused local proof slice only.
+- Result:
+  direct proof now exists in
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.test.tsx`
+  and `apps/web/src/features/auth/hooks/useHydrationReady.test.tsx`;
+  `priority-test-links.csv` points directly at those proof files; and
+  `scanner-overrides.json` plus the standard generated truth refresh now mark
+  the scoped rows as verified with `missing_doc_link`, not `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the direct
+  docs-link closure on the same scoped entities. No remaining frontend proof
+  work stays open on [LUC-1030](/LUC/issues/LUC-1030).
+
+## 2026-07-14 LUC-1026 useAuth local proof
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/web/src/context/AuthContext.tsx#useAuth`.
+- Proof packet:
+  `apps/web/src/context/AuthContext.test.tsx`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the shared auth hook an
+  explicit local proof path through a providerless default-contract regression
+  plus existing provider-backed session-flow coverage.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/context/AuthContext.test.tsx`
+  (`1` file / `5` tests),
+  `corepack pnpm --filter web run typecheck`,
+  `build-architecture-awareness-index.mjs` (`10928` entities / `36121`
+  relations / `entityOverridesApplied=33`),
+  `build-app-completion-index.mjs` (`missingTestLink=963`, down from `964`),
+  and `build-project-truth-indexes.mjs --apply`.
+- Readback:
+  app-completion now records `useAuth` as `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`, and targeted grep no longer finds a `useAuth` proof
+  row in `docs/status/project-truth-index.md`.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the direct
+  documentation-link follow-up; no remaining TAE action stays open on
+  [LUC-1026](/LUC/issues/LUC-1026).
+
+## 2026-07-14 LUC-1027 RegisterPage frontend proof
+
+- Account access `missing_test_link` now has a direct local proof path for
+  `apps/web/src/features/auth/pages/RegisterPage.tsx#RegisterPage`.
+- Proof packet:
+  `apps/web/src/features/auth/pages/RegisterPage.test.tsx` and
+  `docs/architecture/relations/priority-test-links.csv` now link the page
+  function to focused signed-out render and authenticated redirect coverage.
+- Verification:
+  `pnpm --filter web exec vitest run src/features/auth/pages/RegisterPage.test.tsx`
+  and
+  `pnpm --filter web exec vitest run src/features/auth/pages/RegisterPage.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/auth/hooks/useRegisterForm.test.tsx`.
+- Residual:
+  generated `docs/status/app-completion-index.*` and
+  `docs/status/project-truth-index.*` were refreshed in this lane, and
+  `RegisterPage` now reads back as `missing_doc_link` rather than
+  `missing_test_link`.
+
+## 2026-07-14 LUC-1019 dedupeRuntimeOpenOrders doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the helper contract
+  and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1978`, and project truth now
+  routes the same helper as `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1019-account-access-deduperuntimeopenorders-doc-link-2026-07-14-task.md`.
+
+## 2026-07-14 LUC-1016 resolveAggregateSessionWindowEnd proof
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`.
+- Proof packet:
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now carry the focused helper proof
+  and direct relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingTestLink` dropped to `964`, and project truth now
+  routes the first Account access gap to the same helper as
+  `missing_doc_link`.
+- Handoff:
+  this older dispatch snapshot is superseded by the current first-gap lane and
+  should not be treated as an active dispatch target.
+- Evidence:
+  `history/evidence/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14.md`;
+  `history/tasks/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14-task.md`.
+
+## 2026-07-14 LUC-1011 registerAndLogin doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the helper contract
+  and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1978`, and project truth now
+  routes the first Account access gap to
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolveAggregateSessionWindowEnd`
+  as `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1011-account-access-registerandlogin-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1011-account-access-registerandlogin-doc-link-2026-07-14-task.md`.
+
 ## 2026-07-14 LUC-1009 source-control closure for LUC-983, LUC-994, and LUC-1004
 
 - Local dirty-state classification after [LUC-983](/LUC/issues/LUC-983),

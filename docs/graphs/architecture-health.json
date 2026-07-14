@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-07-14T00:36:06.171Z",
+  "generated_at": "2026-07-14T03:23:36.528Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10906,
-    "relations": 35992,
+    "entities": 10949,
+    "relations": 36250,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4854,
+      "document": 4878,
       "feature": 216,
-      "function": 2842,
+      "function": 2845,
       "migration": 57,
       "model": 108,
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1811,
-      "test": 459
+      "task": 1823,
+      "test": 463
     },
     "by_status": {
       "blocked": 47,
       "deprecated": 10,
-      "implemented": 8188,
-      "in_progress": 15,
-      "tested": 842,
-      "verified": 1804
+      "implemented": 8203,
+      "in_progress": 16,
+      "tested": 849,
+      "verified": 1824
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1284,
+      "count": 1276,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -280,14 +280,6 @@
           "type": "api_endpoint",
           "name": "GET /workers/runtime-freshness",
           "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:passwordvisibilitytoggle-tsx:562e02cf59",
-          "type": "component",
-          "name": "PasswordVisibilityToggle.tsx",
-          "path": "apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -608,14 +600,6 @@
           "type": "feature",
           "name": "adminUsers.service.ts",
           "path": "apps/web/src/features/admin/users/services/adminUsers.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:usehydrationready-ts:3f38a9a330",
-          "type": "feature",
-          "name": "useHydrationReady.ts",
-          "path": "apps/web/src/features/auth/hooks/useHydrationReady.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1618,27 @@
           "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
           "status": "verified",
           "owner": "Core Backend Engineer"
+        },
+        {
+          "id": "function:me:4ef644a761",
+          "type": "function",
+          "name": "me",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#me",
+          "status": "verified",
+          "owner": "Core Backend Engineer"
+        },
+        {
+          "id": "function:register:78f96f4570",
+          "type": "function",
+          "name": "register",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#register",
+          "status": "verified",
+          "owner": "Core Backend Engineer"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 301,
+      "count": 299,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3284,10 +3284,10 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1498,
+      "count": 1488,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1315,
+        "curated_graph_covered": 1305,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -3567,15 +3567,6 @@
           "type": "api_endpoint",
           "name": "GET /workers/runtime-freshness",
           "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "component:passwordvisibilitytoggle-tsx:562e02cf59",
-          "type": "component",
-          "name": "PasswordVisibilityToggle.tsx",
-          "path": "apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -3936,15 +3927,6 @@
           "type": "feature",
           "name": "adminUsers.service.ts",
           "path": "apps/web/src/features/admin/users/services/adminUsers.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usehydrationready-ts:3f38a9a330",
-          "type": "feature",
-          "name": "useHydrationReady.ts",
-          "path": "apps/web/src/features/auth/hooks/useHydrationReady.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -5091,6 +5073,24 @@
           "status": "verified",
           "owner": "Core Backend Engineer",
           "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:me:4ef644a761",
+          "type": "function",
+          "name": "me",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#me",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:register:78f96f4570",
+          "type": "function",
+          "name": "register",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#register",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
+          "reason": "curated_graph_covered"
         }
       ]
     },
@@ -6228,7 +6228,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 315,
+      "count": 313,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -7833,10 +7833,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 454,
+      "count": 452,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 281,
+        "curated_graph_covered": 279,
         "historical_task_archive": 139,
         "top_level_app_mount": 1
       },

@@ -32,6 +32,18 @@ function AuthProbe() {
   );
 }
 
+function DefaultAuthProbe() {
+  const { loading, sessionExpired, user, refetchUser } = useAuth();
+  return (
+    <div>
+      <span data-testid="default-loading">{String(loading)}</span>
+      <span data-testid="default-session-expired">{String(sessionExpired)}</span>
+      <span data-testid="default-email">{user?.email ?? 'none'}</span>
+      <span data-testid="default-refetch">{String(typeof refetchUser)}</span>
+    </div>
+  );
+}
+
 describe('AuthProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -183,5 +195,14 @@ describe('AuthProvider', () => {
       configurable: true,
       value: originalWindowLocation,
     });
+  });
+
+  it('returns the default auth contract outside the provider', () => {
+    render(<DefaultAuthProbe />);
+
+    expect(screen.getByTestId('default-loading')).toHaveTextContent('true');
+    expect(screen.getByTestId('default-session-expired')).toHaveTextContent('false');
+    expect(screen.getByTestId('default-email')).toHaveTextContent('none');
+    expect(screen.getByTestId('default-refetch')).toHaveTextContent('function');
   });
 });

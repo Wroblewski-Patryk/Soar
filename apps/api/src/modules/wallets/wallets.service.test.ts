@@ -1,9 +1,27 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { fetchSupportedExchangeBalanceRaw } from '../exchange/exchangeAdapterBoundary.service';
 import {
   buildPaperResetOpenPositionsWhere,
   buildWalletClosedPaperPositionPnlWhere,
   buildWalletOpenPnlWhere,
+  fetchAuthenticatedBalancePreview,
 } from './wallets.service';
+
+vi.mock('../exchange/exchangeAdapterBoundary.service', () => ({
+  fetchSupportedExchangeBalanceRaw: vi.fn(),
+  resolveExchangeAdapterSource: vi.fn(() => 'mocked-exchange-adapter'),
+}));
+
+const originalNodeEnv = process.env.NODE_ENV;
+const originalVitestEnv = process.env.VITEST;
+
+afterEach(() => {
+  process.env.NODE_ENV = originalNodeEnv;
+  process.env.VITEST = originalVitestEnv;
+  delete process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE;
+  delete process.env.WALLET_PREVIEW_TEST_FREE_BALANCE;
+  vi.clearAllMocks();
+});
 
 describe('buildWalletOpenPnlWhere', () => {
   it('includes PAPER bot-owned positions through the bot wallet relation', () => {
@@ -133,6 +151,59 @@ describe('buildPaperResetOpenPositionsWhere', () => {
           },
         },
       ],
+    });
+  });
+});
+
+describe('fetchAuthenticatedBalancePreview', () => {
+  it('returns the capped wallet preview balances from the test runtime env', async () => {
+    process.env.NODE_ENV = 'test';
+    process.env.VITEST = 'true';
+    process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE = '125.5';
+    process.env.WALLET_PREVIEW_TEST_FREE_BALANCE = '999.9';
+
+    await expect(
+      fetchAuthenticatedBalancePreview({
+        exchange: 'BINANCE',
+        apiKey: 'key',
+        apiSecret: 'secret',
+        marketType: 'SPOT',
+        baseCurrency: 'usdt',
+      })
+    ).resolves.toEqual({
+      accountBalance: 125.5,
+      freeBalance: 125.5,
+    });
+
+    expect(fetchSupportedExchangeBalanceRaw).not.toHaveBeenCalled();
+  });
+
+  it('normalizes the requested currency and extracts balances from the exchange payload', async () => {
+    process.env.NODE_ENV = 'production';
+    process.env.VITEST = 'false';
+    vi.mocked(fetchSupportedExchangeBalanceRaw).mockResolvedValue({
+      total: { USDT: '210.25' },
+      free: { USDT: '84.5' },
+    });
+
+    await expect(
+      fetchAuthenticatedBalancePreview({
+        exchange: 'BINANCE',
+        apiKey: 'key',
+        apiSecret: 'secret',
+        marketType: 'FUTURES',
+        baseCurrency: 'usdt',
+      })
+    ).resolves.toEqual({
+      accountBalance: 210.25,
+      freeBalance: 84.5,
+    });
+
+    expect(fetchSupportedExchangeBalanceRaw).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      apiKey: 'key',
+      apiSecret: 'secret',
     });
   });
 });

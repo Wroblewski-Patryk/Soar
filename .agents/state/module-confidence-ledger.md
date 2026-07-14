@@ -1,3 +1,158 @@
+## 2026-07-14 LUC-1032 Account Access runtime script proof refresh
+
+- Module row:
+  Account access / Runtime ops-auth token resolution and controlled live
+  session proof-runner executable proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof rows resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1032-runtime-proof-refresh-2026-07-14.md`;
+  `history/tasks/luc-1032-runtime-proof-refresh-2026-07-14-task.md`.
+- Current proof:
+  `scripts/resolveOpsAuthToken.test.mjs` and
+  `scripts/runControlledLiveSessionProof.test.mjs` already prove the scoped
+  runtime script behaviors, and the new direct rows in
+  `docs/architecture/relations/priority-test-links.csv` plus scoped entries in
+  `docs/architecture/scanner-overrides.json` now let generated truth consume
+  that proof at the feature level. Final app-completion readback no longer
+  lists `scripts/resolveOpsAuthToken.mjs` or
+  `scripts/runControlledLiveSessionProof.mjs` as
+  `implemented_needs_proof`; project truth advances to
+  `resolveRuntimeTakeoverStatus` as the first Account access docs gap.
+- Confidence:
+  high for the local runtime-script proof lane. Direct source-of-truth
+  documentation for adjacent function-level rows remains a separate docs-owned
+  follow-up.
+
+## 2026-07-14 LUC-1023 Account Access dedupeRuntimeOpenOrders Proof
+
+- Module row:
+  Account access / API bots runtime open-orders dedupe helper executable proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1023-account-access-deduperuntimeopenorders-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`
+  now proves exchange-id trimming, exchange-synced preference over bot-origin
+  duplicates, same-origin latest-update winner selection, newest-first
+  ordering, and limit-preserving selection for
+  `dedupeRuntimeOpenOrders`. Final app-completion readback no longer lists the
+  helper as `implemented_needs_proof`; project truth advances to
+  `resolveRuntimeTakeoverStatus` as the first Account access docs gap.
+- Confidence:
+  high for the local helper proof lane. Direct source-of-truth documentation
+  for `resolveRuntimeTakeoverStatus` and `selectRuntimeOpenOrders` remains a
+  separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1031 Account Access fetchAuthenticatedBalancePreview Proof
+
+- Module row:
+  Account access / API wallets authenticated balance preview helper executable
+  proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14.md`;
+  `history/tasks/luc-1031-account-access-fetchauthenticatedbalancepreview-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/wallets/wallets.service.test.ts` now directly proves
+  `fetchAuthenticatedBalancePreview` for test-runtime fallback balances,
+  capped free-balance handling, normalized base-currency lookup, and
+  authenticated exchange payload extraction. Final app-completion readback for
+  the helper is `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local wallets helper proof lane. Direct source-of-truth
+  documentation for the helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1030 PasswordVisibilityToggle and useHydrationReady Frontend Proof
+
+- Module row:
+  Account access / Web auth password-visibility and hydration-ready executable
+  proof.
+- Status:
+  `verified local focused proof / missing-test-link rows resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14.md`;
+  `history/tasks/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/web/src/features/auth/components/PasswordVisibilityToggle.test.tsx`
+  now directly proves the auth toggle labels, enabled callback, and disabled
+  fail-closed behavior. `apps/web/src/features/auth/hooks/useHydrationReady.test.tsx`
+  now directly proves fail-closed server rendering plus client hydration
+  readiness transition. Final app-completion readback for the scoped rows is
+  `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local frontend proof lane. Direct source-of-truth documentation
+  for the same component and hook remains a separate Docs Memory follow-up.
+
+## 2026-07-14 LUC-1026 Account Access useAuth Local Proof
+
+- Module row:
+  Account access / Web auth context hook executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1026-account-access-useauth-local-proof-2026-07-14.md`;
+  `history/tasks/luc-1026-account-access-useauth-local-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/web/src/context/AuthContext.test.tsx` now directly proves the
+  providerless `useAuth` default contract alongside the existing provider-backed
+  bootstrap, unauthorized refetch, protected-route expiry, and logout flows.
+  Final app-completion readback for the hook is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local Web auth hook proof lane. Direct source-of-truth
+  documentation for `useAuth` remains a separate Docs Memory follow-up.
+
+## 2026-07-14 LUC-1027 RegisterPage Frontend Proof
+
+- Module row:
+  Account access / Web auth register page executable proof.
+- Status:
+  `verified local focused proof / direct page test link added / generated truth refresh completed / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1027-registerpage-frontend-proof-2026-07-14.md`;
+  `history/tasks/luc-1027-registerpage-frontend-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/web/src/features/auth/pages/RegisterPage.test.tsx` now directly proves
+  that signed-out visitors see the register heading and form entrypoint, while
+  authenticated visitors are redirected to `/dashboard`. The page function is
+  now linked in `docs/architecture/relations/priority-test-links.csv`.
+- Confidence:
+  high for the local page-proof lane. Generated `app-completion` and
+  `project-truth` readback now matches the page proof, and `RegisterPage`
+  resolves as `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link` in the
+  generated indexes.
+
+## 2026-07-14 LUC-1016 Account Access resolveAggregateSessionWindowEnd Proof
+
+- Module row:
+  Account access / API bots aggregate runtime session-window helper executable
+  proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14.md`;
+  `history/tasks/luc-1016-account-access-resolveaggregatesessionwindowend-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.test.ts`
+  now directly proves
+  `resolveAggregateSessionWindowEnd` for `finishedAt` precedence,
+  `lastHeartbeatAt` fallback, and `startedAt` fallback behavior. Final
+  app-completion readback for the helper is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local helper proof lane. Direct source-of-truth documentation
+  for the helper remains a separate docs-owned follow-up.
+
 ## 2026-07-13 LUC-980 Source Control Closure for Account Access Source Truth
 
 - Status:

@@ -1,13 +1,15 @@
 # Ownership Report
 
-Generated: 2026-07-14T00:36:06.171Z
+Generated: 2026-07-14T03:23:36.528Z
 
 | Owner | Entities | Planned | In Progress | Implemented | Tested | Verified | Blocked | Deprecated |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Core Backend Engineer | 8 | 0 | 0 | 0 | 0 | 8 | 0 | 0 |
 | Docs Memory Lead | 1057 | 0 | 0 | 1052 | 0 | 0 | 1 | 4 |
 | Documentation Steward | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| Engineering Delivery Lead | 9817 | 0 | 14 | 7136 | 842 | 1773 | 46 | 6 |
-| QA Regression Lead | 6 | 0 | 0 | 0 | 0 | 6 | 0 | 0 |
+| Engineering Delivery Lead | 9851 | 0 | 15 | 7151 | 849 | 1784 | 46 | 6 |
+| Frontend Web Engineer | 3 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
+| Integration Domain Engineer | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| QA Regression Lead | 9 | 0 | 0 | 0 | 0 | 9 | 0 | 0 |
 | Soar Project Manager | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
-| Test Automation Engineer | 16 | 0 | 0 | 0 | 0 | 16 | 0 | 0 |
+| Test Automation Engineer | 18 | 0 | 0 | 0 | 0 | 18 | 0 | 0 |
