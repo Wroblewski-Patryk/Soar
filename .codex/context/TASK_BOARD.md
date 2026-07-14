@@ -1,3 +1,166 @@
+## 2026-07-14 LUC-1060 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for resolvesinglecanonicalstrategyid
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  using the smallest focused helper-proof and generated-truth refresh only.
+- Result:
+  `runtimeSessionPositionCommand.service.test.ts` now directly proves single
+  canonical strategy backfill and fail-closed ambiguity behavior, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper as
+  verified local evidence.
+- Verification:
+  focused `runtimeSessionPositionCommand.service.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `resolveSingleCanonicalStrategyId` from
+  `runtimeSessionPositionCommand.service.ts` as the first Account access proof
+  gap. The next Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`
+  as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the
+  runtime-position DCA-count doc-link follow-up. No remaining proof action
+  stays open on [LUC-1060](/LUC/issues/LUC-1060).
+
+## 2026-07-14 LUC-1059 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for resolvesinglecanonicalstrategyid
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted `rg` readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1983` to `1982`, the Account
+  access flow moved from `ok=54` / `implemented_needs_proof=1` /
+  `missing_doc_link=130` to `ok=54` / `implemented_needs_proof=2` /
+  `missing_doc_link=129`, and project truth advanced the first Account access
+  gap to the same helper as `implemented_needs_proof`.
+- Follow-ups:
+  proof is routed through [LUC-1060](/LUC/issues/LUC-1060);
+  local source-control closure is routed through [LUC-1061](/LUC/issues/LUC-1061).
+- Evidence:
+  `history/tasks/luc-1059-account-access-resolvesinglecanonicalstrategyid-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1059-account-access-resolvesinglecanonicalstrategyid-doc-link-2026-07-14.md`.
+- Residual:
+  no remaining DSM action stays open on [LUC-1059](/LUC/issues/LUC-1059).
+
+## 2026-07-14 LUC-1054 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for resolveclosedresult
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`
+  using the smallest focused helper-proof and generated-truth refresh only.
+- Result:
+  `runtimeSessionPositionCommand.service.test.ts` now directly proves the
+  helper's latest `CLOSE` trade precedence, opposite-side order fallback, and
+  duplicate-close fail-closed behavior, while `priority-test-links.csv` and
+  `scanner-overrides.json` promote the helper as verified local evidence.
+- Verification:
+  focused `runtimeSessionPositionCommand.service.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `resolveClosedResult` as the first Account
+  access proof gap. The next Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `resolveSingleCanonicalStrategyId`; no remaining proof action stays open on
+  [LUC-1054](/LUC/issues/LUC-1054).
+
+## 2026-07-14 LUC-1050 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for resolveclosedresult
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check` with line-ending warnings only.
+- Readback:
+  app-completion `missingDocLink` dropped from `1984` to `1983`, the Account
+  access flow moved from `ok=53` / `implemented_needs_proof=1` /
+  `missing_doc_link=131` to `ok=53` / `implemented_needs_proof=2` /
+  `missing_doc_link=130`, and project truth advanced the first Account access
+  gap to the same helper as `implemented_needs_proof`.
+- Evidence:
+  `history/tasks/luc-1050-account-access-resolveclosedresult-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1050-account-access-resolveclosedresult-doc-link-2026-07-14.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager for the direct
+  `resolveClosedResult` proof follow-up, while the next docs-owned gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`.
+  No remaining DSM action stays open on [LUC-1050](/LUC/issues/LUC-1050).
+
+## 2026-07-14 LUC-1040 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for selectruntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`
+  using the smallest focused proof-link and generated-truth refresh only.
+- Result:
+  `priority-test-links.csv` and `scanner-overrides.json` now expose the
+  existing focused helper proof directly to the generator chain, so the
+  authoritative sequential readback no longer routes `selectRuntimeOpenOrders`
+  as `implemented_needs_proof`.
+- Verification:
+  focused `runtimeSessionOpenOrdersReadModel.service.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted `rg` readback for scoped entities in `docs/status` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `selectRuntimeOpenOrders` as the first
+  Account access proof gap. The next Account access gap now advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `resolveSingleCanonicalStrategyId`; no remaining proof action stays open on
+  [LUC-1040](/LUC/issues/LUC-1040).
+
 ## 2026-07-14 LUC-1042 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1011-LUC-1016-LUC-1019-LUC-1023-plus-7
 
 - Status: `DONE`.

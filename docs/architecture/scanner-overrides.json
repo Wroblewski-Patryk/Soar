@@ -393,6 +393,36 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access runtime open-orders selection helper through focused no-DB tests covering deduped count readback, newest-first ordering after exchange-aware dedupe, and limit-preserving item selection.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts",
+        "history/evidence/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult",
+      "status": "verified",
+      "owner": "QA Verification Engineer",
+      "description": "Verified Account access runtime position-close closure helper through focused no-DB tests covering latest CLOSE trade precedence, latest opposite-side order fallback, and fail-closed duplicate-close behavior when canonical closed-order evidence is absent.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts",
+        "history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access runtime position-close canonical-strategy helper through focused no-DB tests covering single canonical strategy backfill and fail-closed ambiguity when multiple enabled strategy ids remain.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts",
+        "history/evidence/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
       "status": "verified",
       "owner": "Core Backend Engineer",
@@ -539,6 +569,18 @@
     {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
     },

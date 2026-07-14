@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-14T03:23:36.528Z",
+  "generated_at": "2026-07-14T06:05:04.839Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10949,
-    "relations": 36250,
+    "entities": 10971,
+    "relations": 36358,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4878,
+      "document": 4894,
       "feature": 216,
       "function": 2845,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1823,
+      "task": 1829,
       "test": 463
     },
     "by_status": {
       "blocked": 47,
       "deprecated": 10,
-      "implemented": 8203,
-      "in_progress": 16,
+      "implemented": 8216,
+      "in_progress": 15,
       "tested": 849,
-      "verified": 1824
+      "verified": 1834
     }
   },
   "signals": {
@@ -5107,7 +5107,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 139,
+      "count": 140,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5131,6 +5131,14 @@
           "name": "LUC-1027-CHILD - Read-only failed deploy diagnosis (2026-05-31)",
           "path": "history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md",
           "status": "blocked",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:2172043428",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1042-source-control-closure-luc-1011-luc-1016-luc-1019-luc-1023-plus-7-2026-07-14-task.md",
+          "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
         {
@@ -7833,11 +7841,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 452,
+      "count": 453,
       "by_reason": {
         "config_only_file": 33,
         "curated_graph_covered": 279,
-        "historical_task_archive": 139,
+        "historical_task_archive": 140,
         "top_level_app_mount": 1
       },
       "items": [
@@ -7865,6 +7873,15 @@
           "name": "LUC-1027-CHILD - Read-only failed deploy diagnosis (2026-05-31)",
           "path": "history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md",
           "status": "blocked",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:2172043428",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1042-source-control-closure-luc-1011-luc-1016-luc-1019-luc-1023-plus-7-2026-07-14-task.md",
+          "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
         },
@@ -9628,15 +9645,6 @@
           "type": "feature",
           "name": "eslint.config.mjs",
           "path": "apps/web/eslint.config.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:next-env-d-ts:1458448cd1",
-          "type": "feature",
-          "name": "next-env.d.ts",
-          "path": "apps/web/next-env.d.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"

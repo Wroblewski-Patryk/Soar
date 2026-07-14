@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T03:23:45.217Z",
+  "generatedAt": "2026-07-14T06:05:17.201Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 959,
-    "missingDocLink": 1984,
-    "implementedNeedsProof": 112,
+    "missingDocLink": 1982,
+    "implementedNeedsProof": 111,
     "blocked": 0,
-    "riskItems": 3507,
-    "appCompletionRiskItems": 3507,
+    "riskItems": 3504,
+    "appCompletionRiskItems": 3504,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,15 +22,15 @@
       "userFlow": "Account access",
       "total": 268,
       "risks": {
-        "ok": 52,
-        "implemented_needs_proof": 2,
-        "missing_doc_link": 131,
+        "ok": 55,
+        "missing_doc_link": 129,
         "missing_test_link": 52,
+        "implemented_needs_proof": 1,
         "needs_browser_review": 31
       },
       "gates": {
         "auth": 268,
-        "configuration": 21,
+        "configuration": 22,
         "subscription": 3,
         "gateio": 1
       }
@@ -138,69 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:selectruntimeopenorders:d5ee91ce67",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "selectRuntimeOpenOrders",
-      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 7,
-      "risk": "implemented_needs_proof"
-    },
-    {
-      "id": "function:resolveclosedresult:14c437ff28",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveClosedResult",
-      "path": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:resolvesinglecanonicalstrategyid:57eed456ca",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveSingleCanonicalStrategyId",
-      "path": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:resolveruntimepositiondcacount:4196596f76",
       "type": "function",
       "kind": "feature_or_capability",
@@ -218,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -1227,7 +1164,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 4,
       "risk": "missing_test_link"
     },
     {
@@ -4243,7 +4180,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 20,
+      "relatedEntityCount": 21,
       "risk": "needs_browser_review"
     },
     {
@@ -4264,7 +4201,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 37,
+      "relatedEntityCount": 45,
       "risk": "needs_browser_review"
     },
     {
@@ -4285,7 +4222,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 6,
+      "relatedEntityCount": 8,
       "risk": "needs_browser_review"
     },
     {
@@ -4349,6 +4286,69 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 5,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionread-service-ts:150202e64b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionRead.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionsread-service-ts:11cb508e98",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionsRead.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionsRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionsymbolstatsread-service-ts:75f76fab93",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionSymbolStatsRead.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionSymbolStatsRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 52,
       "risk": "needs_browser_review"
     }
   ]

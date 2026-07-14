@@ -241,6 +241,8 @@ apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts#resolve
 apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#dedupeRuntimeOpenOrders,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#resolveRuntimeTakeoverStatus,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders,docs/modules/api-bots.md
+apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult,docs/modules/api-bots.md
+apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.errors.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.repository.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/botsRuntimeRead.repository.ts,docs/modules/api-bots.md

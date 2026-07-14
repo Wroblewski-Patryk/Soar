@@ -1,3 +1,48 @@
+## 2026-07-14 LUC-1060 Account Access resolveSingleCanonicalStrategyId Proof
+
+- Module row:
+  Account access / API bots runtime position-close canonical-strategy helper
+  executable proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / no
+  runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14.md`;
+  `history/tasks/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts`
+  now directly proves `resolveSingleCanonicalStrategyId` for single canonical
+  strategy backfill and fail-closed ambiguity when multiple enabled strategy
+  ids remain. Final app-completion readback for the helper is `hasTest=true`,
+  `hasDoc=true`, `risk=none`.
+- Confidence:
+  high for the local helper proof lane. The next Account access front row now
+  advances to `resolveRuntimePositionDcaCount` as a docs-owned gap; no
+  remaining proof follow-up stays open on `resolveSingleCanonicalStrategyId`.
+
+## 2026-07-14 LUC-1054 Account Access resolveClosedResult Proof
+
+- Module row:
+  Account access / API bots runtime position-close closure helper executable
+  proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / no
+  runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md`;
+  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts`
+  now directly proves `resolveClosedResult` for latest `CLOSE` trade order-id
+  precedence, latest opposite-side fallback order recovery, and duplicate
+  close fail-closed behavior when no canonical closed-order evidence exists.
+  Final app-completion readback for the helper is `hasTest=true`,
+  `hasDoc=true`, `risk=none`.
+- Confidence:
+  high for the local helper proof lane. The next Account access docs-owned gap
+  advances to `resolveSingleCanonicalStrategyId`; no remaining proof follow-up
+  stays open on `resolveClosedResult`.
+
 ## 2026-07-14 LUC-1032 Account Access runtime script proof refresh
 
 - Module row:
@@ -47,6 +92,30 @@
   high for the local helper proof lane. Direct source-of-truth documentation
   for `resolveRuntimeTakeoverStatus` and `selectRuntimeOpenOrders` remains a
   separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1031 Account Access fetchAuthenticatedBalancePreview Proof
+
+## 2026-07-14 LUC-1040 Account Access selectRuntimeOpenOrders Proof
+
+- Module row:
+  Account access / API bots runtime open-orders selection helper executable
+  proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / no
+  runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.test.ts`
+  now directly proves the helper's deduped count readback, newest-first
+  ordering after exchange-aware dedupe, and limit-preserving selection.
+  Final app-completion readback for `selectRuntimeOpenOrders` is
+  `hasTest=true`, `hasDoc=true`, `risk=none`.
+- Confidence:
+  high for the local helper proof lane. The next Account access docs-owned gap
+  now advances to `resolveSingleCanonicalStrategyId`; no remaining proof
+  follow-up stays open on `selectRuntimeOpenOrders`.
 
 ## 2026-07-14 LUC-1031 Account Access fetchAuthenticatedBalancePreview Proof
 

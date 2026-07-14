@@ -1,3 +1,119 @@
+## 2026-07-14 LUC-1060 Account Access resolveSingleCanonicalStrategyId Proof
+
+- Mission:
+  `LUC-1060-ACCOUNT-ACCESS-RESOLVESINGLECANONICALSTRATEGYID-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / IMPLEMENTED_NEEDS_PROOF_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Project Manager proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  using the smallest focused local proof slice only. No runtime code, deploy,
+  push, restart, rollback, protected smoke, secret/account readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `runtimeSessionPositionCommand.service.test.ts` now directly proves the
+  helper's single canonical strategy backfill and fail-closed ambiguity
+  semantics, while `priority-test-links.csv` and `scanner-overrides.json`
+  promote the helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14.md`;
+  `history/tasks/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`
+  as `missing_doc_link`. No remaining proof action stays open on
+  [LUC-1060](/LUC/issues/LUC-1060).
+
+## 2026-07-14 LUC-1059 Account Access resolveSingleCanonicalStrategyId Doc-Link Closure
+
+- Mission:
+  `LUC-1059-ACCOUNT-ACCESS-RESOLVESINGLECANONICALSTRATEGYID-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1059-account-access-resolvesinglecanonicalstrategyid-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1059-account-access-resolvesinglecanonicalstrategyid-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager through
+  [LUC-1060](/LUC/issues/LUC-1060) for the direct proof follow-up, while
+  [LUC-1061](/LUC/issues/LUC-1061) owns source-control closure for the current
+  dirty packet. No remaining DSM action stays open on
+  [LUC-1059](/LUC/issues/LUC-1059).
+
+## 2026-07-14 LUC-1054 Account Access resolveClosedResult Proof
+
+- Mission:
+  `LUC-1054-ACCOUNT-ACCESS-RESOLVECLOSEDRESULT-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / IMPLEMENTED_NEEDS_PROOF_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  QA Verification Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`
+  using the smallest focused local proof slice only. No runtime code, deploy,
+  push, restart, rollback, protected smoke, secret/account readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `runtimeSessionPositionCommand.service.test.ts` now directly proves the
+  helper's latest `CLOSE` trade precedence, latest opposite-side order
+  fallback, and duplicate-close fail-closed semantics. Direct proof linkage in
+  `priority-test-links.csv` and verified status in `scanner-overrides.json`
+  now let generated truth remove `resolveClosedResult` from Account access
+  `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md`;
+  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`. No remaining proof action stays open on
+  [LUC-1054](/LUC/issues/LUC-1054).
+
+## 2026-07-14 LUC-1040 Account Access selectRuntimeOpenOrders Proof
+
+- Mission:
+  `LUC-1040-ACCOUNT-ACCESS-SELECTRUNTIMEOPENORDERS-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / IMPLEMENTED_NEEDS_PROOF_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / HEARTBEAT_REVERIFIED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Project Manager + QA regression proof closure for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`
+  using the smallest focused local proof slice only. No runtime code, deploy,
+  push, restart, rollback, protected smoke, secret/account readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  direct proof linkage in `priority-test-links.csv` and verified status in
+  `scanner-overrides.json` remain valid after a fresh liveness-continuation
+  rerun of the focused Vitest plus generator chain. `selectRuntimeOpenOrders`
+  remains removed from Account access `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`
+  as `missing_doc_link`. No remaining proof action stays open on
+  [LUC-1040](/LUC/issues/LUC-1040).
+
 ## 2026-07-14 LUC-1031 Account Access fetchAuthenticatedBalancePreview Proof
 
 - Mission:

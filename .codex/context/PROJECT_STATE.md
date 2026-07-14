@@ -1,3 +1,136 @@
+## 2026-07-14 LUC-1060 resolveSingleCanonicalStrategyId proof closure
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`.
+- Proof packet:
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  executable proof and generator-readable verified evidence.
+- Verification:
+  focused Vitest PASS (`1` file / `16` tests),
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `resolveSingleCanonicalStrategyId` from
+  `runtimeSessionPositionCommand.service.ts` as `implemented_needs_proof`;
+  project truth advances the next Account access proof gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`
+  as `missing_doc_link`.
+- Residual:
+  no remaining proof action stays open on [LUC-1060](/LUC/issues/LUC-1060);
+  the next owner is Docs Memory Lead + Project Manager for the adjacent
+  runtime-position DCA-count doc-link row.
+
+## 2026-07-14 LUC-1059 resolveSingleCanonicalStrategyId doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  documentation path through the API bots module and graph relation overrides.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS (`10968` entities /
+  `36337` relations / `relationOverridesApplied=43`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  sequential rerun `build-app-completion-index.mjs` PASS
+  (`missingDocLink=1982`, down from `1983`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3505`).
+- Readback:
+  app-completion no longer lists `resolveSingleCanonicalStrategyId` as
+  `missing_doc_link`; project truth now advances the same helper to
+  `implemented_needs_proof`, and the next Account access docs-owned gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`.
+- Residual:
+  proof follow-up is routed through [LUC-1060](/LUC/issues/LUC-1060), and the
+  current dirty-packet source-control closure is routed through
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1054 resolveClosedResult proof closure
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`.
+- Proof packet:
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  executable proof and generator-readable verified evidence.
+- Verification:
+  focused Vitest PASS (`1` file / `15` tests),
+  `build-architecture-awareness-index.mjs` PASS (`10962` entities /
+  `36303` relations / `entityOverridesApplied=42` /
+  `relationOverridesApplied=42`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS
+  (`implementedNeedsProof=111`, down from `112`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3505`, down from
+  `3506`).
+- Readback:
+  app-completion no longer lists `resolveClosedResult` in the priority queue;
+  project truth advances the first Account access gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is Docs Memory Lead + Project Manager for the new docs-owned
+  front row; no remaining proof action stays open on [LUC-1054](/LUC/issues/LUC-1054).
+
+## 2026-07-14 LUC-1050 resolveClosedResult doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveClosedResult`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  documentation path through the API bots module and graph relation overrides.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS (`10958` entities /
+  `36290` relations / `relationOverridesApplied=42`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`missingDocLink=1983`, down
+  from `1984`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3506`).
+- Readback:
+  app-completion no longer lists `resolveClosedResult` as `missing_doc_link`;
+  project truth now advances the same helper to `implemented_needs_proof`, and
+  the next Account access docs gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`.
+- Residual:
+  the next owner is QA Regression Lead + Project Manager for the adjacent
+  `resolveClosedResult` proof closure; no remaining action stays open on
+  [LUC-1050](/LUC/issues/LUC-1050).
+
+## 2026-07-14 LUC-1040 selectRuntimeOpenOrders proof closure
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts#selectRuntimeOpenOrders`.
+- Proof packet:
+  `docs/architecture/relations/priority-test-links.csv` and
+  `docs/architecture/scanner-overrides.json` now give the helper a direct
+  generator-readable proof path to the already-focused
+  `runtimeSessionOpenOrdersReadModel.service.test.ts` coverage.
+- Verification:
+  focused Vitest PASS (`1` file / `7` tests),
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `selectRuntimeOpenOrders` as
+  `implemented_needs_proof`; project truth advances the next Account access
+  docs gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId`
+  as `missing_doc_link`.
+- Residual:
+  no remaining proof action stays open on [LUC-1040](/LUC/issues/LUC-1040);
+  the next owner is Docs Memory Lead + Project Manager for the new docs-owned
+  front row.
+
 ## 2026-07-14 LUC-1042 source-control closure for LUC-1011, LUC-1016, LUC-1019, LUC-1023, and adjacent Account access slices
 
 - Local dirty-state classification is now complete for the current Account

@@ -2,6 +2,37 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-14 - Project-truth generators must be awaited sequentially from the Paperclip scripts workspace
+- Symptom:
+  `docs/status/app-completion-index.json` and
+  `docs/status/project-truth-index.json` can preserve stale
+  `implemented_needs_proof` rows even after the scoped helper is already
+  `verified` in `docs/graphs/architecture-awareness.json`.
+- Root cause:
+  `build-architecture-awareness-index.mjs`,
+  `build-app-completion-index.mjs`, and
+  `build-project-truth-indexes.mjs --apply` were launched in parallel, so the
+  downstream steps consumed pre-refresh inputs. The canonical entrypoints for
+  these refreshes also live in
+  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts`, not in
+  the Soar repo root.
+- Correct sequencing:
+  run the Paperclip scripts as separate awaited commands in this exact order:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Verified recovery:
+  [LUC-1054](/LUC/issues/LUC-1054) initially showed a stale
+  `resolveClosedResult` `implemented_needs_proof` row after the parallel run,
+  even though the refreshed awareness graph already marked the helper
+  `verified`. A sequential rerun dropped `implementedNeedsProof` from `112` to
+  `111` and advanced the first Account access gap to
+  `resolveSingleCanonicalStrategyId` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md`;
+  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`.
+
 ### 2026-07-13 - Redirect architecture-awareness builder stdout to an artifact log
 - Symptom:
   direct shell execution of

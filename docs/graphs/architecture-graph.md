@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T03:23:36.528Z
+Generated: 2026-07-14T06:05:04.839Z
 
 ## Canonical Exports
 
@@ -736,7 +736,13 @@ Generated: 2026-07-14T03:23:36.528Z
 | connected_to | project:soar:7c70e892d7 | task:task:aee6bc8809 | history/tasks/luc-1033-blocked-triage-classify-luc-962-and-produce-next-legal-action-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:1131e4b03c | history/tasks/luc-1035-account-access-resolveruntimetakeoverstatus-doc-link-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:6401e5b52b | history/tasks/luc-1039-account-access-selectruntimeopenorders-doc-link-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:9dced6cc5e | history/tasks/luc-1040-account-access-selectruntimeopenorders-proof-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:2172043428 | history/tasks/luc-1042-source-control-closure-luc-1011-luc-1016-luc-1019-luc-1023-plus-7-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-105-runtime-signal-loop-test-closure-repair-2026-05-26:aa7633a58c | history/tasks/luc-105-runtime-signal-loop-test-closure-repair-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:a48a471703 | history/tasks/luc-1050-account-access-resolveclosedresult-doc-link-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:3d9a3a0bad | history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:3f0bb589de | history/tasks/luc-1059-account-access-resolvesinglecanonicalstrategyid-doc-link-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:f4a908ed10 | history/tasks/luc-1060-account-access-resolvesinglecanonicalstrategyid-proof-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b6928b7c5b | history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31:662535a06a | history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9c8d819b32 | history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md |
@@ -1212,9 +1218,3 @@ Generated: 2026-07-14T03:23:36.528Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2312-source-control-closure:53bc9e9e14 | history/tasks/luc-2312-source-control-closure-luc-1160-plus-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2313-operator-coolify-bind-read-only-production-status-access:b344ac1388 | history/tasks/luc-2313-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2316-operator-coolify-bind-read-only-production-status-access:1c71eedc8e | history/tasks/luc-2316-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:dd412bf4af | history/tasks/luc-2319-restore-local-db-redis-infra-for-aggregate-e2e-proof-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:0a1ecf1e9f | history/tasks/luc-2321-coolify-production-deploy-health-sweep-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:e01645adb7 | history/tasks/luc-2328-repair-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2329-gap-register-and-repair-lane-refresh-task:9b3e416602 | history/tasks/luc-2329-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:2a9c200f4e | history/tasks/luc-233-gap-register-and-repair-lane-refresh-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:36b9bdf144 | history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md |

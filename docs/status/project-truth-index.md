@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-14T03:23:51.073Z
+Generated: 2026-07-14T06:05:20.905Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,28 +13,25 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 3507 |
+| appCompletionGaps | 3504 |
 | indexedAppCompletionGaps | 200 |
-| knownAppCompletionRiskItems | 3507 |
+| knownAppCompletionRiskItems | 3504 |
 | appCompletionPriorityReviewItems | 200 |
 | appCompletionPriorityReviewTruncated | true |
 | operationalGateGaps | 0 |
 | indexedGaps | 200 |
-| totalGaps | 3507 |
+| totalGaps | 3504 |
 
 ## First Gap
 
-- medium: Account access: selectRuntimeOpenOrders has app-completion risk implemented_needs_proof.
-- Owner: QA Regression Lead + Project Manager
-- Next action: Run and record fresh proof for the implemented behavior, then update completion/project-truth indexes.
+- medium: Account access: resolveRuntimePositionDcaCount has app-completion risk missing_doc_link.
+- Owner: Docs Memory Lead + Project Manager
+- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: selectRuntimeOpenOrders has app-completion risk implemented_needs_proof. | QA Regression Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: resolveClosedResult has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: resolveSingleCanonicalStrategyId has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: resolveRuntimePositionDcaCount has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: countRuntimeManagedPositions has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: getRuntimePositionBotContext has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
@@ -112,3 +109,6 @@ This is the routing surface agents should use before guessing whether an app wor
 | medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: clearSessionCookie has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: registerAndLogin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |

@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-14T03:23:36.528Z
+Generated: 2026-07-14T06:05:04.839Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 139
+- Raw tasks without architecture links: 140
 - Actionable implementation entities without task links: 0
 - Raw implementation entities without task links: 313
-- Classified task-linkage noise: 452
+- Classified task-linkage noise: 453
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
 - curated_graph_covered: 279
-- historical_task_archive: 139
+- historical_task_archive: 140
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -35,6 +35,7 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task: LOCAL-CERTAINTY-CLOSURE-2026-05-21 (history/tasks/local-certainty-closure-2026-05-21-task.md)
 - Task: Local Integrity Build Sweep (history/tasks/local-integrity-build-sweep-2026-05-24-task.md)
 - LUC-1027-CHILD - Read-only failed deploy diagnosis (2026-05-31) (history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md)
+- Task (history/tasks/luc-1042-source-control-closure-luc-1011-luc-1016-luc-1019-luc-1023-plus-7-2026-07-14-task.md)
 - luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task (history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md)
 - Task (history/tasks/luc-1148-source-control-closure-comment-followup-2026-05-31-task.md)
 - Task (history/tasks/luc-1148-source-control-closure-finish-successful-run-handoff-2026-05-31-task.md)
@@ -71,7 +72,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1734 Restore Owner Path For Coolify Inventory Lane (history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md)
-- Task (history/tasks/luc-1774-provide-valid-prod-ui-audit-session-2026-06-03-task.md)
 
 ### Raw Implementation Without Task Links
 
