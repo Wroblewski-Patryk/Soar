@@ -1,3 +1,23 @@
+## 2026-07-14 LUC-1124 Account Access Public Browser Proof
+
+- Module row:
+  Account access / public auth page browser-proof lane for
+  `apps/web/src/app/(public)/auth/login/page.tsx` and
+  `apps/web/src/app/(public)/auth/register/page.tsx`.
+- Status:
+  `verified public browser proof / route-render and password-toggle checks
+  passed / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1124-public-read-only-browser-proof-2026-07-14.md`;
+  `history/artifacts/luc-1124-public-read-only-browser-proof-2026-07-14.json`;
+  `history/tasks/luc-1124-public-read-only-browser-proof-2026-07-14-task.md`.
+- Confidence:
+  high for the public auth browser lane on the current local web target.
+  Login and register pages rendered on desktop and mobile, and both password
+  visibility toggles changed type plus accessible label without console,
+  network, or overflow issues. Protected authenticated browser proof remains a
+  separate lane.
+
 ## 2026-07-14 LUC-1116 Account Access sumRuntimeManagedPositionRealizedPnl Proof
 
 - Module row:
