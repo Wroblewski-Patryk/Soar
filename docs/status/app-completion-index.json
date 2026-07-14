@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T19:06:30.463Z",
+  "generatedAt": "2026-07-14T00:37:05.833Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 966,
-    "missingDocLink": 1982,
+    "missingDocLink": 1979,
     "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3513,
-    "appCompletionRiskItems": 3513,
+    "riskItems": 3510,
+    "appCompletionRiskItems": 3510,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,8 +22,8 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 43,
-        "missing_doc_link": 130,
+        "ok": 46,
+        "missing_doc_link": 127,
         "missing_test_link": 58,
         "implemented_needs_proof": 3,
         "needs_browser_review": 31
@@ -138,69 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:createbotwithruntimesession:8834fe54e3",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "createBotWithRuntimeSession",
-      "path": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:getuseridbyemail:71590ed5dd",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "getUserIdByEmail",
-      "path": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:seedticker:27c9ddcd7a",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "seedTicker",
-      "path": "apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:registerandlogin:f4ce0d6384",
       "type": "function",
       "kind": "feature_or_capability",
@@ -219,7 +156,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 5,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4350,6 +4287,69 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionopenordersreadmodel-service-ts:bbd350cfb7",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionOpenOrdersReadModel.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionpositioncommand-service-ts:bae66ac87a",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionPositionCommand.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 37,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesessionpositiondcacount-ts:5e90310320",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSessionPositionDcaCount.ts",
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 6,
       "risk": "needs_browser_review"
     }
   ]

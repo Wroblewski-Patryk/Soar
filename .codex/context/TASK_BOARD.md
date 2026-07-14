@@ -1,3 +1,110 @@
+## 2026-07-14 LUC-1009 [Soar][Source Control Closure] Classify and close local dirty state for LUC-983-LUC-994-LUC-1004
+
+- Status: `DONE`.
+- Scope: classify the local dirty state produced by the completed docs-truth
+  closures for `createBotWithRuntimeSession`, `getUserIdByEmail`, and
+  `seedTicker`, then record the source-control closure decision without
+  pushing, deploying, or touching runtime code.
+- Result:
+  the worktree was classified as one coherent packet with `35` dirty paths
+  before LUC-1009 artifacts (`3` state/context, `23` docs/generated truth,
+  `9` task/evidence/log artifacts, `0` runtime/product code paths).
+- Verification:
+  `git status --short --branch`;
+  `git diff --check`;
+  `pnpm run architecture:graph:drift:strict`;
+  strict added-line credential scan;
+  targeted `rg` readback for the closed helper rows and the next Account
+  access docs gap.
+- Readback:
+  `createBotWithRuntimeSession`, `getUserIdByEmail`, and `seedTicker` are no
+  longer the first Account access docs gap; project truth now routes
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Source-control decision:
+  one local commit is appropriate for the combined docs/generated packet;
+  push is held for batch and deploy impact is none.
+- Evidence:
+  `history/tasks/luc-1009-source-control-closure-luc-983-luc-994-luc-1004-2026-07-14-task.md`;
+  `history/evidence/luc-1009-source-control-closure-2026-07-14.md`.
+
+## 2026-07-14 LUC-1004 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for seedticker
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1980` to `1979`, and project
+  truth advanced the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Evidence:
+  `history/tasks/luc-1004-account-access-seedticker-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1004-account-access-seedticker-doc-link-2026-07-14.md`.
+
+## 2026-07-14 LUC-994 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for getuseridbyemail
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check`.
+- Readback:
+  app-completion/project-truth no longer route `getUserIdByEmail`, and the
+  first Account access docs gap advanced to
+  `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker`.
+- Evidence:
+  `history/tasks/luc-994-account-access-getuseridbyemail-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-994-account-access-getuseridbyemail-doc-link-2026-07-14.md`.
+
+## 2026-07-13 LUC-983 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for createbotwithruntimesession
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  redirected external architecture-awareness rebuild ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`;
+  targeted `rg` readback for scoped entities in `docs/status`;
+  `git diff --check`.
+- Readback:
+  `missingDocLink` dropped from `1982` to `1981`, and project truth advanced
+  the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail`.
+- Evidence:
+  `history/tasks/luc-983-account-access-createbotwithruntimesession-doc-link-2026-07-13-task.md`;
+  `history/evidence/luc-983-account-access-createbotwithruntimesession-doc-link-2026-07-13.md`.
+
 ## 2026-07-13 LUC-980 [Soar][Source Control Closure] Classify local dirty state after LUC-975 and LUC-978
 
 - Status: `DONE`.

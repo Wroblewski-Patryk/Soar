@@ -2,6 +2,23 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-13 - Redirect architecture-awareness builder stdout to an artifact log
+- Symptom:
+  direct shell execution of
+  `build-architecture-awareness-index.mjs` timed out in this runner even
+  though the builder itself completed successfully.
+- Correct response:
+  redirect stdout/stderr to an artifact log, for example
+  `*> history/artifacts/<issue>-build-architecture-awareness-log.txt`, then
+  read the exit code and log tail instead of relying on live console output.
+- Verified recovery:
+  [LUC-983](/LUC/issues/LUC-983) completed after redirecting the builder log,
+  which finished in about `61.6s`; downstream app-completion and project-truth
+  then read the refreshed awareness graph correctly.
+- Evidence:
+  `history/artifacts/luc-983-build-architecture-awareness-log.txt`;
+  `history/evidence/luc-983-account-access-createbotwithruntimesession-doc-link-2026-07-13.md`.
+
 ### 2026-07-12 - Paperclip status close requires the configured API URL and inline completion evidence
 - Symptom:
   `http://127.0.0.1:3201/api/issues/LUC-733` and

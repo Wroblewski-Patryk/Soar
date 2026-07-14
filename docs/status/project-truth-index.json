@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T19:06:40.693Z",
+  "generatedAt": "2026-07-14T00:37:15.233Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,68 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3513,
+    "appCompletionGaps": 3510,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3513,
+    "knownAppCompletionRiskItems": 3510,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3513
+    "totalGaps": 3510
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: createBotWithRuntimeSession has app-completion risk missing_doc_link.",
+    "summary": "Account access: registerAndLogin has app-completion risk missing_doc_link.",
     "nextOwner": "Docs Memory Lead + Project Manager",
     "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
-      "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession"
+      "apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin"
     ],
-    "sourceItemId": "function:createbotwithruntimesession:8834fe54e3",
+    "sourceItemId": "function:registerandlogin:f4ce0d6384",
     "risk": "missing_doc_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: createBotWithRuntimeSession has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession"
-      ],
-      "sourceItemId": "function:createbotwithruntimesession:8834fe54e3",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getUserIdByEmail has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail"
-      ],
-      "sourceItemId": "function:getuseridbyemail:71590ed5dd",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: seedTicker has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker"
-      ],
-      "sourceItemId": "function:seedticker:27c9ddcd7a",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2591,45 @@
         "apps/api/src/modules/auth/sessionToken.ts"
       ],
       "sourceItemId": "route:sessiontoken-ts:0f23b09856",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionOpenOrdersReadModel.service.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts"
+      ],
+      "sourceItemId": "route:runtimesessionopenordersreadmodel-service-ts:bbd350cfb7",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionPositionCommand.service.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts"
+      ],
+      "sourceItemId": "route:runtimesessionpositioncommand-service-ts:bae66ac87a",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionPositionDcaCount.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts"
+      ],
+      "sourceItemId": "route:runtimesessionpositiondcacount-ts:5e90310320",
       "risk": "needs_browser_review"
     }
   ]

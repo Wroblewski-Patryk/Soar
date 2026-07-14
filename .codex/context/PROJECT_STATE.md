@@ -1,3 +1,76 @@
+## 2026-07-14 LUC-1009 source-control closure for LUC-983, LUC-994, and LUC-1004
+
+- Local dirty-state classification after [LUC-983](/LUC/issues/LUC-983),
+  [LUC-994](/LUC/issues/LUC-994), and [LUC-1004](/LUC/issues/LUC-1004) is now
+  recorded for the sidecar closure lane.
+- Classified packet before adding LUC-1009 artifacts: `35` dirty paths
+  (`3` state/context, `23` docs/generated source-truth files, `9` task/evidence/log
+  artifacts, `0` runtime/product code paths).
+- Verification confirmed the packet remains coherent:
+  `git diff --check` passed, `pnpm run architecture:graph:drift:strict`
+  passed (`857/857 covered`, `0 missing`), and no value-shaped credential
+  matches were found in added lines.
+- Closure posture:
+  one local commit is appropriate for the combined docs/generated packet;
+  push remains held for batch and deploy impact is none.
+- Readback:
+  the first remaining Account access docs gap is
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Evidence:
+  `history/evidence/luc-1009-source-control-closure-2026-07-14.md`;
+  `history/tasks/luc-1009-source-control-closure-luc-983-luc-994-luc-1004-2026-07-14-task.md`.
+
+## 2026-07-14 LUC-1004 seedTicker doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the helper contract
+  and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1979`, and project truth now
+  routes the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+- Evidence:
+  `history/evidence/luc-1004-account-access-seedticker-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1004-account-access-seedticker-doc-link-2026-07-14-task.md`.
+
+## 2026-07-14 LUC-994 getUserIdByEmail doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the helper contract
+  and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion/project-truth no longer route `getUserIdByEmail` as the first
+  Account access docs gap, and the queue advances to
+  `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker`.
+- Evidence:
+  `history/evidence/luc-994-account-access-getuseridbyemail-doc-link-2026-07-14.md`;
+  `history/tasks/luc-994-account-access-getuseridbyemail-doc-link-2026-07-14-task.md`.
+
+## 2026-07-13 LUC-983 createBotWithRuntimeSession doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession`.
+- Source-of-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now all carry the helper contract
+  and matching `documents` relation.
+- Sequential generated readback is authoritative:
+  app-completion `missingDocLink` dropped to `1981`, and project truth now
+  routes the first Account access docs gap to
+  `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail`.
+- Evidence:
+  `history/evidence/luc-983-account-access-createbotwithruntimesession-doc-link-2026-07-13.md`;
+  `history/tasks/luc-983-account-access-createbotwithruntimesession-doc-link-2026-07-13-task.md`.
+
 ## 2026-07-13 LUC-980 source-control closure for LUC-975 and LUC-978
 
 - Local dirty-state classification after [LUC-975](/LUC/issues/LUC-975) and

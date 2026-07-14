@@ -406,6 +406,24 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-13T19:05:37.854Z
+Generated: 2026-07-14T00:36:06.171Z
 
 ## Canonical Exports
 
@@ -717,6 +717,7 @@ Generated: 2026-07-13T19:05:37.854Z
 | connected_to | project:soar:7c70e892d7 | task:task:931c56a0d4 | history/tasks/local-docker-coolify-parity-2026-05-24-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-local-integrity-build-sweep:9f6a181112 | history/tasks/local-integrity-build-sweep-2026-05-24-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e837a45489 | history/tasks/luc-100-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:5a6c82e240 | history/tasks/luc-1004-account-access-seedticker-doc-link-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8bec924620 | history/tasks/luc-102-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:907a57e2d9 | history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31:7aabac40e4 | history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-13T19:05:37.854Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2365-decide-push-and-production-promotion-path-for-de3db789:b724af920a | history/tasks/luc-2365-decide-push-and-production-promotion-path-for-de3db789-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:4265bf3afb | history/tasks/luc-2366-refresh-protected-runtime-worker-slo-proof-de3db789-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths:d2173e357f | history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths:6d7f73ba0f | history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |

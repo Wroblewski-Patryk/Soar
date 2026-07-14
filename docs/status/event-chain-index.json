@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T19:06:40.693Z",
+  "generatedAt": "2026-07-14T00:37:15.233Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4874,
-      "linkedRelationCount": 20015,
+      "entityCount": 4884,
+      "linkedRelationCount": 20094,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3778,
+          "count": 3788,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -7998,8 +7998,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 934,
-      "linkedRelationCount": 3480,
+      "entityCount": 935,
+      "linkedRelationCount": 3484,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8854,7 +8854,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 693,
+          "count": 694,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3298,
-      "linkedRelationCount": 11639,
+      "entityCount": 3304,
+      "linkedRelationCount": 11692,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10757,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1283,
+          "count": 1286,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11240,6 +11240,30 @@
               "status": "tested"
             },
             {
+              "id": "function:getuseridbyemail:71590ed5dd",
+              "type": "function",
+              "name": "getUserIdByEmail",
+              "path": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#getUserIdByEmail",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:createbotwithruntimesession:8834fe54e3",
+              "type": "function",
+              "name": "createBotWithRuntimeSession",
+              "path": "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts#createBotWithRuntimeSession",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:seedticker:27c9ddcd7a",
+              "type": "function",
+              "name": "seedTicker",
+              "path": "apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts#seedTicker",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "function:closebotruntimesessionposition:0d9dc5a10d",
               "type": "function",
               "name": "closeBotRuntimeSessionPosition",
@@ -11374,36 +11398,12 @@
               "path": "apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession",
               "owner": "QA Regression Lead",
               "status": "verified"
-            },
-            {
-              "id": "route:runtimeexchangesyncedpositionprice-ts:fbccdda698",
-              "type": "route",
-              "name": "runtimeExchangeSyncedPositionPrice.ts",
-              "path": "apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:runtimesessionpositiondcacount-ts:5e90310320",
-              "type": "route",
-              "name": "runtimeSessionPositionDcaCount.ts",
-              "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:runtimesessionpositionwindow-ts:ebec174dab",
-              "type": "route",
-              "name": "runtimeSessionPositionWindow.ts",
-              "path": "apps/api/src/modules/bots/runtimeSessionPositionWindow.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1414,
+          "count": 1417,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9334,
-      "linkedRelationCount": 33371,
+      "entityCount": 9348,
+      "linkedRelationCount": 33462,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1580,
+          "count": 1582,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6218,
+          "count": 6230,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14643,10 +14643,10 @@
               "status": "verified"
             },
             {
-              "id": "task:task:2938289858",
+              "id": "task:task:28c7156ed5",
               "type": "task",
               "name": "Task",
-              "path": "history/tasks/luc-636-account-access-session-token-doc-link-closure-2026-07-12-task.md",
+              "path": "history/tasks/luc-994-account-access-getuseridbyemail-doc-link-2026-07-14-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
