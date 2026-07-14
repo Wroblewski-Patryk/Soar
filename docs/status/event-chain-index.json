@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T19:47:23.242Z",
+  "generatedAt": "2026-07-14T20:22:41.880Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -11,7 +11,7 @@
     {
       "userFlow": "Account access",
       "entityCount": 5058,
-      "linkedRelationCount": 20973,
+      "linkedRelationCount": 20974,
       "layers": {
         "frontend": {
           "count": 202,
@@ -2616,7 +2616,7 @@
     {
       "userFlow": "Admin operation",
       "entityCount": 69,
-      "linkedRelationCount": 173,
+      "linkedRelationCount": 174,
       "layers": {
         "frontend": {
           "count": 17,
@@ -2778,6 +2778,14 @@
               "path": "apps/api/src",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:users-e2e-test-ts:5eed994cab",
+              "type": "test",
+              "name": "users.e2e.test.ts",
+              "path": "apps/api/src/modules/admin/users/users.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "route:admin-routes-ts:7b34b33781",
@@ -2962,14 +2970,6 @@
               "path": "apps/api/src/modules/admin/users/users.types.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "test:users-e2e-test-ts:5eed994cab",
-              "type": "test",
-              "name": "users.e2e.test.ts",
-              "path": "apps/api/src/modules/admin/users/users.e2e.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             },
             {
               "id": "route:page-tsx:2c9fc36678",
@@ -12713,7 +12713,7 @@
     {
       "userFlow": "Unclassified user workflow",
       "entityCount": 9543,
-      "linkedRelationCount": 34286,
+      "linkedRelationCount": 34287,
       "layers": {
         "frontend": {
           "count": 706,

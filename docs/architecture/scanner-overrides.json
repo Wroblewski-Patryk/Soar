@@ -913,6 +913,12 @@
       "evidence": "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts"
     },
     {
+      "fromId": "api_endpoint:get:6708703663",
+      "toPath": "apps/api/src/modules/admin/users/users.e2e.test.ts",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/admin/users/users.e2e.test.ts"
+    },
+    {
       "fromPath": "history/artifacts/luc-1132-browser-proof.json",
       "toPath": "apps/web/src/app/(public)/auth/login/page.tsx",
       "type": "tests",
