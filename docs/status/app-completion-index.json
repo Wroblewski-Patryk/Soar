@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T17:14:08.966Z",
+  "generatedAt": "2026-07-14T19:47:16.428Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,14 +7,14 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 48,
+    "needsBrowserReview": 44,
     "missingTestLink": 30,
     "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 81,
-    "appCompletionRiskItems": 81,
-    "priorityReviewItems": 81,
+    "riskItems": 77,
+    "appCompletionRiskItems": 77,
+    "priorityReviewItems": 77,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -23,8 +23,7 @@
       "userFlow": "Account access",
       "total": 9,
       "risks": {
-        "ok": 5,
-        "needs_browser_review": 4
+        "ok": 9
       },
       "gates": {
         "auth": 9
@@ -94,90 +93,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "route:page-tsx:122c957d36",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/(public)/auth/login/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 33,
-      "risk": "needs_browser_review"
-    },
-    {
-      "id": "route:page-tsx:a9b788b8ce",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/(public)/auth/register/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 33,
-      "risk": "needs_browser_review"
-    },
-    {
-      "id": "route:loginpage-tsx:b9f71f78d7",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "LoginPage.tsx",
-      "path": "apps/web/src/features/auth/pages/LoginPage.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": true,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 12,
-      "risk": "needs_browser_review"
-    },
-    {
-      "id": "route:registerpage-tsx:61822becff",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "RegisterPage.tsx",
-      "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 14,
-      "risk": "needs_browser_review"
-    },
     {
       "id": "api_endpoint:get:6708703663",
       "type": "api_endpoint",

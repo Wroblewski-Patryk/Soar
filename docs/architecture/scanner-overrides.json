@@ -3,6 +3,50 @@
   "excludePathPrefixes": [],
   "entityOverrides": [
     {
+      "path": "apps/web/src/app/(public)/auth/login/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the public Soar login route in a local 1440x960 Chromium run: the hydrated email/password form and remember-device control were enabled, and the create-account link reached the register route.",
+      "evidence": [
+        "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+        "history/artifacts/luc-1132-browser-proof.json",
+        "history/artifacts/luc-1132-login-page.png"
+      ]
+    },
+    {
+      "path": "apps/web/src/app/(public)/auth/register/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the public Soar register route through the local Chromium clickthrough from the login page, including the expected account-creation heading and enabled submit surface.",
+      "evidence": [
+        "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+        "history/artifacts/luc-1132-browser-proof.json",
+        "history/artifacts/luc-1132-register-page.png"
+      ]
+    },
+    {
+      "path": "apps/web/src/features/auth/pages/LoginPage.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the visible LoginPage form state and register navigation in the LUC-1132 local browser packet; this proof does not claim an authenticated or production session.",
+      "evidence": [
+        "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+        "history/artifacts/luc-1132-browser-proof.json",
+        "history/artifacts/luc-1132-login-page.png"
+      ]
+    },
+    {
+      "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the visible RegisterPage heading and account-creation form surface after an in-browser clickthrough from the public login page.",
+      "evidence": [
+        "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+        "history/artifacts/luc-1132-browser-proof.json",
+        "history/artifacts/luc-1132-register-page.png"
+      ]
+    },
+    {
       "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -867,6 +911,54 @@
       "toPath": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
       "type": "tests",
       "evidence": "apps/api/src/modules/bots/runtimeSessionTradesRead.list.test.ts"
+    },
+    {
+      "fromPath": "history/artifacts/luc-1132-browser-proof.json",
+      "toPath": "apps/web/src/app/(public)/auth/login/page.tsx",
+      "type": "tests",
+      "evidence": "LUC-1132 local Chromium login route proof"
+    },
+    {
+      "fromPath": "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+      "toPath": "apps/web/src/app/(public)/auth/login/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1132 account-access browser review"
+    },
+    {
+      "fromPath": "history/artifacts/luc-1132-browser-proof.json",
+      "toPath": "apps/web/src/app/(public)/auth/register/page.tsx",
+      "type": "tests",
+      "evidence": "LUC-1132 local Chromium register clickthrough proof"
+    },
+    {
+      "fromPath": "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+      "toPath": "apps/web/src/app/(public)/auth/register/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1132 account-access browser review"
+    },
+    {
+      "fromPath": "history/artifacts/luc-1132-browser-proof.json",
+      "toPath": "apps/web/src/features/auth/pages/LoginPage.tsx",
+      "type": "tests",
+      "evidence": "LUC-1132 visible LoginPage form proof"
+    },
+    {
+      "fromPath": "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+      "toPath": "apps/web/src/features/auth/pages/LoginPage.tsx",
+      "type": "documents",
+      "evidence": "LUC-1132 account-access browser review"
+    },
+    {
+      "fromPath": "history/artifacts/luc-1132-browser-proof.json",
+      "toPath": "apps/web/src/features/auth/pages/RegisterPage.tsx",
+      "type": "tests",
+      "evidence": "LUC-1132 visible RegisterPage form proof"
+    },
+    {
+      "fromPath": "history/evidence/luc-1132-account-access-browser-review-2026-07-14.md",
+      "toPath": "apps/web/src/features/auth/pages/RegisterPage.tsx",
+      "type": "documents",
+      "evidence": "LUC-1132 account-access browser review"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T17:14:09.181Z",
+  "generatedAt": "2026-07-14T19:47:23.242Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,81 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 81,
-    "indexedAppCompletionGaps": 81,
-    "knownAppCompletionRiskItems": 81,
-    "appCompletionPriorityReviewItems": 81,
+    "appCompletionGaps": 77,
+    "indexedAppCompletionGaps": 77,
+    "knownAppCompletionRiskItems": 77,
+    "appCompletionPriorityReviewItems": 77,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 81,
-    "totalGaps": 81
+    "indexedGaps": 77,
+    "totalGaps": 77
   },
   "firstGap": {
     "kind": "app_completion_gap",
-    "severity": "high",
-    "userFlow": "Account access",
-    "summary": "Account access: page.tsx has app-completion risk needs_browser_review.",
-    "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-    "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+    "severity": "medium",
+    "userFlow": "Admin operation",
+    "summary": "Admin operation: GET / has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/web/src/app/(public)/auth/login/page.tsx"
+      "apps/api/src/router/admin.routes.ts#/"
     ],
-    "sourceItemId": "route:page-tsx:122c957d36",
-    "risk": "needs_browser_review"
+    "sourceItemId": "api_endpoint:get:6708703663",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Account access",
-      "summary": "Account access: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/(public)/auth/login/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:122c957d36",
-      "risk": "needs_browser_review"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Account access",
-      "summary": "Account access: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/(public)/auth/register/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:a9b788b8ce",
-      "risk": "needs_browser_review"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Account access",
-      "summary": "Account access: LoginPage.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/features/auth/pages/LoginPage.tsx"
-      ],
-      "sourceItemId": "route:loginpage-tsx:b9f71f78d7",
-      "risk": "needs_browser_review"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Account access",
-      "summary": "Account access: RegisterPage.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/features/auth/pages/RegisterPage.tsx"
-      ],
-      "sourceItemId": "route:registerpage-tsx:61822becff",
-      "risk": "needs_browser_review"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",

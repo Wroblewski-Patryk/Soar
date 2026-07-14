@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T17:00:19.988Z
+Generated: 2026-07-14T19:46:53.146Z
 
 ## Canonical Exports
 
@@ -779,12 +779,15 @@ Generated: 2026-07-14T17:00:19.988Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-closure:611d10f85c | history/tasks/luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:29acc6f356 | history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6b8458640 | history/tasks/luc-1115-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-luc-1112-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1116-task-account-access-sumruntimemanagedpositionrealizedpnl-proof:7c7a8bc70e | history/tasks/luc-1116-account-access-sumruntimemanagedpositionrealizedpnl-proof-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:2e0e4bc1cf | history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:7c0726358c | history/tasks/luc-112-architecture-awareness-docs-graph-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:85d8ce0309 | history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1120-source-control-closure-classify-and-close-local-dirty-state-for-luc-149:66a9a2c378 | history/tasks/luc-1120-source-control-closure-classify-and-close-local-dirty-state-for-luc-149-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0b6fc95219 | history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:a5a57a273d | history/tasks/luc-1122-source-control-closure-classify-and-close-local-dirty-state-for-luc-1119-luc-1120-luc-1121-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f8299870bb | history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1124-public-read-only-browser-proof:876fe4f1c1 | history/tasks/luc-1124-public-read-only-browser-proof-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c39b2e2815 | history/tasks/luc-1126-source-control-closure-classify-and-close-local-dirty-state-for-luc-405-luc-1123-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3c85da3d86 | history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3c7b267e02 | history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md |
@@ -1215,6 +1218,3 @@ Generated: 2026-07-14T17:00:19.988Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart:47d83a752d | history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-228-v1-audit-to-completion-controller-2026-05-27:06b4ec96fb | history/tasks/luc-228-v1-audit-to-completion-controller-2026-05-27-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2280-controlled-soar-web-restart:cc08910835 | history/tasks/luc-2280-controlled-soar-web-restart-503-restarting-state-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05:2c971cf95e | history/tasks/luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2281-approve-redacted-host-log-export-path-for-soar-api-crash-window:55cb8827d3 | history/tasks/luc-2281-approve-redacted-host-log-export-path-for-soar-api-crash-window-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2282-prepare-soar-web-rollback-or-redeploy-permit:8c5294f11c | history/tasks/luc-2282-prepare-soar-web-rollback-or-redeploy-permit-2026-06-05-task.md |

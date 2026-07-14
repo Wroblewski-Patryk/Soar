@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T17:14:09.181Z",
+  "generatedAt": "2026-07-14T19:47:23.242Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5018,
-      "linkedRelationCount": 20879,
+      "entityCount": 5058,
+      "linkedRelationCount": 20973,
       "layers": {
         "frontend": {
           "count": 202,
@@ -1099,8 +1099,8 @@
               "type": "route",
               "name": "LoginPage.tsx",
               "path": "apps/web/src/features/auth/pages/LoginPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:2e9b7e490f",
@@ -1115,8 +1115,8 @@
               "type": "route",
               "name": "RegisterPage.tsx",
               "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "feature:usehydrationready-ts:3f38a9a330",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3898,
+          "count": 3938,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -7998,8 +7998,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 938,
-      "linkedRelationCount": 3508,
+      "entityCount": 939,
+      "linkedRelationCount": 3510,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8854,7 +8854,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 697,
+          "count": 698,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3421,
-      "linkedRelationCount": 12353,
+      "entityCount": 3425,
+      "linkedRelationCount": 12367,
       "layers": {
         "frontend": {
           "count": 390,
@@ -11403,7 +11403,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1506,
+          "count": 1510,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9487,
-      "linkedRelationCount": 34139,
+      "entityCount": 9543,
+      "linkedRelationCount": 34286,
       "layers": {
         "frontend": {
           "count": 706,
@@ -13921,8 +13921,8 @@
               "type": "route",
               "name": "LoginPage.tsx",
               "path": "apps/web/src/features/auth/pages/LoginPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:profilepage-tsx:f1dab93865",
@@ -13937,8 +13937,8 @@
               "type": "route",
               "name": "RegisterPage.tsx",
               "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "test:i18nprovider-route-loading-test-tsx:879f70138e",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6345,
+          "count": 6401,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
