@@ -248,6 +248,7 @@ apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePo
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed,docs/modules/api-bots.md
+apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows,docs/modules/api-bots.md

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T15:56:26.514Z",
+  "generatedAt": "2026-07-14T16:22:56.536Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3495,
+    "appCompletionGaps": 3494,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3495,
+    "knownAppCompletionRiskItems": 3494,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3495
+    "totalGaps": 3494
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "summary": "Account access: sumRuntimeManagedPositionRealizedPnl has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity"
+      "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl"
     ],
-    "sourceItemId": "function:sumruntimemanagedpositionquantity:239a52ebd3",
-    "risk": "missing_doc_link"
+    "sourceItemId": "function:sumruntimemanagedpositionrealizedpnl:d1ff53d94b",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity"
-      ],
-      "sourceItemId": "function:sumruntimemanagedpositionquantity:239a52ebd3",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2617,19 @@
         "apps/web/src/features/auth/components/LoginForm.tsx"
       ],
       "sourceItemId": "component:loginform-tsx:1f6d6fe17e",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: PasswordVisibilityToggle.tsx has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx"
+      ],
+      "sourceItemId": "component:passwordvisibilitytoggle-tsx:562e02cf59",
       "risk": "needs_browser_review"
     }
   ]

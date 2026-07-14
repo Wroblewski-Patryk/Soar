@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T15:56:22.821Z",
+  "generatedAt": "2026-07-14T16:22:52.549Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 950,
-    "missingDocLink": 1982,
+    "missingDocLink": 1981,
     "implementedNeedsProof": 111,
     "blocked": 0,
-    "riskItems": 3495,
-    "appCompletionRiskItems": 3495,
+    "riskItems": 3494,
+    "appCompletionRiskItems": 3494,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,9 +22,9 @@
       "userFlow": "Account access",
       "total": 268,
       "risks": {
-        "ok": 64,
-        "missing_doc_link": 129,
+        "ok": 65,
         "missing_test_link": 43,
+        "missing_doc_link": 128,
         "implemented_needs_proof": 1,
         "needs_browser_review": 31
       },
@@ -138,27 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:sumruntimemanagedpositionquantity:239a52ebd3",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "sumRuntimeManagedPositionQuantity",
-      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 4,
-      "risk": "missing_doc_link"
-    },
-    {
       "id": "function:sumruntimemanagedpositionrealizedpnl:d1ff53d94b",
       "type": "function",
       "kind": "feature_or_capability",
@@ -176,7 +155,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 2,
       "risk": "missing_test_link"
     },
     {
@@ -4054,7 +4033,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 65,
+      "relatedEntityCount": 66,
       "risk": "needs_browser_review"
     },
     {
@@ -4351,6 +4330,27 @@
         "needsScreenshotReview": true
       },
       "relatedEntityCount": 16,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:passwordvisibilitytoggle-tsx:562e02cf59",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "PasswordVisibilityToggle.tsx",
+      "path": "apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
       "risk": "needs_browser_review"
     }
   ]

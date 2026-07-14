@@ -1,3 +1,27 @@
+## 2026-07-14 LUC-1111 sumRuntimeManagedPositionQuantity doc-link closure
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`
+  by restoring the canonical documentation relation input.
+- Result:
+  `docs/architecture/relations/documentation-links.csv` now maps the helper to
+  `docs/modules/api-bots.md`, and the refreshed generated truth advances the
+  first Account access gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl`
+  as `missing_test_link`.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Evidence:
+  `history/tasks/luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-2026-07-14.md`.
+- Residual:
+  no runtime mutation, deploy, push, or protected proof is claimed here.
+
 ## 2026-07-14 LUC-1104 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1067-LUC-1069-LUC-1071-LUC-1073-plus-14
 
 - Status: `DONE`.
