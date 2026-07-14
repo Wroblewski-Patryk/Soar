@@ -1,3 +1,22 @@
+## 2026-07-14 LUC-1116 Account Access sumRuntimeManagedPositionRealizedPnl Proof
+
+- Module row:
+  Account access / API bots runtime managed-position realized-PnL repository
+  helper executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`;
+  `docs/architecture/relations/priority-test-links.csv`;
+  `docs/architecture/scanner-overrides.json`;
+  `history/evidence/luc-1116-account-access-sumruntimemanagedpositionrealizedpnl-proof-2026-07-14.md`;
+  `history/tasks/luc-1116-account-access-sumruntimemanagedpositionrealizedpnl-proof-2026-07-14-task.md`.
+- Confidence:
+  high for the local helper proof lane. The regenerated Account access front
+  row now advances away from `sumRuntimeManagedPositionRealizedPnl`; no
+  remaining proof follow-up stays open on the helper.
+
 ## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Proof
 
 - Module row:

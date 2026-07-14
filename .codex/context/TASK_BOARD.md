@@ -1,3 +1,23 @@
+## 2026-07-14 LUC-1116 sumRuntimeManagedPositionRealizedPnl proof
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl`
+  with the smallest focused repository proof and generated-truth refresh.
+- Result:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`
+  now directly proves scoped `where` forwarding into
+  `prisma.position.aggregate`, exact `_sum.realizedPnl` selection, and
+  passthrough aggregate readback, while the refreshed local truth inputs and
+  regenerated indexes carry the helper as verified.
+- Verification:
+  focused Vitest run for
+  `src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`
+  -> architecture-awareness refresh -> strict graph drift -> app-completion
+  rebuild -> project-truth apply.
+- Residual:
+  no runtime mutation, deploy, push, or protected proof is claimed here.
+
 ## 2026-07-14 LUC-1111 sumRuntimeManagedPositionQuantity doc-link closure
 
 - Status: `DONE`.

@@ -1,3 +1,23 @@
+## 2026-07-14 LUC-1116 sumRuntimeManagedPositionRealizedPnl proof
+
+- `apps/api/src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`
+  now directly proves the scoped `where` forwarding into
+  `prisma.position.aggregate`, exact `_sum.realizedPnl` selection, and
+  passthrough aggregate readback for the Account access runtime managed-position
+  realized-PnL helper.
+- `docs/architecture/relations/priority-test-links.csv` and
+  `docs/architecture/scanner-overrides.json` now carry the direct proof link,
+  and the regenerated `docs/status/app-completion-index.*` plus
+  `docs/status/project-truth-index.*` no longer route the helper as the first
+  Account access `missing_test_link`.
+- Verification:
+  focused Vitest run for
+  `src/modules/bots/sumRuntimeManagedPositionRealizedPnl.repository.test.ts`
+  -> architecture-awareness refresh -> strict graph drift -> app-completion
+  rebuild -> project-truth apply.
+- Residual:
+  no runtime mutation, deploy, or protected proof was claimed.
+
 ## 2026-07-14 LUC-1111 sumRuntimeManagedPositionQuantity doc-link closure
 
 - `docs/architecture/relations/documentation-links.csv` now maps
