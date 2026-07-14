@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-14T15:06:30.143Z
+Generated: 2026-07-14T15:56:26.514Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -24,15 +24,15 @@ This is the routing surface agents should use before guessing whether an app wor
 
 ## First Gap
 
-- medium: Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_test_link.
-- Owner: Test Automation Engineer + QA Regression Lead
-- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
+- medium: Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_doc_link.
+- Owner: Docs Memory Lead + Project Manager
+- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: sumRuntimeManagedPositionRealizedPnl has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: sumRuntimeManagedPositionTradeFees has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: sumRuntimeManagedPositionUnrealizedPnl has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

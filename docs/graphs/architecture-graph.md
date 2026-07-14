@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T15:06:10.210Z
+Generated: 2026-07-14T15:56:07.893Z
 
 ## Canonical Exports
 
@@ -772,6 +772,7 @@ Generated: 2026-07-14T15:06:10.210Z
 | connected_to | project:soar:7c70e892d7 | task:task:56efb0ec2d | history/tasks/luc-110-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1100-account-access-sumruntimemanagedpositionmarginused-proof:31df3a2003 | history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-closure:a46ac399c2 | history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069:5b3958ff3b | history/tasks/luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069-luc-1071-luc-1073-plus-14-2026-07-14-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31:68ba559700 | history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:57e6ef2ba7 | history/tasks/luc-1108-source-control-closure-classify-and-close-luc-1105-context-evidence-dirty-set-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:29acc6f356 | history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T15:06:10.210Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2282-prepare-soar-web-rollback-or-redeploy-permit:8c5294f11c | history/tasks/luc-2282-prepare-soar-web-rollback-or-redeploy-permit-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha:4f94a76138 | history/tasks/luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2286-choose-next-soar-web-recovery-action-after-restart-503:15a7d0de3f | history/tasks/luc-2286-choose-next-soar-web-recovery-action-after-restart-503-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2287-clear-stuck-coolify-soar-web-deploy-queue:45777bc4cd | history/tasks/luc-2287-clear-stuck-coolify-soar-web-deploy-queue-2026-06-05-task.md |

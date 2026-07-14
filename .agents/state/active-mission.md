@@ -1,3 +1,35 @@
+## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Proof
+
+- Mission:
+  `LUC-1108-ACCOUNT-ACCESS-SUMRUNTIMEMANAGEDPOSITIONQUANTITY-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `sumRuntimeManagedPositionQuantity.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.position.aggregate`, exact
+  `_sum.quantity` selection, and passthrough aggregate readback, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper as
+  verified local evidence.
+- Evidence:
+  `history/evidence/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14.md`;
+  `history/tasks/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1108](/LUC/issues/LUC-1108).
+
 ## 2026-07-14 LUC-1102 Wake Reconciliation
 
 - Status:

@@ -45299,3 +45299,33 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   no runtime code, protected smoke, secret/account readback, deploy, restart,
   rollback, DB/Redis mutation, exchange/payment/subscription mutation, order,
   position, bot activation, or LIVE trading action occurred.
+
+## 2026-07-14 LUC-1108 sumRuntimeManagedPositionQuantity proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`.
+- Source-truth packet:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionQuantity.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused `sumRuntimeManagedPositionQuantity.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion no longer lists `sumRuntimeManagedPositionQuantity` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `sumRuntimeManagedPositionRealizedPnl`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).

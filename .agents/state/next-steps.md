@@ -1,3 +1,14 @@
+## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Follow-Up
+
+- Docs Memory Lead + Project Manager owns the remaining
+  `missing_doc_link` row for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`.
+- The next Test Automation Engineer + QA Regression Lead front row is now
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl`
+  as `missing_test_link`.
+- Evidence:
+  `history/evidence/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14.md`.
+
 ## 2026-07-13 LUC-910 workers-backtest recovered
 
 - Two independent Paperclip control-plane reconciler reads after the targeted

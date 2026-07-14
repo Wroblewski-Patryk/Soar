@@ -463,6 +463,16 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime managed-position quantity repository helper through focused no-DB repository tests covering direct scoped where-clause forwarding into prisma.position.aggregate, exact quantity sum selection, and passthrough aggregate readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/sumRuntimeManagedPositionQuantity.repository.test.ts",
+        "history/evidence/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions",
       "status": "verified",
       "owner": "Test Automation Engineer",
@@ -703,6 +713,12 @@
       "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "apps/api/src/modules/bots/sumRuntimeManagedPositionQuantity.repository.test.ts",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/sumRuntimeManagedPositionQuantity.repository.test.ts"
     },
     {
       "fromPath": "docs/modules/api-bots.md",

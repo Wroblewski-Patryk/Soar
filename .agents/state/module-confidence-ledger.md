@@ -1,3 +1,23 @@
+## 2026-07-14 LUC-1108 Account Access sumRuntimeManagedPositionQuantity Proof
+
+- Module row:
+  Account access / API bots runtime managed-position quantity repository
+  helper executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionQuantity.repository.test.ts`;
+  `docs/architecture/relations/priority-test-links.csv`;
+  `docs/architecture/scanner-overrides.json`;
+  `history/evidence/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14.md`;
+  `history/tasks/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14-task.md`.
+- Confidence:
+  high for the local helper proof lane. The next Account access front row now
+  advances to `sumRuntimeManagedPositionRealizedPnl` as a missing-test gap; no
+  remaining proof follow-up stays open on
+  `sumRuntimeManagedPositionQuantity`.
+
 ## 2026-07-14 LUC-1102 Account Access sumRuntimeManagedPositionMarginUsed Doc-Link Closure
 
 - Module:

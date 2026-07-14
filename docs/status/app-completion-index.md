@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-14T15:06:21.066Z
+Generated: 2026-07-14T15:56:22.821Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,8 +15,8 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Items: 3567
 - User flows: 8
 - Needs browser/screenshot review: 452
-- Missing test link: 951
-- Missing doc link: 1981
+- Missing test link: 950
+- Missing doc link: 1982
 - Implemented, needs proof: 111
 - Blocked: 0
 - Known non-ok risk items: 3495
@@ -28,7 +28,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Unclassified user workflow: 1610 entities; risks {"missing_test_link":221,"missing_doc_link":1149,"implemented_needs_proof":90,"ok":3,"needs_browser_review":147}; gates {"auth":29,"configuration":3}
 - Trading operation: 944 entities; risks {"missing_doc_link":394,"missing_test_link":403,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":39,"auth":8}
 - Dashboard overview: 285 entities; risks {"missing_test_link":126,"missing_doc_link":107,"implemented_needs_proof":1,"needs_browser_review":51}; gates {"configuration":5,"auth":5}
-- Account access: 268 entities; risks {"ok":64,"missing_test_link":44,"missing_doc_link":128,"implemented_needs_proof":1,"needs_browser_review":31}; gates {"auth":268,"configuration":22,"subscription":3,"gateio":1}
+- Account access: 268 entities; risks {"ok":64,"missing_doc_link":129,"missing_test_link":43,"implemented_needs_proof":1,"needs_browser_review":31}; gates {"auth":268,"configuration":22,"subscription":3,"gateio":1}
 - Exchange connection and configuration: 185 entities; risks {"missing_doc_link":111,"missing_test_link":42,"implemented_needs_proof":2,"needs_browser_review":30}; gates {"gateio":15,"configuration":164,"binance":18,"auth":6}
 - User configuration: 156 entities; risks {"ok":5,"implemented_needs_proof":10,"missing_test_link":74,"missing_doc_link":43,"needs_browser_review":24}; gates {"configuration":95,"auth":8}
 - Subscription and entitlement: 82 entities; risks {"missing_test_link":24,"missing_doc_link":38,"needs_browser_review":20}; gates {"subscription":82,"auth":5,"configuration":2}
@@ -38,7 +38,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionQuantity | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity | auth |
+| Account access | missing_doc_link | feature_or_capability | sumRuntimeManagedPositionQuantity | Test Automation Engineer | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionRealizedPnl | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionTradeFees | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionTradeFees | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionUnrealizedPnl | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionUnrealizedPnl | auth |
