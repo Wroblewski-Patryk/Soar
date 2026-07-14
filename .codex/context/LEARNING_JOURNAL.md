@@ -2,6 +2,25 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-14 - Account access browser proofs need the API on localhost:3001, not 3000
+- Symptom:
+  browser verification for the login page initially logged
+  `ERR_CONNECTION_REFUSED` even though the web app was up on
+  `http://localhost:3002`.
+- Root cause:
+  the API dev server starts on `http://localhost:3001` after a short startup
+  lag. A browser run launched before that server was ready sees auth/session
+  failures and can misclassify the page as broken.
+- Correct response:
+  wait for the API startup log line
+  `serverUrl":"http://localhost:3001"` before running account-access browser
+  proof.
+- Verified recovery:
+  after the API reached `localhost:3001`, the login page rendered, the form
+  was enabled, and the `Create one` link navigated to the register page.
+- Evidence:
+  `history/evidence/luc-1132-account-access-browser-review-2026-07-14.md`.
+
 ### 2026-07-14 - Project-truth generators must be awaited sequentially from the Paperclip scripts workspace
 - Symptom:
   `docs/status/app-completion-index.json` and
