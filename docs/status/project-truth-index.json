@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T06:05:20.905Z",
+  "generatedAt": "2026-07-14T15:06:30.143Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,146 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3504,
+    "appCompletionGaps": 3495,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3504,
+    "knownAppCompletionRiskItems": 3495,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3504
+    "totalGaps": 3495
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: resolveRuntimePositionDcaCount has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "summary": "Account access: sumRuntimeManagedPositionQuantity has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount"
+      "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity"
     ],
-    "sourceItemId": "function:resolveruntimepositiondcacount:4196596f76",
-    "risk": "missing_doc_link"
+    "sourceItemId": "function:sumruntimemanagedpositionquantity:239a52ebd3",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: resolveRuntimePositionDcaCount has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount"
-      ],
-      "sourceItemId": "function:resolveruntimepositiondcacount:4196596f76",
-      "risk": "missing_doc_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: countRuntimeManagedPositions has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions"
-      ],
-      "sourceItemId": "function:countruntimemanagedpositions:0ce5a38d62",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: getRuntimePositionBotContext has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext"
-      ],
-      "sourceItemId": "function:getruntimepositionbotcontext:8248645c80",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: listRuntimeManagedPositions has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions"
-      ],
-      "sourceItemId": "function:listruntimemanagedpositions:830a8e1274",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: listRuntimeOpenOrders has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders"
-      ],
-      "sourceItemId": "function:listruntimeopenorders:f3dedb4a64",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: listRuntimePositionLastPrices has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices"
-      ],
-      "sourceItemId": "function:listruntimepositionlastprices:093699cbc9",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: listRuntimePositionStrategies has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies"
-      ],
-      "sourceItemId": "function:listruntimepositionstrategies:9c7acfbd7f",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: listRuntimePositionTradeRows has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows"
-      ],
-      "sourceItemId": "function:listruntimepositiontraderows:b47a76c5a0",
-      "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: sumRuntimeManagedPositionMarginUsed has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
-      "evidence": [
-        "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed"
-      ],
-      "sourceItemId": "function:sumruntimemanagedpositionmarginused:5ea33078a8",
-      "risk": "missing_test_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2513,123 @@
         "apps/api/src/modules/bots/runtimeSessionSymbolStatsRead.service.ts"
       ],
       "sourceItemId": "route:runtimesessionsymbolstatsread-service-ts:75f76fab93",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionTradeFallbackScope.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts"
+      ],
+      "sourceItemId": "route:runtimesessiontradefallbackscope-ts:ed10e149dc",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionTradesRead.repository.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionTradesRead.repository.ts"
+      ],
+      "sourceItemId": "route:runtimesessiontradesread-repository-ts:5926545735",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: runtimeSessionTradesRead.service.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts"
+      ],
+      "sourceItemId": "route:runtimesessiontradesread-service-ts:f5df8941de",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: exchangeAuthenticatedRead.service.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.ts"
+      ],
+      "sourceItemId": "route:exchangeauthenticatedread-service-ts:1614a81fbe",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: exchangeAuthenticatedReadContract.service.ts has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.ts"
+      ],
+      "sourceItemId": "route:exchangeauthenticatedreadcontract-service-ts:4e7d4db759",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: page.tsx has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/web/src/app/(public)/auth/login/page.tsx"
+      ],
+      "sourceItemId": "route:page-tsx:122c957d36",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: page.tsx has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/web/src/app/(public)/auth/register/page.tsx"
+      ],
+      "sourceItemId": "route:page-tsx:a9b788b8ce",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: AuthContext.tsx has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/web/src/context/AuthContext.tsx"
+      ],
+      "sourceItemId": "component:authcontext-tsx:a378912537",
+      "risk": "needs_browser_review"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "high",
+      "userFlow": "Account access",
+      "summary": "Account access: LoginForm.tsx has app-completion risk needs_browser_review.",
+      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "evidence": [
+        "apps/web/src/features/auth/components/LoginForm.tsx"
+      ],
+      "sourceItemId": "component:loginform-tsx:1f6d6fe17e",
       "risk": "needs_browser_review"
     }
   ]

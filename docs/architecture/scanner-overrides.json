@@ -423,6 +423,96 @@
       ]
     },
     {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount",
+      "status": "verified",
+      "owner": "QA Verification Engineer",
+      "description": "Verified Account access runtime position DCA-count helper through focused no-DB tests covering same-order OPEN dedupe, raw-trade fallback when order ids are absent, explicit/runtime-state precedence, and fail-closed non-negative truncation semantics.",
+      "evidence": [
+        "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts",
+        "history/evidence/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime position bot-context repository helper through focused no-DB repository tests covering owned-bot scoping, exact runtime context projection selection, and passthrough readback of the prisma payload.",
+      "evidence": [
+        "apps/api/src/modules/bots/getRuntimePositionBotContext.repository.test.ts",
+        "history/evidence/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime managed-position count repository helper through focused no-DB repository tests covering direct scoped where-clause forwarding into prisma.position.count and passthrough count readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/countRuntimeManagedPositions.repository.test.ts",
+        "history/evidence/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime managed-position margin-used repository helper through focused no-DB repository tests covering direct scoped where-clause forwarding into prisma.position.aggregate, exact marginUsed sum selection, and passthrough aggregate readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/sumRuntimeManagedPositionMarginUsed.repository.test.ts",
+        "history/evidence/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime managed-position list repository helper through focused no-DB repository tests covering scoped where-clause and limit forwarding into prisma.position.findMany, canonical runtime ordering, exact projection selection, and passthrough row readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/listRuntimeManagedPositions.repository.test.ts",
+        "history/evidence/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime open-order list repository helper through focused no-DB repository tests covering scoped where-clause and limit forwarding into prisma.order.findMany, canonical runtime ordering, exact projection selection, and passthrough row readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/listRuntimeOpenOrders.repository.test.ts",
+        "history/evidence/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime position last-prices repository helper through focused no-DB repository tests covering scoped where-clause forwarding into prisma.botRuntimeSymbolStat.findMany, exact projection selection, and passthrough row readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/listRuntimePositionLastPrices.repository.test.ts",
+        "history/evidence/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime position trade-row repository helper through focused no-DB repository tests covering scoped where-clause forwarding into prisma.trade.findMany, canonical runtime ordering, optional take forwarding, exact projection selection, and passthrough row readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/listRuntimePositionTradeRows.repository.test.ts",
+        "history/evidence/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access runtime position strategy repository helper through focused no-DB repository tests covering scoped where-clause forwarding into prisma.strategy.findMany, exact projection selection, and passthrough row readback.",
+      "evidence": [
+        "apps/api/src/modules/bots/listRuntimePositionStrategies.repository.test.ts",
+        "history/evidence/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14.md"
+      ]
+    },
+    {
       "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
       "status": "verified",
       "owner": "Core Backend Engineer",
@@ -581,6 +671,60 @@
     {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts#resolveSingleCanonicalStrategyId",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"
     },

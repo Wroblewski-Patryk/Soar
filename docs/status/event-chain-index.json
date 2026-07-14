@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T06:05:20.905Z",
+  "generatedAt": "2026-07-14T15:06:30.143Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4947,
-      "linkedRelationCount": 20457,
+      "entityCount": 5007,
+      "linkedRelationCount": 20820,
       "layers": {
         "frontend": {
           "count": 202,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 727,
+          "count": 735,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3837,
+          "count": 3889,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1369,6 +1369,110 @@
               "type": "task",
               "name": "LUC-1026 Account Access useAuth Local Proof",
               "path": "history/tasks/luc-1026-account-access-useauth-local-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1071-account-access-countruntimemanagedpositions-proof:aabc4e88ef",
+              "type": "task",
+              "name": "LUC-1071 Account Access countRuntimeManagedPositions Proof",
+              "path": "history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1075-account-access-getruntimepositionbotcontext-proof:74fe68f4e5",
+              "type": "task",
+              "name": "LUC-1075 Account Access getRuntimePositionBotContext Proof",
+              "path": "history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1079-account-access-listruntimemanagedpositions-proof:b0b621030f",
+              "type": "task",
+              "name": "LUC-1079 Account Access listRuntimeManagedPositions Proof",
+              "path": "history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1083-account-access-listruntimeopenorders-proof:03797ca706",
+              "type": "task",
+              "name": "LUC-1083 Account Access listRuntimeOpenOrders Proof",
+              "path": "history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1085-account-access-listruntimeopenorders-doc-link-closure:251bd9dad2",
+              "type": "task",
+              "name": "LUC-1085 Account Access listRuntimeOpenOrders Doc-Link Closure",
+              "path": "history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1087-account-access-listruntimepositionlastprices-proof:18797e03d8",
+              "type": "task",
+              "name": "LUC-1087 Account Access listRuntimePositionLastPrices Proof",
+              "path": "history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1089-account-access-listruntimepositionlastprices-doc-link-closure:418d870d18",
+              "type": "task",
+              "name": "LUC-1089 Account Access listRuntimePositionLastPrices Doc-Link Closure",
+              "path": "history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1091-account-access-listruntimepositionstrategies-proof:795aacecd4",
+              "type": "task",
+              "name": "LUC-1091 Account Access listRuntimePositionStrategies Proof",
+              "path": "history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1094-account-access-listruntimepositionstrategies-doc-link-closure:93caeed90e",
+              "type": "task",
+              "name": "LUC-1094 Account Access listRuntimePositionStrategies Doc-Link Closure",
+              "path": "history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1096-account-access-listruntimepositiontraderows-proof:11de1ab48b",
+              "type": "task",
+              "name": "LUC-1096 Account Access listRuntimePositionTradeRows Proof",
+              "path": "history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1098-account-access-listruntimepositiontraderows-doc-link-closure:e75012b2e8",
+              "type": "task",
+              "name": "LUC-1098 Account Access listRuntimePositionTradeRows Doc-Link Closure",
+              "path": "history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1100-account-access-sumruntimemanagedpositionmarginused-proof:31df3a2003",
+              "type": "task",
+              "name": "LUC-1100 Account Access sumRuntimeManagedPositionMarginUsed Proof",
+              "path": "history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-closure:a46ac399c2",
+              "type": "task",
+              "name": "LUC-1102 Account Access sumRuntimeManagedPositionMarginUsed Doc-Link Closure",
+              "path": "history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1841,110 +1945,6 @@
               "type": "task",
               "name": "LUC-2781 Dev Backend shutdownImpl Test Link",
               "path": "history/tasks/luc-2781-dev-backend-shutdownimpl-test-link-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2793-mobile-traceability-v1-scope-classification:30062c5cb8",
-              "type": "task",
-              "name": "LUC-2793 Mobile Traceability V1 Scope Classification",
-              "path": "history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2846-gap-register-and-repair-lane-refresh:8195c73da7",
-              "type": "task",
-              "name": "LUC-2846 Gap Register And Repair Lane Refresh",
-              "path": "history/tasks/luc-2846-gap-register-and-repair-lane-refresh-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-285-safe-lane-continuation-2026-05-27:94bfd2df19",
-              "type": "task",
-              "name": "LUC-285 Safe-Lane Continuation (2026-05-27)",
-              "path": "history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-continuation-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-285-safe-lane-source-scoped-recovery-2026-05-27:eaac7346f6",
-              "type": "task",
-              "name": "LUC-285 Safe-Lane Source-Scoped Recovery (2026-05-27)",
-              "path": "history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-source-scoped-recovery-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2861-no-stall-queue-expeditor:9529809858",
-              "type": "task",
-              "name": "LUC-2861 No-Stall Queue Expeditor",
-              "path": "history/tasks/luc-2861-no-stall-queue-expeditor-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2881-gap-register-and-repair-lane-refresh:23f72e3ab0",
-              "type": "task",
-              "name": "LUC-2881 Gap Register And Repair Lane Refresh",
-              "path": "history/tasks/luc-2881-gap-register-and-repair-lane-refresh-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2931-local-external-gates-pipeline-missing-test-links:93431708bd",
-              "type": "task",
-              "name": "LUC-2931 Local External Gates Pipeline Missing-Test Links",
-              "path": "history/tasks/luc-2931-local-external-gates-pipeline-missing-test-links-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2956-prod-security-exchange-proof-helper-missing-test-links:8b9eb22dd9",
-              "type": "task",
-              "name": "LUC-2956 Prod Security Exchange Proof Helper Missing-Test Links",
-              "path": "history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2986-no-stall-queue-expeditor:d28295b846",
-              "type": "task",
-              "name": "LUC-2986 No-Stall Queue Expeditor",
-              "path": "history/tasks/luc-2986-no-stall-queue-expeditor-2026-06-08-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2992-no-stall-queue-expeditor:af6b2f4b5b",
-              "type": "task",
-              "name": "LUC-2992 No-Stall Queue Expeditor",
-              "path": "history/tasks/luc-2992-no-stall-queue-expeditor-2026-06-08-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-3071-daily-project-status-refresh-2026-06-11:82f6378458",
-              "type": "task",
-              "name": "LUC-3071 Daily Project Status Refresh - 2026-06-11",
-              "path": "history/tasks/luc-3071-daily-project-status-refresh-2026-06-11-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-322-safe-lane-non-production-architecture-status-refresh-2026-05-27:90f7fe7b49",
-              "type": "task",
-              "name": "LUC-322 Safe-Lane Non-Production Architecture/Status Refresh (2026-05-27)",
-              "path": "history/tasks/luc-322-safe-lane-non-production-architecture-status-refresh-2026-05-27-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-3366-gap-register-and-repair-lane-refresh-2026-06-11:3afb99dfc5",
-              "type": "task",
-              "name": "LUC-3366 Gap Register And Repair Lane Refresh - 2026-06-11",
-              "path": "history/tasks/luc-3366-gap-register-and-repair-lane-refresh-2026-06-11-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -3205,7 +3205,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 843,
-      "linkedRelationCount": 2640,
+      "linkedRelationCount": 2642,
       "layers": {
         "frontend": {
           "count": 331,
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3340,
-      "linkedRelationCount": 11924,
+      "entityCount": 3411,
+      "linkedRelationCount": 12303,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10757,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1293,
+          "count": 1310,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11320,90 +11320,90 @@
               "status": "verified"
             },
             {
+              "id": "function:resolveruntimepositiondcacount:4196596f76",
+              "type": "function",
+              "name": "resolveRuntimePositionDcaCount",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount",
+              "owner": "QA Verification Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:getruntimepositionbotcontext:8248645c80",
+              "type": "function",
+              "name": "getRuntimePositionBotContext",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listruntimemanagedpositions:830a8e1274",
+              "type": "function",
+              "name": "listRuntimeManagedPositions",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:countruntimemanagedpositions:0ce5a38d62",
+              "type": "function",
+              "name": "countRuntimeManagedPositions",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:sumruntimemanagedpositionmarginused:5ea33078a8",
+              "type": "function",
+              "name": "sumRuntimeManagedPositionMarginUsed",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listruntimeopenorders:f3dedb4a64",
+              "type": "function",
+              "name": "listRuntimeOpenOrders",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listruntimepositionlastprices:093699cbc9",
+              "type": "function",
+              "name": "listRuntimePositionLastPrices",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listruntimepositiontraderows:b47a76c5a0",
+              "type": "function",
+              "name": "listRuntimePositionTradeRows",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "function:listruntimepositionstrategies:9c7acfbd7f",
+              "type": "function",
+              "name": "listRuntimePositionStrategies",
+              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "function:closebotruntimesessionposition:0d9dc5a10d",
               "type": "function",
               "name": "closeBotRuntimeSessionPosition",
               "path": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
               "owner": "Test Automation Engineer",
               "status": "verified"
-            },
-            {
-              "id": "function:getbotruntimesession:31527b2117",
-              "type": "function",
-              "name": "getBotRuntimeSession",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession",
-              "owner": "QA Regression Lead",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessions:90b67e00aa",
-              "type": "function",
-              "name": "listBotRuntimeSessions",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessions",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessionpositions:6fbe0a6853",
-              "type": "function",
-              "name": "listBotRuntimeSessionPositions",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionPositions",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessionsymbolstats:56ec5fe963",
-              "type": "function",
-              "name": "listBotRuntimeSessionSymbolStats",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionSymbolStats",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessiontrades:1852c0d2bc",
-              "type": "function",
-              "name": "listBotRuntimeSessionTrades",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#listBotRuntimeSessionTrades",
-              "owner": "Core Backend Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:resolvesessionwindowend:7ec1d2752b",
-              "type": "function",
-              "name": "resolveSessionWindowEnd",
-              "path": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
-              "owner": "QA Regression Lead",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessions:6ead446538",
-              "type": "function",
-              "name": "listBotRuntimeSessions",
-              "path": "apps/api/src/modules/bots/runtimeSessionRead.service.ts#listBotRuntimeSessions",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessionpositions:1753d271c1",
-              "type": "function",
-              "name": "listBotRuntimeSessionPositions",
-              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts#listBotRuntimeSessionPositions",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listbotruntimesessiontrades:9af95ff6aa",
-              "type": "function",
-              "name": "listBotRuntimeSessionTrades",
-              "path": "apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts#listBotRuntimeSessionTrades",
-              "owner": "Core Backend Engineer",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1445,
+          "count": 1499,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9414,
-      "linkedRelationCount": 33792,
+      "entityCount": 9476,
+      "linkedRelationCount": 34090,
       "layers": {
         "frontend": {
           "count": 706,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1587,
+          "count": 1595,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6282,
+          "count": 6336,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

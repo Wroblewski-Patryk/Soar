@@ -1,3 +1,380 @@
+## 2026-07-14 LUC-1102 Account Access sumRuntimeManagedPositionMarginUsed Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime managed-position
+  margin-used repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `docs/modules/api-bots.md`;
+  `docs/architecture/relations/documentation-links.csv`;
+  `docs/architecture/scanner-overrides.json`;
+  `history/evidence/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md`.
+- Confidence:
+  high for the direct documentation-link lane. The next overall Account access
+  front row now advances to `sumRuntimeManagedPositionQuantity` as a
+  missing-test gap; no remaining docs follow-up stays open on
+  `sumRuntimeManagedPositionMarginUsed`.
+
+## 2026-07-14 LUC-1100 Account Access sumRuntimeManagedPositionMarginUsed Proof
+
+- Module row:
+  Account access / API bots runtime managed-position margin-used repository
+  helper executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionMarginUsed.repository.test.ts`;
+  `docs/architecture/relations/priority-test-links.csv`;
+  `docs/architecture/scanner-overrides.json`;
+  `history/evidence/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14.md`;
+  `history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md`.
+- Confidence:
+  high for the local helper proof lane. The next Account access front row now
+  advances to `sumRuntimeManagedPositionQuantity` as a missing-test gap; no
+  remaining proof follow-up stays open on
+  `sumRuntimeManagedPositionMarginUsed`.
+
+## 2026-07-14 LUC-1098 Account Access listRuntimePositionTradeRows Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime position trade-row
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md`.
+- Readback:
+  generated app-completion no longer classifies the helper as
+  `missing_doc_link`. The next overall Account access gap is now
+  `sumRuntimeManagedPositionMarginUsed` as `missing_test_link`, while the next
+  docs-owned Account access row is
+  `runtimeSessionPositionsRead.service.test.ts#row` as `missing_doc_link`.
+- Confidence:
+  high for the source-of-truth coverage lane. Executable proof for the helper
+  remains closed by [LUC-1096](/LUC/issues/LUC-1096).
+
+## 2026-07-14 LUC-1096 Account Access listRuntimePositionTradeRows Proof
+
+- Module row:
+  Account access / API bots runtime position trade-row repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+follow-up remains / no runtime mutation`.
+- Evidence:
+  `apps/api/src/modules/bots/listRuntimePositionTradeRows.repository.test.ts`;
+  `docs/architecture/relations/priority-test-links.csv`;
+  `docs/architecture/scanner-overrides.json`;
+  `history/evidence/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14.md`;
+  `history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md`.
+- Confidence:
+  high for the local helper proof lane. The next Account access front row now
+  advances to `sumRuntimeManagedPositionMarginUsed` as a missing-test gap; no
+  remaining proof follow-up stays open on `listRuntimePositionTradeRows`.
+
+## 2026-07-14 LUC-1094 Account Access listRuntimePositionStrategies Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime position strategy
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md`.
+- Readback:
+  generated app-completion no longer classifies the helper as
+  `missing_doc_link`. The next overall Account access gap is now
+  `listRuntimePositionTradeRows` as `missing_test_link`, while the next
+  docs-owned Account access row is
+  `runtimeSessionPositionsRead.service.test.ts#row` as `missing_doc_link`.
+- Confidence:
+  high for the source-of-truth coverage lane. Executable proof for the helper
+  remains closed by [LUC-1091](/LUC/issues/LUC-1091).
+
+## 2026-07-14 LUC-1091 Account Access listRuntimePositionStrategies Proof
+
+- Module row:
+  Account access / API bots runtime position strategy repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14.md`;
+  `history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/listRuntimePositionStrategies.repository.test.ts`
+  now directly proves `listRuntimePositionStrategies` for scoped `where`
+  forwarding into `prisma.strategy.findMany`, exact projection selection, and
+  passthrough row readback. Final app-completion readback for the helper is
+  `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1089 Account Access listRuntimePositionLastPrices Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime position last-prices
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md`.
+- Readback:
+  generated app-completion no longer classifies the helper as
+  `missing_doc_link`. The next overall Account access gap is now
+  `listRuntimePositionStrategies` as `missing_test_link`, while the next
+  docs-owned gap is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Confidence:
+  high for the source-of-truth coverage lane. Executable proof for the helper
+  remains closed by [LUC-1087](/LUC/issues/LUC-1087).
+
+## 2026-07-14 LUC-1087 Account Access listRuntimePositionLastPrices Proof
+
+- Module row:
+  Account access / API bots runtime position last-prices repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14.md`;
+  `history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/listRuntimePositionLastPrices.repository.test.ts`
+  now directly proves `listRuntimePositionLastPrices` for scoped `where`
+  forwarding into `prisma.botRuntimeSymbolStat.findMany`, exact projection
+  selection, and passthrough row readback. Final app-completion readback for
+  the helper is `hasTest=true`, `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1085 Account Access listRuntimeOpenOrders Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime open-order list
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md`.
+- Readback:
+  generated app-completion no longer classifies the helper as
+  `missing_doc_link`. The next overall Account access gap is now
+  `listRuntimePositionLastPrices` as `missing_test_link`, while the next
+  docs-owned gap is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Confidence:
+  high for the source-of-truth coverage lane. Executable proof for the helper
+  remains closed by [LUC-1083](/LUC/issues/LUC-1083).
+
+## 2026-07-14 LUC-1083 Account Access listRuntimeOpenOrders Proof
+
+- Module row:
+  Account access / API bots runtime open-order list repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/listRuntimeOpenOrders.repository.test.ts` now
+  directly proves `listRuntimeOpenOrders` for scoped `where` and `limit`
+  forwarding into `prisma.order.findMany`, canonical runtime ordering, exact
+  projection selection, and passthrough row readback. Final app-completion
+  readback for the helper is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1081 Account Access listRuntimeManagedPositions Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime managed-position list
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14-task.md`.
+- Readback:
+  generated app-completion no longer classifies the helper as
+  `missing_doc_link`. The next overall Account access gap is now
+  `listRuntimeOpenOrders` as `missing_test_link`, while the next docs-owned
+  gap is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Confidence:
+  high for the source-of-truth coverage lane. Executable proof for the helper
+  remains closed by [LUC-1079](/LUC/issues/LUC-1079).
+
+## 2026-07-14 LUC-1079 Account Access listRuntimeManagedPositions Proof
+
+- Module row:
+  Account access / API bots runtime managed-position list repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14.md`;
+  `history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/listRuntimeManagedPositions.repository.test.ts`
+  now directly proves `listRuntimeManagedPositions` for scoped `where` and
+  `limit` forwarding into `prisma.position.findMany`, canonical runtime
+  ordering, exact projection selection, and passthrough row readback. Final
+  app-completion readback for the helper is `hasTest=true`, `hasDoc=false`,
+  `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1077 Account Access getRuntimePositionBotContext Doc-Link Closure
+
+- Module:
+  `docs/modules/api-bots.md` ownership coverage for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`.
+- Status:
+  `verified`.
+- Change:
+  direct documentation linkage now covers the runtime position bot-context
+  repository helper in module docs plus canonical graph relations
+  (`documentation-links.csv` and `scanner-overrides.json`).
+- Evidence:
+  `history/evidence/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14-task.md`.
+- Residual:
+  generated Account access first overall gap advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  as `missing_test_link`, while docs ownership advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as the next `missing_doc_link` queue item; proof for
+  `getRuntimePositionBotContext` remains closed by [LUC-1075](/LUC/issues/LUC-1075).
+
+## 2026-07-14 LUC-1075 Account Access getRuntimePositionBotContext Proof
+
+- Module row:
+  Account access / API bots runtime position bot-context repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / no runtime
+  mutation`.
+- Evidence:
+  `history/evidence/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14.md`;
+  `history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/getRuntimePositionBotContext.repository.test.ts`
+  now directly proves `getRuntimePositionBotContext` for owned-bot scoping,
+  exact runtime context projection selection, and passthrough prisma payload
+  readback. Final app-completion readback for the helper is `hasTest=true`,
+  `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1073 Account Access countRuntimeManagedPositions Doc-Link Closure
+
+- Module row:
+  Account access / API bots runtime managed-position count repository helper
+  documentation linkage.
+- Status:
+  `verified local docs link / missing-doc-link row resolved / proof already
+  present / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14-task.md`.
+- Current proof:
+  `docs/modules/api-bots.md`,
+  `documentation-links.csv`, and `scanner-overrides.json` now give
+  `countRuntimeManagedPositions` direct source-of-truth documentation
+  coverage. Final app-completion readback for the helper is `hasTest=true`,
+  `hasDoc=true`, `risk=none`.
+- Confidence:
+  high for the local documentation lane. The Account access front row now
+  advances to `getRuntimePositionBotContext` as a focused proof gap, not a
+  docs gap.
+
+## 2026-07-14 LUC-1071 Account Access countRuntimeManagedPositions Proof
+
+- Module row:
+  Account access / API bots runtime managed-position count repository helper
+  executable proof.
+- Status:
+  `verified local focused proof / missing-test-link row resolved / docs
+  follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14.md`;
+  `history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/countRuntimeManagedPositions.repository.test.ts`
+  now directly proves `countRuntimeManagedPositions` for scoped `where`
+  forwarding into `prisma.position.count` and passthrough count readback.
+  Final app-completion readback for the helper is `hasTest=true`,
+  `hasDoc=false`, `risk=missing_doc_link`.
+- Confidence:
+  high for the local repository proof lane. Direct source-of-truth
+  documentation for the same helper remains a separate docs-owned follow-up.
+
+## 2026-07-14 LUC-1069 Account Access resolveRuntimePositionDcaCount Proof
+
+- Module row:
+  Account access / API bots runtime position DCA-count helper executable
+  proof.
+- Status:
+  `verified local focused proof / implemented-needs-proof row resolved / no
+  runtime mutation`.
+- Evidence:
+  `history/evidence/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14.md`;
+  `history/tasks/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14-task.md`.
+- Current proof:
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`
+  now directly proves `resolveRuntimePositionDcaCount` for same-order OPEN
+  dedupe, raw-trade fallback without order ids, explicit/runtime current-add
+  precedence, and fail-closed non-negative truncation semantics. Final
+  app-completion readback for the helper is `hasTest=true`, `hasDoc=true`,
+  `risk=none`.
+- Confidence:
+  high for the local helper proof lane. The next Account access front row now
+  advances to `countRuntimeManagedPositions` as a missing-test gap; no
+  remaining proof follow-up stays open on `resolveRuntimePositionDcaCount`.
+
 ## 2026-07-14 LUC-1060 Account Access resolveSingleCanonicalStrategyId Proof
 
 - Module row:

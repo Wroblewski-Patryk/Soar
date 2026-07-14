@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-14T06:05:17.201Z
+Generated: 2026-07-14T15:06:21.066Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,12 +15,12 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Items: 3567
 - User flows: 8
 - Needs browser/screenshot review: 452
-- Missing test link: 959
-- Missing doc link: 1982
+- Missing test link: 951
+- Missing doc link: 1981
 - Implemented, needs proof: 111
 - Blocked: 0
-- Known non-ok risk items: 3504
-- Priority review items indexed: 200/3504
+- Known non-ok risk items: 3495
+- Priority review items indexed: 200/3495
 - Priority review truncated: true
 
 ## Flow Summary
@@ -28,7 +28,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 - Unclassified user workflow: 1610 entities; risks {"missing_test_link":221,"missing_doc_link":1149,"implemented_needs_proof":90,"ok":3,"needs_browser_review":147}; gates {"auth":29,"configuration":3}
 - Trading operation: 944 entities; risks {"missing_doc_link":394,"missing_test_link":403,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":39,"auth":8}
 - Dashboard overview: 285 entities; risks {"missing_test_link":126,"missing_doc_link":107,"implemented_needs_proof":1,"needs_browser_review":51}; gates {"configuration":5,"auth":5}
-- Account access: 268 entities; risks {"ok":55,"missing_doc_link":129,"missing_test_link":52,"implemented_needs_proof":1,"needs_browser_review":31}; gates {"auth":268,"configuration":22,"subscription":3,"gateio":1}
+- Account access: 268 entities; risks {"ok":64,"missing_test_link":44,"missing_doc_link":128,"implemented_needs_proof":1,"needs_browser_review":31}; gates {"auth":268,"configuration":22,"subscription":3,"gateio":1}
 - Exchange connection and configuration: 185 entities; risks {"missing_doc_link":111,"missing_test_link":42,"implemented_needs_proof":2,"needs_browser_review":30}; gates {"gateio":15,"configuration":164,"binance":18,"auth":6}
 - User configuration: 156 entities; risks {"ok":5,"implemented_needs_proof":10,"missing_test_link":74,"missing_doc_link":43,"needs_browser_review":24}; gates {"configuration":95,"auth":8}
 - Subscription and entitlement: 82 entities; risks {"missing_test_link":24,"missing_doc_link":38,"needs_browser_review":20}; gates {"subscription":82,"auth":5,"configuration":2}
@@ -38,15 +38,6 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | missing_doc_link | feature_or_capability | resolveRuntimePositionDcaCount | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount | auth |
-| Account access | missing_test_link | feature_or_capability | countRuntimeManagedPositions | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions | auth |
-| Account access | missing_test_link | feature_or_capability | getRuntimePositionBotContext | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext | auth |
-| Account access | missing_test_link | feature_or_capability | listRuntimeManagedPositions | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions | auth |
-| Account access | missing_test_link | feature_or_capability | listRuntimeOpenOrders | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders | auth |
-| Account access | missing_test_link | feature_or_capability | listRuntimePositionLastPrices | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices | auth |
-| Account access | missing_test_link | feature_or_capability | listRuntimePositionStrategies | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies | auth |
-| Account access | missing_test_link | feature_or_capability | listRuntimePositionTradeRows | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows | auth |
-| Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionMarginUsed | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionQuantity | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionRealizedPnl | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionTradeFees | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionTradeFees | auth |
@@ -118,6 +109,15 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/profile/security/security.e2e.test.ts#registerAndLogin | auth |
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/profile/stage-abuse-throttling.e2e.test.ts#registerAndLogin | auth |
 | Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/profile/subscription/subscription.e2e.test.ts#registerAndLogin | auth, subscription |
+| Account access | missing_doc_link | feature_or_capability | createAuthenticatedClient | Engineering Delivery Lead | apps/api/src/modules/reports/reports.e2e.test.ts#createAuthenticatedClient | auth |
+| Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/strategies/strategies.e2e.test.ts#registerAndLogin | auth |
+| Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/upload/upload.e2e.test.ts#registerAndLogin | auth |
+| Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/wallets/wallets.crud.e2e.test.ts#registerAndLogin | auth |
+| Account access | missing_doc_link | feature_or_capability | registerAndLogin | Engineering Delivery Lead | apps/api/src/modules/wallets/wallets.e2e.test.ts#registerAndLogin | auth |
+| Account access | missing_doc_link | feature_or_capability | fetchAuthenticatedBalancePreview | Integration Domain Engineer | apps/api/src/modules/wallets/wallets.service.ts#fetchAuthenticatedBalancePreview | auth, configuration |
+| Account access | missing_doc_link | feature_or_capability | createAuthHeader | Engineering Delivery Lead | apps/api/src/router/workers-health-readiness.test.ts#createAuthHeader | auth |
+| Account access | missing_doc_link | feature_or_capability | withBearer | Engineering Delivery Lead | apps/api/src/test/authenticatedRequest.ts#withBearer | auth |
+| Account access | missing_doc_link | feature_or_capability | readPageSource | Engineering Delivery Lead | apps/web/src/app/(public)/auth/authPageCacheContract.test.ts#readPageSource | auth |
 
 ## Agent Rule
 

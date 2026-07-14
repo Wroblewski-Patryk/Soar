@@ -1,3 +1,518 @@
+## 2026-07-14 LUC-1104 source-control closure for LUC-1067 through LUC-1102 packet
+
+- `LUC-1104 [Soar][Source Control Closure] Classify and close local dirty
+  state for LUC-1067-LUC-1069-LUC-1071-LUC-1073-plus-14` executed as a narrow
+  sidecar lane after the board clarified the target delivery issue remains
+  dependency-blocked by protected gates.
+- The local dirty packet was classified as one coherent Account access
+  repository-helper proof/doc-link bundle:
+  state/control `4`, runtime/product `9`, task/evidence `36`,
+  docs/generated `26`, stale/out-of-scope `0`.
+- Verification:
+  focused Vitest packet for `runtimeSessionPositionsRead` helpers PASS
+  (`9` files, `32` tests),
+  `pnpm run architecture:graph:drift:strict` PASS (`871/871`, `0 missing`),
+  and `git diff --check` PASS with LF/CRLF warnings only.
+- Secret-risk readback found only false-positive label/governance strings such
+  as `secret/account`, `apiKey`, `password`, and `bearer`; no credential
+  values or account data were preserved in the packet.
+- Durable closure artifacts:
+  `history/tasks/luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069-luc-1071-luc-1073-plus-14-2026-07-14-task.md`
+  and
+  `history/evidence/luc-1104-source-control-closure-2026-07-14.md`.
+- Source-control decision:
+  local scoped commit created, push held for batch, deploy impact none.
+
+## 2026-07-14 LUC-1102 sumRuntimeManagedPositionMarginUsed doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS, rerun
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `sumRuntimeManagedPositionMarginUsed` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `sumRuntimeManagedPositionQuantity` as `missing_test_link`,
+  while the next docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1100 sumRuntimeManagedPositionMarginUsed proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`.
+- Proof packet:
+  `apps/api/src/modules/bots/sumRuntimeManagedPositionMarginUsed.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused `sumRuntimeManagedPositionMarginUsed.repository.test.ts` Vitest run
+  -> `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` -> sequential
+  `build-app-completion-index.mjs` -> sequential
+  `build-project-truth-indexes.mjs --apply` -> targeted readback in
+  `docs/status/*` -> `git diff --check`.
+- Readback:
+  app-completion no longer lists `sumRuntimeManagedPositionMarginUsed` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `sumRuntimeManagedPositionQuantity`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1098 listRuntimePositionTradeRows doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS, rerun
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimePositionTradeRows` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `sumRuntimeManagedPositionMarginUsed` as `missing_test_link`,
+  while the next docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1096 listRuntimePositionTradeRows proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`.
+- Proof packet:
+  `apps/api/src/modules/bots/listRuntimePositionTradeRows.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused `listRuntimePositionTradeRows.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion no longer lists `listRuntimePositionTradeRows` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `sumRuntimeManagedPositionMarginUsed`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1094 listRuntimePositionStrategies doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimePositionStrategies` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `listRuntimePositionTradeRows` as `missing_test_link`, while
+  the next docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1091 listRuntimePositionStrategies proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`.
+- Proof packet:
+  `apps/api/src/modules/bots/listRuntimePositionStrategies.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused `listRuntimePositionStrategies.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion no longer lists `listRuntimePositionStrategies` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `listRuntimePositionTradeRows`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1089 listRuntimePositionLastPrices doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimePositionLastPrices` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `listRuntimePositionStrategies` as `missing_test_link`, while
+  the next docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1087 listRuntimePositionLastPrices proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`.
+- Proof packet:
+  `apps/api/src/modules/bots/listRuntimePositionLastPrices.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused `listRuntimePositionLastPrices.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion no longer lists `listRuntimePositionLastPrices` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `listRuntimePositionStrategies`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1085 listRuntimeOpenOrders doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimeOpenOrders` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `listRuntimePositionLastPrices` as `missing_test_link`, while
+  the next docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1083 listRuntimeOpenOrders proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`.
+- Proof packet:
+  `apps/api/src/modules/bots/listRuntimeOpenOrders.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused Vitest PASS, `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS, rerun
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimeOpenOrders` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership, and the next proof-owned
+  Account access front row is `listRuntimePositionLastPrices`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1081 listRuntimeManagedPositions doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14.md`
+  now give the helper direct documentation coverage and generator-readable
+  relation evidence.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  rerun `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimeManagedPositions` as
+  `missing_doc_link`; project truth now advances the first overall Account
+  access gap to `listRuntimeOpenOrders` as `missing_test_link`, while the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1079 listRuntimeManagedPositions proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`.
+- Proof packet:
+  `apps/api/src/modules/bots/listRuntimeManagedPositions.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused Vitest PASS, `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS, rerun
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `listRuntimeManagedPositions` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1077 getRuntimePositionBotContext doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14.md`
+  now give the helper direct documentation linkage and generator-readable
+  coverage.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS,
+  sequential `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `getRuntimePositionBotContext` as
+  `missing_doc_link`; project truth advances the next overall Account access
+  gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  as `missing_test_link`, while the next docs-owned Account access gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`.
+- Residual:
+  proof remains closed by [LUC-1075](/LUC/issues/LUC-1075), and the current
+  dirty-packet source-control closure remains [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1075 getRuntimePositionBotContext proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`.
+- Proof packet:
+  `apps/api/src/modules/bots/getRuntimePositionBotContext.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused Vitest PASS, `build-architecture-awareness-index.mjs` PASS,
+  `pnpm run architecture:graph:drift:strict` PASS, rerun
+  `build-app-completion-index.mjs` PASS, and sequential
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  app-completion no longer lists `getRuntimePositionBotContext` as
+  `missing_test_link`; project truth now advances the same helper to
+  `missing_doc_link` with Docs Memory ownership.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1073 countRuntimeManagedPositions doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14.md`
+  now give the helper direct documentation linkage and generator-readable
+  coverage.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS (`10984` entities /
+  `36425` relations / `entityOverridesApplied=45` /
+  `relationOverridesApplied=45`);
+  `pnpm run architecture:graph:drift:strict` PASS (`864/864`, `0` missing);
+  sequential `build-app-completion-index.mjs` PASS (`missingDocLink=1981`,
+  down from `1982`);
+  sequential `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3502`,
+  down from `3503`);
+  targeted `rg` readback PASS;
+  `git diff --check` with line-ending warnings only.
+- Readback:
+  app-completion no longer lists `countRuntimeManagedPositions` as
+  `missing_doc_link`; project truth advances the first Account access gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  as `missing_test_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1071 countRuntimeManagedPositions proof closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`.
+- Proof packet:
+  `apps/api/src/modules/bots/countRuntimeManagedPositions.repository.test.ts`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused Vitest PASS (`1` file / `1` test),
+  `build-architecture-awareness-index.mjs` PASS (`10978` entities /
+  `36392` relations / `entityOverridesApplied=45` /
+  `relationOverridesApplied=44`),
+  `pnpm run architecture:graph:drift:strict` PASS (`864/864`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`missingTestLink=958`, down
+  from `959`), and sequential `build-project-truth-indexes.mjs --apply` PASS
+  (`totalGaps=3503`).
+- Readback:
+  app-completion no longer lists `countRuntimeManagedPositions` as
+  `missing_test_link`; Account access now routes the same helper as
+  `missing_doc_link`, and project truth advances the first gap to the same
+  path with Docs Memory ownership.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-14 LUC-1069 resolveRuntimePositionDcaCount proof closure
+
+- Account access `implemented_needs_proof` is now closed locally for
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`.
+- Proof packet:
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14-task.md`,
+  and
+  `history/evidence/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14.md`
+  now give the helper direct executable proof and generator-readable verified
+  evidence.
+- Verification:
+  focused Vitest PASS (`1` file / `24` tests),
+  `build-architecture-awareness-index.mjs` PASS (`10977` entities /
+  `36384` relations / `entityOverridesApplied=44` /
+  `relationOverridesApplied=44`),
+  `pnpm run architecture:graph:drift:strict` PASS (`863/863`, `0` missing),
+  rerun `build-app-completion-index.mjs` PASS (`implementedNeedsProof=111`,
+  down from `112`), and sequential
+  `build-project-truth-indexes.mjs --apply` PASS (`totalGaps=3503`).
+- Readback:
+  app-completion no longer lists `resolveRuntimePositionDcaCount` as
+  `implemented_needs_proof`; Account access now shows `ok=56` /
+  `missing_test_link=52` / `missing_doc_link=128` /
+  `implemented_needs_proof=1`, and project truth advances the first gap to
+  `countRuntimeManagedPositions` as `missing_test_link`.
+- Residual:
+  the current dirty-packet source-control closure remains
+  [LUC-1061](/LUC/issues/LUC-1061).
+
 ## 2026-07-14 LUC-1060 resolveSingleCanonicalStrategyId proof closure
 
 - Account access `implemented_needs_proof` is now closed locally for

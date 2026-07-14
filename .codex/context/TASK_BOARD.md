@@ -1,3 +1,564 @@
+## 2026-07-14 LUC-1104 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1067-LUC-1069-LUC-1071-LUC-1073-plus-14
+
+- Status: `DONE`.
+- Scope: classify and preserve the current local dirty packet created by the
+  Account access repository-helper proof/doc-link sequence
+  [LUC-1067](/LUC/issues/LUC-1067) through
+  [LUC-1102](/LUC/issues/LUC-1102) without treating blocked delivery gates as
+  cleared.
+- Result:
+  the full worktree was attributable to one coherent packet:
+  state/control `4`, runtime/product `9`, task/evidence `36`,
+  docs/generated `26`, stale/out-of-scope `0`; runtime touches remained
+  limited to the focused `runtimeSessionPositionsRead` helper test family.
+- Verification:
+  focused Vitest packet for `runtimeSessionPositionsRead` helpers ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `git diff --check` -> added-line redaction readback.
+- Evidence:
+  `history/tasks/luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069-luc-1071-luc-1073-plus-14-2026-07-14-task.md`;
+  `history/evidence/luc-1104-source-control-closure-2026-07-14.md`.
+- Source-control decision:
+  local scoped commit created, push held for batch, deploy impact none.
+- Residual:
+  no push, deploy, or protected proof is claimed on
+  [LUC-1104](/LUC/issues/LUC-1104).
+
+## 2026-07-14 LUC-1102 Wake Reconciliation
+
+- Status: `DONE`.
+- Note: the wake payload still labeled this issue `blocked`, but the
+  repository truth and evidence trail already show `LUC-1102` closed. No new
+  work was required in this heartbeat; this entry records the status sync so
+  future continuations do not treat the resolved gap as live.
+
+## 2026-07-14 LUC-1102 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for sumruntimemanagedpositionmarginused
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `sumRuntimeManagedPositionMarginUsed` as the
+  first Account access gap. The next overall front row is now
+  `sumRuntimeManagedPositionQuantity` as `missing_test_link`, while the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1102](/LUC/issues/LUC-1102).
+
+## 2026-07-14 LUC-1100 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for sumruntimemanagedpositionmarginused
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `sumRuntimeManagedPositionMarginUsed.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.position.aggregate`, exact
+  `_sum.marginUsed` selection, and passthrough aggregate readback, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper as
+  verified local evidence.
+- Verification:
+  focused `sumRuntimeManagedPositionMarginUsed.repository.test.ts` Vitest run
+  -> `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` -> sequential
+  `build-project-truth-indexes.mjs --apply` -> targeted readback in
+  `docs/status/*` -> `git diff --check`.
+- Readback:
+  project truth no longer routes `sumRuntimeManagedPositionMarginUsed` as the
+  first Account access `missing_test_link` gap. The same helper now advances
+  to `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `sumRuntimeManagedPositionQuantity`.
+- Evidence:
+  `history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1100](/LUC/issues/LUC-1100).
+
+## 2026-07-14 LUC-1098 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listruntimepositiontraderows
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionTradeRows` as the first
+  Account access gap. The next overall front row is now
+  `sumRuntimeManagedPositionMarginUsed` as `missing_test_link`, while the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1098](/LUC/issues/LUC-1098).
+
+## 2026-07-14 LUC-1096 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listruntimepositiontraderows
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `listRuntimePositionTradeRows.repository.test.ts` now directly proves
+  scoped `where` plus optional `take` forwarding into `prisma.trade.findMany`,
+  canonical runtime ordering, exact projection selection, and passthrough row
+  readback, while `priority-test-links.csv` and `scanner-overrides.json`
+  promote the helper as verified local evidence.
+- Verification:
+  focused `listRuntimePositionTradeRows.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionTradeRows` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `sumRuntimeManagedPositionMarginUsed`.
+- Evidence:
+  `history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1096](/LUC/issues/LUC-1096).
+
+## 2026-07-14 LUC-1094 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listruntimepositionstrategies
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionStrategies` as the first
+  Account access gap. The next overall front row is now
+  `listRuntimePositionTradeRows` as `missing_test_link`, while the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1094](/LUC/issues/LUC-1094).
+
+## 2026-07-14 LUC-1091 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listruntimepositionstrategies
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `listRuntimePositionStrategies.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.strategy.findMany`, exact projection
+  selection, and passthrough row readback, while `priority-test-links.csv`
+  and `scanner-overrides.json` promote the helper as verified local evidence.
+- Verification:
+  focused `listRuntimePositionStrategies.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionStrategies` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `listRuntimePositionTradeRows`.
+- Evidence:
+  `history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1091](/LUC/issues/LUC-1091).
+
+## 2026-07-14 LUC-1089 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listruntimepositionlastprices
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionLastPrices` as the first
+  Account access gap. The next overall front row is now
+  `listRuntimePositionStrategies` as `missing_test_link`, and the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1089](/LUC/issues/LUC-1089).
+
+## 2026-07-14 LUC-1087 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listruntimepositionlastprices
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `listRuntimePositionLastPrices.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.botRuntimeSymbolStat.findMany`,
+  exact projection selection, and passthrough row readback, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper
+  as verified local evidence.
+- Verification:
+  focused `listRuntimePositionLastPrices.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimePositionLastPrices` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `listRuntimePositionStrategies`.
+- Evidence:
+  `history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1087](/LUC/issues/LUC-1087).
+
+## 2026-07-14 LUC-1085 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listruntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimeOpenOrders` as the first Account
+  access gap. The next overall front row is now
+  `listRuntimePositionLastPrices` as `missing_test_link`, and the next
+  docs-owned row is `runtimeSessionPositionsRead.service.test.ts#row` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1085](/LUC/issues/LUC-1085).
+
+## 2026-07-14 LUC-1083 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listruntimeopenorders
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `listRuntimeOpenOrders.repository.test.ts` now directly proves scoped
+  `where` plus `limit` forwarding into `prisma.order.findMany`, canonical
+  runtime ordering, exact projection selection, and passthrough row readback,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Verification:
+  focused `listRuntimeOpenOrders.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimeOpenOrders` as the first Account
+  access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership, and the next overall
+  proof-owned front row is `listRuntimePositionLastPrices`.
+- Evidence:
+  `history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1083](/LUC/issues/LUC-1083).
+
+## 2026-07-14 LUC-1081 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for listruntimemanagedpositions
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimeManagedPositions` as the first
+  Account access gap. The next overall front row is now
+  `listRuntimeOpenOrders` as `missing_test_link`, and the next docs-owned row
+  is `runtimeSessionPositionsRead.service.test.ts#row` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14.md`.
+- Residual:
+  No remaining DSM action stays open on [LUC-1081](/LUC/issues/LUC-1081).
+
+## 2026-07-14 LUC-1079 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for listruntimemanagedpositions
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `listRuntimeManagedPositions.repository.test.ts` now directly proves scoped
+  `where` plus `limit` forwarding into `prisma.position.findMany`, canonical
+  runtime ordering, exact projection selection, and passthrough row readback,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Verification:
+  focused `listRuntimeManagedPositions.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `listRuntimeManagedPositions` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership.
+- Evidence:
+  `history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1079](/LUC/issues/LUC-1079).
+
+## 2026-07-14 LUC-1077 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for getruntimepositionbotcontext
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted `rg` readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1982` to `1981`, and project
+  truth advanced the first overall Account access gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  as `missing_test_link`, while the first docs-owned Account access gap is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`.
+- Evidence:
+  `history/tasks/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14.md`.
+- Residual:
+  proof remains closed by [LUC-1075](/LUC/issues/LUC-1075), while the current
+  local source-control closure sidecar remains [LUC-1061](/LUC/issues/LUC-1061).
+  No remaining DSM action stays open on [LUC-1077](/LUC/issues/LUC-1077).
+
+## 2026-07-14 LUC-1075 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for getruntimepositionbotcontext
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `getRuntimePositionBotContext.repository.test.ts` now directly proves the
+  owned-bot runtime context projection requested from `prisma.bot.findFirst`,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Verification:
+  focused `getRuntimePositionBotContext.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `getRuntimePositionBotContext` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership.
+- Evidence:
+  `history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14.md`.
+- Residual:
+  no remaining proof action stays open on [LUC-1075](/LUC/issues/LUC-1075).
+
+## 2026-07-14 LUC-1073 [Soar][Project Truth][App Completion] Prove Account access missing-doc-link for countruntimemanagedpositions
+
+- Status: `DONE`.
+- Scope: close the docs-owned Account access `missing_doc_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`
+  using the smallest source-of-truth slice only.
+- Result:
+  `docs/modules/api-bots.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now document and link the scoped helper, and the
+  authoritative sequential generator chain no longer routes it as
+  `missing_doc_link`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted `rg` readback for scoped entities in `docs/status` ->
+  `git diff --check`.
+- Readback:
+  app-completion `missingDocLink` dropped from `1982` to `1981`, and project
+  truth advanced the first Account access gap to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  as `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14-task.md`;
+  `history/evidence/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager for
+  `getRuntimePositionBotContext`, while the current local source-control
+  closure sidecar remains [LUC-1061](/LUC/issues/LUC-1061). No remaining DSM
+  action stays open on [LUC-1073](/LUC/issues/LUC-1073).
+
+## 2026-07-14 LUC-1071 [Soar][Project Truth][App Completion] Prove Account access missing-test-link for countruntimemanagedpositions
+
+- Status: `DONE`.
+- Scope: close the Account access `missing_test_link` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`
+  using the smallest focused repository-proof and generated-truth refresh
+  only.
+- Result:
+  `countRuntimeManagedPositions.repository.test.ts` now directly proves scoped
+  `where` forwarding into `prisma.position.count` plus passthrough count
+  readback, while `priority-test-links.csv` and `scanner-overrides.json`
+  promote the helper as verified local evidence.
+- Verification:
+  focused `countRuntimeManagedPositions.repository.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `countRuntimeManagedPositions` as the first
+  Account access `missing_test_link` gap. The same helper now advances to
+  `missing_doc_link` with Docs Memory ownership.
+- Evidence:
+  `history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for
+  `countRuntimeManagedPositions`; no remaining proof action stays open on
+  [LUC-1071](/LUC/issues/LUC-1071).
+
+## 2026-07-14 LUC-1069 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for resolveruntimepositiondcacount
+
+- Status: `DONE`.
+- Scope: close the Account access `implemented_needs_proof` routing for
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`
+  using the smallest focused helper-proof and generated-truth refresh only.
+- Result:
+  `runtimeSessionPositionsRead.service.test.ts` now directly proves same-order
+  OPEN dedupe, raw-trade fallback without order ids, explicit/runtime current
+  adds precedence, and fail-closed non-negative truncation behavior, while
+  `scanner-overrides.json` promotes the helper as verified local evidence.
+- Verification:
+  focused `runtimeSessionPositionsRead.service.test.ts` Vitest run ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  project truth no longer routes `resolveRuntimePositionDcaCount` from
+  `runtimeSessionPositionDcaCount.ts` as the first Account access proof gap.
+  The next Account access gap advances to
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`
+  as `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14.md`.
+- Residual:
+  the next owner/action is Test Automation Engineer + QA Regression Lead for
+  `countRuntimeManagedPositions`; no remaining proof action stays open on
+  [LUC-1069](/LUC/issues/LUC-1069).
+
 ## 2026-07-14 LUC-1060 [Soar][Project Truth][App Completion] Prove Account access implemented-needs-proof for resolvesinglecanonicalstrategyid
 
 - Status: `DONE`.

@@ -1,3 +1,539 @@
+## 2026-07-14 LUC-1102 Wake Reconciliation
+
+- Status:
+  `DONE / WAKE_RECONCILED / STALE_BLOCKED_FLAG_DISPROVEN`.
+- Note:
+  this heartbeat only reconciles the stale blocked wake against the finished
+  docs-link closure; the mission itself remains complete and no additional
+  implementation, verification, or escalation work is open here.
+
+## 2026-07-14 LUC-1102 Account Access sumRuntimeManagedPositionMarginUsed Doc-Link Closure
+
+- Mission:
+  `LUC-1102-ACCOUNT-ACCESS-SUMRUNTIMEMANAGEDPOSITIONMARGINUSED-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_PROOF_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  Documentation Steward source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1102](/LUC/issues/LUC-1102).
+
+## 2026-07-14 LUC-1100 Account Access sumRuntimeManagedPositionMarginUsed Proof
+
+- Mission:
+  `LUC-1100-ACCOUNT-ACCESS-SUMRUNTIMEMANAGEDPOSITIONMARGINUSED-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `sumRuntimeManagedPositionMarginUsed.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.position.aggregate`, exact
+  `_sum.marginUsed` selection, and passthrough aggregate readback, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper as
+  verified local evidence.
+- Evidence:
+  `history/evidence/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14.md`;
+  `history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionQuantity`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1100](/LUC/issues/LUC-1100).
+
+## 2026-07-14 LUC-1098 Account Access listRuntimePositionTradeRows Doc-Link Closure
+
+- Mission:
+  `LUC-1098-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONTRADEROWS-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_PROOF_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1098](/LUC/issues/LUC-1098).
+
+## 2026-07-14 LUC-1096 Account Access listRuntimePositionTradeRows Proof
+
+- Mission:
+  `LUC-1096-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONTRADEROWS-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `listRuntimePositionTradeRows.repository.test.ts` now directly proves
+  scoped `where` plus optional `take` forwarding into `prisma.trade.findMany`,
+  canonical runtime ordering, exact projection selection, and passthrough row
+  readback, while `priority-test-links.csv` and `scanner-overrides.json`
+  promote the helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14.md`;
+  `history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionMarginUsed`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1096](/LUC/issues/LUC-1096).
+
+## 2026-07-14 LUC-1094 Account Access listRuntimePositionStrategies Doc-Link Closure
+
+- Mission:
+  `LUC-1094-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONSTRATEGIES-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_DOC_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`
+  as `missing_test_link`, while the next docs-owned row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1094](/LUC/issues/LUC-1094).
+
+## 2026-07-14 LUC-1091 Account Access listRuntimePositionStrategies Proof
+
+- Mission:
+  `LUC-1091-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONSTRATEGIES-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `listRuntimePositionStrategies.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.strategy.findMany`, exact projection
+  selection, and passthrough row readback, while `priority-test-links.csv`
+  and `scanner-overrides.json` promote the helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14.md`;
+  `history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1091](/LUC/issues/LUC-1091).
+
+## 2026-07-14 LUC-1089 Account Access listRuntimePositionLastPrices Doc-Link Closure
+
+- Mission:
+  `LUC-1089-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONLASTPRICES-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_PROOF_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1089](/LUC/issues/LUC-1089).
+
+## 2026-07-14 LUC-1087 Account Access listRuntimePositionLastPrices Proof
+
+- Mission:
+  `LUC-1087-ACCOUNT-ACCESS-LISTRUNTIMEPOSITIONLASTPRICES-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `listRuntimePositionLastPrices.repository.test.ts` now directly proves
+  scoped `where` forwarding into `prisma.botRuntimeSymbolStat.findMany`,
+  exact projection selection, and passthrough row readback, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper
+  as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14.md`;
+  `history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1087](/LUC/issues/LUC-1087).
+
+## 2026-07-14 LUC-1085 Account Access listRuntimeOpenOrders Doc-Link Closure
+
+- Mission:
+  `LUC-1085-ACCOUNT-ACCESS-LISTRUNTIMEOPENORDERS-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_PROOF_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1085](/LUC/issues/LUC-1085).
+
+## 2026-07-14 LUC-1083 Account Access listRuntimeOpenOrders Proof
+
+- Mission:
+  `LUC-1083-ACCOUNT-ACCESS-LISTRUNTIMEOPENORDERS-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `listRuntimeOpenOrders.repository.test.ts` now directly proves scoped
+  `where` plus `limit` forwarding into `prisma.order.findMany`, canonical
+  runtime ordering, exact projection selection, and passthrough row readback,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14.md`;
+  `history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while the next Test Automation Engineer +
+  QA Regression Lead front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionLastPrices`
+  as `missing_test_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1083](/LUC/issues/LUC-1083).
+
+## 2026-07-14 LUC-1081 Account Access listRuntimeManagedPositions Doc-Link Closure
+
+- Mission:
+  `LUC-1081-ACCOUNT-ACCESS-LISTRUNTIMEMANAGEDPOSITIONS-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_PROOF_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1081-account-access-listruntimemanagedpositions-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeOpenOrders`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1081](/LUC/issues/LUC-1081).
+
+## 2026-07-14 LUC-1079 Account Access listRuntimeManagedPositions Proof
+
+- Mission:
+  `LUC-1079-ACCOUNT-ACCESS-LISTRUNTIMEMANAGEDPOSITIONS-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `listRuntimeManagedPositions.repository.test.ts` now directly proves scoped
+  `where` plus `limit` forwarding into `prisma.position.findMany`, canonical
+  runtime ordering, exact projection selection, and passthrough row readback,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14.md`;
+  `history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while [LUC-1061](/LUC/issues/LUC-1061) still
+  owns source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1079](/LUC/issues/LUC-1079).
+
+## 2026-07-14 LUC-1077 Account Access getRuntimePositionBotContext Doc-Link Closure
+
+- Mission:
+  `LUC-1077-ACCOUNT-ACCESS-GETRUNTIMEPOSITIONBOTCONTEXT-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_NEXT_DOC_GAP / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1077-account-access-getruntimepositionbotcontext-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next overall Account access front row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimeManagedPositions`
+  as `missing_test_link`, while the next docs-owned Account access row is
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts#row`
+  as `missing_doc_link`. [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1077](/LUC/issues/LUC-1077).
+
+## 2026-07-14 LUC-1075 Account Access getRuntimePositionBotContext Proof
+
+- Mission:
+  `LUC-1075-ACCOUNT-ACCESS-GETRUNTIMEPOSITIONBOTCONTEXT-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `getRuntimePositionBotContext.repository.test.ts` now directly proves the
+  owned-bot runtime context projection requested from `prisma.bot.findFirst`,
+  while `priority-test-links.csv` and `scanner-overrides.json` promote the
+  helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14.md`;
+  `history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while [LUC-1061](/LUC/issues/LUC-1061) still
+  owns source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1075](/LUC/issues/LUC-1075).
+
+## 2026-07-14 LUC-1073 Account Access countRuntimeManagedPositions Doc-Link Closure
+
+- Mission:
+  `LUC-1073-ACCOUNT-ACCESS-COUNTRUNTIMEMANAGEDPOSITIONS-DOC-LINK-2026-07-14`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the helper direct
+  documentation coverage, and the authoritative sequential generator chain no
+  longer routes it as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14.md`;
+  `history/tasks/luc-1073-account-access-countruntimemanagedpositions-doc-link-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is QA Regression Lead + Project Manager for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#getRuntimePositionBotContext`
+  as `missing_test_link`, while [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining DSM action
+  stays open on [LUC-1073](/LUC/issues/LUC-1073).
+
+## 2026-07-14 LUC-1071 Account Access countRuntimeManagedPositions Proof
+
+- Mission:
+  `LUC-1071-ACCOUNT-ACCESS-COUNTRUNTIMEMANAGEDPOSITIONS-PROOF-2026-07-14`.
+- Status:
+  `DONE / DIRECT_REPOSITORY_PROOF_PASS / MISSING_TEST_LINK_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED_TO_DOCS / NO_RUNTIME_MUTATION`.
+- Scope:
+  Test Automation Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`
+  using the smallest focused local repository proof slice only. No runtime
+  code, deploy, push, restart, rollback, protected smoke, secret/account
+  readback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, bot activation, or LIVE trading action.
+- Result:
+  `countRuntimeManagedPositions.repository.test.ts` now directly proves scoped
+  `where` forwarding into `prisma.position.count`, while
+  `priority-test-links.csv` and `scanner-overrides.json` promote the helper as
+  verified local evidence.
+- Evidence:
+  `history/evidence/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14.md`;
+  `history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Docs Memory Lead + Project Manager for the same
+  helper as `missing_doc_link`, while [LUC-1061](/LUC/issues/LUC-1061) still
+  owns source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1071](/LUC/issues/LUC-1071).
+
+## 2026-07-14 LUC-1069 Account Access resolveRuntimePositionDcaCount Proof
+
+- Mission:
+  `LUC-1069-ACCOUNT-ACCESS-RESOLVERUNTIMEPOSITIONDCACOUNT-PROOF-2026-07-14`.
+- Status:
+  `DONE / FOCUSED_HELPER_PROOF_PASS / IMPLEMENTED_NEEDS_PROOF_ROW_RESOLVED /
+PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  QA Verification Engineer proof closure for
+  `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount`
+  using the smallest focused local proof slice only. No runtime code, deploy,
+  push, restart, rollback, protected smoke, secret/account readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `runtimeSessionPositionsRead.service.test.ts` now directly proves same-order
+  OPEN dedupe, raw-trade fallback when order ids are absent, explicit/runtime
+  precedence, and fail-closed non-negative truncation semantics, while
+  `scanner-overrides.json` promotes the helper as verified local evidence.
+- Evidence:
+  `history/evidence/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14.md`;
+  `history/tasks/luc-1069-account-access-resolveruntimepositiondcacount-proof-2026-07-14-task.md`.
+- Residual:
+  the next owner/action is Test Automation Engineer + QA Regression Lead for
+  `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#countRuntimeManagedPositions`
+  as `missing_test_link`, while [LUC-1061](/LUC/issues/LUC-1061) still owns
+  source-control closure for the current dirty packet. No remaining proof
+  action stays open on [LUC-1069](/LUC/issues/LUC-1069).
+
 ## 2026-07-14 LUC-1060 Account Access resolveSingleCanonicalStrategyId Proof
 
 - Mission:
