@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T22:34:56.397Z",
+  "generatedAt": "2026-07-14T23:15:54.245Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 75,
-    "indexedAppCompletionGaps": 75,
-    "knownAppCompletionRiskItems": 75,
-    "appCompletionPriorityReviewItems": 75,
+    "appCompletionGaps": 74,
+    "indexedAppCompletionGaps": 74,
+    "knownAppCompletionRiskItems": 74,
+    "appCompletionPriorityReviewItems": 74,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 75,
-    "totalGaps": 75
+    "indexedGaps": 74,
+    "totalGaps": 74
   },
   "firstGap": {
     "kind": "app_completion_gap",
-    "severity": "medium",
-    "userFlow": "Account access",
-    "summary": "Account access: USE /admin has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "severity": "high",
+    "userFlow": "Admin operation",
+    "summary": "Admin operation: page.tsx has app-completion risk needs_browser_review.",
+    "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+    "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
     "evidence": [
-      "apps/api/src/router/index.ts#/admin"
+      "apps/web/src/app/admin/page.tsx"
     ],
-    "sourceItemId": "api_endpoint:use-admin:9b16797c60",
-    "risk": "missing_doc_link"
+    "sourceItemId": "route:page-tsx:36cbd2cd9b",
+    "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: USE /admin has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/router/index.ts#/admin"
-      ],
-      "sourceItemId": "api_endpoint:use-admin:9b16797c60",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",

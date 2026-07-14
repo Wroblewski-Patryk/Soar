@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-14T22:34:56.397Z
+Generated: 2026-07-14T23:15:54.245Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,26 +13,25 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 75 |
-| indexedAppCompletionGaps | 75 |
-| knownAppCompletionRiskItems | 75 |
-| appCompletionPriorityReviewItems | 75 |
+| appCompletionGaps | 74 |
+| indexedAppCompletionGaps | 74 |
+| knownAppCompletionRiskItems | 74 |
+| appCompletionPriorityReviewItems | 74 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 75 |
-| totalGaps | 75 |
+| indexedGaps | 74 |
+| totalGaps | 74 |
 
 ## First Gap
 
-- medium: Account access: USE /admin has app-completion risk missing_doc_link.
-- Owner: Docs Memory Lead + Project Manager
-- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
+- high: Admin operation: page.tsx has app-completion risk needs_browser_review.
+- Owner: QA Regression Lead + Frontend Experience Lead
+- Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: USE /admin has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | high | app_completion_gap | Admin operation | Admin operation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Admin operation | Admin operation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Admin operation | Admin operation: AdminUsersPage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |

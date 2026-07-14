@@ -1,3 +1,31 @@
+## 2026-07-15 LUC-1175 admin root doc-link closure
+
+- Account access `missing_doc_link` is now closed locally for
+  `apps/api/src/router/index.ts#/admin`.
+- Source-truth packet:
+  `docs/modules/api-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15.md`
+  now give the admin router mount direct documentation coverage at the actual
+  app-completion path.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  sequential `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/*`.
+- Readback:
+  `USE /admin` no longer routes as `missing_doc_link`; Account access now shows
+  `{"ok":11}`, the first generated project-truth gap advances to Admin
+  operation browser-review for `apps/web/src/app/admin/page.tsx`, and the next
+  docs-owned API gap is `apps/api/src/router/dashboard.routes.ts#/backtests`.
+- Residual:
+  no runtime mutation, deploy, push, or protected browser proof is claimed
+  here.
+
 ## 2026-07-15 LUC-1166 admin root test-link closure
 
 - Account access/Admin operation `missing_test_link` is now closed locally for

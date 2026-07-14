@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T22:34:56.397Z",
+  "generatedAt": "2026-07-14T23:15:54.245Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5070,
-      "linkedRelationCount": 21052,
+      "entityCount": 5073,
+      "linkedRelationCount": 21069,
       "layers": {
         "frontend": {
           "count": 202,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3948,
+          "count": 3951,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 80,
-      "linkedRelationCount": 236,
+      "entityCount": 83,
+      "linkedRelationCount": 251,
       "layers": {
         "frontend": {
           "count": 17,
@@ -2804,6 +2804,14 @@
               "status": "implemented"
             },
             {
+              "id": "api_endpoint:use-admin:9b16797c60",
+              "type": "api_endpoint",
+              "name": "USE /admin",
+              "path": "apps/api/src/router/index.ts#/admin",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
               "id": "api_endpoint:use-users:2f4d7609a6",
               "type": "api_endpoint",
               "name": "USE /users",
@@ -2940,14 +2948,6 @@
               "status": "implemented"
             },
             {
-              "id": "api_endpoint:use-admin:9b16797c60",
-              "type": "api_endpoint",
-              "name": "USE /admin",
-              "path": "apps/api/src/router/index.ts#/admin",
-              "owner": "QA Regression Lead",
-              "status": "verified"
-            },
-            {
               "id": "route:users-controller-ts:a37fcf92e8",
               "type": "route",
               "name": "users.controller.ts",
@@ -3007,7 +3007,7 @@
           "truncated": false
         },
         "worker": {
-          "count": 26,
+          "count": 29,
           "sample": [
             {
               "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
@@ -3098,6 +3098,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-1175-account-access-use-admin-missing-doc-link-closure:f5d6c8a4bb",
+              "type": "task",
+              "name": "LUC-1175 Account Access `USE /admin` Missing-Doc-Link Closure",
+              "path": "history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "document:luc-1152-evidence:7e5a49d627",
               "type": "document",
               "name": "LUC-1152 Evidence",
@@ -3130,6 +3138,14 @@
               "status": "verified"
             },
             {
+              "id": "document:luc-1175-evidence:e5d06ab58c",
+              "type": "document",
+              "name": "LUC-1175 Evidence",
+              "path": "history/evidence/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:luc-1152-admin-operation-get-root-doc-link-closure:dc48f5fdc0",
               "type": "document",
               "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
@@ -3142,6 +3158,14 @@
               "type": "document",
               "name": "LUC-1166 Admin Operation `USE /admin` Missing-Test-Link Closure",
               "path": "history/tasks/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:luc-1175-account-access-use-admin-missing-doc-link-closure:c0fe233bcb",
+              "type": "document",
+              "name": "LUC-1175 Account Access `USE /admin` Missing-Doc-Link Closure",
+              "path": "history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -12800,8 +12824,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9555,
-      "linkedRelationCount": 34366,
+      "entityCount": 9558,
+      "linkedRelationCount": 34381,
       "layers": {
         "frontend": {
           "count": 706,
@@ -14096,7 +14120,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6413,
+          "count": 6416,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

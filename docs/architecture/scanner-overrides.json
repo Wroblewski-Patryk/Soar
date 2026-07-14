@@ -688,6 +688,12 @@
     },
     {
       "fromPath": "docs/modules/api-admin.md",
+      "toPath": "apps/api/src/router/index.ts#/admin",
+      "type": "documents",
+      "evidence": "docs/modules/api-admin.md"
+    },
+    {
+      "fromPath": "docs/modules/api-admin.md",
       "toPath": "apps/api/src/router/admin.routes.ts#/",
       "type": "documents",
       "evidence": "docs/modules/api-admin.md"

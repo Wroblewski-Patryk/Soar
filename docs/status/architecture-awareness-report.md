@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-14T22:28:34.733Z
+Generated: 2026-07-14T23:15:24.276Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4951 |
+| document | 4953 |
 | feature | 216 |
 | function | 2845 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1857 |
+| task | 1858 |
 | test | 519 |
 
 ## Counts By Status
@@ -28,10 +28,10 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 181 |
 | deprecated | 10 |
-| implemented | 8256 |
+| implemented | 8258 |
 | in_progress | 29 |
 | tested | 926 |
-| verified | 1710 |
+| verified | 1711 |
 
 ## Health Signals
 
@@ -162,6 +162,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 60, relation entries: 67).
-- Override summary: excluded files 0, entity overrides 60, relation overrides 67, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 60, relation entries: 68).
+- Override summary: excluded files 0, entity overrides 60, relation overrides 68, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

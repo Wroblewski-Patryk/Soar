@@ -1,3 +1,30 @@
+## 2026-07-15 LUC-1175 Account Access USE /admin Missing-Doc-Link Closure
+
+- Status: `DONE`.
+- Scope: close the generated Account access `missing_doc_link` routing for
+  `apps/api/src/router/index.ts#/admin` using the smallest source-of-truth
+  repair only.
+- Result:
+  `documentation-links.csv` and `scanner-overrides.json` now link the admin
+  router mount directly to `docs/modules/api-admin.md`, and the refreshed
+  app-completion/project-truth chain no longer dispatches `USE /admin` as a
+  docs gap.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  `USE /admin` no longer appears in the Account access review queue; the first
+  generated project-truth gap is now Admin operation browser-review for
+  `apps/web/src/app/admin/page.tsx`, and the next docs-owned API gap is
+  `apps/api/src/router/dashboard.routes.ts#/backtests`.
+- Evidence:
+  `history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1166 Admin Operation USE /admin Missing-Test-Link Closure
 
 - Status: `DONE`.

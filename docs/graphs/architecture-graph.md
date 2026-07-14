@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T22:28:34.733Z
+Generated: 2026-07-14T23:15:24.276Z
 
 ## Canonical Exports
 
@@ -820,6 +820,7 @@ Generated: 2026-07-14T22:28:34.733Z
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1167:58cfdbcac5 | history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e8b013b371 | history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1174:ffcc0d4836 | history/tasks/luc-1174-soar-v1-conformance-backend-verify-exchange-positions-dca-tsl-workers-readiness-contracts-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1175-account-access-use-admin-missing-doc-link-closure:f5d6c8a4bb | history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1175-soar-v1-conformance-frontend-verification-2026-06-01:2b61a67754 | history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map:789f23f45e | history/tasks/luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-rea:abd1440228 | history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T22:28:34.733Z
 | connected_to | project:soar:7c70e892d7 | task:task:0af381cc0c | history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2264-operator-coolify-bind-read-only-production-status-access:996cff8193 | history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2269-operator-coolify-bind-read-only-production-status-access:1d38b3fd79 | history/tasks/luc-2269-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:697d458166 | history/tasks/luc-227-autonomous-idle-and-map-drift-sweep-2026-05-27-task.md |
