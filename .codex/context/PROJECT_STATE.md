@@ -1,3 +1,50 @@
+## 2026-07-15 LUC-1288 source-control closure for LUC-1286
+
+- Revalidated the local dirty state left by `LUC-1286` as one coherent packet:
+  direct proof-link source-truth edits in
+  `docs/architecture/relations/priority-test-links.csv` and
+  `docs/architecture/scanner-overrides.json`, the expected generated
+  `docs/graphs/*` and `docs/status/*` refreshes, source-truth context updates,
+  and the paired `history/tasks/*` plus `history/evidence/*` artifacts for the
+  proof lane.
+- No runtime code, dependency, env, secret, deploy, or push scope appeared in
+  the packet. The generated readback remains aligned with the `LUC-1286`
+  outcome: `apps/api/src/router/dashboard.routes.ts#/bots` is no longer
+  `missing_test_link`, the same endpoint now routes as
+  `Account access / missing_doc_link`, and the next Dashboard overview
+  proof-owned gap is `USE /icons`.
+- Closure decision:
+  one reversible local commit is valid for this packet; push remains held for
+  batch and deploy impact is none.
+
+## 2026-07-15 LUC-1286 dashboard overview USE /bots missing-test-link closure
+
+- The generated Dashboard overview `USE /bots` proof gap is closed without
+  adding runtime behavior or duplicate route tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/bots` now carries direct
+  generator-readable proof to `apps/api/src/modules/bots/bots.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /bots` as
+  `missing_test_link`; the same endpoint now advances to `missing_doc_link`,
+  and generated project truth moves the next Dashboard overview proof-owned gap
+  to `USE /icons`.
+- Validation note:
+  the full `bots.e2e.test.ts` replay still exposes a pre-existing timeout in
+  `lists and returns runtime session monitoring summary with ownership
+  isolation`; the scoped acceptance proof used the stable route-mount subset
+  covering unauthenticated fail-closed access, authenticated owner CRUD, and
+  non-owner isolation.
+
 ## 2026-07-15 LUC-1284 source-control closure for LUC-1280-LUC-1282
 
 - Revalidated the local dirty state as one coherent packet spanning the

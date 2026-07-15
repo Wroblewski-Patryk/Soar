@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-15T19:37:27.820Z",
+  "generated_at": "2026-07-15T20:14:19.118Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15113,
-    "relations": 41347,
+    "entities": 15125,
+    "relations": 41401,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5003,
+      "document": 5011,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1880,
+      "task": 1884,
       "test": 522
     },
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12228,
+      "implemented": 12235,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1734
+      "verified": 1739
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3807,
+      "count": 3806,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -72,14 +72,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-bots:d49fee56cc",
-          "type": "api_endpoint",
-          "name": "USE /bots",
-          "path": "apps/api/src/router/dashboard.routes.ts#/bots",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1626,19 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-reports.pt.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-de-ch-ts:91fa00f5e2",
+          "type": "feature",
+          "name": "dashboard-shell.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1742,
+      "count": 1741,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1653,14 +1653,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-bots:d49fee56cc",
-          "type": "api_endpoint",
-          "name": "USE /bots",
-          "path": "apps/api/src/router/dashboard.routes.ts#/bots",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3229,14 @@
           "type": "model",
           "name": "cc",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#cc",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:cc:d4806ae37d",
+          "type": "model",
+          "name": "Cc",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Cc",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1471,
+      "count": 1470,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1288,
+        "curated_graph_covered": 1287,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6502,15 +6502,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-bots:d49fee56cc",
-          "type": "api_endpoint",
-          "name": "USE /bots",
-          "path": "apps/api/src/router/dashboard.routes.ts#/bots",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "cacheKeyForSupplemental",
           "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#cacheKeyForSupplemental",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:hascontinuouscandleintervals:ba206688f0",
+          "type": "function",
+          "name": "hasContinuousCandleIntervals",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#hasContinuousCandleIntervals",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11014,7 +11014,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1756,
+      "count": 1755,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11029,14 +11029,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-bots:d49fee56cc",
-          "type": "api_endpoint",
-          "name": "USE /bots",
-          "path": "apps/api/src/router/dashboard.routes.ts#/bots",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -12615,14 +12607,22 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#$a",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:r:3dab9c6eb1",
+          "type": "model",
+          "name": "$r",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#$r",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 447,
+      "count": 446,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 272,
+        "curated_graph_covered": 271,
         "historical_task_archive": 141,
         "top_level_app_mount": 1
       },
@@ -13915,15 +13915,6 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-bots:d49fee56cc",
-          "type": "api_endpoint",
-          "name": "USE /bots",
-          "path": "apps/api/src/router/dashboard.routes.ts#/bots",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-icons:309c3997b9",
           "type": "api_endpoint",
           "name": "USE /icons",
@@ -14423,6 +14414,15 @@
           "type": "feature",
           "name": "backtestRunDetails.copy.ts",
           "path": "apps/web/src/features/backtest/components/backtestRunDetails.copy.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:usebacktestruncoredata-ts:4d81b12c7f",
+          "type": "feature",
+          "name": "useBacktestRunCoreData.ts",
+          "path": "apps/web/src/features/backtest/hooks/useBacktestRunCoreData.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

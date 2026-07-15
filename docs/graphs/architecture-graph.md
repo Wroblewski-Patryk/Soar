@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T19:37:27.820Z
+Generated: 2026-07-15T20:14:19.118Z
 
 ## Canonical Exports
 
@@ -76,7 +76,7 @@ Generated: 2026-07-15T19:37:27.820Z
 | api_endpoint | verified | USE /users | apps/api/src/router/admin.routes.ts#/users | Test Automation Engineer |
 | api_endpoint | implemented | GET / | apps/api/src/router/dashboard.routes.ts#/ | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /backtests | apps/api/src/router/dashboard.routes.ts#/backtests | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /bots | apps/api/src/router/dashboard.routes.ts#/bots | Engineering Delivery Lead |
+| api_endpoint | verified | USE /bots | apps/api/src/router/dashboard.routes.ts#/bots | Test Automation Engineer |
 | api_endpoint | implemented | USE /icons | apps/api/src/router/dashboard.routes.ts#/icons | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Engineering Delivery Lead |
@@ -870,6 +870,10 @@ Generated: 2026-07-15T19:37:27.820Z
 | connected_to | project:soar:7c70e892d7 | task:task:66e28a9bfe | history/tasks/luc-1276-source-control-closure-luc-1275-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01:9f05e8ba4b | history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9595e7bb22 | history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:0ce455fc08 | history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:686dbdeb30 | history/tasks/luc-1282-source-control-closure-luc-1280-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:47582dd6c8 | history/tasks/luc-1284-source-control-closure-luc-1280-luc-1282-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:908c9ad7d4 | history/tasks/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c5ee399a01 | history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-130-luc-88-productivity-review-evidence-closure-2026-05-26:4c8237b1c5 | history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:30c5a48360 | history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md |
@@ -1214,7 +1218,3 @@ Generated: 2026-07-15T19:37:27.820Z
 | connected_to | project:soar:7c70e892d7 | task:task:982d246d0b | history/tasks/luc-2186-close-residual-actionable-missing-doc-relation-rows-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2187-inspect-high-signal-missing-test-relation-families:7669b437b7 | history/tasks/luc-2187-inspect-high-signal-missing-test-relation-families-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2188-dynamic-protected-route-fixture-proof:bb91787e43 | history/tasks/luc-2188-dynamic-protected-route-fixture-proof-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-219-no-stall-queue-expeditor-2026-05-26:978ad404b3 | history/tasks/luc-219-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2196-operator-coolify-bind-read-only-production-status-access:3e8f0c19cd | history/tasks/luc-2196-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2197-classify-current-actionable-missing-test-rows-from-architecture-awareness:f64f78bfa8 | history/tasks/luc-2197-classify-current-actionable-missing-test-rows-architecture-awareness-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2198-repair-script-tooling-missing-test-relation-backlog:e17604685e | history/tasks/luc-2198-repair-script-tooling-missing-test-relation-backlog-2026-06-05-task.md |

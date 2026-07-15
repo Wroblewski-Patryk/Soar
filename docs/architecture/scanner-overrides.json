@@ -644,6 +644,16 @@
         "apps/api/src/modules/admin/users/users.e2e.test.ts",
         "history/evidence/luc-1155-admin-operation-use-users-missing-test-link-2026-07-14.md"
       ]
+    },
+    {
+      "path": "apps/api/src/router/dashboard.routes.ts#/bots",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview bots router mount through focused bots API e2e coverage for unauthenticated fail-closed access, authenticated owner CRUD readback, market-type filtering, bot detail reads, and non-owner fail-closed behavior on mounted bot routes.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -1006,6 +1016,12 @@
       "toPath": "apps/api/src/modules/admin/users/users.e2e.test.ts",
       "type": "tests",
       "evidence": "apps/api/src/modules/admin/users/users.e2e.test.ts"
+    },
+    {
+      "fromId": "api_endpoint:use-bots:d49fee56cc",
+      "toPath": "apps/api/src/modules/bots/bots.e2e.test.ts",
+      "type": "tests",
+      "evidence": "apps/api/src/modules/bots/bots.e2e.test.ts"
     },
     {
       "fromId": "api_endpoint:get:6708703663",

@@ -1,3 +1,59 @@
+## 2026-07-15 LUC-1288 Source-control closure for LUC-1286
+
+- Status:
+  `DONE / DIRTY_STATE_CLOSED / LOCAL_COMMIT_CREATED / NO_PUSH / NO_DEPLOY`.
+- Scope:
+  review and source-control closure lane for the `LUC-1286`
+  Dashboard overview `USE /bots` proof-link packet. No runtime code edit,
+  deploy, push, env edit, rollback, protected account/session smoke, or
+  production mutation.
+- Completed:
+  revalidated the expected dirty packet, confirmed the readback still matches
+  the `LUC-1286` proof outcome, ran bounded secret-risk checks on authored
+  closure files, and closed the local workspace state with one reversible
+  commit.
+- Evidence:
+  `history/tasks/luc-1288-source-control-closure-for-luc-1286-2026-07-15-task.md`;
+  `history/evidence/luc-1288-source-control-closure-for-luc-1286-2026-07-15.md`.
+- Residual:
+  no local dirty state remains from the `LUC-1286` packet; the separate
+  docs-owned `missing_doc_link` follow-up for `USE /bots` and the next
+  Dashboard overview proof gap at `USE /icons` remain outside this closure
+  lane.
+
+## 2026-07-15 LUC-1286 Dashboard overview USE /bots missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/bots`.
+- Findings:
+  the repo already had focused executable proof in
+  `apps/api/src/modules/bots/bots.e2e.test.ts`, but it lacked a direct
+  generator-readable relation and verified override at the dashboard router
+  mount boundary.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run` ->
+  fails on the pre-existing timeout in
+  `lists and returns runtime session monitoring summary with ownership isolation`;
+  `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts --run -t "rejects unauthenticated access|supports full CRUD for authenticated owner|enforces ownership isolation for get/update/delete"` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Dashboard overview: USE /bots has app-completion risk missing_test_link.`
+  The same endpoint now routes as `Account access` / `missing_doc_link`, and
+  the next Dashboard overview proof-owned gap advances to `USE /icons`.
+- Evidence:
+  `history/tasks/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15-task.md`;
+  `history/evidence/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1284 Source-control closure for LUC-1280-LUC-1282
 
 - Status:
