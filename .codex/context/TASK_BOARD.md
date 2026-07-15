@@ -1,3 +1,76 @@
+## 2026-07-15 LUC-1216 source-control closure for LUC-1198
+
+- Status: `DONE`.
+- Wake scope: local source-control closure sidecar for
+  [LUC-1198](/LUC/issues/LUC-1198) only.
+- Dirty-state classification:
+  - current docs/source-truth files:
+    `.agents/state/module-confidence-ledger.md`,
+    `.codex/context/PROJECT_STATE.md`,
+    `.codex/context/TASK_BOARD.md`,
+    `docs/modules/web-admin.md`,
+    `docs/architecture/relations/documentation-links.csv`,
+    `docs/architecture/scanner-overrides.json`;
+  - current generated outputs:
+    `docs/graphs/*`,
+    `docs/status/*`;
+  - current evidence/task artifacts:
+    `history/artifacts/luc-1198-build-architecture-awareness-log.txt`,
+    `history/evidence/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15.md`,
+    `history/tasks/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15-task.md`.
+- Validation:
+  `git status --short`,
+  `git diff --stat`,
+  `git diff --check`,
+  targeted high-signal redaction scan over the authored/untracked dirty paths,
+  `pnpm run quality:guardrails`.
+- Decision:
+  commit locally because the dirty packet is coherent `docs/history/evidence/context`
+  scope only, no runtime/product code remained dirty, and the bounded
+  redaction scan found no high-signal secret material.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, protected
+  account readback, or live-trading mutation.
+- Evidence:
+  `history/evidence/luc-1216-source-control-closure-for-luc-1198-2026-07-15.md`;
+  `history/tasks/luc-1216-source-control-closure-for-luc-1198-2026-07-15-task.md`.
+
+## 2026-07-15 LUC-1198 Account Access admin root missing-doc-link proof
+
+- Status: `BLOCKED`.
+- Scope: prove whether the generated Account access `missing_doc_link` routing
+  for `apps/web/src/app/admin/page.tsx` is a true docs gap or a generated-state
+  classifier mismatch.
+- Result:
+  `docs/modules/web-admin.md`, `documentation-links.csv`, and
+  `scanner-overrides.json` now give the admin root route direct canonical
+  documentation coverage, and the refreshed architecture-awareness graph links
+  `route:page-tsx:36cbd2cd9b` to
+  `document:web-deep-dive-admin-module:62c6205d4d`.
+- Verification:
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply` ->
+  direct replay of the `build-app-completion-index.mjs` `hasDoc` logic against
+  the refreshed `docs/graphs/architecture-awareness.json` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  the direct classifier replay now returns `hasDoc=true` / `risk=ok` for
+  `apps/web/src/app/admin/page.tsx`, but the emitted
+  `docs/status/app-completion-index.json` still serializes that same route as
+  `hasDoc=false` / `missing_doc_link`; `project-truth-index.json` therefore
+  still routes it as the first Account access gap.
+- Blocker:
+  generator / emission mismatch outside the assigned Soar docs lane. Unblock
+  owner: Project Truth / generator maintainer. Requested action: repair the
+  app-completion generation chain so emitted `hasDoc` matches the refreshed
+  graph for `route:page-tsx:36cbd2cd9b`.
+- Evidence:
+  `history/tasks/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15-task.md`;
+  `history/evidence/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1193 Account Access admin root missing-test-link closure
 
 - Status: `DONE`.

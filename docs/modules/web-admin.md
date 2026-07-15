@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/admin`
 - Owner: frontend/admin-console
-- Last updated: 2026-05-21
+- Last updated: 2026-07-15
 - Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## 1. Purpose and Scope
@@ -54,7 +54,15 @@ Out of scope:
 - Layout:
   - dedicated admin shell with subscriptions/users navigation.
 - Route wrappers:
+  - `apps/web/src/app/admin/page.tsx` is the admin root entrypoint and performs
+    the canonical redirect to `/admin/subscriptions`.
   - app route files re-export feature pages for Next app router wiring.
+
+## 5A. Architecture-Awareness Doc-Link Coverage
+
+| Entity path | Canonical doc | Why it belongs here |
+| --- | --- | --- |
+| `apps/web/src/app/admin/page.tsx` | `docs/modules/web-admin.md` | Admin root route that redirects authenticated admin visitors to the subscriptions management surface. |
 
 ## 6. Security and Risk Guardrails
 - Admin pages are under middleware-protected `/admin/:path*`.

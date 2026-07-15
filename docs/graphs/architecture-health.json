@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-15T00:40:00.281Z",
+  "generated_at": "2026-07-15T01:05:53.307Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
     "entities": 11123,
-    "relations": 37089,
+    "relations": 37090,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,

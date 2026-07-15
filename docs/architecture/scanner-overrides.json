@@ -1028,6 +1028,12 @@
       "toPath": "apps/web/src/features/auth/pages/RegisterPage.tsx",
       "type": "documents",
       "evidence": "LUC-1132 account-access browser review"
+    },
+    {
+      "fromPath": "docs/modules/web-admin.md",
+      "toPath": "apps/web/src/app/admin/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1198 admin root route module ownership"
     }
   ]
 }

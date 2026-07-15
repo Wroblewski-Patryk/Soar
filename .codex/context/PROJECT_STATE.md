@@ -1,3 +1,55 @@
+## 2026-07-15 LUC-1216 source-control closure committed for LUC-1198 packet
+
+- The local dirty set left by [LUC-1198](/LUC/issues/LUC-1198) was classified
+  as current `docs/history/evidence/context` scope only.
+- No runtime or product-code paths were dirty at closure time.
+- Bounded validation for the closure lane:
+  `git status --short`,
+  `git diff --stat`,
+  `git diff --check`,
+  targeted high-signal redaction scan over authored/untracked dirty paths, and
+  `pnpm run quality:guardrails`.
+- Closure disposition:
+  local commit selected; push/deploy remained forbidden and were not part of
+  this lane.
+- Durable closure packet:
+  `history/evidence/luc-1216-source-control-closure-for-luc-1198-2026-07-15.md`,
+  `history/tasks/luc-1216-source-control-closure-for-luc-1198-2026-07-15-task.md`.
+
+## 2026-07-15 LUC-1198 admin root doc-link proof blocked by classifier mismatch
+
+- Account access `missing_doc_link` remains generated for
+  `apps/web/src/app/admin/page.tsx`, but the scoped docs gap is no longer real
+  in repository source truth.
+- Source-truth packet:
+  `docs/modules/web-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15-task.md`,
+  `history/evidence/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15.md`,
+  and
+  `history/artifacts/luc-1198-build-architecture-awareness-log.txt`.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  direct replay of `build-app-completion-index.mjs` `hasDoc` logic on
+  `docs/graphs/architecture-awareness.json` ->
+  targeted readback in `docs/status/*`.
+- Readback:
+  the refreshed graph now links `route:page-tsx:36cbd2cd9b` to
+  `document:web-deep-dive-admin-module:62c6205d4d`, and direct classifier
+  replay returns `hasDoc=true` / `risk=ok` for
+  `apps/web/src/app/admin/page.tsx`; however
+  `docs/status/app-completion-index.json` still emits `hasDoc=false` and
+  `missing_doc_link`, and `docs/status/project-truth-index.json` still routes
+  the same path as the first Account access gap.
+- Residual:
+  this lane is blocked on the Project Truth / generator maintainer owner to
+  repair the app-completion emission mismatch; no further Soar-local docs-only
+  edit can truthfully clear the generated row.
+
 ## 2026-07-15 LUC-1193 admin root missing-test-link closure
 
 - Account access `missing_test_link` is now closed locally for

@@ -1,3 +1,26 @@
+## 2026-07-15 LUC-1198 Account Access admin root doc-link proof
+
+- Module row:
+  Account access / web admin root doc-link classification.
+- Status delta:
+  `BLOCKED / DOC_RELATION_PRESENT / CLASSIFIER_MISMATCH_CONFIRMED`.
+- Confidence update:
+  [LUC-1198](/LUC/issues/LUC-1198) added direct module documentation and
+  canonical graph relations for `apps/web/src/app/admin/page.tsx`, and the
+  refreshed architecture-awareness graph links the route to
+  `docs/modules/web-admin.md`. A direct replay of the current
+  `build-app-completion-index.mjs` `hasDoc` logic on the refreshed graph
+  returns `hasDoc=true` / `risk=ok`, but the emitted
+  `docs/status/app-completion-index.json` still serializes the same route as
+  `hasDoc=false` / `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15-task.md`;
+  `history/evidence/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15.md`.
+- Residual:
+  unblock requires a Project Truth / generator maintainer repair so the
+  emitted app-completion/project-truth outputs match the refreshed graph for
+  `route:page-tsx:36cbd2cd9b`.
+
 ## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Closure
 
 - Module row:
