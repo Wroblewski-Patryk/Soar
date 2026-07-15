@@ -1,3 +1,31 @@
+## 2026-07-15 LUC-1193 Account Access admin root missing-test-link closure
+
+- Status: `DONE`.
+- Scope: close the generated Account access `missing_test_link` routing for
+  `apps/web/src/app/admin/page.tsx` using the smallest direct redirect proof.
+- Result:
+  `apps/web/src/app/admin/page.test.tsx` now proves the `/admin` route issues
+  the canonical `redirect("/admin/subscriptions")`, and
+  `docs/architecture/relations/priority-test-links.csv` now exposes that proof
+  to the app-completion generator.
+- Verification:
+  focused `pnpm --filter web exec vitest run src/app/admin/page.test.tsx` ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  sequential `build-app-completion-index.mjs` ->
+  sequential `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  Account access no longer reports `apps/web/src/app/admin/page.tsx` as
+  `missing_test_link`; the same flow now surfaces
+  `apps/web/src/app/admin/page.tsx` as `missing_doc_link`, while the next
+  proof-owned missing-test-link rows move to Subscription and entitlement API
+  surfaces.
+- Evidence:
+  `history/tasks/luc-1193-account-access-admin-root-missing-test-link-2026-07-15-task.md`;
+  `history/evidence/luc-1193-account-access-admin-root-missing-test-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1188 Admin Root Browser-Review Closure
 
 - Status: `DONE`.

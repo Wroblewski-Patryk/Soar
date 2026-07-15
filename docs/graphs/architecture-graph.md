@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T00:25:43.095Z
+Generated: 2026-07-15T00:40:00.281Z
 
 ## Canonical Exports
 
@@ -831,6 +831,7 @@ Generated: 2026-07-15T00:25:43.095Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-execu:3fa6fc3be2 | history/tasks/luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-executable-regression-checks-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-119-luc-98-release-permit-evidence-closure-2026-05-26:114a7e96b8 | history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c8f83ee72e | history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:8aed160b69 | history/tasks/luc-1193-account-access-admin-root-missing-test-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b0f0e6c311 | history/tasks/luc-1194-soar-backend-luc-1188-add-endpoint-contract-test-post-dashboard-positions-orphan-repair-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1195:2c1f922e9b | history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-conformance-pack-runtime-positions-read-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1195:f53e5b06c3 | history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-level-conformance-pack-runtime-positions-read-2026-06-01-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-15T00:25:43.095Z
 | connected_to | project:soar:7c70e892d7 | task:task:c651a27e61 | history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2260-operator-coolify-bind-read-only-production-status-access:d502d93352 | history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0af381cc0c | history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2264-operator-coolify-bind-read-only-production-status-access:996cff8193 | history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

@@ -1,4 +1,5 @@
 entity_path,test_path,reason
+apps/web/src/app/admin/page.tsx,apps/web/src/app/admin/page.test.tsx,LUC-1193 direct admin root redirect relation to canonical subscriptions route proof
 apps/api/src/middleware/requireAuth.ts#clearSession,apps/api/src/middleware/requireAuth.test.ts,LUC-93 direct clearSession stale invalid expired deleted-user session clearing proof relation
 apps/api/src/modules/auth/auth.cookie.ts#getSessionCookieBaseOptions,apps/api/src/modules/auth/auth.cookie.test.ts,LUC-498 auth session cookie base options proof relation
 apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets,apps/api/src/modules/auth/auth.jwt.test.ts,LUC-541 direct JWT secret resolution primary and rotation-window proof relation

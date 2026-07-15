@@ -1,3 +1,31 @@
+## 2026-07-15 LUC-1193 admin root missing-test-link closure
+
+- Account access `missing_test_link` is now closed locally for
+  `apps/web/src/app/admin/page.tsx`.
+- Proof packet:
+  `apps/web/src/app/admin/page.test.tsx`,
+  `docs/architecture/relations/priority-test-links.csv`,
+  `history/tasks/luc-1193-account-access-admin-root-missing-test-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1193-account-access-admin-root-missing-test-link-2026-07-15.md`
+  now give the admin root redirect direct generator-readable test proof.
+- Verification:
+  focused `pnpm --filter web exec vitest run src/app/admin/page.test.tsx` PASS ->
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  sequential `build-app-completion-index.mjs` PASS ->
+  sequential `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/*`.
+- Readback:
+  Account access no longer has any `missing_test_link` rows; the first
+  generated gap for that flow is now `missing_doc_link` on the same admin root
+  route, while the next proof-owned missing-test-link rows advance to
+  Subscription and entitlement API surfaces.
+- Residual:
+  browser-review evidence for the admin root route remains tracked separately
+  in the earlier scanner override packet; this change closes only the direct
+  automated test-link gap.
+
 ## 2026-07-15 LUC-1188 admin root browser-review closure
 
 - Admin operation `needs_browser_review` is now closed locally for

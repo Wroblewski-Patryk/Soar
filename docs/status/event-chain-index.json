@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T00:25:51.908Z",
+  "generatedAt": "2026-07-15T00:40:14.228Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5081,
-      "linkedRelationCount": 21108,
+      "entityCount": 5085,
+      "linkedRelationCount": 21133,
       "layers": {
         "frontend": {
-          "count": 203,
+          "count": 204,
           "sample": [
             {
               "id": "task:task:8e90b5d6a3",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3957,
+          "count": 3960,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2615,11 +2615,11 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 93,
-      "linkedRelationCount": 294,
+      "entityCount": 102,
+      "linkedRelationCount": 327,
       "layers": {
         "frontend": {
-          "count": 17,
+          "count": 19,
           "sample": [
             {
               "id": "component:adminlayoutshell-tsx:bda7fce396",
@@ -2742,6 +2742,14 @@
               "status": "implemented"
             },
             {
+              "id": "test:page-test-tsx:011ecbc6a9",
+              "type": "test",
+              "name": "page.test.tsx",
+              "path": "apps/web/src/app/admin/page.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "test:adminuserspage-test-tsx:e362357480",
               "type": "test",
               "name": "AdminUsersPage.test.tsx",
@@ -2756,12 +2764,20 @@
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#AdminUsersPage",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "function:publicpage:e7362bf3db",
+              "type": "function",
+              "name": "PublicPage",
+              "path": "apps/web/src/app/(public)/page.tsx#PublicPage",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": false
         },
         "backend": {
-          "count": 30,
+          "count": 34,
           "sample": [
             {
               "id": "api_endpoint:get:6708703663",
@@ -3002,12 +3018,44 @@
               "path": "apps/api/src/modules/admin/users/users.controller.ts#updateUser",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "route:page-tsx:122c957d36",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/(public)/auth/login/page.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "route:page-tsx:a9b788b8ce",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/(public)/auth/register/page.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "route:page-tsx:f693d6012d",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/(public)/page.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "route:page-tsx:4bc9c15a6c",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/(public)/privacy/page.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": false
         },
         "worker": {
-          "count": 38,
+          "count": 41,
           "sample": [
             {
               "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
@@ -3162,6 +3210,14 @@
               "status": "verified"
             },
             {
+              "id": "document:luc-1193-account-access-admin-root-missing-test-link-closure:1bee94f8dc",
+              "type": "document",
+              "name": "LUC-1193 Account Access Admin Root Missing-Test-Link Closure",
+              "path": "history/evidence/luc-1193-account-access-admin-root-missing-test-link-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:luc-1152-admin-operation-get-root-doc-link-closure:dc48f5fdc0",
               "type": "document",
               "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
@@ -3190,6 +3246,14 @@
               "type": "document",
               "name": "Task",
               "path": "history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:task:9865c15849",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-1193-account-access-admin-root-missing-test-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -3304,6 +3368,14 @@
               "path": "history/artifacts/luc-1188-admin-root-browser-proof.json",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
+            },
+            {
+              "id": "task:task:8aed160b69",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1193-account-access-admin-root-missing-test-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "document:production-ui-module-clickthrough-audit:0910c6e73d",
@@ -12904,11 +12976,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9562,
-      "linkedRelationCount": 34414,
+      "entityCount": 9566,
+      "linkedRelationCount": 34441,
       "layers": {
         "frontend": {
-          "count": 706,
+          "count": 707,
           "sample": [
             {
               "id": "task:task:2026ed0dbb",
@@ -14200,7 +14272,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6420,
+          "count": 6423,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
