@@ -1,3 +1,45 @@
+## 2026-07-15 LUC-1272 source-control closure for LUC-1271
+
+- Classified the local dirty state left by `LUC-1271` as one coherent
+  proof-link closure packet.
+- Included scope:
+  `docs/architecture/relations/priority-test-links.csv`,
+  generated `docs/graphs/*` and `docs/status/*` refreshes,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/tasks/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15-task.md`,
+  `history/evidence/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15.md`,
+  plus the `LUC-1272` closure-sidecar task/evidence files.
+- Integrity checks for the preserved packet:
+  focused diff review, `git diff --check`, `git diff --cached --check`, and a
+  high-confidence secret-pattern scan across the staged packet.
+- Release impact:
+  none; local closure commit only, with no push or deploy.
+
+## 2026-07-15 LUC-1271 dashboard overview GET / missing-test-link closure
+
+- The generated Dashboard overview `GET /` proof gap is closed without adding
+  new runtime behavior or duplicate tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15.md`.
+- Readback:
+  `apps/api/src/middleware/requireAuth.test.ts` already proves authenticated
+  and fail-closed `GET /dashboard`; this heartbeat added the direct priority
+  relation for `apps/api/src/router/dashboard.routes.ts#/`, refreshed the
+  generated indexes, and removed `Dashboard overview: GET /` from the
+  `missing_test_link` queue. The same endpoint now routes as
+  `missing_doc_link`.
+- Residual:
+  the next first Dashboard overview proof-owned gap is now
+  `USE /bots` as `missing_test_link`.
+
 ## 2026-07-15 LUC-1268 source-control closure commit for LUC-1261 / LUC-1264 / LUC-1265 / LUC-1267
 
 - The admin users doc-link dirty packet remains a bounded docs/state/history

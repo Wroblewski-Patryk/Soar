@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-15T17:55:42.395Z
+Generated: 2026-07-15T18:35:27.311Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4985 |
+| document | 4997 |
 | feature | 291 |
 | function | 5318 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1871 |
+| task | 1877 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,21 +28,21 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 183 |
 | deprecated | 10 |
-| implemented | 12210 |
-| in_progress | 29 |
+| implemented | 12222 |
+| in_progress | 28 |
 | tested | 929 |
-| verified | 1725 |
+| verified | 1732 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 3808
+- Raw implementation entities without inferred tests: 3807
 - Actionable implementation entities without inferred tests: 2547
-- Raw implementation entities without inferred docs: 1743
+- Raw implementation entities without inferred docs: 1742
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1472
-- Raw tasks without architecture links: 140
+- Classified inferred-link noise: 1471
+- Raw tasks without architecture links: 141
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 1757
+- Raw implementation entities without task links: 1756
 - Actionable implementation entities without task links: 1450
 - Classified task-linkage noise: 447
 - Entities without owner attribution: 0
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1289
+- curated_graph_covered: 1288
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -147,7 +147,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - config_only_file: api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
 - curated_graph_covered: api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
-- curated_graph_covered: api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
 - curated_graph_covered: api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
 - curated_graph_covered: api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
 - curated_graph_covered: api_endpoint: USE /icons (apps/api/src/router/dashboard.routes.ts#/icons)
@@ -183,12 +182,13 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: BotsMonitoringTab.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringTab.tsx)
 - curated_graph_covered: component: BotsPortfolioHistorySection.tsx (apps/web/src/features/bots/components/bots-management/BotsPortfolioHistorySection.tsx)
 - curated_graph_covered: component: BotsAssistantTab.tsx (apps/web/src/features/bots/components/BotsAssistantTab.tsx)
+- curated_graph_covered: component: RuntimeDataSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx)
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 273
-- historical_task_archive: 140
+- curated_graph_covered: 272
+- historical_task_archive: 141
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples
@@ -203,6 +203,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: Task Contract (history/tasks/luc-1148-source-control-closure-issue-continuation-needed-2026-05-31-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md)
+- historical_task_archive: task: Task: LUC-1265 clear stale AdminUsersPage project-truth emission (history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md)
 - historical_task_archive: task: LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
 - historical_task_archive: task: LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - historical_task_archive: task: LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
@@ -232,7 +233,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
 - historical_task_archive: task: LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
 - historical_task_archive: task: LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
-- historical_task_archive: task: LUC-1734 Restore Owner Path For Coolify Inventory Lane (history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md)
 
 ## Notes
 

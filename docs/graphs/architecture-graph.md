@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T17:55:42.395Z
+Generated: 2026-07-15T18:35:27.311Z
 
 ## Canonical Exports
 
@@ -857,8 +857,14 @@ Generated: 2026-07-15T17:55:42.395Z
 | connected_to | project:soar:7c70e892d7 | task:task:770652babb | history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:350c8fcb6e | history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0b53f47ce7 | history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:95bf6d67be | history/tasks/luc-1261-adminuserspage-missing-doc-link-closeout-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1263-source-control-closure-task:a427214e66 | history/tasks/luc-1263-source-control-closure-for-luc-1259-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:d0d798adbc | history/tasks/luc-1264-adminuserspage-feature-doc-link-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task-luc-1265-clear-stale-adminuserspage-project-truth-emission:7ef19182ce | history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:a42a64e834 | history/tasks/luc-1267-source-control-closure-luc-1261-luc-1264-luc-1265-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:f7905eb1d8 | history/tasks/luc-1268-source-control-closure-luc-1261-luc-1264-luc-1265-luc-1267-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ddc542514e | history/tasks/luc-127-luc-64-backend-runtime-signal-docs-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:925bb2530f | history/tasks/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01:9f05e8ba4b | history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9595e7bb22 | history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c5ee399a01 | history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -1212,9 +1218,3 @@ Generated: 2026-07-15T17:55:42.395Z
 | connected_to | project:soar:7c70e892d7 | task:task:96e61c8563 | history/tasks/luc-2199-audit-web-support-surface-missing-test-rows-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-22-first-safe-repair-lane-task:8baf28a3ae | history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2200-money-facing-runtime-residual-missing-test-families:6fbc67ddd5 | history/tasks/luc-2200-money-facing-runtime-residual-missing-test-families-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2204-operator-coolify-bind-read-only-production-status-access:1bce2afedf | history/tasks/luc-2204-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2208-operator-coolify-bind-read-only-production-status-access:c30518f72d | history/tasks/luc-2208-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-221-no-stall-queue-expeditor-2026-05-27:465dab6e06 | history/tasks/luc-221-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2222-operator-coolify-bind-read-only-production-status-access:ab4986e0b2 | history/tasks/luc-2222-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:a8fe634a68 | history/tasks/luc-2223-coolify-resource-inventory-reconciliation-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2225-operator-coolify-bind-read-only-production-status-access:a4db5d2792 | history/tasks/luc-2225-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

@@ -1,3 +1,52 @@
+## 2026-07-15 LUC-1272 [Soar][Source Control Closure] Close local dirty state for LUC-1271
+
+- Status: `DONE`.
+- Scope:
+  classify the current local dirty state left by the completed
+  `LUC-1271` Dashboard overview proof-link closure and preserve it as one
+  coherent source-control packet.
+- Findings:
+  the dirty set consists only of the direct `priority-test-links.csv` relation,
+  the generator outputs documented by `LUC-1271`, the related source-truth
+  context updates, and this closure-sidecar documentation.
+- Verification:
+  `git status --short` -> `git diff --stat` -> focused `git diff -- <path>`
+  review -> `git diff --check` -> `git diff --cached --check` -> staged
+  high-confidence secret-pattern scan.
+- Outcome:
+  the `LUC-1271` packet is coherent, preserved locally as one reversible
+  closure commit, and requires no push or deploy.
+- Evidence:
+  `history/tasks/luc-1272-source-control-closure-for-luc-1271-2026-07-15-task.md`;
+  `history/evidence/luc-1272-source-control-closure-for-luc-1271-2026-07-15.md`.
+
+## 2026-07-15 LUC-1271 Dashboard overview GET / missing-test-link closure
+
+- Status: `DONE`.
+- Wake scope:
+  prove the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/`.
+- Findings:
+  the repo already contained direct executable proof in
+  `apps/api/src/middleware/requireAuth.test.ts`; the gap was the missing
+  generator-readable relation from the dashboard router root to that existing
+  test.
+- Verification:
+  `pnpm --filter api exec vitest run src/middleware/requireAuth.test.ts` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Dashboard overview: GET / has app-completion risk missing_test_link.` The
+  same endpoint now routes as `missing_doc_link`, and the next
+  proof-owned Dashboard overview `missing_test_link` router mount is
+  `USE /bots`.
+- Evidence:
+  `history/tasks/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15-task.md`;
+  `history/evidence/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1268 source-control closure commit for LUC-1261 / LUC-1264 / LUC-1265 / LUC-1267
 
 - Status: `DONE`.

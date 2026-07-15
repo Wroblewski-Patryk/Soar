@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-15T17:55:42.395Z
+Generated: 2026-07-15T18:35:27.311Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 140
+- Raw tasks without architecture links: 141
 - Actionable implementation entities without task links: 1450
-- Raw implementation entities without task links: 1757
+- Raw implementation entities without task links: 1756
 - Classified task-linkage noise: 447
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 273
-- historical_task_archive: 140
+- curated_graph_covered: 272
+- historical_task_archive: 141
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -122,6 +122,7 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task Contract (history/tasks/luc-1148-source-control-closure-issue-continuation-needed-2026-05-31-task.md)
 - Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md)
 - Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md)
+- Task: LUC-1265 clear stale AdminUsersPage project-truth emission (history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md)
 - LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
 - LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
@@ -151,13 +152,11 @@ Every task should identify the feature/module it changes, dependency expectation
 - LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
-- LUC-1734 Restore Owner Path For Coolify Inventory Lane (history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md)
 
 ### Raw Implementation Without Task Links
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
-- api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
 - api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
 - api_endpoint: USE /icons (apps/api/src/router/dashboard.routes.ts#/icons)
 - api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
@@ -195,3 +194,4 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: MarketUniversesTable.tsx (apps/web/src/features/markets/components/MarketUniversesTable.tsx)
 - component: StrategiesList.tsx (apps/web/src/features/strategies/components/StrategiesList.tsx)
 - component: Basic.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Basic.tsx)
+- component: Indicators.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx)
