@@ -1,3 +1,32 @@
+## 2026-07-15 LUC-1188 admin root browser-review closure
+
+- Admin operation `needs_browser_review` is now closed locally for
+  `apps/web/src/app/admin/page.tsx`.
+- Source-truth packet:
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md`,
+  `history/evidence/luc-1188-admin-root-browser-review-2026-07-15.md`,
+  `history/artifacts/luc-1188-admin-root-browser-proof.json`,
+  and
+  `history/artifacts/luc-1188-admin-root-browser-proof.png`.
+- Verification:
+  fresh local headless CDP precheck on `/admin` captured the synthetic-cookie
+  limitation; authenticated production clickthrough evidence from
+  `2026-06-27` and `2026-06-29` remained the accepted browser-proof basis for
+  the real admin redirect claim; sequential
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply` then refreshed generated truth.
+- Readback:
+  `apps/web/src/app/admin/page.tsx` no longer appears as the first generated
+  project-truth gap; the remaining Admin operation browser-review rows advance
+  to `apps/web/src/app/admin/users/page.tsx` and
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx`.
+- Residual:
+  local synthetic-cookie route proofs do not emulate an `ADMIN` principal for
+  the client auth context and cannot alone close admin-only browser rows.
+
 ## 2026-07-15 LUC-1175 admin root doc-link closure
 
 - Account access `missing_doc_link` is now closed locally for

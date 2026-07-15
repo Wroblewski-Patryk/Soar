@@ -3,6 +3,19 @@
   "excludePathPrefixes": [],
   "entityOverrides": [
     {
+      "path": "apps/web/src/app/admin/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the admin root route through authenticated production clickthrough evidence on 2026-06-27 and 2026-06-29: /admin resolved to the expected admin destination after middleware and app routing. A fresh local synthetic-cookie CDP precheck on 2026-07-15 confirmed that this harness does not emulate an ADMIN principal and therefore cannot replace authenticated admin route proof.",
+      "evidence": [
+        "history/evidence/luc-1188-admin-root-browser-review-2026-07-15.md",
+        "history/evidence/luc-5526-prod-ui-module-clickthrough-2026-06-27.md",
+        "history/evidence/luc-6248-prod-ui-module-clickthrough-2026-06-29.md",
+        "history/artifacts/luc-1188-admin-root-browser-proof.json",
+        "history/artifacts/luc-1188-admin-root-browser-proof.png"
+      ]
+    },
+    {
       "path": "apps/web/src/app/(public)/auth/login/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

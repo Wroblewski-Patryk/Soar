@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T23:15:54.245Z",
+  "generatedAt": "2026-07-15T00:25:51.908Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5073,
-      "linkedRelationCount": 21069,
+      "entityCount": 5081,
+      "linkedRelationCount": 21108,
       "layers": {
         "frontend": {
-          "count": 202,
+          "count": 203,
           "sample": [
             {
               "id": "task:task:8e90b5d6a3",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 738,
+          "count": 739,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3951,
+          "count": 3957,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 83,
-      "linkedRelationCount": 251,
+      "entityCount": 93,
+      "linkedRelationCount": 294,
       "layers": {
         "frontend": {
           "count": 17,
@@ -2896,8 +2896,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/admin/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "api_endpoint:use-subscriptions-plans:b5026ab209",
@@ -3007,7 +3007,7 @@
           "truncated": false
         },
         "worker": {
-          "count": 29,
+          "count": 38,
           "sample": [
             {
               "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
@@ -3146,6 +3146,22 @@
               "status": "implemented"
             },
             {
+              "id": "document:luc-1188-admin-root-browser-review:8892e7e73d",
+              "type": "document",
+              "name": "LUC-1188 Admin Root Browser Review",
+              "path": "history/evidence/luc-1188-admin-root-browser-review-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "task:learning-journal:c5626339c3",
+              "type": "task",
+              "name": "LEARNING_JOURNAL",
+              "path": ".codex/context/LEARNING_JOURNAL.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "document:luc-1152-admin-operation-get-root-doc-link-closure:dc48f5fdc0",
               "type": "document",
               "name": "LUC-1152 Admin Operation GET Root Doc-Link Closure",
@@ -3170,20 +3186,20 @@
               "status": "implemented"
             },
             {
+              "id": "document:task:59e0843df8",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:luc-5591-v1-app-completion-admin-operation-proof-lane:dbc28f4857",
               "type": "document",
               "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
               "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "task:learning-journal:c5626339c3",
-              "type": "task",
-              "name": "LEARNING_JOURNAL",
-              "path": ".codex/context/LEARNING_JOURNAL.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             },
             {
               "id": "task:luc-1155-admin-operation-use-users-missing-test-link-closure:9033f8f025",
@@ -3234,6 +3250,62 @@
               "status": "implemented"
             },
             {
+              "id": "task:task:74b766f5f3",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "agent:project-memory-index:7835719b6a",
+              "type": "agent",
+              "name": "Project Memory Index",
+              "path": ".agents/core/project-memory-index.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:mission-control:ba3faa3760",
+              "type": "agent",
+              "name": "Mission Control",
+              "path": ".agents/core/mission-control.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:responsibility-lanes:4708049f99",
+              "type": "agent",
+              "name": "Responsibility Lanes",
+              "path": ".agents/workflows/responsibility-lanes.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:responsibility-learning:ff40aac95c",
+              "type": "agent",
+              "name": "Responsibility Learning",
+              "path": ".agents/state/responsibility-learning.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "agent:agent-process-evals:733443a73f",
+              "type": "agent",
+              "name": "Agent Process Evals",
+              "path": ".agents/state/agent-evals.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:luc-1188-admin-root-browser-proof-json:28842b0edb",
+              "type": "test",
+              "name": "luc-1188-admin-root-browser-proof.json",
+              "path": "history/artifacts/luc-1188-admin-root-browser-proof.json",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "document:production-ui-module-clickthrough-audit:0910c6e73d",
               "type": "document",
               "name": "Production UI Module Clickthrough Audit",
@@ -3255,7 +3327,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 6,
+          "count": 7,
           "sample": [
             {
               "id": "document:api-deep-dive-admin-module:9d48a83d1e",
@@ -3302,6 +3374,14 @@
               "type": "document",
               "name": "App Completion Index",
               "path": "docs/status/app-completion-index.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:project-truth-index:df4eb1672a",
+              "type": "document",
+              "name": "Project Truth Index",
+              "path": "docs/status/project-truth-index.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -8111,7 +8191,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 939,
-      "linkedRelationCount": 3516,
+      "linkedRelationCount": 3517,
       "layers": {
         "frontend": {
           "count": 25,
@@ -12824,8 +12904,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9558,
-      "linkedRelationCount": 34381,
+      "entityCount": 9562,
+      "linkedRelationCount": 34414,
       "layers": {
         "frontend": {
           "count": 706,
@@ -14120,7 +14200,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 6416,
+          "count": 6420,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T23:15:54.245Z",
+  "generatedAt": "2026-07-15T00:25:51.908Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -20,30 +20,30 @@
   },
   "firstGap": {
     "kind": "app_completion_gap",
-    "severity": "high",
-    "userFlow": "Admin operation",
-    "summary": "Admin operation: page.tsx has app-completion risk needs_browser_review.",
-    "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-    "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+    "severity": "medium",
+    "userFlow": "Account access",
+    "summary": "Account access: page.tsx has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
       "apps/web/src/app/admin/page.tsx"
     ],
     "sourceItemId": "route:page-tsx:36cbd2cd9b",
-    "risk": "needs_browser_review"
+    "risk": "missing_test_link"
   },
   "gaps": [
     {
       "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Admin operation",
-      "summary": "Admin operation: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: page.tsx has app-completion risk missing_test_link.",
+      "nextOwner": "Test Automation Engineer + QA Regression Lead",
+      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
       "evidence": [
         "apps/web/src/app/admin/page.tsx"
       ],
       "sourceItemId": "route:page-tsx:36cbd2cd9b",
-      "risk": "needs_browser_review"
+      "risk": "missing_test_link"
     },
     {
       "kind": "app_completion_gap",

@@ -2,6 +2,26 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-15 - Synthetic cookie route proof does not prove admin-only client redirects
+- Symptom:
+  a local headless CDP visit to `/admin` with only a synthetic cookie gate did
+  not redirect to `/admin/subscriptions`; it stayed on `/admin` and rendered the
+  admin-denied screen.
+- Root cause:
+  the synthetic cookie is enough to cross middleware, but it does not establish
+  a real `ADMIN` principal for the client auth context used by the admin layout.
+- Correct response:
+  do not treat synthetic-cookie local route proof as sufficient for admin-only
+  browser rows. Use an approved authenticated admin session path, or rely on
+  existing authenticated evidence when the route already has valid production
+  clickthrough proof.
+- Verified recovery:
+  [LUC-1188](/LUC/issues/LUC-1188) closed the admin root browser-review row by
+  linking authenticated production `/admin` clickthrough evidence, while the
+  fresh local CDP artifacts were retained only as a limitation precheck.
+- Evidence:
+  `history/evidence/luc-1188-admin-root-browser-review-2026-07-15.md`.
+
 ### 2026-07-14 - Account access browser proofs need the API on localhost:3001, not 3000
 - Symptom:
   browser verification for the login page initially logged

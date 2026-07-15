@@ -1,3 +1,30 @@
+## 2026-07-15 LUC-1188 Admin Root Browser-Review Closure
+
+- Status: `DONE`.
+- Scope: close the generated Admin operation `needs_browser_review` routing for
+  `apps/web/src/app/admin/page.tsx` using the smallest truthful browser-proof
+  packet.
+- Result:
+  `scanner-overrides.json` now links the admin root route directly to accepted
+  authenticated browser evidence, while the new local CDP precheck artifacts
+  document why a synthetic cookie gate is not sufficient as sole admin-route
+  proof.
+- Verification:
+  local headless CDP `/admin` precheck ->
+  historical authenticated production clickthrough readback ->
+  `build-architecture-awareness-index.mjs` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply` ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  the first generated Admin operation browser-review gap advances from
+  `apps/web/src/app/admin/page.tsx` to the remaining admin users surfaces.
+- Evidence:
+  `history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md`;
+  `history/evidence/luc-1188-admin-root-browser-review-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1175 Account Access USE /admin Missing-Doc-Link Closure
 
 - Status: `DONE`.

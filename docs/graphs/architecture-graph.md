@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-14T23:15:24.276Z
+Generated: 2026-07-15T00:25:43.095Z
 
 ## Canonical Exports
 
@@ -826,6 +826,7 @@ Generated: 2026-07-14T23:15:24.276Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-rea:abd1440228 | history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-118-luc-107-coolify-health-evidence-closure-2026-05-26:1106793307 | history/tasks/luc-118-luc-107-coolify-health-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01:ceabf40a9e | history/tasks/luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:74b766f5f3 | history/tasks/luc-1188-admin-root-browser-review-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1188:c63c13500b | history/tasks/luc-1188-soar-v1-conformance-backend-worker-endpoint-to-contract-drift-matrix-dca-tsl-positions-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-execu:3fa6fc3be2 | history/tasks/luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-executable-regression-checks-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-119-luc-98-release-permit-evidence-closure-2026-05-26:114a7e96b8 | history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-14T23:15:24.276Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2260-operator-coolify-bind-read-only-production-status-access:d502d93352 | history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0af381cc0c | history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2264-operator-coolify-bind-read-only-production-status-access:996cff8193 | history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2269-operator-coolify-bind-read-only-production-status-access:1d38b3fd79 | history/tasks/luc-2269-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

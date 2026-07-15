@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-14T23:15:24.276Z",
+  "generated_at": "2026-07-15T00:25:43.095Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 11115,
-    "relations": 37029,
+    "entities": 11119,
+    "relations": 37062,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4953,
+      "document": 4955,
       "feature": 216,
       "function": 2845,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1858,
-      "test": 519
+      "task": 1859,
+      "test": 520
     },
     "by_status": {
       "blocked": 181,
       "deprecated": 10,
-      "implemented": 8258,
+      "implemented": 8259,
       "in_progress": 29,
-      "tested": 926,
-      "verified": 1711
+      "tested": 927,
+      "verified": 1713
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 296,
+      "count": 295,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3284,10 +3284,10 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1474,
+      "count": 1473,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1291,
+        "curated_graph_covered": 1290,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6236,7 +6236,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 310,
+      "count": 309,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -7841,10 +7841,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 450,
+      "count": 449,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 276,
+        "curated_graph_covered": 275,
         "historical_task_archive": 140,
         "top_level_app_mount": 1
       },

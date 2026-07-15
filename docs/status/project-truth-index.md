@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-14T23:15:54.245Z
+Generated: 2026-07-15T00:25:51.908Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -24,15 +24,15 @@ This is the routing surface agents should use before guessing whether an app wor
 
 ## First Gap
 
-- high: Admin operation: page.tsx has app-completion risk needs_browser_review.
-- Owner: QA Regression Lead + Frontend Experience Lead
-- Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
+- medium: Account access: page.tsx has app-completion risk missing_test_link.
+- Owner: Test Automation Engineer + QA Regression Lead
+- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| high | app_completion_gap | Admin operation | Admin operation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
+| medium | app_completion_gap | Account access | Account access: page.tsx has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | high | app_completion_gap | Admin operation | Admin operation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Admin operation | Admin operation: AdminUsersPage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: GET / has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
