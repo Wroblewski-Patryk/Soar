@@ -1,3 +1,36 @@
+## 2026-07-15 LUC-1249 admin users route wrapper doc-link proved with follow-up
+
+- Canonical doc-link coverage is now present locally for
+  `apps/web/src/app/admin/users/page.tsx`.
+- Source-truth packet:
+  `docs/modules/web-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1249-account-access-admin-users-page-doc-link-2026-07-15.md`.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/*` ->
+  `git diff --check`.
+- Readback:
+  the refreshed graph links `route:page-tsx:2c9fc36678` to
+  `document:web-deep-dive-admin-module:62c6205d4d`, and
+  `docs/status/app-completion-index.md` now reports
+  `Account access: 13 entities; risks {"ok":13}`. However,
+  `docs/status/project-truth-index.{json,md}` still emit the stale first gap
+  `Account access: page.tsx has app-completion risk missing_doc_link.`
+- Follow-up:
+  [LUC-1250](/LUC/issues/LUC-1250) owns the Project Truth / generator repair
+  lane for the stale ingestion mismatch.
+- Residual:
+  this proof packet does not claim browser-review completion for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` or any deploy,
+  push, runtime mutation, or protected-account action.
+
 ## 2026-07-15 LUC-1246 source-control closure committed for LUC-1240 packet
 
 - The local dirty set left by [LUC-1240](/LUC/issues/LUC-1240) was classified

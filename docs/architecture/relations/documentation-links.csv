@@ -1,5 +1,6 @@
 entity_path,doc_path
 apps/web/src/app/admin/page.tsx,docs/modules/web-admin.md
+apps/web/src/app/admin/users/page.tsx,docs/modules/web-admin.md
 apps/web/src/i18n/__fixtures__/guardrails.seed-regression.tsx,docs/modules/web-shared.md
 apps/web/src/i18n/I18nProvider.tsx,docs/modules/web-shared.md
 apps/web/src/i18n/namespaceRegistry.ts,docs/modules/web-shared.md

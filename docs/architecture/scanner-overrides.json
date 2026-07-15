@@ -1047,6 +1047,12 @@
       "toPath": "apps/web/src/app/admin/page.tsx",
       "type": "documents",
       "evidence": "LUC-1198 admin root route module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-admin.md",
+      "toPath": "apps/web/src/app/admin/users/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1249 admin users route wrapper module ownership"
     }
   ]
 }

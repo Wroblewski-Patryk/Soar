@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T03:42:30.867Z
+Generated: 2026-07-15T16:20:47.541Z
 
 ## Canonical Exports
 
@@ -848,7 +848,9 @@ Generated: 2026-07-15T03:42:30.867Z
 | connected_to | project:soar:7c70e892d7 | task:task:2cc0940ce1 | history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01:72ff555902 | history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:7fd9a531ae | history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1246-source-control-closure-task:5923836921 | history/tasks/luc-1246-source-control-closure-for-luc-1240-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:1006502740 | history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:924ba7d5a7 | history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c0843e4c26 | history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task:d69613fb31 | history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:350c8fcb6e | history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-15T03:42:30.867Z
 | connected_to | project:soar:7c70e892d7 | task:task-luc-2231-api-platform-safety-adversarial-review:593a42d43d | history/tasks/luc-2231-api-platform-safety-adversarial-review-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2233-refresh-journey-evidence-indexes-after-current-graph-state:6cf4de4a24 | history/tasks/luc-2233-refresh-journey-evidence-indexes-current-graph-state-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2239-operator-coolify-bind-read-only-production-status-access:1b239409be | history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2251-operator-coolify-bind-read-only-production-status-access:a003c8fb86 | history/tasks/luc-2251-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2252-repair-top-release-ops-script-missing-test-relations:b87c608007 | history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md |

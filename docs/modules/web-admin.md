@@ -56,6 +56,8 @@ Out of scope:
 - Route wrappers:
   - `apps/web/src/app/admin/page.tsx` is the admin root entrypoint and performs
     the canonical redirect to `/admin/subscriptions`.
+  - `apps/web/src/app/admin/users/page.tsx` is the Next app-router wrapper for
+    `/admin/users` and re-exports the admin users management surface.
   - app route files re-export feature pages for Next app router wiring.
 
 ## 5A. Architecture-Awareness Doc-Link Coverage
@@ -63,6 +65,7 @@ Out of scope:
 | Entity path | Canonical doc | Why it belongs here |
 | --- | --- | --- |
 | `apps/web/src/app/admin/page.tsx` | `docs/modules/web-admin.md` | Admin root route that redirects authenticated admin visitors to the subscriptions management surface. |
+| `apps/web/src/app/admin/users/page.tsx` | `docs/modules/web-admin.md` | Admin users route wrapper that binds the protected `/admin/users` app route to the documented users-management surface. |
 
 ## 6. Security and Risk Guardrails
 - Admin pages are under middleware-protected `/admin/:path*`.

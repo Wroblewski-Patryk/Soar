@@ -1,3 +1,39 @@
+## 2026-07-15 LUC-1249 Account access admin users route doc-link proof
+
+- Status: `DONE`.
+- Wake scope: prove and repair, if possible, the Account access
+  `missing_doc_link` routing for
+  `apps/web/src/app/admin/users/page.tsx`.
+- Result:
+  added the direct canonical documentation relation from the admin users route
+  wrapper to `docs/modules/web-admin.md`, refreshed the graph/status outputs,
+  and proved a split state: `app-completion` cleared the row, but
+  `project-truth` still emits the stale Account access gap.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/app-completion-index.{json,md}` and
+  `docs/status/project-truth-index.{json,md}` ->
+  `git diff --check`.
+- Readback:
+  `docs/status/app-completion-index.md` now reports
+  `Account access: 13 entities; risks {"ok":13}` with no priority-review row
+  for `apps/web/src/app/admin/users/page.tsx`, while
+  `docs/status/project-truth-index.{json,md}` still emit
+  `Account access: page.tsx has app-completion risk missing_doc_link.` as the
+  first generated gap.
+- Follow-up:
+  created [LUC-1250](/LUC/issues/LUC-1250) to repair the Project Truth
+  ingestion mismatch after the local doc-link closure.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, or protected
+  account mutation occurred.
+- Evidence:
+  `history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1249-account-access-admin-users-page-doc-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1246 source-control closure for LUC-1240
 
 - Status: `DONE`.

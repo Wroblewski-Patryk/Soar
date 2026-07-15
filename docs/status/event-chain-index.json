@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T03:43:26.898Z",
+  "generatedAt": "2026-07-15T16:21:12.883Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5075,
-      "linkedRelationCount": 21105,
+      "entityCount": 5081,
+      "linkedRelationCount": 21138,
       "layers": {
         "frontend": {
-          "count": 180,
+          "count": 183,
           "sample": [
             {
               "id": "task:task:7fd9a531ae",
@@ -29,6 +29,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1030-password-visibility-toggle-and-hydration-ready-frontend-proof-2026-07-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:924ba7d5a7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -289,6 +297,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:luc-1249-evidence:1745c64f11",
+              "type": "document",
+              "name": "LUC-1249 Evidence",
+              "path": "history/evidence/luc-1249-account-access-admin-users-page-doc-link-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "test:navigation-test-ts:9e98883af0",
               "type": "test",
               "name": "navigation.test.ts",
@@ -309,6 +325,14 @@
               "type": "document",
               "name": "Task",
               "path": "history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:task:643e09718e",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -629,30 +653,6 @@
               "type": "function",
               "name": "AdminUsersPage",
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#AdminUsersPage",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:formatdate:a33e302190",
-              "type": "function",
-              "name": "formatDate",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#formatDate",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:loadusers:80dcfa4826",
-              "type": "function",
-              "name": "loadUsers",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#loadUsers",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:onapplyfilters:3d56bc07d5",
-              "type": "function",
-              "name": "onApplyFilters",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#onApplyFilters",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3970,
+          "count": 3973,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1338,7 +1338,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -2615,11 +2615,11 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 110,
-      "linkedRelationCount": 370,
+      "entityCount": 111,
+      "linkedRelationCount": 380,
       "layers": {
         "frontend": {
-          "count": 26,
+          "count": 27,
           "sample": [
             {
               "id": "component:adminlayoutshell-tsx:bda7fce396",
@@ -2668,6 +2668,14 @@
               "path": "docs/architecture/reference/admin-frontend-architecture.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
+            },
+            {
+              "id": "task:task:924ba7d5a7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "task:task:9c3103f0bc",
@@ -2916,6 +2924,14 @@
               "status": "verified"
             },
             {
+              "id": "route:page-tsx:2c9fc36678",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/admin/users/page.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
               "id": "function:createadminagent:65f9f85d1e",
               "type": "function",
               "name": "createAdminAgent",
@@ -3044,14 +3060,6 @@
               "status": "implemented"
             },
             {
-              "id": "route:page-tsx:2c9fc36678",
-              "type": "route",
-              "name": "page.tsx",
-              "path": "apps/web/src/app/admin/users/page.tsx",
-              "owner": "QA Regression Lead",
-              "status": "verified"
-            },
-            {
               "id": "route:adminuserspage-tsx:784aa77abb",
               "type": "route",
               "name": "AdminUsersPage.tsx",
@@ -3095,7 +3103,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b",
@@ -4860,7 +4868,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:luc-1162-account-access-use-users-doc-link-closure:f46f93f7f3",
@@ -7209,7 +7217,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728",
@@ -9382,7 +9390,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:luc-3885-stripe-webhook-subscription-lifecycle-reconciliation:d429702abc",
@@ -11771,7 +11779,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc",
@@ -13040,11 +13048,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12919,
-      "linkedRelationCount": 37877,
+      "entityCount": 12925,
+      "linkedRelationCount": 37910,
       "layers": {
         "frontend": {
-          "count": 1417,
+          "count": 1420,
           "sample": [
             {
               "id": "task:task:2026ed0dbb",
@@ -13067,6 +13075,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:924ba7d5a7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13675,14 +13691,6 @@
               "type": "function",
               "name": "renderMetadata",
               "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#renderMetadata",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:index-ts:e10f7ccccc",
-              "type": "feature",
-              "name": "index.ts",
-              "path": "apps/web/src/ui/components/loading/index.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -14336,7 +14344,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9012,
+          "count": 9015,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -16989,7 +16997,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "blocked"
+              "status": "in_progress"
             },
             {
               "id": "task:backend-permission-and-data-isolation-review-task:6bbc4f70d1",

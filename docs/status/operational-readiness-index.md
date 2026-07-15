@@ -1,6 +1,6 @@
 # Operational Readiness Index
 
-Generated: 2026-07-15T03:43:26.898Z
+Generated: 2026-07-15T16:21:12.883Z
 Project: Soar
 Status: ready_for_repair_flow
 
