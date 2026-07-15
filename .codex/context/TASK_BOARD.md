@@ -45667,3 +45667,21 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Residual:
   the current dirty-packet source-control closure remains
   [LUC-1061](/LUC/issues/LUC-1061).
+
+## 2026-07-15 LUC-1223 local dirty-state closure for LUC-1220
+
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`).
+- Baseline `git status --short --branch` showed branch
+  `main...origin/main [ahead 39]` with exactly two untracked paths:
+  `history/artifacts/luc-1220-local-protected-route-action-proof-matrix-2026-07-15.json`
+  and
+  `history/evidence/luc-1220-local-protected-route-action-proof-matrix-2026-07-15.md`.
+- Classification: both files are intended `LUC-1220` proof artifacts; no
+  runtime, app, env, or secret-bearing dirty paths were present.
+- Closure packet:
+  `history/evidence/luc-1223-luc-1220-local-dirty-state-closure-2026-07-15.md`
+  and
+  `history/tasks/luc-1223-classify-and-close-local-dirty-state-for-luc-1220-2026-07-15-task.md`.
+- Disposition: preserve the proof files in one narrow local commit; push `not
+  needed`; deploy impact `none`.

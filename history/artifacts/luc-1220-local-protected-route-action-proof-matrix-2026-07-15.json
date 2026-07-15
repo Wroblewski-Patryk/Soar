@@ -1,0 +1,111 @@
+{
+  "status": "FAIL",
+  "today": "2026-07-15",
+  "generatedAt": "2026-07-15T01:34:07.886Z",
+  "issue": "LUC-1220",
+  "dynamicFixtures": {
+    "enabled": false,
+    "apiInterception": false,
+    "fixtureIds": []
+  },
+  "clusters": [
+    {
+      "name": "admin",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS",
+        "SOAR-ACTION-VISIT-PAGE-ADMIN-USERS"
+      ],
+      "apiRoutes": [
+        "GET /admin/subscriptions/plans",
+        "PUT /admin/subscriptions/plans/:id",
+        "GET /admin/users",
+        "PUT /admin/users/:id"
+      ],
+      "existingTests": [
+        "AdminSubscriptionsPage tests",
+        "AdminUsersPage tests",
+        "apps/api/src/modules/admin/admin.e2e.test.ts",
+        "apps/api/src/modules/subscriptions/subscriptions.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-admin.md",
+        "docs/modules/api-admin.md",
+        "docs/modules/api-subscriptions.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS",
+      "route": "/admin/subscriptions",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected admin list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS",
+      "route": "/admin/subscriptions",
+      "result": "PASS",
+      "observedPath": "/admin/subscriptions",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected admin route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-ADMIN-USERS",
+      "route": "/admin/users",
+      "result": "FAIL",
+      "observedPath": "/auth/login",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "expected /admin/users, got /auth/login; preview=Skip to main content\nSoar\nLogin\nRegister\nSign in to Soar\n\nAccess your control center and monitor markets, positions, and bot runtime in one place.\n\nEmail\nPassword\nRemember this dev"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/admin/layout.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/admin/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/admin/subscriptions/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/admin/users/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-admin.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-admin.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-subscriptions.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}

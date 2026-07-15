@@ -31922,3 +31922,23 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual:
   the next docs-owned Account access gap is now
   `apps/api/src/modules/bots/bots.subscription-entitlements.e2e.test.ts#registerAndLogin`.
+
+## 2026-07-15 LUC-1223 local dirty-state closure for LUC-1220
+
+- `LUC-1223` classified the local dirty scope left by `LUC-1220` as exactly
+  two untracked proof files:
+  `history/artifacts/luc-1220-local-protected-route-action-proof-matrix-2026-07-15.json`
+  and
+  `history/evidence/luc-1220-local-protected-route-action-proof-matrix-2026-07-15.md`.
+- No runtime, app, docs, env, or secret-bearing files were dirty in the
+  baseline snapshot.
+- PM closure action preserved those files in a narrow local source-control
+  packet with evidence:
+  `history/evidence/luc-1223-luc-1220-local-dirty-state-closure-2026-07-15.md`
+  and
+  `history/tasks/luc-1223-classify-and-close-local-dirty-state-for-luc-1220-2026-07-15-task.md`.
+- Closure disposition: commit required, push `not needed`, deploy impact
+  `none`.
+- Residual: the preserved `LUC-1220` proof still reports local `/admin/users`
+  route access as `FAIL`; runtime/product follow-up, if needed, belongs to a
+  separate lane.

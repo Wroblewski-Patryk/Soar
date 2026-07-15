@@ -16268,3 +16268,21 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   no remaining action on [LUC-621](/LUC/issues/LUC-621). The next Account
   access row is `auth.session.ts#getSessionJwtExpiresIn`, owned by Docs Memory
   Lead + Project Manager as a separate documentation-link row.
+
+## 2026-07-15 LUC-1223 local dirty-state closure for LUC-1220
+
+- Scope:
+  PM source-control closure for two untracked `history/*` proof files left by
+  `LUC-1220`. No runtime code, deploy, push, restart, rollback, env edit,
+  migration, secret/account access, or production mutation.
+- Result:
+  the dirty workspace was classified as limited to two intended LUC-1220 proof
+  artifacts, then closed with a narrow local commit containing those proof
+  files plus the LUC-1223 history/source-of-truth packet.
+- Evidence:
+  `history/evidence/luc-1223-luc-1220-local-dirty-state-closure-2026-07-15.md`;
+  `history/tasks/luc-1223-classify-and-close-local-dirty-state-for-luc-1220-2026-07-15-task.md`.
+- Residual:
+  no remaining action on `LUC-1223`. The preserved LUC-1220 proof still
+  reports `/admin/users` as `FAIL`, which requires a separate runtime/product
+  lane if still in scope.
