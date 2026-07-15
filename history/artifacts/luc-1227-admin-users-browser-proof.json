@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "webBaseUrl": "http://localhost:3002",
+  "apiBaseUrl": "http://localhost:3001",
+  "adminEmail": "luc1227-admin-1784081350909@example.test",
+  "regularEmail": "luc1227-user-1784081350909@example.test",
+  "route": "/admin/users",
+  "title": "Soar",
+  "checks": [
+    {
+      "name": "route reachable in authenticated admin session",
+      "pass": true,
+      "observed": "/admin/users"
+    },
+    {
+      "name": "renders admin test account row",
+      "pass": true
+    },
+    {
+      "name": "renders regular test account row",
+      "pass": true
+    },
+    {
+      "name": "shows role action controls",
+      "pass": true
+    },
+    {
+      "name": "shows subscription plan controls",
+      "pass": true
+    },
+    {
+      "name": "shows refresh and filters",
+      "pass": true
+    }
+  ],
+  "screenshotPath": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\history\\artifacts\\luc-1227-admin-users-browser-proof.png",
+  "generatedAt": "2026-07-15T02:12:59.213Z",
+  "notes": [
+    "Non-destructive browser proof on local dev runtime using a real admin session.",
+    "This lane verifies authenticated route render and visible operator controls for page.tsx; it does not submit admin mutations."
+  ]
+}
