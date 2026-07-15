@@ -1,3 +1,21 @@
+## 2026-07-15 LUC-1246 source-control closure committed for LUC-1240 packet
+
+- The local dirty set left by [LUC-1240](/LUC/issues/LUC-1240) was classified
+  as current `docs/history/evidence/context/generated-output` scope only.
+- No runtime or product-code paths were dirty at closure time.
+- Bounded validation for the closure lane:
+  `git status --short`,
+  `git diff --stat`,
+  `git diff --check`,
+  targeted high-signal redaction scan over authored/untracked dirty paths, and
+  `pnpm run quality:guardrails`.
+- Closure disposition:
+  local commit selected; push/deploy remained forbidden and were not part of
+  this lane.
+- Durable closure packet:
+  `history/evidence/luc-1246-source-control-closure-for-luc-1240-2026-07-15.md`,
+  `history/tasks/luc-1246-source-control-closure-for-luc-1240-2026-07-15-task.md`.
+
 ## 2026-07-15 LUC-1218 stale admin-root missing-doc-link emission cleared by refresh
 
 - The stale Account access `missing_doc_link` routing for
@@ -31942,3 +31960,24 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual: the preserved `LUC-1220` proof still reports local `/admin/users`
   route access as `FAIL`; runtime/product follow-up, if needed, belongs to a
   separate lane.
+
+## 2026-07-15 LUC-1240 admin users route wrapper browser proof
+
+- Current project truth for the Admin operation route wrapper
+  `apps/web/src/app/admin/users/page.tsx` is now evidence-backed through:
+  same-day authenticated local browser proof (`LUC-1227`),
+  fresh unauthenticated fail-closed readback (`307 -> /auth/login`),
+  and fresh focused `AdminUsersPage.test.tsx` pass.
+- `docs/architecture/scanner-overrides.json` now promotes that wrapper path to
+  `verified`; regenerated truth no longer classifies that wrapper path as
+  `needs_browser_review`.
+- Important nuance:
+  the earlier `LUC-1220` synthetic-cookie harness failure for `/admin/users`
+  was retained as a harness limitation note, not treated as stronger evidence
+  than the authenticated admin packet.
+- Residual:
+  the same wrapper path now routes as a docs-owned `missing_doc_link` gap in
+  `project-truth-index`, which is separate from QA browser-proof closure.
+- Residual:
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` remains the next
+  likely Admin operation browser-review surface, separate from the wrapper row.

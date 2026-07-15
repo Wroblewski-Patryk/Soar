@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-15T01:05:53.307Z
+Generated: 2026-07-15T03:42:30.867Z
 
 ## Contract
 
@@ -10,15 +10,15 @@ Every task should identify the feature/module it changes, dependency expectation
 
 - Actionable tasks without architecture links: 0
 - Raw tasks without architecture links: 140
-- Actionable implementation entities without task links: 0
-- Raw implementation entities without task links: 309
-- Classified task-linkage noise: 449
+- Actionable implementation entities without task links: 1450
+- Raw implementation entities without task links: 1757
+- Classified task-linkage noise: 447
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 275
+- curated_graph_covered: 273
 - historical_task_archive: 140
 - top_level_app_mount: 1
 
@@ -27,6 +27,86 @@ Every task should identify the feature/module it changes, dependency expectation
 
 ## Actionable Implementation Without Task Links
 
+- feature: about.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/about.js)
+- feature: activate_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/activate_banner_mb.js)
+- feature: advanced_protection_signal_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal_toast.js)
+- feature: advanced_protection_signal.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal.js)
+- feature: background.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js)
+- feature: dfd_landing_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/dfd_landing_page.js)
+- feature: download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/download_scan_popup.js)
+- feature: dws.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/dws.js)
+- feature: esd_enrolled_detection_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_detection_toast.js)
+- feature: esd_enrolled_intro_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_intro_toast.js)
+- feature: esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_toast.js)
+- feature: esd_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/ESD-Package/scripts/esd_content_main.js)
+- feature: foreground_sidebar_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/foreground_sidebar_main.js)
+- feature: how_it_works.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/how_it_works.js)
+- feature: iframe_block_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/iframe_block_page.js)
+- feature: interactive_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/interactive_balloon.js)
+- feature: mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_activate_banner.js)
+- feature: mb_page_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_page_banner.js)
+- feature: mcafee_fonts.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mcafee_fonts.js)
+- feature: mockingbird_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/mockingbird_content_main.js)
+- feature: worklet_processor.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/worklet_processor.js)
+- feature: no_native_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/no_native_toast.js)
+- feature: nps_survey.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/nps_survey.js)
+- feature: page_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/page_banner_mb.js)
+- feature: preference.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/preference.js)
+- feature: content_annotation.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_annotation.js)
+- feature: content_aps_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_balloon.js)
+- feature: content_aps_observer.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_observer.js)
+- feature: content_aps_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_toast.js)
+- feature: content_autoplay_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_autoplay_detection.js)
+- feature: content_change_native_installer_url.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_change_native_installer_url.js)
+- feature: content_download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_download_scan_popup.js)
+- feature: content_esd_enrolled_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_enrolled_toast.js)
+- feature: content_esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_toast.js)
+- feature: content_idps.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_idps.js)
+- feature: content_iframe_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_banner.js)
+- feature: content_iframe_helper.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_helper.js)
+- feature: content_injection_check.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_injection_check.js)
+- feature: content_mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_activate_banner.js)
+- feature: content_mb_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_banner.js)
+- feature: content_mb_page_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_page_banner.js)
+- feature: content_mb_video_check.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_video_check.js)
+- feature: content_navigate_complete.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_navigate_complete.js)
+- feature: content_no_native_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_no_native_toast.js)
+- feature: content_rat_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_rat_detection.js)
+- feature: content_search_categorization.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_search_categorization.js)
+- feature: content_sidebar_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_sidebar_main.js)
+- feature: content_site_listener.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_site_listener.js)
+- feature: content_web_boost_upsell.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_web_boost_upsell.js)
+- feature: iframe_block.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/iframe_block.js)
+- feature: iframe_form_check.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/iframe_form_check.js)
+- feature: iframe_form_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/iframe_form_detection.js)
+- feature: feature_collector.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/Sailer-Package/feature_collector.js)
+- feature: settings.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/settings.js)
+- feature: sidebar_esd.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_esd.js)
+- feature: sidebar_home.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_home.js)
+- feature: sidebar_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_main.js)
+- feature: sidebar_mb_faq.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_mb_faq.js)
+- feature: sidebar_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_mb.js)
+- feature: sidebar_rat_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/sidebar_rat_detection.js)
+- feature: site_status_block_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/site_status_block_page.js)
+- feature: site_status_site_report.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/site_status_site_report.js)
+- feature: site_status_typosquatting.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/site_status_typosquatting.js)
+- feature: statistics.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/statistics.js)
+- feature: topbar_iframe_block.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/topbar_iframe_block.js)
+- feature: vendors.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/vendors.js)
+- feature: wa-common.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/wa-common.js)
+- feature: web_boost_upsell_right.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/web_boost_upsell_right.js)
+- feature: web_boost_upsell_top.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/web_boost_upsell_top.js)
+- feature: whitelist.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/whitelist.js)
+- feature: offscreendocument_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.107.1_0/offscreendocument_main.js)
+- feature: page_embed_script.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.107.1_0/page_embed_script.js)
+- feature: service_worker_bin_prod.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.107.1_0/service_worker_bin_prod.js)
+- feature: craw_background.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/nmmhkkegccagdldgiimedpiccmgmieda/1.0.0.6_0/craw_background.js)
+- feature: craw_window.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/nmmhkkegccagdldgiimedpiccmgmieda/1.0.0.6_0/craw_window.js)
+- model: _a (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#_a)
+- model: _c (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#_c)
+- model: _l (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#_l)
+- model: _r (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#_r)
+- model: $a (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#$a)
 
 ## Raw Task-Linkage Samples
 
@@ -89,10 +169,8 @@ Every task should identify the feature/module it changes, dependency expectation
 - api_endpoint: USE /strategies (apps/api/src/router/dashboard.routes.ts#/strategies)
 - api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
 - api_endpoint: GET / (apps/api/src/router/index.ts#/)
-- api_endpoint: GET /alerts (apps/api/src/router/index.ts#/alerts)
 - api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
 - api_endpoint: GET /health (apps/api/src/router/index.ts#/health)
-- api_endpoint: GET /metrics (apps/api/src/router/index.ts#/metrics)
 - api_endpoint: GET /ready (apps/api/src/router/index.ts#/ready)
 - api_endpoint: GET /ready/details (apps/api/src/router/index.ts#/ready/details)
 - api_endpoint: USE /upload (apps/api/src/router/index.ts#/upload)
@@ -115,3 +193,5 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: ExchangeConnectionsView.tsx (apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx)
 - component: AuditTrailView.tsx (apps/web/src/features/logs/components/AuditTrailView.tsx)
 - component: MarketUniversesTable.tsx (apps/web/src/features/markets/components/MarketUniversesTable.tsx)
+- component: StrategiesList.tsx (apps/web/src/features/strategies/components/StrategiesList.tsx)
+- component: Basic.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Basic.tsx)

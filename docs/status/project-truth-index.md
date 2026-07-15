@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-15T01:33:32.884Z
+Generated: 2026-07-15T03:43:26.898Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -24,15 +24,15 @@ This is the routing surface agents should use before guessing whether an app wor
 
 ## First Gap
 
-- high: Admin operation: page.tsx has app-completion risk needs_browser_review.
-- Owner: QA Regression Lead + Frontend Experience Lead
-- Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
+- medium: Account access: page.tsx has app-completion risk missing_doc_link.
+- Owner: Docs Memory Lead + Project Manager
+- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| high | app_completion_gap | Admin operation | Admin operation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
+| medium | app_completion_gap | Account access | Account access: page.tsx has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | high | app_completion_gap | Admin operation | Admin operation: AdminUsersPage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: GET / has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /backtests has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |

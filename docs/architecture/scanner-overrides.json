@@ -16,6 +16,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/admin/users/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the admin users route wrapper through a local authenticated admin browser proof on 2026-07-15: /admin/users rendered the expected operator surface with admin and regular user rows, role controls, subscription-plan controls, refresh, and filters. Fresh 2026-07-15 readback also confirmed unauthenticated route access still fails closed with HTTP 307 to /auth/login, and focused AdminUsersPage component tests passed without submitting admin mutations.",
+      "evidence": [
+        "history/evidence/luc-1240-admin-users-page-browser-review-2026-07-15.md",
+        "history/evidence/luc-1227-admin-users-browser-proof-2026-07-15.md",
+        "history/artifacts/luc-1227-admin-users-browser-proof.json",
+        "history/artifacts/luc-1227-admin-users-browser-proof.png",
+        "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/(public)/auth/login/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

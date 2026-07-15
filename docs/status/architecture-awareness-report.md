@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-15T01:05:53.307Z
+Generated: 2026-07-15T03:42:30.867Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,57 +11,133 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4957 |
-| feature | 216 |
-| function | 2845 |
+| document | 4973 |
+| feature | 291 |
+| function | 5318 |
 | migration | 57 |
-| model | 108 |
+| model | 1483 |
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1860 |
-| test | 521 |
+| task | 1865 |
+| test | 522 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 181 |
+| blocked | 183 |
 | deprecated | 10 |
-| implemented | 8261 |
-| in_progress | 29 |
-| tested | 928 |
-| verified | 1714 |
+| implemented | 12199 |
+| in_progress | 28 |
+| tested | 929 |
+| verified | 1719 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1264
-- Actionable implementation entities without inferred tests: 4
-- Raw implementation entities without inferred docs: 295
-- Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 1473
+- Raw implementation entities without inferred tests: 3808
+- Actionable implementation entities without inferred tests: 2547
+- Raw implementation entities without inferred docs: 1743
+- Actionable implementation entities without inferred docs: 1450
+- Classified inferred-link noise: 1472
 - Raw tasks without architecture links: 140
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 309
-- Actionable implementation entities without task links: 0
-- Classified task-linkage noise: 449
+- Raw implementation entities without task links: 1757
+- Actionable implementation entities without task links: 1450
+- Classified task-linkage noise: 447
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: buildLocalReadinessEnv (scripts/dev-backend.mjs#buildLocalReadinessEnv)
-- function: hasUsableVersionedKeyring (scripts/dev-backend.mjs#hasUsableVersionedKeyring)
-- function: looksWeakSecret (scripts/dev-backend.mjs#looksWeakSecret)
-- function: readConfiguredEnvValue (scripts/dev-backend.mjs#readConfiguredEnvValue)
+- feature: about.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/about.js)
+- feature: activate_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/activate_banner_mb.js)
+- feature: advanced_protection_signal_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal_toast.js)
+- feature: advanced_protection_signal.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal.js)
+- feature: background.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js)
+- feature: download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/download_scan_popup.js)
+- feature: dws.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/dws.js)
+- feature: esd_enrolled_detection_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_detection_toast.js)
+- feature: esd_enrolled_intro_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_intro_toast.js)
+- feature: esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_toast.js)
+- feature: esd_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/ESD-Package/scripts/esd_content_main.js)
+- feature: foreground_sidebar_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/foreground_sidebar_main.js)
+- feature: how_it_works.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/how_it_works.js)
+- feature: iframe_block_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/iframe_block_page.js)
+- feature: interactive_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/interactive_balloon.js)
+- feature: mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_activate_banner.js)
+- feature: mb_page_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_page_banner.js)
+- feature: mcafee_fonts.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mcafee_fonts.js)
+- feature: mockingbird_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/mockingbird_content_main.js)
+- feature: worklet_processor.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/worklet_processor.js)
+- feature: no_native_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/no_native_toast.js)
+- feature: nps_survey.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/nps_survey.js)
+- feature: page_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/page_banner_mb.js)
+- feature: preference.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/preference.js)
+- feature: content_annotation.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_annotation.js)
+- feature: content_aps_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_balloon.js)
+- feature: content_aps_observer.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_observer.js)
+- feature: content_aps_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_toast.js)
+- feature: content_autoplay_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_autoplay_detection.js)
+- feature: content_change_native_installer_url.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_change_native_installer_url.js)
+- feature: content_download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_download_scan_popup.js)
+- feature: content_esd_enrolled_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_enrolled_toast.js)
+- feature: content_esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_toast.js)
+- feature: content_idps.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_idps.js)
+- feature: content_iframe_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_banner.js)
+- feature: content_iframe_helper.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_helper.js)
+- feature: content_injection_check.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_injection_check.js)
+- feature: content_mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_activate_banner.js)
+- feature: content_mb_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_banner.js)
+- feature: content_mb_page_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_page_banner.js)
 
 ## Top Actionable Missing Doc Links
 
+- feature: about.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/about.js)
+- feature: activate_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/activate_banner_mb.js)
+- feature: advanced_protection_signal_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal_toast.js)
+- feature: advanced_protection_signal.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/advanced_protection_signal.js)
+- feature: background.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js)
+- feature: dfd_landing_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/dfd_landing_page.js)
+- feature: download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/download_scan_popup.js)
+- feature: dws.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/dws.js)
+- feature: esd_enrolled_detection_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_detection_toast.js)
+- feature: esd_enrolled_intro_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_enrolled_intro_toast.js)
+- feature: esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/esd_toast.js)
+- feature: esd_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/ESD-Package/scripts/esd_content_main.js)
+- feature: foreground_sidebar_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/foreground_sidebar_main.js)
+- feature: how_it_works.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/how_it_works.js)
+- feature: iframe_block_page.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/iframe_block_page.js)
+- feature: interactive_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/interactive_balloon.js)
+- feature: mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_activate_banner.js)
+- feature: mb_page_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mb_page_banner.js)
+- feature: mcafee_fonts.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/mcafee_fonts.js)
+- feature: mockingbird_content_main.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/mockingbird_content_main.js)
+- feature: worklet_processor.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/MockingBird-Package/scripts/worklet_processor.js)
+- feature: no_native_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/no_native_toast.js)
+- feature: nps_survey.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/nps_survey.js)
+- feature: page_banner_mb.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/page_banner_mb.js)
+- feature: preference.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/preference.js)
+- feature: content_annotation.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_annotation.js)
+- feature: content_aps_balloon.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_balloon.js)
+- feature: content_aps_observer.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_observer.js)
+- feature: content_aps_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_aps_toast.js)
+- feature: content_autoplay_detection.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_autoplay_detection.js)
+- feature: content_change_native_installer_url.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_change_native_installer_url.js)
+- feature: content_download_scan_popup.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_download_scan_popup.js)
+- feature: content_esd_enrolled_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_enrolled_toast.js)
+- feature: content_esd_toast.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_esd_toast.js)
+- feature: content_idps.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_idps.js)
+- feature: content_iframe_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_banner.js)
+- feature: content_iframe_helper.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_iframe_helper.js)
+- feature: content_injection_check.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_injection_check.js)
+- feature: content_mb_activate_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_activate_banner.js)
+- feature: content_mb_banner.js (.tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/scripts/content_mb_banner.js)
 
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1290
+- curated_graph_covered: 1289
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -111,7 +187,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 275
+- curated_graph_covered: 273
 - historical_task_archive: 140
 - top_level_app_mount: 1
 
@@ -162,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 61, relation entries: 69).
-- Override summary: excluded files 0, entity overrides 61, relation overrides 69, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 62, relation entries: 69).
+- Override summary: excluded files 0, entity overrides 62, relation overrides 69, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

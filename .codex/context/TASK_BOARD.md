@@ -1,3 +1,40 @@
+## 2026-07-15 LUC-1246 source-control closure for LUC-1240
+
+- Status: `DONE`.
+- Wake scope: local source-control closure sidecar for
+  [LUC-1240](/LUC/issues/LUC-1240) only.
+- Dirty-state classification:
+  - current docs/source-truth files:
+    `.codex/context/PROJECT_STATE.md`,
+    `.codex/context/TASK_BOARD.md`,
+    `docs/architecture/scanner-overrides.json`;
+  - current generated outputs:
+    `docs/graphs/*`,
+    `docs/status/*`,
+    `history/artifacts/*`,
+    `history/audits/*`,
+    `history/releases/*`;
+  - current evidence/task artifacts:
+    `history/evidence/luc-1240-admin-users-page-browser-review-2026-07-15.md`,
+    `history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md`.
+- Validation:
+  `git status --short`,
+  `git diff --stat`,
+  `git diff --check`,
+  targeted high-signal redaction scan over the authored/untracked dirty paths,
+  `pnpm run quality:guardrails`.
+- Decision:
+  commit locally because the dirty packet is coherent
+  `docs/history/evidence/context/generated-output` scope only, no
+  runtime/product code remained dirty, and the bounded redaction scan found no
+  high-signal secret material.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, protected
+  account readback, or live-trading mutation.
+- Evidence:
+  `history/evidence/luc-1246-source-control-closure-for-luc-1240-2026-07-15.md`;
+  `history/tasks/luc-1246-source-control-closure-for-luc-1240-2026-07-15-task.md`.
+
 ## 2026-07-15 LUC-1218 stale admin-root missing-doc-link emission refresh
 
 - Status: `DONE`.
@@ -45685,3 +45722,26 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `history/tasks/luc-1223-classify-and-close-local-dirty-state-for-luc-1220-2026-07-15-task.md`.
 - Disposition: preserve the proof files in one narrow local commit; push `not
   needed`; deploy impact `none`.
+
+## 2026-07-15 LUC-1240 admin users page browser-review closure
+
+- QVE closed the scoped Admin operation route-wrapper gap for
+  `apps/web/src/app/admin/users/page.tsx`.
+- Proof packet:
+  `history/evidence/luc-1240-admin-users-page-browser-review-2026-07-15.md`
+  and
+  `history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md`.
+- Evidence basis:
+  same-day authenticated local browser proof from
+  `history/evidence/luc-1227-admin-users-browser-proof-2026-07-15.md`,
+  fresh unauthenticated route readback `307 -> /auth/login`, and focused
+  `AdminUsersPage.test.tsx` PASS (`1` file / `4` tests).
+- Source-of-truth action:
+  `docs/architecture/scanner-overrides.json` now marks
+  `apps/web/src/app/admin/users/page.tsx` verified and the generator queue
+  no longer classifies that wrapper path as `needs_browser_review`.
+- Residual:
+  the regenerated first gap for the same wrapper path is now
+  `Account access / missing_doc_link`, which belongs to Docs/PM, and
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` remains a
+  separate row if still present after refresh.

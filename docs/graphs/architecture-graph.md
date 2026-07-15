@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T01:05:53.307Z
+Generated: 2026-07-15T03:42:30.867Z
 
 ## Canonical Exports
 
@@ -839,10 +839,15 @@ Generated: 2026-07-15T01:05:53.307Z
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1196:a257c1e35a | history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readines:3d496682a8 | history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1197-continuation-source-scoped-recovery-action:6b7e412486 | history/tasks/luc-1197-source-scoped-recovery-workers-ready-suite-reblock-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:9c3103f0bc | history/tasks/luc-1198-account-access-admin-page-doc-link-proof-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f3d3cefc79 | history/tasks/luc-121-frontend-map-inventory-evidence-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1216-source-control-closure-task:484fcd077c | history/tasks/luc-1216-source-control-closure-for-luc-1198-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task-luc-1218-stale-admin-root-missing-doc-link-emission-refresh:795adbb2bd | history/tasks/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0f962bdf9e | history/tasks/luc-122-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:fda2406595 | history/tasks/luc-1223-classify-and-close-local-dirty-state-for-luc-1220-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:2cc0940ce1 | history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01:72ff555902 | history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:7fd9a531ae | history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:1006502740 | history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c0843e4c26 | history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task:d69613fb31 | history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md |
@@ -1213,8 +1218,3 @@ Generated: 2026-07-15T01:05:53.307Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2239-operator-coolify-bind-read-only-production-status-access:1b239409be | history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2251-operator-coolify-bind-read-only-production-status-access:a003c8fb86 | history/tasks/luc-2251-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2252-repair-top-release-ops-script-missing-test-relations:b87c608007 | history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2253-repair-api-script-tooling-missing-test-relations:e11ead77f9 | history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:a5a0cb7709 | history/tasks/luc-2254-close-auth-session-helper-missing-test-links-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:c651a27e61 | history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2260-operator-coolify-bind-read-only-production-status-access:d502d93352 | history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:0af381cc0c | history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md |
