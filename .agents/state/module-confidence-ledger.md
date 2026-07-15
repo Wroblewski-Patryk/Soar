@@ -1,3 +1,22 @@
+## 2026-07-15 LUC-1280 Dashboard Overview USE Backtests Doc-Link Closure
+
+- Module row:
+  Dashboard overview / dashboard backtests router mount.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1280](/LUC/issues/LUC-1280) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/backtests`,
+  and `docs/modules/api-backtests.md` now records the authenticated dashboard
+  mount contract for the delegated backtests surface. Generated app-completion
+  no longer classifies `USE /backtests` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15.md`.
+- Residual:
+  Dashboard overview now advances to the first proof-owned gap
+  `apps/api/src/router/dashboard.routes.ts#/bots` as `missing_test_link`.
+
 ## 2026-07-15 LUC-1275 Dashboard Overview GET Root Doc-Link Closure
 
 - Module row:
@@ -15,9 +34,10 @@
   `history/tasks/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15-task.md`;
   `history/evidence/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15.md`.
 - Residual:
-  Dashboard overview remains queued on later docs/test/browser lanes, with
-  `apps/api/src/router/dashboard.routes.ts#/backtests` now the first
-  docs-owned Dashboard overview gap as `missing_doc_link`.
+  Dashboard overview later advanced through
+  `apps/api/src/router/dashboard.routes.ts#/backtests` and now sits on the
+  proof-owned `apps/api/src/router/dashboard.routes.ts#/bots`
+  `missing_test_link` lane.
 
 ## 2026-07-15 LUC-1198 Account Access admin root doc-link proof
 

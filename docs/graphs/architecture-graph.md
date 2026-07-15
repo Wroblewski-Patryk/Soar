@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T19:05:36.689Z
+Generated: 2026-07-15T19:37:27.820Z
 
 ## Canonical Exports
 
@@ -867,6 +867,7 @@ Generated: 2026-07-15T19:05:36.689Z
 | connected_to | project:soar:7c70e892d7 | task:task:925bb2530f | history/tasks/luc-1271-dashboard-overview-get-missing-test-link-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:81481e8958 | history/tasks/luc-1272-source-control-closure-for-luc-1271-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c867d59585 | history/tasks/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:66e28a9bfe | history/tasks/luc-1276-source-control-closure-luc-1275-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01:9f05e8ba4b | history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9595e7bb22 | history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c5ee399a01 | history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-15T19:05:36.689Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2196-operator-coolify-bind-read-only-production-status-access:3e8f0c19cd | history/tasks/luc-2196-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2197-classify-current-actionable-missing-test-rows-from-architecture-awareness:f64f78bfa8 | history/tasks/luc-2197-classify-current-actionable-missing-test-rows-architecture-awareness-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2198-repair-script-tooling-missing-test-relation-backlog:e17604685e | history/tasks/luc-2198-repair-script-tooling-missing-test-relation-backlog-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:96e61c8563 | history/tasks/luc-2199-audit-web-support-surface-missing-test-rows-2026-06-05-task.md |

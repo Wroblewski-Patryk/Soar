@@ -233,6 +233,7 @@ apps/api/src/router/index.ts#/admin,docs/modules/api-admin.md
 apps/api/src/router/admin.routes.ts#/,docs/modules/api-admin.md
 apps/api/src/router/admin.routes.ts#/users,docs/modules/api-admin.md
 apps/api/src/router/dashboard.routes.ts#/,docs/modules/api-root.md
+apps/api/src/router/dashboard.routes.ts#/backtests,docs/modules/api-backtests.md
 apps/api/src/router/index.ts#/auth,docs/modules/api-auth.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/modules/api-backtests.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/architecture/05_strategy-signal-and-decision-flow.md

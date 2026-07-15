@@ -107,6 +107,11 @@ Out of scope:
   - `GET /dashboard/backtests/runs/:id/timeline`
   - `POST /dashboard/backtests/runs`
   - `DELETE /dashboard/backtests/runs/:id`
+- Router mounts:
+  - `USE /backtests` delegates the authenticated dashboard mount in
+    `apps/api/src/router/dashboard.routes.ts` into `backtestsRouter`, making
+    the full backtest run/report/timeline surface reachable only after the
+    shared `requireAuth` boundary succeeds.
 
 ## 6. Security and Risk Guardrails
 
@@ -192,5 +197,6 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 
 | Source entity                                                           | Owner doc                       | Classification                                                                                                                                                                                                                                   | Expected proof                                                                                                                                                         |
 | ----------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/router/dashboard.routes.ts#/backtests`                    | `docs/modules/api-backtests.md` | Authenticated dashboard router mount that delegates the backtests run/report/timeline surface into `backtestsRouter` after the shared `requireAuth` gate succeeds.                                                                             | Architecture-awareness `documents` relation from this doc plus focused backtests route/e2e proof when mount ownership or auth boundary changes.                      |
 | `apps/api/src/modules/backtests/backtestIndicatorSpecs.ts`              | `docs/modules/api-backtests.md` | Backtest indicator parsing and warmup helper extracted from the replay pipeline while preserving parity with shared series tests.                                                                                                                | Architecture-awareness `documents` relation from this doc plus backtest indicator/timeline/replay tests when behavior changes.                                         |
 | `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` | `docs/modules/api-backtests.md` | Backtests e2e auth bootstrap helper that registers the owner account through the real `/auth/register` route and reuses the authenticated agent for owned run/trade/report route proof without fabricating session state inside backtests tests. | Architecture-awareness `documents` relation from this doc plus DB-backed `backtests.e2e.test.ts` proof when auth bootstrap or owned backtests route isolation changes. |

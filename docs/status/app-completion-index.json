@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T19:06:55.764Z",
+  "generatedAt": "2026-07-15T19:37:36.888Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 41,
     "missingTestLink": 26,
-    "missingDocLink": 3,
+    "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 70,
-    "appCompletionRiskItems": 70,
-    "priorityReviewItems": 70,
+    "riskItems": 69,
+    "appCompletionRiskItems": 69,
+    "priorityReviewItems": 69,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -42,8 +42,7 @@
       "userFlow": "Dashboard overview",
       "total": 46,
       "risks": {
-        "ok": 1,
-        "missing_doc_link": 1,
+        "ok": 2,
         "missing_test_link": 14,
         "needs_browser_review": 30
       },
@@ -92,25 +91,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "api_endpoint:use-backtests:1db01efff8",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /backtests",
-      "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 6,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "api_endpoint:use-bots:d49fee56cc",
       "type": "api_endpoint",

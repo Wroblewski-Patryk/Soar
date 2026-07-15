@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T19:06:56.016Z",
+  "generatedAt": "2026-07-15T19:37:40.607Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 70,
-    "indexedAppCompletionGaps": 70,
-    "knownAppCompletionRiskItems": 70,
-    "appCompletionPriorityReviewItems": 70,
+    "appCompletionGaps": 69,
+    "indexedAppCompletionGaps": 69,
+    "knownAppCompletionRiskItems": 69,
+    "appCompletionPriorityReviewItems": 69,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 70,
-    "totalGaps": 70
+    "indexedGaps": 69,
+    "totalGaps": 69
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Dashboard overview",
-    "summary": "Dashboard overview: USE /backtests has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "summary": "Dashboard overview: USE /bots has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/api/src/router/dashboard.routes.ts#/backtests"
+      "apps/api/src/router/dashboard.routes.ts#/bots"
     ],
-    "sourceItemId": "api_endpoint:use-backtests:1db01efff8",
-    "risk": "missing_doc_link"
+    "sourceItemId": "api_endpoint:use-bots:d49fee56cc",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: USE /backtests has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/router/dashboard.routes.ts#/backtests"
-      ],
-      "sourceItemId": "api_endpoint:use-backtests:1db01efff8",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",

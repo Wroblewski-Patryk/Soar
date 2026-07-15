@@ -1,3 +1,73 @@
+## 2026-07-15 LUC-1284 Source-control closure for LUC-1280-LUC-1282
+
+- Status:
+  `DONE / DIRTY_STATE_CLOSED / LOCAL_COMMIT_CREATED / NO_PUSH / NO_DEPLOY`.
+- Scope:
+  review and source-control closure lane for the combined `LUC-1280`
+  Dashboard overview backtests doc-link packet and the `LUC-1282`
+  classification sidecar. No runtime code edit, deploy, push, env edit,
+  rollback, protected account/session smoke, or production mutation.
+- Completed:
+  revalidated the expected dirty packet, added final closure evidence for
+  `LUC-1284`, and closed the local workspace state with one reversible commit.
+- Evidence:
+  `history/tasks/luc-1284-source-control-closure-luc-1280-luc-1282-2026-07-15-task.md`;
+  `history/evidence/luc-1284-source-control-closure-luc-1280-luc-1282-2026-07-15.md`.
+- Residual:
+  no local dirty state remains from the `LUC-1280` + `LUC-1282` packet; the
+  next Dashboard overview gap is separate follow-up work on `USE /bots`
+  `missing_test_link`.
+
+## 2026-07-15 LUC-1282 Source-control closure for LUC-1280
+
+- Status: `DONE`.
+- Scope:
+  classify the current local dirty state left by the completed
+  `LUC-1280` Dashboard overview backtests doc-link closure and preserve it as
+  one coherent source-control packet.
+- Findings:
+  the dirty set consists only of the direct dashboard backtests doc-link
+  changes, the expected generated `docs/graphs/*` and `docs/status/*`
+  refreshes, the related source-truth context updates, and this closure-sidecar
+  documentation.
+- Verification:
+  `git status --short` -> `git diff --stat` -> `git diff --numstat` ->
+  `git diff --check` -> focused `git diff -- <authored paths>` ->
+  `rg -n "USE /backtests|USE /bots|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S`.
+- Outcome:
+  the `LUC-1280` packet is coherent, reversible, and valid for one local
+  commit-ready closure packet. No push or deploy action is part of this lane.
+- Evidence:
+  `history/tasks/luc-1282-source-control-closure-luc-1280-2026-07-15-task.md`;
+  `history/evidence/luc-1282-source-control-closure-luc-1280-2026-07-15.md`.
+
+## 2026-07-15 LUC-1280 Dashboard overview USE /backtests missing-doc-link closure
+
+- Status: `DONE`.
+- Wake scope:
+  close the first generated Dashboard overview `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/backtests`.
+- Findings:
+  the repo already had the correct owner doc family in
+  `docs/modules/api-backtests.md`, but it lacked a direct generator-readable
+  documentation relation for the dashboard router mount and an explicit mount
+  note tying the shared dashboard auth boundary to the delegated backtests
+  surface.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  `git diff --check`.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Dashboard overview: USE /backtests has app-completion risk missing_doc_link.`
+  The next first Dashboard overview gap advances to `USE /bots` as
+  `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1276 Source-control closure for LUC-1275
 
 - Status: `VERIFIED_LOCAL_COMMIT_READY`.

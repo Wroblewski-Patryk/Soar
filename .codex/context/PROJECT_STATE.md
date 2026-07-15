@@ -1,3 +1,71 @@
+## 2026-07-15 LUC-1284 source-control closure for LUC-1280-LUC-1282
+
+- Revalidated the local dirty state as one coherent packet spanning the
+  `LUC-1280` Dashboard overview backtests doc-link repair and the `LUC-1282`
+  source-control classification sidecar.
+- Confirmed the packet contained only the expected docs/history/context paths:
+  authored changes in `docs/modules/api-backtests.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`, regenerated `docs/graphs/*` and
+  `docs/status/*`, context updates in `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, plus the
+  `LUC-1280`, `LUC-1282`, and `LUC-1284` task/evidence artifacts.
+- Closed the packet with one local reversible commit
+  `docs: close local dirty state for LUC-1280 and LUC-1282`; no push or deploy
+  action was taken.
+- Residual:
+  Dashboard overview still advances to `apps/api/src/router/dashboard.routes.ts#/bots`
+  as the next proof-owned `missing_test_link` gap, outside this source-control
+  closure scope.
+
+## 2026-07-15 LUC-1282 source-control closure for LUC-1280
+
+- Classified the local dirty state left by `LUC-1280` as one coherent
+  docs/state/history closure packet.
+- Included scope:
+  `docs/modules/api-backtests.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  generated `docs/graphs/*` and `docs/status/*` refreshes,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md`,
+  `history/evidence/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15.md`,
+  plus the `LUC-1282` closure-sidecar task/evidence files.
+- Integrity checks for the preserved packet:
+  focused diff review, `git diff --check`, and the required generated-truth
+  readback query confirming `USE /backtests` cleared while `USE /bots` is now
+  the first Dashboard overview proof-owned gap.
+- Release impact:
+  none; local closure classification only, with no push or deploy.
+
+## 2026-07-15 LUC-1280 dashboard overview USE /backtests missing-doc-link closure
+
+- The generated Dashboard overview `USE /backtests` docs gap is closed
+  without adding runtime behavior or duplicate owner docs.
+- Source-truth packet:
+  `docs/modules/api-backtests.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15.md`.
+- Readback:
+  `docs/modules/api-backtests.md` now gives the authenticated dashboard
+  router-mount contract for `apps/api/src/router/dashboard.routes.ts#/backtests`,
+  the refreshed graph links that entity to the canonical backtests owner doc,
+  and regenerated project truth no longer emits the old `USE /backtests`
+  `missing_doc_link` row. Dashboard overview aggregate risk now reads
+  `{"ok":2,"missing_test_link":14,"needs_browser_review":30}`.
+- Residual:
+  the next first Dashboard overview gap is now `USE /bots` as
+  `missing_test_link`; the remaining work moved from docs ownership to proof
+  ownership.
+
 ## 2026-07-15 LUC-1272 source-control closure for LUC-1271
 
 - Classified the local dirty state left by `LUC-1271` as one coherent

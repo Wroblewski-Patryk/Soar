@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T19:06:56.016Z",
+  "generatedAt": "2026-07-15T19:37:40.607Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5115,
-      "linkedRelationCount": 21307,
+      "entityCount": 5117,
+      "linkedRelationCount": 21314,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3991,
+          "count": 3993,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 860,
-      "linkedRelationCount": 2734,
+      "entityCount": 862,
+      "linkedRelationCount": 2747,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 283,
+          "count": 284,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -5532,8 +5532,16 @@
           "truncated": false
         },
         "docs": {
-          "count": 105,
+          "count": 106,
           "sample": [
+            {
+              "id": "document:api-deep-dive-backtests-module:0a87980ceb",
+              "type": "document",
+              "name": "API Deep-Dive: Backtests Module",
+              "path": "docs/modules/api-backtests.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
             {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
               "type": "document",
@@ -6163,14 +6171,6 @@
               "type": "document",
               "name": "Web dashboard home module doc",
               "path": "docs/architecture/nodes/SOAR-DOC-WEB-DASHBOARD-HOME.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:app-shell-template-split-contract-public-dashboard-admin:67e261ff67",
-              "type": "document",
-              "name": "App-Shell Template Split Contract (Public / Dashboard / Admin)",
-              "path": "docs/architecture/reference/app-shell-template-split-contract.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12961,
-      "linkedRelationCount": 38093,
+      "entityCount": 12964,
+      "linkedRelationCount": 38107,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9036,
+          "count": 9039,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
