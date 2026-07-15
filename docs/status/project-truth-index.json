@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T17:39:29.357Z",
+  "generatedAt": "2026-07-15T18:00:35.048Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 72,
-    "indexedAppCompletionGaps": 72,
-    "knownAppCompletionRiskItems": 72,
-    "appCompletionPriorityReviewItems": 72,
+    "appCompletionGaps": 71,
+    "indexedAppCompletionGaps": 71,
+    "knownAppCompletionRiskItems": 71,
+    "appCompletionPriorityReviewItems": 71,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 72,
-    "totalGaps": 72
+    "indexedGaps": 71,
+    "totalGaps": 71
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
-    "userFlow": "Account access",
-    "summary": "Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "userFlow": "Dashboard overview",
+    "summary": "Dashboard overview: GET / has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx"
+      "apps/api/src/router/dashboard.routes.ts#/"
     ],
-    "sourceItemId": "route:adminuserspage-tsx:784aa77abb",
-    "risk": "missing_doc_link"
+    "sourceItemId": "api_endpoint:get:1f75b583ca",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx"
-      ],
-      "sourceItemId": "route:adminuserspage-tsx:784aa77abb",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",

@@ -66,6 +66,7 @@ Out of scope:
 | --- | --- | --- |
 | `apps/web/src/app/admin/page.tsx` | `docs/modules/web-admin.md` | Admin root route that redirects authenticated admin visitors to the subscriptions management surface. |
 | `apps/web/src/app/admin/users/page.tsx` | `docs/modules/web-admin.md` | Admin users route wrapper that binds the protected `/admin/users` app route to the documented users-management surface. |
+| `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` | `docs/modules/web-admin.md` | Admin users feature page that owns the operator-facing list, role confirmation, and subscription-plan assignment controls rendered for `/admin/users`. |
 
 ## 6. Security and Risk Guardrails
 - Admin pages are under middleware-protected `/admin/:path*`.

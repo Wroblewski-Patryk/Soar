@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T17:39:29.100Z",
+  "generatedAt": "2026-07-15T17:55:51.693Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 41,
     "missingTestLink": 27,
-    "missingDocLink": 4,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 72,
-    "appCompletionRiskItems": 72,
-    "priorityReviewItems": 72,
+    "riskItems": 71,
+    "appCompletionRiskItems": 71,
+    "priorityReviewItems": 71,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -23,8 +23,7 @@
       "userFlow": "Account access",
       "total": 14,
       "risks": {
-        "ok": 13,
-        "missing_doc_link": 1
+        "ok": 14
       },
       "gates": {
         "auth": 14,
@@ -92,28 +91,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "route:adminuserspage-tsx:784aa77abb",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "AdminUsersPage.tsx",
-      "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-      "owner": "QA Regression Lead",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "subscription"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 31,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "api_endpoint:get:1f75b583ca",
       "type": "api_endpoint",

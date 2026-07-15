@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-15T17:39:20.465Z
+Generated: 2026-07-15T17:55:42.395Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4981 |
+| document | 4985 |
 | feature | 291 |
 | function | 5318 |
 | migration | 57 |
@@ -19,19 +19,19 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1869 |
+| task | 1871 |
 | test | 522 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 182 |
+| blocked | 183 |
 | deprecated | 10 |
-| implemented | 12206 |
+| implemented | 12210 |
 | in_progress | 29 |
 | tested | 929 |
-| verified | 1724 |
+| verified | 1725 |
 
 ## Health Signals
 

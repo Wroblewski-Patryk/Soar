@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T17:39:29.357Z",
+  "generatedAt": "2026-07-15T18:00:35.048Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,12 +10,20 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5087,
-      "linkedRelationCount": 21170,
+      "entityCount": 5093,
+      "linkedRelationCount": 21203,
       "layers": {
         "frontend": {
-          "count": 186,
+          "count": 189,
           "sample": [
+            {
+              "id": "task:task:0b53f47ce7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "blocked"
+            },
             {
               "id": "task:task:770652babb",
               "type": "task",
@@ -321,6 +329,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:luc-1261-evidence:59b0209de5",
+              "type": "document",
+              "name": "LUC-1261 Evidence",
+              "path": "history/evidence/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "test:navigation-test-ts:9e98883af0",
               "type": "test",
               "name": "navigation.test.ts",
@@ -357,6 +373,14 @@
               "type": "document",
               "name": "Task",
               "path": "history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:task:d25f3004cb",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -629,30 +653,6 @@
               "type": "function",
               "name": "AuthProbe",
               "path": "apps/web/src/context/AuthContext.test.tsx#AuthProbe",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:defaultauthprobe:be6af92e71",
-              "type": "function",
-              "name": "DefaultAuthProbe",
-              "path": "apps/web/src/context/AuthContext.test.tsx#DefaultAuthProbe",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:logoutprobe:6ab97e0960",
-              "type": "function",
-              "name": "LogoutProbe",
-              "path": "apps/web/src/context/AuthContext.test.tsx#LogoutProbe",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:refetchprobe:1f7c732698",
-              "type": "function",
-              "name": "RefetchProbe",
-              "path": "apps/web/src/context/AuthContext.test.tsx#RefetchProbe",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
             }
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3976,
+          "count": 3979,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2615,11 +2615,11 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 111,
-      "linkedRelationCount": 380,
+      "entityCount": 112,
+      "linkedRelationCount": 389,
       "layers": {
         "frontend": {
-          "count": 27,
+          "count": 28,
           "sample": [
             {
               "id": "component:adminlayoutshell-tsx:bda7fce396",
@@ -2668,6 +2668,14 @@
               "path": "docs/architecture/reference/admin-frontend-architecture.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
+            },
+            {
+              "id": "task:task:0b53f47ce7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "blocked"
             },
             {
               "id": "task:task:924ba7d5a7",
@@ -2932,6 +2940,14 @@
               "status": "verified"
             },
             {
+              "id": "route:adminuserspage-tsx:784aa77abb",
+              "type": "route",
+              "name": "AdminUsersPage.tsx",
+              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
               "id": "function:createadminagent:65f9f85d1e",
               "type": "function",
               "name": "createAdminAgent",
@@ -3058,14 +3074,6 @@
               "path": "apps/api/src/modules/admin/users/users.types.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:adminuserspage-tsx:784aa77abb",
-              "type": "route",
-              "name": "AdminUsersPage.tsx",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-              "owner": "QA Regression Lead",
-              "status": "verified"
             },
             {
               "id": "function:listusers:8a2608985c",
@@ -10443,8 +10451,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4000,
-      "linkedRelationCount": 12944,
+      "entityCount": 4001,
+      "linkedRelationCount": 12949,
       "layers": {
         "frontend": {
           "count": 393,
@@ -11739,7 +11747,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2082,
+          "count": 2083,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13048,12 +13056,20 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12931,
-      "linkedRelationCount": 37942,
+      "entityCount": 12937,
+      "linkedRelationCount": 37975,
       "layers": {
         "frontend": {
-          "count": 1423,
+          "count": 1426,
           "sample": [
+            {
+              "id": "task:task:0b53f47ce7",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "blocked"
+            },
             {
               "id": "task:task:2026ed0dbb",
               "type": "task",
@@ -13683,14 +13699,6 @@
               "type": "component",
               "name": "AuditTrailView.tsx",
               "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:audittrailview:8d764aff29",
-              "type": "function",
-              "name": "AuditTrailView",
-              "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#AuditTrailView",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -14344,7 +14352,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9018,
+          "count": 9021,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -1,3 +1,72 @@
+## 2026-07-15 LUC-1268 source-control closure commit for LUC-1261 / LUC-1264 / LUC-1265 / LUC-1267
+
+- The admin users doc-link dirty packet remains a bounded docs/state/history
+  closure stream only.
+- Final classification:
+  `LUC-1261` owns PM integration and issue-history records,
+  `LUC-1264` owns the canonical feature-page doc-link edits,
+  `LUC-1265` owns the generated graph and status refresh packet, and
+  `LUC-1267` owns the first source-control classification evidence.
+- Additional closure proof:
+  high-confidence redaction scan across authored context/docs/history paths
+  found no credential signatures, and `git diff --check` plus
+  `pnpm run quality:guardrails` are the minimal release-safety checks for this
+  local docs/state commit.
+- Closure outcome:
+  the packet is safe for one local commit with no push or deploy; source-control
+  closure no longer remains open for these four linked issues.
+
+## 2026-07-15 LUC-1267 source-control closure for LUC-1261 / LUC-1264 / LUC-1265
+
+- The local dirty worktree packet left after the admin users doc-link closure
+  is classified as coherent, attributable, and safe to preserve.
+- Ownership classification:
+  `LUC-1261` owns the PM integration records in
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/tasks/luc-1261-adminuserspage-missing-doc-link-{baseline,closeout}-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1261-adminuserspage-missing-doc-link-{baseline,closeout}-2026-07-15.md`;
+  `LUC-1264` owns the canonical docs relation changes in
+  `docs/modules/web-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  and
+  `history/tasks/luc-1264-adminuserspage-feature-doc-link-2026-07-15-task.md` /
+  `history/evidence/luc-1264-adminuserspage-feature-doc-link-2026-07-15.md`;
+  `LUC-1265` owns the generated truth refresh packet in `docs/graphs/*` and
+  `docs/status/*`, plus its paired task/evidence history files.
+- Readback:
+  `git status --short`, `git diff --stat`, and `git diff --numstat` show a
+  single bounded docs/state packet with no source-code, secrets, env files, or
+  runtime artifacts mixed into the closure.
+- Closure outcome:
+  no revert, cleanup, push, deploy, or further source mutation is required for
+  this source-control lane; the packet is ready for the owning lanes to commit
+  in their own closure flow.
+
+## 2026-07-15 LUC-1261 AdminUsersPage missing-doc-link closure integrated
+
+- The parent PM lane is now fully closed after integrating the completed child
+  docs and refresh follow-ups `LUC-1264` and `LUC-1265`.
+- Source-truth packet:
+  `docs/modules/web-admin.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/graphs/architecture-awareness.json`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1261-adminuserspage-missing-doc-link-closeout-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1261-adminuserspage-missing-doc-link-closeout-2026-07-15.md`.
+- Readback:
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` now has direct
+  canonical doc coverage, `Account access` reports `14` entities with
+  `{"ok":14}`, and `project-truth` no longer emits the old
+  `AdminUsersPage.tsx` `missing_doc_link` gap.
+- Residual:
+  the next first generated gap is now `Dashboard overview: GET /` as
+  `missing_test_link`; no remaining action stays on the admin users feature-page
+  doc-link closure itself.
+
 ## 2026-07-15 LUC-1263 source-control closure for LUC-1259
 
 - The local dirty packet left by `LUC-1259` is classified as coherent
@@ -32092,3 +32161,32 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual:
   `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` remains the next
   likely Admin operation browser-review surface, separate from the wrapper row.
+## 2026-07-15 LUC-1264 AdminUsersPage feature-page doc-link repair split from stale project-truth ingestion
+
+- Added direct canonical doc coverage for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` in
+  `docs/modules/web-admin.md` and
+  `docs/architecture/relations/documentation-links.csv`.
+- Fresh `architecture-awareness` readback now contains
+  `document:web-deep-dive-admin-module:62c6205d4d -> route:adminuserspage-tsx:784aa77abb`
+  as a `documents` relation.
+- Fresh `app-completion-index.md` now reports `Account access: 14 entities;
+  risks {"ok":14}` with no `AdminUsersPage.tsx` priority-review row.
+- Fresh `project-truth-index.{json,md}` still emit
+  `Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.`
+  as the first gap after the same refresh.
+- Follow-up:
+  [LUC-1265](/LUC/issues/LUC-1265) now owns the narrow project-truth /
+  generator refresh lane; `LUC-1264` is blocked on that follow-up rather than
+  on missing docs content.
+
+## 2026-07-15 LUC-1264 AdminUsersPage feature-page doc-link closure completed
+
+- `LUC-1265` cleared the stale project-truth packet after the feature-page
+  doc-link closure.
+- `docs/status/project-truth-index.{json,md}` now advance to
+  `Dashboard overview: GET / has app-completion risk missing_test_link.`
+- The original Account access `missing_doc_link` gap for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` is fully closed
+  across canonical docs, architecture-awareness, app-completion, and
+  project-truth outputs.
