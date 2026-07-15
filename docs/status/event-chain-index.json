@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T16:26:43.126Z",
+  "generatedAt": "2026-07-15T17:39:29.357Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,12 +10,20 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5081,
-      "linkedRelationCount": 21138,
+      "entityCount": 5087,
+      "linkedRelationCount": 21170,
       "layers": {
         "frontend": {
-          "count": 183,
+          "count": 186,
           "sample": [
+            {
+              "id": "task:task:770652babb",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
             {
               "id": "task:task:7fd9a531ae",
               "type": "task",
@@ -305,6 +313,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:luc-1259-adminuserspage-browser-review:1c7d01d191",
+              "type": "document",
+              "name": "LUC-1259 AdminUsersPage Browser Review",
+              "path": "history/evidence/luc-1259-adminuserspage-browser-review-2026-07-15.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "test:navigation-test-ts:9e98883af0",
               "type": "test",
               "name": "navigation.test.ts",
@@ -333,6 +349,14 @@
               "type": "document",
               "name": "Task",
               "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:task:9dcca38d68",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -631,30 +655,6 @@
               "path": "apps/web/src/context/AuthContext.test.tsx#RefetchProbe",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "function:renderwithi18n:6d1be80707",
-              "type": "function",
-              "name": "renderWithI18n",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx#renderWithI18n",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "test:adminuserspage-test-tsx:e362357480",
-              "type": "test",
-              "name": "AdminUsersPage.test.tsx",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:adminuserspage:e494242783",
-              "type": "function",
-              "name": "AdminUsersPage",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#AdminUsersPage",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3973,
+          "count": 3976,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3064,8 +3064,8 @@
               "type": "route",
               "name": "AdminUsersPage.tsx",
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "function:listusers:8a2608985c",
@@ -8743,8 +8743,8 @@
               "type": "route",
               "name": "AdminUsersPage.tsx",
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "function:listsubscriptionplans:b90e9278db",
@@ -13048,11 +13048,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12925,
-      "linkedRelationCount": 37910,
+      "entityCount": 12931,
+      "linkedRelationCount": 37942,
       "layers": {
         "frontend": {
-          "count": 1420,
+          "count": 1423,
           "sample": [
             {
               "id": "task:task:2026ed0dbb",
@@ -13067,6 +13067,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:770652babb",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13683,14 +13691,6 @@
               "type": "function",
               "name": "AuditTrailView",
               "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#AuditTrailView",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:rendermetadata:3892569e61",
-              "type": "function",
-              "name": "renderMetadata",
-              "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#renderMetadata",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -14344,7 +14344,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9015,
+          "count": 9018,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

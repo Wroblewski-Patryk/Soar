@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T16:26:43.126Z",
+  "generatedAt": "2026-07-15T17:39:29.357Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -20,30 +20,30 @@
   },
   "firstGap": {
     "kind": "app_completion_gap",
-    "severity": "high",
-    "userFlow": "Admin operation",
-    "summary": "Admin operation: AdminUsersPage.tsx has app-completion risk needs_browser_review.",
-    "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-    "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+    "severity": "medium",
+    "userFlow": "Account access",
+    "summary": "Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.",
+    "nextOwner": "Docs Memory Lead + Project Manager",
+    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
       "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx"
     ],
     "sourceItemId": "route:adminuserspage-tsx:784aa77abb",
-    "risk": "needs_browser_review"
+    "risk": "missing_doc_link"
   },
   "gaps": [
     {
       "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Admin operation",
-      "summary": "Admin operation: AdminUsersPage.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
       "evidence": [
         "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx"
       ],
       "sourceItemId": "route:adminuserspage-tsx:784aa77abb",
-      "risk": "needs_browser_review"
+      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",

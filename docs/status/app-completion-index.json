@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T16:26:43.126Z",
+  "generatedAt": "2026-07-15T17:39:29.100Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,9 +7,9 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 42,
+    "needsBrowserReview": 41,
     "missingTestLink": 27,
-    "missingDocLink": 3,
+    "missingDocLink": 4,
     "implementedNeedsProof": 0,
     "blocked": 0,
     "riskItems": 72,
@@ -21,25 +21,23 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 13,
+      "total": 14,
       "risks": {
-        "ok": 13
+        "ok": 13,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 13,
-        "subscription": 2
+        "auth": 14,
+        "subscription": 3
       }
     },
     {
       "userFlow": "Admin operation",
-      "total": 2,
+      "total": 1,
       "risks": {
-        "ok": 1,
-        "needs_browser_review": 1
+        "ok": 1
       },
-      "gates": {
-        "auth": 1
-      }
+      "gates": {}
     },
     {
       "userFlow": "Dashboard overview",
@@ -100,20 +98,21 @@
       "kind": "screen_or_route",
       "name": "AdminUsersPage.tsx",
       "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Admin operation",
+      "owner": "QA Regression Lead",
+      "status": "verified",
+      "userFlow": "Account access",
       "gates": [
-        "auth"
+        "auth",
+        "subscription"
       ],
       "evidence": {
         "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": true,
-        "needsScreenshotReview": true
+        "needsScreenshotReview": false
       },
-      "relatedEntityCount": 29,
-      "risk": "needs_browser_review"
+      "relatedEntityCount": 31,
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:get:1f75b583ca",

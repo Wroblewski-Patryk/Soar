@@ -1,3 +1,50 @@
+## 2026-07-15 LUC-1263 source-control closure for LUC-1259
+
+- The local dirty packet left by `LUC-1259` is classified as coherent
+  source-truth, generated-status, and history-evidence scope only.
+- Runtime/product code dirty count is `0`.
+- Validation:
+  `git status --short` ->
+  `git diff --stat` ->
+  `git diff --check` PASS ->
+  targeted high-signal redaction scan PASS ->
+  `pnpm run quality:guardrails` PASS.
+- Disposition:
+  local closure commit is the correct source-control action; no push or deploy
+  is required for this lane.
+- Residual:
+  the admin users screen browser-review gap is closed, while the next truthful
+  follow-up remains the separate docs-owned `missing_doc_link` gap on
+  `AdminUsersPage.tsx`.
+
+## 2026-07-15 LUC-1259 AdminUsersPage browser-review closure
+
+- Admin operation `needs_browser_review` is now closed locally for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx`.
+- Source-truth packet:
+  `docs/architecture/scanner-overrides.json`,
+  `history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md`,
+  `history/evidence/luc-1259-adminuserspage-browser-review-2026-07-15.md`,
+  `history/evidence/luc-1227-admin-users-browser-proof-2026-07-15.md`,
+  and `history/artifacts/luc-1227-admin-users-browser-proof.{json,png}`.
+- Verification:
+  focused `corepack pnpm --filter web exec vitest run src/features/admin/users/pages/AdminUsersPage.test.tsx --reporter verbose`
+  PASS ->
+  sequential `build-architecture-awareness-index.mjs` PASS ->
+  sequential `build-app-completion-index.mjs` PASS ->
+  sequential `build-project-truth-indexes.mjs --apply` PASS ->
+  `git diff --check`.
+- Readback:
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` no longer emits
+  `needs_browser_review`; the first generated gap now reclassifies to
+  `Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.`
+- Residual:
+  a Docs Memory follow-up is required for the new doc-link row on the same
+  path, and a separate source-control closure sidecar is still required for the
+  local docs/generated/evidence dirty packet before commit. Follow-ups:
+  [LUC-1261](/LUC/issues/LUC-1261) for the doc-link lane and
+  [LUC-1263](/LUC/issues/LUC-1263) for source-control closure.
+
 ## 2026-07-15 LUC-1250 stale admin-users project-truth gap cleared by canonical refresh
 
 - The stale project-truth first gap for

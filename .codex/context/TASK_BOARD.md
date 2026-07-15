@@ -1,3 +1,58 @@
+## 2026-07-15 LUC-1263 source-control closure for LUC-1259
+
+- Status: `DONE`.
+- Wake scope:
+  classify and close the local dirty state left by
+  `LUC-1259` admin users screen browser-review closure.
+- Result:
+  confirmed the dirty tree is one coherent docs/context/generated/history
+  packet with no runtime/product paths and no out-of-scope churn, then selected
+  a local closure commit as the correct disposition.
+- Verification:
+  `git status --short` ->
+  `git diff --stat` ->
+  `git diff --check` PASS ->
+  targeted redaction scan PASS ->
+  `pnpm run quality:guardrails` PASS.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, or
+  protected account mutation occurred.
+- Evidence:
+  `history/tasks/luc-1263-source-control-closure-for-luc-1259-2026-07-15-task.md`;
+  `history/evidence/luc-1263-source-control-closure-for-luc-1259-2026-07-15.md`.
+
+## 2026-07-15 LUC-1259 admin users screen browser-review closure
+
+- Status: `DONE`.
+- Wake scope: prove the `needs_browser_review` row for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx`.
+- Result:
+  attached the existing same-day authenticated `/admin/users` browser packet to
+  the exact screen path via `scanner-overrides`, reran the focused screen test,
+  and refreshed project truth sequentially.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/features/admin/users/pages/AdminUsersPage.test.tsx --reporter verbose`
+  PASS ->
+  `build-architecture-awareness-index.mjs` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  `git diff --check`.
+- Readback:
+  the Admin operation `needs_browser_review` row for
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` is gone; the
+  new first project-truth gap is
+  `Account access: AdminUsersPage.tsx has app-completion risk missing_doc_link.`
+- Follow-up:
+  [LUC-1261](/LUC/issues/LUC-1261) owns the new doc-link gap and
+  [LUC-1263](/LUC/issues/LUC-1263) owns source-control closure for the dirty
+  packet left by this verification lane.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, protected
+  account mutation, or live-trading change occurred.
+- Evidence:
+  `history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md`;
+  `history/evidence/luc-1259-adminuserspage-browser-review-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1250 refresh project-truth ingestion after admin-users doc-link closure
 
 - Status: `DONE`.

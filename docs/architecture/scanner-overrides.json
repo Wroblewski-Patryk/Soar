@@ -29,6 +29,19 @@
       ]
     },
     {
+      "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the AdminUsersPage operator surface through the same-day local authenticated admin browser proof on 2026-07-15: /admin/users rendered admin and regular user rows, role action controls, subscription-plan controls, refresh, and filters without submitting admin mutations. Fresh 2026-07-15 focused component tests also passed for load, role confirmation, plan assignment confirmation, cancel path, and load-error rendering.",
+      "evidence": [
+        "history/evidence/luc-1259-adminuserspage-browser-review-2026-07-15.md",
+        "history/evidence/luc-1227-admin-users-browser-proof-2026-07-15.md",
+        "history/artifacts/luc-1227-admin-users-browser-proof.json",
+        "history/artifacts/luc-1227-admin-users-browser-proof.png",
+        "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/(public)/auth/login/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
