@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-15T21:05:17.592Z
+Generated: 2026-07-15T23:01:52.046Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -16,8 +16,8 @@ Internal functions and modules are implementation details: they receive proof th
 - Items: 86
 - User flows: 7
 - Needs browser/screenshot review: 41
-- Missing test link: 25
-- Missing doc link: 2
+- Missing test link: 24
+- Missing doc link: 3
 - Implemented, needs proof: 0
 - Blocked: 0
 - Known non-ok risk items: 68
@@ -26,9 +26,9 @@ Internal functions and modules are implementation details: they receive proof th
 
 ## Flow Summary
 
-- Dashboard overview: 45 entities; risks {"ok":2,"missing_test_link":13,"needs_browser_review":30}; gates {"configuration":1}
+- Dashboard overview: 44 entities; risks {"ok":2,"missing_test_link":12,"needs_browser_review":30}; gates {"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
-- Account access: 15 entities; risks {"ok":15}; gates {"auth":15,"subscription":3}
+- Account access: 16 entities; risks {"ok":15,"missing_doc_link":1}; gates {"auth":16,"subscription":3}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
 - Exchange connection and configuration: 1 entities; risks {"needs_browser_review":1}; gates {"configuration":1}
@@ -38,7 +38,7 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | missing_test_link | api_endpoint | USE /icons | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/icons | - |
+| Account access | missing_doc_link | api_endpoint | USE /icons | Test Automation Engineer | apps/api/src/router/dashboard.routes.ts#/icons | auth |
 | Dashboard overview | missing_test_link | api_endpoint | USE /logs | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/logs | - |
 | Dashboard overview | missing_test_link | api_endpoint | USE /market-stream | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/market-stream | - |
 | Dashboard overview | missing_test_link | api_endpoint | USE /markets | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/markets | - |

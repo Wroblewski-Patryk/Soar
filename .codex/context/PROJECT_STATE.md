@@ -1,3 +1,29 @@
+## 2026-07-16 LUC-1294 dashboard overview USE /icons missing-test-link closure
+
+- The generated Dashboard overview `missing_test_link` proof gap is closed
+  without adding runtime behavior or duplicate route tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/icons` now carries direct
+  generator-readable proof to `apps/api/src/modules/icons/icons.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /icons` as
+  `missing_test_link`; the same endpoint now advances to
+  `Account access / missing_doc_link`, and generated project truth moves the
+  next Dashboard overview proof-owned gap to `USE /logs`.
+- Validation note:
+  full `icons.e2e.test.ts` replay passed (`1` file / `6` tests), covering
+  unauthenticated fail-closed access plus authenticated cache, curated-fallback,
+  and placeholder-fallback lookup behavior on the mounted icons route.
+
 ## 2026-07-16 LUC-1293 source-control closure for LUC-1289
 
 - Revalidated the local dirty state left by `LUC-1289` as one coherent packet:

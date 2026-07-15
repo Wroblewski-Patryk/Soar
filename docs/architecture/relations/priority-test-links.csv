@@ -123,6 +123,7 @@ apps/api/src/router/index.ts#/auth,apps/api/src/modules/auth/auth.e2e.test.ts,LU
 apps/api/src/router/index.ts#/admin,apps/api/src/modules/admin/users/users.e2e.test.ts,LUC-1166 direct admin router mount relation to existing admin users e2e proof
 apps/api/src/router/dashboard.routes.ts#/,apps/api/src/middleware/requireAuth.test.ts,LUC-1271 direct dashboard root route relation to existing authenticated and fail-closed auth proof
 apps/api/src/router/dashboard.routes.ts#/bots,apps/api/src/modules/bots/bots.e2e.test.ts,LUC-1286 direct dashboard bots router mount relation to existing bots owner CRUD and fail-closed e2e proof
+apps/api/src/router/dashboard.routes.ts#/icons,apps/api/src/modules/icons/icons.e2e.test.ts,LUC-1294 direct dashboard icons router mount relation to existing authenticated lookup and fail-closed e2e proof
 apps/api/src/router/admin.routes.ts#/users,apps/api/src/modules/admin/users/users.e2e.test.ts,LUC-1155 direct admin users router mount relation to existing admin users e2e proof
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation

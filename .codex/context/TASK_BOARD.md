@@ -1,3 +1,33 @@
+## 2026-07-16 LUC-1294 Dashboard overview USE /icons missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/icons`.
+- Findings:
+  the repo already had focused executable proof in
+  `apps/api/src/modules/icons/icons.e2e.test.ts`, but it lacked a direct
+  generator-readable relation and verified override at the dashboard router
+  mount boundary.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/icons/icons.e2e.test.ts --run` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /icons` as `missing_test_link`.
+  The same endpoint now routes as `Account access` / `missing_doc_link`, and
+  the next Dashboard overview proof-owned gap advances to `USE /logs`.
+- Evidence:
+  `history/tasks/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16-task.md`;
+  `history/evidence/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1293 Source-control closure for LUC-1289
 
 - Status: `DONE`.

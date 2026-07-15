@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T21:05:17.592Z",
+  "generatedAt": "2026-07-15T23:01:52.046Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,8 +8,8 @@
     "items": 86,
     "flows": 7,
     "needsBrowserReview": 41,
-    "missingTestLink": 25,
-    "missingDocLink": 2,
+    "missingTestLink": 24,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
     "riskItems": 68,
@@ -21,12 +21,13 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 15,
+      "total": 16,
       "risks": {
-        "ok": 15
+        "ok": 15,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 15,
+        "auth": 16,
         "subscription": 3
       }
     },
@@ -40,10 +41,10 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 45,
+      "total": 44,
       "risks": {
         "ok": 2,
-        "missing_test_link": 13,
+        "missing_test_link": 12,
         "needs_browser_review": 30
       },
       "gates": {
@@ -97,18 +98,20 @@
       "kind": "api_endpoint",
       "name": "USE /icons",
       "path": "apps/api/src/router/dashboard.routes.ts#/icons",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 3,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 7,
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:use-logs:39b6910aae",
