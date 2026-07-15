@@ -1,3 +1,55 @@
+## 2026-07-16 LUC-1293 Source-control closure for LUC-1289
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local dirty state produced by `LUC-1289`.
+- Findings:
+  the workspace diff is a single docs/history/context/generated-output packet
+  for the `USE /bots` missing-doc-link closure, with no runtime code,
+  dependency, env, or secret-bearing scope in the bounded review.
+- Verification:
+  `git status --short --branch` -> PASS;
+  `git diff --stat` -> PASS;
+  `git diff --numstat` -> PASS;
+  `git diff --check` -> PASS with only future `LF -> CRLF` working-copy
+  warnings from Git;
+  focused `git diff -- <scoped paths>` readback -> PASS.
+- Outcome:
+  the dirty state can be closed safely with one local reversible commit while
+  keeping push status held and deploy impact at none.
+- Evidence:
+  `history/tasks/luc-1293-source-control-closure-for-luc-1289-2026-07-16-task.md`;
+  `history/evidence/luc-1293-source-control-closure-for-luc-1289-2026-07-16.md`.
+
+## 2026-07-15 LUC-1289 Account access USE /bots missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/bots`.
+- Findings:
+  the repo already had the correct owner doc family in `docs/modules/api-bots.md`,
+  but it lacked a direct generator-readable documentation relation and an
+  explicit mount note tying the shared dashboard auth boundary to the delegated
+  bots surface.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Account access: USE /bots has app-completion risk missing_doc_link.`
+  The first overall project-truth gap advances to
+  `Dashboard overview: USE /icons` as `missing_test_link`, and the only
+  remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+- Evidence:
+  `history/tasks/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1288 Source-control closure for LUC-1286
 
 - Status:

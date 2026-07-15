@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T20:14:19.118Z
+Generated: 2026-07-15T21:05:07.062Z
 
 ## Canonical Exports
 
@@ -874,6 +874,7 @@ Generated: 2026-07-15T20:14:19.118Z
 | connected_to | project:soar:7c70e892d7 | task:task:686dbdeb30 | history/tasks/luc-1282-source-control-closure-luc-1280-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:47582dd6c8 | history/tasks/luc-1284-source-control-closure-luc-1280-luc-1282-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:908c9ad7d4 | history/tasks/luc-1286-dashboard-overview-use-bots-missing-test-link-2026-07-15-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:ee07a78a6b | history/tasks/luc-1288-source-control-closure-for-luc-1286-2026-07-15-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c5ee399a01 | history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-130-luc-88-productivity-review-evidence-closure-2026-05-26:4c8237b1c5 | history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:30c5a48360 | history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-15T20:14:19.118Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2185-operator-coolify-bind-read-only-production-status-access:ccff751018 | history/tasks/luc-2185-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:982d246d0b | history/tasks/luc-2186-close-residual-actionable-missing-doc-relation-rows-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2187-inspect-high-signal-missing-test-relation-families:7669b437b7 | history/tasks/luc-2187-inspect-high-signal-missing-test-relation-families-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2188-dynamic-protected-route-fixture-proof:bb91787e43 | history/tasks/luc-2188-dynamic-protected-route-fixture-proof-2026-06-05-task.md |

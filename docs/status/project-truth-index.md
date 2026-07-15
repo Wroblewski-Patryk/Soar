@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-15T20:14:42.063Z
+Generated: 2026-07-15T21:05:20.715Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,26 +13,25 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 69 |
-| indexedAppCompletionGaps | 69 |
-| knownAppCompletionRiskItems | 69 |
-| appCompletionPriorityReviewItems | 69 |
+| appCompletionGaps | 68 |
+| indexedAppCompletionGaps | 68 |
+| knownAppCompletionRiskItems | 68 |
+| appCompletionPriorityReviewItems | 68 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 69 |
-| totalGaps | 69 |
+| indexedGaps | 68 |
+| totalGaps | 68 |
 
 ## First Gap
 
-- medium: Account access: USE /bots has app-completion risk missing_doc_link.
-- Owner: Docs Memory Lead + Project Manager
-- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
+- medium: Dashboard overview: USE /icons has app-completion risk missing_test_link.
+- Owner: Test Automation Engineer + QA Regression Lead
+- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: USE /bots has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /icons has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /logs has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /market-stream has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

@@ -1,3 +1,24 @@
+## 2026-07-15 LUC-1289 Account Access USE Bots Doc-Link Closure
+
+- Module row:
+  Account access / dashboard bots router mount documentation.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1289](/LUC/issues/LUC-1289) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/bots`,
+  and `docs/modules/api-bots.md` now records the authenticated dashboard mount
+  contract for the delegated bots lifecycle/runtime/assistant surface.
+  Generated app-completion no longer classifies `USE /bots` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15.md`.
+- Residual:
+  the first overall project-truth gap now advances to
+  `apps/api/src/router/dashboard.routes.ts#/icons` as `missing_test_link`,
+  while the remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-15 LUC-1280 Dashboard Overview USE Backtests Doc-Link Closure
 
 - Module row:

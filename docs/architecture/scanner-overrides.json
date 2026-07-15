@@ -767,6 +767,12 @@
     },
     {
       "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/bots",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
       "type": "documents",
       "evidence": "docs/modules/api-bots.md"

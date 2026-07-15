@@ -1,3 +1,47 @@
+## 2026-07-16 LUC-1293 source-control closure for LUC-1289
+
+- Revalidated the local dirty state left by `LUC-1289` as one coherent packet:
+  docs ownership updates for `apps/api/src/router/dashboard.routes.ts#/bots`,
+  matching generated graph/status refreshes, Soar state/context notes, and the
+  paired `history/tasks` plus `history/evidence` artifacts.
+- Closure decision:
+  close the packet with one local reversible commit only; hold push and deploy
+  because the scope is docs/history/context/generated outputs with no runtime
+  behavior change.
+- Residual:
+  this closure does not resolve the next project-truth gap
+  `apps/api/src/router/dashboard.routes.ts#/icons` `missing_test_link`, and it
+  leaves the remaining docs-owned gaps `GET /alerts` and `GET /metrics`
+  untouched.
+
+## 2026-07-15 LUC-1289 account access USE /bots missing-doc-link closure
+
+- The generated Account access `USE /bots` docs gap is closed without adding
+  runtime behavior or duplicate owner docs.
+- Source-truth packet:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1289-account-access-use-bots-missing-doc-link-2026-07-15.md`.
+- Readback:
+  `docs/modules/api-bots.md` now gives the authenticated dashboard
+  router-mount contract for `apps/api/src/router/dashboard.routes.ts#/bots`,
+  the refreshed graph links that entity to the canonical bots owner doc, and
+  regenerated project truth no longer emits the old `Account access: USE /bots`
+  `missing_doc_link` row. The first overall project-truth gap now advances to
+  `Dashboard overview: USE /icons` as `missing_test_link`.
+- Residual:
+  the remaining docs-owned app-completion gaps are now
+  `apps/api/src/router/index.ts#/alerts` and
+  `apps/api/src/router/index.ts#/metrics`; proof and browser-review lanes stay
+  separate.
+
 ## 2026-07-15 LUC-1288 source-control closure for LUC-1286
 
 - Revalidated the local dirty state left by `LUC-1286` as one coherent packet:

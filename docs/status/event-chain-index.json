@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T20:14:42.063Z",
+  "generatedAt": "2026-07-15T21:05:20.715Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5125,
-      "linkedRelationCount": 21344,
+      "entityCount": 5129,
+      "linkedRelationCount": 21362,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4000,
+          "count": 4004,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1981,6 +1981,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:api-deep-dive-bots-module:db18a1a6ac",
+              "type": "document",
+              "name": "API Deep-Dive: Bots Module",
+              "path": "docs/modules/api-bots.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:auth-session-deep-chain:f7d5fd2ef8",
               "type": "document",
               "name": "Auth session deep chain",
@@ -2497,14 +2505,6 @@
               "type": "document",
               "name": "API Deep-Dive: Backtests Module",
               "path": "docs/modules/api-backtests.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:api-deep-dive-bots-module:db18a1a6ac",
-              "type": "document",
-              "name": "API Deep-Dive: Bots Module",
-              "path": "docs/modules/api-bots.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 871,
-      "linkedRelationCount": 2791,
+      "entityCount": 872,
+      "linkedRelationCount": 2802,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 292,
+          "count": 293,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -10484,7 +10484,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 4004,
-      "linkedRelationCount": 12969,
+      "linkedRelationCount": 12971,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11600,6 +11600,14 @@
               "status": "implemented"
             },
             {
+              "id": "api_endpoint:use-bots:d49fee56cc",
+              "type": "api_endpoint",
+              "name": "USE /bots",
+              "path": "apps/api/src/router/dashboard.routes.ts#/bots",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "function:registerandlogin:d16ee9a69d",
               "type": "function",
               "name": "registerAndLogin",
@@ -11764,14 +11772,6 @@
               "type": "function",
               "name": "listRuntimePositionStrategies",
               "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:closebotruntimesessionposition:0d9dc5a10d",
-              "type": "function",
-              "name": "closeBotRuntimeSessionPosition",
-              "path": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
               "owner": "Test Automation Engineer",
               "status": "verified"
             }
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12976,
-      "linkedRelationCount": 38161,
+      "entityCount": 12979,
+      "linkedRelationCount": 38180,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9051,
+          "count": 9054,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
