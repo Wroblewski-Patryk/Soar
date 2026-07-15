@@ -1,3 +1,48 @@
+## 2026-07-15 LUC-1276 Source-control closure for LUC-1275
+
+- Status: `VERIFIED_LOCAL_COMMIT_READY`.
+- Scope:
+  classify and close the local dirty packet created by the `LUC-1275`
+  Dashboard overview `GET /dashboard` missing-doc-link repair.
+- Verification:
+  `git status --short` ->
+  `git diff --stat` ->
+  `git diff --numstat` ->
+  `git diff --check` ->
+  focused `git diff -- <authored paths>` ->
+  `rg -n "Dashboard overview: GET /|USE /backtests|missing_doc_link|missing-test-link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S`.
+- Outcome:
+  the dirty packet matches the expected docs/history/context scope and is
+  coherent for one reversible local commit; no push or deploy action is part of
+  this closure lane.
+- Evidence:
+  `history/tasks/luc-1276-source-control-closure-luc-1275-2026-07-15-task.md`;
+  `history/evidence/luc-1276-source-control-closure-luc-1275-2026-07-15.md`.
+
+## 2026-07-15 LUC-1275 Dashboard overview GET / missing-doc-link closure
+
+- Status: `DONE`.
+- Wake scope:
+  close the first generated Dashboard overview `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/`.
+- Findings:
+  the repo already had the correct owner doc family in `docs/modules/api-root.md`,
+  but it lacked a direct generator-readable documentation relation and an
+  explicit payload note for the authenticated dashboard root probe.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `pnpm run architecture:graph:drift:strict` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  `git diff --check`.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Dashboard overview: GET / has app-completion risk missing_doc_link.` The
+  next docs-owned Dashboard overview gap advances to `USE /backtests`.
+- Evidence:
+  `history/tasks/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1272 [Soar][Source Control Closure] Close local dirty state for LUC-1271
 
 - Status: `DONE`.

@@ -60,6 +60,10 @@ Out of scope:
 - Protected operations endpoints require authenticated admin access from an
   allowed operations network before returning readiness details, metrics,
   alerts, worker topology, or runtime freshness diagnostics.
+- `GET /dashboard` is the authenticated dashboard root reachability probe. It
+  returns only the minimal welcome payload plus the authenticated `req.user`
+  echo so the protected mount can prove session continuity before downstream
+  dashboard modules execute.
 - Dashboard and admin root probes validate that the authenticated router mounts
   are reachable under their respective boundaries.
 
@@ -86,6 +90,9 @@ Out of scope:
   network access.
 - Dashboard and admin routers apply no-store headers and route-level auth
   middleware before module routes execute.
+- `GET /dashboard` must stay minimal and must not inline dashboard business
+  module data beyond the authenticated welcome payload and current user
+  projection.
 
 ### Source-Level Auth Map: `GET /workers/ready`
 - Route definition:

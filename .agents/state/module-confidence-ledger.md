@@ -1,3 +1,24 @@
+## 2026-07-15 LUC-1275 Dashboard Overview GET Root Doc-Link Closure
+
+- Module row:
+  `api-root` / Dashboard overview root reachability probe.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1275](/LUC/issues/LUC-1275) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/`,
+  and `docs/modules/api-root.md` now records the exact `GET /dashboard`
+  payload contract as a minimal authenticated mount probe. Generated
+  app-completion no longer classifies the Dashboard overview root probe as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15-task.md`;
+  `history/evidence/luc-1275-dashboard-overview-get-missing-doc-link-2026-07-15.md`.
+- Residual:
+  Dashboard overview remains queued on later docs/test/browser lanes, with
+  `apps/api/src/router/dashboard.routes.ts#/backtests` now the first
+  docs-owned Dashboard overview gap as `missing_doc_link`.
+
 ## 2026-07-15 LUC-1198 Account Access admin root doc-link proof
 
 - Module row:

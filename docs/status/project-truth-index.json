@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T18:35:46.482Z",
+  "generatedAt": "2026-07-15T19:06:56.016Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 71,
-    "indexedAppCompletionGaps": 71,
-    "knownAppCompletionRiskItems": 71,
-    "appCompletionPriorityReviewItems": 71,
+    "appCompletionGaps": 70,
+    "indexedAppCompletionGaps": 70,
+    "knownAppCompletionRiskItems": 70,
+    "appCompletionPriorityReviewItems": 70,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 71,
-    "totalGaps": 71
+    "indexedGaps": 70,
+    "totalGaps": 70
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Dashboard overview",
-    "summary": "Dashboard overview: GET / has app-completion risk missing_doc_link.",
+    "summary": "Dashboard overview: USE /backtests has app-completion risk missing_doc_link.",
     "nextOwner": "Docs Memory Lead + Project Manager",
     "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
     "evidence": [
-      "apps/api/src/router/dashboard.routes.ts#/"
+      "apps/api/src/router/dashboard.routes.ts#/backtests"
     ],
-    "sourceItemId": "api_endpoint:get:1f75b583ca",
+    "sourceItemId": "api_endpoint:use-backtests:1db01efff8",
     "risk": "missing_doc_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: GET / has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/router/dashboard.routes.ts#/"
-      ],
-      "sourceItemId": "api_endpoint:get:1f75b583ca",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",

@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-15T18:35:46.482Z
+Generated: 2026-07-15T19:06:56.016Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,18 +13,18 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 71 |
-| indexedAppCompletionGaps | 71 |
-| knownAppCompletionRiskItems | 71 |
-| appCompletionPriorityReviewItems | 71 |
+| appCompletionGaps | 70 |
+| indexedAppCompletionGaps | 70 |
+| knownAppCompletionRiskItems | 70 |
+| appCompletionPriorityReviewItems | 70 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 71 |
-| totalGaps | 71 |
+| indexedGaps | 70 |
+| totalGaps | 70 |
 
 ## First Gap
 
-- medium: Dashboard overview: GET / has app-completion risk missing_doc_link.
+- medium: Dashboard overview: USE /backtests has app-completion risk missing_doc_link.
 - Owner: Docs Memory Lead + Project Manager
 - Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
@@ -32,7 +32,6 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: GET / has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /backtests has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /bots has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /icons has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
