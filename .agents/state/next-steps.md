@@ -1,3 +1,16 @@
+## 2026-07-15 LUC-1250 Project-Truth Ingestion Refresh Follow-Up
+
+- The stale project-truth `missing_doc_link` row for
+  `apps/web/src/app/admin/users/page.tsx` is no longer active after the
+  canonical generator-chain refresh.
+- The next generated first gap is now browser-review proof on
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx`, owned by
+  QA Regression Lead + Frontend Experience Lead.
+- A separate source-control closure lane is required for the local generated
+  docs/graphs + docs/status dirty packet.
+- Evidence:
+  `history/evidence/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1218 Stale Admin-Root Missing-Doc-Link Emission Follow-Up
 
 - The stale Account access `missing_doc_link` row for

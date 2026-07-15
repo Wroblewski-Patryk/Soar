@@ -1,3 +1,32 @@
+## 2026-07-15 LUC-1250 refresh project-truth ingestion after admin-users doc-link closure
+
+- Status: `DONE`.
+- Wake scope: determine why `project-truth` still emitted the stale Account
+  access `missing_doc_link` gap after the admin-users wrapper doc-link closure.
+- Result:
+  targeted readback showed a generated-state mismatch:
+  `app-completion-index.json` had already cleared the row, while
+  `project-truth-index.json` had not. Re-running the canonical generator chain
+  refreshed the stale packet without any generator-code change.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/app-completion-index.{json,md}` and
+  `docs/status/project-truth-index.{json,md}`.
+- Readback:
+  the old first gap for `apps/web/src/app/admin/users/page.tsx` is gone and the
+  next truthful front row is now
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` as
+  `needs_browser_review`.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, or protected
+  account mutation occurred.
+- Evidence:
+  `history/tasks/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15-task.md`;
+  `history/evidence/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1249 Account access admin users route doc-link proof
 
 - Status: `DONE`.

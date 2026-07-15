@@ -1,3 +1,27 @@
+## 2026-07-15 LUC-1250 Refresh Project-Truth Ingestion After Admin-Users Doc-Link Closure
+
+- Mission:
+  `LUC-1250-REFRESH-PROJECT-TRUTH-INGESTION-AFTER-ADMIN-USERS-DOC-LINK-CLOSURE-2026-07-15`.
+- Status:
+  `DONE / GENERATED_TRUTH_REFRESHED / STALE_PROJECT_TRUTH_GAP_CLEARED / NO_TOOLCHAIN_CODE_CHANGE`.
+- Scope:
+  Documentation Steward verification lane for stale generated project-truth
+  routing after the admin-users wrapper doc-link closure. No runtime code edit,
+  deploy, push, restart, rollback, env edit, secret/account readback, DB
+  mutation, protected browser/account action, or Paperclip toolchain
+  modification.
+- Result:
+  the canonical generator chain now aligns `project-truth-index.*` with
+  `app-completion-index.*`; the stale Account access `missing_doc_link` row for
+  `apps/web/src/app/admin/users/page.tsx` no longer emits, and the first gap
+  advances to `AdminUsersPage.tsx` browser-review proof.
+- Evidence:
+  `history/evidence/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15.md`;
+  `history/tasks/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15-task.md`.
+- Residual:
+  a separate source-control closure lane is still required for the generated
+  docs/graphs + docs/status dirty packet.
+
 ## 2026-07-15 LUC-1218 Stale Admin-Root Missing-Doc-Link Emission Refresh
 
 - Mission:

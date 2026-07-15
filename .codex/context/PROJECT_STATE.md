@@ -1,3 +1,34 @@
+## 2026-07-15 LUC-1250 stale admin-users project-truth gap cleared by canonical refresh
+
+- The stale project-truth first gap for
+  `apps/web/src/app/admin/users/page.tsx` was caused by a generated-state
+  mismatch, not a confirmed Paperclip toolchain defect.
+- Source-truth packet:
+  `docs/status/app-completion-index.json`,
+  `docs/status/app-completion-index.md`,
+  `docs/status/project-truth-index.json`,
+  `docs/status/project-truth-index.md`,
+  `history/tasks/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1250-refresh-project-truth-ingestion-after-admin-users-doc-link-closure-2026-07-15.md`.
+- Verification:
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS ->
+  targeted readback in `docs/status/app-completion-index.{json,md}` and
+  `docs/status/project-truth-index.{json,md}`.
+- Readback:
+  `docs/status/project-truth-index.json` no longer emits
+  `route:page-tsx:2c9fc36678` as the first gap. The refreshed first gap is now
+  `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` with
+  `needs_browser_review`, owned by QA Regression Lead + Frontend Experience
+  Lead.
+- Residual:
+  local generated docs/graphs + docs/status files remain dirty and need a
+  separate source-control closure lane before commit; no runtime, deploy, or
+  secret-bearing change occurred in this lane.
+
 ## 2026-07-15 LUC-1249 admin users route wrapper doc-link proved with follow-up
 
 - Canonical doc-link coverage is now present locally for
