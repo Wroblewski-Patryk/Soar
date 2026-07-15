@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T01:05:53.321Z",
+  "generatedAt": "2026-07-15T01:33:32.884Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5085,
-      "linkedRelationCount": 21133,
+      "entityCount": 5086,
+      "linkedRelationCount": 21136,
       "layers": {
         "frontend": {
           "count": 204,
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 181,
+          "count": 182,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2517,6 +2517,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:web-deep-dive-admin-module:62c6205d4d",
+              "type": "document",
+              "name": "Web Deep-Dive: Admin Module",
+              "path": "docs/modules/web-admin.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:app-completion-index:507f64f96f",
               "type": "document",
               "name": "App Completion Index",
@@ -2595,14 +2603,6 @@
               "path": "docs/modules/module-registry.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:module-documentation-status-index-canonical:aef98a486c",
-              "type": "document",
-              "name": "Module Documentation Status Index (Canonical)",
-              "path": "docs/modules/module-doc-status-index.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -2616,7 +2616,7 @@
     {
       "userFlow": "Admin operation",
       "entityCount": 102,
-      "linkedRelationCount": 327,
+      "linkedRelationCount": 328,
       "layers": {
         "frontend": {
           "count": 19,
@@ -2852,6 +2852,14 @@
               "status": "verified"
             },
             {
+              "id": "route:page-tsx:36cbd2cd9b",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/admin/page.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
               "id": "function:createadminagent:65f9f85d1e",
               "type": "function",
               "name": "createAdminAgent",
@@ -2906,14 +2914,6 @@
               "path": "apps/web/src/app/admin/layout.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:page-tsx:36cbd2cd9b",
-              "type": "route",
-              "name": "page.tsx",
-              "path": "apps/web/src/app/admin/page.tsx",
-              "owner": "QA Regression Lead",
-              "status": "verified"
             },
             {
               "id": "api_endpoint:use-subscriptions-plans:b5026ab209",
@@ -12977,7 +12977,7 @@
     {
       "userFlow": "Unclassified user workflow",
       "entityCount": 9566,
-      "linkedRelationCount": 34441,
+      "linkedRelationCount": 34442,
       "layers": {
         "frontend": {
           "count": 707,

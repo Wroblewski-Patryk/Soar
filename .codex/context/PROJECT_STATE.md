@@ -1,3 +1,31 @@
+## 2026-07-15 LUC-1218 stale admin-root missing-doc-link emission cleared by refresh
+
+- The stale Account access `missing_doc_link` routing for
+  `apps/web/src/app/admin/page.tsx` is no longer active after rerunning the
+  authoritative app-completion and project-truth generators.
+- Direct replay of the upstream classifier logic on the refreshed
+  `docs/graphs/architecture-awareness.json` returned `hasDoc=true` and
+  `hasTest=true` for `route:page-tsx:36cbd2cd9b`, matching the refreshed
+  emitted outputs.
+- Refreshed source-of-truth packet:
+  `docs/status/app-completion-index.json`,
+  `docs/status/app-completion-index.md`,
+  `docs/status/project-truth-index.json`,
+  `docs/status/project-truth-index.md`,
+  `history/tasks/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15-task.md`,
+  and
+  `history/evidence/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15.md`.
+- Readback:
+  the next generated first gap is now Admin operation browser-review on
+  `apps/web/src/app/admin/users/page.tsx`; remaining `missing_doc_link` rows
+  move to `apps/api/src/router/dashboard.routes.ts#/backtests`,
+  `apps/api/src/router/index.ts#/alerts`, and
+  `apps/api/src/router/index.ts#/metrics`.
+- Residual:
+  local generated status files remain dirty and need a separate source-control
+  closure lane before commit; no runtime, deploy, or secret-bearing change was
+  made in this lane.
+
 ## 2026-07-15 LUC-1216 source-control closure committed for LUC-1198 packet
 
 - The local dirty set left by [LUC-1198](/LUC/issues/LUC-1198) was classified

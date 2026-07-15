@@ -1,3 +1,35 @@
+## 2026-07-15 LUC-1218 stale admin-root missing-doc-link emission refresh
+
+- Status: `DONE`.
+- Wake scope: determine whether the stale Account access
+  `missing_doc_link` emission for `apps/web/src/app/admin/page.tsx` still
+  needed a generator repair lane after graph refresh.
+- Result:
+  direct replay of the authoritative builder logic already reported
+  `hasDoc=true` / `hasTest=true` for `route:page-tsx:36cbd2cd9b`, and a fresh
+  rerun of the authoritative app-completion plus project-truth generators
+  cleared the stale emitted row without any generator code change.
+- Verification:
+  direct local replay of `hasLinkedType(..., "document")` and
+  `hasLinkedType(..., "test")` against `docs/graphs/architecture-awareness.json`
+  ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  ->
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  ->
+  targeted readback in `docs/status/app-completion-index.json` and
+  `docs/status/project-truth-index.json`.
+- Readback:
+  Account access now reports `{"ok":12}` with no priority-review row for
+  `apps/web/src/app/admin/page.tsx`; the first generated gap advances to Admin
+  operation browser-review on `apps/web/src/app/admin/users/page.tsx`.
+- Residual:
+  local generated `docs/status/*` changes remain dirty and require a separate
+  source-control closure lane before commit.
+- Evidence:
+  `history/tasks/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15-task.md`;
+  `history/evidence/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1216 source-control closure for LUC-1198
 
 - Status: `DONE`.

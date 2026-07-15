@@ -1,3 +1,27 @@
+## 2026-07-15 LUC-1218 Stale Admin-Root Missing-Doc-Link Emission Refresh
+
+- Mission:
+  `LUC-1218-STALE-ADMIN-ROOT-MISSING-DOC-LINK-EMISSION-REFRESH-2026-07-15`.
+- Status:
+  `DONE / GENERATED_TRUTH_REFRESHED / STALE_EMISSION_CLEARED / NO_GENERATOR_CODE_CHANGE`.
+- Scope:
+  Delivery Project Manager verification lane for stale generated project-truth
+  routing of `apps/web/src/app/admin/page.tsx`. No runtime code edit, deploy,
+  push, restart, rollback, env edit, secret/account readback, DB mutation, or
+  protected browser/account proof.
+- Result:
+  authoritative refresh of `docs/status/app-completion-index.*` and
+  `docs/status/project-truth-index.*` cleared the stale Account access
+  `missing_doc_link` emission for the admin root route without any generator
+  code change.
+- Evidence:
+  `history/evidence/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15.md`;
+  `history/tasks/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15-task.md`.
+- Residual:
+  the next generated first gap is now Admin operation browser-review on
+  `apps/web/src/app/admin/users/page.tsx`; a separate source-control closure
+  lane is required for the local generated-status dirty packet.
+
 ## 2026-07-14 LUC-1152 Admin Operation GET Root Doc-Link Closure
 
 - Mission:

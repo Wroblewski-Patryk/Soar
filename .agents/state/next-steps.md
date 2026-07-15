@@ -1,3 +1,16 @@
+## 2026-07-15 LUC-1218 Stale Admin-Root Missing-Doc-Link Emission Follow-Up
+
+- The stale Account access `missing_doc_link` row for
+  `apps/web/src/app/admin/page.tsx` is no longer active after refreshing the
+  authoritative app-completion and project-truth generators.
+- The next generated first gap is now Admin operation browser-review on
+  `apps/web/src/app/admin/users/page.tsx`, owned by QA Regression Lead +
+  Frontend Experience Lead.
+- A separate source-control closure lane is required for the local generated
+  status packet produced by this refresh.
+- Evidence:
+  `history/evidence/luc-1218-stale-admin-root-missing-doc-link-emission-refresh-2026-07-15.md`.
+
 ## 2026-07-15 LUC-1162 Account Access USE /users Doc-Link Follow-Up
 
 - The scoped Account access `missing_doc_link` row for
