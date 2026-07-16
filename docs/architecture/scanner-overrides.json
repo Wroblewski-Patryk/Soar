@@ -674,6 +674,16 @@
         "apps/api/src/modules/logs/logs.e2e.test.ts",
         "history/evidence/luc-1303-dashboard-overview-use-logs-missing-test-link-2026-07-16.md"
       ]
+    },
+    {
+      "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview market-stream router mount through focused market-stream API e2e coverage for unauthenticated fail-closed access and authenticated validation of the SSE query contract when symbol count exceeds the route limit on the mounted stream endpoint.",
+      "evidence": [
+        "apps/api/src/modules/market-stream/marketStream.routes.e2e.test.ts",
+        "history/evidence/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16.md"
+      ]
     }
   ],
   "relationOverrides": [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T14:32:09.279Z",
+  "generatedAt": "2026-07-16T15:14:38.033Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5147,
-      "linkedRelationCount": 21455,
+      "entityCount": 5149,
+      "linkedRelationCount": 21463,
       "layers": {
         "frontend": {
           "count": 198,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 746,
+          "count": 747,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1111,6 +1111,22 @@
               "status": "tested"
             },
             {
+              "id": "api_endpoint:use-market-stream:33f6cb2c91",
+              "type": "api_endpoint",
+              "name": "USE /market-stream",
+              "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "test:marketstream-routes-e2e-test-ts:49d55bb1b6",
+              "type": "test",
+              "name": "marketStream.routes.e2e.test.ts",
+              "path": "apps/api/src/modules/market-stream/marketStream.routes.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:use-admin:9b16797c60",
               "type": "api_endpoint",
               "name": "USE /admin",
@@ -1285,28 +1301,12 @@
               "path": "apps/api/src/modules/auth/auth.service.ts#registerUser",
               "owner": "Test Automation Engineer",
               "status": "verified"
-            },
-            {
-              "id": "function:getsessionjwtexpiresin:301a733b15",
-              "type": "function",
-              "name": "getSessionJwtExpiresIn",
-              "path": "apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:getsessionttlms:5d85c8aeea",
-              "type": "function",
-              "name": "getSessionTtlMs",
-              "path": "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 4018,
+          "count": 4019,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 882,
-      "linkedRelationCount": 2860,
+      "entityCount": 886,
+      "linkedRelationCount": 2873,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 139,
+          "count": 140,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4277,14 +4277,6 @@
               "type": "api_endpoint",
               "name": "USE /backtests",
               "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "api_endpoint:use-market-stream:33f6cb2c91",
-              "type": "api_endpoint",
-              "name": "USE /market-stream",
-              "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -4871,12 +4863,20 @@
               "path": "apps/web/src/app/dashboard/markets/create/page.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "route:page-tsx:6cbd1c33d7",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/dashboard/markets/list/page.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 301,
+          "count": 304,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4008,
-      "linkedRelationCount": 12992,
+      "entityCount": 4010,
+      "linkedRelationCount": 13000,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1314,
+          "count": 1315,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2088,
+          "count": 2089,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12994,
-      "linkedRelationCount": 38271,
+      "entityCount": 12997,
+      "linkedRelationCount": 38283,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9069,
+          "count": 9072,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

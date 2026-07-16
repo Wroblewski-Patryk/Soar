@@ -1,3 +1,55 @@
+## 2026-07-16 LUC-1327 Source-control closure for LUC-1322 dirty state
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local dirty packet created by `LUC-1322`.
+- Findings:
+  all dirty paths were current and in-scope, limited to docs, generated graph
+  and status indexes, local source-of-truth context, and `history/*` evidence.
+  No runtime source, dependency, or deployment files were part of the packet.
+- Verification:
+  `git status --short` -> scoped packet only;
+  `git diff --stat` -> docs/state/history-only packet;
+  `git diff --numstat` -> coherent generated/index rebuild batch;
+  bounded high-confidence credential-signature scan across authored/untracked
+  packet files -> no matches.
+- Outcome:
+  the repo qualified for one local closure commit instead of a no-commit
+  exception.
+- Evidence:
+  `history/tasks/luc-1327-source-control-closure-for-luc-1322-2026-07-16-task.md`;
+  `history/evidence/luc-1327-source-control-closure-for-luc-1322-2026-07-16.md`.
+
+## 2026-07-16 LUC-1322 Dashboard overview USE /market-stream missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/market-stream`.
+- Findings:
+  the repo already had focused executable proof in
+  `apps/api/src/modules/market-stream/marketStream.routes.e2e.test.ts`, but it
+  lacked a direct generator-readable relation and verified override at the
+  dashboard router mount boundary.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/market-stream/marketStream.routes.e2e.test.ts --run` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /market-stream` as `missing_test_link`.
+  The same endpoint now routes as `Account access` / `missing_doc_link`, and
+  the next Dashboard overview proof-owned gap advances to `USE /markets`.
+- Evidence:
+  `history/tasks/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16-task.md`;
+  `history/evidence/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1313 Account access USE /logs missing-doc-link closure
 
 - Status: `DONE`.

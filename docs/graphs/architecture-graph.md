@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T14:31:49.446Z
+Generated: 2026-07-16T15:14:31.832Z
 
 ## Canonical Exports
 
@@ -79,7 +79,7 @@ Generated: 2026-07-16T14:31:49.446Z
 | api_endpoint | verified | USE /bots | apps/api/src/router/dashboard.routes.ts#/bots | Test Automation Engineer |
 | api_endpoint | verified | USE /icons | apps/api/src/router/dashboard.routes.ts#/icons | Test Automation Engineer |
 | api_endpoint | verified | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Test Automation Engineer |
-| api_endpoint | implemented | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Engineering Delivery Lead |
+| api_endpoint | verified | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Test Automation Engineer |
 | api_endpoint | implemented | USE /markets | apps/api/src/router/dashboard.routes.ts#/markets | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /orders | apps/api/src/router/dashboard.routes.ts#/orders | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /positions | apps/api/src/router/dashboard.routes.ts#/positions | Engineering Delivery Lead |
@@ -886,6 +886,7 @@ Generated: 2026-07-16T14:31:49.446Z
 | connected_to | project:soar:7c70e892d7 | task:luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26:2ecee2d981 | history/tasks/luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:1f4f3831a3 | history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-132-luc-19-runtime-readiness-task-closure-2026-05-26:fb150b0445 | history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:450be2565b | history/tasks/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99b465c313 | history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-16T14:31:49.446Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2173-operator-coolify-bind-read-only-production-status-access:f9a17da310 | history/tasks/luc-2173-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:01f5191627 | history/tasks/luc-2174-classify-remaining-actionable-missing-doc-rows-after-graph-refresh-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:29509942b1 | history/tasks/luc-2175-classify-remaining-actionable-missing-test-rows-after-graph-refresh-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:7438e4ac09 | history/tasks/luc-2176-extend-local-route-action-proof-matrix-remaining-non-production-families-2026-06-05-task.md |

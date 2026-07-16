@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-16T14:31:49.446Z",
+  "generated_at": "2026-07-16T15:14:31.832Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15143,
-    "relations": 41511,
+    "entities": 15146,
+    "relations": 41523,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5023,
+      "document": 5025,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1890,
+      "task": 1891,
       "test": 522
     },
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12245,
+      "implemented": 12246,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1747
+      "verified": 1749
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3804,
+      "count": 3803,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -72,14 +72,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-market-stream:33f6cb2c91",
-          "type": "api_endpoint",
-          "name": "USE /market-stream",
-          "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1626,19 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-shell.pl.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-pt-ts:0c29e9ad50",
+          "type": "feature",
+          "name": "dashboard-shell.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1739,
+      "count": 1738,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1653,14 +1653,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-market-stream:33f6cb2c91",
-          "type": "api_endpoint",
-          "name": "USE /market-stream",
-          "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3229,14 @@
           "type": "model",
           "name": "Cr",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Cr",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:da:8fedde7fa6",
+          "type": "model",
+          "name": "Da",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Da",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1468,
+      "count": 1467,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1285,
+        "curated_graph_covered": 1284,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6502,15 +6502,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-market-stream:33f6cb2c91",
-          "type": "api_endpoint",
-          "name": "USE /market-stream",
-          "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "pruneGatewayCache",
           "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#pruneGatewayCache",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resetbacktestdatagatewaycachefortests:20b5b4b3d0",
+          "type": "function",
+          "name": "resetBacktestDataGatewayCacheForTests",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#resetBacktestDataGatewayCacheForTests",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11014,7 +11014,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1753,
+      "count": 1752,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11029,14 +11029,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-market-stream:33f6cb2c91",
-          "type": "api_endpoint",
-          "name": "USE /market-stream",
-          "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -12615,14 +12607,22 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#ac",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ae:0031c96026",
+          "type": "model",
+          "name": "Ae",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ae",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 444,
+      "count": 443,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 269,
+        "curated_graph_covered": 268,
         "historical_task_archive": 141,
         "top_level_app_mount": 1
       },
@@ -13915,15 +13915,6 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-market-stream:33f6cb2c91",
-          "type": "api_endpoint",
-          "name": "USE /market-stream",
-          "path": "apps/api/src/router/dashboard.routes.ts#/market-stream",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-markets:583f095d82",
           "type": "api_endpoint",
           "name": "USE /markets",
@@ -14423,6 +14414,15 @@
           "type": "feature",
           "name": "useBacktestTradesAnalytics.ts",
           "path": "apps/web/src/features/backtest/hooks/useBacktestTradesAnalytics.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:backtests-service-ts:97b9d3c31b",
+          "type": "feature",
+          "name": "backtests.service.ts",
+          "path": "apps/web/src/features/backtest/services/backtests.service.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

@@ -1,3 +1,47 @@
+## 2026-07-16 LUC-1327 source-control closure for LUC-1322 dirty state
+
+- Classified the local `LUC-1322` dirty set as one coherent
+  docs/state/history packet with no product-code, dependency, or deploy-path
+  changes.
+- Bounded redaction check against authored and untracked packet files found no
+  matches for high-confidence credential signatures or private-key headers.
+- Local source-control decision:
+  commit the entire packet together because it carries the authored proof-link
+  change, regenerated derived indexes, project state updates, and history
+  evidence required to keep the repository source of truth aligned.
+- Closure evidence:
+  `history/tasks/luc-1327-source-control-closure-for-luc-1322-2026-07-16-task.md`
+  and
+  `history/evidence/luc-1327-source-control-closure-for-luc-1322-2026-07-16.md`.
+
+## 2026-07-16 LUC-1322 dashboard overview USE /market-stream missing-test-link closure
+
+- The generated Dashboard overview `USE /market-stream` proof gap is closed
+  without adding runtime behavior or duplicate route tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/market-stream` now carries direct
+  generator-readable proof to
+  `apps/api/src/modules/market-stream/marketStream.routes.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /market-stream` as
+  `missing_test_link`; the same endpoint now advances to `missing_doc_link`
+  under `Account access`, and generated project truth moves the next Dashboard
+  overview proof-owned gap to `USE /markets`.
+- Validation note:
+  full `marketStream.routes.e2e.test.ts` replay passed (`1` file / `2`
+  tests), covering unauthenticated fail-closed access and authenticated
+  contract rejection when the mounted stream route exceeds the symbol-limit
+  validation boundary.
+
 ## 2026-07-16 LUC-1313 account access USE /logs missing-doc-link closure
 
 - The generated Account access `USE /logs` docs gap is closed without adding
