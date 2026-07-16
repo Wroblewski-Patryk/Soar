@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T15:42:29.386Z",
+  "generatedAt": "2026-07-16T16:13:15.482Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,8 +8,8 @@
     "items": 86,
     "flows": 7,
     "needsBrowserReview": 41,
-    "missingTestLink": 22,
-    "missingDocLink": 2,
+    "missingTestLink": 21,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
     "riskItems": 65,
@@ -21,12 +21,13 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 18,
+      "total": 19,
       "risks": {
-        "ok": 18
+        "ok": 18,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 18,
+        "auth": 19,
         "subscription": 3,
         "configuration": 1
       }
@@ -41,10 +42,10 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 42,
+      "total": 41,
       "risks": {
         "ok": 2,
-        "missing_test_link": 10,
+        "missing_test_link": 9,
         "needs_browser_review": 30
       },
       "gates": {
@@ -98,18 +99,20 @@
       "kind": "api_endpoint",
       "name": "USE /markets",
       "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 3,
-      "risk": "missing_test_link"
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:use-orders:b0814be10f",

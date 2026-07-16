@@ -1,3 +1,36 @@
+## 2026-07-16 LUC-1332 Dashboard overview USE /markets missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/markets`.
+- Findings:
+  the repo already had focused executable proof in
+  `apps/api/src/modules/markets/markets.e2e.test.ts`, but it lacked a direct
+  generator-readable relation and verified override at the dashboard router
+  mount boundary.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/markets/markets.e2e.test.ts --run` ->
+  failed on pre-existing symbol-composition drift and a pre-existing Gate.io
+  timeout outside the scoped route-mount subset;
+  `pnpm --filter api exec vitest run src/modules/markets/markets.e2e.test.ts -t "rejects unauthenticated access|supports full CRUD for authenticated owner|returns public market catalog filtered by base currency and market type|enforces ownership isolation for get/update/delete" --run` ->
+  PASS (`4` tests, `14` skipped);
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /markets` as `missing_test_link`.
+  The same endpoint now routes as `Account access` / `missing_doc_link`, and
+  the next Dashboard overview proof-owned gap advances to `USE /orders`.
+- Evidence:
+  `history/tasks/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16-task.md`;
+  `history/evidence/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1330 Source-control closure for LUC-1329 dirty state
 
 - Status: `DONE`.

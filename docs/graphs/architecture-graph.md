@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T15:42:16.002Z
+Generated: 2026-07-16T16:13:10.434Z
 
 ## Canonical Exports
 
@@ -80,7 +80,7 @@ Generated: 2026-07-16T15:42:16.002Z
 | api_endpoint | verified | USE /icons | apps/api/src/router/dashboard.routes.ts#/icons | Test Automation Engineer |
 | api_endpoint | verified | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Test Automation Engineer |
 | api_endpoint | verified | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Test Automation Engineer |
-| api_endpoint | implemented | USE /markets | apps/api/src/router/dashboard.routes.ts#/markets | Engineering Delivery Lead |
+| api_endpoint | verified | USE /markets | apps/api/src/router/dashboard.routes.ts#/markets | Test Automation Engineer |
 | api_endpoint | implemented | USE /orders | apps/api/src/router/dashboard.routes.ts#/orders | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /positions | apps/api/src/router/dashboard.routes.ts#/positions | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /profile/apiKeys | apps/api/src/router/dashboard.routes.ts#/profile/apiKeys | Engineering Delivery Lead |
@@ -888,7 +888,9 @@ Generated: 2026-07-16T15:42:16.002Z
 | connected_to | project:soar:7c70e892d7 | task:luc-132-luc-19-runtime-readiness-task-closure-2026-05-26:fb150b0445 | history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:450be2565b | history/tasks/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ffa70b0986 | history/tasks/luc-1327-source-control-closure-for-luc-1322-2026-07-16-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:0f2c0f8f15 | history/tasks/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:ea92a4d8f8 | history/tasks/luc-1330-source-control-closure-for-luc-1329-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99b465c313 | history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:5a4b35fe1c | history/tasks/luc-1367-operator-soar-owner-login-verification-path-2026-06-02-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-16T15:42:16.002Z
 | connected_to | project:soar:7c70e892d7 | task:task:ca7df65562 | history/tasks/luc-2166-classify-engine-runtime-model-doc-test-gaps-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2168-engine-runtime-model-doc-graph-relations:cc6639d032 | history/tasks/luc-2168-engine-runtime-model-doc-graph-relations-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2171-operator-coolify-bind-read-only-production-status-access:4a08b63672 | history/tasks/luc-2171-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2173-operator-coolify-bind-read-only-production-status-access:f9a17da310 | history/tasks/luc-2173-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:01f5191627 | history/tasks/luc-2174-classify-remaining-actionable-missing-doc-rows-after-graph-refresh-2026-06-05-task.md |

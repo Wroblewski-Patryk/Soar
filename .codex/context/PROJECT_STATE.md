@@ -1,3 +1,32 @@
+## 2026-07-16 LUC-1332 dashboard overview USE /markets missing-test-link closure
+
+- The generated Dashboard overview `USE /markets` proof gap is closed without
+  adding runtime behavior or duplicate route tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/markets` now carries direct
+  generator-readable proof to
+  `apps/api/src/modules/markets/markets.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /markets` as
+  `missing_test_link`; the same endpoint now advances to `missing_doc_link`
+  under `Account access`, and generated project truth moves the next Dashboard
+  overview proof-owned gap to `USE /orders`.
+- Validation note:
+  the scoped route-mount subset in `markets.e2e.test.ts` passed (`4` tests,
+  `14` skipped), covering unauthenticated fail-closed access, owner CRUD,
+  mounted catalog reads, and ownership isolation. Full-file replay still
+  exposes pre-existing failures in symbol-composition and Gate.io catalog
+  coverage outside this issue's acceptance scope.
+
 ## 2026-07-16 LUC-1330 source-control closure for LUC-1329 dirty state
 
 - Classified the local `LUC-1329` worktree as one coherent docs/state/history

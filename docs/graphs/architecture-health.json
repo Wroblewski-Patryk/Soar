@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-16T15:42:16.002Z",
+  "generated_at": "2026-07-16T16:13:10.434Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15149,
-    "relations": 41543,
+    "entities": 15155,
+    "relations": 41574,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5027,
+      "document": 5031,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1892,
+      "task": 1894,
       "test": 522
     },
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12248,
+      "implemented": 12251,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1750
+      "verified": 1753
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3803,
+      "count": 3802,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -72,14 +72,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-markets:583f095d82",
-          "type": "api_endpoint",
-          "name": "USE /markets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/markets",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,6 +1626,14 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-shell.pt.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-de-ch-ts:c239c9afab",
+          "type": "feature",
+          "name": "dashboard-strategies.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -1661,8 +1661,8 @@
           "type": "api_endpoint",
           "name": "USE /markets",
           "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-orders:b0814be10f",
@@ -6507,15 +6507,6 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:use-markets:583f095d82",
-          "type": "api_endpoint",
-          "name": "USE /markets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-orders:b0814be10f",
           "type": "api_endpoint",
           "name": "USE /orders",
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "resetBacktestDataGatewayCacheForTests",
           "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#resetBacktestDataGatewayCacheForTests",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:safefloat:e1abc40238",
+          "type": "function",
+          "name": "safeFloat",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#safeFloat",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11037,8 +11037,8 @@
           "type": "api_endpoint",
           "name": "USE /markets",
           "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-orders:b0814be10f",
@@ -13919,8 +13919,8 @@
           "type": "api_endpoint",
           "name": "USE /markets",
           "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Test Automation Engineer",
           "reason": "curated_graph_covered"
         },
         {

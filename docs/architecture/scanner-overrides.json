@@ -646,6 +646,16 @@
       ]
     },
     {
+      "path": "apps/api/src/router/dashboard.routes.ts#/markets",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview markets router mount through focused markets API e2e coverage for unauthenticated fail-closed access, authenticated market-universe CRUD and catalog reads, normalized input handling, ownership isolation, and active-bot or historical-reference mutation guardrails on the mounted markets routes.",
+      "evidence": [
+        "apps/api/src/modules/markets/markets.e2e.test.ts",
+        "history/evidence/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16.md"
+      ]
+    },
+    {
       "path": "apps/api/src/router/dashboard.routes.ts#/bots",
       "status": "verified",
       "owner": "Test Automation Engineer",
