@@ -1,3 +1,61 @@
+## 2026-07-16 LUC-1350 Source-control closure for LUC-1349 dirty state
+
+- Status: `DONE`.
+- Scope:
+  classify and close the current local dirty packet created by `LUC-1349`.
+- Findings:
+  all dirty paths were current and in scope for one docs/state/history packet
+  tied to the `USE /orders` doc-link closure. No runtime source, dependency,
+  env, credential, or deployment-path files were part of the packet.
+- Verification:
+  `git status --short` -> scoped dirty packet only;
+  `git diff --stat` and `git diff --numstat` -> one coherent docs/state/history
+  batch plus generated rebuild output;
+  `git diff --check` -> PASS;
+  bounded high-confidence signature review on authored/untracked packet files ->
+  no matches;
+  focused diff review on authored source-truth files ->
+  confirms `USE /orders` doc-link intent and derived index churn;
+  `pnpm run quality:guardrails` -> PASS.
+- Outcome:
+  the `LUC-1349` packet qualified for one local source-control closure commit
+  with no push or deploy.
+- Evidence:
+  `history/tasks/luc-1350-source-control-closure-for-luc-1349-2026-07-16-task.md`;
+  `history/evidence/luc-1350-source-control-closure-for-luc-1349-2026-07-16.md`.
+
+## 2026-07-16 LUC-1349 Dashboard overview USE /orders missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the generated Dashboard overview `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/orders`.
+- Findings:
+  the repo already had the canonical orders owner doc in
+  `docs/modules/api-orders.md`, but project truth lacked a direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount note in the orders module doc.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `rg -n "USE /orders|USE /positions|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /orders` cleared, next first gap `USE /positions`;
+  `git diff --check` -> PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /orders` as `missing_doc_link`. The app-completion
+  totals now show `missingDocLink=2`, and generated project truth advances the
+  first overall gap to `Dashboard overview: USE /positions` as
+  `missing_test_link`.
+- Evidence:
+  `history/tasks/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1348 Source-control closure for LUC-149 dirty state
 
 - Status: `DONE`.

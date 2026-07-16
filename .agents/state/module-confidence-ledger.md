@@ -1,3 +1,24 @@
+## 2026-07-16 LUC-1349 Dashboard Overview USE Orders Doc-Link Closure
+
+- Module row:
+  Dashboard overview / dashboard orders router mount.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1349](/LUC/issues/LUC-1349) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/orders`,
+  and `docs/modules/api-orders.md` now records the authenticated dashboard
+  mount contract for the delegated open-orders and manual-order API surface.
+  Generated app-completion no longer classifies `USE /orders` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16.md`.
+- Residual:
+  the first overall project-truth gap now advances to
+  `apps/api/src/router/dashboard.routes.ts#/positions` as `missing_test_link`,
+  while the remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-16 LUC-1329 Account Access USE Market-Stream Doc-Link Closure
 
 - Module row:

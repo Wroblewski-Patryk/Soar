@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-16T17:29:55.335Z
+Generated: 2026-07-16T17:42:32.797Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,26 +13,25 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 64 |
-| indexedAppCompletionGaps | 64 |
-| knownAppCompletionRiskItems | 64 |
-| appCompletionPriorityReviewItems | 64 |
+| appCompletionGaps | 63 |
+| indexedAppCompletionGaps | 63 |
+| knownAppCompletionRiskItems | 63 |
+| appCompletionPriorityReviewItems | 63 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 64 |
-| totalGaps | 64 |
+| indexedGaps | 63 |
+| totalGaps | 63 |
 
 ## First Gap
 
-- medium: Dashboard overview: USE /orders has app-completion risk missing_doc_link.
-- Owner: Docs Memory Lead + Project Manager
-- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
+- medium: Dashboard overview: USE /positions has app-completion risk missing_test_link.
+- Owner: Test Automation Engineer + QA Regression Lead
+- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /orders has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /positions has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/apiKeys has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/basic has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

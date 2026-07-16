@@ -1,3 +1,48 @@
+## 2026-07-16 LUC-1350 source-control closure for LUC-1349 dirty state
+
+- Classified the local `LUC-1349` worktree as one coherent docs/state/history
+  packet for the Dashboard overview `USE /orders` doc-link closure.
+- Focused diff review showed the authored root cause is the fresh dashboard
+  router documentation relation for `apps/api/src/router/dashboard.routes.ts#/orders`
+  plus the matching mount note in `docs/modules/api-orders.md`, with the rest
+  of the packet produced by derived graph/status/context refreshes.
+- Bounded no-secret review stayed on the scoped packet only and found no
+  high-confidence credential signatures.
+- Closure decision:
+  local commit approved for the full packet without push or deploy; closure
+  evidence lives in
+  `history/tasks/luc-1350-source-control-closure-for-luc-1349-2026-07-16-task.md`
+  and
+  `history/evidence/luc-1350-source-control-closure-for-luc-1349-2026-07-16.md`.
+
+## 2026-07-16 LUC-1349 dashboard overview USE /orders missing-doc-link closure
+
+- The generated Dashboard overview `USE /orders` doc-link gap is closed
+  without changing runtime behavior or widening the orders API surface.
+- Source-truth packet:
+  `docs/modules/api-orders.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/orders` now carries direct
+  generator-readable documentation to `docs/modules/api-orders.md`, and the
+  module doc records the authenticated dashboard mount contract for delegated
+  open-order reads and manual-order command/read endpoints. Refreshed
+  app-completion no longer routes `USE /orders` as `missing_doc_link`, and
+  generated project truth moves the first overall gap to
+  `Dashboard overview: USE /positions` as `missing_test_link`.
+- Validation note:
+  architecture-awareness rebuild, strict graph drift audit, app-completion
+  rebuild, and project-truth `--apply` all passed in sequence. Remaining
+  docs-owned gaps are now limited to `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-16 LUC-1348 source-control closure for LUC-149 dirty state
 
 - Classified the local `LUC-149` worktree as one coherent generated

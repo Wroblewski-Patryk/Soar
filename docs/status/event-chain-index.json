@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T17:29:55.335Z",
+  "generatedAt": "2026-07-16T17:42:32.797Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5165,
-      "linkedRelationCount": 21544,
+      "entityCount": 5170,
+      "linkedRelationCount": 21572,
       "layers": {
         "frontend": {
           "count": 198,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 748,
+          "count": 749,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4033,
+          "count": 4036,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 185,
+          "count": 186,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2549,6 +2549,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:api-deep-dive-orders-module:fa839633c3",
+              "type": "document",
+              "name": "API Deep-Dive: Orders Module",
+              "path": "docs/modules/api-orders.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:app-completion-index:507f64f96f",
               "type": "document",
               "name": "App Completion Index",
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "UI Scorecard",
               "path": "docs/ux/ui-scorecard.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:documentation-drift-report:d2e829a2fe",
-              "type": "document",
-              "name": "Documentation Drift Report",
-              "path": "docs/analysis/documentation-drift.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 894,
-      "linkedRelationCount": 2923,
+      "entityCount": 899,
+      "linkedRelationCount": 2954,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 310,
+          "count": 314,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -4939,6 +4939,22 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1280-dashboard-overview-use-backtests-missing-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:38813b3c67",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1348-source-control-closure-for-luc-149-2026-07-16-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:589e1a4d7e",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1349-dashboard-overview-use-orders-missing-doc-link-2026-07-16-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -5501,22 +5517,6 @@
               "path": "history/tasks/luc-2799-workers-ready-smoke-principal-gate-blocked-disposition-2026-06-07-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:190d6d4200",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-181-workers-market-stream-operator-log-root-cause-packet-2026-05-26-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:6626e4470e",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-19-runtime-readiness-refresh-2026-05-26-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
@@ -5532,13 +5532,21 @@
           "truncated": false
         },
         "docs": {
-          "count": 106,
+          "count": 107,
           "sample": [
             {
               "id": "document:api-deep-dive-backtests-module:0a87980ceb",
               "type": "document",
               "name": "API Deep-Dive: Backtests Module",
               "path": "docs/modules/api-backtests.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-orders-module:fa839633c3",
+              "type": "document",
+              "name": "API Deep-Dive: Orders Module",
+              "path": "docs/modules/api-orders.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -6165,14 +6173,6 @@
               "path": "docs/architecture/nodes/SOAR-COMP-HOME-LIVE-WIDGETS.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:web-dashboard-home-module-doc:7b55c21fdb",
-              "type": "document",
-              "name": "Web dashboard home module doc",
-              "path": "docs/architecture/nodes/SOAR-DOC-WEB-DASHBOARD-HOME.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -6186,7 +6186,7 @@
     {
       "userFlow": "Exchange connection and configuration",
       "entityCount": 817,
-      "linkedRelationCount": 2996,
+      "linkedRelationCount": 2998,
       "layers": {
         "frontend": {
           "count": 28,
@@ -8375,7 +8375,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 939,
-      "linkedRelationCount": 3519,
+      "linkedRelationCount": 3521,
       "layers": {
         "frontend": {
           "count": 25,
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4020,
-      "linkedRelationCount": 13052,
+      "entityCount": 4022,
+      "linkedRelationCount": 13068,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2097,
+          "count": 2099,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13012,
-      "linkedRelationCount": 38364,
+      "entityCount": 13017,
+      "linkedRelationCount": 38393,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9087,
+          "count": 9092,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -27,6 +27,10 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/orders`.
+- Dashboard overview reaches the authenticated orders API surface through
+  `apps/api/src/router/dashboard.routes.ts#/orders`, which delegates the
+  runtime open-orders read path and the manual-order command/read endpoints to
+  this module without adding a separate dashboard-specific orders controller.
 - Depends on:
   - `prisma` order persistence.
   - exchange connector/adapter (`CcxtFuturesConnector`, `LiveOrderAdapter`).
