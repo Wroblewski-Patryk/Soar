@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T23:18:33.984Z",
+  "generatedAt": "2026-07-16T11:23:54.609Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5139,
-      "linkedRelationCount": 21411,
+      "entityCount": 5140,
+      "linkedRelationCount": 21415,
       "layers": {
         "frontend": {
           "count": 198,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 745,
+          "count": 746,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1095,6 +1095,22 @@
               "status": "tested"
             },
             {
+              "id": "api_endpoint:use-logs:39b6910aae",
+              "type": "api_endpoint",
+              "name": "USE /logs",
+              "path": "apps/api/src/router/dashboard.routes.ts#/logs",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "test:logs-e2e-test-ts:fc4700cc35",
+              "type": "test",
+              "name": "logs.e2e.test.ts",
+              "path": "apps/api/src/modules/logs/logs.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:use-admin:9b16797c60",
               "type": "api_endpoint",
               "name": "USE /admin",
@@ -1285,22 +1301,6 @@
               "path": "apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs",
               "owner": "Test Automation Engineer",
               "status": "verified"
-            },
-            {
-              "id": "function:makerequest:59ca4aee73",
-              "type": "function",
-              "name": "makeRequest",
-              "path": "apps/api/src/modules/auth/sessionToken.test.ts#makeRequest",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:restoreenv:56fb79f8b3",
-              "type": "function",
-              "name": "restoreEnv",
-              "path": "apps/api/src/modules/auth/sessionToken.test.ts#restoreEnv",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             }
           ],
           "truncated": true
@@ -3581,7 +3581,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 877,
-      "linkedRelationCount": 2832,
+      "linkedRelationCount": 2833,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4281,14 +4281,6 @@
               "status": "implemented"
             },
             {
-              "id": "api_endpoint:use-logs:39b6910aae",
-              "type": "api_endpoint",
-              "name": "USE /logs",
-              "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
               "id": "api_endpoint:use-market-stream:33f6cb2c91",
               "type": "api_endpoint",
               "name": "USE /market-stream",
@@ -4869,6 +4861,14 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/markets/[id]/edit/page.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "route:page-tsx:220e4e1fa3",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/dashboard/markets/create/page.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -13089,7 +13089,7 @@
     {
       "userFlow": "Unclassified user workflow",
       "entityCount": 12988,
-      "linkedRelationCount": 38231,
+      "linkedRelationCount": 38233,
       "layers": {
         "frontend": {
           "count": 1435,

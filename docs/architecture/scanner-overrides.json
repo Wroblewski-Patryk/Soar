@@ -664,6 +664,16 @@
         "apps/api/src/modules/icons/icons.e2e.test.ts",
         "history/evidence/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16.md"
       ]
+    },
+    {
+      "path": "apps/api/src/router/dashboard.routes.ts#/logs",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview logs router mount through focused logs API e2e coverage for unauthenticated fail-closed access, owner-only audit-log reads, source/actor/severity filtering, and visibility of runtime, execution, and exchange-sync audit events on the mounted logs route.",
+      "evidence": [
+        "apps/api/src/modules/logs/logs.e2e.test.ts",
+        "history/evidence/luc-1303-dashboard-overview-use-logs-missing-test-link-2026-07-16.md"
+      ]
     }
   ],
   "relationOverrides": [

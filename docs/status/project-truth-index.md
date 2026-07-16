@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-15T23:18:33.984Z
+Generated: 2026-07-16T11:23:54.609Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -24,15 +24,15 @@ This is the routing surface agents should use before guessing whether an app wor
 
 ## First Gap
 
-- medium: Dashboard overview: USE /logs has app-completion risk missing_test_link.
-- Owner: Test Automation Engineer + QA Regression Lead
-- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
+- medium: Account access: USE /logs has app-completion risk missing_doc_link.
+- Owner: Docs Memory Lead + Project Manager
+- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /logs has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: USE /logs has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /market-stream has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /markets has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /orders has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

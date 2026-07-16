@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-15T23:18:18.533Z
+Generated: 2026-07-16T11:23:29.332Z
 
 ## Canonical Exports
 
@@ -78,7 +78,7 @@ Generated: 2026-07-15T23:18:18.533Z
 | api_endpoint | implemented | USE /backtests | apps/api/src/router/dashboard.routes.ts#/backtests | Engineering Delivery Lead |
 | api_endpoint | verified | USE /bots | apps/api/src/router/dashboard.routes.ts#/bots | Test Automation Engineer |
 | api_endpoint | verified | USE /icons | apps/api/src/router/dashboard.routes.ts#/icons | Test Automation Engineer |
-| api_endpoint | implemented | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Engineering Delivery Lead |
+| api_endpoint | verified | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Test Automation Engineer |
 | api_endpoint | implemented | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /markets | apps/api/src/router/dashboard.routes.ts#/markets | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /orders | apps/api/src/router/dashboard.routes.ts#/orders | Engineering Delivery Lead |

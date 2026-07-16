@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-15T23:18:18.533Z
+Generated: 2026-07-16T11:23:29.332Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -28,14 +28,14 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 183 |
 | deprecated | 10 |
-| implemented | 12242 |
+| implemented | 12241 |
 | in_progress | 29 |
 | tested | 929 |
-| verified | 1744 |
+| verified | 1745 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 3805
+- Raw implementation entities without inferred tests: 3804
 - Actionable implementation entities without inferred tests: 2547
 - Raw implementation entities without inferred docs: 1740
 - Actionable implementation entities without inferred docs: 1450
@@ -148,7 +148,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
 - curated_graph_covered: api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
 - curated_graph_covered: api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
-- curated_graph_covered: api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
 - curated_graph_covered: api_endpoint: USE /market-stream (apps/api/src/router/dashboard.routes.ts#/market-stream)
 - curated_graph_covered: api_endpoint: USE /markets (apps/api/src/router/dashboard.routes.ts#/markets)
 - curated_graph_covered: api_endpoint: USE /orders (apps/api/src/router/dashboard.routes.ts#/orders)
@@ -183,6 +182,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: RuntimeDataSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx)
 - curated_graph_covered: component: RuntimeOnboardingSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx)
 - curated_graph_covered: component: HomeLiveWidgets.tsx (apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx)
+- curated_graph_covered: component: SearchableMultiSelect.tsx (apps/web/src/features/markets/components/SearchableMultiSelect.tsx)
 
 ## Classified Task-Linkage Noise
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 65, relation entries: 76).
-- Override summary: excluded files 0, entity overrides 65, relation overrides 76, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 66, relation entries: 76).
+- Override summary: excluded files 0, entity overrides 66, relation overrides 76, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

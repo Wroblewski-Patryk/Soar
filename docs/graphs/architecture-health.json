@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-15T23:18:18.533Z",
+  "generated_at": "2026-07-16T11:23:29.332Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
     "entities": 15137,
-    "relations": 41471,
+    "relations": 41473,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
@@ -25,15 +25,15 @@
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12242,
+      "implemented": 12241,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1744
+      "verified": 1745
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3805,
+      "count": 3804,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -72,14 +72,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-logs:39b6910aae",
-          "type": "api_endpoint",
-          "name": "USE /logs",
-          "path": "apps/api/src/router/dashboard.routes.ts#/logs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,6 +1626,14 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-shell.en.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-pl-ts:ac0407998d",
+          "type": "feature",
+          "name": "dashboard-shell.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -1661,8 +1661,8 @@
           "type": "api_endpoint",
           "name": "USE /logs",
           "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-market-stream:33f6cb2c91",
@@ -6507,15 +6507,6 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:use-logs:39b6910aae",
-          "type": "api_endpoint",
-          "name": "USE /logs",
-          "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-market-stream:33f6cb2c91",
           "type": "api_endpoint",
           "name": "USE /market-stream",
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "openInterestPeriodForTimeframe",
           "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#openInterestPeriodForTimeframe",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:prunegatewaycache:d666a4a1ff",
+          "type": "function",
+          "name": "pruneGatewayCache",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#pruneGatewayCache",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11037,8 +11037,8 @@
           "type": "api_endpoint",
           "name": "USE /logs",
           "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-market-stream:33f6cb2c91",
@@ -13919,8 +13919,8 @@
           "type": "api_endpoint",
           "name": "USE /logs",
           "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Test Automation Engineer",
           "reason": "curated_graph_covered"
         },
         {

@@ -1,3 +1,30 @@
+## 2026-07-16 LUC-1303 dashboard overview USE /logs missing-test-link closure
+
+- The generated Dashboard overview `USE /logs` proof gap is closed without
+  adding runtime behavior or duplicate route tests.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1303-dashboard-overview-use-logs-missing-test-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1303-dashboard-overview-use-logs-missing-test-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/logs` now carries direct
+  generator-readable proof to `apps/api/src/modules/logs/logs.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /logs` as
+  `missing_test_link`; the same endpoint now advances to `missing_doc_link`,
+  and generated project truth moves the next Dashboard overview proof-owned gap
+  to `USE /market-stream`.
+- Validation note:
+  full `logs.e2e.test.ts` replay passed (`1` file / `3` tests), covering
+  unauthenticated fail-closed access, owner-only audit log visibility,
+  source/actor/severity filtering, and mounted-route visibility for runtime,
+  execution, and exchange-sync audit events.
+
 ## 2026-07-16 LUC-1294 dashboard overview USE /icons missing-test-link closure
 
 - The generated Dashboard overview `missing_test_link` proof gap is closed
