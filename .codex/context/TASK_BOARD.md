@@ -1,3 +1,32 @@
+## 2026-07-16 LUC-1348 Source-control closure for LUC-149 dirty state
+
+- Status: `DONE`.
+- Scope:
+  classify and close the current local dirty packet still present after
+  `LUC-149`.
+- Findings:
+  all dirty paths were current and in scope for one generated docs/status
+  packet. No product-code, dependency, env, or deploy-path files were part of
+  the packet.
+- Verification:
+  `git status --short` -> scoped packet only;
+  `git diff --stat` and `git diff --numstat` -> coherent generated batch;
+  `git diff --check` -> PASS;
+  bounded high-confidence signature review on the packet -> no matches;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `pnpm run quality:guardrails` -> PASS.
+- Outcome:
+  the `LUC-149` packet qualified for one local source-control closure commit
+  with no push or deploy. Current generated truth now routes
+  `Dashboard overview: USE /orders` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1348-source-control-closure-for-luc-149-2026-07-16-task.md`.
+
 ## 2026-07-16 LUC-1332 Dashboard overview USE /markets missing-test-link closure
 
 - Status: `DONE`.

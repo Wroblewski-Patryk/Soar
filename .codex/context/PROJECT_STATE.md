@@ -1,3 +1,20 @@
+## 2026-07-16 LUC-1348 source-control closure for LUC-149 dirty state
+
+- Classified the local `LUC-149` worktree as one coherent generated
+  docs/status packet with no product-code, dependency, env, or deployment-path
+  drift.
+- Focused diff review showed the authored root cause is the fresh proof-link
+  row for `apps/api/src/router/dashboard.routes.ts#/orders` to
+  `apps/api/src/modules/orders/orders-positions.e2e.test.ts`, with the rest of
+  the packet coming from derived architecture-awareness and app-completion
+  rebuilds.
+- Bounded no-secret review stayed on the scoped packet only and found no
+  high-confidence credential signatures.
+- Closure decision:
+  local commit approved for the full packet without push or deploy; closure
+  evidence lives in
+  `history/tasks/luc-1348-source-control-closure-for-luc-149-2026-07-16-task.md`.
+
 ## 2026-07-16 LUC-1332 dashboard overview USE /markets missing-test-link closure
 
 - The generated Dashboard overview `USE /markets` proof gap is closed without

@@ -127,6 +127,7 @@ apps/api/src/router/dashboard.routes.ts#/icons,apps/api/src/modules/icons/icons.
 apps/api/src/router/dashboard.routes.ts#/logs,apps/api/src/modules/logs/logs.e2e.test.ts,LUC-1303 direct dashboard logs router mount relation to existing owner-scoped audit log and fail-closed e2e proof
 apps/api/src/router/dashboard.routes.ts#/market-stream,apps/api/src/modules/market-stream/marketStream.routes.e2e.test.ts,LUC-1322 direct dashboard market-stream router mount relation to existing authenticated SSE contract and fail-closed e2e proof
 apps/api/src/router/dashboard.routes.ts#/markets,apps/api/src/modules/markets/markets.e2e.test.ts,LUC-1332 direct dashboard markets router mount relation to existing owner-scoped universe CRUD, catalog, and fail-closed e2e proof
+apps/api/src/router/dashboard.routes.ts#/orders,apps/api/src/modules/orders/orders-positions.e2e.test.ts,LUC-1343 direct dashboard orders router mount relation to existing authenticated owner-scoped read and write contract e2e proof
 apps/api/src/router/admin.routes.ts#/users,apps/api/src/modules/admin/users/users.e2e.test.ts,LUC-1155 direct admin users router mount relation to existing admin users e2e proof
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation

@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-16T16:35:14.023Z
+Generated: 2026-07-16T17:29:55.339Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5033 |
+| document | 5036 |
 | feature | 291 |
 | function | 5318 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1895 |
+| task | 1897 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,23 +28,23 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 183 |
 | deprecated | 10 |
-| implemented | 12253 |
+| implemented | 12256 |
 | in_progress | 29 |
 | tested | 929 |
-| verified | 1754 |
+| verified | 1756 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 3802
+- Raw implementation entities without inferred tests: 3801
 - Actionable implementation entities without inferred tests: 2547
-- Raw implementation entities without inferred docs: 1737
+- Raw implementation entities without inferred docs: 1736
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1466
+- Classified inferred-link noise: 1465
 - Raw tasks without architecture links: 141
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 1751
+- Raw implementation entities without task links: 1750
 - Actionable implementation entities without task links: 1450
-- Classified task-linkage noise: 442
+- Classified task-linkage noise: 441
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1283
+- curated_graph_covered: 1282
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -148,7 +148,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
 - curated_graph_covered: api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
 - curated_graph_covered: api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
-- curated_graph_covered: api_endpoint: USE /orders (apps/api/src/router/dashboard.routes.ts#/orders)
 - curated_graph_covered: api_endpoint: USE /positions (apps/api/src/router/dashboard.routes.ts#/positions)
 - curated_graph_covered: api_endpoint: USE /profile/apiKeys (apps/api/src/router/dashboard.routes.ts#/profile/apiKeys)
 - curated_graph_covered: api_endpoint: USE /profile/basic (apps/api/src/router/dashboard.routes.ts#/profile/basic)
@@ -183,11 +182,12 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: SearchableMultiSelect.tsx (apps/web/src/features/markets/components/SearchableMultiSelect.tsx)
 - curated_graph_covered: component: Security.tsx (apps/web/src/features/profile/components/Security.tsx)
 - curated_graph_covered: component: Subscription.tsx (apps/web/src/features/profile/components/Subscription.tsx)
+- curated_graph_covered: component: Additional.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Additional.tsx)
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 267
+- curated_graph_covered: 266
 - historical_task_archive: 141
 - top_level_app_mount: 1
 

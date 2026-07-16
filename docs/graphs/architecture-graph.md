@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T16:35:14.023Z
+Generated: 2026-07-16T17:29:55.339Z
 
 ## Canonical Exports
 
@@ -892,6 +892,8 @@ Generated: 2026-07-16T16:35:14.023Z
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ea92a4d8f8 | history/tasks/luc-1330-source-control-closure-for-luc-1329-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b37789568d | history/tasks/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:4fbe62c3b8 | history/tasks/luc-1336-account-access-use-markets-missing-doc-link-2026-07-16-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:38813b3c67 | history/tasks/luc-1348-source-control-closure-for-luc-149-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99b465c313 | history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:5a4b35fe1c | history/tasks/luc-1367-operator-soar-owner-login-verification-path-2026-06-02-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-16T16:35:14.023Z
 | connected_to | project:soar:7c70e892d7 | task:task:aeacb85d8e | history/tasks/luc-2163-normalize-backend-model-missing-doc-links-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9b8ddad6b2 | history/tasks/luc-2164-reconcile-shared-web-ui-missing-test-relation-rows-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:34dface07f | history/tasks/luc-2165-classify-second-wave-script-tooling-relation-backlog-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:ca7df65562 | history/tasks/luc-2166-classify-engine-runtime-model-doc-test-gaps-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2168-engine-runtime-model-doc-graph-relations:cc6639d032 | history/tasks/luc-2168-engine-runtime-model-doc-graph-relations-2026-06-05-task.md |

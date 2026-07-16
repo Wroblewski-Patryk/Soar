@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T16:37:22.708Z",
+  "generatedAt": "2026-07-16T17:29:55.335Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5164,
-      "linkedRelationCount": 21540,
+      "entityCount": 5165,
+      "linkedRelationCount": 21544,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4032,
+          "count": 4033,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 892,
-      "linkedRelationCount": 2915,
+      "entityCount": 894,
+      "linkedRelationCount": 2923,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 141,
+          "count": 142,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4287,6 +4287,14 @@
               "path": "apps/api/src/router/dashboard.routes.ts#/orders",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:orders-positions-e2e-test-ts:279b1b7e37",
+              "type": "test",
+              "name": "orders-positions.e2e.test.ts",
+              "path": "apps/api/src/modules/orders/orders-positions.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "api_endpoint:use-positions:e3a48a2408",
@@ -4863,20 +4871,12 @@
               "path": "apps/web/src/app/dashboard/markets/list/page.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:page-tsx:2e9b7e490f",
-              "type": "route",
-              "name": "page.tsx",
-              "path": "apps/web/src/app/dashboard/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 309,
+          "count": 310,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4016,
-      "linkedRelationCount": 13040,
+      "entityCount": 4020,
+      "linkedRelationCount": 13052,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1316,
+          "count": 1317,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2094,
+          "count": 2097,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13009,
-      "linkedRelationCount": 38354,
+      "entityCount": 13012,
+      "linkedRelationCount": 38364,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9084,
+          "count": 9087,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

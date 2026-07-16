@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-16T16:35:14.023Z",
+  "generated_at": "2026-07-16T17:29:55.339Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15158,
-    "relations": 41594,
+    "entities": 15163,
+    "relations": 41613,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5033,
+      "document": 5036,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1895,
+      "task": 1897,
       "test": 522
     },
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12253,
+      "implemented": 12256,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1754
+      "verified": 1756
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3802,
+      "count": 3801,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -72,14 +72,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-orders:b0814be10f",
-          "type": "api_endpoint",
-          "name": "USE /orders",
-          "path": "apps/api/src/router/dashboard.routes.ts#/orders",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1626,19 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-strategies.de-CH.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-en-ts:322bc4e72a",
+          "type": "feature",
+          "name": "dashboard-strategies.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1737,
+      "count": 1736,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1653,14 +1653,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-orders:b0814be10f",
-          "type": "api_endpoint",
-          "name": "USE /orders",
-          "path": "apps/api/src/router/dashboard.routes.ts#/orders",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3229,14 @@
           "type": "model",
           "name": "dc",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#dc",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:dc:6e97926097",
+          "type": "model",
+          "name": "Dc",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Dc",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1466,
+      "count": 1465,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1283,
+        "curated_graph_covered": 1282,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6502,15 +6502,6 @@
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-orders:b0814be10f",
-          "type": "api_endpoint",
-          "name": "USE /orders",
-          "path": "apps/api/src/router/dashboard.routes.ts#/orders",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "safeFloat",
           "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#safeFloat",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:setdbcandledelegatefortests:06d533a0cf",
+          "type": "function",
+          "name": "setDbCandleDelegateForTests",
+          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#setDbCandleDelegateForTests",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11014,7 +11014,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1751,
+      "count": 1750,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11029,14 +11029,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-orders:b0814be10f",
-          "type": "api_endpoint",
-          "name": "USE /orders",
-          "path": "apps/api/src/router/dashboard.routes.ts#/orders",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -12615,14 +12607,22 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ai",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:al:73c68ca57a",
+          "type": "model",
+          "name": "Al",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Al",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 442,
+      "count": 441,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 267,
+        "curated_graph_covered": 266,
         "historical_task_archive": 141,
         "top_level_app_mount": 1
       },
@@ -13915,15 +13915,6 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-orders:b0814be10f",
-          "type": "api_endpoint",
-          "name": "USE /orders",
-          "path": "apps/api/src/router/dashboard.routes.ts#/orders",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-positions:e3a48a2408",
           "type": "api_endpoint",
           "name": "USE /positions",
@@ -14423,6 +14414,15 @@
           "type": "feature",
           "name": "backtestSymbolStats.ts",
           "path": "apps/web/src/features/backtest/utils/backtestSymbolStats.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:nonoverlappingtradesegments-ts:b394271b25",
+          "type": "feature",
+          "name": "nonOverlappingTradeSegments.ts",
+          "path": "apps/web/src/features/backtest/utils/nonOverlappingTradeSegments.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
