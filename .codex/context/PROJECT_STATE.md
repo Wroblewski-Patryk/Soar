@@ -1,3 +1,31 @@
+## 2026-07-16 LUC-1313 account access USE /logs missing-doc-link closure
+
+- The generated Account access `USE /logs` docs gap is closed without adding
+  runtime behavior or duplicate owner docs.
+- Source-truth packet:
+  `docs/modules/api-logs.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16.md`.
+- Readback:
+  `docs/modules/api-logs.md` now gives the authenticated dashboard
+  router-mount contract for `apps/api/src/router/dashboard.routes.ts#/logs`,
+  the refreshed graph links that entity to the canonical logs owner doc, and
+  regenerated project truth no longer emits the old `Account access: USE /logs`
+  `missing_doc_link` row. The first overall project-truth gap now advances to
+  `Dashboard overview: USE /market-stream` as `missing_test_link`.
+- Residual:
+  the remaining docs-owned app-completion gaps are now
+  `apps/api/src/router/index.ts#/alerts` and
+  `apps/api/src/router/index.ts#/metrics`; proof and browser-review lanes stay
+  separate.
+
 ## 2026-07-16 LUC-1303 dashboard overview USE /logs missing-test-link closure
 
 - The generated Dashboard overview `USE /logs` proof gap is closed without

@@ -1,3 +1,24 @@
+## 2026-07-16 LUC-1313 Account Access USE Logs Doc-Link Closure
+
+- Module row:
+  Account access / dashboard logs router mount documentation.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1313](/LUC/issues/LUC-1313) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/logs`,
+  and `docs/modules/api-logs.md` now records the authenticated dashboard mount
+  contract for the delegated audit-log read surface. Generated app-completion
+  no longer classifies `USE /logs` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16.md`.
+- Residual:
+  the first overall project-truth gap now advances to
+  `apps/api/src/router/dashboard.routes.ts#/market-stream` as
+  `missing_test_link`, while the remaining docs-owned gaps are
+  `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-15 LUC-1289 Account Access USE Bots Doc-Link Closure
 
 - Module row:

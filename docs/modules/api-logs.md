@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/logs`
 - Owner: backend/observability
-- Last updated: 2026-04-12
+- Last updated: 2026-07-16
 - Related planning task: `DCP-07`
 
 ## 1. Purpose and Scope
@@ -43,6 +43,11 @@ Out of scope:
   - `GET /dashboard/logs`
 - Rate limit:
   - 120 requests per 60 seconds.
+- Router mounts:
+  - `USE /logs` delegates the authenticated dashboard mount in
+    `apps/api/src/router/dashboard.routes.ts` into `logsRouter`, making the
+    audit-trail read surface reachable only after the shared `requireAuth`
+    boundary succeeds.
 
 ## 6. Security and Risk Guardrails
 - Auth required for access.
@@ -65,4 +70,3 @@ pnpm --filter api test -- src/modules/logs/logs.e2e.test.ts src/modules/paginati
 ## 9. Open Issues and Follow-Ups
 - Add total-count envelope for richer paginated UI controls.
 - Consider index tuning if log volume growth impacts query latency.
-

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T11:23:29.332Z
+Generated: 2026-07-16T14:31:49.446Z
 
 ## Canonical Exports
 
@@ -880,9 +880,11 @@ Generated: 2026-07-16T11:23:29.332Z
 | connected_to | project:soar:7c70e892d7 | task:task:aeba61c576 | history/tasks/luc-1293-source-control-closure-for-luc-1289-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:04e8f70a9f | history/tasks/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-130-luc-88-productivity-review-evidence-closure-2026-05-26:4c8237b1c5 | history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:f623777aa1 | history/tasks/luc-1303-dashboard-overview-use-logs-missing-test-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:30c5a48360 | history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01:f2b6c63f0f | history/tasks/luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26:2ecee2d981 | history/tasks/luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:1f4f3831a3 | history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-132-luc-19-runtime-readiness-task-closure-2026-05-26:fb150b0445 | history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-16T11:23:29.332Z
 | connected_to | project:soar:7c70e892d7 | task:task:01f5191627 | history/tasks/luc-2174-classify-remaining-actionable-missing-doc-rows-after-graph-refresh-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:29509942b1 | history/tasks/luc-2175-classify-remaining-actionable-missing-test-rows-after-graph-refresh-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:7438e4ac09 | history/tasks/luc-2176-extend-local-route-action-proof-matrix-remaining-non-production-families-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:9244ec0c29 | history/tasks/luc-2177-semantic-route-api-dto-response-parity-audit-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2181-operator-coolify-bind-read-only-production-status-access:f6638f79a7 | history/tasks/luc-2181-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

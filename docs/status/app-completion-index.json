@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T11:23:47.396Z",
+  "generatedAt": "2026-07-16T14:32:01.922Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 41,
     "missingTestLink": 23,
-    "missingDocLink": 3,
+    "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 67,
-    "appCompletionRiskItems": 67,
-    "priorityReviewItems": 67,
+    "riskItems": 66,
+    "appCompletionRiskItems": 66,
+    "priorityReviewItems": 66,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -23,8 +23,7 @@
       "userFlow": "Account access",
       "total": 17,
       "risks": {
-        "ok": 16,
-        "missing_doc_link": 1
+        "ok": 17
       },
       "gates": {
         "auth": 17,
@@ -93,28 +92,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "api_endpoint:use-logs:39b6910aae",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /logs",
-      "path": "apps/api/src/router/dashboard.routes.ts#/logs",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Account access",
-      "gates": [
-        "auth",
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 3,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "api_endpoint:use-market-stream:33f6cb2c91",
       "type": "api_endpoint",

@@ -1,3 +1,32 @@
+## 2026-07-16 LUC-1313 Account access USE /logs missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/logs`.
+- Findings:
+  the repo already had the correct owner doc family in `docs/modules/api-logs.md`,
+  but it lacked a direct generator-readable documentation relation and an
+  explicit mount note tying the shared dashboard auth boundary to the delegated
+  logs surface.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Account access: USE /logs has app-completion risk missing_doc_link.`
+  The first overall project-truth gap advances to
+  `Dashboard overview: USE /market-stream` as `missing_test_link`, and the
+  only remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+- Evidence:
+  `history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1303 Dashboard overview USE /logs missing-test-link closure
 
 - Status: `DONE`.

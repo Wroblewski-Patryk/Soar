@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T11:23:54.609Z",
+  "generatedAt": "2026-07-16T14:32:09.279Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5140,
-      "linkedRelationCount": 21415,
+      "entityCount": 5147,
+      "linkedRelationCount": 21455,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4012,
+          "count": 4018,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 183,
+          "count": 184,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -1993,6 +1993,14 @@
               "type": "document",
               "name": "API Deep-Dive: Icons Module",
               "path": "docs/modules/api-icons.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-logs-module:e56b4bd4db",
+              "type": "document",
+              "name": "API Deep-Dive: Logs Module",
+              "path": "docs/modules/api-logs.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "Mobile Modules Index",
               "path": "docs/modules/mobile-module-index.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:mobile-module-bootstrap-scaffold:b54ddbe9ed",
-              "type": "document",
-              "name": "Mobile Module: Bootstrap Scaffold",
-              "path": "docs/modules/mobile-bootstrap.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 877,
-      "linkedRelationCount": 2833,
+      "entityCount": 882,
+      "linkedRelationCount": 2860,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 138,
+          "count": 139,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 297,
+          "count": 301,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12988,
-      "linkedRelationCount": 38233,
+      "entityCount": 12994,
+      "linkedRelationCount": 38271,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9063,
+          "count": 9069,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-16T11:23:29.332Z
+Generated: 2026-07-16T14:31:49.446Z
 
 ## Contract
 
@@ -11,14 +11,14 @@ Every task should identify the feature/module it changes, dependency expectation
 - Actionable tasks without architecture links: 0
 - Raw tasks without architecture links: 141
 - Actionable implementation entities without task links: 1450
-- Raw implementation entities without task links: 1754
-- Classified task-linkage noise: 445
+- Raw implementation entities without task links: 1753
+- Classified task-linkage noise: 444
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 270
+- curated_graph_covered: 269
 - historical_task_archive: 141
 - top_level_app_mount: 1
 
@@ -157,7 +157,6 @@ Every task should identify the feature/module it changes, dependency expectation
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
-- api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
 - api_endpoint: USE /market-stream (apps/api/src/router/dashboard.routes.ts#/market-stream)
 - api_endpoint: USE /markets (apps/api/src/router/dashboard.routes.ts#/markets)
 - api_endpoint: USE /orders (apps/api/src/router/dashboard.routes.ts#/orders)
@@ -195,3 +194,4 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: Indicators.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx)
 - component: Open.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Open.tsx)
 - component: StrategyPresetPicker.tsx (apps/web/src/features/strategies/components/StrategyPresetPicker.tsx)
+- component: sections.tsx (apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx)
