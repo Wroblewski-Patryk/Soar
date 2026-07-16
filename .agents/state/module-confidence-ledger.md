@@ -1,3 +1,24 @@
+## 2026-07-16 LUC-1329 Account Access USE Market-Stream Doc-Link Closure
+
+- Module row:
+  Account access / dashboard market-stream router mount documentation.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1329](/LUC/issues/LUC-1329) added direct module documentation and
+  canonical graph relations for
+  `apps/api/src/router/dashboard.routes.ts#/market-stream`, and
+  `docs/modules/api-market-stream.md` now records the authenticated dashboard
+  mount contract for the delegated SSE surface. Generated app-completion no
+  longer classifies `USE /market-stream` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16.md`.
+- Residual:
+  the first overall project-truth gap now advances to
+  `apps/api/src/router/dashboard.routes.ts#/markets` as `missing_test_link`,
+  while the remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-16 LUC-1313 Account Access USE Logs Doc-Link Closure
 
 - Module row:

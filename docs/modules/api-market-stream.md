@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/market-stream`
 - Owner: backend/runtime-infra
-- Last updated: 2026-05-08
+- Last updated: 2026-07-16
 - Related planning task: `EXCHANGE2-05`
 
 ## 1. Purpose and Scope
@@ -63,6 +63,11 @@ Out of scope:
 ## 5. API and UI Integration
 - Direct endpoint:
   - `GET /dashboard/market-stream/events`
+- Router mounts:
+  - `USE /market-stream` delegates the authenticated dashboard mount in
+    `apps/api/src/router/dashboard.routes.ts` into `marketStreamRouter`, so the
+    SSE surface remains reachable only after the shared `requireAuth` boundary
+    succeeds.
 - UI integration:
   - dashboard home live widgets.
   - runtime views requiring near-real-time ticker/candle updates.

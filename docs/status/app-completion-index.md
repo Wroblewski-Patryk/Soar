@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-16T15:14:37.783Z
+Generated: 2026-07-16T15:42:29.386Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -17,17 +17,17 @@ Internal functions and modules are implementation details: they receive proof th
 - User flows: 7
 - Needs browser/screenshot review: 41
 - Missing test link: 22
-- Missing doc link: 3
+- Missing doc link: 2
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 66
-- Priority review items indexed: 66/66
+- Known non-ok risk items: 65
+- Priority review items indexed: 65/65
 - Priority review truncated: false
 
 ## Flow Summary
 
 - Dashboard overview: 42 entities; risks {"ok":2,"missing_test_link":10,"needs_browser_review":30}; gates {"configuration":1}
-- Account access: 18 entities; risks {"ok":17,"missing_doc_link":1}; gates {"auth":18,"subscription":3,"configuration":1}
+- Account access: 18 entities; risks {"ok":18}; gates {"auth":18,"subscription":3,"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | missing_doc_link | api_endpoint | USE /market-stream | Test Automation Engineer | apps/api/src/router/dashboard.routes.ts#/market-stream | auth |
 | Dashboard overview | missing_test_link | api_endpoint | USE /markets | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/markets | - |
 | Dashboard overview | missing_test_link | api_endpoint | USE /orders | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/orders | - |
 | Dashboard overview | missing_test_link | api_endpoint | USE /positions | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/positions | - |

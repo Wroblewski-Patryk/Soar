@@ -1,3 +1,55 @@
+## 2026-07-16 LUC-1330 Source-control closure for LUC-1329 dirty state
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local dirty packet left by `LUC-1329`.
+- Classification:
+  all dirty paths were `current` and in scope for one docs/state/history packet;
+  no stale or out-of-scope paths were found.
+- Verification:
+  `git status --short` -> scoped dirty packet only;
+  `git diff --stat` and `git diff --numstat` -> coherent docs/state/history
+  batch plus generated rebuild output;
+  `git diff --check` -> PASS;
+  bounded high-confidence signature review on authored/untracked packet files ->
+  no matches.
+- Outcome:
+  the `LUC-1329` packet qualified for one local source-control closure commit
+  with no push or deploy.
+- Evidence:
+  `history/tasks/luc-1330-source-control-closure-for-luc-1329-2026-07-16-task.md`;
+  `history/evidence/luc-1330-source-control-closure-for-luc-1329-2026-07-16.md`.
+
+## 2026-07-16 LUC-1329 Account access USE /market-stream missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the first generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/market-stream`.
+- Findings:
+  the market-stream owner doc already covered the delegated
+  `/dashboard/market-stream/events` SSE contract, but it lacked both a direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount note tying the shared `requireAuth` boundary to the
+  delegated stream surface.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/project-truth-index.md` no longer emits
+  `Account access: USE /market-stream has app-completion risk missing_doc_link.`
+  The first overall project-truth gap advances to
+  `Dashboard overview: USE /markets` as `missing_test_link`, and the only
+  remaining docs-owned gaps are `GET /alerts` and `GET /metrics`.
+- Evidence:
+  `history/tasks/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16-task.md`;
+  `history/evidence/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1327 Source-control closure for LUC-1322 dirty state
 
 - Status: `DONE`.

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T15:14:31.832Z
+Generated: 2026-07-16T15:42:16.002Z
 
 ## Canonical Exports
 
@@ -887,6 +887,7 @@ Generated: 2026-07-16T15:14:31.832Z
 | connected_to | project:soar:7c70e892d7 | task:task:1f4f3831a3 | history/tasks/luc-1313-account-access-use-logs-missing-doc-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-132-luc-19-runtime-readiness-task-closure-2026-05-26:fb150b0445 | history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:450be2565b | history/tasks/luc-1322-dashboard-overview-use-market-stream-missing-test-link-2026-07-16-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:ffa70b0986 | history/tasks/luc-1327-source-control-closure-for-luc-1322-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99b465c313 | history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-16T15:14:31.832Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2171-operator-coolify-bind-read-only-production-status-access:4a08b63672 | history/tasks/luc-2171-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2173-operator-coolify-bind-read-only-production-status-access:f9a17da310 | history/tasks/luc-2173-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:01f5191627 | history/tasks/luc-2174-classify-remaining-actionable-missing-doc-rows-after-graph-refresh-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:29509942b1 | history/tasks/luc-2175-classify-remaining-actionable-missing-test-rows-after-graph-refresh-2026-06-05-task.md |

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T15:14:38.033Z",
+  "generatedAt": "2026-07-16T15:42:32.857Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5149,
-      "linkedRelationCount": 21463,
+      "entityCount": 5154,
+      "linkedRelationCount": 21489,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4019,
+          "count": 4024,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 886,
-      "linkedRelationCount": 2873,
+      "entityCount": 887,
+      "linkedRelationCount": 2884,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 304,
+          "count": 305,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -10484,7 +10484,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 4010,
-      "linkedRelationCount": 13000,
+      "linkedRelationCount": 13005,
       "layers": {
         "frontend": {
           "count": 394,
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 12997,
-      "linkedRelationCount": 38283,
+      "entityCount": 13000,
+      "linkedRelationCount": 38303,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9072,
+          "count": 9075,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

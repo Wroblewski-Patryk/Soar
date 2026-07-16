@@ -1,3 +1,44 @@
+## 2026-07-16 LUC-1330 source-control closure for LUC-1329 dirty state
+
+- Classified the local `LUC-1329` worktree as one coherent docs/state/history
+  packet for the Account access `USE /market-stream` missing-doc-link closure.
+- Bounded no-secret review stayed on authored and untracked packet files only
+  and found no high-confidence credential signatures.
+- Closure decision:
+  local commit approved for the full packet without push or deploy; closure
+  evidence lives in
+  `history/tasks/luc-1330-source-control-closure-for-luc-1329-2026-07-16-task.md`
+  and
+  `history/evidence/luc-1330-source-control-closure-for-luc-1329-2026-07-16.md`.
+
+## 2026-07-16 LUC-1329 account access USE /market-stream missing-doc-link closure
+
+- The generated Account access `USE /market-stream` doc-link gap is closed
+  without changing runtime behavior or widening the market-stream surface.
+- Source-truth packet:
+  `docs/modules/api-market-stream.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/market-stream` now carries direct
+  generator-readable documentation to `docs/modules/api-market-stream.md`, and
+  the module doc records the authenticated dashboard mount contract for the SSE
+  stream surface. Refreshed app completion no longer routes
+  `USE /market-stream` as `missing_doc_link`, and generated project truth moves
+  the first overall gap to `Dashboard overview: USE /markets` as
+  `missing_test_link`.
+- Validation note:
+  architecture-awareness rebuild, strict graph drift audit, app-completion
+  rebuild, and project-truth `--apply` all passed in sequence. Remaining
+  docs-owned gaps are now limited to `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-16 LUC-1327 source-control closure for LUC-1322 dirty state
 
 - Classified the local `LUC-1322` dirty set as one coherent
