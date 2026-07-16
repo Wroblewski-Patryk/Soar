@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T16:13:15.729Z",
+  "generatedAt": "2026-07-16T16:37:22.708Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5160,
-      "linkedRelationCount": 21517,
+      "entityCount": 5164,
+      "linkedRelationCount": 21540,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4029,
+          "count": 4032,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 184,
+          "count": 185,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2001,6 +2001,14 @@
               "type": "document",
               "name": "API Deep-Dive: Logs Module",
               "path": "docs/modules/api-logs.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-markets-module:c081c4a6d0",
+              "type": "document",
+              "name": "API Deep-Dive: Markets Module",
+              "path": "docs/modules/api-markets.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "Documentation Drift Report",
               "path": "docs/analysis/documentation-drift.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:mobile-modules-index:3b6ff6ed04",
-              "type": "document",
-              "name": "Mobile Modules Index",
-              "path": "docs/modules/mobile-module-index.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 888,
-      "linkedRelationCount": 2890,
+      "entityCount": 892,
+      "linkedRelationCount": 2915,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 140,
+          "count": 141,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 306,
+          "count": 309,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4015,
-      "linkedRelationCount": 13030,
+      "entityCount": 4016,
+      "linkedRelationCount": 13040,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2093,
+          "count": 2094,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13006,
-      "linkedRelationCount": 38334,
+      "entityCount": 13009,
+      "linkedRelationCount": 38354,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9081,
+          "count": 9084,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

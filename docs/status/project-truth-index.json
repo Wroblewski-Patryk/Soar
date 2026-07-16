@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T16:13:15.729Z",
+  "generatedAt": "2026-07-16T16:37:22.708Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 65,
-    "indexedAppCompletionGaps": 65,
-    "knownAppCompletionRiskItems": 65,
-    "appCompletionPriorityReviewItems": 65,
+    "appCompletionGaps": 64,
+    "indexedAppCompletionGaps": 64,
+    "knownAppCompletionRiskItems": 64,
+    "appCompletionPriorityReviewItems": 64,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 65,
-    "totalGaps": 65
+    "indexedGaps": 64,
+    "totalGaps": 64
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
-    "userFlow": "Account access",
-    "summary": "Account access: USE /markets has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "userFlow": "Dashboard overview",
+    "summary": "Dashboard overview: USE /orders has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/api/src/router/dashboard.routes.ts#/markets"
+      "apps/api/src/router/dashboard.routes.ts#/orders"
     ],
-    "sourceItemId": "api_endpoint:use-markets:583f095d82",
-    "risk": "missing_doc_link"
+    "sourceItemId": "api_endpoint:use-orders:b0814be10f",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: USE /markets has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/router/dashboard.routes.ts#/markets"
-      ],
-      "sourceItemId": "api_endpoint:use-markets:583f095d82",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",

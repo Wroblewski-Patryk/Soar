@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-16T16:13:10.434Z
+Generated: 2026-07-16T16:35:14.023Z
 
 ## Canonical Exports
 
@@ -891,6 +891,7 @@ Generated: 2026-07-16T16:13:10.434Z
 | connected_to | project:soar:7c70e892d7 | task:task:0f2c0f8f15 | history/tasks/luc-1329-account-access-use-market-stream-missing-doc-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f6ff5f055f | history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ea92a4d8f8 | history/tasks/luc-1330-source-control-closure-for-luc-1329-2026-07-16-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:b37789568d | history/tasks/luc-1332-dashboard-overview-use-markets-missing-test-link-2026-07-16-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99b465c313 | history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:5a4b35fe1c | history/tasks/luc-1367-operator-soar-owner-login-verification-path-2026-06-02-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-16T16:13:10.434Z
 | connected_to | project:soar:7c70e892d7 | task:task:34dface07f | history/tasks/luc-2165-classify-second-wave-script-tooling-relation-backlog-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ca7df65562 | history/tasks/luc-2166-classify-engine-runtime-model-doc-test-gaps-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2168-engine-runtime-model-doc-graph-relations:cc6639d032 | history/tasks/luc-2168-engine-runtime-model-doc-graph-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2171-operator-coolify-bind-read-only-production-status-access:4a08b63672 | history/tasks/luc-2171-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

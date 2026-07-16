@@ -830,6 +830,12 @@
       "evidence": "docs/modules/api-market-stream.md"
     },
     {
+      "fromPath": "docs/modules/api-markets.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/markets",
+      "type": "documents",
+      "evidence": "docs/modules/api-markets.md"
+    },
+    {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
       "type": "documents",

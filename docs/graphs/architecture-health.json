@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-16T16:13:10.434Z",
+  "generated_at": "2026-07-16T16:35:14.023Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15155,
-    "relations": 41574,
+    "entities": 15158,
+    "relations": 41594,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5031,
+      "document": 5033,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1894,
+      "task": 1895,
       "test": 522
     },
     "by_status": {
       "blocked": 183,
       "deprecated": 10,
-      "implemented": 12251,
+      "implemented": 12253,
       "in_progress": 29,
       "tested": 929,
-      "verified": 1753
+      "verified": 1754
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1738,
+      "count": 1737,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1655,14 +1655,6 @@
           "path": "apps/api/src/index.ts#/webhooks/stripe",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-markets:583f095d82",
-          "type": "api_endpoint",
-          "name": "USE /markets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "verified",
-          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-orders:b0814be10f",
@@ -3237,6 +3229,14 @@
           "type": "model",
           "name": "Da",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Da",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:dc:5a95e24fdd",
+          "type": "model",
+          "name": "dc",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#dc",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1467,
+      "count": 1466,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1284,
+        "curated_graph_covered": 1283,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -11014,7 +11014,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1752,
+      "count": 1751,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11031,14 +11031,6 @@
           "path": "apps/api/src/index.ts#/webhooks/stripe",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-markets:583f095d82",
-          "type": "api_endpoint",
-          "name": "USE /markets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "verified",
-          "owner": "Test Automation Engineer"
         },
         {
           "id": "api_endpoint:use-orders:b0814be10f",
@@ -12615,14 +12607,22 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ae",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ai:0bfcbf9100",
+          "type": "model",
+          "name": "Ai",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ai",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 443,
+      "count": 442,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 268,
+        "curated_graph_covered": 267,
         "historical_task_archive": 141,
         "top_level_app_mount": 1
       },
@@ -13915,15 +13915,6 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-markets:583f095d82",
-          "type": "api_endpoint",
-          "name": "USE /markets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/markets",
-          "status": "verified",
-          "owner": "Test Automation Engineer",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-orders:b0814be10f",
           "type": "api_endpoint",
           "name": "USE /orders",
@@ -14423,6 +14414,15 @@
           "type": "feature",
           "name": "backtests.service.ts",
           "path": "apps/web/src/features/backtest/services/backtests.service.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:backtestsymbolstats-ts:5738a3e21c",
+          "type": "feature",
+          "name": "backtestSymbolStats.ts",
+          "path": "apps/web/src/features/backtest/utils/backtestSymbolStats.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
