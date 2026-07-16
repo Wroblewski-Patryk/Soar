@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-16T17:42:32.797Z
+Generated: 2026-07-16T18:16:58.901Z
 Project: Soar
 Status: gaps_require_routing
 

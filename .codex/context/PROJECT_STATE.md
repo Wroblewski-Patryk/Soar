@@ -1,3 +1,49 @@
+## 2026-07-16 LUC-1357 source-control closure for LUC-1353-LUC-1354
+
+- Classified the local dirty worktree as one coherent docs/context/history
+  packet attributable to the `LUC-1353` proof-link repair and the
+  `LUC-1354` source-control classification artifact.
+- Bounded redaction review found no high-confidence credential signatures in
+  the dirty `docs/**`, `history/**`, or `.codex/context/**` paths.
+- Local closure decision: commit the full packet together because it is
+  limited to docs, generated indexes, evidence, and source-of-truth state; no
+  runtime code, dependency, or environment files were part of the change set.
+- Residual product risk remains unchanged from `LUC-1353`: regenerated
+  `docs/status/project-truth-index.{json,md}` still emits stale
+  `USE /positions / missing_test_link` output after the proof gap is closed in
+  architecture-awareness and app-completion outputs.
+
+## 2026-07-16 LUC-1353 dashboard overview USE /positions missing-test-link closure
+
+- The generated Dashboard overview `USE /positions` proof gap is closed at the
+  architecture/app-completion layer without adding runtime behavior or
+  duplicate route tests, but the truth lane remains blocked on stale
+  project-truth output.
+- Source-truth packet:
+  `docs/architecture/relations/priority-test-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  `docs/graphs/architecture-awareness.{json,csv}`,
+  `docs/graphs/architecture-proof-register.csv`,
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `history/tasks/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16-task.md`,
+  and
+  `history/evidence/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16.md`.
+- Readback:
+  `apps/api/src/router/dashboard.routes.ts#/positions` now carries direct
+  generator-readable proof to
+  `apps/api/src/modules/positions/positions.list.e2e.test.ts`.
+  Refreshed app completion no longer routes `USE /positions` as
+  `missing_test_link`; the same endpoint now advances to `missing_doc_link`
+  under `Account access`. However, regenerated project truth still incorrectly
+  reports `USE /positions` as `missing_test_link`, so the next-gap advance is
+  blocked by generator inconsistency rather than proof coverage.
+- Validation note:
+  full `positions.list.e2e.test.ts` replay passed (`2` tests), covering
+  authenticated mounted-route reads, canonical symbol-filter normalization,
+  active OPEN filtering that excludes stale local rows, and history readback
+  that still surfaces stale positions without the active-only filter.
+
 ## 2026-07-16 LUC-1350 source-control closure for LUC-1349 dirty state
 
 - Classified the local `LUC-1349` worktree as one coherent docs/state/history

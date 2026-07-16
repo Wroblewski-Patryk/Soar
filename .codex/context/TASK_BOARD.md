@@ -1,3 +1,60 @@
+## 2026-07-16 LUC-1357 Source-control closure for LUC-1353-LUC-1354
+
+- Status: `DONE`.
+- Scope:
+  classify the local dirty worktree created by `LUC-1353` and `LUC-1354`,
+  run bounded redaction review, and make a local commit/no-commit decision.
+- Classification:
+  one coherent docs/context/history packet; no unrelated product-code or
+  dependency changes were found.
+- Verification:
+  focused diff review for authored files PASS;
+  bounded high-confidence credential scan across dirty `docs/**`,
+  `history/**`, and `.codex/context/**` paths PASS (no matches);
+  prior scoped `LUC-1353` validations remain the technical proof base for the
+  packet.
+- Closure:
+  local source-control closure commit required because the packet is
+  docs/evidence/state only and validation evidence exists. No push or deploy
+  performed.
+- Residual:
+  product-truth generator consistency remains an open functional blocker for
+  `LUC-1353`; this closure issue only resolves the local dirty-state decision.
+
+## 2026-07-16 LUC-1353 Dashboard overview USE /positions missing-test-link closure
+
+- Status: `BLOCKED`.
+- Scope:
+  close the first generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/positions`.
+- Findings:
+  the repo already had focused executable proof in
+  `apps/api/src/modules/positions/positions.list.e2e.test.ts`, but it lacked a
+  direct generator-readable relation and verified override at the dashboard
+  router mount boundary.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/positions/positions.list.e2e.test.ts --run` ->
+  PASS (`2` tests);
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  sequential `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /positions` as `missing_test_link`.
+  The same endpoint now routes as `Account access` / `missing_doc_link` in
+  app-completion output, but `docs/status/project-truth-index.{json,md}` still
+  emits the stale `USE /positions / missing_test_link` gap after the rebuild.
+- Blocker:
+  project-truth rebuild consistency is now the blocking owner path. The
+  positions proof lane itself is complete; the stale truth emission is not.
+- Evidence:
+  `history/tasks/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16-task.md`;
+  `history/evidence/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16.md`.
+
 ## 2026-07-16 LUC-1350 Source-control closure for LUC-1349 dirty state
 
 - Status: `DONE`.
