@@ -22,8 +22,9 @@
 - Outcome:
   `docs/status/app-completion-index.md` no longer emits
   `Dashboard overview: USE /icons` as `missing_test_link`.
-  The same endpoint now routes as `Account access` / `missing_doc_link`, and
-  the next Dashboard overview proof-owned gap advances to `USE /logs`.
+  The same endpoint now has a direct doc link and no longer routes as
+  `missing_doc_link`; the next Dashboard overview proof-owned gap advances to
+  `USE /logs`.
 - Evidence:
   `history/tasks/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16-task.md`;
   `history/evidence/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16.md`.

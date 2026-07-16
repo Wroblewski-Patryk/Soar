@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-15T23:00:11.827Z
+Generated: 2026-07-15T23:18:18.533Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 65, relation entries: 75).
-- Override summary: excluded files 0, entity overrides 65, relation overrides 75, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 65, relation entries: 76).
+- Override summary: excluded files 0, entity overrides 65, relation overrides 76, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

@@ -14,11 +14,11 @@
   `history/evidence/luc-1294-dashboard-overview-use-icons-missing-test-link-2026-07-16.md`.
 - Readback:
   `apps/api/src/router/dashboard.routes.ts#/icons` now carries direct
-  generator-readable proof to `apps/api/src/modules/icons/icons.e2e.test.ts`.
+  generator-readable proof to `apps/api/src/modules/icons/icons.e2e.test.ts`
+  and a direct documentation relation to `docs/modules/api-icons.md`.
   Refreshed app completion no longer routes `USE /icons` as
-  `missing_test_link`; the same endpoint now advances to
-  `Account access / missing_doc_link`, and generated project truth moves the
-  next Dashboard overview proof-owned gap to `USE /logs`.
+  `missing_test_link` or `missing_doc_link`; generated project truth now moves
+  the next Dashboard overview proof-owned gap to `USE /logs`.
 - Validation note:
   full `icons.e2e.test.ts` replay passed (`1` file / `6` tests), covering
   unauthenticated fail-closed access plus authenticated cache, curated-fallback,

@@ -1,6 +1,6 @@
 # Event Chain Index
 
-Generated: 2026-07-15T23:02:02.012Z
+Generated: 2026-07-15T23:18:33.984Z
 Project: Soar
 
 This index maps user-facing flows to backend, frontend, worker, data, test, and docs entities.
@@ -9,7 +9,7 @@ Incomplete chains: 0/8
 
 | Flow | Status | Frontend | Backend | Worker | Missing | Next owner |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| Account access | chain_indexed | 198 | 745 | 4010 | - | Project Manager |
+| Account access | chain_indexed | 198 | 745 | 4012 | - | Project Manager |
 | Admin operation | chain_indexed | 30 | 30 | 47 | - | Project Manager |
 | Dashboard overview | chain_indexed | 335 | 138 | 297 | - | Project Manager |
 | Exchange connection and configuration | chain_indexed | 28 | 300 | 404 | - | Project Manager |
