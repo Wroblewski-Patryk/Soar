@@ -42,7 +42,7 @@ project-truth tooling rather than missing Soar documentation.
       `USE /profile/security` mount
 - [x] direct generator-readable documentation linkage exists for
       `apps/api/src/router/dashboard.routes.ts#/profile/security`
-- [ ] regenerated app-completion and project-truth outputs advance past the
+- [x] regenerated app-completion and project-truth outputs advance past the
       scoped `missing_doc_link` row
 
 ## Forbidden
@@ -96,16 +96,14 @@ project-truth tooling rather than missing Soar documentation.
   `pnpm run architecture:graph:drift:strict`;
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`;
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`;
-  `rg -n "USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S`;
-  `node -` reproduction against `docs/graphs/architecture-awareness.json` confirming
-  `api_endpoint:use-profile-security:61552c894b` now has `hasDoc: true` under the same
-  `hasLinkedType` logic used by `build-app-completion-index.mjs`;
+  `rg -n "USE /profile/security|USE /profile/apiKeys|missing_doc_link" docs/status/app-completion-index.md docs/status/project-truth-index.md docs/status/app-completion-index.json docs/status/project-truth-index.json -S`;
   `git diff --check`.
 - Outcome:
-  the scoped Soar documentation repair is present, but the generated
-  `app-completion` and `project-truth` outputs still emit
-  `USE /profile/security` as `missing_doc_link`.
-  The blocker is now exact: `build-app-completion-index.mjs` writes
-  `evidence.hasDoc: false` for this endpoint even though the refreshed
-  `architecture-awareness.json` contains a direct `document -> api_endpoint`
-  relation from `docs/modules/api-profile.md`.
+  the scoped Soar documentation repair is present and the generated
+  `app-completion` and `project-truth` outputs have advanced past
+  `USE /profile/security`.
+  However, the issue remains blocked on the workspace clean-worktree gate:
+  current dirty state extends beyond the minimal `LUC-1396` packet, including
+  other generated/status churn and untracked `LUC-1422` artifacts that require
+  explicit source-control closure ownership before this issue can move to
+  `done`.

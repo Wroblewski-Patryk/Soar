@@ -1,3 +1,106 @@
+## 2026-07-17 LUC-1428 source-control closure for LUC-1368 LUC-1396 LUC-1417 LUC-1421 plus 1
+
+- The current local Soar dirty packet is attributable to five linked issue
+  lanes only: `LUC-1368`, `LUC-1396`, `LUC-1417`, `LUC-1421`, and `LUC-1422`.
+- The unnamed `plus-1` lane in the issue title resolves to `LUC-1422` because
+  the shared worktree contains the only extra scoped task/evidence/artifact
+  trio outside the four named issues:
+  `history/tasks/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17-task.md`,
+  `history/evidence/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17.md`,
+  and `history/artifacts/luc-1422-paperclip-closeout-2026-07-17.md`,
+  plus the untracked local browser-proof matrix pair.
+- Dirty authored paths remain limited to source-of-truth docs/state, issue
+  task/evidence/artifact packets, and the expected generated
+  `docs/graphs/*` and `docs/status/*` projections. No runtime/product code,
+  dependency, migration, env, or deploy files are part of this packet.
+- Residual:
+  the local packet is valid for one source-control closure commit even though
+  `LUC-1368` and `LUC-1422` remain functionally blocked on external owner/tooling
+  issues. Those blockers stay in their own issue records and do not require the
+  local docs/evidence packet to remain dirty.
+
+## 2026-07-17 LUC-1368 deploy-capable Redis recovery path reprobe
+
+- The Soar production Redis blocker remains live rather than stale:
+  the bound Redis resource still reads `restarting:unhealthy` with
+  `restart_count=682`, while public Soar health stays split between
+  API `/health` `200` and API `/ready` `503`.
+- The injected Coolify bearer token is still read-only for the recovery
+  surface:
+  `POST /api/v1/databases/{redis}/restart` still returns
+  `403 Missing required permissions: deploy`.
+- The newly present owner-login surface is also not yet a usable recovery path:
+  `POST /login` succeeds with `200 {"two_factor":false}`, but the follow-up
+  session-backed `GET /api/v1/teams/current` and
+  `POST /api/v1/databases/{redis}/restart` both still return
+  `401 Unauthenticated`.
+- Residual:
+  `LUC-1368` remains blocked until Security Review Lead or Ops Release Lead
+  provides a deploy-capable Coolify bearer/session mutation path or performs
+  the one Redis recovery action directly, after which DRE should rerun bounded
+  public and protected readiness smoke.
+
+## 2026-07-17 LUC-1417 dashboard overview USE /wallets missing-test-link closure
+
+- The generated Dashboard overview `missing_test_link` proof gap is now closed
+  locally for `apps/api/src/router/dashboard.routes.ts#/wallets`.
+- `docs/architecture/relations/priority-test-links.csv` now links the router
+  mount directly to `apps/api/src/modules/wallets/wallets.e2e.test.ts`, and
+  `docs/architecture/scanner-overrides.json` now marks the exact mount as
+  verified with both wallet e2e files as route-proof evidence.
+- Focused DB-backed wallet API replay passed for the mounted route contract:
+  unauthenticated fail-closed access, metadata and live preview behavior,
+  analytics reads, reset-paper guardrails, CRUD behavior, and ownership
+  isolation.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `USE /wallets` no longer appears as `missing_test_link`;
+  the same endpoint now advances to `Account access / missing_doc_link`.
+- Residual:
+  Docs Memory Lead + Project Manager own the direct doc-link follow-up for
+  `apps/api/src/router/dashboard.routes.ts#/wallets`, and the next Dashboard
+  overview proof-owned API row is now `apps/api/src/router/index.ts#/dashboard`.
+
+## 2026-07-17 LUC-1421 dashboard overview USE /wallets missing-test-link closure
+
+- The scoped Soar proof-link repair for
+  `apps/api/src/router/dashboard.routes.ts#/wallets` is now closed:
+  no runtime code changes were required, and this lane preserved the existing
+  overlapping `LUC-1417` local proof packet instead of rebinding shared route
+  references.
+- Focused DB-backed wallets route proof passed again in
+  `apps/api/src/modules/wallets/wallets.e2e.test.ts` and
+  `apps/api/src/modules/wallets/wallets.crud.e2e.test.ts`, covering
+  unauthenticated fail-closed access, metadata and balance-preview behavior,
+  CRUD and ownership isolation, analytics reads, and reset-paper guardrails.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /wallets` as `Dashboard overview / missing_test_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route it as that gap.
+- Residual:
+  `USE /wallets` now advances to `Account access / missing_doc_link`, and the
+  next Dashboard overview proof-owned row is
+  `apps/api/src/router/index.ts#/dashboard`.
+
+## 2026-07-17 LUC-1422 dashboard backtests detail browser review
+
+- Fresh FE/browser proof is now present for
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx`.
+- The local protected-route browser harness passed for:
+  unauthenticated fail-closed redirect to `/auth/login`,
+  fixture-backed `/dashboard/backtests/luc-2188-backtest-run` route reachability,
+  and list-page navigation to `/dashboard/backtests/create`.
+- Focused route-shell coverage also passed for the same wrapper path:
+  `src/app/dashboard/backtests/[id]/page.test.tsx`.
+- Current generated truth is only partially aligned:
+  `docs/status/app-completion-index.md` no longer emits the wrapper path as
+  `needs_browser_review`, but `docs/status/project-truth-index.json` still
+  carries the stale browser-review row after the same refresh pass.
+- Residual:
+  the remaining blocker is project-truth tooling/readback outside the FE route.
+  The unblock owner must diagnose why `build-project-truth-indexes.mjs`
+  continues to route the stale wrapper row when the refreshed app-completion
+  queue is clean.
+
 ## 2026-07-17 LUC-1412 close local dirty packet from LUC-1410 profile-basic doc-link closure
 
 - The PM takeover baseline for `LUC-1412` is complete.
@@ -102,14 +205,15 @@
   `docs/architecture/scanner-overrides.json`.
 - Current generated truth is not yet aligned:
   `docs/graphs/architecture-awareness.json` contains the direct
-  `document -> api_endpoint` relation, but
-  `docs/status/app-completion-index.json` still writes `hasDoc: false` and
-  keeps `USE /profile/security` in `missing_doc_link`.
+  `document -> api_endpoint` relation, and the current generated
+  `app-completion` and `project-truth` outputs no longer emit
+  `USE /profile/security` as `missing_doc_link`.
 - Residual:
-  `LUC-1396` is blocked on project-truth tooling outside the Soar repo.
-  The unblock owner must fix the `build-app-completion-index.mjs` readback
-  contradiction or the upstream architecture export path before this row can
-  advance.
+  `LUC-1396` has cleared the scoped route but remains blocked on the current
+  shared dirty worktree: generated/status churn and untracked `LUC-1422`
+  artifacts require explicit source-control closure ownership before the issue
+  can close. The remaining docs-owned generated gaps in the current readback
+  are `GET /alerts` and `GET /metrics`.
 
 ## 2026-07-17 LUC-1393 account access USE /profile/apiKeys missing-doc-link closure
 

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-17T21:34:39.399Z
+Generated: 2026-07-17T22:36:40.614Z
 
 ## Canonical Exports
 
@@ -89,7 +89,7 @@ Generated: 2026-07-17T21:34:39.399Z
 | api_endpoint | implemented | USE /profile/subscription | apps/api/src/router/dashboard.routes.ts#/profile/subscription | Engineering Delivery Lead |
 | api_endpoint | verified | USE /reports | apps/api/src/router/dashboard.routes.ts#/reports | Test Automation Engineer |
 | api_endpoint | verified | USE /strategies | apps/api/src/router/dashboard.routes.ts#/strategies | Test Automation Engineer |
-| api_endpoint | implemented | USE /wallets | apps/api/src/router/dashboard.routes.ts#/wallets | Engineering Delivery Lead |
+| api_endpoint | verified | USE /wallets | apps/api/src/router/dashboard.routes.ts#/wallets | Test Automation Engineer |
 | api_endpoint | implemented | GET / | apps/api/src/router/index.ts#/ | Engineering Delivery Lead |
 | api_endpoint | verified | USE /admin | apps/api/src/router/index.ts#/admin | QA Regression Lead |
 | api_endpoint | implemented | GET /alerts | apps/api/src/router/index.ts#/alerts | Engineering Delivery Lead |
@@ -906,6 +906,7 @@ Generated: 2026-07-17T21:34:39.399Z
 | connected_to | project:soar:7c70e892d7 | task:task:5a4b35fe1c | history/tasks/luc-1367-operator-soar-owner-login-verification-path-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c13061e3d8 | history/tasks/luc-1367-source-control-closure-for-luc-1353-luc-1359-luc-1362-luc-1365-plus-1-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0ba21be902 | history/tasks/luc-1368-operator-soar-protected-test-account-smoke-path-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:6ab0a5b46b | history/tasks/luc-1368-provide-deploy-capable-redis-recovery-path-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-137-docs-operations-closure-bundle-2026-05-26:d3cd9bdf63 | history/tasks/luc-137-docs-operations-closure-bundle-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1371-reconcile-coolify-resource-inventory:23deaf26cf | history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1371-soar-coolify-resource-inventory-task:2bb9896e56 | history/tasks/luc-1371-soar-coolify-resource-inventory-2026-06-02-task.md |
@@ -931,11 +932,16 @@ Generated: 2026-07-17T21:34:39.399Z
 | connected_to | project:soar:7c70e892d7 | task:task:f4cd19b03e | history/tasks/luc-1408-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:186a65fbff | history/tasks/luc-1409-source-control-closure-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:be941d1863 | history/tasks/luc-141-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:cb6ffc49df | history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8e1b113859 | history/tasks/luc-1412-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:fa52f2085c | history/tasks/luc-1412-source-control-close-local-dirty-packet-from-luc-1410-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:aa96e75baf | history/tasks/luc-1416-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:d928e8f0f6 | history/tasks/luc-1417-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:267a954e4c | history/tasks/luc-1418-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof:8f1c70f6ef | history/tasks/luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-142-history-evidence-closure-bundle-2026-05-26:5bdd3087aa | history/tasks/luc-142-history-evidence-closure-bundle-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:769dab506c | history/tasks/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:2d78afe08e | history/tasks/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99136ee7d2 | history/tasks/luc-1422-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:042cb7e10f | history/tasks/luc-1429-classify-history-evidence-artifact-dirty-scope-for-luc-1223-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e9e4f6d81d | history/tasks/luc-143-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -1212,9 +1218,3 @@ Generated: 2026-07-17T21:34:39.399Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2095-source-control-close-local-dirty-state-for-luc-2094:a3090a5866 | history/tasks/luc-2095-source-control-close-local-dirty-state-for-luc-2094-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2099-operator-coolify-bind-read-only-production-status-access:1fee3311a2 | history/tasks/luc-2099-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-21-soar-local-architecture-and-repo-preflight:f20d9ed387 | history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:b297bce3dd | history/tasks/luc-2105-normalize-shared-web-ui-doc-link-gaps-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:d161b63fd6 | history/tasks/luc-2106-classify-shared-web-ui-missing-test-links-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:954f69914a | history/tasks/luc-2107-route-api-matrix-parity-guardrail-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2112-operator-coolify-bind-read-only-production-status-access:b39374dc83 | history/tasks/luc-2112-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2117-operator-coolify-bind-read-only-production-status-access:d5e88b3137 | history/tasks/luc-2117-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2122-operator-coolify-bind-read-only-production-status-access:11c98d2240 | history/tasks/luc-2122-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

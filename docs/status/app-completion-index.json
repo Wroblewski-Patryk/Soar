@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T21:35:04.238Z",
+  "generatedAt": "2026-07-17T22:36:40.488Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,26 +7,27 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 41,
-    "missingTestLink": 14,
-    "missingDocLink": 2,
+    "needsBrowserReview": 40,
+    "missingTestLink": 13,
+    "missingDocLink": 3,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 57,
-    "appCompletionRiskItems": 57,
-    "priorityReviewItems": 57,
+    "riskItems": 56,
+    "appCompletionRiskItems": 56,
+    "priorityReviewItems": 56,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 24,
+      "total": 26,
       "risks": {
-        "ok": 24
+        "ok": 25,
+        "missing_doc_link": 1
       },
       "gates": {
-        "auth": 24,
+        "auth": 26,
         "subscription": 3,
         "configuration": 2
       }
@@ -41,11 +42,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 36,
+      "total": 34,
       "risks": {
         "ok": 4,
-        "missing_test_link": 2,
-        "needs_browser_review": 30
+        "missing_test_link": 1,
+        "needs_browser_review": 29
       },
       "gates": {
         "configuration": 1
@@ -98,18 +99,20 @@
       "kind": "api_endpoint",
       "name": "USE /wallets",
       "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 4,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 7,
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
@@ -127,27 +130,8 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 4,
+      "relatedEntityCount": 6,
       "risk": "missing_test_link"
-    },
-    {
-      "id": "route:page-tsx:ccedfda0ce",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 4,
-      "risk": "needs_browser_review"
     },
     {
       "id": "route:page-tsx:235e305216",

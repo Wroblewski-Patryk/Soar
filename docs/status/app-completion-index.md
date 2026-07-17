@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-17T21:35:04.238Z
+Generated: 2026-07-17T22:36:40.488Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,19 +15,19 @@ Internal functions and modules are implementation details: they receive proof th
 
 - Items: 86
 - User flows: 7
-- Needs browser/screenshot review: 41
-- Missing test link: 14
-- Missing doc link: 2
+- Needs browser/screenshot review: 40
+- Missing test link: 13
+- Missing doc link: 3
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 57
-- Priority review items indexed: 57/57
+- Known non-ok risk items: 56
+- Priority review items indexed: 56/56
 - Priority review truncated: false
 
 ## Flow Summary
 
-- Dashboard overview: 36 entities; risks {"ok":4,"missing_test_link":2,"needs_browser_review":30}; gates {"configuration":1}
-- Account access: 24 entities; risks {"ok":24}; gates {"auth":24,"subscription":3,"configuration":2}
+- Dashboard overview: 34 entities; risks {"ok":4,"missing_test_link":1,"needs_browser_review":29}; gates {"configuration":1}
+- Account access: 26 entities; risks {"ok":25,"missing_doc_link":1}; gates {"auth":26,"subscription":3,"configuration":2}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,9 +38,8 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | missing_test_link | api_endpoint | USE /wallets | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/wallets | - |
+| Account access | missing_doc_link | api_endpoint | USE /wallets | Test Automation Engineer | apps/api/src/router/dashboard.routes.ts#/wallets | auth |
 | Dashboard overview | missing_test_link | api_endpoint | USE /dashboard | Engineering Delivery Lead | apps/api/src/router/index.ts#/dashboard | - |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/backtests/[id]/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/backtests/create/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/backtests/list/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx | - |

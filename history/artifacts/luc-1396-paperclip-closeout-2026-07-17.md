@@ -10,19 +10,23 @@
   `docs/graphs/architecture-awareness.json` now contains a direct
   `documents` relation to `api_endpoint:use-profile-security:61552c894b`, and a
   focused reproduction against the graph returns `hasDoc: true`.
-- Remaining blocker:
-  `docs/status/app-completion-index.json` still writes `evidence.hasDoc: false`
-  for the same endpoint, so `docs/status/project-truth-index.md` continues to
-  route `USE /profile/security` as `missing_doc_link`.
+- Current closeout condition:
+  `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /profile/security` as `missing_doc_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route the same
+  endpoint as an open gap.
 - Validation run:
-  `build-architecture-awareness-index` PASS;
-  `architecture:graph:drift:strict` PASS;
-  `build-app-completion-index` PASS;
-  `build-project-truth-indexes --apply` PASS;
-  targeted `rg` readback confirms the row still emits as `missing_doc_link`;
+  targeted `rg` readback across
+  `docs/status/app-completion-index.{md,json}` and
+  `docs/status/project-truth-index.{md,json}` confirms no remaining
+  `missing_doc_link` rows for `USE /profile/security` or
+  `USE /profile/apiKeys`;
+  `git status --short` shows the workspace is still dirty beyond the minimal
+  `LUC-1396` packet, including additional generated/status churn and untracked
+  `LUC-1422` artifacts;
   `git diff --check` returns only pre-existing line-ending warnings.
-- Next owner/action:
-  Paperclip docs/tooling owner must diagnose
-  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
-  or its upstream graph consumption path. This issue should remain blocked
-  until the generator promotes the endpoint out of `missing_doc_link`.
+- Residual:
+  the scoped route is resolved, but this issue remains blocked on source-
+  control closure for the current shared dirty packet. The remaining docs-owned
+  generated gaps in the current readback are `GET /alerts` and `GET /metrics`,
+  outside `LUC-1396`.

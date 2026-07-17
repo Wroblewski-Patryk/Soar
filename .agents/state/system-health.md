@@ -1,3 +1,29 @@
+## 2026-07-17 LUC-1368 protected Redis recovery path reprobe
+
+- Status:
+  `BLOCKED / REDIS_RESTARTING_UNHEALTHY / BEARER_403_DEPLOY / OWNER_SESSION_401`.
+- Health impact:
+  no live runtime state changed in this lane. Public API `/health` remains
+  `200`, API `/ready` remains `503`, public Web `/` remains `200`, and Web
+  `/api/build-info` remains `200` with SHA
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Verification:
+  Coolify `GET /api/v1/databases/{redis}` still reports `redis` as
+  `restarting:unhealthy` with `restart_count=682` at
+  `2026-07-17T22:30:37Z`;
+  Coolify bearer `POST /api/v1/databases/{redis}/restart` still returns
+  `403 Missing required permissions: deploy`;
+  Coolify owner-login `POST /login` returns `200 {"two_factor":false}`, but
+  the follow-up session-backed `GET /api/v1/teams/current` and
+  `POST /api/v1/databases/{redis}/restart` both return `401 Unauthenticated`.
+- Unblock owner/action:
+  Security Review Lead or Ops Release Lead must provide a deploy-capable
+  Coolify bearer/session mutation path or directly perform the single Redis
+  recovery action, then DRE should rerun bounded readiness smoke.
+- Evidence:
+  `history/tasks/luc-1368-provide-deploy-capable-redis-recovery-path-2026-07-17-task.md`;
+  `history/evidence/luc-1368-provide-deploy-capable-redis-recovery-path-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1387 Redis owner-path restoration gate
 
 - Status:

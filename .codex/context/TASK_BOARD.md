@@ -1,6 +1,148 @@
-## 2026-07-17 LUC-1412 Close local dirty packet from LUC-1410 profile-basic doc-link closure
+## 2026-07-17 LUC-1428 Classify and close local dirty state for LUC-1368-LUC-1396-LUC-1417-LUC-1421-plus-1
 
 - Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty worktree left
+  by `LUC-1368`, `LUC-1396`, `LUC-1417`, `LUC-1421`, and one additional
+  unnamed issue packet.
+- Findings:
+  the shared worktree is one coherent docs/state/evidence bundle. The unnamed
+  `plus-1` lane resolves to `LUC-1422`, based on the only additional scoped
+  task/evidence/artifact files and the untracked local protected-route browser
+  proof matrix pair. No stale or out-of-scope paths were found.
+- Verification:
+  `git status --short` -> dirty paths limited to docs/state/history plus
+  generated `docs/graphs/*` and `docs/status/*`;
+  `git diff --stat` and `git diff --numstat` -> churn matches the linked issue
+  packets only, with runtime/product code `0`;
+  `git diff --check` -> PASS with line-ending warnings only;
+  bounded high-confidence redaction scan over authored and untracked
+  docs/history/state paths -> PASS with no secret-value matches.
+- Outcome:
+  the packet satisfied the sidecar commit rule for docs/state/evidence-only
+  dirty state, so it was closed with one local commit and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1428-source-control-closure-classify-and-close-local-dirty-state-for-luc-1368-luc-1396-luc-1417-luc-1421-plus-1-2026-07-17-task.md`;
+  `history/evidence/luc-1428-source-control-closure-classify-and-close-local-dirty-state-for-luc-1368-luc-1396-luc-1417-luc-1421-plus-1-2026-07-17.md`;
+  `history/artifacts/luc-1428-paperclip-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1368 provide deploy-capable Redis recovery path for LUC-1359
+
+- Status: `BLOCKED`.
+- Scope:
+  prove or execute the protected deploy-capable recovery path for the Soar
+  production Redis resource that is blocking `LUC-1359`.
+- Findings:
+  the runner now exposes names-only Coolify owner-login and resource-id
+  bindings in addition to the previously known read-only bearer token, but the
+  new surface still does not unlock a usable restart path. Direct Redis
+  readback still shows `restarting:unhealthy` with `restart_count=682`;
+  bearer-token Redis restart still returns
+  `403 Missing required permissions: deploy`; and a cookie-jar owner-login flow
+  reaches `POST /login -> 200 {"two_factor":false}` but the subsequent
+  session-backed `GET /api/v1/teams/current` and
+  `POST /api/v1/databases/{redis}/restart` both still return
+  `401 Unauthenticated`.
+- Verification:
+  `curl.exe -D - https://api.soar.luckysparrow.ch/health` -> `200`;
+  `Invoke-WebRequest https://api.soar.luckysparrow.ch/ready` -> `503`;
+  `curl.exe -D - https://soar.luckysparrow.ch/` -> `200`;
+  `curl.exe -D - https://soar.luckysparrow.ch/api/build-info` -> `200`,
+  SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589`;
+  Coolify `GET /api/v1/databases/{redis}` -> `restarting:unhealthy`,
+  `restart_count=682`;
+  Coolify bearer `POST /api/v1/databases/{redis}/restart` -> `403 Missing required permissions: deploy`;
+  cookie-jar owner-login `POST /login` -> `200 {"two_factor":false}`;
+  session-backed `GET /api/v1/teams/current` and
+  `POST /api/v1/databases/{redis}/restart` -> `401 Unauthenticated`.
+- Outcome:
+  `LUC-1368` remains blocked. The current runner still has no deploy-capable
+  Redis recovery path on Friday, July 17, 2026.
+- Evidence:
+  `history/tasks/luc-1368-provide-deploy-capable-redis-recovery-path-2026-07-17-task.md`;
+  `history/evidence/luc-1368-provide-deploy-capable-redis-recovery-path-2026-07-17.md`.
+
+## 2026-07-17 LUC-1421 Prove Dashboard overview missing-test-link for USE /wallets
+
+- Status: `DONE`.
+- Scope:
+  verify closure of the generated Dashboard overview `missing_test_link` row
+  for `apps/api/src/router/dashboard.routes.ts#/wallets` using the smallest
+  durable proof replay and readback.
+- Findings:
+  the repository already contained executable mounted-route proof in
+  `apps/api/src/modules/wallets/wallets.e2e.test.ts` and
+  `apps/api/src/modules/wallets/wallets.crud.e2e.test.ts`, but the current
+  worktree also already contained overlapping uncommitted `LUC-1417` artifacts
+  for the same route. This lane therefore kept shared router-mount proof
+  ownership on `LUC-1417` and used `LUC-1421` as the QA verification packet
+  after replaying the focused wallets suites and generator readback.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/wallets/wallets.crud.e2e.test.ts --run` ->
+  PASS (`1` file, `12` tests);
+  `pnpm --filter api exec vitest run src/modules/wallets/wallets.e2e.test.ts --run` ->
+  PASS (`1` file, `24` tests);
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS with `missingTestLink: 13`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS and rerouted `USE /wallets`;
+  targeted `rg` readback across
+  `docs/status/app-completion-index.{md,json}` and
+  `docs/status/project-truth-index.{md,json}` -> `USE /wallets` now reads as
+  `Account access / missing_doc_link`, while the next Dashboard overview
+  proof-owned gap is `USE /dashboard`.
+- Outcome:
+  generated truth no longer reports
+  `apps/api/src/router/dashboard.routes.ts#/wallets` as
+  `Dashboard overview / missing_test_link`. `LUC-1421` closes as the QA
+  verification lane for the existing proof-owned repair, and the route
+  advances to the docs-owned lane.
+- Evidence:
+  `history/tasks/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md`;
+  `history/evidence/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17.md`;
+  `history/artifacts/luc-1421-paperclip-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1422 Capture dashboard backtests detail proof or exact FE repair lane
+
+- Status: `BLOCKED`.
+- Scope:
+  Frontend/browser-review lane for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx`.
+- Findings:
+  fresh local proof now exists for the wrapper page. The protected-route browser
+  harness passed for the synthetic backtests detail route and create-route
+  navigation, and the focused `[id]/page.tsx` Vitest route-shell test passed.
+  After refreshing the generator chain, `docs/status/app-completion-index.md`
+  no longer lists the wrapper path, but
+  `docs/status/project-truth-index.json` still emits the same
+  `needs_browser_review` row.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/backtests/[id]/page.test.tsx --reporter verbose`
+  -> PASS (`1` file / `1` test);
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1422 --today 2026-07-17 --clusters backtests --dynamic-fixtures-only --intercept-fixture-api`
+  -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS with the wrapper path absent from the priority review queue;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  -> PASS but still writes the stale wrapper row into `project-truth`.
+- Outcome:
+  the FE/browser-proof lane is complete, but issue closure remains blocked on a
+  downstream project-truth tooling contradiction outside the frontend route.
+- Evidence:
+  `history/tasks/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17-task.md`;
+  `history/evidence/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17.md`;
+  `history/evidence/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.md`;
+  `history/artifacts/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.json`.
+
+## 2026-07-17 LUC-1412 Close local dirty packet from LUC-1410 profile-basic doc-link closure
+
+- Status: `BLOCKED`.
 - Scope:
   PM-owned known-state and source-control verification lane for the expected
   local dirty packet after `LUC-1410`.
@@ -162,7 +304,7 @@
 
 ## 2026-07-17 LUC-1396 Account access USE /profile/security missing-doc-link closure
 
-- Status: `BLOCKED`.
+- Status: `DONE`.
 - Scope:
   close the generated Account access `missing_doc_link` row for
   `apps/api/src/router/dashboard.routes.ts#/profile/security`.
@@ -171,28 +313,22 @@
   `docs/modules/api-profile.md`, but it lacked a direct
   generator-readable documentation relation for the dashboard router mount and
   an explicit mount classification entry in the profile module doc. Those
-  Soar-side repairs are now present, but the generator readback still does not
-  promote the endpoint out of `missing_doc_link`.
+  Soar-side repairs are now present, and the refreshed generator readback no
+  longer emits the endpoint as `missing_doc_link`.
 - Verification:
-  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
-  PASS;
-  `pnpm run architecture:graph:drift:strict` -> PASS;
-  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
-  PASS;
-  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
-  PASS;
-  `rg -n "USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
-  `USE /profile/security` still emits as `missing_doc_link`;
-  direct `node -` reproduction against `docs/graphs/architecture-awareness.json`
-  returns `hasDoc: true` for
-  `api_endpoint:use-profile-security:61552c894b`, so the blocker is in the
-  project-truth/app-completion tooling rather than missing Soar docs;
+  `rg -n "USE /profile/security|USE /profile/apiKeys|missing_doc_link" docs/status/app-completion-index.md docs/status/project-truth-index.md docs/status/app-completion-index.json docs/status/project-truth-index.json -S` ->
+  no `missing_doc_link` rows remain for `USE /profile/security` or
+  `USE /profile/apiKeys`; only `GET /alerts` and `GET /metrics` remain as
+  current docs-owned gaps;
+  `git status --short` -> workspace is still dirty beyond the minimal
+  `LUC-1396` packet, including additional generated/status churn and untracked
+  `LUC-1422` artifacts;
   `git diff --check` -> PASS.
 - Outcome:
-  the Soar documentation repair landed, but the closure remains blocked on a
-  tooling contradiction in
-  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
-  or its upstream graph consumption path.
+  the Soar documentation repair remains in place and the generated truth has
+  advanced past the scoped route, but `LUC-1396` stays blocked until a
+  source-control closure owner classifies and closes the current shared dirty
+  packet.
 - Evidence:
   `history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md`;
   `history/evidence/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17.md`.
@@ -47090,6 +47226,44 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `Account access / missing_doc_link`, which belongs to Docs/PM, and
   `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` remains a
   separate row if still present after refresh.
+## 2026-07-17 LUC-1417 Dashboard overview USE /wallets missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the exact Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/wallets` without expanding into
+  wallet browser proof, doc-link repair, or generic dashboard regression work.
+- Result:
+  linked the router mount to existing wallet API e2e proof in
+  `docs/architecture/relations/priority-test-links.csv`, added the matching
+  verified route evidence in `docs/architecture/scanner-overrides.json`, and
+  refreshed architecture, app-completion, and project-truth outputs.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/wallets/wallets.e2e.test.ts --run` ->
+  PASS;
+  `pnpm --filter api exec vitest run src/modules/wallets/wallets.crud.e2e.test.ts --run` ->
+  PASS;
+  `build-architecture-awareness-index.mjs` PASS;
+  `pnpm run architecture:graph:drift:strict` PASS;
+  first `build-app-completion-index.mjs` run preserved a stale
+  `missing_test_link` readback, isolated rerun PASS with corrected
+  `verified / hasTest=true / missing_doc_link` wallet state;
+  final `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  `USE /wallets` is no longer emitted as `missing_test_link` in
+  `docs/status/app-completion-index.{json,md}` or
+  `docs/status/project-truth-index.{json,md}`; it now advances to
+  `Account access / missing_doc_link`, owned by Docs Memory Lead +
+  Project Manager. The remaining Dashboard overview proof-owned API row is now
+  `apps/api/src/router/index.ts#/dashboard`.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, protected
+  account mutation, or live-trading change occurred.
+- Evidence:
+  `history/tasks/luc-1417-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md`;
+  `history/evidence/luc-1417-dashboard-overview-use-wallets-missing-test-link-2026-07-17.md`;
+  `history/artifacts/luc-1417-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-15 LUC-1264 AdminUsersPage feature-page doc-link closure
 
 - Status: `BLOCKED`.

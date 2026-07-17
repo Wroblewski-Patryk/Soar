@@ -1,3 +1,50 @@
+## 2026-07-17 LUC-1421 Dashboard Overview USE Wallets Missing-Test-Link Closure
+
+- Module row:
+  Dashboard overview / dashboard wallets router mount proof linkage.
+- Status delta:
+  `DONE / TEST_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1421](/LUC/issues/LUC-1421) verified the existing local wallets route
+  proof packet for `apps/api/src/router/dashboard.routes.ts#/wallets`, which
+  was already present in the overlapping `LUC-1417` worktree packet. Focused
+  wallets API e2e replay passed for unauthenticated fail-closed access,
+  metadata and balance-preview behavior, CRUD and ownership isolation,
+  analytics reads, and reset-paper guardrails. Regenerated app-completion and
+  project-truth no longer classify `USE /wallets` as
+  `Dashboard overview / missing_test_link`; the same route now truthfully
+  advances to `Account access / missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md`;
+  `history/evidence/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17.md`.
+- Residual:
+  the next Dashboard overview proof-owned gap is `USE /dashboard`, while
+  `USE /wallets` now belongs to the separate docs-owned lane.
+
+## 2026-07-17 LUC-1422 Dashboard Overview Backtests Detail Browser Review
+
+- Module row:
+  Dashboard overview / dashboard backtests detail route wrapper.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / BLOCKED_ON_PROJECT_TRUTH_TOOLING`.
+- Confidence update:
+  [LUC-1422](/LUC/issues/LUC-1422) added fresh browser-backed local proof for
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx`: the protected-route
+  harness verified fail-closed unauthenticated access, fixture-backed route
+  reachability for `/dashboard/backtests/luc-2188-backtest-run`, and create
+  navigation from the list page, while the focused `[id]/page.tsx` test passed
+  for the route shell and run-id handoff into `BacktestRunDetails`.
+  Regenerated `app-completion` no longer classifies the wrapper path as
+  `needs_browser_review`.
+- Evidence:
+  `history/tasks/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17-task.md`;
+  `history/evidence/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17.md`;
+  `history/evidence/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.md`.
+- Residual:
+  closure remains blocked on downstream `project-truth` tooling because
+  `docs/status/project-truth-index.json` still emits the stale wrapper row
+  after the same refresh pass.
+
 ## 2026-07-17 LUC-1410 Dashboard Overview USE Profile Basic Doc-Link Closure
 
 - Module row:
@@ -25,24 +72,24 @@
 - Module row:
   Account access / dashboard profile security router mount documentation.
 - Status delta:
-  `IMPLEMENTED / BLOCKED_ON_PROJECT_TRUTH_TOOLING`.
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
 - Confidence update:
   [LUC-1396](/LUC/issues/LUC-1396) added direct module documentation and
   canonical graph relations for
   `apps/api/src/router/dashboard.routes.ts#/profile/security`, and
   `docs/modules/api-profile.md` now records the authenticated dashboard mount
-  contract for delegated password-rotation and account-deletion routes. The
-  refreshed `architecture-awareness` graph now contains a direct
-  `document -> api_endpoint` relation for the route mount, but generated
-  `app-completion` still classifies `USE /profile/security` as
+  contract for delegated password-rotation and account-deletion routes. After
+  the resolved upstream generator blocker, regenerated app-completion and
+  project-truth no longer classify `USE /profile/security` as
   `missing_doc_link`.
 - Evidence:
   `history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md`;
   `history/evidence/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17.md`.
 - Residual:
-  closure is blocked on the project-truth generator contradiction in
-  `build-app-completion-index.mjs`; the next Soar docs-owned gaps cannot
-  truthfully advance until that tooling defect is resolved.
+  the module row is closed, but the issue itself remains blocked on shared
+  source-control closure for the current dirty packet. The remaining generated
+  docs-owned rows now narrow to `GET /alerts` and `GET /metrics`, outside this
+  module row.
 
 ## 2026-07-17 LUC-1393 Account Access USE Profile APIKeys Doc-Link Closure
 

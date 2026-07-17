@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-17T21:34:39.399Z",
+  "generated_at": "2026-07-17T22:36:40.614Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15238,
-    "relations": 41958,
+    "entities": 15262,
+    "relations": 42080,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5091,
+      "document": 5109,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1917,
+      "task": 1923,
       "test": 522
     },
     "by_status": {
-      "blocked": 185,
+      "blocked": 187,
       "deprecated": 10,
-      "implemented": 12305,
+      "implemented": 12321,
       "in_progress": 28,
       "tested": 930,
-      "verified": 1780
+      "verified": 1786
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3795,
+      "count": 3794,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -80,14 +80,6 @@
           "type": "api_endpoint",
           "name": "USE /profile/subscription",
           "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-wallets:b8382408ca",
-          "type": "api_endpoint",
-          "name": "USE /wallets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1626,19 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-wallets.pt.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-de-ch-ts:b9780332af",
+          "type": "feature",
+          "name": "public.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/public.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1731,
+      "count": 1730,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1459,
+      "count": 1457,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1276,
+        "curated_graph_covered": 1274,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6511,15 +6511,6 @@
           "type": "api_endpoint",
           "name": "USE /profile/subscription",
           "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-wallets:b8382408ca",
-          "type": "api_endpoint",
-          "name": "USE /wallets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "resolveStartIndex",
           "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#resolveStartIndex",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:computeadaptivemaxcandles:02423458c5",
+          "type": "function",
+          "name": "computeAdaptiveMaxCandles",
+          "path": "apps/api/src/modules/backtests/backtestRange.service.ts#computeAdaptiveMaxCandles",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11022,7 +11022,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1745,
+      "count": 1744,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -12627,10 +12627,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 437,
+      "count": 436,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 261,
+        "curated_graph_covered": 260,
         "historical_task_archive": 142,
         "top_level_app_mount": 1
       },

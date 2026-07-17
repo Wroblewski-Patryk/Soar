@@ -29,6 +29,18 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the dashboard backtests detail route wrapper through fresh local browser-backed route proof on 2026-07-17. The synthetic protected-route harness confirmed unauthenticated access still fails closed to /auth/login, the fixture-backed /dashboard/backtests/luc-2188-backtest-run route resolved to the expected detail page, and the backtests list create action still navigated to /dashboard/backtests/create without mutating runtime state. Focused Backtests details page tests also passed for the canonical route shell and selected run-id handoff into BacktestRunDetails.",
+      "evidence": [
+        "history/evidence/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17.md",
+        "history/evidence/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.md",
+        "history/artifacts/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.json",
+        "apps/web/src/app/dashboard/backtests/[id]/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -716,6 +728,17 @@
       ]
     },
     {
+      "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview wallets router mount through focused wallets API e2e coverage for unauthenticated fail-closed access, authenticated metadata and balance-preview behavior, wallet CRUD and ownership isolation, mounted analytics reads, and reset-paper guardrails on the mounted wallet routes.",
+      "evidence": [
+        "apps/api/src/modules/wallets/wallets.e2e.test.ts",
+        "apps/api/src/modules/wallets/wallets.crud.e2e.test.ts",
+        "history/evidence/luc-1417-dashboard-overview-use-wallets-missing-test-link-2026-07-17.md"
+      ]
+    },
+    {
       "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
       "status": "verified",
       "owner": "Test Automation Engineer",
@@ -1293,6 +1316,12 @@
       "toPath": "apps/web/src/app/admin/users/page.tsx",
       "type": "documents",
       "evidence": "LUC-1249 admin users route wrapper module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-backtest.md",
+      "toPath": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1422 backtests detail route wrapper module ownership"
     }
   ]
 }

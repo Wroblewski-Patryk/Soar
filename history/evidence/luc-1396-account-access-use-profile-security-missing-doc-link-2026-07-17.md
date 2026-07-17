@@ -41,17 +41,18 @@
   with type `documents` and evidence `docs/modules/api-profile.md`.
 - Direct reproduction against the generated graph returns `hasDoc: true` for
   `api_endpoint:use-profile-security:61552c894b`.
-- `docs/status/app-completion-index.json` still writes `evidence.hasDoc: false`
-  and `risk: "missing_doc_link"` for the same endpoint.
-- `docs/status/project-truth-index.md` therefore still routes
-  `Account access: USE /profile/security has app-completion risk missing_doc_link.`
+- Current generated truth is now aligned:
+  `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /profile/security` as `missing_doc_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route the same
+  endpoint as an open gap.
 
 ## Residual / blocker
 
-- The Soar-side documentation repair is complete, but the issue is blocked on
-  project-truth tooling: `build-app-completion-index.mjs` does not promote the
-  endpoint out of `missing_doc_link` despite the refreshed document relation.
+- The scoped doc-link gap is resolved, but this issue cannot close yet because
+  the Soar workspace currently fails the clean-worktree/source-control gate.
+- Current `git status --short` shows additional modified generated/status files
+  plus untracked `LUC-1422` artifacts outside the minimal `LUC-1396` packet.
 - Next owner/action:
-  Paperclip docs/tooling owner must diagnose the generator contradiction in
-  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
-  or the upstream architecture export path before `LUC-1396` can be closed.
+  Project Manager + source-control closure owner must classify and close the
+  current shared dirty packet before `LUC-1396` can move to `done`.

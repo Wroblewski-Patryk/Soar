@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-17T21:35:10.665Z
+Generated: 2026-07-17T22:36:40.461Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,14 +13,14 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 1 |
 | criticalRuntimeFindings | 1 |
-| appCompletionGaps | 57 |
-| indexedAppCompletionGaps | 57 |
-| knownAppCompletionRiskItems | 57 |
-| appCompletionPriorityReviewItems | 57 |
+| appCompletionGaps | 56 |
+| indexedAppCompletionGaps | 56 |
+| knownAppCompletionRiskItems | 56 |
+| appCompletionPriorityReviewItems | 56 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 2 |
-| indexedGaps | 60 |
-| totalGaps | 60 |
+| indexedGaps | 59 |
+| totalGaps | 59 |
 
 ## First Gap
 
@@ -33,9 +33,8 @@ This is the routing surface agents should use before guessing whether an app wor
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
 | critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /wallets has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: USE /wallets has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /dashboard has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |

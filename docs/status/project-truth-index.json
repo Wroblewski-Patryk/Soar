@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T21:35:10.665Z",
+  "generatedAt": "2026-07-17T22:36:40.461Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 1,
     "criticalRuntimeFindings": 1,
-    "appCompletionGaps": 57,
-    "indexedAppCompletionGaps": 57,
-    "knownAppCompletionRiskItems": 57,
-    "appCompletionPriorityReviewItems": 57,
+    "appCompletionGaps": 56,
+    "indexedAppCompletionGaps": 56,
+    "knownAppCompletionRiskItems": 56,
+    "appCompletionPriorityReviewItems": 56,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 2,
-    "indexedGaps": 60,
-    "totalGaps": 60
+    "indexedGaps": 59,
+    "totalGaps": 59
   },
   "firstGap": {
     "kind": "runtime_error",
@@ -38,15 +38,15 @@
     {
       "kind": "app_completion_gap",
       "severity": "medium",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: USE /wallets has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
+      "userFlow": "Account access",
+      "summary": "Account access: USE /wallets has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
       "evidence": [
         "apps/api/src/router/dashboard.routes.ts#/wallets"
       ],
       "sourceItemId": "api_endpoint:use-wallets:b8382408ca",
-      "risk": "missing_test_link"
+      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",
@@ -60,19 +60,6 @@
       ],
       "sourceItemId": "api_endpoint:use-dashboard:2e7ff2f1fa",
       "risk": "missing_test_link"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/backtests/[id]/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:ccedfda0ce",
-      "risk": "needs_browser_review"
     },
     {
       "kind": "app_completion_gap",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T21:35:10.665Z",
+  "generatedAt": "2026-07-17T22:36:40.461Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5228,
-      "linkedRelationCount": 21848,
+      "entityCount": 5249,
+      "linkedRelationCount": 21944,
       "layers": {
         "frontend": {
-          "count": 198,
+          "count": 200,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 754,
+          "count": 755,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1223,6 +1223,22 @@
               "status": "tested"
             },
             {
+              "id": "api_endpoint:use-wallets:b8382408ca",
+              "type": "api_endpoint",
+              "name": "USE /wallets",
+              "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
+              "id": "test:wallets-e2e-test-ts:84cd09aa42",
+              "type": "test",
+              "name": "wallets.e2e.test.ts",
+              "path": "apps/api/src/modules/wallets/wallets.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:use-admin:9b16797c60",
               "type": "api_endpoint",
               "name": "USE /admin",
@@ -1285,28 +1301,12 @@
               "path": "apps/web/src/features/auth/pages/LoginPage.tsx",
               "owner": "QA Regression Lead",
               "status": "verified"
-            },
-            {
-              "id": "route:page-tsx:2e9b7e490f",
-              "type": "route",
-              "name": "page.tsx",
-              "path": "apps/web/src/app/dashboard/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:registerpage-tsx:61822becff",
-              "type": "route",
-              "name": "RegisterPage.tsx",
-              "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
-              "owner": "QA Regression Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 4087,
+          "count": 4104,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 188,
+          "count": 189,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2581,6 +2581,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:web-deep-dive-backtest-module:b0342286e3",
+              "type": "document",
+              "name": "Web Deep-Dive: Backtest Module",
+              "path": "docs/modules/web-backtest.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:api-deep-dive-orders-module:fa839633c3",
               "type": "document",
               "name": "API Deep-Dive: Orders Module",
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "App Completion Index",
               "path": "docs/status/app-completion-index.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:project-truth-index:df4eb1672a",
-              "type": "document",
-              "name": "Project Truth Index",
-              "path": "docs/status/project-truth-index.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3580,11 +3580,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 922,
-      "linkedRelationCount": 3087,
+      "entityCount": 940,
+      "linkedRelationCount": 3176,
       "layers": {
         "frontend": {
-          "count": 335,
+          "count": 336,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 145,
+          "count": 147,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4311,14 +4311,6 @@
               "path": "apps/api/src/modules/profile/basic/basic.e2e.test.ts",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "api_endpoint:use-wallets:b8382408ca",
-              "type": "api_endpoint",
-              "name": "USE /wallets",
-              "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             },
             {
               "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
@@ -4693,8 +4685,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:235e305216",
@@ -4871,12 +4863,20 @@
               "path": "apps/web/src/app/dashboard/strategies/[id]/page.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "route:page-tsx:e1cf4c0916",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/dashboard/strategies/create/page.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 333,
+          "count": 347,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -4979,6 +4979,22 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:cb6ffc49df",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:d928e8f0f6",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1417-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -5501,22 +5517,6 @@
               "path": "history/tasks/live-bot-symbol-overlap-guard-task-2026-04-28.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "document:get-dashboard-bots-id-runtime-monitoring-aggregate:fb0a86f4c9",
-              "type": "document",
-              "name": "GET /dashboard/bots/:id/runtime-monitoring/aggregate",
-              "path": "docs/architecture/nodes/SOAR-API-BOT-RUNTIME-AGGREGATE.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:get-dashboard-bots-id-runtime-graph:e3c955da60",
-              "type": "document",
-              "name": "GET /dashboard/bots/:id/runtime-graph",
-              "path": "docs/architecture/nodes/SOAR-API-BOT-RUNTIME-GRAPH.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -5532,7 +5532,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 108,
+          "count": 109,
           "sample": [
             {
               "id": "document:api-deep-dive-backtests-module:0a87980ceb",
@@ -6185,8 +6185,8 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 818,
-      "linkedRelationCount": 3008,
+      "entityCount": 819,
+      "linkedRelationCount": 3018,
       "layers": {
         "frontend": {
           "count": 28,
@@ -7065,7 +7065,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 405,
+          "count": 406,
           "sample": [
             {
               "id": "agent:procedure:f48c47c027",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4037,
-      "linkedRelationCount": 13156,
+      "entityCount": 4041,
+      "linkedRelationCount": 13186,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1319,
+          "count": 1320,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2112,
+          "count": 2115,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13089,
-      "linkedRelationCount": 38718,
+      "entityCount": 13112,
+      "linkedRelationCount": 38832,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -13738,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1651,
+          "count": 1652,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9164,
+          "count": 9186,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -15693,8 +15693,8 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 343,
-      "linkedRelationCount": 846,
+      "entityCount": 344,
+      "linkedRelationCount": 853,
       "layers": {
         "frontend": {
           "count": 94,
@@ -16989,7 +16989,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 103,
+          "count": 104,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -17132,6 +17132,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:cb6ffc49df",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -17622,14 +17630,6 @@
               "path": "scripts/collectSloEvidence.test.mjs",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "function:readconfiguredenvvalue:677e4cf203",
-              "type": "function",
-              "name": "readConfiguredEnvValue",
-              "path": "scripts/dev-backend.mjs#readConfiguredEnvValue",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
