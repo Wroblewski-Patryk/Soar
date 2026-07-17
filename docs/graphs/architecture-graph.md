@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-17T22:36:40.614Z
+Generated: 2026-07-17T23:12:40.214Z
 
 ## Canonical Exports
 
@@ -943,11 +943,15 @@ Generated: 2026-07-17T22:36:40.614Z
 | connected_to | project:soar:7c70e892d7 | task:task:769dab506c | history/tasks/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:2d78afe08e | history/tasks/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:99136ee7d2 | history/tasks/luc-1422-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:b4e81e4375 | history/tasks/luc-1428-source-control-closure-classify-and-close-local-dirty-state-for-luc-1368-luc-1396-luc-1417-luc-1421-plus-1-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:042cb7e10f | history/tasks/luc-1429-classify-history-evidence-artifact-dirty-scope-for-luc-1223-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e9e4f6d81d | history/tasks/luc-143-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9c3a8d821a | history/tasks/luc-1430-final-non-runtime-source-control-closure-for-luc-1223-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:1e9082df43 | history/tasks/luc-1431-account-access-use-wallets-missing-doc-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0f96481d95 | history/tasks/luc-1434-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1435-verify-coolify-redeploy-and-production-smoke:da1601b18a | history/tasks/luc-1435-verify-coolify-redeploy-production-smoke-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:22d8ca9fdc | history/tasks/luc-1436-dashboard-backtests-create-browser-review-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:5315d64477 | history/tasks/luc-1437-dashboard-backtests-list-browser-review-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:891999ba52 | history/tasks/luc-1437-refresh-approved-production-smoke-principal-for-workers-ready-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:2bbcd61dc7 | history/tasks/luc-1438-production-smoke-auth-binding-recheck-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8072c6eacc | history/tasks/luc-1438-refresh-production-smoke-auth-binding-for-workers-ready-2026-06-02-task.md |
@@ -1214,7 +1218,3 @@ Generated: 2026-07-17T22:36:40.614Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2087-operator-coolify-bind-read-only-production-status-access:9fd7161da6 | history/tasks/luc-2087-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2091-operator-coolify-bind-read-only-production-status-access:0a36e36d72 | history/tasks/luc-2091-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2093-source-control-close-local-dirty-state-for-luc-2087-luc-2091:3452b08ff9 | history/tasks/luc-2093-source-control-close-local-dirty-state-for-luc-2087-luc-2091-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2094-operator-coolify-bind-read-only-production-status-access:9872f60acd | history/tasks/luc-2094-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2095-source-control-close-local-dirty-state-for-luc-2094:a3090a5866 | history/tasks/luc-2095-source-control-close-local-dirty-state-for-luc-2094-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2099-operator-coolify-bind-read-only-production-status-access:1fee3311a2 | history/tasks/luc-2099-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-21-soar-local-architecture-and-repo-preflight:f20d9ed387 | history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md |

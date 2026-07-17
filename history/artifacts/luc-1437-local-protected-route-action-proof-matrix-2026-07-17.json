@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "today": "2026-07-17",
+  "generatedAt": "2026-07-17T23:09:36.923Z",
+  "issue": "LUC-1437",
+  "dynamicFixtures": {
+    "enabled": true,
+    "apiInterception": true,
+    "fixtureIds": [
+      "luc-2188-backtest-run"
+    ]
+  },
+  "clusters": [
+    {
+      "name": "backtests",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-BACKTEST-DETAIL"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/backtests",
+        "POST /dashboard/backtests",
+        "GET /dashboard/backtests/:id",
+        "DELETE /dashboard/backtests/:id",
+        "GET /dashboard/backtests/:id/trades",
+        "GET /dashboard/backtests/:id/report",
+        "GET /dashboard/backtests/:id/timeline"
+      ],
+      "existingTests": [
+        "app/dashboard/backtests/list/page.test.tsx",
+        "app/dashboard/backtests/[id]/page.test.tsx",
+        "BacktestCreateForm.test.tsx",
+        "BacktestsListView.test.tsx",
+        "apps/api/src/modules/backtests/backtests.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-backtest.md",
+        "docs/modules/api-backtests.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BACKTESTS-LIST",
+      "route": "/dashboard/backtests/list",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected backtests list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BACKTEST-DETAIL",
+      "route": "/dashboard/backtests/luc-2188-backtest-run",
+      "result": "PASS",
+      "observedPath": "/dashboard/backtests/luc-2188-backtest-run",
+      "statusCode": 200,
+      "fixtureId": "luc-2188-backtest-run",
+      "fixtureKind": "backtest",
+      "notes": "route reached expected route through local HTTP fixture-id proof"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BACKTEST-CREATE",
+      "route": "backtests list-page add action",
+      "result": "PASS",
+      "observedPath": "/dashboard/backtests/create",
+      "notes": "clicked create/add action (Create), expected create route"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/backtests/list/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/backtests/create/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/backtest/components/BacktestCreateForm.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/backtest/components/BacktestRunDetails.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/backtests/list/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/backtests/[id]/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-backtest.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-backtests.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}

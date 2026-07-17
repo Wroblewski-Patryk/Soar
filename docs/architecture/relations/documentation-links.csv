@@ -245,6 +245,7 @@ apps/api/src/router/dashboard.routes.ts#/profile/security,docs/modules/api-profi
 apps/api/src/router/dashboard.routes.ts#/profile/apiKeys,docs/modules/api-profile.md
 apps/api/src/router/dashboard.routes.ts#/reports,docs/modules/api-reports.md
 apps/api/src/router/dashboard.routes.ts#/market-stream,docs/modules/api-market-stream.md
+apps/api/src/router/dashboard.routes.ts#/wallets,docs/modules/api-wallets.md
 apps/api/src/router/index.ts#/auth,docs/modules/api-auth.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/modules/api-backtests.md
 apps/api/src/modules/backtests/backtestIndicatorSpecs.ts,docs/architecture/05_strategy-signal-and-decision-flow.md

@@ -1,3 +1,61 @@
+## 2026-07-17 LUC-1441 Classify and close local dirty state for LUC-1431-LUC-1436-LUC-1437
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by `LUC-1431`, `LUC-1436`, and `LUC-1437`.
+- Findings:
+  the shared worktree is one coherent docs/state/history bundle owned only by
+  those three issue lanes. `LUC-1431` contributes the wallet doc-link repair
+  plus generated truth refresh, `LUC-1437` contributes the backtests list
+  route-wrapper proof refresh, and `LUC-1436` contributes the create-route
+  proof packet plus state updates. No runtime/product code, dependency, env,
+  deploy, or secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS;
+  `git diff --stat` and targeted `git diff --numstat` -> PASS with docs/state/history
+  scope only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  bounded high-confidence redaction scan over touched docs/history/state paths
+  -> PASS with no secret signatures matched.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one reversible
+  docs/state/evidence commit, so it was preserved with one local commit and no
+  push/deploy.
+- Evidence:
+  `history/tasks/luc-1441-source-control-closure-classify-and-close-local-dirty-state-for-luc-1431-luc-1436-luc-1437-2026-07-17-task.md`;
+  `history/evidence/luc-1441-source-control-closure-classify-and-close-local-dirty-state-for-luc-1431-luc-1436-luc-1437-2026-07-17.md`;
+  `history/artifacts/luc-1441-paperclip-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1436 Capture dashboard backtests create page proof or exact FE repair lane
+
+- Status: `DONE`.
+- Scope:
+  QA-owned verification lane for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/backtests/create/page.tsx`.
+- Findings:
+  the create route did not fail under fresh proof on Friday, July 17, 2026.
+  The focused route-shell test passed, and the local protected-route harness
+  again reached `/dashboard/backtests/create` through the list-page create
+  action without mutating runtime state.
+- Verification:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/backtests/create/page.test.tsx --reporter verbose`
+  -> PASS (`1` file / `1` test);
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1436 --today 2026-07-17 --clusters backtests --dynamic-fixtures-only --intercept-fixture-api`
+  -> PASS and wrote fresh markdown/json proof artifacts.
+- Outcome:
+  `LUC-1436` closes as a QA verification/evidence lane. The remaining work is
+  not a reproduced frontend defect; it is the exact source-of-truth repair to
+  claim the create-page browser proof in `scanner-overrides.json` and, if still
+  required by the generator, the matching route-document edge.
+- Evidence:
+  `history/tasks/luc-1436-dashboard-backtests-create-browser-review-2026-07-17-task.md`;
+  `history/evidence/luc-1436-dashboard-backtests-create-browser-review-2026-07-17.md`;
+  `history/evidence/luc-1436-local-protected-route-action-proof-matrix-2026-07-17.md`;
+  `history/artifacts/luc-1436-local-protected-route-action-proof-matrix-2026-07-17.json`;
+  `history/artifacts/luc-1436-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1428 Classify and close local dirty state for LUC-1368-LUC-1396-LUC-1417-LUC-1421-plus-1
 
 - Status: `DONE`.
@@ -47378,3 +47436,21 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-1384-dashboard-overview-profile-security-and-reports-proof-2026-07-17-task.md`;
   `history/evidence/luc-1384-dashboard-overview-profile-security-and-reports-proof-2026-07-17.md`.
+## 2026-07-17 LUC-1431 account access USE /wallets missing-doc-link closure
+
+- The generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/wallets` is now closed locally.
+- `docs/modules/api-wallets.md` now records the authenticated dashboard router
+  mount contract for the delegated wallets API surface, and the direct
+  doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /wallets` as `missing_doc_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route it as a gap.
+- Residual:
+  the remaining generated docs-owned rows now narrow to
+  `apps/api/src/router/index.ts#/alerts` and
+  `apps/api/src/router/index.ts#/metrics`, while the next project-truth
+  app-completion gap advances to `apps/api/src/router/index.ts#/dashboard`.

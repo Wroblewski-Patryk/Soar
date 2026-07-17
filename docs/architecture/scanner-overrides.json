@@ -41,6 +41,18 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/backtests/list/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the dashboard backtests list route wrapper through fresh local browser-backed route proof on 2026-07-17. The synthetic protected-route harness confirmed unauthenticated access still fails closed to /auth/login, the canonical /dashboard/backtests/list route reached the protected login gate, the list-page create action navigated to /dashboard/backtests/create, and the fixture-backed details route stayed reachable without mutating runtime state. Focused Backtests list page tests also passed for the canonical route shell and Create CTA navigation.",
+      "evidence": [
+        "history/evidence/luc-1437-dashboard-backtests-list-browser-review-2026-07-17.md",
+        "history/evidence/luc-1437-local-protected-route-action-proof-matrix-2026-07-17.md",
+        "history/artifacts/luc-1437-local-protected-route-action-proof-matrix-2026-07-17.json",
+        "apps/web/src/app/dashboard/backtests/list/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -958,6 +970,12 @@
       "evidence": "docs/modules/api-profile.md"
     },
     {
+      "fromPath": "docs/modules/api-wallets.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/wallets",
+      "type": "documents",
+      "evidence": "docs/modules/api-wallets.md"
+    },
+    {
       "fromPath": "docs/modules/api-reports.md",
       "toPath": "apps/api/src/router/dashboard.routes.ts#/reports",
       "type": "documents",
@@ -1322,6 +1340,12 @@
       "toPath": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
       "type": "documents",
       "evidence": "LUC-1422 backtests detail route wrapper module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-backtest.md",
+      "toPath": "apps/web/src/app/dashboard/backtests/list/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1437 backtests list route wrapper module ownership"
     }
   ]
 }

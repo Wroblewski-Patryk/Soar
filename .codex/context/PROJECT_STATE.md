@@ -1,3 +1,40 @@
+## 2026-07-17 LUC-1441 source-control closure for LUC-1431 LUC-1436 LUC-1437
+
+- The current local Soar dirty packet is attributable only to `LUC-1431`,
+  `LUC-1436`, and `LUC-1437`.
+- `LUC-1431` owns the wallet doc-link authored docs plus the generated
+  `docs/graphs/*` and `docs/status/*` refresh.
+- `LUC-1437` owns the list-route browser-proof truth-ingestion updates plus the
+  same generated refresh surfaces.
+- `LUC-1436` owns the create-route proof artifacts and the state/doc updates
+  that recorded the residual truth-ingestion gap.
+- No runtime/product code, dependency, env, deploy, migration, or secret-bearing
+  files were present in the packet, so the bundle was valid for one local
+  source-control closure commit.
+- Residual:
+  push remains intentionally held for batch because the packet is
+  docs/state/evidence only, and `LUC-1436` still has a separate create-page
+  truth-ingestion follow-up outside this closure lane.
+
+## 2026-07-17 LUC-1436 dashboard backtests create browser review
+
+- Fresh local proof now exists for
+  `apps/web/src/app/dashboard/backtests/create/page.tsx`.
+- Focused route-shell coverage passed on Friday, July 17, 2026:
+  `src/app/dashboard/backtests/create/page.test.tsx`.
+- The local protected-route harness also passed on Friday, July 17, 2026:
+  unauthenticated `/dashboard/backtests/list` still fails closed to
+  `/auth/login`, the fixture-backed detail route still resolves, and the
+  list-page create action still reaches `/dashboard/backtests/create`.
+- No frontend defect was reproduced on the create page during this heartbeat.
+- Residual:
+  the remaining gap is exact truth-ingestion wiring. The create page still
+  lacks the verified browser-proof claim currently present for
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx` in
+  `docs/architecture/scanner-overrides.json`, so the next owner should add the
+  create-page override, add the route-document edge if still required by the
+  generator, and refresh `app-completion` plus `project-truth` readback.
+
 ## 2026-07-17 LUC-1428 source-control closure for LUC-1368 LUC-1396 LUC-1417 LUC-1421 plus 1
 
 - The current local Soar dirty packet is attributable to five linked issue
@@ -100,6 +137,33 @@
   The unblock owner must diagnose why `build-project-truth-indexes.mjs`
   continues to route the stale wrapper row when the refreshed app-completion
   queue is clean.
+
+## 2026-07-17 LUC-1437 dashboard backtests list browser review
+
+- Fresh FE/browser proof is now present for
+  `apps/web/src/app/dashboard/backtests/list/page.tsx`.
+- The local protected-route browser harness passed for:
+  unauthenticated fail-closed redirect to `/auth/login`,
+  canonical `/dashboard/backtests/list` route reachability through the
+  protected login gate,
+  fixture-backed `/dashboard/backtests/luc-2188-backtest-run` reachability as
+  part of the same backtests cluster proof,
+  and list-page navigation to `/dashboard/backtests/create`.
+- Focused route-shell coverage also passed for the same wrapper path:
+  `src/app/dashboard/backtests/list/page.test.tsx`.
+- The source-of-truth gap was an input omission rather than an FE failure:
+  `docs/architecture/scanner-overrides.json` was missing the list-route
+  verified override and module-document relation already used for the detail
+  wrapper.
+- Current generated truth is now aligned across both indexes:
+  `docs/status/app-completion-index.{md,json}` and
+  `docs/status/project-truth-index.{md,json}` no longer emit
+  `apps/web/src/app/dashboard/backtests/list/page.tsx` as
+  `needs_browser_review`.
+- Residual:
+  this closure is route-wrapper proof only and does not claim production
+  protected-session proof or feature-level browser closure for
+  `BacktestsListView.tsx`.
 
 ## 2026-07-17 LUC-1412 close local dirty packet from LUC-1410 profile-basic doc-link closure
 
@@ -33149,3 +33213,13 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Fresh readback confirms both mounts no longer emit
   `missing_test_link`; they now advance to separate docs-owned
   `missing_doc_link` follow-up classification.
+## 2026-07-17 LUC-1431 account access USE /wallets missing-doc-link closure
+
+- The wallets dashboard router mount
+  `apps/api/src/router/dashboard.routes.ts#/wallets` now has a direct
+  source-of-truth doc relation to `docs/modules/api-wallets.md`.
+- Regenerated `architecture-awareness`, `app-completion`, and `project-truth`
+  outputs no longer route `USE /wallets` as an Account access doc-link gap.
+- The generated doc-link queue is now reduced to `GET /alerts` and
+  `GET /metrics`; the next app-completion gap in project truth is
+  `Dashboard overview: USE /dashboard` as `missing_test_link`.

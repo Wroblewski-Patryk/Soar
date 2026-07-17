@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T22:36:40.461Z",
+  "generatedAt": "2026-07-17T23:13:23.538Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5249,
-      "linkedRelationCount": 21944,
+      "entityCount": 5269,
+      "linkedRelationCount": 22045,
       "layers": {
         "frontend": {
-          "count": 200,
+          "count": 202,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 755,
+          "count": 759,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4104,
+          "count": 4117,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 189,
+          "count": 190,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2041,6 +2041,14 @@
               "type": "document",
               "name": "API Deep-Dive: Strategies Module",
               "path": "docs/modules/api-strategies.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-wallets-module:d88f471f99",
+              "type": "document",
+              "name": "API Deep-Dive: Wallets Module",
+              "path": "docs/modules/api-wallets.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -2585,14 +2593,6 @@
               "type": "document",
               "name": "Web Deep-Dive: Backtest Module",
               "path": "docs/modules/web-backtest.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:api-deep-dive-orders-module:fa839633c3",
-              "type": "document",
-              "name": "API Deep-Dive: Orders Module",
-              "path": "docs/modules/api-orders.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 940,
-      "linkedRelationCount": 3176,
+      "entityCount": 951,
+      "linkedRelationCount": 3258,
       "layers": {
         "frontend": {
           "count": 336,
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 147,
+          "count": 149,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4701,8 +4701,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/backtests/list/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:botformpagecontent-tsx:6ccb659f39",
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 347,
+          "count": 355,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -5532,7 +5532,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 109,
+          "count": 110,
           "sample": [
             {
               "id": "document:api-deep-dive-backtests-module:0a87980ceb",
@@ -6186,7 +6186,7 @@
     {
       "userFlow": "Exchange connection and configuration",
       "entityCount": 819,
-      "linkedRelationCount": 3018,
+      "linkedRelationCount": 3020,
       "layers": {
         "frontend": {
           "count": 28,
@@ -8375,7 +8375,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 939,
-      "linkedRelationCount": 3523,
+      "linkedRelationCount": 3525,
       "layers": {
         "frontend": {
           "count": 25,
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4041,
-      "linkedRelationCount": 13186,
+      "entityCount": 4048,
+      "linkedRelationCount": 13217,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1320,
+          "count": 1322,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2115,
+          "count": 2120,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13112,
-      "linkedRelationCount": 38832,
+      "entityCount": 13130,
+      "linkedRelationCount": 38949,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -13738,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1652,
+          "count": 1654,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9186,
+          "count": 9202,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -15019,12 +15019,12 @@
               "status": "verified"
             },
             {
-              "id": "task:task:24688b5ea3",
+              "id": "task:task:22d8ca9fdc",
               "type": "task",
               "name": "Task",
-              "path": "history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md",
+              "path": "history/tasks/luc-1436-dashboard-backtests-create-browser-review-2026-07-17-task.md",
               "owner": "Engineering Delivery Lead",
-              "status": "tested"
+              "status": "verified"
             }
           ],
           "truncated": true
@@ -15693,8 +15693,8 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 344,
-      "linkedRelationCount": 853,
+      "entityCount": 345,
+      "linkedRelationCount": 857,
       "layers": {
         "frontend": {
           "count": 94,
@@ -16989,7 +16989,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 104,
+          "count": 105,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -17182,6 +17182,14 @@
               "path": "history/evidence/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "task:task:b4e81e4375",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1428-source-control-closure-classify-and-close-local-dirty-state-for-luc-1368-luc-1396-luc-1417-luc-1421-plus-1-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "document:task:5b357afaf8",
@@ -17622,14 +17630,6 @@
               "path": "scripts/collectSloEvidence.mjs",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "test:collectsloevidence-test-mjs:70f350bd8f",
-              "type": "test",
-              "name": "collectSloEvidence.test.mjs",
-              "path": "scripts/collectSloEvidence.test.mjs",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             }
           ],
           "truncated": true

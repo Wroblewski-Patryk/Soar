@@ -161,4 +161,5 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 
 | Source entity | Owner doc | Classification | Expected proof |
 | --- | --- | --- | --- |
+| `apps/api/src/router/dashboard.routes.ts#/wallets` | `docs/modules/api-wallets.md` | Authenticated dashboard router mount that delegates the wallets API surface into this module without a dashboard-specific controller. | Direct doc relation plus wallets API e2e coverage when mount behavior changes. |
 | `apps/api/src/lib/capitalAllocation.ts` | `docs/modules/api-wallets.md` | Shared wallet/runtime capital allocation helper used by wallet preview and runtime capital snapshots. | Architecture-awareness `documents` relation from this doc plus wallet preview/runtime capital tests when allocation behavior changes. |
