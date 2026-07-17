@@ -1,3 +1,37 @@
+## 2026-07-17 LUC-1410 Dashboard overview USE /profile/basic missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the generated Dashboard overview `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`.
+- Findings:
+  the repo already had the canonical profile owner doc in
+  `docs/modules/api-profile.md`, and the mount already had direct proof-link
+  coverage from `LUC-1383`, but it lacked the exact generator-readable
+  documentation relation for the dashboard router mount and an explicit mount
+  classification entry in the profile module doc.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS with `missingDocLink: 2`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS and no longer routes `USE /profile/basic` as a project-truth gap;
+  `rg -n "USE /profile/basic|USE /wallets|USE /dashboard|GET /alerts|GET /metrics|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /profile/basic` is absent; the next Dashboard overview proof-owned rows
+  are `USE /wallets` and `USE /dashboard`; the remaining docs-owned rows are
+  `GET /alerts` and `GET /metrics`;
+  `git diff --check` -> PASS with line-ending warnings only.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /profile/basic` as `missing_doc_link`, and
+  `docs/status/project-truth-index.md` no longer routes the same endpoint as
+  an open gap.
+- Evidence:
+  `history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1409 Source-control closure for LUC-1393 and LUC-1402
 
 - Status: `DONE`.

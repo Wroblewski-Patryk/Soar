@@ -918,6 +918,12 @@
     },
     {
       "fromPath": "docs/modules/api-profile.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
+      "type": "documents",
+      "evidence": "docs/modules/api-profile.md"
+    },
+    {
+      "fromPath": "docs/modules/api-profile.md",
       "toPath": "apps/api/src/router/dashboard.routes.ts#/profile/security",
       "type": "documents",
       "evidence": "docs/modules/api-profile.md"

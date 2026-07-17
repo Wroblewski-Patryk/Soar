@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-17T21:13:04.449Z
+Generated: 2026-07-17T21:34:39.399Z
 
 ## Canonical Exports
 
@@ -929,6 +929,7 @@ Generated: 2026-07-17T21:13:04.449Z
 | connected_to | project:soar:7c70e892d7 | task:task:93af6ebff1 | history/tasks/luc-1402-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:51ca0306e4 | history/tasks/luc-1405-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f4cd19b03e | history/tasks/luc-1408-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:186a65fbff | history/tasks/luc-1409-source-control-closure-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:be941d1863 | history/tasks/luc-141-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8e1b113859 | history/tasks/luc-1412-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:aa96e75baf | history/tasks/luc-1416-reconcile-coolify-resource-inventory-2026-06-02-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-17T21:13:04.449Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2112-operator-coolify-bind-read-only-production-status-access:b39374dc83 | history/tasks/luc-2112-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2117-operator-coolify-bind-read-only-production-status-access:d5e88b3137 | history/tasks/luc-2117-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2122-operator-coolify-bind-read-only-production-status-access:11c98d2240 | history/tasks/luc-2122-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:5ff7a080f3 | history/tasks/luc-2123-classify-actionable-graph-missing-doc-test-links-2026-06-05-task.md |

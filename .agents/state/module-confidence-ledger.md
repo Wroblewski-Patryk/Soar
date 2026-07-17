@@ -1,3 +1,25 @@
+## 2026-07-17 LUC-1410 Dashboard Overview USE Profile Basic Doc-Link Closure
+
+- Module row:
+  Dashboard overview / dashboard profile basic router mount documentation.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1410](/LUC/issues/LUC-1410) added direct module documentation and
+  canonical graph relations for
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`, and
+  `docs/modules/api-profile.md` now records the authenticated dashboard mount
+  contract for delegated profile read, update, and account-deletion routes.
+  Generated app-completion and project-truth no longer classify
+  `USE /profile/basic` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17.md`.
+- Residual:
+  the next Dashboard overview proof-owned gaps are `USE /wallets` and
+  `USE /dashboard`, while the remaining docs-owned rows are `GET /alerts` and
+  `GET /metrics`.
+
 ## 2026-07-17 LUC-1396 Account Access USE Profile Security Doc-Link Closure
 
 - Module row:

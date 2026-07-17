@@ -1,3 +1,24 @@
+## 2026-07-17 LUC-1410 dashboard overview USE /profile/basic missing-doc-link closure
+
+- The scoped Soar doc-link repair for
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic` is now closed:
+  no runtime code or proof changes were required.
+- `docs/modules/api-profile.md` now records the authenticated dashboard router
+  mount contract for delegated profile read, update, and account-deletion
+  routes, and the direct doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /profile/basic` as `missing_doc_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route it as a gap.
+- Residual:
+  the next Dashboard overview proof-owned rows now advance to
+  `apps/api/src/router/dashboard.routes.ts#/wallets` and
+  `apps/api/src/router/index.ts#/dashboard`, while the remaining generated
+  docs-owned rows narrow to `apps/api/src/router/index.ts#/alerts` and
+  `apps/api/src/router/index.ts#/metrics`.
+
 ## 2026-07-17 LUC-1409 source-control closure for LUC-1393 and LUC-1402
 
 - The local Soar dirty state tied to the current

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T21:13:04.445Z",
+  "generatedAt": "2026-07-17T21:35:10.665Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5223,
-      "linkedRelationCount": 21827,
+      "entityCount": 5228,
+      "linkedRelationCount": 21848,
       "layers": {
         "frontend": {
           "count": 198,
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4082,
+          "count": 4087,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 921,
-      "linkedRelationCount": 3073,
+      "entityCount": 922,
+      "linkedRelationCount": 3087,
       "layers": {
         "frontend": {
           "count": 335,
@@ -5532,7 +5532,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 107,
+          "count": 108,
           "sample": [
             {
               "id": "document:api-deep-dive-backtests-module:0a87980ceb",
@@ -5547,6 +5547,14 @@
               "type": "document",
               "name": "API Deep-Dive: Orders Module",
               "path": "docs/modules/api-orders.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-profile-module:fe29e29088",
+              "type": "document",
+              "name": "API Deep-Dive: Profile Module",
+              "path": "docs/modules/api-profile.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -6163,14 +6171,6 @@
               "type": "document",
               "name": "PUT /dashboard/wallets/:id",
               "path": "docs/architecture/nodes/SOAR-API-WALLET-UPDATE.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:homelivewidgets:b87c1f6ebd",
-              "type": "document",
-              "name": "HomeLiveWidgets",
-              "path": "docs/architecture/nodes/SOAR-COMP-HOME-LIVE-WIDGETS.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13085,
-      "linkedRelationCount": 38690,
+      "entityCount": 13089,
+      "linkedRelationCount": 38718,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9160,
+          "count": 9164,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -15693,8 +15693,8 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 342,
-      "linkedRelationCount": 841,
+      "entityCount": 343,
+      "linkedRelationCount": 846,
       "layers": {
         "frontend": {
           "count": 94,
@@ -16378,6 +16378,14 @@
               "status": "implemented"
             },
             {
+              "id": "api_endpoint:use-profile-basic:567948ce49",
+              "type": "api_endpoint",
+              "name": "USE /profile/basic",
+              "path": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "api_endpoint:use-profile-security:61552c894b",
               "type": "api_endpoint",
               "name": "USE /profile/security",
@@ -16976,20 +16984,12 @@
               "path": "apps/api/src/prisma/client.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:exchangeapikeyprobe-service-ts:991bd24eba",
-              "type": "route",
-              "name": "exchangeApiKeyProbe.service.ts",
-              "path": "apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 102,
+          "count": 103,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -17158,6 +17158,14 @@
               "path": "history/evidence/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "task:task:186a65fbff",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1409-source-control-closure-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "document:luc-1396-evidence:3660319318",
@@ -17620,14 +17628,6 @@
               "type": "function",
               "name": "readConfiguredEnvValue",
               "path": "scripts/dev-backend.mjs#readConfiguredEnvValue",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:dev-backend-mjs:6e3373794f",
-              "type": "feature",
-              "name": "dev-backend.mjs",
-              "path": "scripts/dev-backend.mjs",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }

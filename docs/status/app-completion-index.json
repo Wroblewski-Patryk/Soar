@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T21:13:04.436Z",
+  "generatedAt": "2026-07-17T21:35:04.238Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -9,12 +9,12 @@
     "flows": 7,
     "needsBrowserReview": 41,
     "missingTestLink": 14,
-    "missingDocLink": 3,
+    "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 58,
-    "appCompletionRiskItems": 58,
-    "priorityReviewItems": 58,
+    "riskItems": 57,
+    "appCompletionRiskItems": 57,
+    "priorityReviewItems": 57,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -43,8 +43,7 @@
       "userFlow": "Dashboard overview",
       "total": 36,
       "risks": {
-        "ok": 3,
-        "missing_doc_link": 1,
+        "ok": 4,
         "missing_test_link": 2,
         "needs_browser_review": 30
       },
@@ -93,27 +92,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "api_endpoint:use-profile-basic:567948ce49",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /profile/basic",
-      "path": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
-      "owner": "Test Automation Engineer",
-      "status": "verified",
-      "userFlow": "Dashboard overview",
-      "gates": [
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 7,
-      "risk": "missing_doc_link"
-    },
     {
       "id": "api_endpoint:use-wallets:b8382408ca",
       "type": "api_endpoint",

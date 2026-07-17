@@ -21,6 +21,10 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/profile/*` via `apps/api/src/router/dashboard.routes.ts`.
+- Dashboard overview reaches the authenticated basic profile surface through
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`, which delegates
+  profile read, profile update, and account-deletion routes to this module
+  after the shared dashboard auth gate succeeds.
 - Account access reaches the authenticated profile security surface through
   `apps/api/src/router/dashboard.routes.ts#/profile/security`, which
   delegates password-rotation and account-deletion routes to this module after
@@ -112,6 +116,7 @@ Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
 | --- | --- | --- | --- |
 | `ProfileSecurityDomainError` | `docs/modules/api-profile.md` | Typed profile-security error taxonomy for password/account security fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
 | `apps/api/src/modules/profile/security/security.errors.ts` | `docs/modules/api-profile.md` | Profile-security error taxonomy file for password/account-deletion fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
+| `apps/api/src/router/dashboard.routes.ts#/profile/basic` | `docs/modules/api-profile.md` | Authenticated dashboard router mount that delegates the profile basic read, update, and account-deletion surface into this module without a dashboard-specific controller. | Direct doc relation plus profile basic e2e coverage when mount behavior changes. |
 | `apps/api/src/router/dashboard.routes.ts#/profile/security` | `docs/modules/api-profile.md` | Authenticated dashboard router mount that delegates profile password-rotation and account-deletion flows into this module without a dashboard-specific controller. | Direct doc relation plus profile security e2e coverage when mount behavior changes. |
 | `apps/api/src/modules/profile/apiKey/apiKey.controller.ts#testConnection` | `docs/modules/api-profile.md` | Profile API-key provided-credential connection-test controller surface. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the already-tested support row. | Profile API-key e2e and probe service tests when connection-test behavior changes. |
 | `apps/api/src/modules/profile/apiKey/apiKey.controller.ts#testStoredConnection` | `docs/modules/api-profile.md` | Profile API-key stored-credential connection-test controller surface. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the already-tested support row. | Profile API-key e2e and probe service tests when stored connection-test behavior changes. |

@@ -1,3 +1,30 @@
+## 2026-07-17 LUC-1410 Prove Dashboard overview missing-doc-link for use-profile-basic
+
+- Mission:
+  `LUC-1410-DASHBOARD-OVERVIEW-USE-PROFILE-BASIC-MISSING-DOC-LINK-2026-07-17`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
+- Scope:
+  Documentation Steward source-truth repair for
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`. No runtime code,
+  deploy, push, restart, rollback, env edit, migration, protected
+  account/session smoke, secret/account value readback, DB/Redis mutation, or
+  browser proof.
+- Result:
+  `docs/modules/api-profile.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the dashboard
+  profile-basic mount direct documentation coverage, and the authoritative
+  sequential generator chain no longer routes `USE /profile/basic` as
+  `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17.md`;
+  `history/tasks/luc-1410-dashboard-overview-use-profile-basic-missing-doc-link-2026-07-17-task.md`.
+- Residual:
+  the next Dashboard overview gaps now advance to `USE /wallets` and
+  `USE /dashboard` as proof-owned rows, while the remaining docs-owned rows are
+  `GET /alerts` and `GET /metrics`.
+
 ## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
 
 - Mission:

@@ -240,6 +240,7 @@ apps/api/src/router/dashboard.routes.ts#/logs,docs/modules/api-logs.md
 apps/api/src/router/dashboard.routes.ts#/markets,docs/modules/api-markets.md
 apps/api/src/router/dashboard.routes.ts#/orders,docs/modules/api-orders.md
 apps/api/src/router/dashboard.routes.ts#/positions,docs/modules/api-positions.md
+apps/api/src/router/dashboard.routes.ts#/profile/basic,docs/modules/api-profile.md
 apps/api/src/router/dashboard.routes.ts#/profile/security,docs/modules/api-profile.md
 apps/api/src/router/dashboard.routes.ts#/profile/apiKeys,docs/modules/api-profile.md
 apps/api/src/router/dashboard.routes.ts#/reports,docs/modules/api-reports.md
