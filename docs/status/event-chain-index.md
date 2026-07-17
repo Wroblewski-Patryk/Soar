@@ -1,6 +1,6 @@
 # Event Chain Index
 
-Generated: 2026-07-16T18:16:58.901Z
+Generated: 2026-07-17T14:43:44.927Z
 Project: Soar
 
 This index maps user-facing flows to backend, frontend, worker, data, test, and docs entities.

@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-16T18:16:58.901Z
+Generated: 2026-07-17T14:43:44.927Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -11,28 +11,29 @@ This is the routing surface agents should use before guessing whether an app wor
 | appCompletionItems | 86 |
 | eventChains | 8 |
 | incompleteEventChains | 0 |
-| runtimeFindings | 0 |
-| criticalRuntimeFindings | 0 |
+| runtimeFindings | 1 |
+| criticalRuntimeFindings | 1 |
 | appCompletionGaps | 63 |
 | indexedAppCompletionGaps | 63 |
 | knownAppCompletionRiskItems | 63 |
 | appCompletionPriorityReviewItems | 63 |
 | appCompletionPriorityReviewTruncated | false |
-| operationalGateGaps | 0 |
-| indexedGaps | 63 |
-| totalGaps | 63 |
+| operationalGateGaps | 2 |
+| indexedGaps | 66 |
+| totalGaps | 66 |
 
 ## First Gap
 
-- medium: Dashboard overview: USE /positions has app-completion risk missing_test_link.
-- Owner: Test Automation Engineer + QA Regression Lead
-- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
+- critical: api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"}
+- Owner: Deployment Reliability Engineer + Ops Release Lead
+- Next action: Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /positions has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
+| medium | app_completion_gap | Account access | Account access: USE /positions has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/apiKeys has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/basic has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/security has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
@@ -95,3 +96,5 @@ This is the routing surface agents should use before guessing whether an app wor
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: AuditTrailView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: PerformanceReportsView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | User configuration | User configuration: ProfilePage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
+| critical | operational_gate_gap | - | runtime_error_index: critical_findings | Project Manager |
+| high | operational_gate_gap | - | public_runtime_probe: failed | Deployment Reliability Engineer |

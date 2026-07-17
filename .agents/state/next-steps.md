@@ -1,3 +1,17 @@
+## 2026-07-17 LUC-1362 stale USE /positions project-truth gap reconciled
+
+- The stale `Dashboard overview / missing_test_link` project-truth emission for
+  `apps/api/src/router/dashboard.routes.ts#/positions` is no longer active
+  after the authoritative generated-state refresh.
+- The same endpoint now truthfully remains as
+  `Account access / missing_doc_link`, owned by Docs Memory Lead + Project
+  Manager.
+- The refreshed first overall project-truth gap is now the production runtime
+  readiness failure on `https://api.soar.luckysparrow.ch/ready`, owned by
+  Deployment Reliability Engineer + Ops Release Lead.
+- Evidence:
+  `history/evidence/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17.md`.
+
 ## 2026-07-15 LUC-1250 Project-Truth Ingestion Refresh Follow-Up
 
 - The stale project-truth `missing_doc_link` row for

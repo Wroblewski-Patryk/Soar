@@ -10723,3 +10723,24 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
   `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.
+## 2026-07-17 LUC-1359 API ready 503 runtime
+
+- Status:
+  `BLOCKED / API_HEALTH_200 / API_READY_503 / WEB_200 / REDIS_RESTARTING_UNHEALTHY / DEPLOY_PERMISSION_BLOCKED`.
+- Findings:
+  public production probes on Friday, July 17, 2026 reconfirmed API `/health`
+  `200`, API `/ready` `503`, Web `/` `200`, and Web `/api/build-info` `200`.
+  Readiness code inspection narrows the live failure to critical-secret or
+  runtime-dependency gating, and Coolify readback now shows the production
+  `redis` resource as `restarting:unhealthy` while Soar applications remain
+  `running:unknown`. Direct Coolify database restart/start/stop verbs return
+  `403 Missing required permissions: deploy` for the bound API token, and a
+  CSRF-backed Coolify UI session login succeeds but still cannot use the API
+  restart path (`401 Unauthenticated`).
+- Next owner/action:
+  Ops Release Lead or Security Review Lead must provide a deploy-capable
+  Coolify Redis mutation path or perform the Redis recovery directly, then DRE
+  should rerun public smoke and protected `/ready/details`.
+- Evidence:
+  `history/evidence/luc-1359-restore-production-api-ready-503-runtime-2026-07-17.md`;
+  `history/tasks/luc-1359-restore-production-api-ready-503-runtime-2026-07-17-task.md`.

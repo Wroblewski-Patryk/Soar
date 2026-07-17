@@ -1,3 +1,107 @@
+## 2026-07-17 LUC-1371 source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-2
+
+- The current local dirty state remains coherent after retaining the `LUC-1367`
+  closure packet and adding the `LUC-1371` refresh records.
+- The packet is still limited to `.agents/state/*`, `.codex/context/*`,
+  `docs/status/*`, and matching `history/tasks/`, `history/evidence/`, and
+  `history/artifacts/` records. No runtime source, dependency, env, or deploy
+  paths were added.
+- `LUC-1371` closes the current docs/context/history/generated-state packet
+  with a local source-control closure commit; push not needed; deploy impact
+  none.
+- This issue identifier already exists historically in older June 2, 2026 Ops
+  inventory artifacts, so the current closure packet is distinguished by title
+  and date-specific filenames rather than by identifier alone.
+- The operational blocker remains unchanged and external to source-control
+  hygiene: `LUC-1359` still needs a deploy-capable Redis recovery path or a
+  direct Ops/Security action.
+
+## 2026-07-17 LUC-1367 source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-1
+
+- The current local dirty state remains coherent after retaining the `LUC-1366`
+  closure packet and adding the `LUC-1367` refresh records.
+- The packet is still limited to `.agents/state/*`, `.codex/context/*`,
+  `docs/status/*`, and matching `history/tasks/`, `history/evidence/`, and
+  `history/artifacts/` records. No runtime source, dependency, env, or deploy
+  paths were added.
+- `LUC-1367` refreshes the closure truth only: not committed, push not needed,
+  deploy impact none.
+- The operational blocker remains unchanged and external to source-control
+  hygiene: `LUC-1359` still needs a deploy-capable Redis recovery path or a
+  direct Ops/Security action.
+
+## 2026-07-17 LUC-1366 source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365
+
+- The current local dirty state remains coherent after adding the retained
+  `LUC-1365` closure packet and the `LUC-1359` resume-correction artifact.
+- The packet is still limited to `.agents/state/*`, `.codex/context/*`,
+  `docs/status/*`, and matching `history/tasks/`, `history/evidence/`, and
+  `history/artifacts/` records. No runtime source, dependency, env, or deploy
+  paths were added.
+- `LUC-1366` refreshes the closure truth only: not committed, push not needed,
+  deploy impact none.
+- The operational blocker remains unchanged and external to source-control
+  hygiene: `LUC-1359` still needs a deploy-capable Redis recovery path or a
+  direct Ops/Security action.
+
+## 2026-07-17 LUC-1365 source-control closure for LUC-1353-LUC-1359-LUC-1362
+
+- The current local dirty state is fully attributable to three related July 17
+  lanes: `LUC-1353` wake closeout, `LUC-1362` generated project-truth
+  reconciliation, and `LUC-1359` production API readiness incident evidence.
+- Dirty scope is limited to `.agents/state/*`, `.codex/context/*`,
+  `docs/status/*`, and the matching `history/tasks/`, `history/evidence/`, and
+  `history/artifacts/` records. No unrelated runtime code, dependency, env, or
+  deploy files are part of the packet.
+- `LUC-1365` closes as a classification-only source-control decision:
+  not committed, push not needed, deploy impact none.
+- The packet is safe to preserve locally or batch later, but any later commit
+  owner should keep the scope limited to these docs/context/history paths and
+  continue treating `LUC-1359` as a separate live runtime blocker.
+
+## 2026-07-17 LUC-1353 wake reconciliation and closeout
+
+- `LUC-1353` is now closed because its only residual blocker was the stale
+  generated `project-truth` emission later reconciled by `LUC-1362`.
+- The original proof link for
+  `apps/api/src/router/dashboard.routes.ts#/positions` remains the same:
+  `apps/api/src/modules/positions/positions.list.e2e.test.ts`, with the direct
+  relation recorded in `docs/architecture/relations/priority-test-links.csv`
+  and `docs/architecture/scanner-overrides.json`.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `api_endpoint:use-positions:e3a48a2408` no longer routes as
+  `Dashboard overview / missing_test_link` and now truthfully remains
+  `Account access / missing_doc_link`.
+- Residual work moved off this issue and stays with the separate docs-owned
+  follow-up lane for the same endpoint plus the unrelated `api_ready` `503`
+  runtime readiness gap.
+
+## 2026-07-17 LUC-1362 reconcile stale USE /positions project-truth gap for LUC-1353
+
+- The stale generated `project-truth` emission for
+  `apps/api/src/router/dashboard.routes.ts#/positions` is cleared without any
+  runtime or generator-code change.
+- Source-truth packet:
+  `docs/status/app-completion-index.{json,md}`,
+  `docs/status/project-truth-index.{json,md}`,
+  `docs/status/event-chain-index.{json,md}`,
+  `docs/status/runtime-error-index.{json,md}`,
+  `docs/status/operational-readiness-index.{json,md}`,
+  `history/tasks/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17-task.md`,
+  and
+  `history/evidence/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17.md`.
+- Readback:
+  `docs/status/app-completion-index.json` already classified
+  `api_endpoint:use-positions:e3a48a2408` as
+  `Account access / missing_doc_link`, and the refreshed
+  `docs/status/project-truth-index.{json,md}` now match that same route and
+  no longer emit the stale `Dashboard overview / missing_test_link` row.
+- Residual:
+  the positions endpoint still needs a docs-owned follow-up lane for
+  `missing_doc_link`, and the refreshed first overall project-truth gap is now
+  the unrelated runtime readiness failure on
+  `https://api.soar.luckysparrow.ch/ready` returning `503`.
+
 ## 2026-07-16 LUC-1357 source-control closure for LUC-1353-LUC-1354
 
 - Classified the local dirty worktree as one coherent docs/context/history
@@ -32694,3 +32798,18 @@ QA_PROOF_FOLLOWUP_CREATED`.
   `apps/web/src/features/admin/users/pages/AdminUsersPage.tsx` is fully closed
   across canonical docs, architecture-awareness, app-completion, and
   project-truth outputs.
+## 2026-07-17 LUC-1359 production API readiness incident
+
+- The current Soar production web surface is up, but the API readiness probe is
+  degraded again on Friday, July 17, 2026: API `/health` `200`, API `/ready`
+  `503`, Web `/` `200`, Web `/api/build-info` `200`.
+- Live Coolify readback narrows the incident to the Redis dependency path:
+  production `redis` is `restarting:unhealthy` while `postgresql` stays
+  `running:healthy` and the Soar applications remain `running:unknown`.
+- The current runner can authenticate read-only to Coolify and can authenticate
+  to the Coolify UI login flow, but it still does not have a deploy-capable API
+  path for the Redis restart/recovery action. Bearer-token Redis lifecycle
+  verbs return `403 Missing required permissions: deploy`; session-auth API
+  restart remains `401 Unauthenticated`.
+- Restoration is blocked on a deploy-capable Coolify credential path or a
+  direct Redis recovery action by Ops/Security, followed by a DRE smoke rerun.

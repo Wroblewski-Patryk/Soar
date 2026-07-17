@@ -1,3 +1,124 @@
+## 2026-07-17 LUC-1371 Source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-2
+
+- Status: `DONE`.
+- Scope:
+  refresh the prior closure packet once more after the retained `LUC-1367`
+  closure records themselves remained part of the current local dirty worktree.
+- Classification:
+  the current worktree remains one coherent docs/context/history/generated-state
+  bundle with no unrelated product code, dependency, env, or deployment files.
+- Decision:
+  local source-control closure commit created; push `not needed`; deploy impact
+  `none`.
+- Historical note:
+  older June 2, 2026 Ops inventory artifacts also use identifier `LUC-1371`,
+  so this closure packet is distinguished by its source-control title and
+  date-specific filenames.
+- Evidence:
+  `history/tasks/luc-1371-source-control-closure-for-luc-1353-luc-1359-luc-1362-luc-1365-plus-2-2026-07-17-task.md`;
+  `history/artifacts/luc-1371-source-control-closure-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1367 Source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-1
+
+- Status: `DONE`.
+- Scope:
+  refresh the prior closure packet once more after the retained `LUC-1366`
+  closure records themselves became part of the current local dirty worktree.
+- Classification:
+  the current worktree remains one coherent docs/context/history/generated-state
+  bundle with no unrelated product code, dependency, env, or deployment files.
+- Decision:
+  `not committed`; push `not needed`; deploy impact `none`.
+- Evidence:
+  `history/tasks/luc-1367-source-control-closure-for-luc-1353-luc-1359-luc-1362-luc-1365-plus-1-2026-07-17-task.md`;
+  `history/artifacts/luc-1367-source-control-closure-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1366 Source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365
+
+- Status: `DONE`.
+- Scope:
+  refresh the prior closure packet after the `LUC-1359` resume-correction
+  artifact and the retained `LUC-1365` closeout became part of the local dirty
+  worktree.
+- Classification:
+  the current worktree remains one coherent docs/context/history/generated-state
+  bundle with no unrelated product code, dependency, env, or deployment files.
+- Decision:
+  `not committed`; push `not needed`; deploy impact `none`.
+- Evidence:
+  `history/tasks/luc-1366-source-control-closure-for-luc-1353-luc-1359-luc-1362-luc-1365-2026-07-17-task.md`;
+  `history/artifacts/luc-1366-source-control-closure-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1365 Source-control closure for LUC-1353-LUC-1359-LUC-1362
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local dirty state left after the `LUC-1353` wake
+  closeout, the `LUC-1362` project-truth refresh, and the blocked `LUC-1359`
+  production runtime incident packet.
+- Classification:
+  the current worktree is one coherent docs/context/history/generated-state
+  bundle. No unrelated product code, dependency, env, or deployment files are
+  included.
+- Decision:
+  `not committed` in this heartbeat; the issue closes with attribution and
+  safety evidence only. Push status `not needed`. Deploy impact `none`.
+- Evidence:
+  `history/tasks/luc-1365-source-control-closure-for-luc-1353-luc-1359-luc-1362-2026-07-17-task.md`;
+  `history/artifacts/luc-1365-source-control-closure-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1353 Wake Reconciliation And Closeout
+
+- Status: `DONE`.
+- Scope:
+  close the parent proof issue after [LUC-1362](/LUC/issues/LUC-1362)
+  reconciled the stale generated `project-truth` emission for
+  `apps/api/src/router/dashboard.routes.ts#/positions`.
+- Resolution:
+  the original Test Automation proof lane from `LUC-1353` remains valid, and
+  the only blocker recorded on July 16, 2026 was removed by the authoritative
+  generated-state refresh completed in `LUC-1362`.
+- Final state:
+  `docs/status/project-truth-index.{json,md}` no longer emit
+  `Dashboard overview: USE /positions` as `missing_test_link`; the same route
+  now truthfully advances to the separate docs-owned
+  `Account access / missing_doc_link` row.
+- Evidence:
+  `history/tasks/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16-task.md`;
+  `history/evidence/luc-1353-dashboard-overview-use-positions-missing-test-link-2026-07-16.md`;
+  `history/tasks/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17-task.md`;
+  `history/evidence/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17.md`.
+
+## 2026-07-17 LUC-1362 Reconcile stale USE /positions project-truth gap for LUC-1353
+
+- Status: `DONE`.
+- Scope:
+  reconcile the stale generated `project-truth` gap for
+  `apps/api/src/router/dashboard.routes.ts#/positions` left after the
+  `LUC-1353` proof-link closure.
+- Findings:
+  `app-completion-index.json` already routed the positions endpoint to
+  `Account access / missing_doc_link`, while the checked-in
+  `project-truth-index.json` still emitted the older
+  `Dashboard overview / missing_test_link` row for the same `sourceItemId`.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  dry-run `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS and showed the correct `Account access / missing_doc_link` classification;
+  apply `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS.
+- Outcome:
+  `docs/status/project-truth-index.{json,md}` no longer emit
+  `Dashboard overview: USE /positions has app-completion risk missing_test_link.`
+  The positions route now matches app completion as
+  `Account access / missing_doc_link`, and the refreshed first overall gap is
+  the unrelated runtime readiness failure
+  `api_ready https://api.soar.luckysparrow.ch/ready returned 503`.
+- Evidence:
+  `history/tasks/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17-task.md`;
+  `history/evidence/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17.md`.
+
 ## 2026-07-16 LUC-1357 Source-control closure for LUC-1353-LUC-1354
 
 - Status: `DONE`.
@@ -46690,3 +46811,28 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `Dashboard overview: GET / has app-completion risk missing_test_link.`
 - Outcome:
   the `AdminUsersPage.tsx` Account access docs gap is closed end-to-end.
+## 2026-07-17 LUC-1359 Restore production runtime for API `/ready` 503
+
+- Status: `BLOCKED`.
+- Scope:
+  diagnose and restore the current production API readiness failure on Friday,
+  July 17, 2026.
+- Findings:
+  public production status is now narrow: API `/health` `200`, API `/ready`
+  `503`, Web `/` `200`, and Web `/api/build-info` `200`. Coolify readback
+  shows production `redis` as `restarting:unhealthy`, matching the readiness
+  and admin-login degradation. The bound Coolify API token is read-only for
+  this action surface: Redis `restart` / `start` / `stop` verbs all return
+  `403 Missing required permissions: deploy`.
+- Recovery boundary:
+  Coolify UI session login with the bound `COOLIFY_LOGIN_*` credentials
+  succeeds (`two_factor=false`), but the API restart path remains
+  `401 Unauthenticated`, so this runner still lacks a deploy-capable Redis
+  mutation path.
+- Blocker:
+  Ops Release Lead or Security Review Lead must inject deploy-capable Coolify
+  permissions for the Redis resource or execute the single Redis recovery
+  action directly, then DRE reruns bounded smoke and `/ready/details`.
+- Evidence:
+  `history/tasks/luc-1359-restore-production-api-ready-503-runtime-2026-07-17-task.md`;
+  `history/evidence/luc-1359-restore-production-api-ready-503-runtime-2026-07-17.md`.

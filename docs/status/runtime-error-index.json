@@ -1,11 +1,27 @@
 {
-  "generatedAt": "2026-07-16T18:16:58.901Z",
+  "generatedAt": "2026-07-17T14:43:44.927Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "counts": {
-    "runtimeFindings": 0,
-    "criticalFindings": 0,
+    "runtimeFindings": 1,
+    "criticalFindings": 1,
     "blockedFindings": 0
   },
-  "findings": []
+  "findings": [
+    {
+      "id": "production-public-probe",
+      "severity": "critical",
+      "layer": "production",
+      "status": "failing",
+      "summary": "api_ready https://api.soar.luckysparrow.ch/ready returned 503: {\"status\":\"not_ready\",\"service\":\"api\"}",
+      "evidence": [
+        "https://soar.luckysparrow.ch",
+        "https://soar.luckysparrow.ch/api/build-info",
+        "https://api.soar.luckysparrow.ch/health",
+        "https://api.soar.luckysparrow.ch/ready"
+      ],
+      "nextOwner": "Deployment Reliability Engineer + Ops Release Lead",
+      "nextAction": "Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof."
+    }
+  ]
 }

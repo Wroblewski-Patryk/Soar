@@ -1,3 +1,28 @@
+## 2026-07-17 LUC-1362 Reconcile stale USE /positions project-truth gap for LUC-1353
+
+- Mission:
+  `LUC-1362-RECONCILE-STALE-USE-POSITIONS-PROJECT-TRUTH-GAP-FOR-LUC-1353-2026-07-17`.
+- Status:
+  `DONE / GENERATED_TRUTH_REFRESHED / STALE_PROJECT_TRUTH_GAP_CLEARED / NO_TOOLCHAIN_CODE_CHANGE`.
+- Scope:
+  Engineering Delivery Lead verification lane for stale generated project-truth
+  routing of `apps/api/src/router/dashboard.routes.ts#/positions` after the
+  prior proof-link closure. No runtime code edit, deploy, push, restart,
+  rollback, env edit, secret/account readback, DB mutation, or protected
+  account action.
+- Result:
+  the authoritative project-truth refresh no longer emits
+  `Dashboard overview: USE /positions` as `missing_test_link`; the same route
+  now truthfully advances to `Account access / missing_doc_link`, and the
+  broader first gap moves to the current runtime readiness probe failure.
+- Evidence:
+  `history/evidence/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17.md`;
+  `history/tasks/luc-1362-reconcile-stale-use-positions-project-truth-gap-for-luc-1353-2026-07-17-task.md`.
+- Residual:
+  a separate docs-owned lane still exists for the `USE /positions`
+  `missing_doc_link` row, and the refreshed project truth now surfaces the
+  unrelated `api_ready` `503` runtime gap as the first overall issue.
+
 ## 2026-07-15 LUC-1250 Refresh Project-Truth Ingestion After Admin-Users Doc-Link Closure
 
 - Mission:
