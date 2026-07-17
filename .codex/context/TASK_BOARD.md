@@ -1,3 +1,30 @@
+## 2026-07-17 LUC-1412 Close local dirty packet from LUC-1410 profile-basic doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  PM-owned known-state and source-control verification lane for the expected
+  local dirty packet after `LUC-1410`.
+- Findings:
+  the latest board assignment comment required evidence before action, and the
+  repo already satisfied that requirement: `git status --short --branch`
+  showed a clean worktree, while local history showed
+  `3a1d0f8a7 docs: close LUC-1410 profile-basic doc link` as the newest commit.
+- Verification:
+  `git status --short --branch` -> `## main...origin/main [ahead 68]` with no
+  dirty paths;
+  `git log --oneline -n 12` -> latest local commit is `3a1d0f8a7`;
+  `git show --stat --name-only --format=fuller 3a1d0f8a7` -> the full
+  `LUC-1410` packet is already committed;
+  `git diff --check` -> PASS.
+- Outcome:
+  no unresolved local dirty packet remained from `LUC-1410`, so `LUC-1412`
+  closes as a PM verification/evidence lane only. This heartbeat adds durable
+  `LUC-1412` task/evidence/context records and leaves push/deploy untouched.
+- Evidence:
+  `history/tasks/luc-1412-source-control-close-local-dirty-packet-from-luc-1410-2026-07-17-task.md`;
+  `history/evidence/luc-1412-source-control-close-local-dirty-packet-from-luc-1410-2026-07-17.md`;
+  `history/artifacts/luc-1412-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1410 Dashboard overview USE /profile/basic missing-doc-link closure
 
 - Status: `DONE`.

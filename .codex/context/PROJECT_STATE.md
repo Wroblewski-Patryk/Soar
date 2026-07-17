@@ -1,3 +1,17 @@
+## 2026-07-17 LUC-1412 close local dirty packet from LUC-1410 profile-basic doc-link closure
+
+- The PM takeover baseline for `LUC-1412` is complete.
+- No local dirty packet remained from `LUC-1410` when this lane started:
+  `git status --short --branch` showed a clean worktree and local history
+  identified `3a1d0f8a7 docs: close LUC-1410 profile-basic doc link` as the
+  already-landed closure commit.
+- `LUC-1412` therefore closes as a verification/evidence lane only, with no
+  additional product/doc/generated packet requiring preservation.
+- Evidence:
+  `history/tasks/luc-1412-source-control-close-local-dirty-packet-from-luc-1410-2026-07-17-task.md`;
+  `history/evidence/luc-1412-source-control-close-local-dirty-packet-from-luc-1410-2026-07-17.md`;
+  `history/artifacts/luc-1412-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1410 dashboard overview USE /profile/basic missing-doc-link closure
 
 - The scoped Soar doc-link repair for
