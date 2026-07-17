@@ -129,6 +129,10 @@ apps/api/src/router/dashboard.routes.ts#/market-stream,apps/api/src/modules/mark
 apps/api/src/router/dashboard.routes.ts#/markets,apps/api/src/modules/markets/markets.e2e.test.ts,LUC-1332 direct dashboard markets router mount relation to existing owner-scoped universe CRUD, catalog, and fail-closed e2e proof
 apps/api/src/router/dashboard.routes.ts#/orders,apps/api/src/modules/orders/orders-positions.e2e.test.ts,LUC-1343 direct dashboard orders router mount relation to existing authenticated owner-scoped read and write contract e2e proof
 apps/api/src/router/dashboard.routes.ts#/positions,apps/api/src/modules/positions/positions.list.e2e.test.ts,LUC-1353 direct dashboard positions router mount relation to existing authenticated owner-scoped list contract e2e proof
+apps/api/src/router/dashboard.routes.ts#/profile/apiKeys,apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts,LUC-1383 direct dashboard profile-apiKeys router mount relation to existing auth-gated API-key lifecycle and fail-closed e2e proof
+apps/api/src/router/dashboard.routes.ts#/profile/basic,apps/api/src/modules/profile/basic/basic.e2e.test.ts,LUC-1383 direct dashboard profile-basic router mount relation to existing mounted profile basic read update delete and fail-closed e2e proof
+apps/api/src/router/dashboard.routes.ts#/profile/security,apps/api/src/modules/profile/security/security.e2e.test.ts,LUC-1384 direct dashboard profile-security router mount relation to existing password change and account deletion e2e proof
+apps/api/src/router/dashboard.routes.ts#/reports,apps/api/src/modules/reports/reports.e2e.test.ts,LUC-1384 direct dashboard reports router mount relation to existing cross-mode aggregation and auth-isolation e2e proof
 apps/api/src/router/admin.routes.ts#/users,apps/api/src/modules/admin/users/users.e2e.test.ts,LUC-1155 direct admin users router mount relation to existing admin users e2e proof
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation

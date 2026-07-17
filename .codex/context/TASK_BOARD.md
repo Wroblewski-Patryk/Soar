@@ -1,3 +1,80 @@
+## 2026-07-17 LUC-1379 Account access USE /positions missing-doc-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/positions`.
+- Findings:
+  the repo already had the canonical positions owner doc in
+  `docs/modules/api-positions.md`, but it lacked a direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount note in the positions module doc.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `rg -n "USE /positions|GET /alerts|GET /metrics|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /positions` cleared; only `GET /alerts` and `GET /metrics` remain as
+  generated `missing_doc_link` rows;
+  `git diff --check` -> PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Account access: USE /positions` as `missing_doc_link`.
+  The next generated docs-owned gaps now advance to `USE /profile/apiKeys`,
+  `USE /profile/security`, `USE /reports`, `USE /profile/basic`,
+  `GET /alerts`, and `GET /metrics`.
+- Evidence:
+  `history/tasks/luc-1379-account-access-use-positions-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1379-account-access-use-positions-missing-doc-link-2026-07-17.md`.
+
+## 2026-07-17 LUC-1387 Restore least-privilege Coolify owner path for one Redis recovery action
+
+- Status: `IN_REVIEW`.
+- Scope:
+  replace the unowned `403 Missing required permissions: deploy` loop with one
+  exact owner-path decision for the Soar production Redis recovery.
+- Findings:
+  `LUC-1374` already reproved the runtime blocker on Friday, July 17, 2026 and
+  the current roster has no separate active Ops Release Lead agent for direct
+  Coolify mutation execution.
+- Outcome:
+  the remaining gate is now a typed board/operator confirmation for exactly one
+  Redis restart action (`POST /api/v1/databases/{redis-id}/restart`) or one
+  deploy-capable owner designated for that same single action only.
+- Evidence:
+  `history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md`;
+  `history/evidence/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17.md`.
+
+## 2026-07-17 LUC-1383 Reconcile local proof for /profile/basic and /profile/apiKeys
+
+- Status: `DONE`.
+- Scope:
+  close the Dashboard overview generated `missing_test_link` rows for
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic` and
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` by repairing the
+  generator-readable proof linkage to the existing profile API e2e coverage.
+- Resolution:
+  direct route-mount proof links plus matching verified scanner overrides now
+  let the generator promote both mounts out of the QA proof backlog without any
+  runtime code change.
+- Readback:
+  `/profile/apiKeys` now truthfully routes as
+  `Account access / missing_doc_link`, and `/profile/basic` now truthfully
+  routes as `Dashboard overview / missing_doc_link`.
+- Verification:
+  local `basic.e2e` replay failed because PostgreSQL was unreachable at
+  `localhost:5432`; `apiKey.e2e` replay timed out in the current workstation
+  session; architecture-awareness, graph-drift, app-completion, and
+  project-truth generators all passed; targeted readback passed.
+- Evidence:
+  `history/tasks/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17-task.md`;
+  `history/evidence/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17.md`;
+  `history/artifacts/luc-1383-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
 
 - Status: `BLOCKED`.
@@ -46858,3 +46935,39 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/tasks/luc-1359-restore-production-api-ready-503-runtime-2026-07-17-task.md`;
   `history/evidence/luc-1359-restore-production-api-ready-503-runtime-2026-07-17.md`.
+
+## 2026-07-17 LUC-1384 Dashboard overview `/profile/security` and `/reports` proof-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the exact Dashboard overview `missing_test_link` rows for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security` and
+  `apps/api/src/router/dashboard.routes.ts#/reports` without expanding into
+  browser-proof or generic dashboard regression work.
+- Result:
+  linked both router mounts to their existing API e2e proof in
+  `docs/architecture/relations/priority-test-links.csv`, added matching
+  verified route/test overrides in
+  `docs/architecture/scanner-overrides.json`, and refreshed architecture,
+  app-completion, and project-truth outputs.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/profile/security/security.e2e.test.ts --run` ->
+  BLOCKED BY LOCAL DB (`localhost:5432` unreachable);
+  `pnpm --filter api exec vitest run src/modules/reports/reports.e2e.test.ts --run` ->
+  PARTIAL (`401` unauthenticated case passed; DB-backed authenticated cases
+  blocked by the same missing local DB);
+  `build-architecture-awareness-index.mjs` PASS ->
+  `pnpm run architecture:graph:drift:strict` PASS ->
+  `build-app-completion-index.mjs` PASS ->
+  `build-project-truth-indexes.mjs --apply` PASS.
+- Readback:
+  both router mounts are no longer emitted as `missing_test_link` in
+  `docs/status/app-completion-index.{json,md}` or
+  `docs/status/project-truth-index.{json,md}`; each advances to a separate
+  docs-owned `missing_doc_link` follow-up classification.
+- Deployment impact:
+  none; no push, deploy, restart, rollback, env change, DB action, protected
+  account mutation, or live-trading change occurred.
+- Evidence:
+  `history/tasks/luc-1384-dashboard-overview-profile-security-and-reports-proof-2026-07-17-task.md`;
+  `history/evidence/luc-1384-dashboard-overview-profile-security-and-reports-proof-2026-07-17.md`.

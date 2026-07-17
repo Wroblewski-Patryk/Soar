@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-17T14:43:44.927Z
+Generated: 2026-07-17T18:42:15.824Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,14 +13,14 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 1 |
 | criticalRuntimeFindings | 1 |
-| appCompletionGaps | 63 |
-| indexedAppCompletionGaps | 63 |
-| knownAppCompletionRiskItems | 63 |
-| appCompletionPriorityReviewItems | 63 |
+| appCompletionGaps | 62 |
+| indexedAppCompletionGaps | 62 |
+| knownAppCompletionRiskItems | 62 |
+| appCompletionPriorityReviewItems | 62 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 2 |
-| indexedGaps | 66 |
-| totalGaps | 66 |
+| indexedGaps | 65 |
+| totalGaps | 65 |
 
 ## First Gap
 
@@ -33,11 +33,10 @@ This is the routing surface agents should use before guessing whether an app wor
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
 | critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
-| medium | app_completion_gap | Account access | Account access: USE /positions has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/apiKeys has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/basic has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/security has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /reports has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: USE /profile/apiKeys has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: USE /profile/security has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Account access | Account access: USE /reports has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
+| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/basic has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /strategies has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /wallets has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /dashboard has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

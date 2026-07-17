@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-16T18:16:29.678Z
+Generated: 2026-07-17T18:42:15.804Z
 
 ## Contract
 
@@ -11,14 +11,14 @@ Every task should identify the feature/module it changes, dependency expectation
 - Actionable tasks without architecture links: 0
 - Raw tasks without architecture links: 141
 - Actionable implementation entities without task links: 1450
-- Raw implementation entities without task links: 1749
-- Classified task-linkage noise: 440
+- Raw implementation entities without task links: 1748
+- Classified task-linkage noise: 439
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 265
+- curated_graph_covered: 264
 - historical_task_archive: 141
 - top_level_app_mount: 1
 
@@ -157,7 +157,6 @@ Every task should identify the feature/module it changes, dependency expectation
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
-- api_endpoint: USE /reports (apps/api/src/router/dashboard.routes.ts#/reports)
 - api_endpoint: USE /strategies (apps/api/src/router/dashboard.routes.ts#/strategies)
 - api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
 - api_endpoint: GET / (apps/api/src/router/index.ts#/)
@@ -195,3 +194,4 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: WalletsListTable.tsx (apps/web/src/features/wallets/components/WalletsListTable.tsx)
 - component: AppLogoLink.tsx (apps/web/src/ui/components/AppLogoLink.tsx)
 - component: ConfirmModal.tsx (apps/web/src/ui/components/ConfirmModal.tsx)
+- component: FormModal.tsx (apps/web/src/ui/components/FormModal.tsx)

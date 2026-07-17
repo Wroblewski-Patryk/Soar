@@ -1,3 +1,24 @@
+## 2026-07-17 LUC-1387 Redis owner-path restoration gate
+
+- Status:
+  `IN_REVIEW / REDIS_RECOVERY_OWNER_PATH_PENDING_CONFIRMATION`.
+- Health impact:
+  no live runtime state changed in this lane; the Soar production incident
+  remains the same Redis `restarting:unhealthy` + API `/ready` `503` condition
+  already proved by `LUC-1374`.
+- Authorization impact:
+  the generic Security/Ops unblock note is now narrowed to one typed decision:
+  board/operator must approve or reject exactly one Redis recovery action
+  (`POST /api/v1/databases/{redis-id}/restart`) or designate one
+  deploy-capable owner for that same single action only.
+- Next owner/action:
+  pending `LUC-1387` board/operator confirmation; after acceptance, execute the
+  single Redis restart action only, then return `LUC-1374` to DRE for bounded
+  readiness recheck.
+- Evidence:
+  `history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md`;
+  `history/evidence/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1374 Redis restarting:unhealthy recheck
 
 - Status:

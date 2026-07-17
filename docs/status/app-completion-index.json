@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T14:43:44.915Z",
+  "generatedAt": "2026-07-17T18:42:15.813Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,28 +8,28 @@
     "items": 86,
     "flows": 7,
     "needsBrowserReview": 41,
-    "missingTestLink": 19,
-    "missingDocLink": 3,
+    "missingTestLink": 15,
+    "missingDocLink": 6,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 63,
-    "appCompletionRiskItems": 63,
-    "priorityReviewItems": 63,
+    "riskItems": 62,
+    "appCompletionRiskItems": 62,
+    "priorityReviewItems": 62,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 20,
+      "total": 23,
       "risks": {
-        "ok": 19,
-        "missing_doc_link": 1
+        "ok": 20,
+        "missing_doc_link": 3
       },
       "gates": {
-        "auth": 20,
+        "auth": 23,
         "subscription": 3,
-        "configuration": 1
+        "configuration": 2
       }
     },
     {
@@ -42,10 +42,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 40,
+      "total": 37,
       "risks": {
         "ok": 3,
-        "missing_test_link": 7,
+        "missing_doc_link": 1,
+        "missing_test_link": 3,
         "needs_browser_review": 30
       },
       "gates": {
@@ -94,11 +95,54 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "api_endpoint:use-positions:e3a48a2408",
+      "id": "api_endpoint:use-profile-apikeys:680f20cf0c",
       "type": "api_endpoint",
       "kind": "api_endpoint",
-      "name": "USE /positions",
-      "path": "apps/api/src/router/dashboard.routes.ts#/positions",
+      "name": "USE /profile/apiKeys",
+      "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth",
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "api_endpoint:use-profile-security:61552c894b",
+      "type": "api_endpoint",
+      "kind": "api_endpoint",
+      "name": "USE /profile/security",
+      "path": "apps/api/src/router/dashboard.routes.ts#/profile/security",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 9,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "api_endpoint:use-reports:cc94abde59",
+      "type": "api_endpoint",
+      "kind": "api_endpoint",
+      "name": "USE /reports",
+      "path": "apps/api/src/router/dashboard.routes.ts#/reports",
       "owner": "Test Automation Engineer",
       "status": "verified",
       "userFlow": "Account access",
@@ -115,82 +159,25 @@
       "risk": "missing_doc_link"
     },
     {
-      "id": "api_endpoint:use-profile-apikeys:680f20cf0c",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /profile/apiKeys",
-      "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [
-        "configuration"
-      ],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 4,
-      "risk": "missing_test_link"
-    },
-    {
       "id": "api_endpoint:use-profile-basic:567948ce49",
       "type": "api_endpoint",
       "kind": "api_endpoint",
       "name": "USE /profile/basic",
       "path": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Dashboard overview",
-      "gates": [],
+      "gates": [
+        "configuration"
+      ],
       "evidence": {
-        "hasTest": false,
+        "hasTest": true,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 4,
-      "risk": "missing_test_link"
-    },
-    {
-      "id": "api_endpoint:use-profile-security:61552c894b",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /profile/security",
-      "path": "apps/api/src/router/dashboard.routes.ts#/profile/security",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 4,
-      "risk": "missing_test_link"
-    },
-    {
-      "id": "api_endpoint:use-reports:cc94abde59",
-      "type": "api_endpoint",
-      "kind": "api_endpoint",
-      "name": "USE /reports",
-      "path": "apps/api/src/router/dashboard.routes.ts#/reports",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 3,
-      "risk": "missing_test_link"
+      "risk": "missing_doc_link"
     },
     {
       "id": "api_endpoint:use-strategies:673ded2ac7",

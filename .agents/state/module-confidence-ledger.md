@@ -1,3 +1,23 @@
+## 2026-07-17 LUC-1379 Account Access USE Positions Doc-Link Closure
+
+- Module row:
+  Account access / dashboard positions router mount documentation.
+- Status delta:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED`.
+- Confidence update:
+  [LUC-1379](/LUC/issues/LUC-1379) added direct module documentation and
+  canonical graph relations for `apps/api/src/router/dashboard.routes.ts#/positions`,
+  and `docs/modules/api-positions.md` now records the authenticated dashboard
+  mount contract for the delegated positions API surface. Generated
+  app-completion no longer classifies `USE /positions` as `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1379-account-access-use-positions-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1379-account-access-use-positions-missing-doc-link-2026-07-17.md`.
+- Residual:
+  the next docs-owned gaps now advance to `USE /profile/apiKeys`,
+  `USE /profile/security`, `USE /reports`, `USE /profile/basic`,
+  `GET /alerts`, and `GET /metrics`.
+
 ## 2026-07-16 LUC-1349 Dashboard Overview USE Orders Doc-Link Closure
 
 - Module row:

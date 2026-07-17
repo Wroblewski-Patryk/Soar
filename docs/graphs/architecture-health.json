@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-16T18:16:29.678Z",
+  "generated_at": "2026-07-17T18:42:15.804Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15172,
-    "relations": 41669,
+    "entities": 15210,
+    "relations": 41830,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5042,
+      "document": 5070,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1900,
+      "task": 1910,
       "test": 522
     },
     "by_status": {
-      "blocked": 183,
+      "blocked": 185,
       "deprecated": 10,
-      "implemented": 12261,
+      "implemented": 12285,
       "in_progress": 29,
-      "tested": 929,
-      "verified": 1760
+      "tested": 930,
+      "verified": 1771
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3800,
+      "count": 3796,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -76,42 +76,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "api_endpoint:use-profile-apikeys:680f20cf0c",
-          "type": "api_endpoint",
-          "name": "USE /profile/apiKeys",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-profile-basic:567948ce49",
-          "type": "api_endpoint",
-          "name": "USE /profile/basic",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-profile-security:61552c894b",
-          "type": "api_endpoint",
-          "name": "USE /profile/security",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/security",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "api_endpoint:use-profile-subscription:e9d8631f88",
           "type": "api_endpoint",
           "name": "USE /profile/subscription",
           "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-reports:cc94abde59",
-          "type": "api_endpoint",
-          "name": "USE /reports",
-          "path": "apps/api/src/router/dashboard.routes.ts#/reports",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,11 +1602,43 @@
           "path": "apps/web/src/i18n/namespaces/dashboard-strategies.pl.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-pt-ts:3c1dd07cad",
+          "type": "feature",
+          "name": "dashboard-strategies.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-de-ch-ts:cd66dfaec7",
+          "type": "feature",
+          "name": "dashboard-wallets.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-en-ts:1df499a6be",
+          "type": "feature",
+          "name": "dashboard-wallets.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-pl-ts:86b661c7c0",
+          "type": "feature",
+          "name": "dashboard-wallets.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1735,
+      "count": 1734,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1653,14 +1653,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-reports:cc94abde59",
-          "type": "api_endpoint",
-          "name": "USE /reports",
-          "path": "apps/api/src/router/dashboard.routes.ts#/reports",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3229,14 @@
           "type": "model",
           "name": "dl",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#dl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:dr:472d6e9dd6",
+          "type": "model",
+          "name": "Dr",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Dr",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1464,
+      "count": 1460,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1281,
+        "curated_graph_covered": 1277,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6507,46 +6507,10 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:use-profile-apikeys:680f20cf0c",
-          "type": "api_endpoint",
-          "name": "USE /profile/apiKeys",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-profile-basic:567948ce49",
-          "type": "api_endpoint",
-          "name": "USE /profile/basic",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/basic",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-profile-security:61552c894b",
-          "type": "api_endpoint",
-          "name": "USE /profile/security",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/security",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-profile-subscription:e9d8631f88",
           "type": "api_endpoint",
           "name": "USE /profile/subscription",
           "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-reports:cc94abde59",
-          "type": "api_endpoint",
-          "name": "USE /reports",
-          "path": "apps/api/src/router/dashboard.routes.ts#/reports",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8221,42 @@
           "type": "function",
           "name": "calcReferenceBalance",
           "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#calcReferenceBalance",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:calcreservedmargin:fef18fc0a2",
+          "type": "function",
+          "name": "calcReservedMargin",
+          "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#calcReservedMargin",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:clamp:a1023f7857",
+          "type": "function",
+          "name": "clamp",
+          "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#clamp",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:picknextsymbol:9a0ee22d10",
+          "type": "function",
+          "name": "pickNextSymbol",
+          "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#pickNextSymbol",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:pushevent:361982eaf2",
+          "type": "function",
+          "name": "pushEvent",
+          "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts#pushEvent",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11014,7 +11014,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1749,
+      "count": 1748,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11029,14 +11029,6 @@
           "type": "api_endpoint",
           "name": "USE /webhooks/stripe",
           "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-reports:cc94abde59",
-          "type": "api_endpoint",
-          "name": "USE /reports",
-          "path": "apps/api/src/router/dashboard.routes.ts#/reports",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -12615,14 +12607,22 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ao",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ar:fe3742b148",
+          "type": "model",
+          "name": "Ar",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ar",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 440,
+      "count": 439,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 265,
+        "curated_graph_covered": 264,
         "historical_task_archive": 141,
         "top_level_app_mount": 1
       },
@@ -13915,15 +13915,6 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-reports:cc94abde59",
-          "type": "api_endpoint",
-          "name": "USE /reports",
-          "path": "apps/api/src/router/dashboard.routes.ts#/reports",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-strategies:673ded2ac7",
           "type": "api_endpoint",
           "name": "USE /strategies",
@@ -14423,6 +14414,15 @@
           "type": "feature",
           "name": "pairStatsMetricDisplay.ts",
           "path": "apps/web/src/features/backtest/utils/pairStatsMetricDisplay.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:timelineindicatoroverlays-ts:a6acc19653",
+          "type": "feature",
+          "name": "timelineIndicatorOverlays.ts",
+          "path": "apps/web/src/features/backtest/utils/timelineIndicatorOverlays.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

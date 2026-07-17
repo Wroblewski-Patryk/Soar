@@ -1,3 +1,60 @@
+## 2026-07-17 LUC-1379 account access USE /positions missing-doc-link closure
+
+- The last generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/positions` is now cleared through
+  canonical docs only: no runtime code or proof changes were required.
+- `docs/modules/api-positions.md` now records the authenticated dashboard
+  router mount contract for the delegated positions surface, and the direct
+  doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `USE /positions` is cleared and no longer appears as the
+  first docs-owned row.
+- Residual:
+  the next generated docs-owned gaps now advance to
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`,
+  `apps/api/src/router/dashboard.routes.ts#/profile/security`,
+  `apps/api/src/router/dashboard.routes.ts#/reports`,
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`,
+  `apps/api/src/router/index.ts#/alerts`, and
+  `apps/api/src/router/index.ts#/metrics`.
+
+## 2026-07-17 LUC-1387 Redis owner-path confirmation
+
+- `LUC-1387` converted the remaining Soar Redis blocker from a generic
+  Security/Ops note into an exact owner-path gate for Friday, July 17, 2026.
+- The upstream DRE evidence is unchanged: direct Coolify Redis `restart`,
+  `start`, and `stop` probes still return
+  `403 Missing required permissions: deploy`, so the next legal move is not
+  another token retry.
+- Current roster review showed no separate active Ops Release Lead lane, so the
+  bounded path is now a board/operator confirmation for exactly one production
+  Redis restart action or one designated deploy-capable owner for that same
+  action only.
+- `LUC-1374` should resume only after that owner action lands, at which point
+  DRE reruns bounded readiness smoke.
+
+## 2026-07-17 LUC-1383 local proof reconciliation for profile basic and API keys
+
+- `docs/architecture/relations/priority-test-links.csv` now links
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic` to
+  `apps/api/src/modules/profile/basic/basic.e2e.test.ts` and
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` to
+  `apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts`.
+- `docs/architecture/scanner-overrides.json` now marks both exact router mounts
+  as verified with same-issue evidence, allowing the generator to promote the
+  mounted routes out of the `missing_test_link` backlog.
+- Fresh generated readback no longer routes either endpoint as
+  `Dashboard overview / missing_test_link`.
+  `USE /profile/apiKeys` now advances to `Account access / missing_doc_link`,
+  while `USE /profile/basic` now advances to
+  `Dashboard overview / missing_doc_link`.
+- Local DB-backed replay remained only partially provable in this heartbeat:
+  `basic.e2e.test.ts` failed because Prisma could not reach PostgreSQL at
+  `localhost:5432`, and `apiKey.e2e.test.ts` timed out before a conclusive
+  result. The source-truth repair itself is verified by generator readback.
+
 ## 2026-07-17 LUC-1374 Redis unhealthy recheck
 
 - Fresh live verification on Friday, July 17, 2026 confirms the earlier
@@ -32832,3 +32889,25 @@ QA_PROOF_FOLLOWUP_CREATED`.
   restart remains `401 Unauthenticated`.
 - Restoration is blocked on a deploy-capable Coolify credential path or a
   direct Redis recovery action by Ops/Security, followed by a DRE smoke rerun.
+
+## 2026-07-17 LUC-1384 dashboard overview profile-security and reports proof-link closure
+
+- Closed the two scoped Dashboard overview QA proof-link gaps for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security` and
+  `apps/api/src/router/dashboard.routes.ts#/reports`.
+- Added direct route-mount proof links in
+  `docs/architecture/relations/priority-test-links.csv` and matching verified
+  route/test overrides in `docs/architecture/scanner-overrides.json`.
+- Focused generator/readback verification passed for:
+  `build-architecture-awareness-index.mjs`,
+  `pnpm run architecture:graph:drift:strict`,
+  `build-app-completion-index.mjs`, and
+  `build-project-truth-indexes.mjs --apply`.
+- Attempted same-run replay of
+  `apps/api/src/modules/profile/security/security.e2e.test.ts` and
+  `apps/api/src/modules/reports/reports.e2e.test.ts` was blocked by missing
+  local PostgreSQL on `localhost:5432`; closure therefore relies on existing
+  durable test proof plus fresh graph/index readback.
+- Fresh readback confirms both mounts no longer emit
+  `missing_test_link`; they now advance to separate docs-owned
+  `missing_doc_link` follow-up classification.

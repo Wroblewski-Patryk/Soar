@@ -23,6 +23,11 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/positions`.
+- Account access reaches the authenticated positions API surface through
+  `apps/api/src/router/dashboard.routes.ts#/positions`, which delegates the
+  positions list/detail, live-status, exchange-snapshot, takeover, orphan
+  repair, and management-mode endpoints to this module after the shared
+  dashboard auth gate succeeds.
 - Depends on:
   - `prisma` position/order/apiKey persistence.
   - authenticated-read exchange snapshot adapters for supported
@@ -134,6 +139,7 @@ Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
 | `apps/api/src/modules/positions/livePositionReconciliation.history.ts` | `docs/modules/api-positions.md` | LIVE reconciliation history projection helper boundary for position lifecycle evidence. | Architecture-awareness `documents` relation from this doc plus live reconciliation/history tests when behavior changes. |
 | `apps/api/src/modules/positions/livePositionReconciliationApiKeys.ts` | `docs/modules/api-positions.md` | API-key selection helper used by position reconciliation snapshot reads without exposing secret values. | Architecture-awareness `documents` relation from this doc plus positions snapshot/reconciliation tests when behavior changes. |
 | `apps/api/src/modules/positions/positionCloseAttribution.ts` | `docs/modules/api-positions.md` | Position close-attribution helper for classifying external/local lifecycle close reasons. | Architecture-awareness `documents` relation from this doc plus position lifecycle tests when behavior changes. |
+| `apps/api/src/router/dashboard.routes.ts#/positions` | `docs/modules/api-positions.md` | Authenticated dashboard router mount that delegates the positions API surface into this module without a dashboard-specific controller. | Direct doc relation plus positions route e2e coverage when mount behavior changes. |
 
 ## 21. Architecture-Awareness Test-Link Classification
 
