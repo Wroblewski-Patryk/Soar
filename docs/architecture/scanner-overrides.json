@@ -706,6 +706,16 @@
       ]
     },
     {
+      "path": "apps/api/src/router/dashboard.routes.ts#/strategies",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview strategies router mount through focused strategies API e2e coverage for unauthenticated fail-closed access, authenticated CRUD and import-export flows, ownership isolation on mounted detail mutations, and active-bot update-delete guardrails on the mounted strategy routes.",
+      "evidence": [
+        "apps/api/src/modules/strategies/strategies.e2e.test.ts",
+        "history/evidence/luc-1397-dashboard-overview-use-strategies-missing-test-link-2026-07-17.md"
+      ]
+    },
+    {
       "path": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
       "status": "verified",
       "owner": "Test Automation Engineer",
@@ -899,6 +909,24 @@
       "toPath": "apps/api/src/router/dashboard.routes.ts#/positions",
       "type": "documents",
       "evidence": "docs/modules/api-positions.md"
+    },
+    {
+      "fromPath": "docs/modules/api-strategies.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/strategies",
+      "type": "documents",
+      "evidence": "docs/modules/api-strategies.md"
+    },
+    {
+      "fromPath": "docs/modules/api-profile.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/profile/security",
+      "type": "documents",
+      "evidence": "docs/modules/api-profile.md"
+    },
+    {
+      "fromPath": "docs/modules/api-profile.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/profile/apiKeys",
+      "type": "documents",
+      "evidence": "docs/modules/api-profile.md"
     },
     {
       "fromPath": "docs/modules/api-bots.md",

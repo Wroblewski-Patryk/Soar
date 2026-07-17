@@ -1,3 +1,51 @@
+## 2026-07-17 LUC-1396 Account Access USE Profile Security Doc-Link Closure
+
+- Module row:
+  Account access / dashboard profile security router mount documentation.
+- Status delta:
+  `IMPLEMENTED / BLOCKED_ON_PROJECT_TRUTH_TOOLING`.
+- Confidence update:
+  [LUC-1396](/LUC/issues/LUC-1396) added direct module documentation and
+  canonical graph relations for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security`, and
+  `docs/modules/api-profile.md` now records the authenticated dashboard mount
+  contract for delegated password-rotation and account-deletion routes. The
+  refreshed `architecture-awareness` graph now contains a direct
+  `document -> api_endpoint` relation for the route mount, but generated
+  `app-completion` still classifies `USE /profile/security` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17.md`.
+- Residual:
+  closure is blocked on the project-truth generator contradiction in
+  `build-app-completion-index.mjs`; the next Soar docs-owned gaps cannot
+  truthfully advance until that tooling defect is resolved.
+
+## 2026-07-17 LUC-1393 Account Access USE Profile APIKeys Doc-Link Closure
+
+- Module row:
+  Account access / dashboard profile API-key router mount documentation.
+- Status delta:
+  `IMPLEMENTED / BLOCKED_ON_PROJECT_TRUTH_TOOLING`.
+- Confidence update:
+  [LUC-1393](/LUC/issues/LUC-1393) added direct module documentation and
+  canonical graph relations for
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`, and
+  `docs/modules/api-profile.md` now records the authenticated dashboard mount
+  contract for the delegated profile API-key lifecycle and connection-test
+  surface. The refreshed `architecture-awareness` graph now contains a direct
+  `document -> api_endpoint` relation for the route mount, but generated
+  `app-completion` still classifies `USE /profile/apiKeys` as
+  `missing_doc_link`.
+- Evidence:
+  `history/tasks/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17.md`.
+- Residual:
+  closure is blocked on the project-truth generator contradiction in
+  `build-app-completion-index.mjs`; the next Soar docs-owned gaps cannot
+  truthfully advance until that tooling defect is resolved.
+
 ## 2026-07-17 LUC-1379 Account Access USE Positions Doc-Link Closure
 
 - Module row:

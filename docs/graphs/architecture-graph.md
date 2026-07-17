@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-17T18:42:15.804Z
+Generated: 2026-07-17T19:46:50.786Z
 
 ## Canonical Exports
 
@@ -88,7 +88,7 @@ Generated: 2026-07-17T18:42:15.804Z
 | api_endpoint | verified | USE /profile/security | apps/api/src/router/dashboard.routes.ts#/profile/security | Test Automation Engineer |
 | api_endpoint | implemented | USE /profile/subscription | apps/api/src/router/dashboard.routes.ts#/profile/subscription | Engineering Delivery Lead |
 | api_endpoint | verified | USE /reports | apps/api/src/router/dashboard.routes.ts#/reports | Test Automation Engineer |
-| api_endpoint | implemented | USE /strategies | apps/api/src/router/dashboard.routes.ts#/strategies | Engineering Delivery Lead |
+| api_endpoint | verified | USE /strategies | apps/api/src/router/dashboard.routes.ts#/strategies | Test Automation Engineer |
 | api_endpoint | implemented | USE /wallets | apps/api/src/router/dashboard.routes.ts#/wallets | Engineering Delivery Lead |
 | api_endpoint | implemented | GET / | apps/api/src/router/index.ts#/ | Engineering Delivery Lead |
 | api_endpoint | verified | USE /admin | apps/api/src/router/index.ts#/admin | QA Regression Lead |
@@ -914,8 +914,12 @@ Generated: 2026-07-17T18:42:15.804Z
 | connected_to | project:soar:7c70e892d7 | task:task:b9dfd68fbd | history/tasks/luc-1378-execute-owner-login-proof-under-security-gate-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f4b2f07f31 | history/tasks/luc-1379-account-access-use-positions-missing-doc-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f795e4ad8c | history/tasks/luc-138-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:1c6d80f743 | history/tasks/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:faad7c11f1 | history/tasks/luc-1384-dashboard-overview-profile-security-and-reports-proof-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:24688b5ea3 | history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:c4da83ac67 | history/tasks/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:550ced8bcb | history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:a810c95320 | history/tasks/luc-1397-dashboard-overview-use-strategies-missing-test-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:1863c60132 | history/tasks/luc-1397-operator-soar-owner-login-verification-path-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3bb1e6b2b8 | history/tasks/luc-1398-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1399-reconcile-coolify-resource-inventory-task:b04fc726ea | history/tasks/luc-1399-reconcile-coolify-resource-inventory-2026-06-02-task.md |
@@ -1214,7 +1218,3 @@ Generated: 2026-07-17T18:42:15.804Z
 | connected_to | project:soar:7c70e892d7 | task:task:5ff7a080f3 | history/tasks/luc-2123-classify-actionable-graph-missing-doc-test-links-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f24fc2517f | history/tasks/luc-2124-expand-local-protected-route-action-proof-matrix-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2130-operator-coolify-bind-read-only-production-status-access:ccadfb8e43 | history/tasks/luc-2130-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:bcb7f80c14 | history/tasks/luc-2131-normalize-web-lib-i18n-missing-doc-test-link-samples-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:31b098f033 | history/tasks/luc-2132-classify-script-tooling-missing-doc-test-links-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2136-operator-coolify-bind-read-only-production-status-access:e4d724a07a | history/tasks/luc-2136-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:0d1a24c2f3 | history/tasks/luc-2137-residual-tooling-doc-link-classification-2026-06-05-task.md |

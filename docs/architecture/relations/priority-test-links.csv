@@ -133,6 +133,7 @@ apps/api/src/router/dashboard.routes.ts#/profile/apiKeys,apps/api/src/modules/pr
 apps/api/src/router/dashboard.routes.ts#/profile/basic,apps/api/src/modules/profile/basic/basic.e2e.test.ts,LUC-1383 direct dashboard profile-basic router mount relation to existing mounted profile basic read update delete and fail-closed e2e proof
 apps/api/src/router/dashboard.routes.ts#/profile/security,apps/api/src/modules/profile/security/security.e2e.test.ts,LUC-1384 direct dashboard profile-security router mount relation to existing password change and account deletion e2e proof
 apps/api/src/router/dashboard.routes.ts#/reports,apps/api/src/modules/reports/reports.e2e.test.ts,LUC-1384 direct dashboard reports router mount relation to existing cross-mode aggregation and auth-isolation e2e proof
+apps/api/src/router/dashboard.routes.ts#/strategies,apps/api/src/modules/strategies/strategies.e2e.test.ts,LUC-1397 direct dashboard strategies router mount relation to existing authenticated CRUD import-export guard and fail-closed e2e proof
 apps/api/src/router/admin.routes.ts#/users,apps/api/src/modules/admin/users/users.e2e.test.ts,LUC-1155 direct admin users router mount relation to existing admin users e2e proof
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation

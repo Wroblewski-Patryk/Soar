@@ -1,3 +1,113 @@
+## 2026-07-17 LUC-1397 Dashboard overview USE /strategies missing-test-link closure
+
+- Status: `DONE`.
+- Scope:
+  close the generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/strategies`.
+- Findings:
+  the repo already had executable mounted-route proof in
+  `apps/api/src/modules/strategies/strategies.e2e.test.ts`, but it lacked a
+  direct generator-readable relation and matching verified override for the
+  dashboard router mount.
+- Verification:
+  `pnpm --filter api exec vitest run src/modules/strategies/strategies.e2e.test.ts -t "rejects unauthenticated access|supports create/list/get/update/delete flow for authenticated user|supports export/import flow with format versioning|enforces ownership isolation on get/update/delete|blocks strategy updates when strategy is used by any active bot|allows strategy updates when linked bots are inactive|blocks strategy delete when strategy is used by any active bot" --run` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS after one transient Windows file-lock retry on
+  `docs/status/app-completion-index.json`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `rg -n "USE /strategies|USE /wallets|USE /dashboard|GET /alerts|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /strategies` no longer appears in either generated gap index;
+  `USE /wallets` and `USE /dashboard` are now the next Dashboard overview
+  proof-owned rows;
+  `git diff --check` -> PASS.
+- Outcome:
+  `docs/status/app-completion-index.md` no longer emits
+  `Dashboard overview: USE /strategies` as `missing_test_link`, and
+  `docs/status/project-truth-index.md` no longer routes the same endpoint as an
+  open gap.
+- Evidence:
+  `history/tasks/luc-1397-dashboard-overview-use-strategies-missing-test-link-2026-07-17-task.md`;
+  `history/evidence/luc-1397-dashboard-overview-use-strategies-missing-test-link-2026-07-17.md`.
+
+## 2026-07-17 LUC-1396 Account access USE /profile/security missing-doc-link closure
+
+- Status: `BLOCKED`.
+- Scope:
+  close the generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security`.
+- Findings:
+  the repo already had the canonical profile owner doc in
+  `docs/modules/api-profile.md`, but it lacked a direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount classification entry in the profile module doc. Those
+  Soar-side repairs are now present, but the generator readback still does not
+  promote the endpoint out of `missing_doc_link`.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `rg -n "USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /profile/security` still emits as `missing_doc_link`;
+  direct `node -` reproduction against `docs/graphs/architecture-awareness.json`
+  returns `hasDoc: true` for
+  `api_endpoint:use-profile-security:61552c894b`, so the blocker is in the
+  project-truth/app-completion tooling rather than missing Soar docs;
+  `git diff --check` -> PASS.
+- Outcome:
+  the Soar documentation repair landed, but the closure remains blocked on a
+  tooling contradiction in
+  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
+  or its upstream graph consumption path.
+- Evidence:
+  `history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17.md`.
+
+## 2026-07-17 LUC-1393 Account access USE /profile/apiKeys missing-doc-link closure
+
+- Status: `BLOCKED`.
+- Scope:
+  close the generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`.
+- Findings:
+  the repo already had the canonical profile owner doc in
+  `docs/modules/api-profile.md`, but it lacked a direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount classification entry in the profile module doc. Those
+  Soar-side repairs are now present, but the generator readback still does not
+  promote the endpoint out of `missing_doc_link`.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS;
+  `rg -n "USE /profile/apiKeys|USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /profile/apiKeys` still emits as `missing_doc_link`;
+  direct `node -` reproduction against `docs/graphs/architecture-awareness.json`
+  returns `hasDoc: true` for
+  `api_endpoint:use-profile-apikeys:680f20cf0c`, so the blocker is in the
+  project-truth/app-completion tooling rather than missing Soar docs;
+  `git diff --check` -> PASS.
+- Outcome:
+  the Soar documentation repair landed, but the closure remains blocked on a
+  tooling contradiction in
+  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
+  or its upstream graph consumption path.
+- Evidence:
+  `history/tasks/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1379 Account access USE /positions missing-doc-link closure
 
 - Status: `DONE`.

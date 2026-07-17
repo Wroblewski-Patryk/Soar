@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-17T18:42:15.804Z
+Generated: 2026-07-17T19:46:50.786Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5070 |
+| document | 5082 |
 | feature | 291 |
 | function | 5318 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1910 |
+| task | 1914 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,23 +28,23 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 185 |
 | deprecated | 10 |
-| implemented | 12285 |
-| in_progress | 29 |
+| implemented | 12296 |
+| in_progress | 28 |
 | tested | 930 |
-| verified | 1771 |
+| verified | 1777 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 3796
+- Raw implementation entities without inferred tests: 3795
 - Actionable implementation entities without inferred tests: 2547
-- Raw implementation entities without inferred docs: 1734
+- Raw implementation entities without inferred docs: 1733
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1460
+- Classified inferred-link noise: 1459
 - Raw tasks without architecture links: 141
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 1748
+- Raw implementation entities without task links: 1747
 - Actionable implementation entities without task links: 1450
-- Classified task-linkage noise: 439
+- Classified task-linkage noise: 438
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1277
+- curated_graph_covered: 1276
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -149,7 +149,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
 - curated_graph_covered: api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
 - curated_graph_covered: api_endpoint: USE /profile/subscription (apps/api/src/router/dashboard.routes.ts#/profile/subscription)
-- curated_graph_covered: api_endpoint: USE /strategies (apps/api/src/router/dashboard.routes.ts#/strategies)
 - curated_graph_covered: api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/index.ts#/)
 - curated_graph_covered: api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
@@ -183,11 +182,12 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: Indicators.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx)
 - curated_graph_covered: component: Open.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Open.tsx)
 - curated_graph_covered: component: SortableThresholdListEditor.tsx (apps/web/src/features/strategies/components/StrategyFormSections/SortableThresholdListEditor.tsx)
+- curated_graph_covered: component: sections.tsx (apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx)
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 264
+- curated_graph_covered: 263
 - historical_task_archive: 141
 - top_level_app_mount: 1
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 73, relation entries: 84).
-- Override summary: excluded files 0, entity overrides 73, relation overrides 84, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 74, relation entries: 87).
+- Override summary: excluded files 0, entity overrides 74, relation overrides 87, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

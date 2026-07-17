@@ -1,3 +1,64 @@
+## 2026-07-17 LUC-1397 dashboard overview USE /strategies missing-test-link closure
+
+- The generated Dashboard overview `missing_test_link` proof gap is now closed
+  locally for `apps/api/src/router/dashboard.routes.ts#/strategies`.
+- `docs/architecture/relations/priority-test-links.csv` now links the router
+  mount directly to `apps/api/src/modules/strategies/strategies.e2e.test.ts`,
+  and `docs/architecture/scanner-overrides.json` now marks the exact mount as
+  verified with same-issue evidence.
+- Focused DB-backed API e2e replay passed for the mounted route contract:
+  unauthenticated fail-closed access, authenticated CRUD, import/export,
+  ownership isolation, and active-bot guardrails on strategy update/delete.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `USE /strategies` no longer appears in either generated gap
+  queue after the proof-link refresh.
+- Residual:
+  the next Dashboard overview proof-owned gaps advance to
+  `apps/api/src/router/dashboard.routes.ts#/wallets` and
+  `apps/api/src/router/index.ts#/dashboard`.
+
+## 2026-07-17 LUC-1396 account access USE /profile/security missing-doc-link closure
+
+- The scoped Soar doc-link repair for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security` is now present:
+  no runtime code or proof changes were required.
+- `docs/modules/api-profile.md` now records the authenticated dashboard router
+  mount contract for delegated password-rotation and account-deletion routes,
+  and the direct doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is not yet aligned:
+  `docs/graphs/architecture-awareness.json` contains the direct
+  `document -> api_endpoint` relation, but
+  `docs/status/app-completion-index.json` still writes `hasDoc: false` and
+  keeps `USE /profile/security` in `missing_doc_link`.
+- Residual:
+  `LUC-1396` is blocked on project-truth tooling outside the Soar repo.
+  The unblock owner must fix the `build-app-completion-index.mjs` readback
+  contradiction or the upstream architecture export path before this row can
+  advance.
+
+## 2026-07-17 LUC-1393 account access USE /profile/apiKeys missing-doc-link closure
+
+- The scoped Soar doc-link repair for
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` is now present:
+  no runtime code or proof changes were required.
+- `docs/modules/api-profile.md` now records the authenticated dashboard router
+  mount contract for the delegated profile API-key lifecycle and connection
+  test surface, and the direct doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is not yet aligned:
+  `docs/graphs/architecture-awareness.json` contains the direct
+  `document -> api_endpoint` relation, but
+  `docs/status/app-completion-index.json` still writes `hasDoc: false` and
+  keeps `USE /profile/apiKeys` in `missing_doc_link`.
+- Residual:
+  `LUC-1393` is blocked on project-truth tooling outside the Soar repo.
+  The unblock owner must fix the `build-app-completion-index.mjs` readback
+  contradiction or the upstream architecture export path before this row can
+  advance.
+
 ## 2026-07-17 LUC-1379 account access USE /positions missing-doc-link closure
 
 - The last generated Account access `missing_doc_link` row for

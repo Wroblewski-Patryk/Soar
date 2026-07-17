@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-17T18:42:15.824Z
+Generated: 2026-07-17T19:48:18.955Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,14 +13,14 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 1 |
 | criticalRuntimeFindings | 1 |
-| appCompletionGaps | 62 |
-| indexedAppCompletionGaps | 62 |
-| knownAppCompletionRiskItems | 62 |
-| appCompletionPriorityReviewItems | 62 |
+| appCompletionGaps | 59 |
+| indexedAppCompletionGaps | 59 |
+| knownAppCompletionRiskItems | 59 |
+| appCompletionPriorityReviewItems | 59 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 2 |
-| indexedGaps | 65 |
-| totalGaps | 65 |
+| indexedGaps | 62 |
+| totalGaps | 62 |
 
 ## First Gap
 
@@ -33,11 +33,8 @@ This is the routing surface agents should use before guessing whether an app wor
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
 | critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
-| medium | app_completion_gap | Account access | Account access: USE /profile/apiKeys has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Account access | Account access: USE /profile/security has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: USE /reports has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /profile/basic has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
-| medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /strategies has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /wallets has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Dashboard overview | Dashboard overview: USE /dashboard has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
