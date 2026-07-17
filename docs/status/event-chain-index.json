@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T19:48:18.955Z",
+  "generatedAt": "2026-07-17T21:13:04.445Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5219,
-      "linkedRelationCount": 21811,
+      "entityCount": 5223,
+      "linkedRelationCount": 21827,
       "layers": {
         "frontend": {
           "count": 198,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 752,
+          "count": 754,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4081,
+          "count": 4082,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 187,
+          "count": 188,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2025,6 +2025,14 @@
               "type": "document",
               "name": "API Deep-Dive: Profile Module",
               "path": "docs/modules/api-profile.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-reports-module:f225b792c8",
+              "type": "document",
+              "name": "API Deep-Dive: Reports Module",
+              "path": "docs/modules/api-reports.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -2593,14 +2601,6 @@
               "type": "document",
               "name": "Project Truth Index",
               "path": "docs/status/project-truth-index.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:v1-protected-proof-gate-classification:6901327f69",
-              "type": "document",
-              "name": "V1 Protected Proof Gate Classification",
-              "path": "docs/operations/v1-protected-proof-gate-classification.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 920,
-      "linkedRelationCount": 3065,
+      "entityCount": 921,
+      "linkedRelationCount": 3073,
       "layers": {
         "frontend": {
           "count": 335,
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 332,
+          "count": 333,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13077,
-      "linkedRelationCount": 38667,
+      "entityCount": 13085,
+      "linkedRelationCount": 38690,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9152,
+          "count": 9160,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -1,3 +1,68 @@
+## 2026-07-17 LUC-1409 Source-control closure for LUC-1393 and LUC-1402
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local Soar dirty state produced by the
+  `LUC-1393` rerun/closeout packet and the `LUC-1402` docs/blocker packet.
+- Findings:
+  the dirty worktree was limited to authored docs/evidence/state files and
+  generated graph/status projections tied to those two issues. No stale,
+  out-of-scope, product-code, dependency, or deploy files were present.
+- Verification:
+  `git status --short` -> dirty paths remained confined to the expected packet;
+  `git diff --stat` and `git diff --numstat` -> churn was limited to the
+  expected docs/state/history plus generated graph/status refreshes;
+  `git diff --check` -> PASS;
+  bounded high-confidence redaction scan over authored/untracked files ->
+  PASS with no matches.
+- Outcome:
+  the packet satisfied the sidecar commit rule for docs/state/evidence-only
+  dirty state, so it was closed with one local commit and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1409-source-control-closure-2026-07-17-task.md`;
+  `history/evidence/luc-1409-source-control-closure-2026-07-17.md`;
+  `history/artifacts/luc-1409-paperclip-closeout-2026-07-17.md`.
+
+## 2026-07-17 LUC-1402 Account access USE /reports missing-doc-link closure
+
+- Status: `BLOCKED`.
+- Scope:
+  close the generated Account access `missing_doc_link` row for
+  `apps/api/src/router/dashboard.routes.ts#/reports`.
+- Findings:
+  the repo already had the canonical reports owner doc in
+  `docs/modules/api-reports.md`, but it lacked the direct
+  generator-readable documentation relation for the dashboard router mount and
+  an explicit mount classification entry in the reports module doc. Those
+  Soar-side repairs are now present, and `app-completion` no longer emits the
+  route as a doc-link gap.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
+  PASS with `missingDocLink: 3` and
+  `Account access: 24 entities; risks {"ok":24}`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
+  PASS but still writes a stale `/reports` app-completion gap into
+  `docs/status/project-truth-index.{md,json}`;
+  `rg -n "USE /reports|USE /profile/basic|missing_doc_link|Account access" docs/status/app-completion-index.md docs/status/project-truth-index.md` ->
+  `USE /reports` is absent from `app-completion` and still present only in
+  `project-truth`;
+  direct `node -` readback confirms the generated graph now contains the
+  `docs/modules/api-reports.md -> api_endpoint:use-reports:cc94abde59`
+  relation while `app-completion-index.json` contains no `missing_doc_link`
+  items;
+  `git diff --check` -> PASS.
+- Outcome:
+  the Soar documentation repair landed and cleared the scoped app-completion
+  gap, but issue closure remains blocked on downstream `project-truth`
+  generation that still projects stale `/reports` state after the source
+  app-completion index is clean.
+- Evidence:
+  `history/tasks/luc-1402-account-access-use-reports-missing-doc-link-2026-07-17-task.md`;
+  `history/evidence/luc-1402-account-access-use-reports-missing-doc-link-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1397 Dashboard overview USE /strategies missing-test-link closure
 
 - Status: `DONE`.
@@ -73,7 +138,7 @@
 
 ## 2026-07-17 LUC-1393 Account access USE /profile/apiKeys missing-doc-link closure
 
-- Status: `BLOCKED`.
+- Status: `DONE`.
 - Scope:
   close the generated Account access `missing_doc_link` row for
   `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`.
@@ -82,8 +147,8 @@
   `docs/modules/api-profile.md`, but it lacked a direct
   generator-readable documentation relation for the dashboard router mount and
   an explicit mount classification entry in the profile module doc. Those
-  Soar-side repairs are now present, but the generator readback still does not
-  promote the endpoint out of `missing_doc_link`.
+  Soar-side repairs are now present, and the resolved upstream generator path
+  now promotes the endpoint out of `missing_doc_link`.
 - Verification:
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` ->
   PASS;
@@ -92,18 +157,15 @@
   PASS;
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` ->
   PASS;
-  `rg -n "USE /profile/apiKeys|USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
-  `USE /profile/apiKeys` still emits as `missing_doc_link`;
-  direct `node -` reproduction against `docs/graphs/architecture-awareness.json`
-  returns `hasDoc: true` for
-  `api_endpoint:use-profile-apikeys:680f20cf0c`, so the blocker is in the
-  project-truth/app-completion tooling rather than missing Soar docs;
+  `rg -n "USE /profile/apiKeys|USE /profile/basic|GET /alerts|GET /metrics|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` ->
+  `USE /profile/apiKeys` cleared; remaining generated docs-owned rows advance
+  to `USE /profile/basic`, `GET /alerts`, and `GET /metrics`;
   `git diff --check` -> PASS.
 - Outcome:
-  the Soar documentation repair landed, but the closure remains blocked on a
-  tooling contradiction in
-  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
-  or its upstream graph consumption path.
+  `docs/status/app-completion-index.md` no longer emits
+  `Account access: USE /profile/apiKeys` as `missing_doc_link`.
+  The next generated docs-owned rows now advance to `USE /profile/basic`,
+  `GET /alerts`, and `GET /metrics`.
 - Evidence:
   `history/tasks/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17-task.md`;
   `history/evidence/luc-1393-account-access-use-profile-apikeys-missing-doc-link-2026-07-17.md`.

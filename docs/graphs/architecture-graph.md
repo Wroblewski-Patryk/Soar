@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-17T19:46:50.786Z
+Generated: 2026-07-17T21:13:04.449Z
 
 ## Canonical Exports
 
@@ -924,6 +924,8 @@ Generated: 2026-07-17T19:46:50.786Z
 | connected_to | project:soar:7c70e892d7 | task:task:3bb1e6b2b8 | history/tasks/luc-1398-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1399-reconcile-coolify-resource-inventory-task:b04fc726ea | history/tasks/luc-1399-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-140-closure-lane-provenance-packets-2026-05-26:23127d5941 | history/tasks/luc-140-closure-lane-provenance-packets-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1400-source-control-closure-2026-07-17-task:600d967e74 | history/tasks/luc-1400-source-control-closure-2026-07-17-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:684df5f9f5 | history/tasks/luc-1402-account-access-use-reports-missing-doc-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:93af6ebff1 | history/tasks/luc-1402-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:51ca0306e4 | history/tasks/luc-1405-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f4cd19b03e | history/tasks/luc-1408-reconcile-coolify-resource-inventory-2026-06-02-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-17T19:46:50.786Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2117-operator-coolify-bind-read-only-production-status-access:d5e88b3137 | history/tasks/luc-2117-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2122-operator-coolify-bind-read-only-production-status-access:11c98d2240 | history/tasks/luc-2122-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:5ff7a080f3 | history/tasks/luc-2123-classify-actionable-graph-missing-doc-test-links-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:f24fc2517f | history/tasks/luc-2124-expand-local-protected-route-action-proof-matrix-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2130-operator-coolify-bind-read-only-production-status-access:ccadfb8e43 | history/tasks/luc-2130-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |

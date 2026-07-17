@@ -5,7 +5,7 @@
 - Title: `Account access USE /profile/apiKeys missing-doc-link closure`
 - Task Type: `fix`
 - Current Stage: `verification`
-- Status: `BLOCKED`
+- Status: `DONE`
 - Owner: `Documentation Steward`
 - Depends on: `LUC-1383`
 - Priority: `P1`
@@ -16,7 +16,7 @@
 - Iteration: `1`
 - Operation Mode: `BUILDER`
 - Mission ID: `LUC-1393-account-access-use-profile-apikeys-doc-link`
-- Mission Status: `BLOCKED`
+- Mission Status: `VERIFIED`
 
 ## Context
 `LUC-1383` closed the Dashboard overview proof-link lane for
@@ -29,8 +29,7 @@ entry for future source-of-truth readback.
 
 ## Goal
 Close the generated doc-link gap for `USE /profile/apiKeys` without changing
-runtime behavior, or leave an exact blocker if the closure is prevented by the
-project-truth tooling rather than missing Soar documentation.
+runtime behavior.
 
 ## Constraints
 - reuse existing profile module documentation ownership
@@ -42,7 +41,7 @@ project-truth tooling rather than missing Soar documentation.
       `USE /profile/apiKeys` mount
 - [x] direct generator-readable documentation linkage exists for
       `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`
-- [ ] regenerated app-completion and project-truth outputs advance past the
+- [x] regenerated app-completion and project-truth outputs advance past the
       scoped `missing_doc_link` row
 
 ## Forbidden
@@ -54,8 +53,7 @@ project-truth tooling rather than missing Soar documentation.
 ## Validation Evidence
 - Tests: `not applicable`; documentation closure only
 - Manual checks: focused readback of generated `app-completion` and
-  `project-truth` outputs plus direct reproduction of the generator evidence
-  logic against the same generated graph
+  `project-truth` outputs after the resolved upstream generator blocker
 - Screenshots/logs: `not applicable`
 - High-risk checks: `none`
 - Module confidence ledger updated: `yes`
@@ -67,7 +65,7 @@ project-truth tooling rather than missing Soar documentation.
 - Quality scenario rows closed or changed: `none`
 - Risk register updated: `not applicable`
 - Risk rows closed or changed: `none`
-- Reality status: `blocked`
+- Reality status: `verified`
 
 ## Result Report
 - Affected files:
@@ -96,16 +94,10 @@ project-truth tooling rather than missing Soar documentation.
   `pnpm run architecture:graph:drift:strict`;
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`;
   `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`;
-  `rg -n "USE /profile/apiKeys|USE /profile/security|USE /reports|USE /profile/basic|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S`;
-  `node -` reproduction against `docs/graphs/architecture-awareness.json` confirming
-  `api_endpoint:use-profile-apikeys:680f20cf0c` now has `hasDoc: true` under the same
-  `hasLinkedType` logic used by `build-app-completion-index.mjs`;
+  `rg -n "USE /profile/apiKeys|USE /profile/basic|GET /alerts|GET /metrics|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S`;
   `git diff --check`.
 - Outcome:
-  the scoped Soar documentation repair is present, but the generated
-  `app-completion` and `project-truth` outputs still emit
-  `USE /profile/apiKeys` as `missing_doc_link`.
-  The blocker is now exact: `build-app-completion-index.mjs` writes
-  `evidence.hasDoc: false` for this endpoint even though the refreshed
-  `architecture-awareness.json` contains a direct `document -> api_endpoint`
-  relation from `docs/modules/api-profile.md`.
+  the scoped Account access `USE /profile/apiKeys` doc-link gap is closed and
+  the regenerated outputs no longer emit that endpoint as `missing_doc_link`.
+  The next generated docs-owned rows now advance to `USE /profile/basic`,
+  `GET /alerts`, and `GET /metrics`.

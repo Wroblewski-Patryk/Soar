@@ -1,3 +1,41 @@
+## 2026-07-17 LUC-1409 source-control closure for LUC-1393 and LUC-1402
+
+- The local Soar dirty state tied to the current
+  `LUC-1393` and `LUC-1402` packet was classified and closed as one coherent
+  docs/state/evidence change set.
+- Dirty authored files were limited to the `LUC-1393` rerun/closeout packet,
+  the `LUC-1402` reports doc-link packet, and the expected source-of-truth
+  context files; the rest of the churn was generated graph/status output from
+  the same work.
+- Bounded validation and bounded high-confidence redaction checks passed, so
+  the packet met the source-control sidecar rule for one local commit.
+- Residual:
+  `LUC-1402` remains functionally blocked on downstream `project-truth`
+  tooling outside the Soar repo, but that blocker no longer owns local
+  source-control closure for the current packet.
+
+## 2026-07-17 LUC-1402 account access USE /reports missing-doc-link closure
+
+- The scoped Soar doc-link repair for
+  `apps/api/src/router/dashboard.routes.ts#/reports` is now present:
+  no runtime code or proof changes were required.
+- `docs/modules/api-reports.md` now records the authenticated dashboard router
+  mount contract for the delegated reports analytics surface, and the direct
+  doc relation is present in both
+  `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json`.
+- Current generated truth is only partially aligned:
+  `docs/status/app-completion-index.{md,json}` no longer emits `USE /reports`
+  as `missing_doc_link`, but `docs/status/project-truth-index.{md,json}` still
+  carries a stale `/reports` app-completion gap after the same regeneration
+  pass.
+- Residual:
+  `LUC-1402` is blocked on downstream project-truth tooling outside the Soar
+  repo. The unblock owner must diagnose
+  `build-project-truth-indexes.mjs` or its source readback path so stale
+  `/reports` app-completion gaps stop surviving after the app-completion index
+  is clean.
+
 ## 2026-07-17 LUC-1397 dashboard overview USE /strategies missing-test-link closure
 
 - The generated Dashboard overview `missing_test_link` proof gap is now closed
@@ -41,23 +79,23 @@
 ## 2026-07-17 LUC-1393 account access USE /profile/apiKeys missing-doc-link closure
 
 - The scoped Soar doc-link repair for
-  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` is now present:
+  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` is now closed:
   no runtime code or proof changes were required.
 - `docs/modules/api-profile.md` now records the authenticated dashboard router
   mount contract for the delegated profile API-key lifecycle and connection
   test surface, and the direct doc relation is present in both
   `docs/architecture/relations/documentation-links.csv` and
   `docs/architecture/scanner-overrides.json`.
-- Current generated truth is not yet aligned:
-  `docs/graphs/architecture-awareness.json` contains the direct
-  `document -> api_endpoint` relation, but
-  `docs/status/app-completion-index.json` still writes `hasDoc: false` and
-  keeps `USE /profile/apiKeys` in `missing_doc_link`.
+- Current generated truth is aligned again after the resolved upstream
+  generator blocker:
+  `docs/status/app-completion-index.{md,json}` no longer emit
+  `USE /profile/apiKeys` as `missing_doc_link`, and
+  `docs/status/project-truth-index.{md,json}` no longer route it as a gap.
 - Residual:
-  `LUC-1393` is blocked on project-truth tooling outside the Soar repo.
-  The unblock owner must fix the `build-app-completion-index.mjs` readback
-  contradiction or the upstream architecture export path before this row can
-  advance.
+  the next generated docs-owned rows now advance to
+  `apps/api/src/router/dashboard.routes.ts#/profile/basic`,
+  `apps/api/src/router/index.ts#/alerts`, and
+  `apps/api/src/router/index.ts#/metrics`.
 
 ## 2026-07-17 LUC-1379 account access USE /positions missing-doc-link closure
 

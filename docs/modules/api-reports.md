@@ -18,6 +18,10 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/reports`.
+- Account access reaches the authenticated reports API surface through
+  `apps/api/src/router/dashboard.routes.ts#/reports`, which delegates the
+  cross-mode performance analytics route into this module after the shared
+  dashboard auth gate succeeds.
 - Depends on:
   - Prisma read access to `backtestReport` and `trade`.
   - Dashboard auth context (`req.user.id`) from shared middleware chain.
@@ -74,3 +78,11 @@ pnpm --filter api exec vitest run src/modules/reports/reports.service.test.ts sr
 - Legacy rows without `Trade.executionMode` are backfilled from the current bot
   mode by migration; if an older bot had already switched modes before the
   migration, that historical ambiguity remains bounded to pre-snapshot data.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-07-17 under [LUC-1402](/LUC/issues/LUC-1402).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/router/dashboard.routes.ts#/reports` | `docs/modules/api-reports.md` | Authenticated dashboard router mount that delegates the reports analytics API surface into this module without a dashboard-specific controller. | Direct doc relation plus reports API e2e coverage when mount behavior changes. |

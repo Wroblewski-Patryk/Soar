@@ -1,6 +1,6 @@
 # LUC-1393 Closeout
 
-Status: `blocked`
+Status: `done`
 
 Summary:
 - Implemented the Soar-side documentation repair for
@@ -14,9 +14,9 @@ Summary:
 Verification:
 - `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` -> PASS
 - `pnpm run architecture:graph:drift:strict` -> PASS
-- `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` -> PASS, but output still marks `USE /profile/apiKeys` as `missing_doc_link`
-- `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` -> PASS, but project truth still routes the same gap
-- direct `node -` reproduction against `docs/graphs/architecture-awareness.json` -> `hasDoc: true` for `api_endpoint:use-profile-apikeys:680f20cf0c`
+- `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` -> PASS; `missingDocLink` dropped to `3`
+- `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply` -> PASS; `USE /profile/apiKeys` no longer appears in project truth
+- `rg -n "USE /profile/apiKeys|USE /profile/basic|GET /alerts|GET /metrics|missing_doc_link|missing_test_link" docs/status/app-completion-index.md docs/status/project-truth-index.md -S` -> `USE /profile/apiKeys` cleared; next docs-owned rows are `USE /profile/basic`, `GET /alerts`, and `GET /metrics`
 - `git diff --check` -> PASS (line-ending warnings only)
 
 Evidence:
@@ -28,21 +28,8 @@ No-commit / deploy:
 - Push status: not pushed.
 - Deploy impact: none.
 
-Blocker:
-- The refreshed `architecture-awareness.json` contains the direct
-  `document -> api_endpoint` relation from `docs/modules/api-profile.md` to
-  `api_endpoint:use-profile-apikeys:680f20cf0c`, but
-  `docs/status/app-completion-index.json` still writes
-  `"hasDoc": false` and keeps the endpoint in `missing_doc_link`.
-- This indicates a project-truth tooling contradiction outside the Soar docs
-  lane, likely in
-  `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs`
-  or the upstream graph-consumption path.
-
-Unblock owner/action:
-- Owner: Paperclip docs/tooling maintainer or PM-routed owner of the
-  project-truth generator.
-- Action: diagnose why `build-app-completion-index.mjs` emits `hasDoc: false`
-  for an endpoint whose generated graph already has a direct `document`
-  relation, then rerun the Soar generator chain and confirm
-  `USE /profile/apiKeys` leaves `missing_doc_link`.
+Residual:
+- This closeout covers only the scoped Account access `USE /profile/apiKeys`
+  docs-owned lane.
+- Production runtime readiness remains separately degraded because
+  `https://api.soar.luckysparrow.ch/ready` still returns `503`.

@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-17T19:46:50.786Z
+Generated: 2026-07-17T21:13:04.449Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 141
+- Raw tasks without architecture links: 142
 - Actionable implementation entities without task links: 1450
-- Raw implementation entities without task links: 1747
-- Classified task-linkage noise: 438
+- Raw implementation entities without task links: 1745
+- Classified task-linkage noise: 437
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 263
-- historical_task_archive: 141
+- curated_graph_covered: 261
+- historical_task_archive: 142
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -124,6 +124,7 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md)
 - Task: LUC-1265 clear stale AdminUsersPage project-truth emission (history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md)
 - LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
+- luc-1400-source-control-closure-2026-07-17-task (history/tasks/luc-1400-source-control-closure-2026-07-17-task.md)
 - LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
 - LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
@@ -151,15 +152,12 @@ Every task should identify the feature/module it changes, dependency expectation
 - LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
-- LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
 
 ### Raw Implementation Without Task Links
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
-- api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
 - api_endpoint: GET / (apps/api/src/router/index.ts#/)
-- api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
 - api_endpoint: GET /health (apps/api/src/router/index.ts#/health)
 - api_endpoint: GET /ready (apps/api/src/router/index.ts#/ready)
 - api_endpoint: GET /ready/details (apps/api/src/router/index.ts#/ready/details)
@@ -195,3 +193,5 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: ConfirmModal.tsx (apps/web/src/ui/components/ConfirmModal.tsx)
 - component: FormModal.tsx (apps/web/src/ui/components/FormModal.tsx)
 - component: InlinePager.tsx (apps/web/src/ui/components/InlinePager.tsx)
+- component: SkeletonCardBlock.tsx (apps/web/src/ui/components/loading/SkeletonCardBlock.tsx)
+- component: SkeletonFormBlock.tsx (apps/web/src/ui/components/loading/SkeletonFormBlock.tsx)

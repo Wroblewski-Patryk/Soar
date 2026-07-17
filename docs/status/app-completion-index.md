@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-17T19:47:23.401Z
+Generated: 2026-07-17T21:13:04.436Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -17,17 +17,17 @@ Internal functions and modules are implementation details: they receive proof th
 - User flows: 7
 - Needs browser/screenshot review: 41
 - Missing test link: 14
-- Missing doc link: 4
+- Missing doc link: 3
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 59
-- Priority review items indexed: 59/59
+- Known non-ok risk items: 58
+- Priority review items indexed: 58/58
 - Priority review truncated: false
 
 ## Flow Summary
 
 - Dashboard overview: 36 entities; risks {"ok":3,"missing_doc_link":1,"missing_test_link":2,"needs_browser_review":30}; gates {"configuration":1}
-- Account access: 24 entities; risks {"ok":23,"missing_doc_link":1}; gates {"auth":24,"subscription":3,"configuration":2}
+- Account access: 24 entities; risks {"ok":24}; gates {"auth":24,"subscription":3,"configuration":2}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Account access | missing_doc_link | api_endpoint | USE /reports | Test Automation Engineer | apps/api/src/router/dashboard.routes.ts#/reports | auth |
 | Dashboard overview | missing_doc_link | api_endpoint | USE /profile/basic | Test Automation Engineer | apps/api/src/router/dashboard.routes.ts#/profile/basic | configuration |
 | Dashboard overview | missing_test_link | api_endpoint | USE /wallets | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/wallets | - |
 | Dashboard overview | missing_test_link | api_endpoint | USE /dashboard | Engineering Delivery Lead | apps/api/src/router/index.ts#/dashboard | - |

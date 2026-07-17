@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-17T19:46:50.786Z",
+  "generated_at": "2026-07-17T21:13:04.449Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15226,
-    "relations": 41907,
+    "entities": 15234,
+    "relations": 41937,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5082,
+      "document": 5088,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1914,
+      "task": 1916,
       "test": 522
     },
     "by_status": {
       "blocked": 185,
       "deprecated": 10,
-      "implemented": 12296,
+      "implemented": 12302,
       "in_progress": 28,
       "tested": 930,
-      "verified": 1777
+      "verified": 1779
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1733,
+      "count": 1731,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1657,26 +1657,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "api_endpoint:use-wallets:b8382408ca",
-          "type": "api_endpoint",
-          "name": "USE /wallets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "api_endpoint:get:ec3f1b71d9",
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
-          "type": "api_endpoint",
-          "name": "USE /dashboard",
-          "path": "apps/api/src/router/index.ts#/dashboard",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3221,22 @@
           "type": "model",
           "name": "ea",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#ea",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ec:293b997089",
+          "type": "model",
+          "name": "ec",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#ec",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ec:8e2bbcd62f",
+          "type": "model",
+          "name": "Ec",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ec",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -8276,7 +8276,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 141,
+      "count": 142,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -8371,6 +8371,14 @@
           "type": "task",
           "name": "LUC-1371 Reconcile Coolify Resource Inventory",
           "path": "history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1400-source-control-closure-2026-07-17-task:600d967e74",
+          "type": "task",
+          "name": "luc-1400-source-control-closure-2026-07-17-task",
+          "path": "history/tasks/luc-1400-source-control-closure-2026-07-17-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -11014,7 +11022,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1747,
+      "count": 1745,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -11033,26 +11041,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "api_endpoint:use-wallets:b8382408ca",
-          "type": "api_endpoint",
-          "name": "USE /wallets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "api_endpoint:get:ec3f1b71d9",
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
-          "type": "api_endpoint",
-          "name": "USE /dashboard",
-          "path": "apps/api/src/router/index.ts#/dashboard",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -12615,15 +12607,31 @@
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#ba",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ba:060f820c81",
+          "type": "model",
+          "name": "Ba",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ba",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:bl:d735a01c05",
+          "type": "model",
+          "name": "bl",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#bl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 438,
+      "count": 437,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 263,
-        "historical_task_archive": 141,
+        "curated_graph_covered": 261,
+        "historical_task_archive": 142,
         "top_level_app_mount": 1
       },
       "items": [
@@ -12731,6 +12739,15 @@
           "type": "task",
           "name": "LUC-1371 Reconcile Coolify Resource Inventory",
           "path": "history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-1400-source-control-closure-2026-07-17-task:600d967e74",
+          "type": "task",
+          "name": "luc-1400-source-control-closure-2026-07-17-task",
+          "path": "history/tasks/luc-1400-source-control-closure-2026-07-17-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -13915,28 +13932,10 @@
           "reason": "config_only_file"
         },
         {
-          "id": "api_endpoint:use-wallets:b8382408ca",
-          "type": "api_endpoint",
-          "name": "USE /wallets",
-          "path": "apps/api/src/router/dashboard.routes.ts#/wallets",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:get:ec3f1b71d9",
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
-          "type": "api_endpoint",
-          "name": "USE /dashboard",
-          "path": "apps/api/src/router/index.ts#/dashboard",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -14423,6 +14422,15 @@
           "type": "feature",
           "name": "formatters.ts",
           "path": "apps/web/src/features/bots/components/bots-management/formatters.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:botsmonitoringaggregate-service-ts:eae6ff09a1",
+          "type": "feature",
+          "name": "botsMonitoringAggregate.service.ts",
+          "path": "apps/web/src/features/bots/services/botsMonitoringAggregate.service.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

@@ -929,6 +929,12 @@
       "evidence": "docs/modules/api-profile.md"
     },
     {
+      "fromPath": "docs/modules/api-reports.md",
+      "toPath": "apps/api/src/router/dashboard.routes.ts#/reports",
+      "type": "documents",
+      "evidence": "docs/modules/api-reports.md"
+    },
+    {
       "fromPath": "docs/modules/api-bots.md",
       "toPath": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
       "type": "documents",
