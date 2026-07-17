@@ -1,3 +1,30 @@
+## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
+
+- Mission:
+  `LUC-1374-REDIS-RESTARTING-UNHEALTHY-2026-07-17`.
+- Status:
+  `BLOCKED / API_READY_503_REPROVED / REDIS_RESTARTING_UNHEALTHY_REPROVED / COOLIFY_DEPLOY_PERMISSION_STILL_MISSING`.
+- Scope:
+  DRE release lane for the Soar production Redis incident. Recheck live public
+  status, recheck Coolify resource state, probe the smallest allowed Redis
+  mutation path, and leave a fresh unblock packet if recovery still requires
+  unavailable deploy rights. No repo code edit, deploy, push, rollback,
+  environment edit, data mutation, Redis mutation, production account mutation,
+  or secret-value disclosure.
+- Result:
+  the live blocker is still current on Friday, July 17, 2026. Public API
+  `/health` stays `200`, public API `/ready` stays `503`, Web stays `200`, and
+  Coolify still reports `redis` as `restarting:unhealthy` at
+  `2026-07-17T16:31:37Z`. Bearer-token Redis `restart` / `start` / `stop`
+  still fail with `403 Missing required permissions: deploy`.
+- Evidence:
+  `history/evidence/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17.md`;
+  `history/tasks/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17-task.md`.
+- Residual:
+  Ops Release Lead or Security Review Lead must provide a deploy-capable
+  Coolify Redis mutation path or perform the single Redis recovery action
+  directly, then DRE reruns bounded smoke.
+
 ## 2026-07-17 LUC-1362 Reconcile stale USE /positions project-truth gap for LUC-1353
 
 - Mission:

@@ -1,3 +1,30 @@
+## 2026-07-17 LUC-1374 Redis restarting:unhealthy recheck
+
+- Status:
+  `BLOCKED / API_READY_503 / REDIS_RESTARTING_UNHEALTHY / COOLIFY_DEPLOY_PERMISSION_MISSING`.
+- Health impact:
+  public API `/health` remains `200`, but public API `/ready` remains `503`
+  while public Web `/` and `/api/build-info` remain `200`. Fresh Coolify
+  readback at `2026-07-17T16:31:37Z` still shows `redis` as
+  `restarting:unhealthy` and `postgresql` as `running:healthy`.
+- Verification:
+  `Invoke-WebRequest https://api.soar.luckysparrow.ch/health` -> `200`;
+  `Invoke-WebRequest https://api.soar.luckysparrow.ch/ready` -> `503`;
+  `Invoke-WebRequest https://soar.luckysparrow.ch/` -> `200`;
+  `Invoke-WebRequest https://soar.luckysparrow.ch/api/build-info` -> `200`;
+  Coolify `GET /api/v1/resources` -> `redis restarting:unhealthy`;
+  Coolify `GET /api/v1/databases/{redis}` -> `restart_count=682`;
+  Coolify Redis `restart` / `start` / `stop` mutation probes all returned
+  `403 Missing required permissions: deploy`.
+- Unblock owner/action:
+  Ops Release Lead or Security Review Lead must provide a deploy-capable
+  Coolify Redis mutation path or directly execute the Redis recovery action,
+  then DRE should rerun bounded public and protected readiness smoke.
+- Evidence:
+  `history/evidence/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17.md`;
+  `history/tasks/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17-task.md`;
+  `history/artifacts/luc-1374-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-13 LUC-910 workers-backtest Coolify recovery confirmed
 
 - Status:

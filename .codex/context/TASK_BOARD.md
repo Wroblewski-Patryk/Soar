@@ -1,3 +1,25 @@
+## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
+
+- Status: `BLOCKED`.
+- Scope:
+  recheck the live Soar production Redis incident on Friday, July 17, 2026 and
+  recover it if the runner has the required Coolify rights.
+- Findings:
+  fresh public smoke still shows API `/health` `200`, API `/ready` `503`, Web
+  `/` `200`, and Web `/api/build-info` `200`.
+  Fresh Coolify readback at `2026-07-17T16:31:37Z` still shows
+  `redis -> restarting:unhealthy` and `postgresql -> running:healthy`.
+- Verification:
+  Coolify bearer-token Redis `restart`, `start`, and `stop` probes all still
+  fail with `403 Missing required permissions: deploy`.
+- Outcome:
+  the runtime blocker is still live and still requires a deploy-capable
+  Coolify Redis mutation path or a direct Ops/Security recovery action.
+- Evidence:
+  `history/tasks/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17-task.md`;
+  `history/evidence/luc-1374-diagnose-and-recover-redis-restarting-unhealthy-2026-07-17.md`;
+  `history/artifacts/luc-1374-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1371 Source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-2
 
 - Status: `DONE`.

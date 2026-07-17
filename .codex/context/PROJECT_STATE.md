@@ -1,3 +1,22 @@
+## 2026-07-17 LUC-1374 Redis unhealthy recheck
+
+- Fresh live verification on Friday, July 17, 2026 confirms the earlier
+  `LUC-1359` runtime blocker is still active rather than stale.
+- Public probes remain:
+  API `/health` `200`, API `/ready` `503`, Web `/` `200`, and Web
+  `/api/build-info` `200`.
+- Fresh Coolify readback at `2026-07-17T16:31:37Z` still reports production
+  `redis` as `restarting:unhealthy` with `restart_count=682`, while
+  `postgresql` remains `running:healthy`.
+- The current runner still cannot perform the required Redis recovery action:
+  bearer-token `POST /api/v1/databases/{redis}/restart`,
+  `/start`, and `/stop` all return `403 Missing required permissions: deploy`.
+- Residual:
+  the blocker remains operational, not source-control-related. Ops Release Lead
+  or Security Review Lead must execute the Redis recovery step or provide a
+  deploy-capable Coolify mutation path before DRE can finish the runtime
+  restoration.
+
 ## 2026-07-17 LUC-1371 source-control closure for LUC-1353-LUC-1359-LUC-1362-LUC-1365-plus-2
 
 - The current local dirty state remains coherent after retaining the `LUC-1367`
