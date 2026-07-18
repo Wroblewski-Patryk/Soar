@@ -1,3 +1,26 @@
+## 2026-07-18 LUC-1501 source-control closure for LUC-1467
+
+- The local Soar dirty set left by `LUC-1467` was classified as one coherent
+  packet only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  and `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-18.md`.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Saturday, July 18, 2026 closure action created the `LUC-1501`
+  task/evidence/closeout packet and closed the bundle with one local commit.
+
+## 2026-07-18 LUC-1467 resume delta for LUC-1438
+
+- Saturday, July 18, 2026 recheck confirmed the durable `LUC-1467`
+  Coolify-read-only access lane is still complete and does not open a new
+  runnable path for `LUC-1438`.
+- The live unblock path remains the existing `LUC-4103` owner-login
+  method-selection interaction; no new blocker or recovery lane was found in
+  this wake.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1405 stale `use-profile-security` signal reconciled
 
 - Saturday, July 18, 2026 readback confirmed the current Soar source of truth

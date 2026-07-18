@@ -1,3 +1,47 @@
+## 2026-07-18 LUC-1501 classify and close local dirty state for LUC-1467
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by `LUC-1467`.
+- Findings:
+  the worktree was one coherent local-proof/state bundle only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  and `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-18.md`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1467|LUC-1501|LUC-4103` across touched files
+  -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1501-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-18-task.md`;
+  `history/evidence/luc-1501-source-control-closure-luc-1467-2026-07-18.md`;
+  `history/artifacts/luc-1501-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-18 LUC-1467 resume delta for LUC-1438
+
+- Status: `BLOCKED`.
+- Scope:
+  resume-only readback for the `LUC-1438` productivity review wake. No new
+  runnable lane was discovered in this heartbeat.
+- Outcome:
+  the durable `LUC-1467` access-binding packet stays complete, and the live
+  unblock path for `LUC-1438` still points at the existing
+  `LUC-4103` owner-login method-selection interaction.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-18.md`;
+  `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`;
+  `history/evidence/luc-1467-coolify-read-only-production-status-access-2026-06-02.md`.
+
 ## 2026-07-18 LUC-1405 reconcile stale missing-doc-link signal for `use-profile-security`
 
 - Status: `DONE`.
