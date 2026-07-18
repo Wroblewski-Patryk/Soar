@@ -670,6 +670,17 @@
       ]
     },
     {
+      "path": "apps/api/src/router/index.ts#/dashboard",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified the Dashboard overview dashboard router mount through focused /dashboard auth and cache-header coverage for authenticated access, missing-token fail-closed behavior, token rotation acceptance, stale-session rejection, and no-store headers on the mounted namespace.",
+      "evidence": [
+        "apps/api/src/middleware/requireAuth.test.ts",
+        "apps/api/src/router/cacheHeaders.test.ts",
+        "history/evidence/luc-1443-dashboard-overview-use-dashboard-missing-test-link-2026-07-17.md"
+      ]
+    },
+    {
       "path": "apps/api/src/router/dashboard.routes.ts#/markets",
       "status": "verified",
       "owner": "Test Automation Engineer",

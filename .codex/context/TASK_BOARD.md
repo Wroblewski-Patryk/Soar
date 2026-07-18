@@ -1,3 +1,96 @@
+## 2026-07-18 LUC-1454 source-control closure for LUC-1443 LUC-1448 LUC-1449
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by `LUC-1443`, `LUC-1448`, and `LUC-1449`.
+- Findings:
+  the worktree is one coherent docs/state/history bundle. Dirty tracked files
+  stay within `.codex/context/*`, `docs/architecture/*`, generated
+  `docs/graphs/*`, generated `docs/status/*`, and the expected issue
+  task/evidence/artifact packets. No runtime/product code, dependency, env,
+  migration, or deploy file is mixed into this packet.
+- Timeline note:
+  `LUC-1443` and `LUC-1448` packets are dated `2026-07-17`, while the
+  `LUC-1449` trio is dated `2026-07-18`. Those timestamps are consistent with
+  the current closure heartbeat and do not indicate stale work.
+- Verification:
+  `git status --short` -> PASS;
+  `git diff --stat` -> PASS;
+  targeted issue artifact readback for `LUC-1443`, `LUC-1448`, `LUC-1449`
+  -> PASS;
+  bounded high-confidence secret scan on authored/untracked closure files
+  -> PASS;
+  `pnpm run quality:guardrails` -> PASS.
+- Outcome:
+  local source-control closure commit is required by policy for a validated
+  docs/state/evidence-only packet and was created in this lane. Push remains
+  intentionally held for batch; deploy impact is `none`.
+
+## 2026-07-18 LUC-1449 workspace-shape test closure
+
+- Status: `DONE`.
+- Scope:
+  QA-owned verification lane for the synthetic Paperclip issue
+  `workspace-shape-test`.
+- Findings:
+  fresh Paperclip readback confirms a valid parent-bound shape:
+  `LUC-1449` has parent `LUC-1444`, active Soar goal binding, zero comments,
+  and primary workspace routing to `C:\Personal\Projekty\Aplikacje\Soar`.
+- Verification:
+  `GET /api/issues/{id}` -> PASS;
+  `GET /api/issues/{id}/heartbeat-context` -> PASS;
+  `git status --short` -> PASS;
+  `git diff --stat` -> PASS;
+  bounded `rg -n "LUC-1449|workspace-shape-test" history .codex/context`
+  -> PASS.
+- Outcome:
+  the issue was a synthetic shape/disposition check only, so QA closed it as
+  `done` with evidence instead of leaving an invalid `in_progress` lane.
+- Evidence:
+  `history/tasks/luc-1449-workspace-shape-test-2026-07-18-task.md`;
+  `history/evidence/luc-1449-workspace-shape-test-2026-07-18.md`;
+  `history/artifacts/luc-1449-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-17 LUC-1443 Prove Dashboard overview missing-test-link for USE /dashboard
+
+- Status: `DONE`.
+- Scope:
+  close the generated Dashboard overview `missing_test_link` row for
+  `apps/api/src/router/index.ts#/dashboard` using the smallest durable
+  mounted-route proof link.
+- Findings:
+  the repository already contained executable `/dashboard` mount proof in
+  `apps/api/src/middleware/requireAuth.test.ts` and
+  `apps/api/src/router/cacheHeaders.test.ts`, but there was no direct
+  generator-readable relation from the top-level router mount to that existing
+  proof.
+- Verification:
+  `pnpm --filter api exec vitest run src/middleware/requireAuth.test.ts --run`
+  -> PASS (`1` file / `9` tests);
+  `pnpm --filter api exec vitest run src/router/cacheHeaders.test.ts --run`
+  -> PASS (`1` file / `3` tests);
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS with `missingTestLink: 12`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  -> PASS and rerouted `USE /dashboard`;
+  targeted `rg` readback across
+  `docs/status/app-completion-index.md` and
+  `docs/status/project-truth-index.md` -> `USE /dashboard` no longer appears
+  as `Dashboard overview / missing_test_link` and now reads as
+  `Account access / missing_doc_link`.
+- Outcome:
+  generated truth no longer reports `apps/api/src/router/index.ts#/dashboard`
+  as a proof-owned dashboard gap. `LUC-1443` closes as the QA proof-link lane,
+  and the same endpoint advances to the docs-owned follow-up.
+- Evidence:
+  `history/tasks/luc-1443-dashboard-overview-use-dashboard-missing-test-link-2026-07-17-task.md`;
+  `history/evidence/luc-1443-dashboard-overview-use-dashboard-missing-test-link-2026-07-17.md`;
+  `history/artifacts/luc-1443-paperclip-closeout-2026-07-17.md`.
+
 ## 2026-07-17 LUC-1441 Classify and close local dirty state for LUC-1431-LUC-1436-LUC-1437
 
 - Status: `DONE`.
@@ -197,6 +290,35 @@
   `history/evidence/luc-1422-dashboard-backtests-detail-browser-review-2026-07-17.md`;
   `history/evidence/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.md`;
   `history/artifacts/luc-1422-local-protected-route-action-proof-matrix-2026-07-17.json`.
+
+## 2026-07-17 LUC-1446 Diagnose stale project-truth backtests-detail browser-review row
+
+- Status: `DONE`.
+- Scope:
+  tooling-truth diagnosis for the `LUC-1422` follow-up on
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx`.
+- Findings:
+  `project-truth` is not currently emitting the backtests-detail wrapper row.
+  After a scoped rerun of
+  `build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`,
+  neither `docs/status/app-completion-index.json` nor
+  `docs/status/project-truth-index.json` contains
+  `route:page-tsx:ccedfda0ce` or
+  `apps/web/src/app/dashboard/backtests/[id]/page.tsx`.
+  The generic `Dashboard overview: page.tsx has app-completion risk needs_browser_review`
+  rows now point to other dashboard routes such as
+  `apps/web/src/app/dashboard/backtests/create/page.tsx`, so the lingering
+  blocker was issue-state drift after the Friday, July 17, 2026 FE proof rather
+  than a live project-truth generator contradiction.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  -> PASS;
+  targeted JSON readback confirmed
+  `appHasBacktestsDetail=false` and `truthHasBacktestsDetail=false` for
+  `route:page-tsx:ccedfda0ce`.
+- Outcome:
+  close `LUC-1446` and release the stale blocker path from `LUC-1422`; no
+  additional tooling-fix lane is required for this source item.
 
 ## 2026-07-17 LUC-1412 Close local dirty packet from LUC-1410 profile-basic doc-link closure
 

@@ -77,6 +77,61 @@
   the one Redis recovery action directly, after which DRE should rerun bounded
   public and protected readiness smoke.
 
+## 2026-07-18 LUC-1454 source-control closure for LUC-1443 LUC-1448 LUC-1449
+
+- The current local Soar dirty packet is attributable only to `LUC-1443`,
+  `LUC-1448`, and `LUC-1449`.
+- Dirty tracked files remain limited to source-of-truth docs/state plus the
+  generated `docs/graphs/*` and `docs/status/*` refresh surfaces. Untracked
+  files are limited to the expected `history/tasks/*`, `history/evidence/*`,
+  and `history/artifacts/*` packets for those three issues.
+- No runtime/product code, dependency, env, deploy, migration, or secret-bearing
+  file was present in the packet, so the bundle was valid for one local
+  source-control closure commit after bounded validation.
+- Timeline note:
+  `LUC-1443` and `LUC-1448` packets are dated `2026-07-17`, while the
+  `LUC-1449` trio is dated `2026-07-18`. The packet spans adjacent
+  verification dates and remains current to this closure heartbeat.
+- Residual:
+  push remains intentionally held for batch because the packet is docs/state/
+  evidence only and has no deploy effect.
+
+## 2026-07-18 LUC-1449 workspace-shape test verified
+
+- `LUC-1449` was a synthetic Paperclip workspace-shape verification lane, not a
+  pending Soar product change.
+- Fresh readback confirmed valid parent binding to `LUC-1444`, active Soar
+  goal/project linkage, zero comments, and primary workspace routing to
+  `C:\Personal\Projekty\Aplikacje\Soar`.
+- The lane is closed as `done` with QA evidence only; no runtime, deploy,
+  product code, or generated truth surface changed.
+- Evidence:
+  `history/evidence/luc-1449-workspace-shape-test-2026-07-18.md`,
+  `history/tasks/luc-1449-workspace-shape-test-2026-07-18-task.md`,
+  `history/artifacts/luc-1449-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-17 LUC-1443 dashboard overview USE /dashboard missing-test-link closure
+
+- The generated Dashboard overview `missing_test_link` proof gap is now closed
+  locally for `apps/api/src/router/index.ts#/dashboard`.
+- `docs/architecture/relations/priority-test-links.csv` now links the router
+  mount directly to `apps/api/src/middleware/requireAuth.test.ts`, and
+  `docs/architecture/scanner-overrides.json` now marks the exact mount as
+  verified with both auth and cache-header proof evidence.
+- Focused `/dashboard` replay passed for the mounted route contract:
+  authenticated bearer access, previous-secret token rotation, missing-token
+  fail-closed behavior, invalid/deleted/stale session rejection, temporary
+  auth-store failure handling, and no-store headers on the mounted namespace.
+- Current generated truth is aligned across `app-completion` and
+  `project-truth`: `USE /dashboard` no longer appears as
+  `Dashboard overview / missing_test_link`; the same endpoint now advances to
+  `Account access / missing_doc_link`.
+- Residual:
+  Docs Memory Lead + Project Manager own the direct doc-link follow-up for
+  `apps/api/src/router/index.ts#/dashboard`, while QA proof-owned dashboard API
+  attention can move to the remaining `missing_test_link` rows outside this
+  flow.
+
 ## 2026-07-17 LUC-1417 dashboard overview USE /wallets missing-test-link closure
 
 - The generated Dashboard overview `missing_test_link` proof gap is now closed

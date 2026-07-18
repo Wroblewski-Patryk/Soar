@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-17T23:12:40.214Z",
+  "generated_at": "2026-07-18T00:10:25.224Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15279,
-    "relations": 42189,
+    "entities": 15291,
+    "relations": 42230,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5122,
+      "document": 5131,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1927,
+      "task": 1930,
       "test": 522
     },
     "by_status": {
       "blocked": 187,
       "deprecated": 10,
-      "implemented": 12333,
+      "implemented": 12341,
       "in_progress": 28,
       "tested": 930,
-      "verified": 1791
+      "verified": 1795
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3794,
+      "count": 3793,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -88,14 +88,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
-          "type": "api_endpoint",
-          "name": "USE /dashboard",
-          "path": "apps/api/src/router/index.ts#/dashboard",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1632,6 +1624,14 @@
           "type": "feature",
           "name": "public.de-CH.ts",
           "path": "apps/web/src/i18n/namespaces/public.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-en-ts:7d58dd176e",
+          "type": "feature",
+          "name": "public.en.ts",
+          "path": "apps/web/src/i18n/namespaces/public.en.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1456,
+      "count": 1455,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1273,
+        "curated_graph_covered": 1272,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -6520,15 +6520,6 @@
           "type": "api_endpoint",
           "name": "GET /",
           "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-dashboard:2e7ff2f1fa",
-          "type": "api_endpoint",
-          "name": "USE /dashboard",
-          "path": "apps/api/src/router/index.ts#/dashboard",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8248,15 @@
           "type": "function",
           "name": "computeAdaptiveMaxCandles",
           "path": "apps/api/src/modules/backtests/backtestRange.service.ts#computeAdaptiveMaxCandles",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resolveeffectivemaxcandlesfromseed:982cafb965",
+          "type": "function",
+          "name": "resolveEffectiveMaxCandlesFromSeed",
+          "path": "apps/api/src/modules/backtests/backtestRange.service.ts#resolveEffectiveMaxCandlesFromSeed",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

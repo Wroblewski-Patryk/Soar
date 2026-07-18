@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T23:13:23.538Z",
+  "generatedAt": "2026-07-18T00:10:44.140Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -38,15 +38,15 @@
     {
       "kind": "app_completion_gap",
       "severity": "medium",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: USE /dashboard has app-completion risk missing_test_link.",
-      "nextOwner": "Test Automation Engineer + QA Regression Lead",
-      "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
+      "userFlow": "Account access",
+      "summary": "Account access: USE /dashboard has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
       "evidence": [
         "apps/api/src/router/index.ts#/dashboard"
       ],
       "sourceItemId": "api_endpoint:use-dashboard:2e7ff2f1fa",
-      "risk": "missing_test_link"
+      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",
