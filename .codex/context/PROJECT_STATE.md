@@ -1,3 +1,18 @@
+## 2026-07-18 LUC-1405 stale `use-profile-security` signal reconciled
+
+- Saturday, July 18, 2026 readback confirmed the current Soar source of truth
+  already reflects the `LUC-1396` closure for
+  `apps/api/src/router/dashboard.routes.ts#/profile/security`.
+- `docs/status/app-completion-index.{md,json}` and
+  `docs/status/project-truth-index.{md,json}` do not emit
+  `USE /profile/security` as `missing_doc_link`.
+- `docs/architecture/relations/documentation-links.csv` still carries the
+  direct doc relation to `docs/modules/api-profile.md`, and the prior
+  `LUC-1396` state/evidence packet remains internally consistent.
+- `LUC-1405` therefore closes as a stale-signal reconciliation lane only:
+  no runtime, documentation, generator, or graph-regeneration change was
+  needed in this heartbeat.
+
 ## 2026-07-18 LUC-1470 source-control closure for LUC-1438
 
 - The local Soar dirty set created by `LUC-1438` was classified as one

@@ -1,3 +1,26 @@
+## 2026-07-18 LUC-1405 reconcile stale missing-doc-link signal for `use-profile-security`
+
+- Status: `DONE`.
+- Scope:
+  PM reconciliation lane for the stale Account access `missing_doc_link`
+  signal on `apps/api/src/router/dashboard.routes.ts#/profile/security`.
+- Verification:
+  targeted `rg` readback across canonical state/history files -> PASS;
+  JSON readback of `docs/status/app-completion-index.json` for
+  `use-profile-security` -> PASS with no matching row;
+  JSON readback of `docs/status/project-truth-index.json` for
+  `use-profile-security` -> PASS with no matching row;
+  prior `LUC-1396` evidence readback -> PASS.
+- Outcome:
+  the current signal was stale, not live. Current Soar source of truth already
+  agrees with the `LUC-1396` closure: `USE /profile/security` is not emitted
+  as `missing_doc_link`, the direct docs mapping remains present, and no code,
+  docs, generator, or rebuild work was required in this heartbeat.
+- Evidence:
+  `history/tasks/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18-task.md`;
+  `history/evidence/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18.md`;
+  `history/artifacts/luc-1405-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1470 classify and close local dirty state for LUC-1438
 
 - Status: `DONE`.
