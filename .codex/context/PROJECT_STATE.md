@@ -1,3 +1,52 @@
+## 2026-07-18 LUC-1461 source-control closure for LUC-1460
+
+- The local Soar dirty set created by `LUC-1460` was classified as one
+  coherent packet only:
+  `.agents/state/system-health.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md`,
+  `history/evidence/luc-1460-production-ready-503-diagnosis-2026-07-18.md`,
+  and `history/artifacts/luc-1460-paperclip-closeout-2026-07-18.md`.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Saturday, July 18, 2026 closure action added the missing `LUC-1460`
+  closeout artifact, created the `LUC-1461` task/evidence/closeout packet, and
+  closed the bundle with one local commit.
+- Residual:
+  the local worktree no longer has an open `LUC-1460` closure obligation; the
+  functional blocker remains the production runtime readiness failure on
+  `https://api.soar.luckysparrow.ch/ready` and its existing owner lanes
+  `LUC-1387` and `LUC-1368`.
+
+## 2026-07-18 LUC-1460 diagnose production `/ready` 503 and route the narrowest recovery lane
+
+- Fresh public Soar production smoke on Saturday, July 18, 2026 reconfirmed
+  the current split state without any protected or mutating action:
+  API `/health` -> `200`, API `/ready` -> `503`, Web `/` -> `200`, and Web
+  `/api/build-info` -> `200` with runtime metadata
+  `gitSha=b0b2c2ce9477a32fcda7717f447ad46aa4327589`,
+  `buildId=lyjMpIXMK3BggQfTjTOEL`, `gitRef=main`.
+- Local code readback narrowed public `/ready` failure to two implemented
+  gates only:
+  `apps/api/src/config/criticalSecretsReadiness.ts` and
+  `apps/api/src/config/runtimeDependencyReadiness.ts`.
+- Existing July 17 project-truth evidence remains sufficient to classify the
+  active failing dependency/resource without new mutation:
+  production Coolify `redis` is still the exact failing readiness dependency,
+  while `postgresql` remained healthy in the latest bound readback.
+- No new permit or owner lane was created. The narrowest honest recovery path
+  already exists in `LUC-1387`, which is waiting on confirmation for exactly
+  one Redis recovery action (`POST /api/v1/databases/{redis-id}/restart`);
+  `LUC-1368` remains the deploy-capable recovery-path blocker until Security
+  Review Lead or Ops Release Lead provides or executes that one action.
+- This heartbeat changed source of truth and evidence only. No deploy,
+  restart, rollback, secret readback, protected smoke, account action, or live
+  trading action was performed. Evidence:
+  `history/evidence/luc-1460-production-ready-503-diagnosis-2026-07-18.md`,
+  `history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md`,
+  `history/artifacts/luc-1460-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1458 source-control closure for LUC-1456
 
 - The local Soar dirty set created by `LUC-1456` was classified as one

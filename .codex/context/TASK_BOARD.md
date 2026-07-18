@@ -1,3 +1,60 @@
+## 2026-07-18 LUC-1461 classify and close local dirty state for LUC-1460
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by `LUC-1460`.
+- Findings:
+  the worktree was one coherent state/history bundle only:
+  `.agents/state/system-health.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  the `LUC-1460` task/evidence pair, and the missing `LUC-1460` closeout
+  artifact. No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1460|LUC-1461` across touched files -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/evidence/luc-1461-source-control-closure-luc-1460-2026-07-18.md`;
+  `history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md`;
+  `history/artifacts/luc-1461-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-18 LUC-1460 diagnose production `/ready` 503 and route the narrowest recovery lane
+
+- Status: `BLOCKED`.
+- Scope:
+  classify the fresh public production `api_ready` `503` gap from the smallest
+  legal evidence surface and route exactly one narrow next owner path.
+- Verification:
+  fresh public probe on Saturday, July 18, 2026 reconfirmed
+  `https://api.soar.luckysparrow.ch/health` -> `200`,
+  `https://api.soar.luckysparrow.ch/ready` -> `503`,
+  `https://soar.luckysparrow.ch/` -> `200`,
+  `https://soar.luckysparrow.ch/api/build-info` -> `200` with
+  `gitSha=b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Findings:
+  local code readback shows `/ready` can fail only from secret readiness or
+  runtime dependency readiness; existing July 17 project-truth evidence still
+  isolates the active production dependency failure to Coolify
+  `redis -> restarting:unhealthy`, not Postgres.
+- Outcome:
+  no new permit lane was created because the narrowest legal owner path already
+  exists in `LUC-1387` for exactly one Redis restart action. `LUC-1368`
+  remains the deploy-capable recovery-path blocker until Security Review Lead
+  or Ops Release Lead accepts or performs that one action.
+- Evidence:
+  `history/evidence/luc-1460-production-ready-503-diagnosis-2026-07-18.md`;
+  `history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md`;
+  `history/artifacts/luc-1460-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1458 source-control closure for LUC-1456
 
 - Status: `DONE`.

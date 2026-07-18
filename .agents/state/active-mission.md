@@ -1,3 +1,29 @@
+## 2026-07-18 LUC-1461 Source-control closure for LUC-1460
+
+- Mission:
+  `LUC-1461-SOURCE-CONTROL-CLOSURE-LUC-1460-2026-07-18`.
+- Status:
+  `DONE / DIRTY_STATE_CLASSIFIED / LOCAL_COMMIT_CREATED / WORKTREE_CLEAN`.
+- Scope:
+  Source-control closure for the validated `LUC-1460` state/history packet
+  only. No runtime code, deploy, push, restart, rollback, env edit, migration,
+  DB mutation, secret/account readback, or protected smoke.
+- Result:
+  The local dirty set was confirmed as one coherent `LUC-1460` packet across
+  `.agents/state/system-health.md`, `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`, and the `LUC-1460` history artifacts. The
+  missing `LUC-1460` closeout artifact was added, the `LUC-1461`
+  task/evidence/closeout packet was created, and one local commit closed the
+  bundle.
+- Evidence:
+  `history/evidence/luc-1461-source-control-closure-luc-1460-2026-07-18.md`;
+  `history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md`;
+  `history/artifacts/luc-1461-paperclip-closeout-2026-07-18.md`.
+- Residual:
+  no remaining local dirty-state closure action stays open for `LUC-1460`; the
+  functional blocker remains the production `api_ready .../ready returned 503`
+  path awaiting the existing Redis recovery owner lane.
+
 ## 2026-07-18 LUC-1458 Source-control closure for LUC-1456
 
 - Mission:

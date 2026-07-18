@@ -1,3 +1,29 @@
+## 2026-07-18 LUC-1460 production `/ready` 503 diagnosis
+
+- Status:
+  `BLOCKED / API_READY_503 / REDIS_RESTARTING_UNHEALTHY / EXISTING_SINGLE_ACTION_PERMIT_PATH`.
+- Health impact:
+  fresh public read-only smoke on Saturday, July 18, 2026 reconfirmed the same
+  split production state: API `/health` `200`, API `/ready` `503`, public Web
+  `/` `200`, and Web `/api/build-info` `200` with SHA
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Code classification:
+  `apps/api/src/router/index.ts#/ready` fails only when
+  `evaluateCriticalSecretsReadiness()` or
+  `evaluateRuntimeDependencyReadiness()` is not ready. Existing July 17
+  project-truth evidence still isolates the active failing dependency to
+  Coolify production `redis`, while `postgresql` remains healthy.
+- Narrowest owner/action:
+  do not create a duplicate permit lane. The narrowest existing path is
+  `LUC-1387`, already pending confirmation for exactly one Redis recovery
+  action (`POST /api/v1/databases/{redis-id}/restart`). `LUC-1368` remains the
+  deploy-capable recovery-path blocker until Security Review Lead or Ops
+  Release Lead accepts or executes that one action.
+- Evidence:
+  `history/evidence/luc-1460-production-ready-503-diagnosis-2026-07-18.md`;
+  `history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md`;
+  `history/artifacts/luc-1460-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-17 LUC-1368 protected Redis recovery path reprobe
 
 - Status:

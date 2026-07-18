@@ -1,3 +1,17 @@
+## 2026-07-18 LUC-1461 source-control closure for LUC-1460 complete
+
+- The local dirty packet left by `LUC-1460` was classified as one coherent
+  state/history bundle and closed with one local commit in the assigned
+  sidecar lane.
+- The closure packet now includes the missing
+  `history/artifacts/luc-1460-paperclip-closeout-2026-07-18.md` artifact plus
+  the durable `LUC-1461` task/evidence/closeout records.
+- The runtime blocker itself is unchanged:
+  `https://api.soar.luckysparrow.ch/ready` still returns `503`, and the
+  narrowest recovery path remains `LUC-1387` plus blocker `LUC-1368`.
+- Evidence:
+  `history/evidence/luc-1461-source-control-closure-luc-1460-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1458 source-control closure for LUC-1456 complete
 
 - The local dirty packet left by `LUC-1456` was classified as one coherent
