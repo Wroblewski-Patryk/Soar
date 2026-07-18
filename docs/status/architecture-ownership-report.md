@@ -1,13 +1,13 @@
 # Ownership Report
 
-Generated: 2026-07-18T00:10:25.224Z
+Generated: 2026-07-18T00:34:08.885Z
 
 | Owner | Entities | Planned | In Progress | Implemented | Tested | Verified | Blocked | Deprecated |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Core Backend Engineer | 8 | 0 | 0 | 0 | 0 | 8 | 0 | 0 |
 | Docs Memory Lead | 1057 | 0 | 0 | 1052 | 0 | 0 | 1 | 4 |
 | Documentation Steward | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| Engineering Delivery Lead | 14155 | 0 | 27 | 11289 | 930 | 1717 | 186 | 6 |
+| Engineering Delivery Lead | 14164 | 0 | 27 | 11296 | 930 | 1719 | 186 | 6 |
 | Frontend Web Engineer | 3 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
 | Integration Domain Engineer | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | QA Regression Lead | 21 | 0 | 0 | 0 | 0 | 21 | 0 | 0 |

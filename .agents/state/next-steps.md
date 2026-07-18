@@ -1,3 +1,29 @@
+## 2026-07-18 LUC-1458 source-control closure for LUC-1456 complete
+
+- The local dirty packet left by `LUC-1456` was classified as one coherent
+  docs/state/history bundle and closed with one local commit in the assigned
+  sidecar lane.
+- The `LUC-1456` residual links now point to
+  [LUC-1458](/LUC/issues/LUC-1458), matching the actual closure issue.
+- The next generated docs-owned first rows remain
+  `apps/api/src/router/index.ts#/alerts` and `apps/api/src/router/index.ts#/metrics`
+  as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1458-source-control-closure-luc-1456-2026-07-18.md`.
+
+## 2026-07-18 LUC-1456 Account access USE /dashboard doc-link closed
+
+- The scoped Account access `missing_doc_link` row for
+  `apps/api/src/router/index.ts#/dashboard` is no longer active after refreshed
+  generated readback.
+- The remaining generated docs-owned first rows are now
+  `apps/api/src/router/index.ts#/alerts` and `apps/api/src/router/index.ts#/metrics`
+  as `missing_doc_link`.
+- Local source-control closure for the current docs/state/history packet is
+  routed through [LUC-1458](/LUC/issues/LUC-1458).
+- Evidence:
+  `history/evidence/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18.md`.
+
 ## 2026-07-17 LUC-1362 stale USE /positions project-truth gap reconciled
 
 - The stale `Dashboard overview / missing_test_link` project-truth emission for

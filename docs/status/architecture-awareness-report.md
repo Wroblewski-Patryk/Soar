@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-18T00:10:25.224Z
+Generated: 2026-07-18T00:34:08.885Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5131 |
+| document | 5138 |
 | feature | 291 |
 | function | 5318 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1930 |
+| task | 1932 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,10 +28,10 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 187 |
 | deprecated | 10 |
-| implemented | 12341 |
+| implemented | 12348 |
 | in_progress | 28 |
 | tested | 930 |
-| verified | 1795 |
+| verified | 1797 |
 
 ## Health Signals
 
@@ -40,11 +40,11 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - Raw implementation entities without inferred docs: 1729
 - Actionable implementation entities without inferred docs: 1450
 - Classified inferred-link noise: 1455
-- Raw tasks without architecture links: 142
+- Raw tasks without architecture links: 143
 - Actionable tasks without architecture links: 0
 - Raw implementation entities without task links: 1743
 - Actionable implementation entities without task links: 1450
-- Classified task-linkage noise: 435
+- Classified task-linkage noise: 436
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -188,7 +188,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - config_only_file: 33
 - curated_graph_covered: 259
-- historical_task_archive: 142
+- historical_task_archive: 143
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples
@@ -206,6 +206,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: Task: LUC-1265 clear stale AdminUsersPage project-truth emission (history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md)
 - historical_task_archive: task: LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
 - historical_task_archive: task: luc-1400-source-control-closure-2026-07-17-task (history/tasks/luc-1400-source-control-closure-2026-07-17-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md)
 - historical_task_archive: task: LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - historical_task_archive: task: LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
 - historical_task_archive: task: LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
@@ -232,12 +233,11 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: Task (history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md)
 - historical_task_archive: task: LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
 - historical_task_archive: task: LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
-- historical_task_archive: task: LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
 
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 78, relation entries: 92).
-- Override summary: excluded files 0, entity overrides 78, relation overrides 92, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 78, relation entries: 93).
+- Override summary: excluded files 0, entity overrides 78, relation overrides 93, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

@@ -66,6 +66,11 @@ Out of scope:
   dashboard modules execute.
 - Dashboard and admin root probes validate that the authenticated router mounts
   are reachable under their respective boundaries.
+- The top-level `router.use('/dashboard', applyNoStoreHeaders, dashboardRoutes)`
+  mount in `apps/api/src/router/index.ts` is the Account access namespace
+  boundary for every downstream dashboard API module, so documentation and
+  proof links for `USE /dashboard` must stay attached to this root module doc
+  as well as the delegated route surfaces.
 
 ## 5. API and UI Integration
 - Root and operations routes:

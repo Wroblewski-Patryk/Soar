@@ -1,3 +1,52 @@
+## 2026-07-18 LUC-1458 Source-control closure for LUC-1456
+
+- Mission:
+  `LUC-1458-SOURCE-CONTROL-CLOSURE-LUC-1456-2026-07-18`.
+- Status:
+  `DONE / DIRTY_STATE_CLASSIFIED / LOCAL_COMMIT_CREATED / WORKTREE_CLEAN`.
+- Scope:
+  Source-control closure for the validated `LUC-1456` docs/state/history packet
+  only. No runtime code, deploy, push, restart, rollback, env edit, migration,
+  DB mutation, secret/account readback, or protected browser proof.
+- Result:
+  The local dirty set was confirmed as one coherent `LUC-1456` packet across
+  docs-link inputs, generated architecture/status refresh output, state/context
+  ledgers, and `LUC-1456` task/evidence/closeout artifacts. The stale residual
+  sidecar references were corrected to `LUC-1458`, a local closure packet was
+  added, and one local commit closed the bundle.
+- Evidence:
+  `history/evidence/luc-1458-source-control-closure-luc-1456-2026-07-18.md`;
+  `history/tasks/luc-1458-source-control-closure-classify-and-close-local-dirty-state-for-luc-1456-2026-07-18-task.md`;
+  `history/artifacts/luc-1458-paperclip-closeout-2026-07-18.md`.
+- Residual:
+  no remaining local dirty-state closure action stays open for `LUC-1456`; the
+  next docs-owned generated gaps remain `GET /alerts` and `GET /metrics`, while
+  the first overall runtime blocker remains `api_ready .../ready returned 503`.
+
+## 2026-07-18 LUC-1456 Prove Account access missing-doc-link for use-dashboard
+
+- Mission:
+  `LUC-1456-ACCOUNT-ACCESS-USE-DASHBOARD-DOC-LINK-2026-07-18`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / PROJECT_TRUTH_ADVANCED / SOURCE_CONTROL_SIDECARE_ROUTED`.
+- Scope:
+  Documentation Steward source-truth repair for
+  `apps/api/src/router/index.ts#/dashboard`. No runtime code, deploy, push,
+  restart, rollback, env edit, migration, DB mutation, secret/account readback,
+  or protected browser proof.
+- Result:
+  `docs/modules/api-root.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now give the top-level dashboard
+  mount direct documentation coverage, and the authoritative generator chain no
+  longer routes `USE /dashboard` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18.md`;
+  `history/tasks/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18-task.md`.
+- Residual:
+  docs-owned follow-up now advances to `GET /alerts` and `GET /metrics`, while
+  local source-control closure is delegated to [LUC-1458](/LUC/issues/LUC-1458).
+
 ## 2026-07-17 LUC-1410 Prove Dashboard overview missing-doc-link for use-profile-basic
 
 - Mission:

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T00:10:44.140Z",
+  "generatedAt": "2026-07-18T00:34:28.261Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 1,
     "criticalRuntimeFindings": 1,
-    "appCompletionGaps": 54,
-    "indexedAppCompletionGaps": 54,
-    "knownAppCompletionRiskItems": 54,
-    "appCompletionPriorityReviewItems": 54,
+    "appCompletionGaps": 53,
+    "indexedAppCompletionGaps": 53,
+    "knownAppCompletionRiskItems": 53,
+    "appCompletionPriorityReviewItems": 53,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 2,
-    "indexedGaps": 57,
-    "totalGaps": 57
+    "indexedGaps": 56,
+    "totalGaps": 56
   },
   "firstGap": {
     "kind": "runtime_error",
@@ -34,19 +34,6 @@
       "summary": "api_ready https://api.soar.luckysparrow.ch/ready returned 503: {\"status\":\"not_ready\",\"service\":\"api\"}",
       "nextOwner": "Deployment Reliability Engineer + Ops Release Lead",
       "nextAction": "Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof."
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: USE /dashboard has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/router/index.ts#/dashboard"
-      ],
-      "sourceItemId": "api_endpoint:use-dashboard:2e7ff2f1fa",
-      "risk": "missing_doc_link"
     },
     {
       "kind": "app_completion_gap",

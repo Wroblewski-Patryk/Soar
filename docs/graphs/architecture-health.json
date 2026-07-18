@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-18T00:10:25.224Z",
+  "generated_at": "2026-07-18T00:34:08.885Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15291,
-    "relations": 42230,
+    "entities": 15300,
+    "relations": 42261,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5131,
+      "document": 5138,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1930,
+      "task": 1932,
       "test": 522
     },
     "by_status": {
       "blocked": 187,
       "deprecated": 10,
-      "implemented": 12341,
+      "implemented": 12348,
       "in_progress": 28,
       "tested": 930,
-      "verified": 1795
+      "verified": 1797
     }
   },
   "signals": {
@@ -8276,7 +8276,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 142,
+      "count": 143,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -8379,6 +8379,14 @@
           "type": "task",
           "name": "luc-1400-source-control-closure-2026-07-17-task",
           "path": "history/tasks/luc-1400-source-control-closure-2026-07-17-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:39aeb53135",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -12627,11 +12635,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 435,
+      "count": 436,
       "by_reason": {
         "config_only_file": 33,
         "curated_graph_covered": 259,
-        "historical_task_archive": 142,
+        "historical_task_archive": 143,
         "top_level_app_mount": 1
       },
       "items": [
@@ -12748,6 +12756,15 @@
           "type": "task",
           "name": "luc-1400-source-control-closure-2026-07-17-task",
           "path": "history/tasks/luc-1400-source-control-closure-2026-07-17-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:39aeb53135",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -14422,15 +14439,6 @@
           "type": "feature",
           "name": "formatters.ts",
           "path": "apps/web/src/features/bots/components/bots-management/formatters.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:botsmonitoringaggregate-service-ts:eae6ff09a1",
-          "type": "feature",
-          "name": "botsMonitoringAggregate.service.ts",
-          "path": "apps/web/src/features/bots/services/botsMonitoringAggregate.service.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

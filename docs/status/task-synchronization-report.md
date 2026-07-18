@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-18T00:10:25.224Z
+Generated: 2026-07-18T00:34:08.885Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 142
+- Raw tasks without architecture links: 143
 - Actionable implementation entities without task links: 1450
 - Raw implementation entities without task links: 1743
-- Classified task-linkage noise: 435
+- Classified task-linkage noise: 436
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
 - curated_graph_covered: 259
-- historical_task_archive: 142
+- historical_task_archive: 143
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -125,6 +125,7 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task: LUC-1265 clear stale AdminUsersPage project-truth emission (history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md)
 - LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
 - luc-1400-source-control-closure-2026-07-17-task (history/tasks/luc-1400-source-control-closure-2026-07-17-task.md)
+- Task (history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md)
 - LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
 - LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
@@ -151,7 +152,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
-- LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
 
 ### Raw Implementation Without Task Links
 

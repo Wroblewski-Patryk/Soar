@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T00:10:44.140Z",
+  "generatedAt": "2026-07-18T00:34:28.261Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5274,
-      "linkedRelationCount": 22065,
+      "entityCount": 5282,
+      "linkedRelationCount": 22099,
       "layers": {
         "frontend": {
           "count": 202,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 759,
+          "count": 760,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1271,6 +1271,14 @@
               "status": "verified"
             },
             {
+              "id": "document:api-deep-dive-root-and-operations-routes:9fa51581f3",
+              "type": "document",
+              "name": "API Deep-Dive: Root And Operations Routes",
+              "path": "docs/modules/api-root.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "test:requireauth-test-ts:c5b1929e2f",
               "type": "test",
               "name": "requireAuth.test.ts",
@@ -1293,20 +1301,12 @@
               "path": "history/tasks/luc-5146-protected-route-invalid-token-redirect-proof-2026-06-21-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:cf3862b474",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-5298-protected-route-redirect-executable-path-2026-06-20-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 4122,
+          "count": 4129,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3581,7 +3581,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 955,
-      "linkedRelationCount": 3272,
+      "linkedRelationCount": 3276,
       "layers": {
         "frontend": {
           "count": 336,
@@ -10484,7 +10484,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 4048,
-      "linkedRelationCount": 13217,
+      "linkedRelationCount": 13218,
       "layers": {
         "frontend": {
           "count": 394,
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13142,
-      "linkedRelationCount": 38990,
+      "entityCount": 13151,
+      "linkedRelationCount": 39021,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9214,
+          "count": 9223,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14867,6 +14867,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:08b6c34291",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1449-workspace-shape-test-2026-07-18-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:094ec30f31",
               "type": "task",
               "name": "Task",
@@ -15015,14 +15023,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-963-account-access-listbotruntimesessiontrades-doc-link-2026-07-13-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:22d8ca9fdc",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-1436-dashboard-backtests-create-browser-review-2026-07-17-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }

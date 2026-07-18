@@ -1,3 +1,65 @@
+## 2026-07-18 LUC-1458 source-control closure for LUC-1456
+
+- Status: `DONE`.
+- Scope:
+  classify and close the local dirty docs/state/history packet left by
+  `LUC-1456` without changing runtime/product code or pushing/deploying.
+- Dirty-state classification:
+  `current` = `.agents/state/active-mission.md`, `.agents/state/next-steps.md`,
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`,
+  `docs/modules/api-root.md`, `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`, generated `docs/graphs/*`,
+  generated `docs/status/*`, and the three `LUC-1456` history files;
+  `stale` = none;
+  `out-of-scope runtime/product code` = none.
+- Closure action:
+  corrected stale sidecar references from `LUC-1457` to the assigned
+  `LUC-1458`, added the missing `LUC-1458` task/evidence/closeout packet, and
+  made one local commit for the coherent bundle.
+- Verification:
+  inherited `LUC-1456` generator/readback evidence remains valid;
+  `git diff --check` -> warnings only for LF->CRLF normalization;
+  targeted `rg` over `LUC-1456|LUC-1458|LUC-1457` in touched state/history
+  files -> PASS after correction;
+  `git status --short` -> clean after local commit.
+- Outcome:
+  local source-control closure is complete for `LUC-1456`.
+- Evidence:
+  `history/tasks/luc-1458-source-control-closure-classify-and-close-local-dirty-state-for-luc-1456-2026-07-18-task.md`;
+  `history/evidence/luc-1458-source-control-closure-luc-1456-2026-07-18.md`;
+  `history/artifacts/luc-1458-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-18 LUC-1456 Prove Account access missing-doc-link for USE /dashboard
+
+- Status: `DONE`.
+- Scope:
+  close the generated Account access `missing_doc_link` row for
+  `apps/api/src/router/index.ts#/dashboard` using the smallest durable
+  root-module documentation relation.
+- Findings:
+  `docs/modules/api-root.md` already owned the root API router and `GET /dashboard`
+  probe, but the canonical docs-link inputs still attached only the delegated
+  `dashboard.routes.ts#/` surface instead of the top-level
+  `router.use('/dashboard', ...)` mount emitted by app completion.
+- Verification:
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS;
+  `pnpm run architecture:graph:drift:strict` -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS with `missingDocLink: 2`;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  -> PASS and rerouted `USE /dashboard`;
+  targeted `rg` readback across docs-link inputs and generated status -> PASS.
+- Outcome:
+  generated truth no longer reports `apps/api/src/router/index.ts#/dashboard`
+  as a docs-owned Account access gap. The remaining generated docs-owned rows
+  advance to `GET /alerts` and `GET /metrics`, while source-control closure is
+  delegated to [LUC-1458](/LUC/issues/LUC-1458).
+- Evidence:
+  `history/tasks/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18-task.md`;
+  `history/evidence/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18.md`;
+  `history/artifacts/luc-1456-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1454 source-control closure for LUC-1443 LUC-1448 LUC-1449
 
 - Status: `DONE`.

@@ -1,3 +1,44 @@
+## 2026-07-18 LUC-1458 source-control closure for LUC-1456
+
+- The local Soar dirty set created by `LUC-1456` was classified as one
+  coherent packet only:
+  `docs/modules/api-root.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/scanner-overrides.json`,
+  generated `docs/graphs/*` and `docs/status/*`,
+  `.agents/state/active-mission.md`,
+  `.agents/state/next-steps.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  and the `LUC-1456` history artifacts.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Saturday, July 18, 2026 closure action corrected the stale residual handoff
+  links from `LUC-1457` to `LUC-1458`, added the missing sidecar closure
+  packet, and closed the bundle with one local commit.
+- Residual:
+  the local worktree no longer has an open `LUC-1456` closure obligation; the
+  next product-truth work remains the docs-owned `GET /alerts` and
+  `GET /metrics` gaps plus the separate production `api_ready` 503 blocker.
+
+## 2026-07-18 LUC-1456 account access USE /dashboard missing-doc-link closure
+
+- The generated Account access `missing_doc_link` row is now closed locally for
+  `apps/api/src/router/index.ts#/dashboard`.
+- `docs/modules/api-root.md` now explicitly owns the top-level
+  `router.use('/dashboard', applyNoStoreHeaders, dashboardRoutes)` namespace
+  mount, and both `docs/architecture/relations/documentation-links.csv` and
+  `docs/architecture/scanner-overrides.json` now attach that exact router mount
+  to the root API module docs.
+- Fresh generated readback on Saturday, July 18, 2026 no longer emits
+  `USE /dashboard` as a docs-owned gap; the remaining generated docs-owned rows
+  are `apps/api/src/router/index.ts#/alerts` and `#/metrics`.
+- Residual:
+  the first overall project-truth gap is still the production runtime blocker
+  `api_ready https://api.soar.luckysparrow.ch/ready returned 503`, and local
+  source-control closure for this docs/state/history packet is delegated to
+  [LUC-1458](/LUC/issues/LUC-1458).
+
 ## 2026-07-17 LUC-1441 source-control closure for LUC-1431 LUC-1436 LUC-1437
 
 - The current local Soar dirty packet is attributable only to `LUC-1431`,

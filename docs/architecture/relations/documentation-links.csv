@@ -230,6 +230,7 @@ apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared,docs/modu
 apps/api/src/middleware/requireAuth.ts#clearSession,docs/modules/api-auth.md
 apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie,docs/modules/api-auth.md
 apps/api/src/router/index.ts#/admin,docs/modules/api-admin.md
+apps/api/src/router/index.ts#/dashboard,docs/modules/api-root.md
 apps/api/src/router/admin.routes.ts#/,docs/modules/api-admin.md
 apps/api/src/router/admin.routes.ts#/users,docs/modules/api-admin.md
 apps/api/src/router/dashboard.routes.ts#/,docs/modules/api-root.md
