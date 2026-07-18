@@ -1,3 +1,30 @@
+## 2026-07-18 LUC-1470 source-control closure for LUC-1438 complete
+
+- The local dirty packet left by `LUC-1438` was classified as one coherent
+  state/history bundle and closed with one local commit in the assigned
+  sidecar lane.
+- The closure packet now includes the durable `LUC-1470` task/evidence/closeout
+  records without changing runtime code, auth behavior, or protected proof
+  scope.
+- The functional gate itself is unchanged:
+  any separate production protected-proof or owner-login execution for
+  `/dashboard/bots/<real-bot-id>/assistant` remains outside this local closure
+  packet.
+- Evidence:
+  `history/evidence/luc-1470-source-control-closure-luc-1438-2026-07-18.md`.
+
+## 2026-07-18 LUC-1438 local assistant browser proof complete
+
+- The local browser proof for `/dashboard/bots/luc-2188-bot/assistant` passed
+  with the approved local cookie gate and produced the proof matrix artifact.
+- The assistant-route proof lane is now closed as a local-only validation.
+- Separate production protected-proof and owner-login work can continue under
+  their own gate if needed, but this issue no longer needs the local wait-state
+  treatment.
+- Evidence:
+  `history/evidence/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.md`;
+  `history/artifacts/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.json`.
+
 ## 2026-07-18 LUC-1465 source-control closure for LUC-1464 complete
 
 - The local dirty packet left by `LUC-1464` was classified as one coherent

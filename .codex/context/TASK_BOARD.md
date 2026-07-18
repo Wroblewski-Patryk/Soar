@@ -1,3 +1,54 @@
+## 2026-07-18 LUC-1470 classify and close local dirty state for LUC-1438
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by `LUC-1438`.
+- Findings:
+  the worktree was one coherent local-proof/state bundle only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/next-steps.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.md`,
+  and `history/artifacts/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.json`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1438|LUC-1470|assistant route browser proof`
+  across touched files -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1470-source-control-closure-classify-and-close-local-dirty-state-for-luc-1438-2026-07-18-task.md`;
+  `history/evidence/luc-1470-source-control-closure-luc-1438-2026-07-18.md`;
+  `history/artifacts/luc-1470-paperclip-closeout-2026-07-18.md`.
+
+## 2026-07-18 LUC-1438 assistant route browser proof PASS
+
+- Status: `DONE`.
+- Scope:
+  captured the local browser/clickthrough proof for the bots assistant route
+  on `/dashboard/bots/luc-2188-bot/assistant` using the approved local cookie
+  gate; no repo code mutation was needed.
+- Verification:
+  `pnpm qa:local-protected-route-actions:proof -- --issue LUC-1438 --clusters bots --include-dynamic-fixtures`
+  -> PASS; evidence files written to
+  `history/evidence/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.md`
+  and `history/artifacts/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.json`.
+- Outcome:
+  the bots assistant route is locally proven and the issue can close as a
+  proof lane; no FE repair follow-up was required for this heartbeat.
+- Safety:
+  local-only proof, synthetic cookie gate only, no protected production auth,
+  no deploy, no push, no account mutation, no live-trading action.
+
 ## 2026-07-18 LUC-1464 provide approved authenticated dashboard session for LUC-1438 assistant proof
 
 - Status: `DONE`.

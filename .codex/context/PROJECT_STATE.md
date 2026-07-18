@@ -1,3 +1,33 @@
+## 2026-07-18 LUC-1470 source-control closure for LUC-1438
+
+- The local Soar dirty set created by `LUC-1438` was classified as one
+  coherent packet only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/next-steps.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.md`,
+  and `history/artifacts/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.json`.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Saturday, July 18, 2026 closure action created the `LUC-1470`
+  task/evidence/closeout packet and closed the bundle with one local commit.
+- Residual:
+  the local worktree no longer has an open `LUC-1438` closure obligation; any
+  future production protected-proof or owner-login work must run in its own
+  separately approved lane.
+
+## 2026-07-18 LUC-1438 local assistant browser proof PASS
+
+- `pnpm qa:local-protected-route-actions:proof -- --issue LUC-1438 --clusters bots --include-dynamic-fixtures`
+  ran on 2026-07-18 and passed.
+- Covered `/dashboard/bots/luc-2188-bot/assistant` with the local cookie gate;
+  the route resolved to the expected assistant page and the proof artifact
+  recorded the assistant page path directly.
+- Evidence:
+  `history/evidence/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.md`;
+  `history/artifacts/luc-1438-local-protected-route-action-proof-matrix-2026-07-18.json`.
+
 ## 2026-07-18 LUC-1464 browser proof access classification for LUC-1438
 
 - `LUC-1464` verified that the Soar project already has an approved read-only

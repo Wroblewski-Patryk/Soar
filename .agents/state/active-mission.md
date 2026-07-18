@@ -1,3 +1,37 @@
+## 2026-07-18 LUC-1470 Source-control closure for LUC-1438
+
+- Mission:
+  `LUC-1470-SOURCE-CONTROL-CLOSURE-LUC-1438-2026-07-18`.
+- Status:
+  `DONE / DIRTY_STATE_CLASSIFIED / LOCAL_COMMIT_CREATED / WORKTREE_CLEAN`.
+- Scope:
+  Source-control closure for the validated `LUC-1438` local proof packet only.
+  No runtime code, deploy, push, restart, rollback, env edit, migration, DB
+  mutation, secret/account readback, or production protected-proof execution.
+- Result:
+  The local dirty set was confirmed as one coherent `LUC-1438` packet across
+  `.agents/state/active-mission.md`, `.agents/state/next-steps.md`,
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, and the
+  `LUC-1438` proof artifacts. The `LUC-1470` task/evidence/closeout packet was
+  added and one local commit closed the bundle.
+- Residual:
+  no remaining local dirty-state closure action stays open for `LUC-1438`; any
+  separate production protected-proof or owner-login lane remains outside this
+  local closure packet.
+
+## 2026-07-18 LUC-1438 local assistant browser proof PASS
+
+- Status: `DONE`.
+- Mission:
+  local browser proof for the bots assistant route on
+  `/dashboard/bots/luc-2188-bot/assistant`.
+- Result:
+  `pnpm qa:local-protected-route-actions:proof -- --issue LUC-1438 --clusters bots --include-dynamic-fixtures`
+  passed and wrote the proof matrix artifact.
+- Residual:
+  this does not replace any separate production protected-proof or owner-login
+  work; it only closes the local assistant-route proof lane for `LUC-1438`.
+
 ## 2026-07-18 LUC-1465 Source-control closure for LUC-1464
 
 - Mission:
