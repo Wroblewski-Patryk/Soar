@@ -1,3 +1,27 @@
+## 2026-07-18 LUC-1465 Source-control closure for LUC-1464
+
+- Mission:
+  `LUC-1465-SOURCE-CONTROL-CLOSURE-LUC-1464-2026-07-18`.
+- Status:
+  `DONE / DIRTY_STATE_CLASSIFIED / LOCAL_COMMIT_READY / WORKTREE_SCOPE_COHERENT`.
+- Scope:
+  Source-control closure for the validated `LUC-1464` state/history packet
+  only. No runtime code, deploy, push, restart, rollback, env edit, migration,
+  DB mutation, secret/account readback, or protected browser proof.
+- Result:
+  The local dirty set was confirmed as one coherent `LUC-1464` packet across
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, and the
+  `LUC-1464` history artifacts. The `LUC-1465` task/evidence/closeout packet
+  was added to close the bundle with one local commit.
+- Evidence:
+  `history/evidence/luc-1465-source-control-closure-luc-1464-2026-07-18.md`;
+  `history/tasks/luc-1465-source-control-closure-classify-and-close-local-dirty-state-for-luc-1464-2026-07-18-task.md`;
+  `history/artifacts/luc-1465-paperclip-closeout-2026-07-18.md`.
+- Residual:
+  no remaining local dirty-state closure action stays open for `LUC-1464`; the
+  functional blocker remains the owner-login gate on `LUC-4103` before
+  `LUC-1438` can run authenticated assistant-page browser proof.
+
 ## 2026-07-18 LUC-1461 Source-control closure for LUC-1460
 
 - Mission:

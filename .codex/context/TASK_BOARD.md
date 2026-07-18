@@ -1,3 +1,39 @@
+## 2026-07-18 LUC-1464 provide approved authenticated dashboard session for LUC-1438 assistant proof
+
+- Status: `DONE`.
+- Scope:
+  PM coordination lane to classify whether `LUC-1438` already had an approved
+  read-only dashboard-session path for authenticated browser proof on
+  `/dashboard/bots/<real-bot-id>/assistant`, or else leave an exact blocker.
+- Verification:
+  Paperclip issue readback for `LUC-1464` and heartbeat-context readback for
+  `LUC-1438` -> PASS;
+  targeted `rg` readback over `.codex/context/TASK_BOARD.md`,
+  `.codex/context/PROJECT_STATE.md`, and `.agents/state/next-steps.md` for
+  `LUC-4103`, `PROD_UI_AUDIT_AUTH_EMAIL`, `PROD_UI_AUDIT_AUTH_PASSWORD`, and
+  `owner-login` -> PASS;
+  `git status --short` -> PASS before local state writes.
+- Findings:
+  the approved auth family already exists for read-only dashboard/session proof:
+  `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD`, mapped process-locally to
+  `PROD_AUTH_EMAIL/PASSWORD`, with prior redacted proof records and no
+  secret/cookie/token/body artifact storage. The missing piece for
+  `LUC-1438` is not auth-family discovery but the live local-board/operator
+  owner-login gate on [LUC-4103](/LUC/issues/LUC-4103).
+- Outcome:
+  `LUC-1464` closes as a coordination/result lane. `LUC-1438` should resume
+  only after [LUC-4103](/LUC/issues/LUC-4103) resolves the owner-login method
+  selection/execution boundary and hands back one approved read-only
+  authenticated dashboard session run for
+  `/dashboard/bots/<real-bot-id>/assistant`.
+- No mutation:
+  no protected login, proof execution, push, deploy, restart, rollback,
+  secret readback, account mutation, DB mutation, or live-trading action.
+- Evidence:
+  `history/tasks/luc-1464-browser-proof-access-for-luc-1438-2026-07-18-task.md`;
+  `history/evidence/luc-1464-browser-proof-access-for-luc-1438-2026-07-18.md`;
+  `history/artifacts/luc-1464-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1461 classify and close local dirty state for LUC-1460
 
 - Status: `DONE`.

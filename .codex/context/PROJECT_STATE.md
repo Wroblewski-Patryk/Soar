@@ -1,3 +1,22 @@
+## 2026-07-18 LUC-1464 browser proof access classification for LUC-1438
+
+- `LUC-1464` verified that the Soar project already has an approved read-only
+  dashboard auth family for protected browser/session proof:
+  `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD`, mapped process-locally to
+  `PROD_AUTH_EMAIL/PASSWORD`.
+- This does not authorize broad protected proof by itself. The active runtime
+  gate for `LUC-1438` is the local-board/operator owner-login path
+  [LUC-4103](/LUC/issues/LUC-4103), which remains the required method-selection
+  and execution boundary before one assistant-page browser proof can run
+  against `/dashboard/bots/<real-bot-id>/assistant`.
+- No protected login, secret readback, cookie/token export, proof execution,
+  deploy, restart, rollback, account mutation, DB mutation, or live-trading
+  action occurred in this heartbeat.
+- Evidence:
+  `history/tasks/luc-1464-browser-proof-access-for-luc-1438-2026-07-18-task.md`;
+  `history/evidence/luc-1464-browser-proof-access-for-luc-1438-2026-07-18.md`;
+  `history/artifacts/luc-1464-paperclip-closeout-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1461 source-control closure for LUC-1460
 
 - The local Soar dirty set created by `LUC-1460` was classified as one

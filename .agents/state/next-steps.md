@@ -1,3 +1,18 @@
+## 2026-07-18 LUC-1465 source-control closure for LUC-1464 complete
+
+- The local dirty packet left by `LUC-1464` was classified as one coherent
+  state/history bundle and prepared for closure with one local commit in the
+  assigned sidecar lane.
+- The closure packet adds the durable `LUC-1465` task/evidence/closeout
+  records without changing runtime code, auth behavior, or protected proof
+  scope.
+- The functional gate itself is unchanged:
+  `LUC-1438` still waits on the local-board/operator owner-login path in
+  `LUC-4103` before one approved read-only authenticated dashboard session run
+  can execute for `/dashboard/bots/<real-bot-id>/assistant`.
+- Evidence:
+  `history/evidence/luc-1465-source-control-closure-luc-1464-2026-07-18.md`.
+
 ## 2026-07-18 LUC-1461 source-control closure for LUC-1460 complete
 
 - The local dirty packet left by `LUC-1460` was classified as one coherent
