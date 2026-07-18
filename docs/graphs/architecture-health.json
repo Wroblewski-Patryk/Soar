@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-18T00:34:08.885Z",
+  "generated_at": "2026-07-18T22:14:17.073Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15300,
-    "relations": 42261,
+    "entities": 15334,
+    "relations": 42417,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5138,
+      "document": 5164,
       "feature": 291,
       "function": 5318,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1932,
+      "task": 1940,
       "test": 522
     },
     "by_status": {
-      "blocked": 187,
+      "blocked": 188,
       "deprecated": 10,
-      "implemented": 12348,
+      "implemented": 12373,
       "in_progress": 28,
       "tested": 930,
-      "verified": 1797
+      "verified": 1805
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1729,
+      "count": 1728,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1455,
+      "count": 1454,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1272,
+        "curated_graph_covered": 1271,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -8276,7 +8276,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 143,
+      "count": 144,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -8388,6 +8388,14 @@
           "name": "Task",
           "path": "history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md",
           "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:a525441544",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md",
+          "status": "blocked",
           "owner": "Engineering Delivery Lead"
         },
         {
@@ -11030,7 +11038,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1743,
+      "count": 1742,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -12638,8 +12646,8 @@
       "count": 436,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 259,
-        "historical_task_archive": 143,
+        "curated_graph_covered": 258,
+        "historical_task_archive": 144,
         "top_level_app_mount": 1
       },
       "items": [
@@ -12766,6 +12774,15 @@
           "name": "Task",
           "path": "history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md",
           "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:a525441544",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md",
+          "status": "blocked",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
         },
@@ -14430,15 +14447,6 @@
           "type": "feature",
           "name": "timelineIndicatorOverlays.ts",
           "path": "apps/web/src/features/backtest/utils/timelineIndicatorOverlays.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:formatters-ts:1916bb81e3",
-          "type": "feature",
-          "name": "formatters.ts",
-          "path": "apps/web/src/features/bots/components/bots-management/formatters.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

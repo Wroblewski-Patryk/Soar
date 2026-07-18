@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-18T00:34:08.885Z
+Generated: 2026-07-18T22:14:17.073Z
 
 ## Canonical Exports
 
@@ -929,6 +929,7 @@ Generated: 2026-07-18T00:34:08.885Z
 | connected_to | project:soar:7c70e892d7 | task:task:684df5f9f5 | history/tasks/luc-1402-account-access-use-reports-missing-doc-link-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:93af6ebff1 | history/tasks/luc-1402-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:51ca0306e4 | history/tasks/luc-1405-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1405-use-profile-security-stale-missing-doc-link-reconciliation:1c1f54e32a | history/tasks/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f4cd19b03e | history/tasks/luc-1408-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:186a65fbff | history/tasks/luc-1409-source-control-closure-2026-07-17-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:be941d1863 | history/tasks/luc-141-no-stall-queue-expeditor-2026-05-26-task.md |
@@ -965,12 +966,19 @@ Generated: 2026-07-18T00:34:08.885Z
 | connected_to | project:soar:7c70e892d7 | task:luc-145-recent-closure-provenance-packets-2026-05-26:70468bc416 | history/tasks/luc-145-recent-closure-provenance-packets-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:39aeb53135 | history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:47d7df165a | history/tasks/luc-1455-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1456-account-access-use-dashboard-missing-doc-link-closure:72e4786407 | history/tasks/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1458-source-control-closure-for-luc-1456:f3a91589c5 | history/tasks/luc-1458-source-control-closure-classify-and-close-local-dirty-state-for-luc-1456-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:503596dac0 | history/tasks/luc-1459-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:d6284aadfe | history/tasks/luc-146-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:a525441544 | history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:281cc68017 | history/tasks/luc-1460-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1461-source-control-closure-for-luc-1460:d74273868f | history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:d0161ce1e4 | history/tasks/luc-1464-browser-proof-access-for-luc-1438-2026-07-18-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-1465-source-control-closure-for-luc-1464:8e6b8a8390 | history/tasks/luc-1465-source-control-closure-classify-and-close-local-dirty-state-for-luc-1464-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b1ecd59d4c | history/tasks/luc-1466-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:a67c63c99b | history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-147-history-plans-closure-bundle-2026-05-26:5609dd3b49 | history/tasks/luc-147-history-plans-closure-bundle-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:ffea6b32c9 | history/tasks/luc-1470-source-control-closure-classify-and-close-local-dirty-state-for-luc-1438-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:57ee652c8a | history/tasks/luc-1472-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:45934a8259 | history/tasks/luc-1473-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e470e38462 | history/tasks/luc-1476-reconcile-coolify-resource-inventory-2026-06-02-task.md |
@@ -1210,11 +1218,3 @@ Generated: 2026-07-18T00:34:08.885Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2046-task-contract-source-control-closure-for-luc-2045:35b1a63723 | history/tasks/luc-2046-source-control-close-local-dirty-state-for-luc-2045-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2054-task-contract-coolify-read-only-production-status-access:115d47b9f4 | history/tasks/luc-2054-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2055-api-platform-safety-architecture-gap-review:fc9c88f33d | history/tasks/luc-2055-api-platform-safety-architecture-gap-review-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684 | history/tasks/luc-2057-local-protected-wallet-route-action-proof-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2064-source-control-closure-current-luc-402-dirty-packet:09ba7b1bdc | history/tasks/luc-2064-source-control-classify-current-luc-402-dirty-packet-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2069-operator-coolify-bind-read-only-production-status-access:6bdaabd484 | history/tasks/luc-2069-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-207-v1-audit-to-completion-controller-2026-05-26:b7f0720532 | history/tasks/luc-207-v1-audit-to-completion-controller-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2072-operator-coolify-bind-read-only-production-status-access:136eb49614 | history/tasks/luc-2072-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2078-source-control-closure-for-luc-2069-through-luc-2072:d6aeccca26 | history/tasks/luc-2078-source-control-classify-and-close-local-dirty-state-for-luc-2069-luc-2072-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2079-operator-coolify-bind-read-only-production-status-access:75d712cb79 | history/tasks/luc-2079-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-208-no-stall-queue-expeditor-2026-05-26:c132972851 | history/tasks/luc-208-no-stall-queue-expeditor-2026-05-26-task.md |

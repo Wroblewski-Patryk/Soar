@@ -29,6 +29,17 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/backtests/create/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the dashboard backtests create route through fresh local browser-backed route proof on 2026-07-18. The synthetic protected-route harness confirmed unauthenticated access still fails closed to /auth/login, the canonical /dashboard/backtests/create route reached the protected login gate, and the backtests list-page create action still navigated to /dashboard/backtests/create without mutating runtime state. Focused Backtests create page route-shell test coverage also passed for the canonical create-route shell and BacktestCreateForm handoff.",
+      "evidence": [
+        "history/evidence/luc-1451-local-protected-route-action-proof-matrix-2026-07-18.md",
+        "history/artifacts/luc-1451-local-protected-route-action-proof-matrix-2026-07-18.json",
+        "apps/web/src/app/dashboard/backtests/create/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -1351,6 +1362,12 @@
       "toPath": "apps/web/src/app/admin/users/page.tsx",
       "type": "documents",
       "evidence": "LUC-1249 admin users route wrapper module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-backtest.md",
+      "toPath": "apps/web/src/app/dashboard/backtests/create/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1451 backtests create route wrapper module ownership"
     },
     {
       "fromPath": "docs/modules/web-backtest.md",

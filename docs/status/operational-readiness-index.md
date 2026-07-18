@@ -1,6 +1,6 @@
 # Operational Readiness Index
 
-Generated: 2026-07-18T00:34:28.261Z
+Generated: 2026-07-18T22:14:37.627Z
 Project: Soar
 Status: truth_incomplete
 

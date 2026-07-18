@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T00:34:28.261Z",
+  "generatedAt": "2026-07-18T22:14:37.627Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5282,
-      "linkedRelationCount": 22099,
+      "entityCount": 5315,
+      "linkedRelationCount": 22254,
       "layers": {
         "frontend": {
-          "count": 202,
+          "count": 205,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 760,
+          "count": 763,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4129,
+          "count": 4156,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1505,6 +1505,38 @@
               "type": "task",
               "name": "luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task",
               "path": "history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1456-account-access-use-dashboard-missing-doc-link-closure:72e4786407",
+              "type": "task",
+              "name": "LUC-1456 Account Access `USE /dashboard` Missing-Doc-Link Closure",
+              "path": "history/tasks/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1458-source-control-closure-for-luc-1456:f3a91589c5",
+              "type": "task",
+              "name": "LUC-1458 Source-Control Closure For LUC-1456",
+              "path": "history/tasks/luc-1458-source-control-closure-classify-and-close-local-dirty-state-for-luc-1456-2026-07-18-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1461-source-control-closure-for-luc-1460:d74273868f",
+              "type": "task",
+              "name": "LUC-1461 Source-Control Closure For LUC-1460",
+              "path": "history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1465-source-control-closure-for-luc-1464:8e6b8a8390",
+              "type": "task",
+              "name": "LUC-1465 Source-Control Closure For LUC-1464",
+              "path": "history/tasks/luc-1465-source-control-closure-classify-and-close-local-dirty-state-for-luc-1464-2026-07-18-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1915,38 +1947,6 @@
               "path": "history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "blocked"
-            },
-            {
-              "id": "task:luc-2740-rc-external-gate-evidence-checker-missing-test-links:c65bae25b4",
-              "type": "task",
-              "name": "LUC-2740 RC External Gate Evidence Checker Missing-Test Links",
-              "path": "history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2750-live-import-readback-collector-missing-test-links:b3ef820ceb",
-              "type": "task",
-              "name": "LUC-2750 Live Import Readback Collector Missing-Test Links",
-              "path": "history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2760-autonomous-idle-and-map-drift-sweep:b61b23ca1f",
-              "type": "task",
-              "name": "LUC-2760 Autonomous Idle And Map Drift Sweep",
-              "path": "history/tasks/luc-2760-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-2773-soar-assistant-ai-001-v1-scope-decision:3edd229c07",
-              "type": "task",
-              "name": "LUC-2773 - SOAR-ASSISTANT-AI-001 V1 Scope Decision",
-              "path": "history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
@@ -3580,8 +3580,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 955,
-      "linkedRelationCount": 3276,
+      "entityCount": 962,
+      "linkedRelationCount": 3316,
       "layers": {
         "frontend": {
           "count": 336,
@@ -4677,8 +4677,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/backtests/create/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:a407acfc04",
@@ -4876,7 +4876,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 358,
+          "count": 365,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -6186,7 +6186,7 @@
     {
       "userFlow": "Exchange connection and configuration",
       "entityCount": 819,
-      "linkedRelationCount": 3020,
+      "linkedRelationCount": 3021,
       "layers": {
         "frontend": {
           "count": 28,
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4048,
-      "linkedRelationCount": 13218,
+      "entityCount": 4049,
+      "linkedRelationCount": 13224,
       "layers": {
         "frontend": {
           "count": 394,
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2120,
+          "count": 2121,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -11866,6 +11866,14 @@
               "type": "task",
               "name": "EXCHANGE2-15 Gate.io Wallet Balance Preview Fail-Closed Task (2026-05-08)",
               "path": "history/tasks/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-1461-source-control-closure-for-luc-1460:d74273868f",
+              "type": "task",
+              "name": "LUC-1461 Source-Control Closure For LUC-1460",
+              "path": "history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -12410,14 +12418,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-2465-coolify-production-deploy-health-sweep-2026-06-06-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:0a1ecf1e9f",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-2321-coolify-production-deploy-health-sweep-2026-06-06-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13151,
-      "linkedRelationCount": 39021,
+      "entityCount": 13185,
+      "linkedRelationCount": 39177,
       "layers": {
         "frontend": {
           "count": 1435,
@@ -13738,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1654,
+          "count": 1658,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9223,
+          "count": 9253,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -15693,8 +15693,8 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 345,
-      "linkedRelationCount": 857,
+      "entityCount": 349,
+      "linkedRelationCount": 876,
       "layers": {
         "frontend": {
           "count": 94,
@@ -16989,7 +16989,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 105,
+          "count": 109,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -17184,12 +17184,28 @@
               "status": "implemented"
             },
             {
+              "id": "task:luc-1405-use-profile-security-stale-missing-doc-link-reconciliation:1c1f54e32a",
+              "type": "task",
+              "name": "LUC-1405 `use-profile-security` Stale Missing-Doc-Link Reconciliation",
+              "path": "history/tasks/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:b4e81e4375",
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1428-source-control-closure-classify-and-close-local-dirty-state-for-luc-1368-luc-1396-luc-1417-luc-1421-plus-1-2026-07-17-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
+            },
+            {
+              "id": "document:luc-1405-evidence:744e607229",
+              "type": "document",
+              "name": "LUC-1405 Evidence",
+              "path": "history/evidence/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             },
             {
               "id": "document:task:5b357afaf8",
@@ -17244,6 +17260,14 @@
               "type": "document",
               "name": "Task",
               "path": "history/tasks/luc-1396-account-access-use-profile-security-missing-doc-link-2026-07-17-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:luc-1405-use-profile-security-stale-missing-doc-link-reconciliation:3f68da4012",
+              "type": "document",
+              "name": "LUC-1405 `use-profile-security` Stale Missing-Doc-Link Reconciliation",
+              "path": "history/tasks/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -17606,30 +17630,6 @@
               "path": "scripts/runBackupVerificationProfile.test.mjs",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "test:runv1releasegate-test-mjs:58e7b2bdb3",
-              "type": "test",
-              "name": "runV1ReleaseGate.test.mjs",
-              "path": "scripts/runV1ReleaseGate.test.mjs",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:normalizetargetprofile:147c42fa1a",
-              "type": "function",
-              "name": "normalizeTargetProfile",
-              "path": "scripts/collectSloEvidence.mjs#normalizeTargetProfile",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:collectsloevidence-mjs:05d3fe8dab",
-              "type": "feature",
-              "name": "collectSloEvidence.mjs",
-              "path": "scripts/collectSloEvidence.mjs",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true

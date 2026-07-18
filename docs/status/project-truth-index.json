@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T00:34:28.261Z",
+  "generatedAt": "2026-07-18T22:14:37.627Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 1,
     "criticalRuntimeFindings": 1,
-    "appCompletionGaps": 53,
-    "indexedAppCompletionGaps": 53,
-    "knownAppCompletionRiskItems": 53,
-    "appCompletionPriorityReviewItems": 53,
+    "appCompletionGaps": 52,
+    "indexedAppCompletionGaps": 52,
+    "knownAppCompletionRiskItems": 52,
+    "appCompletionPriorityReviewItems": 52,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 2,
-    "indexedGaps": 56,
-    "totalGaps": 56
+    "indexedGaps": 55,
+    "totalGaps": 55
   },
   "firstGap": {
     "kind": "runtime_error",
@@ -34,19 +34,6 @@
       "summary": "api_ready https://api.soar.luckysparrow.ch/ready returned 503: {\"status\":\"not_ready\",\"service\":\"api\"}",
       "nextOwner": "Deployment Reliability Engineer + Ops Release Lead",
       "nextAction": "Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof."
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/backtests/create/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:235e305216",
-      "risk": "needs_browser_review"
     },
     {
       "kind": "app_completion_gap",

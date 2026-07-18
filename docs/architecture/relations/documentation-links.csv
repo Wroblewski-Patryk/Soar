@@ -226,6 +226,7 @@ apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin,docs/modul
 apps/api/src/modules/auth/auth.routes.ts#/logout,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.routes.ts#/me,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.routes.ts#/register,docs/modules/api-auth.md
+apps/web/src/app/dashboard/backtests/create/page.tsx,docs/modules/web-backtest.md
 apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared,docs/modules/api-auth.md
 apps/api/src/middleware/requireAuth.ts#clearSession,docs/modules/api-auth.md
 apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie,docs/modules/api-auth.md
