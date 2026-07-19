@@ -5,6 +5,13 @@
 - Resume reason: `run_liveness_continuation`
 - Scope: recheck the durable `LUC-1438`/`LUC-1467` record and confirm whether the live unblock path changed.
 
+## Retry Note
+
+- Date: 2026-07-19
+- Wake reason: `issue_continuation_needed`
+- Status: `blocked`
+- Outcome: this retry did not expose any new runnable lane. The wake payload still reported `in_progress`, but the durable repo state and prior evidence continue to route the live unblock path through `LUC-4103`.
+
 ## Readback
 
 - The existing `LUC-1467` task/evidence packet remains verified and complete for the read-only Coolify access binding lane.

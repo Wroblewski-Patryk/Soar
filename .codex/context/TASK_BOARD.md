@@ -27,6 +27,22 @@
   `history/evidence/luc-1505-source-control-closure-luc-1467-2026-07-19.md`;
   `history/artifacts/luc-1505-paperclip-closeout-2026-07-19.md`.
 
+## 2026-07-19 LUC-1467 resume delta retry
+
+- Status: `blocked`.
+- Scope:
+  retry-only readback for the `LUC-1438` productivity review wake after the
+  process-lost retry. No new runnable lane was discovered.
+- Outcome:
+  the wake payload still arrived with `in_progress`, but the durable Soar
+  evidence and state continue to route the live unblock path through
+  `LUC-4103`.
+- Freshness note:
+  no runtime, deploy, secret, account, or local source mutation was performed
+  in this retry heartbeat.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
+
 ## 2026-07-19 LUC-1467 resume delta recheck
 
 - Status: `blocked`.
