@@ -43,6 +43,15 @@
   there is still no local repo path to fix the external adapter writeback
   failure from this checkout.
 
+## Run Liveness Continuation
+
+- Date: 2026-07-19
+- Wake reason: `run_liveness_continuation`
+- Status: `blocked`
+- Outcome: this continuation also repeated the same blocked readback. No new
+  runnable lane appeared, and `LUC-4103` remains the named unblock
+  owner/action for the underlying owner-login method-selection gate.
+
 ## Evidence Used
 
 - `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
