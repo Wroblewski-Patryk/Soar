@@ -16,6 +16,10 @@
 - Result: no new runnable lane appeared; the live unblock path still points at
   `LUC-4103` for the owner-login method-selection interaction.
 - Disposition: `blocked`.
+- Mutation-path note: the checkout does not include a local Paperclip issue
+  update helper, and the `.paperclip` tree only exposed archived recovery
+  material; no sanctioned live status mutation path was available in this
+  heartbeat.
 - Evidence:
   `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
 

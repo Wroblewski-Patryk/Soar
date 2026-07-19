@@ -56,6 +56,10 @@
 - Freshness note:
   the recheck found the same blocker and no new runnable lane or local
   mutation path in this heartbeat.
+- Mutation-path note:
+  no local Paperclip issue-update helper was present in this checkout, and the
+  `.paperclip` tree only exposed archived recovery material. A live status
+  mutation path was therefore unavailable from this heartbeat.
 - Evidence:
   `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
 
