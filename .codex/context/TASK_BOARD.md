@@ -1,3 +1,48 @@
+## 2026-07-19 LUC-1505 classify and close local dirty state for LUC-1467
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the `LUC-1467` July 19 recheck.
+- Findings:
+  the worktree was one coherent local-proof/state bundle only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  and `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1467|LUC-1505|LUC-4103` across touched files
+  -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1505-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-19-task.md`;
+  `history/evidence/luc-1505-source-control-closure-luc-1467-2026-07-19.md`;
+  `history/artifacts/luc-1505-paperclip-closeout-2026-07-19.md`.
+
+## 2026-07-19 LUC-1467 resume delta recheck
+
+- Status: `blocked`.
+- Scope:
+  resume-only readback for the `LUC-1438` productivity review wake. No new
+  runnable lane was discovered in this heartbeat.
+- Outcome:
+  the durable `LUC-1467` access-binding packet stays complete, and the live
+  unblock path for `LUC-1438` still points at the existing `LUC-4103`
+  owner-login method-selection interaction.
+- Freshness note:
+  the recheck found the same blocker and no new runnable lane or local
+  mutation path in this heartbeat.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
+
 ## 2026-07-18 LUC-1501 classify and close local dirty state for LUC-1467
 
 - Status: `DONE`.

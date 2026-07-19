@@ -1,3 +1,24 @@
+## 2026-07-19 LUC-1505 source-control closure for LUC-1467
+
+- The local Soar dirty set left by the `LUC-1467` July 19 recheck was
+  classified as one coherent packet only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  and `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Sunday, July 19, 2026 closure action created the `LUC-1505`
+  task/evidence/closeout packet and closed the bundle with one local commit.
+
+## 2026-07-19 LUC-1467 resume delta recheck
+
+- The `LUC-1467` resume delta was rechecked on Sunday, July 19, 2026.
+- Result: no new runnable lane appeared; the live unblock path still points at
+  `LUC-4103` for the owner-login method-selection interaction.
+- Disposition: `blocked`.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-19.md`.
+
 ## 2026-07-18 LUC-1501 source-control closure for LUC-1467
 
 - The local Soar dirty set left by `LUC-1467` was classified as one coherent
