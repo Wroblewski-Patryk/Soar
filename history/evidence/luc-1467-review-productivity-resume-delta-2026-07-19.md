@@ -24,6 +24,15 @@
 - Final disposition for this heartbeat: `blocked`
 - Unblock owner/action: local-board/operator or Patryk resolving the existing owner-login method-selection interaction on `LUC-4103`
 
+## Postscript
+
+- The current heartbeat also hit an external adapter writeback failure after the
+  same blocked determination was reached.
+- No repository-side `heartbeat_runs` implementation or other local code path
+  exists in this checkout to repair that adapter error.
+- The durable issue disposition remains unchanged: `LUC-1467` is blocked on
+  the existing `LUC-4103` owner-login method-selection interaction.
+
 ## Evidence Used
 
 - `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
