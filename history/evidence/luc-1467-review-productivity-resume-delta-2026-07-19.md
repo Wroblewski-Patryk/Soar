@@ -33,6 +33,16 @@
 - The durable issue disposition remains unchanged: `LUC-1467` is blocked on
   the existing `LUC-4103` owner-login method-selection interaction.
 
+## Process Lost Retry
+
+- Date: 2026-07-19
+- Wake reason: `process_lost_retry`
+- Status: `blocked`
+- Outcome: this retry repeated the same readback and did not uncover a new
+  runnable lane. The live unblock path still routes through `LUC-4103`, and
+  there is still no local repo path to fix the external adapter writeback
+  failure from this checkout.
+
 ## Evidence Used
 
 - `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
