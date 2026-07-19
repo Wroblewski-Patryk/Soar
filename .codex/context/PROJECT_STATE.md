@@ -18,6 +18,8 @@
 - The live unblock path remains the existing `LUC-4103` owner-login
   method-selection interaction; no new blocker or recovery lane was found in
   this wake.
+- Liveness continuation recheck: same gate, same blocker, no new runnable lane
+  or local code/state mutation was discovered in this heartbeat.
 - Evidence:
   `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-18.md`.
 
