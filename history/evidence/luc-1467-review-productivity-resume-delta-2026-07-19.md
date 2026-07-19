@@ -89,6 +89,16 @@
   readback. No new runnable lane appeared, and `LUC-4103` remains the named
   unblock owner/action for the underlying owner-login method-selection gate.
 
+## Run Liveness Continuation 6
+
+- Date: 2026-07-19
+- Wake reason: `run_liveness_continuation`
+- Status: `blocked`
+- Outcome: this sixth continuation attempt repeated the same readback. The
+  wake still exposes no new runnable lane, the durable unblock path remains
+  `LUC-4103`, and this checkout still has no local Paperclip issue mutation
+  helper to repair the external adapter writeback failure.
+
 ## Evidence Used
 
 - `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
