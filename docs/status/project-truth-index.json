@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T22:14:37.627Z",
+  "generatedAt": "2026-07-20T15:26:56.745Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 1,
     "criticalRuntimeFindings": 1,
-    "appCompletionGaps": 52,
-    "indexedAppCompletionGaps": 52,
-    "knownAppCompletionRiskItems": 52,
-    "appCompletionPriorityReviewItems": 52,
+    "appCompletionGaps": 51,
+    "indexedAppCompletionGaps": 51,
+    "knownAppCompletionRiskItems": 51,
+    "appCompletionPriorityReviewItems": 51,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 2,
-    "indexedGaps": 55,
-    "totalGaps": 55
+    "indexedGaps": 54,
+    "totalGaps": 54
   },
   "firstGap": {
     "kind": "runtime_error",
@@ -215,19 +215,6 @@
         "apps/web/src/app/dashboard/markets/list/page.tsx"
       ],
       "sourceItemId": "route:page-tsx:6cbd1c33d7",
-      "risk": "needs_browser_review"
-    },
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:2e9b7e490f",
       "risk": "needs_browser_review"
     },
     {

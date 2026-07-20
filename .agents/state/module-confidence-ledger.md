@@ -1,3 +1,22 @@
+## 2026-07-20 LUC-1519 Dashboard Overview Root Browser Proof Repair
+
+- Module row:
+  Dashboard overview / root browser proof / authenticated bootstrap.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / HARNESS_FIX_APPLIED`.
+- Confidence update:
+  [LUC-1519](/LUC/issues/LUC-1519) fixed the local protected-route proof lane
+  for `/dashboard`. The browser harness now emits credentialed fixture CORS
+  responses that echo the request origin, which keeps the authenticated
+  dashboard bootstrap alive and lets the exact `/dashboard` proof pass.
+- Evidence:
+  `history/tasks/luc-1519-dashboard-root-browser-proof-auth-bootstrap-2026-07-20-task.md`;
+  `history/evidence/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.md`;
+  `history/artifacts/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.json`.
+- Residual:
+  generated dashboard completion indexes may still need their own refresh lane
+  if downstream routing artifacts are treated as release evidence.
+
 ## 2026-07-17 LUC-1421 Dashboard Overview USE Wallets Missing-Test-Link Closure
 
 - Module row:
@@ -18,7 +37,7 @@
   `history/tasks/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17-task.md`;
   `history/evidence/luc-1421-dashboard-overview-use-wallets-missing-test-link-2026-07-17.md`.
 - Residual:
-  the next Dashboard overview proof-owned gap is `USE /dashboard`, while
+  the next Dashboard overview proof-owned gap is now elsewhere, while
   `USE /wallets` now belongs to the separate docs-owned lane.
 
 ## 2026-07-17 LUC-1422 Dashboard Overview Backtests Detail Browser Review

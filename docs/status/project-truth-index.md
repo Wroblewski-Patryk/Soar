@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-18T22:14:37.627Z
+Generated: 2026-07-20T15:26:56.745Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,14 +13,14 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 1 |
 | criticalRuntimeFindings | 1 |
-| appCompletionGaps | 52 |
-| indexedAppCompletionGaps | 52 |
-| knownAppCompletionRiskItems | 52 |
-| appCompletionPriorityReviewItems | 52 |
+| appCompletionGaps | 51 |
+| indexedAppCompletionGaps | 51 |
+| knownAppCompletionRiskItems | 51 |
+| appCompletionPriorityReviewItems | 51 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 2 |
-| indexedGaps | 55 |
-| totalGaps | 55 |
+| indexedGaps | 54 |
+| totalGaps | 54 |
 
 ## First Gap
 
@@ -33,7 +33,6 @@ This is the routing surface agents should use before guessing whether an app wor
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
 | critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |

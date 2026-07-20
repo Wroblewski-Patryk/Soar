@@ -1,3 +1,19 @@
+## 2026-07-20 LUC-1519 dashboard root browser proof auth bootstrap repair
+
+- Status: `DONE`.
+- Scope:
+  QA-owned proof lane for the local authenticated `/dashboard` browser
+  bootstrap path and its fixture-backed auth session contract.
+- Outcome:
+  the local protected-route harness now keeps the dashboard session alive by
+  echoing the browser origin in fixture CORS responses and allowing
+  credentials. The exact `/dashboard` proof now passes instead of returning to
+  `/auth/login`.
+- Evidence:
+  `history/tasks/luc-1519-dashboard-root-browser-proof-auth-bootstrap-2026-07-20-task.md`;
+  `history/evidence/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.md`;
+  `history/artifacts/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.json`.
+
 ## 2026-07-20 LUC-1508 classify and close local dirty state for LUC-1467
 
 - Status: `DONE`.
@@ -981,7 +997,7 @@
 
 ## 2026-07-17 LUC-1387 Restore least-privilege Coolify owner path for one Redis recovery action
 
-- Status: `IN_REVIEW`.
+- Status: `DONE`.
 - Scope:
   replace the unowned `403 Missing required permissions: deploy` loop with one
   exact owner-path decision for the Soar production Redis recovery.
@@ -993,6 +1009,10 @@
   the remaining gate is now a typed board/operator confirmation for exactly one
   Redis restart action (`POST /api/v1/databases/{redis-id}/restart`) or one
   deploy-capable owner designated for that same single action only.
+- Monday, July 20, 2026 update:
+  `local-board` accepted that confirmation, so the CLO owner-path lane is
+  complete and the remaining work shifts back to the approved operator/DRE
+  execution path.
 - Evidence:
   `history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md`;
   `history/evidence/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17.md`.
@@ -1022,6 +1042,50 @@
   `history/tasks/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17-task.md`;
   `history/evidence/luc-1383-dashboard-overview-profile-basic-and-apikeys-proof-2026-07-17.md`;
   `history/artifacts/luc-1383-paperclip-closeout-2026-07-17.md`.
+
+## 2026-07-20 LUC-1374 Approved Redis restart outcome
+
+- Status: `BLOCKED`.
+- Scope:
+  handle the reopening comment that approved exactly one Redis restart using
+  `COOLIFY_DEPLOY_API_TOKEN`, then verify Redis plus Soar readiness.
+- Findings:
+  the deploy-permission blocker is actually cleared for the approved restart
+  action. `POST /api/v1/databases/{redis-id}/restart` returned `200`.
+- Verification:
+  post-restart Coolify readback showed `redis -> exited:unhealthy` at
+  `2026-07-20T19:55:36Z` on all subsequent polls.
+  Public API `/health` stayed `200`; public API `/ready` stayed `503` through
+  the observation window.
+- Outcome:
+  the issue is no longer blocked on missing mutation permission. It is now
+  blocked on the underlying Redis resource failure after a successful restart
+  attempt.
+- Evidence:
+  `history/evidence/luc-1374-approved-redis-restart-outcome-2026-07-20.md`;
+  `history/artifacts/luc-1374-paperclip-restart-outcome-2026-07-20.md`.
+
+## 2026-07-20 LUC-1374 Redis unhealthy unblock recheck
+
+- Status: `BLOCKED`.
+- Scope:
+  verify whether the `issue_blockers_resolved` wake on Monday, July 20, 2026
+  actually restored a recovery-capable Redis mutation path.
+- Findings:
+  fresh public smoke still shows API `/health` `200`, API `/ready` `503`, Web
+  `/` `200`, and Web `/api/build-info` `200`.
+  Fresh Coolify readback at `2026-07-20T19:50:37Z` still shows
+  `redis -> restarting:unhealthy` and `postgresql -> running:healthy`.
+- Verification:
+  Coolify bearer-token Redis `restart`, `start`, and `stop` probes all still
+  fail with `403 Missing required permissions: deploy`.
+- Outcome:
+  the unblock wake is disproved; the issue must return to a first-class
+  operational blocker until Ops or Security provides a deploy-capable Redis
+  mutation path or performs the recovery directly.
+- Evidence:
+  `history/evidence/luc-1374-redis-unhealthy-recheck-2026-07-20.md`;
+  `history/artifacts/luc-1374-paperclip-reblock-2026-07-20.md`.
 
 ## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
 
@@ -47975,3 +48039,21 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `apps/api/src/router/index.ts#/alerts` and
   `apps/api/src/router/index.ts#/metrics`, while the next project-truth
   app-completion gap advances to `apps/api/src/router/index.ts#/dashboard`.
+## 2026-07-20 LUC-1517 dashboard page browser-review closure
+
+- Status: `DONE`.
+- Scope:
+  QA-owned proof lane for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  focused `/dashboard` route-shell coverage is current and passing, the repaired
+  local protected-route harness now proves both unauthenticated fail-closed and
+  authenticated `/dashboard` stay-on-page behavior, and regenerated
+  `app-completion` / `project-truth` indexes no longer list
+  `apps/web/src/app/dashboard/page.tsx` as Dashboard overview
+  `needs_browser_review`.
+- Evidence:
+  `history/tasks/luc-1517-dashboard-overview-page-browser-review-2026-07-20-task.md`;
+  `history/evidence/luc-1517-dashboard-overview-page-browser-review-2026-07-20.md`;
+  `history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md`;
+  `history/artifacts/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.json`.

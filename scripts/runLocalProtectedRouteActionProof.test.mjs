@@ -147,6 +147,147 @@ test('fixture API helpers fulfill known dynamic API responses and continue unkno
   }
 });
 
+test('document requests can inherit the synthetic auth cookie header during dashboard bootstrap', async () => {
+  const harness = await importHarness();
+  try {
+    const { installDynamicFixtureApi } = harness.module;
+    const sends = [];
+    let handler;
+    const client = {
+      syntheticAuthCookieHeader: 'token=luc-2057-local-fixture-token',
+      send: async (method, params) => {
+        sends.push({ method, params });
+        return {};
+      },
+      on: (event, callback) => {
+        assert.equal(event, 'Fetch.requestPaused');
+        handler = callback;
+      },
+    };
+
+    await installDynamicFixtureApi(client);
+    await handler({
+      requestId: 'doc-1',
+      resourceType: 'Document',
+      request: {
+        url: 'http://127.0.0.1:3217/dashboard',
+        headers: { 'User-Agent': 'Chrome' },
+      },
+    });
+
+    const continueCall = sends.find(
+      (call) => call.method === 'Fetch.continueRequest' && call.params.requestId === 'doc-1',
+    );
+    assert.ok(continueCall);
+    assert.deepEqual(
+      continueCall.params.headers.find((header) => header.name.toLowerCase() === 'cookie'),
+      { name: 'Cookie', value: 'token=luc-2057-local-fixture-token' },
+    );
+  } finally {
+    await harness.cleanup();
+  }
+});
+
+test('dashboard document requests can be fulfilled with a cookie-bearing local HTML response', async () => {
+  const harness = await importHarness();
+  const originalFetch = globalThis.fetch;
+  try {
+    const { installDynamicFixtureApi } = harness.module;
+    const sends = [];
+    let handler;
+    globalThis.fetch = async (url) => ({
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        entries: () =>
+          Object.entries({
+            'content-type': 'text/html; charset=utf-8',
+            'cache-control': 'no-store',
+          })[Symbol.iterator](),
+      },
+      text: async () => `<html><body>dashboard ${String(url)}</body></html>`,
+    });
+    const client = {
+      syntheticAuthDocumentBootstrap: 'token=luc-2057-local-fixture-token',
+      send: async (method, params) => {
+        sends.push({ method, params });
+        return {};
+      },
+      on: (event, callback) => {
+        assert.equal(event, 'Fetch.requestPaused');
+        handler = callback;
+      },
+    };
+
+    await installDynamicFixtureApi(client);
+    await handler({
+      requestId: 'doc-1',
+      resourceType: 'Document',
+      request: {
+        url: 'http://127.0.0.1:3217/dashboard',
+        headers: { 'User-Agent': 'Chrome' },
+      },
+    });
+
+    const fulfillCall = sends.find(
+      (call) => call.method === 'Fetch.fulfillRequest' && call.params.requestId === 'doc-1',
+    );
+    assert.ok(fulfillCall);
+    assert.equal(fulfillCall.params.responseCode, 200);
+    assert.ok(Buffer.from(fulfillCall.params.body, 'base64').toString('utf8').length > 0);
+  } finally {
+    await harness.cleanup();
+  }
+});
+
+test('synthetic auth bootstrap seeds both request headers and a browser cookie', async () => {
+  const harness = await importHarness();
+  let originalFetch = globalThis.fetch;
+  try {
+    const { seedSyntheticAuthSession } = harness.module;
+    const sends = [];
+    const client = {
+      send: async (method, params) => {
+        sends.push({ method, params });
+        return { success: true };
+      },
+    };
+
+    await seedSyntheticAuthSession(
+      client,
+      { baseUrl: 'http://127.0.0.1:3217' },
+      'luc-2057-local-fixture-token',
+    );
+
+    assert.ok(
+      sends.some(
+        (call) =>
+          call.method === 'Network.setExtraHTTPHeaders' &&
+          call.params.headers.Cookie === 'token=luc-2057-local-fixture-token',
+      ),
+    );
+    assert.ok(
+      sends.some(
+        (call) =>
+          call.method === 'Network.setCookie' &&
+          call.params.name === 'token' &&
+          call.params.url === 'http://127.0.0.1:3217',
+      ),
+    );
+    assert.ok(
+      sends.some(
+        (call) =>
+          call.method === 'Runtime.evaluate' &&
+          typeof call.params.expression === 'string' &&
+          call.params.expression.includes('document.cookie'),
+      ),
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+    await harness.cleanup();
+  }
+});
+
 test('HTTP proof, markdown rendering, wait, and child cleanup stay local and non-mutating', async () => {
   const harness = await importHarness();
   const originalFetch = globalThis.fetch;
@@ -208,6 +349,16 @@ test('HTTP proof, markdown rendering, wait, and child cleanup stay local and non
     assert.equal(child.killCount, 1);
   } finally {
     globalThis.fetch = originalFetch;
+    await harness.cleanup();
+  }
+});
+
+test('dashboard cluster static mapping stays verifiable without browser mutations', async () => {
+  const harness = await importHarness(['--clusters', 'dashboard', '--dry-run']);
+  try {
+    const { verifyStaticMapping } = harness.module;
+    assert.deepEqual(verifyStaticMapping(), { result: 'PASS', missingActions: [], missingFiles: [] });
+  } finally {
     await harness.cleanup();
   }
 });

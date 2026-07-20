@@ -2,6 +2,32 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-20 - Fixture API browser proofs must honor credentialed CORS for auth bootstrap
+- Symptom:
+  the local protected-route browser proof for `/dashboard` passed the middleware
+  gate but still returned to `/auth/login` during authenticated bootstrap.
+- Root cause:
+  the fixture API responses were not safe for a `withCredentials: true` browser
+  client. `Access-Control-Allow-Origin: *` is not enough for credentialed
+  requests, so the dashboard auth bootstrap could not keep the synthetic
+  session alive.
+- Correct response:
+  when a browser proof uses credentialed fixture responses, echo the request
+  origin and allow credentials in the fixture CORS headers instead of treating
+  wildcard CORS as sufficient.
+- Verified recovery:
+  [LUC-1519](/LUC/issues/LUC-1519) passed once the fixture response helper
+  echoed the browser origin and returned `Access-Control-Allow-Credentials: true`
+  alongside the JSON payload.
+- Parent closure:
+  [LUC-1517](/LUC/issues/LUC-1517) then reran the authenticated `/dashboard`
+  proof successfully and cleared the exact Dashboard overview browser-review row
+  for `apps/web/src/app/dashboard/page.tsx`.
+- Evidence:
+  `history/evidence/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.md`;
+  `history/artifacts/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.json`;
+  `history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md`.
+
 ### 2026-07-15 - Synthetic cookie route proof does not prove admin-only client redirects
 - Symptom:
   a local headless CDP visit to `/admin` with only a synthetic cookie gate did
@@ -3924,3 +3950,19 @@ Test-Path $dst
   Use strict allowlist extraction for production health evidence: resource
   `name`, `status`, coarse `health`, row counts, and HTTP status codes only.
   Do not print, attach, or persist full resource objects.
+## 2026-07-20 Local protected-route harness dashboard auth bootstrap gap
+
+- Context:
+  `scripts/runLocalProtectedRouteActionProof.mjs` was extended for
+  `LUC-1517` to cover `/dashboard`.
+- Observation:
+  the generic synthetic-cookie local protected-route flow is sufficient for
+  middleware fail-closed checks, but it does not automatically prove
+  authenticated `/dashboard` bootstrap even with fixture API interception.
+- Implication:
+  dashboard-root browser-review closure needs a route-specific authenticated
+  proof path or a verified harness fix before scanner overrides can truthfully
+  claim browser proof.
+- Evidence:
+  `history/evidence/luc-1517-dashboard-overview-page-browser-review-2026-07-20.md`;
+  `history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md`.

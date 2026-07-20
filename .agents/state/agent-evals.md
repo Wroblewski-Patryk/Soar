@@ -1,6 +1,6 @@
 # Agent Process Evals
 
-Last updated: 2026-05-24
+Last updated: 2026-07-20
 
 Use this ledger to improve how Codex agents work together. It evaluates the
 process, not only the code.
@@ -31,6 +31,7 @@ process, not only the code.
 | AEV-021 | 2026-05-24 | `ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24` | 5 | 4 | 5 | 5 | 5 | The work was multi-lane in shape, but the available subagent tool requires an explicit user request for delegation, so the coordinator ran architecture, registry, tooling, validation, and memory lanes serially. | For future graph backfill, use explicit module slices and ask for/receive delegation approval before parallel subagent work; keep the master CSV and generated outputs under coordinator integration control. | open |
 | AEV-022 | 2026-05-24 | `PROD-FRESH-DEPLOY-380308D1-2026-05-24` | 5 | 4 | 5 | 5 | 5 | The first deploy attempt proved public reachability but failed API/worker builds because the local workspace had an unpushed type fix; a second attempt briefly created duplicate Coolify queue rows, but official queue monitoring and public smoke kept the final state honest. | Before production deploys, compare failing files against `origin/main`, commit/push minimal build fixes first, then queue one current SHA and monitor Coolify by application plus container tag; treat duplicate failed queue rows as noise only after a successful same-SHA row and running container are proven. | open |
 | AEV-023 | 2026-07-20 | `LUC-1467-REVIEW-PRODUCTIVITY-RESUME-DELTA-2026-07-20` | 4 | 4 | 5 | 4 | 4 | The wake was rechecked cleanly, but the runner still had no sanctioned Paperclip issue-mutation path, so the only honest outcome was to preserve the blocked disposition and document the blocker. | For future resume-delta wakes that depend on live external issue state, verify the mutation path up front; if it is unavailable, stop at evidence/state refresh instead of trying to manufacture progress. | open |
+| AEV-024 | 2026-07-20 | `LUC-1519-DASHBOARD-ROOT-BROWSER-PROOF-AUTH-BOOTSTRAP-2026-07-20` | 5 | 5 | 5 | 5 | 5 | The initial failure looked like a route-shell/auth bootstrap issue, but the actual defect was a browser-network contract mismatch in the fixture API CORS response for credentialed requests. | For local browser proofs that rely on `withCredentials`, check the CORS contract first; wildcard origins are not enough when the browser must keep an authenticated bootstrap alive. | open |
 
 ## Scoring
 

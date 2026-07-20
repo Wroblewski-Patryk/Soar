@@ -1,3 +1,28 @@
+## 2026-07-20 LUC-1452 bot edit visible-flow proof captured
+
+- `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx` now has a local
+  visible-flow proof packet for the canonical edit route
+  `/dashboard/bots/luc-2188-bot/edit`.
+- The proof matrix shows the requested edit route as `PASS` with `200` under
+  fixture `luc-2188-bot`.
+- The aggregate proof runner still reports `FAIL` because it includes the
+  built-in unauthenticated bots-list fail-closed check and the bots create
+  subcheck; that noise does not change the edit-route proof outcome.
+- Evidence:
+  `history/evidence/luc-1452-dashboard-bot-edit-page-visible-flow-proof-2026-07-20.md`.
+
+## 2026-07-20 LUC-1519 dashboard root browser proof auth bootstrap repair
+
+- `apps/web/src/app/dashboard/page.tsx` now has a passing local authenticated
+  browser proof for `/dashboard`.
+- The protected-route harness fix was in the fixture API path: credentialed
+  CORS responses now echo the request origin and allow credentials, which lets
+  the browser bootstrap keep the authenticated dashboard session alive.
+- Focused `/dashboard` route-shell accessibility/auth coverage remains current
+  and the local proof matrix now passes.
+- Source-of-truth updates and evidence were recorded for the successful
+  proof, with the old blocked `LUC-1517` diagnosis retained only as history.
+
 ## 2026-07-20 LUC-1508 source-control closure for LUC-1467
 
 - The local Soar dirty set left by the Monday, July 20, 2026 `LUC-1467`
@@ -633,8 +658,10 @@
   bounded path is now a board/operator confirmation for exactly one production
   Redis restart action or one designated deploy-capable owner for that same
   action only.
-- `LUC-1374` should resume only after that owner action lands, at which point
-  DRE reruns bounded readiness smoke.
+- On Monday, July 20, 2026, that typed confirmation was accepted by
+  `local-board`.
+- `LUC-1374` should now resume only after the approved single Redis restart
+  action lands, at which point DRE reruns bounded readiness smoke.
 
 ## 2026-07-17 LUC-1383 local proof reconciliation for profile basic and API keys
 
@@ -655,6 +682,45 @@
   `basic.e2e.test.ts` failed because Prisma could not reach PostgreSQL at
   `localhost:5432`, and `apiKey.e2e.test.ts` timed out before a conclusive
   result. The source-truth repair itself is verified by generator readback.
+
+## 2026-07-20 LUC-1374 approved restart executed but Redis still failed
+
+- The local-board reopening comment was materially correct about one point:
+  the least-privilege deploy token path now works for the approved Redis
+  restart action.
+- Using `$env:COOLIFY_DEPLOY_API_TOKEN`, exactly one approved
+  `POST /api/v1/databases/{redis}/restart` returned `200` with
+  `Database restarting request queued.`
+- The blocker class changed after that step:
+  it is no longer a missing deploy permission; it is now an underlying Redis
+  resource failure after restart.
+- Fresh Coolify readback shows `redis -> exited:unhealthy` at
+  `2026-07-20T19:55:36Z`, and public API `/ready` stayed `503` across the full
+  post-restart observation window while public API `/health` stayed `200`.
+- Residual:
+  a manual Redis recovery step from the runbook is now required
+  (volume backup + persistence-path inspection + AOF repair or approved
+  cache-only rebuild path), followed by DRE reruns of reconciler, acceptance
+  ledger, and readiness smoke.
+
+## 2026-07-20 LUC-1374 unblock wake disproved
+
+- The `issue_blockers_resolved` wake for `LUC-1374` does not match the live
+  environment on Monday, July 20, 2026.
+- Fresh public probes still show API `/health` `200`, API `/ready` `503`, Web
+  `/` `200`, and Web `/api/build-info` `200`.
+- Fresh Coolify readback at `2026-07-20T19:50:37Z` still reports production
+  `redis` as `restarting:unhealthy` with `restart_count=682`, while
+  `postgresql` remains `running:healthy`.
+- The current runner still cannot perform the required Redis recovery step:
+  bearer-token `POST /api/v1/databases/{redis}/restart`,
+  `/start`, and `/stop` all still return `403 Missing required permissions:
+  deploy`.
+- Residual:
+  the blocker remains operational and unchanged from July 17, 2026. Ops
+  Release Lead or Security Review Lead must still execute the Redis recovery
+  step or provide a deploy-capable Coolify mutation path before DRE can finish
+  the runtime restoration.
 
 ## 2026-07-17 LUC-1374 Redis unhealthy recheck
 
@@ -33522,3 +33588,15 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - The generated doc-link queue is now reduced to `GET /alerts` and
   `GET /metrics`; the next app-completion gap in project truth is
   `Dashboard overview: USE /dashboard` as `missing_test_link`.
+## 2026-07-20 LUC-1517 dashboard page browser-review closure
+
+- `apps/web/src/app/dashboard/page.tsx` now has a passing local authenticated
+  browser packet for the canonical `/dashboard` route.
+- The repaired protected-route browser harness proves both unauthenticated
+  fail-closed behavior and authenticated `/dashboard` route stability after
+  auth bootstrap.
+- Focused `/dashboard` route-shell accessibility/auth coverage also passed on
+  Monday, July 20, 2026.
+- After scanner override linkage and index regeneration, the Dashboard overview
+  `needs_browser_review` row for `apps/web/src/app/dashboard/page.tsx` is
+  closed locally.

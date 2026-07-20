@@ -53,23 +53,68 @@
 ## 2026-07-17 LUC-1387 Redis owner-path restoration gate
 
 - Status:
-  `IN_REVIEW / REDIS_RECOVERY_OWNER_PATH_PENDING_CONFIRMATION`.
+  `APPROVED / REDIS_RECOVERY_OWNER_PATH_CONFIRMED`.
 - Health impact:
   no live runtime state changed in this lane; the Soar production incident
   remains the same Redis `restarting:unhealthy` + API `/ready` `503` condition
   already proved by `LUC-1374`.
 - Authorization impact:
-  the generic Security/Ops unblock note is now narrowed to one typed decision:
-  board/operator must approve or reject exactly one Redis recovery action
-  (`POST /api/v1/databases/{redis-id}/restart`) or designate one
-  deploy-capable owner for that same single action only.
+  the generic Security/Ops unblock note was narrowed and then approved on
+  Monday, July 20, 2026: board/operator accepted exactly one Redis recovery
+  action (`POST /api/v1/databases/{redis-id}/restart`) or one deploy-capable
+  owner designated for that same single action only.
 - Next owner/action:
-  pending `LUC-1387` board/operator confirmation; after acceptance, execute the
-  single Redis restart action only, then return `LUC-1374` to DRE for bounded
-  readiness recheck.
+  approved owner path executes the single Redis restart action only, then
+  returns `LUC-1374` to DRE for bounded readiness recheck.
 - Evidence:
   `history/tasks/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17-task.md`;
   `history/evidence/luc-1387-restore-least-privilege-coolify-owner-path-for-one-redis-recovery-action-2026-07-17.md`.
+
+## 2026-07-20 LUC-1374 Approved Redis restart outcome
+
+- Status:
+  `BLOCKED / REDIS_EXITED_UNHEALTHY / API_HEALTH_200 / API_READY_503 / DEPLOY_PERMISSION_CONFIRMED_FOR_RESTART`.
+- Health impact:
+  the approved Redis restart did not restore the Soar readiness path. Redis is
+  now more specifically observed as `exited:unhealthy` after the restart,
+  while public API `/health` remains `200` and public API `/ready` remains
+  `503`.
+- Verification:
+  explicit use of `COOLIFY_DEPLOY_API_TOKEN` for exactly one
+  `POST /api/v1/databases/{redis-id}/restart` returned `200`.
+  Follow-up Coolify readback showed `redis -> exited:unhealthy` at
+  `2026-07-20T19:55:36Z` on all subsequent polls. Public `/health` stayed
+  `200`; public `/ready` stayed `503`.
+- Unblock owner/action:
+  Ops Release Lead or Security Review Lead must perform the next governed
+  Redis recovery step from `docs/operations/redis-aof-recovery-runbook.md`,
+  then DRE should rerun reconciler, acceptance ledger, and bounded public/
+  protected readiness smoke.
+- Evidence:
+  `history/evidence/luc-1374-approved-redis-restart-outcome-2026-07-20.md`;
+  `history/artifacts/luc-1374-paperclip-restart-outcome-2026-07-20.md`.
+
+## 2026-07-20 LUC-1374 Redis unhealthy unblock recheck
+
+- Status:
+  `BLOCKED / API_READY_503 / REDIS_RESTARTING_UNHEALTHY / COOLIFY_DEPLOY_PERMISSION_MISSING`.
+- Health impact:
+  public API `/health` is still `200`, public API `/ready` is still `503`, and
+  public Web `/` plus `/api/build-info` remain `200` on Monday, July 20, 2026.
+  Fresh Coolify readback at `2026-07-20T19:50:37Z` still shows `redis` as
+  `restarting:unhealthy` while `postgresql` remains `running:healthy`.
+- Verification:
+  fresh public route probes plus Coolify `GET /api/v1/resources`,
+  `GET /api/v1/databases/{redis}`, `GET /api/v1/databases/{postgresql}`, and
+  bearer-token Redis `restart` / `start` / `stop` probes. All three mutation
+  probes still returned `403 Missing required permissions: deploy`.
+- Unblock owner/action:
+  Ops Release Lead or Security Review Lead must provide a deploy-capable
+  Coolify Redis mutation path or directly execute the Redis recovery action,
+  then DRE should rerun bounded public and protected readiness smoke.
+- Evidence:
+  `history/evidence/luc-1374-redis-unhealthy-recheck-2026-07-20.md`;
+  `history/artifacts/luc-1374-paperclip-reblock-2026-07-20.md`.
 
 ## 2026-07-17 LUC-1374 Redis restarting:unhealthy recheck
 

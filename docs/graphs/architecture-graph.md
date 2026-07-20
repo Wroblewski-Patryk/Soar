@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-18T22:14:17.073Z
+Generated: 2026-07-20T15:26:35.322Z
 
 ## Canonical Exports
 
@@ -201,6 +201,9 @@ Generated: 2026-07-18T22:14:17.073Z
 | component | implemented | Header.tsx | apps/web/src/ui/layout/public/Header.tsx | Engineering Delivery Lead |
 | component | implemented | ServiceWorkerRegistration.tsx | apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx | Engineering Delivery Lead |
 | document | implemented | pull_request_template.md | .github/pull_request_template.md | Engineering Delivery Lead |
+| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof-intercept.md | Engineering Delivery Lead |
+| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof-localhost.md | Engineering Delivery Lead |
+| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof.md | Engineering Delivery Lead |
 | document | implemented | Architecture Graph | .tmp/luc-2957-architecture-output/graphs/architecture-graph.md | Engineering Delivery Lead |
 | document | deprecated | Architecture Awareness Report | .tmp/luc-2957-architecture-output/status/architecture-awareness-report.md | Engineering Delivery Lead |
 | document | implemented | Dependency Report | .tmp/luc-2957-architecture-output/status/architecture-dependency-report.md | Engineering Delivery Lead |
@@ -510,9 +513,6 @@ Generated: 2026-07-18T22:14:17.073Z
 | document | implemented | Architecture evidence graph system doc | docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM.md | Docs Memory Lead |
 | document | implemented | Assistant runtime contract | docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME-CONTRACT.md | Docs Memory Lead |
 | document | implemented | Assistant runtime architecture | docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME.md | Docs Memory Lead |
-| document | implemented | Codebase map | docs/architecture/nodes/SOAR-DOC-CODEBASE-MAP.md | Docs Memory Lead |
-| document | implemented | Coolify VPS setup guide | docs/architecture/nodes/SOAR-DOC-COOLIFY-VPS.md | Docs Memory Lead |
-| document | implemented | Dashboard route map | docs/architecture/nodes/SOAR-DOC-DASHBOARD-ROUTE-MAP.md | Docs Memory Lead |
 
 ## Relation Index
 
@@ -977,6 +977,7 @@ Generated: 2026-07-18T22:14:17.073Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1465-source-control-closure-for-luc-1464:8e6b8a8390 | history/tasks/luc-1465-source-control-closure-classify-and-close-local-dirty-state-for-luc-1464-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b1ecd59d4c | history/tasks/luc-1466-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:a67c63c99b | history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:e99850b247 | history/tasks/luc-1467-review-productivity-resume-delta-2026-07-20-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-147-history-plans-closure-bundle-2026-05-26:5609dd3b49 | history/tasks/luc-147-history-plans-closure-bundle-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ffea6b32c9 | history/tasks/luc-1470-source-control-closure-classify-and-close-local-dirty-state-for-luc-1438-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:57ee652c8a | history/tasks/luc-1472-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md |
@@ -997,13 +998,18 @@ Generated: 2026-07-18T22:14:17.073Z
 | connected_to | project:soar:7c70e892d7 | task:luc-15p-product-lane-child-issue:3c56fc2d12 | history/tasks/luc-15-product-lane-child-2026-05-25-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-15q-qa-lane-child-issue:b3d4fa0376 | history/tasks/luc-15-qa-lane-child-2026-05-25-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-15x-ux-lane-child-issue:41deb76613 | history/tasks/luc-15-ux-lane-child-2026-05-25-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:2c3469fc69 | history/tasks/luc-1501-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-18-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:a3357d87a8 | history/tasks/luc-1502-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:8b61f70dcb | history/tasks/luc-1505-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-19-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:41eead7600 | history/tasks/luc-1507-confirm-coolify-team-workspace-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f08f3caffb | history/tasks/luc-1508-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:9726936615 | history/tasks/luc-1508-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-20-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:cdf4c9dc48 | history/tasks/luc-151-v1-audit-to-completion-controller-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:0d9cd951e6 | history/tasks/luc-1514-confirm-coolify-team-workspace-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9103a35dea | history/tasks/luc-1515-reconcile-coolify-resource-inventory-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:35d844b6c5 | history/tasks/luc-1517-dashboard-overview-page-browser-review-2026-07-20-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:90703ae844 | history/tasks/luc-1518-confirm-coolify-team-workspace-2026-06-02-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:f24b15cb22 | history/tasks/luc-1519-dashboard-root-browser-proof-auth-bootstrap-2026-07-20-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3241e83179 | history/tasks/luc-1519-reconcile-coolify-resource-inventory-2026-06-02-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-152-latest-closure-provenance-packets-2026-05-26:7c9819a920 | history/tasks/luc-152-latest-closure-provenance-packets-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:46c8f4e203 | history/tasks/luc-1522-confirm-coolify-team-workspace-2026-06-02-task.md |
@@ -1212,9 +1218,3 @@ Generated: 2026-07-18T22:14:17.073Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2034-task-contract-coolify-read-only-production-status-access:d697717a68 | history/tasks/luc-2034-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2039-task-contract-coolify-read-only-production-status-access:636e063fa4 | history/tasks/luc-2039-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-204-no-stall-queue-expeditor-2026-05-26:a358ddf826 | history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2043-task-contract-coolify-read-only-production-status-access:04fca5999d | history/tasks/luc-2043-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2044-source-control-closure:54c94a7be2 | history/tasks/luc-2044-source-control-close-local-dirty-state-for-luc-2014-luc-2018-luc-2020-luc-2021-plus-4-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2045-task-contract-coolify-read-only-production-status-access:7eef2b9cfe | history/tasks/luc-2045-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2046-task-contract-source-control-closure-for-luc-2045:35b1a63723 | history/tasks/luc-2046-source-control-close-local-dirty-state-for-luc-2045-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2054-task-contract-coolify-read-only-production-status-access:115d47b9f4 | history/tasks/luc-2054-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2055-api-platform-safety-architecture-gap-review:fc9c88f33d | history/tasks/luc-2055-api-platform-safety-architecture-gap-review-2026-06-05-task.md |

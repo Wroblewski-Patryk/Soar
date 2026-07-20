@@ -5,7 +5,7 @@
 - Title: [Soar][Security/Ops] Restore least-privilege Coolify owner path for one Redis recovery action
 - Task Type: release
 - Current Stage: implementation
-- Status: REVIEW
+- Status: DONE
 - Owner: Security
 - Depends on: board/operator acceptance of the exact one-action owner path
 - Priority: P0
@@ -16,7 +16,7 @@
 - Iteration: 1
 - Operation Mode: BUILDER
 - Mission ID: LUC-1387-REDIS-OWNER-PATH-2026-07-17
-- Mission Status: PARTIALLY_VERIFIED
+- Mission Status: VERIFIED
 
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
@@ -74,6 +74,8 @@ next step to a least-privilege owner-path restoration instead of repeating the
 same token set or broadening production authority. The current roster exposes
 `09 DRE` for diagnosis and `10 CLO` / `10 SPA` for security review, but no
 separate active Ops Release Lead agent for direct Coolify mutation execution.
+On Monday, July 20, 2026, the typed board/operator confirmation for this owner
+path was accepted.
 
 ## Goal
 Leave a durable, exact, least-privilege owner path for one Redis recovery
@@ -85,8 +87,8 @@ action, with a real approval/interaction route instead of silent `in_progress`.
 - Expected product or reliability outcome:
   the next legal mutation owner and exact action are explicit and reviewable.
 - How success will be observed:
-  `LUC-1387` contains a typed `request_confirmation` interaction and the repo
-  truth names the same scoped owner path.
+  `LUC-1387` contains an accepted `request_confirmation` interaction and the
+  repo truth names the same scoped owner path.
 - Post-launch learning needed: no
 
 ## Deliverable For This Stage
@@ -103,7 +105,7 @@ request for the single Redis restart lane.
 ## Definition of Done
 - [x] the least-privilege owner-path decision was narrowed to one Redis recovery action only
 - [x] the repo source of truth records the exact owner/action and redacted evidence basis
-- [x] the issue rests on a typed review/confirmation path instead of silent `in_progress`
+- [x] the issue rests on an accepted typed confirmation path instead of silent `in_progress`
 
 ## Stage Exit Criteria
 - [x] The output matches the declared `Current Stage`.
@@ -140,14 +142,15 @@ request for the single Redis restart lane.
 - Risk register updated: no
 - Risk rows closed or changed:
   not applicable
-- Reality status: partially verified
+- Reality status: verified
 
 ## Deployment / Ops Evidence
 - Deploy impact: high
 - Env or secret changes:
   none
 - Health-check impact:
-  no live runtime state changed in this lane
+  no live runtime state changed in this lane; only the owner-path approval state
+  changed
 - Smoke steps updated:
   DRE must rerun bounded readiness smoke after accepted owner action
 - Rollback note:
@@ -208,8 +211,9 @@ request for the single Redis restart lane.
 
 ### 4. Execute Implementation
 - Implementation notes:
-  documented the owner-path packet, synced repo truth, and opened a
-  `request_confirmation` interaction limited to one Redis restart action.
+  documented the owner-path packet, synced repo truth, opened the
+  `request_confirmation` interaction limited to one Redis restart action, and
+  closed the lane after board acceptance on July 20, 2026.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -217,7 +221,8 @@ request for the single Redis restart lane.
   records for scope alignment
 - Result:
   PASS for documentation/governance scope; runtime mutation intentionally not
-  performed in this lane
+  performed in this lane, and the requested owner-path approval is now explicit
+  and accepted
 
 ### 6. Self-Review
 - Simpler option considered:
@@ -230,7 +235,7 @@ request for the single Redis restart lane.
 
 ### 7. Update Documentation and Knowledge
 - Docs updated:
-  task/evidence packet plus top-level state summaries
+  task/evidence packet plus top-level state summaries with acceptance outcome
 - Context updated:
   yes
 - Learning journal updated: not applicable

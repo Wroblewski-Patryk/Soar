@@ -67,12 +67,20 @@ Forbidden scope for this lane:
 
 - Repo truth updated to name `LUC-1387` as the current owner-path gate for the
   Redis incident.
-- A typed Paperclip `request_confirmation` interaction is the live waiting path
-  for board/operator acceptance.
-- The issue should rest in `in_review` while that interaction remains pending.
+- A typed Paperclip `request_confirmation` interaction was accepted by
+  `local-board` on Monday, July 20, 2026.
+- The approved scope remains unchanged: exactly one Redis restart action, or
+  one deploy-capable owner designated for that same single action only.
 
 ## Residual Risk
 
 If board/operator rejects the one-action Redis restart lane, the Soar
 production incident remains fail-closed and `LUC-1374` stays blocked on the
 same protected runtime gate.
+
+Current residual after acceptance:
+
+- `LUC-1387` is no longer the decision blocker.
+- The next operational move belongs to the approved owner path: execute the
+  single Redis restart action, then return `LUC-1374` to DRE for bounded
+  readiness recheck.

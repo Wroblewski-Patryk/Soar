@@ -24,6 +24,45 @@ const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '
 
 const actionClusters = [
   {
+    name: 'dashboard',
+    unauthenticatedActionId: 'SOAR-ACTION-VISIT-PAGE-DASHBOARD-HOME-UNAUTH',
+    unauthenticatedRoute: '/dashboard',
+    actions: [
+      {
+        id: 'SOAR-ACTION-VISIT-PAGE-DASHBOARD',
+        route: '/dashboard',
+        expectedPath: '/dashboard',
+        kind: 'route',
+      },
+    ],
+    sourceFiles: [
+      'apps/web/src/app/dashboard/page.tsx',
+      'apps/web/src/app/dashboard/dashboard.a11y.smoke.test.tsx',
+      'apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx',
+      'apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx',
+      'apps/web/src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx',
+      'docs/modules/web-dashboard-home.md',
+      'docs/modules/api-bots.md',
+    ],
+    apiRoutes: [
+      'GET /dashboard/bots',
+      'GET /dashboard/bots/:id/runtime-graph',
+      'GET /dashboard/bots/:id/runtime-sessions',
+      'GET /dashboard/bots/:id/runtime-monitoring/aggregate',
+      'GET /dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats',
+      'GET /dashboard/bots/:id/runtime-sessions/:sessionId/positions',
+      'GET /dashboard/bots/:id/runtime-sessions/:sessionId/trades',
+      'GET /dashboard/market-stream/events',
+    ],
+    existingTests: [
+      'app/dashboard/dashboard.a11y.smoke.test.tsx',
+      'HomeLiveWidgets.test.tsx',
+      'useHomeLiveWidgetsController.test.tsx',
+      'apps/api/src/modules/bots/bots.e2e.test.ts',
+    ],
+    docs: ['docs/modules/web-dashboard-home.md', 'docs/modules/api-bots.md'],
+  },
+  {
     name: 'wallets',
     unauthenticatedActionId: 'SOAR-ACTION-VISIT-PAGE-WALLETS-LIST',
     unauthenticatedRoute: '/dashboard/wallets/list',
@@ -769,11 +808,12 @@ const createPage = async (port) => {
   return client;
 };
 
-const jsonFixtureResponse = (body) => ({
+const jsonFixtureResponse = (body, origin = '*') => ({
   responseCode: 200,
   responseHeaders: [
     { name: 'Content-Type', value: 'application/json' },
-    { name: 'Access-Control-Allow-Origin', value: '*' },
+    { name: 'Access-Control-Allow-Origin', value: origin },
+    { name: 'Access-Control-Allow-Credentials', value: 'true' },
   ],
   body: Buffer.from(JSON.stringify(body)).toString('base64'),
 });
@@ -899,22 +939,96 @@ const installDynamicFixtureApi = async (client) => {
   await client.send('Fetch.enable', {
     patterns: [
       { urlPattern: '*', resourceType: 'XHR', requestStage: 'Request' },
+      { urlPattern: '*', resourceType: 'Document', requestStage: 'Request' },
       { urlPattern: '*', resourceType: 'Fetch', requestStage: 'Request' },
     ],
   });
   client.on('Fetch.requestPaused', async (params) => {
+    if (client.syntheticAuthDocumentBootstrap && params.resourceType === 'Document') {
+      const url = new URL(params.request.url);
+      if (url.pathname.startsWith('/dashboard')) {
+        const response = await fetch(params.request.url, {
+          redirect: 'manual',
+          headers: {
+            Cookie: client.syntheticAuthDocumentBootstrap,
+          },
+        });
+        const body = await response.text();
+        await client
+          .send('Fetch.fulfillRequest', {
+            requestId: params.requestId,
+            responseCode: response.status,
+            responsePhrase: response.statusText,
+            responseHeaders: Array.from(response.headers.entries()).map(([name, value]) => ({
+              name,
+              value,
+            })),
+            body: Buffer.from(body).toString('base64'),
+          })
+          .catch(() => {});
+        return;
+      }
+    }
+
+    if (client.syntheticAuthCookieHeader && params.resourceType === 'Document') {
+      const existingHeaders = Object.entries(params.request.headers ?? {}).map(([name, value]) => ({
+        name,
+        value: String(value),
+      }));
+      const hasCookieHeader = existingHeaders.some((header) => header.name.toLowerCase() === 'cookie');
+      const headers = hasCookieHeader
+        ? existingHeaders.map((header) =>
+            header.name.toLowerCase() === 'cookie'
+              ? { name: header.name, value: client.syntheticAuthCookieHeader }
+              : header
+          )
+        : [...existingHeaders, { name: 'Cookie', value: client.syntheticAuthCookieHeader }];
+      await client
+        .send('Fetch.continueRequest', {
+          requestId: params.requestId,
+          headers,
+        })
+        .catch(() => {});
+      return;
+    }
+
     const fixture = resolveDynamicFixtureApi(params.request.url);
     if (fixture === undefined) {
       await client.send('Fetch.continueRequest', { requestId: params.requestId }).catch(() => {});
       return;
     }
-    await client
-      .send('Fetch.fulfillRequest', {
-        requestId: params.requestId,
-        ...jsonFixtureResponse(fixture),
-      })
-      .catch(() => {});
+      const requestOrigin = String(params.request.headers?.origin ?? params.request.headers?.Origin ?? '*');
+      await client
+        .send('Fetch.fulfillRequest', {
+          requestId: params.requestId,
+          ...jsonFixtureResponse(fixture, requestOrigin),
+        })
+        .catch(() => {});
   });
+};
+
+const seedSyntheticAuthSession = async (client, options, token) => {
+  const encodedToken = encodeURIComponent(token);
+  await client.send('Network.setExtraHTTPHeaders', {
+    headers: {
+      Cookie: `token=${encodedToken}`,
+    },
+  });
+
+  await client.send('Network.setCookie', {
+    name: 'token',
+    value: token,
+    url: options.baseUrl,
+    path: '/',
+    httpOnly: false,
+    sameSite: 'Lax',
+  }).catch(() => {});
+
+  await client.send('Runtime.evaluate', {
+    expression: `document.cookie = ${JSON.stringify(`token=${encodedToken}; path=/`)}`,
+    returnByValue: true,
+    awaitPromise: false,
+  }).catch(() => {});
 };
 
 const evaluate = async (client, expression) => {
@@ -1174,14 +1288,9 @@ const main = async () => {
         notes: `unauthenticated protected ${firstCluster.name} list route fails closed to login`,
       });
 
-      await client.send('Network.setCookie', {
-        name: 'token',
-        value: 'luc-2057-local-fixture-token',
-        url: options.baseUrl,
-        path: '/',
-        httpOnly: false,
-        sameSite: 'Lax',
-      });
+      await seedSyntheticAuthSession(client, options, 'luc-2057-local-fixture-token');
+      client.syntheticAuthCookieHeader = 'token=luc-2057-local-fixture-token';
+      client.syntheticAuthDocumentBootstrap = 'token=luc-2057-local-fixture-token';
 
       for (const cluster of selectedActionClusters) {
         for (const action of cluster.actions) {
@@ -1191,14 +1300,29 @@ const main = async () => {
           const httpProof =
             dynamicFixturesOnly && action.fixtureId ? await httpRouteProof(options, action) : null;
           if (!httpProof) await navigate(client, `${options.baseUrl}${action.route}`);
-          const location = httpProof
+          let location = httpProof
             ? null
             : action.kind === 'redirect'
               ? await waitForPath(client, action.expectedPath)
               : await collectLocation(client);
-          const pass = httpProof
+          let pass = httpProof
             ? httpProof.pass
             : location.pathname === action.expectedPath && location.bodyTextLength > 0;
+
+          if (pass && cluster.name === 'dashboard' && action.route === '/dashboard') {
+            await wait(1500);
+            const settledLocation = await collectLocation(client);
+            if (settledLocation.pathname !== action.expectedPath) {
+              location = settledLocation;
+              pass = false;
+            } else if (!/dashboard/i.test(settledLocation.bodyTextPreview)) {
+              location = settledLocation;
+              pass = false;
+            } else {
+              location = settledLocation;
+            }
+          }
+
           routes.push({
             actionId: action.id,
             route: action.route,
@@ -1327,6 +1451,7 @@ export {
   renderMarkdown,
   resolveDynamicFixtureApi,
   resolveOptions,
+  seedSyntheticAuthSession,
   startWebServer,
   stopChild,
   verifyStaticMapping,

@@ -29,6 +29,20 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the dashboard home route wrapper through fresh local browser-backed route proof on 2026-07-20. The repaired protected-route harness confirmed unauthenticated /dashboard still fails closed to /auth/login, the canonical authenticated /dashboard route remained on-page after auth bootstrap, and focused dashboard accessibility smoke coverage still passed for breadcrumb navigation, single H1 semantics, runtime widget mount during auth bootstrap, and expired-session redirect preservation.",
+      "evidence": [
+        "docs/modules/system-modules.md",
+        "history/evidence/luc-1517-dashboard-overview-page-browser-review-2026-07-20.md",
+        "history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md",
+        "history/evidence/luc-1519-local-protected-route-action-proof-matrix-2026-07-20.md",
+        "history/artifacts/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.json",
+        "apps/web/src/app/dashboard/dashboard.a11y.smoke.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/backtests/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

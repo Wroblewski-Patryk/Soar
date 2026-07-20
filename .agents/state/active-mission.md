@@ -1,3 +1,18 @@
+## 2026-07-20 LUC-1452 bot edit visible-flow proof captured
+
+- Status: `DONE`.
+- Mission:
+  local visible-flow proof for
+  `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`.
+- Result:
+  the requested edit route reached `/dashboard/bots/luc-2188-bot/edit`
+  successfully in the local browser proof matrix. The runner's aggregate
+  status remained noisy because it also checks an unrelated unauthenticated
+  bots-list fail-closed row and a list-page create subcheck.
+- Residual:
+  no FE/UX repair lane was required for the edit route itself in this
+  heartbeat.
+
 ## 2026-07-18 LUC-1470 Source-control closure for LUC-1438
 
 - Mission:
@@ -157,6 +172,54 @@
   the next Dashboard overview gaps now advance to `USE /wallets` and
   `USE /dashboard` as proof-owned rows, while the remaining docs-owned rows are
   `GET /alerts` and `GET /metrics`.
+
+## 2026-07-20 LUC-1374 Approved Redis restart outcome
+
+- Mission:
+  `LUC-1374-APPROVED-REDIS-RESTART-OUTCOME-2026-07-20`.
+- Status:
+  `BLOCKED / PERMISSION_BLOCKER_CLEARED / APPROVED_RESTART_EXECUTED / REDIS_EXITED_UNHEALTHY / API_READY_503_PERSISTS`.
+- Scope:
+  DRE release heartbeat after the local-board approval to use
+  `COOLIFY_DEPLOY_API_TOKEN` for exactly one Redis restart mutation. Execute
+  the approved restart only, then read back Redis state plus Soar `/health` and
+  `/ready`.
+- Result:
+  the approved restart succeeded (`POST .../restart` -> `200`), which proves
+  the deploy-permission blocker was actually removed for this action. Redis did
+  not recover and instead settled at `exited:unhealthy` from
+  `2026-07-20T19:55:36Z`; API `/health` stayed `200`; API `/ready` stayed
+  `503` across the full observation window.
+- Evidence:
+  `history/evidence/luc-1374-approved-redis-restart-outcome-2026-07-20.md`;
+  `history/artifacts/luc-1374-paperclip-restart-outcome-2026-07-20.md`.
+- Residual:
+  the blocker is now the underlying Redis resource failure after restart, not
+  missing deploy permission. Ops Release Lead or Security Review Lead must run
+  the next governed recovery step from the Redis AOF runbook.
+
+## 2026-07-20 LUC-1374 Redis unhealthy unblock recheck
+
+- Mission:
+  `LUC-1374-REDIS-UNHEALTHY-RECHECK-2026-07-20`.
+- Status:
+  `BLOCKED / UNBLOCK_WAKE_DISPROVED / REDIS_RESTARTING_UNHEALTHY_REPROVED / COOLIFY_DEPLOY_PERMISSION_STILL_MISSING`.
+- Scope:
+  DRE release heartbeat to verify the `issue_blockers_resolved` wake against
+  the live Soar production Redis incident using only read-only status reads and
+  the smallest governed Redis mutation-path probes from the Paperclip
+  control-plane workspace.
+- Result:
+  the unblock claim is false as of Monday, July 20, 2026. Public API `/ready`
+  remains `503`; Coolify still reports `redis` as `restarting:unhealthy` at
+  `2026-07-20T19:50:37Z`; and bearer-token Redis `restart` / `start` / `stop`
+  still fail with `403 Missing required permissions: deploy`.
+- Evidence:
+  `history/evidence/luc-1374-redis-unhealthy-recheck-2026-07-20.md`.
+- Residual:
+  Ops Release Lead or Security Review Lead must still provide a deploy-capable
+  Coolify Redis mutation path or execute the Redis recovery directly before DRE
+  can continue with bounded after-recovery smoke.
 
 ## 2026-07-17 LUC-1374 Diagnose and recover redis restarting:unhealthy
 
