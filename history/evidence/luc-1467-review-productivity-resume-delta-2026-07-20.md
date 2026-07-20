@@ -4,7 +4,7 @@
 - Issue: [LUC-1467](/LUC/issues/LUC-1467)
 - Source wake: `LUC-1438` productivity review resume delta
 - Disposition: `blocked`
-- Run: `139843fe-e88c-4fc6-97c7-bbaca6aa496b`
+- Run: `26b35239-b1ae-489c-9c4f-b2d9b9aafe55`
 - Continuation state: `plan_only`
 
 ## Recheck
@@ -13,12 +13,10 @@
 - No new runnable lane appeared.
 - The live unblock path still routes through [LUC-4103](/LUC/issues/LUC-4103)
   for the owner-login method-selection interaction.
-- The retry continuation did not surface any concrete runnable action beyond the
+- This heartbeat did not surface any concrete runnable action beyond the
   existing blocker.
-- This is the second liveness continuation; it also remained plan-only.
-- This heartbeat again confirmed the same blocker with no runnable lane.
 - Current run note: the active continuation remains blocked on LUC-4103.
-- Latest run note: this continuation also remained plan-only.
+- Latest run note: this continuation remained plan-only.
 
 ## Mutation Path
 
