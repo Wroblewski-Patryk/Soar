@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "today": "2026-07-20",
+  "generatedAt": "2026-07-20T21:36:05.281Z",
+  "issue": "LUC-1528",
+  "dynamicFixtures": {
+    "enabled": false,
+    "apiInterception": true,
+    "fixtureIds": []
+  },
+  "clusters": [
+    {
+      "name": "dashboard",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-DASHBOARD"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/bots",
+        "GET /dashboard/bots/:id/runtime-graph",
+        "GET /dashboard/bots/:id/runtime-sessions",
+        "GET /dashboard/bots/:id/runtime-monitoring/aggregate",
+        "GET /dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats",
+        "GET /dashboard/bots/:id/runtime-sessions/:sessionId/positions",
+        "GET /dashboard/bots/:id/runtime-sessions/:sessionId/trades",
+        "GET /dashboard/market-stream/events"
+      ],
+      "existingTests": [
+        "app/dashboard/dashboard.a11y.smoke.test.tsx",
+        "HomeLiveWidgets.test.tsx",
+        "useHomeLiveWidgetsController.test.tsx",
+        "apps/api/src/modules/bots/bots.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-dashboard-home.md",
+        "docs/modules/api-bots.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-DASHBOARD-HOME-UNAUTH",
+      "route": "/dashboard",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected dashboard list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-DASHBOARD",
+      "route": "/dashboard",
+      "result": "PASS",
+      "observedPath": "/dashboard",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected dashboard route with local cookie gate"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/dashboard.a11y.smoke.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-dashboard-home.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-bots.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}

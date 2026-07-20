@@ -1,7 +1,7 @@
 # LUC-1460 Closeout
 
 - Issue: `LUC-1460`
-- Status: `blocked`
+- Status: `done`
 - Lane: `Soar Product Manager`
 
 ## Summary

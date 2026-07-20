@@ -196,7 +196,8 @@
   the local worktree no longer has an open `LUC-1460` closure obligation; the
   functional blocker remains the production runtime readiness failure on
   `https://api.soar.luckysparrow.ch/ready` and its existing owner lanes
-  `LUC-1387` and `LUC-1368`.
+  `LUC-1374` and `LUC-1524`. The former `LUC-1368` deploy-capable recovery
+  gate is retired after the accepted owner path landed.
 
 ## 2026-07-18 LUC-1460 diagnose production `/ready` 503 and route the narrowest recovery lane
 
@@ -215,10 +216,10 @@
   production Coolify `redis` is still the exact failing readiness dependency,
   while `postgresql` remained healthy in the latest bound readback.
 - No new permit or owner lane was created. The narrowest honest recovery path
-  already exists in `LUC-1387`, which is waiting on confirmation for exactly
+  already existed in `LUC-1387` and was exercised in `LUC-1374` for exactly
   one Redis recovery action (`POST /api/v1/databases/{redis-id}/restart`);
-  `LUC-1368` remains the deploy-capable recovery-path blocker until Security
-  Review Lead or Ops Release Lead provides or executes that one action.
+  `LUC-1368` is retired as the deploy-capable recovery-path blocker, and the
+  remaining runtime recovery follow-up now sits in `LUC-1374` / `LUC-1524`.
 - This heartbeat changed source of truth and evidence only. No deploy,
   restart, rollback, secret readback, protected smoke, account action, or live
   trading action was performed. Evidence:

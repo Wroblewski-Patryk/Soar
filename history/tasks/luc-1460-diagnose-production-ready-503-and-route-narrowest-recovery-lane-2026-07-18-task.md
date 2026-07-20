@@ -5,7 +5,7 @@
 - Title: Diagnose production `/ready` 503 and route the narrowest recovery lane
 - Task Type: research
 - Current Stage: verification
-- Status: BLOCKED
+- Status: DONE
 - Owner: Ops/Release
 
 ## Context
@@ -39,4 +39,4 @@ Classify the current public `/ready` failure from the smallest valid evidence su
 - Local code readback shows `/ready` can fail only from secret readiness or runtime dependency readiness.
 - Existing July 17 evidence already isolates the active production dependency failure to Coolify `redis -> restarting:unhealthy`, while Postgres remains healthy.
 - Existing narrow permit path already exists in `LUC-1387`; no new permit issue is needed.
-- Final state for this lane: blocked on Security Review Lead or Ops Release Lead to approve/execute the single Redis restart action already defined by `LUC-1387`.
+- Final state for this lane: complete. The task routed the narrowest existing owner path and left the runtime blocker documented under `LUC-1387` / `LUC-1368`.

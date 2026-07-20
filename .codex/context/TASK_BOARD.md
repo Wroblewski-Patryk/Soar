@@ -168,7 +168,7 @@
 
 ## 2026-07-18 LUC-1467 resume delta for LUC-1438
 
-- Status: `BLOCKED`.
+- Status: `DONE`.
 - Scope:
   resume-only readback for the `LUC-1438` productivity review wake. No new
   runnable lane was discovered in this heartbeat.
@@ -325,7 +325,7 @@
 
 ## 2026-07-18 LUC-1460 diagnose production `/ready` 503 and route the narrowest recovery lane
 
-- Status: `BLOCKED`.
+- Status: `DONE`.
 - Scope:
   classify the fresh public production `api_ready` `503` gap from the smallest
   legal evidence surface and route exactly one narrow next owner path.
@@ -343,9 +343,10 @@
   `redis -> restarting:unhealthy`, not Postgres.
 - Outcome:
   no new permit lane was created because the narrowest legal owner path already
-  exists in `LUC-1387` for exactly one Redis restart action. `LUC-1368`
-  remains the deploy-capable recovery-path blocker until Security Review Lead
-  or Ops Release Lead accepts or performs that one action.
+  existed in `LUC-1387` for exactly one Redis restart action and was then
+  exercised in `LUC-1374`. `LUC-1368` is retired as the deploy-capable
+  recovery-path blocker; the remaining runtime follow-up now sits in
+  `LUC-1374` / `LUC-1524`.
 - Evidence:
   `history/evidence/luc-1460-production-ready-503-diagnosis-2026-07-18.md`;
   `history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md`;
@@ -48057,3 +48058,19 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `history/evidence/luc-1517-dashboard-overview-page-browser-review-2026-07-20.md`;
   `history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md`;
   `history/artifacts/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.json`.
+
+## 2026-07-20 LUC-1528 dashboard page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the fresh local protected-route proof passed again for `/dashboard` under
+  `LUC-1528`, the inspectable proof matrix was attached to the issue, and the
+  task now has a current browser/clickthrough proof artifact tied to the live
+  dispatcher row.
+- Evidence:
+  `history/tasks/luc-1528-dashboard-overview-page-browser-review-2026-07-20-task.md`;
+  `history/evidence/luc-1528-local-protected-route-action-proof-matrix-2026-07-20.md`;
+  `history/artifacts/luc-1528-local-protected-route-action-proof-matrix-2026-07-20.json`.

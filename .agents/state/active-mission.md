@@ -1,3 +1,17 @@
+## 2026-07-20 LUC-1528 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed, the proof matrix and task packet were created, and the
+  issue now has inspectable evidence attached under the current dispatcher
+  row.
+- Residual:
+  this proof refresh does not change the broader generated project-truth queue;
+  it only refreshes the browser evidence for the exact dashboard page row.
+
 ## 2026-07-20 LUC-1452 bot edit visible-flow proof captured
 
 - Status: `DONE`.

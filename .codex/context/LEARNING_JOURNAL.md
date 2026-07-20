@@ -3966,3 +3966,17 @@ Test-Path $dst
 - Evidence:
   `history/evidence/luc-1517-dashboard-overview-page-browser-review-2026-07-20.md`;
   `history/evidence/luc-1517-local-protected-route-action-proof-matrix-2026-07-20.md`.
+
+## 2026-07-20 Paperclip high-risk completion evidence schema constraint
+
+- Context:
+  closing `LUC-1368` and `LUC-1530` required issuing `completionEvidence`
+  through the Paperclip API.
+- Observation:
+  high-risk completions require explicit `securityEvidence`,
+  `deploymentEvidence`, and `monitoringEvidence`, and each evidence ref must
+  belong to the same issue record. Cross-issue attachment IDs are rejected.
+- Implication:
+  when closing a high-risk issue, gather same-issue evidence refs first or
+  prepare an issue-owned comment/attachment artifact before attempting the
+  final status patch.
