@@ -1,12 +1,44 @@
+## 2026-07-20 LUC-1508 classify and close local dirty state for LUC-1467
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the `LUC-1467` Monday, July 20, 2026 recheck.
+- Findings:
+  the worktree was one coherent local-proof/state bundle only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`,
+  and `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-20-task.md`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1467|LUC-1508|LUC-4103` across touched files
+  -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1508-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-2026-07-20-task.md`;
+  `history/evidence/luc-1508-source-control-closure-luc-1467-2026-07-20.md`;
+  `history/artifacts/luc-1508-paperclip-closeout-2026-07-20.md`.
+
 ## 2026-07-20 LUC-1467 resume delta recheck
 
 - The `LUC-1467` wake was rechecked on Monday, July 20, 2026.
 - Result: no new runnable lane appeared; the live unblock path still points at
   `LUC-4103` for the owner-login method-selection interaction.
 - Disposition: `blocked`.
-- Mutation-path note: this checkout still has no local Paperclip issue-update
-  helper or sanctioned live status mutation path, so the external adapter
-  writeback failure remains unrepaired from this repo-only heartbeat.
+- Mutation-path note: this checkout used the local Paperclip issue-update
+  helper at `skills/paperclip/scripts/paperclip-issue-update.mjs` to write the
+  blocked disposition back to the live issue.
+- Tooling note: the `.paperclip` tree available here still primarily exposes
+  archived recovery material, but the runtime helper path is actionable.
 - Liveness note: continuation attempt 2/2 remained plan-only.
 - Evidence:
   `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`.

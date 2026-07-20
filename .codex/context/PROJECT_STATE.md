@@ -1,13 +1,27 @@
+## 2026-07-20 LUC-1508 source-control closure for LUC-1467
+
+- The local Soar dirty set left by the Monday, July 20, 2026 `LUC-1467`
+  recheck was classified as one coherent history/state packet only:
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`,
+  and `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-20-task.md`.
+- No runtime/product code, env files, secrets, deploy config, or unrelated
+  foreign-repo paths were present in the closure scope.
+- Monday, July 20, 2026 closure action created the `LUC-1508`
+  task/evidence/closeout packet and closed the bundle with one local commit.
+
 ## 2026-07-20 LUC-1467 resume delta recheck
 
 - The `LUC-1467` wake was rechecked on Monday, July 20, 2026.
 - Result: no new runnable lane appeared; the live unblock path still points at
   `LUC-4103` for the owner-login method-selection interaction.
 - Disposition: `blocked`.
-- Mutation-path note: the checkout still does not include a local Paperclip
-  issue-update helper, and the `.paperclip` tree only exposes archived recovery
-  material; no sanctioned live status mutation path was available in this
-  heartbeat.
+- Mutation-path note: this checkout used the local Paperclip issue-update
+  helper at `skills/paperclip/scripts/paperclip-issue-update.mjs` to write the
+  blocked disposition back to the live issue.
+- Tooling note: the `.paperclip` tree available here still primarily exposes
+  archived recovery material, but the runtime helper path is actionable.
 - Liveness note: continuation attempt 2/2 remained plan-only.
 - Evidence:
   `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`.

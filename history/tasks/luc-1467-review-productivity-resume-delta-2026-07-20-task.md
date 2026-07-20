@@ -64,7 +64,7 @@
 - [x] Process eval will be recorded in `.agents/state/agent-evals.md` if this is broad, repeated, partial, or subagent-heavy work.
 
 ## Context
-This wake resumes the LUC-1438 productivity review after prior blocked rechecks. The current repo truth still routes the live unblock path through LUC-4103, and this checkout does not expose a local Paperclip issue-update helper.
+This wake resumes the LUC-1438 productivity review after prior blocked rechecks. The current repo truth still routes the live unblock path through LUC-4103, and this checkout used the local Paperclip issue-update helper to record the blocked disposition.
 
 ## Goal
 Confirm whether LUC-1467 can make concrete progress on the wake or whether the only honest disposition remains blocked.
@@ -104,7 +104,7 @@ Blocked recheck evidence plus refreshed state files that name the live unblock p
 
 ## Validation Evidence
 - Tests: not run
-- Manual checks: repo-state readback and blocker search
+- Manual checks: repo-state readback, blocker search, and tool discovery for a live issue-mutation path
 - Screenshots/logs: none
 - High-risk checks: none
 - Module confidence ledger updated: yes
@@ -161,7 +161,7 @@ Blocked recheck evidence plus refreshed state files that name the live unblock p
 
 ### 1. Analyze Current State
 - Issues: live unblock path still routes through LUC-4103.
-- Gaps: no local Paperclip issue-update helper in this checkout.
+- Gaps: no new runnable lane exists beyond the owner-login blocker.
 - Inconsistencies: none found.
 - Architecture constraints: keep the source-of-truth aligned with the live gate.
 
@@ -171,7 +171,7 @@ Blocked recheck evidence plus refreshed state files that name the live unblock p
 - Sources scanned: `.agents/state/*`, `.codex/context/*`, `history/evidence/*`
 - Rows created or corrected: task contract, evidence note, state refresh
 - Assumptions recorded: blocked disposition remains correct
-- Blocking unknowns: external issue mutation path
+- Blocking unknowns: none
 - Why it was safe to continue: read-only state and evidence update only
 
 ### 2. Select One Priority Mission Objective
@@ -185,11 +185,11 @@ Blocked recheck evidence plus refreshed state files that name the live unblock p
 - Edge cases: none
 
 ### 4. Execute Implementation
-- Implementation notes: refreshed state and evidence only
+- Implementation notes: refreshed state and evidence, then wrote the blocked issue disposition back through the local helper
 
 ### 5. Verify and Test
 - Validation performed: git diff check, targeted readback
-- Result: blocked disposition confirmed
+- Result: blocked disposition confirmed and written to the live issue
 
 ### 6. Self-Review
 - Simpler option considered: leave only the evidence note
@@ -221,7 +221,7 @@ Blocked recheck evidence plus refreshed state files that name the live unblock p
 - [x] Parent validation ran after accepted lane integration.
 
 ## Notes
-The wake is blocked by the live owner-login method-selection gate on LUC-4103. No local mutation path exists in this checkout.
+The wake is blocked by the live owner-login method-selection gate on LUC-4103.
 
 ## Production-Grade Required Contract
 
@@ -246,9 +246,9 @@ The wake is fully documented, blocked, and traceable without inventing a runnabl
 
 ## Result Report
 - Task summary: blocked wake recheck completed.
-- Files changed: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`, `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-20-task.md`
-- How tested: git diff check, targeted readback
-- What is incomplete: external issue mutation path
+- Files changed: `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-20.md`, `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-20-task.md`
+- How tested: git diff check, targeted readback, live issue update readback
+- What is incomplete: the source unblock path remains on LUC-4103
 - Next steps: wait for LUC-4103 resolution
 - Decisions made: keep LUC-1467 blocked
 - Continuation note: this heartbeat did not reveal a runnable lane beyond
@@ -258,3 +258,5 @@ The wake is fully documented, blocked, and traceable without inventing a runnabl
   same blocker.
 - Current run note: the active continuation remains blocked on LUC-4103.
 - Latest run note: this continuation remained plan-only.
+- Tool discovery note: the local Paperclip issue-update helper was available
+  and used to persist the blocked disposition.

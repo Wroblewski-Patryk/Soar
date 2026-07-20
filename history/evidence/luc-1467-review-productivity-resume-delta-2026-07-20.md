@@ -20,9 +20,12 @@
 
 ## Mutation Path
 
-- This checkout still has no local Paperclip issue-update helper.
-- The `.paperclip` tree available here only exposes archived recovery material.
-- No sanctioned live status mutation path was available from this heartbeat.
+- This checkout used the local Paperclip issue-update helper at
+  `skills/paperclip/scripts/paperclip-issue-update.mjs`.
+- The issue status was updated live to `blocked` with a disposition comment.
+- The `.paperclip` tree available here still primarily exposes archived
+  recovery material, but the runtime helper path is actionable.
+- No product-code, deploy, secret, or account mutation occurred.
 
 ## Evidence Notes
 
