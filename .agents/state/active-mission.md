@@ -1,3 +1,24 @@
+## 2026-07-21 LUC-1569 protected post-Redis readiness readback using managed bindings
+
+- Status: `BLOCKED`.
+- Mission:
+  protected Soar `/ready/details` and worker readiness readback using already
+  authorized bindings, plus read-only Coolify resource health and redacted
+  `redis-cli PING` evidence when available.
+- Result:
+  read-only Coolify inventory confirmed selector id `0`, name
+  `LuckySparrow`, project `Soar`, production environment `production`, six
+  application rows with `running:unknown`, and PostgreSQL/Redis rows with
+  `running:healthy`. `ops:protected-inputs:check -- --json` reported
+  `PARTIAL` with the required account-access families still missing, and no
+  approved `SMOKE_AUTH_*` binding is present in this runner.
+- Durable output:
+  a typed `request_confirmation` interaction was created on `LUC-1569` to ask
+  for the missing managed smoke binding or operator-run protected proof path.
+- Residual:
+  the protected Soar endpoints remain unproven from this runner until the
+  approved smoke auth path or operator-supervised execution is provided.
+
 ## 2026-07-20 LUC-1528 dashboard page browser-review proof refresh
 
 - Status: `VERIFIED`.

@@ -1,3 +1,54 @@
+## 2026-07-21 LUC-1547 Redis recovery coordination chain clarified
+
+- Coordination chain is now explicit:
+  `LUC-1547 -> LUC-1559 -> LUC-1556 -> LUC-1568`.
+- Disposition stays blocked:
+  this wake still has no runnable protected-proof path here, because the
+  dependency-owned verification and docs lanes remain separate and
+  `LUC-1559` is still the first unresolved blocker.
+- Evidence:
+  live issue-thread clarification received during the current wake.
+
+## 2026-07-21 LUC-1569 protected post-Redis readiness readback recheck
+
+- Status:
+  `PARTIALLY VERIFIED / COOLIFY_INVENTORY_OK / PROTECTED_PROOF_BLOCKED / NO_APPROVED_SMOKE_AUTH_BINDING`.
+- Health impact:
+  Coolify read-only inventory confirmed selector id `0`, name
+  `LuckySparrow`, project `Soar`, production environment `production`, six
+  application resources with `running:unknown`, and PostgreSQL plus Redis with
+  `running:healthy`.
+- Verification:
+  `pnpm run -s ops:protected-inputs:check -- --json` -> `PARTIAL`;
+  `matchingProtectedInputNamesPresent=6`;
+  `bindingState=REQUIRED_PROTECTED_INPUT_FAMILIES_MISSING`;
+  global Coolify resources readback returned the Soar app rows plus healthy
+  PostgreSQL/Redis rows.
+- Unblock owner/action:
+  Ops Release Lead or Security Review Lead must provide an approved managed
+  `SMOKE_AUTH_*` binding or directly execute the protected `ready/details`
+  and worker readiness proof.
+- Evidence:
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-21.md`.
+
+## 2026-07-21 LUC-1556 Redis recovery verification recheck
+
+- Status:
+  `PARTIALLY VERIFIED / PUBLIC_HEALTH_READY / PROTECTED_PROOF_BLOCKED / NO_SMOKE_AUTH_PATH`.
+- Health impact:
+  public API `/health` and `/ready` both returned `200` on Tuesday, July 21, 2026; public Web `/` and `/api/build-info` also returned `200`, and build-info reports SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589` with `metadataSource=env-runtime`.
+- Verification:
+  `https://api.soar.luckysparrow.ch/health -> 200`;
+  `https://api.soar.luckysparrow.ch/ready -> 200`;
+  `https://soar.luckysparrow.ch/ -> 200`;
+  `https://soar.luckysparrow.ch/api/build-info -> 200`;
+  protected `https://api.soar.luckysparrow.ch/ready/details -> 401` without an operator auth path in this runner;
+  protected `https://api.soar.luckysparrow.ch/workers/ready -> 401` without an operator auth path in this runner.
+- Unblock owner/action:
+  Ops Release Lead or Security Review Lead must provide an approved production smoke auth session/token, or execute the protected proof path directly, so DRE/QVE can rerun the protected readiness probes and refresh the acceptance ledger.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-2026-07-21.md`.
+
 ## 2026-07-18 LUC-1460 production `/ready` 503 diagnosis
 
 - Status:

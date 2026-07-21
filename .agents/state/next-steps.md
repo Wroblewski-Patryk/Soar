@@ -1,3 +1,47 @@
+## 2026-07-21 LUC-1569 protected post-Redis readiness readback blocked by missing smoke auth binding
+
+- Read-only Coolify inventory is current:
+  selector id `0`, name `LuckySparrow`, project `Soar`, production
+  environment `production`, six application rows with `running:unknown`, and
+  PostgreSQL plus Redis with `running:healthy`.
+- Protected-input gate is incomplete:
+  `pnpm run -s ops:protected-inputs:check -- --json` returned `PARTIAL` and
+  reported missing required families for `ROLLBACK_GUARD_*`,
+  `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`.
+- Current unblock path:
+  Security Review Lead or Ops Release Lead must provide an approved managed
+  `SMOKE_AUTH_*` binding or run the protected `/ready/details` and
+  `/workers/ready` proof directly, then DRE/QVE can refresh the acceptance
+  ledger.
+- Evidence:
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-21.md`.
+
+## 2026-07-21 LUC-1568 protected readiness proof blocked after Redis recovery
+
+- Public readiness is recovered:
+  API `/health` `200`, API `/ready` `200`, Web `/` `200`, and Web
+  `/api/build-info` `200` with SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Remaining proof gap:
+  protected `/ready/details` and `/workers/ready` still require an approved
+  operator auth/session path that is not present in this runner.
+- Next action:
+  Security Review Lead or Ops Release Lead supplies the smoke auth path or
+  runs the protected proof directly, then QVE reruns the protected readiness
+  checks and refreshes the acceptance ledger.
+- Evidence:
+  `history/evidence/luc-1568-protected-readiness-post-redis-recovery-2026-07-21.md`.
+
+## 2026-07-21 LUC-1556 Redis recovery verification follow-up
+
+- Public readiness has recovered:
+  API `/health` `200`, API `/ready` `200`, Web `/` `200`, and Web `/api/build-info` `200` with SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Remaining proof gap:
+  protected `/ready/details` and `/workers/ready` still require an approved operator auth/session path that is not present in this runner.
+- Next action:
+  Security Review Lead or Ops Release Lead supplies the smoke auth path or runs the protected proof directly, then QVE reruns the protected readiness checks and refreshes the acceptance ledger.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-2026-07-21.md`.
+
 ## 2026-07-18 LUC-1470 source-control closure for LUC-1438 complete
 
 - The local dirty packet left by `LUC-1438` was classified as one coherent
