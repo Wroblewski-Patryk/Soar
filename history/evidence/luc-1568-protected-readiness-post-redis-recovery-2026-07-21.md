@@ -42,4 +42,3 @@ Verify the protected readiness posture after Redis recovery without mutating pro
 ## Unblock Owner / Action
 
 Ops Release Lead or Security Review Lead must provide an approved production smoke auth session/token, or execute the protected proof path directly, so QVE can rerun the protected readiness probes and refresh the acceptance ledger.
-
