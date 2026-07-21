@@ -1,10 +1,8 @@
 # Runtime Error Index
 
-Generated: 2026-07-20T15:26:56.745Z
+Generated: 2026-07-21T14:06:57.807Z
 Project: Soar
 
-Critical findings: 1
+Critical findings: 0
 
-| Severity | Layer | Status | Summary | Next owner |
-| --- | --- | --- | --- | --- |
-| critical | production | failing | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
+_No runtime findings indexed._

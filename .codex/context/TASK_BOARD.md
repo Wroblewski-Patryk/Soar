@@ -1,3 +1,39 @@
+## 2026-07-21 LUC-1612 classify and close local dirty state for LUC-1603
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the completed `LUC-1603` dashboard overview browser-proof refresh.
+- Findings:
+  the worktree was one coherent proof/status packet only:
+  `.codex/context/LEARNING_JOURNAL.md`,
+  `docs/status/app-completion-index.{md,json}`,
+  `docs/status/event-chain-index.{md,json}`,
+  `docs/status/operational-readiness-index.{md,json}`,
+  `docs/status/project-truth-index.{md,json}`,
+  `docs/status/runtime-error-index.{md,json}`,
+  `history/evidence/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.md`,
+  and
+  `history/artifacts/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.json`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1603|LUC-1612|completionEvidence` across
+  touched files -> PASS;
+  bounded high-confidence secret-pattern scan on the dirty files -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1612-source-control-closure-classify-and-close-local-dirty-state-for-luc-1603-2026-07-21-task.md`;
+  `history/evidence/luc-1612-source-control-closure-luc-1603-2026-07-21.md`;
+  `history/artifacts/luc-1612-paperclip-closeout-2026-07-21.md`.
+
 ## 2026-07-20 LUC-1519 dashboard root browser proof auth bootstrap repair
 
 - Status: `DONE`.

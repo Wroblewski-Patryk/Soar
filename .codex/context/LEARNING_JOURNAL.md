@@ -2,6 +2,25 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-21 - Paperclip completionEvidence refs need ids for attachment and work-product links
+- Symptom:
+  the Paperclip issue closeout PATCH for `LUC-1603` rejected the first
+  `completionEvidence` bundle even though the proof artifact existed and the
+  markdown evidence file was ready.
+- Root cause:
+  `completionEvidence.*.refs[]` requires an `id` field for attachment and
+  work-product references; `kind` plus `label` alone is not valid.
+- Correct response:
+  include the concrete uploaded attachment id and work-product id when writing
+  `completionEvidence` on a done transition.
+- Verified recovery:
+  `[LUC-1603](/LUC/issues/LUC-1603)` closed successfully after resubmitting the
+  issue update with `id` populated for the uploaded proof attachment and work
+  product.
+- Evidence:
+  `history/evidence/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.md`;
+  `history/artifacts/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.json`.
+
 ### 2026-07-20 - Fixture API browser proofs must honor credentialed CORS for auth bootstrap
 - Symptom:
   the local protected-route browser proof for `/dashboard` passed the middleware

@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-20T15:26:56.745Z
+Generated: 2026-07-21T14:06:57.807Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -11,28 +11,27 @@ This is the routing surface agents should use before guessing whether an app wor
 | appCompletionItems | 86 |
 | eventChains | 8 |
 | incompleteEventChains | 0 |
-| runtimeFindings | 1 |
-| criticalRuntimeFindings | 1 |
+| runtimeFindings | 0 |
+| criticalRuntimeFindings | 0 |
 | appCompletionGaps | 51 |
 | indexedAppCompletionGaps | 51 |
 | knownAppCompletionRiskItems | 51 |
 | appCompletionPriorityReviewItems | 51 |
 | appCompletionPriorityReviewTruncated | false |
-| operationalGateGaps | 2 |
-| indexedGaps | 54 |
-| totalGaps | 54 |
+| operationalGateGaps | 0 |
+| indexedGaps | 51 |
+| totalGaps | 51 |
 
 ## First Gap
 
-- critical: api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"}
-- Owner: Deployment Reliability Engineer + Ops Release Lead
-- Next action: Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof.
+- high: Dashboard overview: page.tsx has app-completion risk needs_browser_review.
+- Owner: QA Regression Lead + Frontend Experience Lead
+- Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| critical | runtime_error | - | api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"} | Deployment Reliability Engineer + Ops Release Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
@@ -84,5 +83,3 @@ This is the routing surface agents should use before guessing whether an app wor
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: AuditTrailView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: PerformanceReportsView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | User configuration | User configuration: ProfilePage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| critical | operational_gate_gap | - | runtime_error_index: critical_findings | Project Manager |
-| high | operational_gate_gap | - | public_runtime_probe: failed | Deployment Reliability Engineer |

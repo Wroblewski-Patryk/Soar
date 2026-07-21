@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-20T15:26:56.745Z",
+  "generatedAt": "2026-07-21T14:06:57.807Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
-  "status": "truth_incomplete",
+  "status": "ready_for_repair_flow",
   "gates": [
     {
       "gate": "architecture_exports",
@@ -24,7 +24,7 @@
     },
     {
       "gate": "runtime_error_index",
-      "status": "critical_findings",
+      "status": "covered",
       "evidence": "docs/status/runtime-error-index.json",
       "requiredFor": "agent-owned bug discovery and repair routing"
     },
@@ -36,7 +36,7 @@
     },
     {
       "gate": "public_runtime_probe",
-      "status": "failed",
+      "status": "pass",
       "evidence": [
         "https://soar.luckysparrow.ch",
         "https://soar.luckysparrow.ch/api/build-info",

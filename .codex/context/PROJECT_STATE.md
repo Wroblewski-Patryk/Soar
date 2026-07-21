@@ -1,3 +1,24 @@
+## 2026-07-21 LUC-1612 source-control closure for LUC-1603
+
+- The local Soar dirty set left by the completed `LUC-1603` dashboard overview
+  proof refresh was classified as one coherent packet only:
+  `.codex/context/LEARNING_JOURNAL.md`,
+  `docs/status/app-completion-index.{md,json}`,
+  `docs/status/event-chain-index.{md,json}`,
+  `docs/status/operational-readiness-index.{md,json}`,
+  `docs/status/project-truth-index.{md,json}`,
+  `docs/status/runtime-error-index.{md,json}`,
+  `history/evidence/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.md`,
+  and
+  `history/artifacts/luc-1603-local-protected-route-action-proof-matrix-2026-07-21.json`.
+- The generated status refresh is consistent with the completed proof lane:
+  the runtime-error index moved to zero findings, operational readiness moved
+  to `ready_for_repair_flow`, and the first project-truth gap now routes to
+  the remaining `needs_browser_review` dashboard rows instead of the old
+  production readiness failure.
+- Tuesday, July 21, 2026 closure action created the `LUC-1612`
+  task/evidence/closeout packet and closed the bundle with one local commit.
+
 ## 2026-07-20 LUC-1452 bot edit visible-flow proof captured
 
 - `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx` now has a local

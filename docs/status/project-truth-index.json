@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T15:26:56.745Z",
+  "generatedAt": "2026-07-21T14:06:57.807Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -7,34 +7,31 @@
     "appCompletionItems": 86,
     "eventChains": 8,
     "incompleteEventChains": 0,
-    "runtimeFindings": 1,
-    "criticalRuntimeFindings": 1,
+    "runtimeFindings": 0,
+    "criticalRuntimeFindings": 0,
     "appCompletionGaps": 51,
     "indexedAppCompletionGaps": 51,
     "knownAppCompletionRiskItems": 51,
     "appCompletionPriorityReviewItems": 51,
     "appCompletionPriorityReviewTruncated": false,
-    "operationalGateGaps": 2,
-    "indexedGaps": 54,
-    "totalGaps": 54
+    "operationalGateGaps": 0,
+    "indexedGaps": 51,
+    "totalGaps": 51
   },
   "firstGap": {
-    "kind": "runtime_error",
-    "severity": "critical",
-    "userFlow": null,
-    "summary": "api_ready https://api.soar.luckysparrow.ch/ready returned 503: {\"status\":\"not_ready\",\"service\":\"api\"}",
-    "nextOwner": "Deployment Reliability Engineer + Ops Release Lead",
-    "nextAction": "Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof."
+    "kind": "app_completion_gap",
+    "severity": "high",
+    "userFlow": "Dashboard overview",
+    "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
+    "nextOwner": "QA Regression Lead + Frontend Experience Lead",
+    "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
+    "evidence": [
+      "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx"
+    ],
+    "sourceItemId": "route:page-tsx:58248c9afe",
+    "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "runtime_error",
-      "severity": "critical",
-      "userFlow": null,
-      "summary": "api_ready https://api.soar.luckysparrow.ch/ready returned 503: {\"status\":\"not_ready\",\"service\":\"api\"}",
-      "nextOwner": "Deployment Reliability Engineer + Ops Release Lead",
-      "nextAction": "Create or resume a release mutation permit for read-only diagnosis, then rollback/restart/redeploy only with named resource, SHA/image, rollback, and smoke proof."
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",
@@ -697,22 +694,6 @@
       ],
       "sourceItemId": "route:profilepage-tsx:f1dab93865",
       "risk": "needs_browser_review"
-    },
-    {
-      "kind": "operational_gate_gap",
-      "severity": "critical",
-      "userFlow": null,
-      "summary": "runtime_error_index: critical_findings",
-      "nextOwner": "Project Manager",
-      "nextAction": "Restore agent-owned bug discovery and repair routing."
-    },
-    {
-      "kind": "operational_gate_gap",
-      "severity": "high",
-      "userFlow": null,
-      "summary": "public_runtime_probe: failed",
-      "nextOwner": "Deployment Reliability Engineer",
-      "nextAction": "Restore production parity with local behavior."
     }
   ]
 }
