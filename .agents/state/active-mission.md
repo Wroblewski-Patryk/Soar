@@ -33,6 +33,21 @@
   this proof refresh does not change the broader generated project-truth queue;
   it only refreshes the browser evidence for the exact dashboard page row.
 
+## 2026-07-21 LUC-1591 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed after enabling the local fixture API interception path that
+  the harness uses for `/auth/me`, and the fresh evidence pair is attached
+  under the current issue.
+- Residual:
+  the broader generated project-truth queue still requires separate burn-down;
+  this heartbeat only refreshed the browser proof for the exact dashboard page
+  row.
+
 ## 2026-07-20 LUC-1452 bot edit visible-flow proof captured
 
 - Status: `DONE`.

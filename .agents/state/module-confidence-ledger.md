@@ -3247,6 +3247,28 @@ DB_BACKED_PROFILE_ROUTE_PROOF_BLOCKED`.
   remains separate; no FEW repair child is needed because no UI defect was
   reproduced.
 
+## 2026-07-21 LUC-1591 Dashboard Overview Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / page browser-review refresh.
+- Reality:
+  `fresh local proof rerun passed with fixture interception after the initial
+  unauthenticated bootstrap failure was corrected`.
+- Update:
+  [LUC-1591](/LUC/issues/LUC-1591) reran the local Dashboard overview proof
+  with `--intercept-fixture-api`, which restored the synthetic `/auth/me`
+  bootstrap path and allowed `/dashboard` to render instead of failing closed
+  to login.
+- Evidence:
+  `history/artifacts/luc-1591-local-protected-route-action-proof-matrix-2026-07-21.json`;
+  `history/evidence/luc-1591-local-protected-route-action-proof-matrix-2026-07-21.md`.
+- Proof:
+  local protected-route proof PASS for unauthenticated fail-closed access and
+  authenticated dashboard route reachability.
+- Remaining:
+  no local module defect reproduced; the residual app-completion queue still
+  needs separate row-linkage and freshness burn-down.
+
 ## 2026-06-29 LUC-6089 Trading App-Completion Row-Linkage Reconciliation
 
 - Module row:
