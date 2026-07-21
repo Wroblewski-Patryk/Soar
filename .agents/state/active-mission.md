@@ -1,3 +1,18 @@
+## 2026-07-21 LUC-1602 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed after scoping the local protected-route matrix to the
+  `dashboard` cluster with fixture API interception enabled, and the fresh
+  evidence pair is attached under the current issue.
+- Residual:
+  the broader generated project-truth queue still requires separate burn-down;
+  this heartbeat only refreshed the browser proof for the exact dashboard page
+  row.
+
 ## 2026-07-21 LUC-1569 protected post-Redis readiness readback using managed bindings
 
 - Status: `BLOCKED`.
