@@ -1,3 +1,30 @@
+## 2026-07-22 LUC-1641 source-control closure for LUC-1639
+
+- Status: `VERIFIED`.
+- Scope:
+  classify and close the local Soar dirty state left by the completed
+  `LUC-1639` dashboard overview browser-proof refresh.
+- Outcome:
+  the worktree was confirmed as one coherent state/evidence packet for
+  `LUC-1639` only, with no runtime code, deploy, migration, secret, or
+  out-of-scope product changes mixed into the closure scope.
+- Residual:
+  this heartbeat closes local source-control hygiene only; it does not reopen
+  or broaden the dashboard proof lane itself.
+
+## 2026-07-22 LUC-1639 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed with the existing fixture API interception path enabled, and
+  the focused dashboard route accessibility smoke also passed (`5/5`).
+- Residual:
+  this heartbeat refreshes the exact dashboard page proof packet only; broader
+  generated truth/index reconciliation remains a separate lane if required.
+
 ## 2026-07-22 LUC-1636 dashboard page browser-review proof refresh
 
 - Status: `VERIFIED`.

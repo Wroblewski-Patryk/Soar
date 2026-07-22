@@ -1,3 +1,56 @@
+## 2026-07-22 LUC-1641 classify and close local dirty state for LUC-1639
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the completed `LUC-1639` dashboard overview browser-proof refresh.
+- Findings:
+  the worktree was one coherent local state/evidence bundle only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.md`,
+  `history/tasks/luc-1639-dashboard-overview-page-browser-review-2026-07-22-task.md`,
+  and
+  `history/artifacts/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.json`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1639|LUC-1641|completionEvidence` across
+  touched files -> PASS;
+  bounded high-confidence secret-pattern scan on the dirty files -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1641-source-control-closure-classify-and-close-local-dirty-state-for-luc-1639-2026-07-22-task.md`;
+  `history/evidence/luc-1641-source-control-closure-luc-1639-2026-07-22.md`;
+  `history/artifacts/luc-1641-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1639 dashboard overview page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  `pnpm exec vitest run src/app/dashboard/dashboard.a11y.smoke.test.tsx --reporter=verbose`
+  passed in `apps/web` (`5/5`), and
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1639 --today 2026-07-22 --clusters dashboard --intercept-fixture-api ...`
+  passed and wrote a fresh JSON/Markdown proof packet under the current issue
+  id. Unauthenticated `/dashboard` failed closed to `/auth/login`, and the
+  authenticated synthetic-cookie route remained on `/dashboard`.
+- Evidence:
+  `history/tasks/luc-1639-dashboard-overview-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1636 dashboard overview page browser-review proof refresh
 
 - Status: `DONE`.

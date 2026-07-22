@@ -1,3 +1,40 @@
+## 2026-07-22 LUC-1641 source-control closure for LUC-1639
+
+- The local Soar dirty set left by the completed `LUC-1639` dashboard overview
+  browser-proof refresh was classified as one coherent state/evidence packet
+  only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.md`,
+  `history/tasks/luc-1639-dashboard-overview-page-browser-review-2026-07-22-task.md`,
+  and
+  `history/artifacts/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the closure scope.
+- Wednesday, July 22, 2026 closure action created the `LUC-1641`
+  task/evidence/closeout packet and preserved the bundle with one local
+  commit.
+
+## 2026-07-22 LUC-1639 dashboard overview page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/page.tsx` has a fresh local authenticated browser
+  proof packet under `LUC-1639`.
+- The local protected-route harness again passed the canonical `/dashboard`
+  pair: unauthenticated access failed closed to `/auth/login`, and the
+  synthetic-cookie authenticated route remained on `/dashboard`.
+- Focused route-shell verification remains green too:
+  `apps/web/src/app/dashboard/dashboard.a11y.smoke.test.tsx` passed `5/5`
+  checks in a direct `vitest run` from `apps/web`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1639-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/tasks/luc-1639-dashboard-overview-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1636 dashboard overview page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/page.tsx` has a fresh local authenticated browser
