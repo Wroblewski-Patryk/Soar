@@ -1,3 +1,19 @@
+## 2026-07-22 LUC-1667 exact global bot assistant alias proof ingest
+
+- `apps/web/src/app/dashboard/bots/assistant/page.tsx`
+  (`route:page-tsx:66a0b683f3`) now has its exact alias redirect proof ingested
+  into the canonical docs/architecture inputs.
+- The focused assistant alias page test passed and the
+  architecture-awareness, app-completion, and project-truth generators were
+  rerun in sequence.
+- The exact alias route is no longer the target gap; the remaining first
+  bot-related generated row advances to the separate legacy
+  `/dashboard/bots/create` route.
+- Evidence:
+  `history/tasks/luc-1667-ingest-exact-global-bot-assistant-alias-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1667-ingest-exact-global-bot-assistant-alias-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1663 source-control closure for LUC-1662 dynamic bot runtime proof refresh
 
 - The `LUC-1662` exact runtime redirect proof packet has been classified as a

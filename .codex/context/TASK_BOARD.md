@@ -1,3 +1,22 @@
+## 2026-07-22 LUC-1667 ingest exact global bot assistant alias proof
+
+- Status: `DONE`.
+- Scope:
+  Documentation/Memory ingest lane for the exact global assistant alias route
+  `apps/web/src/app/dashboard/bots/assistant/page.tsx`
+  (`route:page-tsx:66a0b683f3`).
+- Outcome:
+  added the exact alias-route source-to-doc relation, source-to-test relation,
+  and scoped proof override; reran architecture-awareness, app-completion, and
+  project-truth in the required sequence; and verified that the alias route no
+  longer appears in generated app-completion/project-truth gaps. The first
+  remaining bot-related gap is now `route:page-tsx:114b5cc57c`
+  (`apps/web/src/app/dashboard/bots/create/page.tsx`).
+- Evidence:
+  `history/tasks/luc-1667-ingest-exact-global-bot-assistant-alias-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1667-ingest-exact-global-bot-assistant-alias-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1663 source-control closure for LUC-1662 dynamic bot runtime proof refresh
 
 - Status: `DONE`.

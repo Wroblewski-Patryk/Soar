@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:16:02.227Z",
+  "generatedAt": "2026-07-22T22:38:30.812Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 46,
-    "indexedAppCompletionGaps": 46,
-    "knownAppCompletionRiskItems": 46,
-    "appCompletionPriorityReviewItems": 46,
+    "appCompletionGaps": 45,
+    "indexedAppCompletionGaps": 45,
+    "knownAppCompletionRiskItems": 45,
+    "appCompletionPriorityReviewItems": 45,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 46,
-    "totalGaps": 46
+    "indexedGaps": 45,
+    "totalGaps": 45
   },
   "firstGap": {
     "kind": "app_completion_gap",
@@ -26,25 +26,12 @@
     "nextOwner": "QA Regression Lead + Frontend Experience Lead",
     "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
     "evidence": [
-      "apps/web/src/app/dashboard/bots/assistant/page.tsx"
+      "apps/web/src/app/dashboard/bots/create/page.tsx"
     ],
-    "sourceItemId": "route:page-tsx:66a0b683f3",
+    "sourceItemId": "route:page-tsx:114b5cc57c",
     "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/bots/assistant/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:66a0b683f3",
-      "risk": "needs_browser_review"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",

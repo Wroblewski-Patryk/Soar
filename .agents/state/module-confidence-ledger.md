@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1665 Dashboard Assistant Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / global bot assistant redirect browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1665](/LUC/issues/LUC-1665) verified the exact source item
+  `apps/web/src/app/dashboard/bots/assistant/page.tsx`
+  (`route:page-tsx:66a0b683f3`). The local protected-route harness proved the
+  assistant route `/dashboard/bots/assistant` under the synthetic cookie gate
+  and recorded the exact redirect to `/dashboard/bots`, keeping the row
+  evidence-backed for browser review.
+- Evidence:
+  `history/evidence/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact local proof packet only; any generated
+  truth/index ingestion remains a separate docs lane if the project still
+  wants the row removed from `needs_browser_review`.
+
 ## 2026-07-22 LUC-1663 source-control closure for LUC-1662 dynamic bot runtime proof refresh
 
 - Module row:

@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-22T22:15:14.708Z",
+  "generated_at": "2026-07-22T22:36:37.884Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15449,
-    "relations": 42956,
+    "entities": 15461,
+    "relations": 42996,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5253,
+      "document": 5262,
       "feature": 291,
       "function": 5319,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1965,
+      "task": 1968,
       "test": 522
     },
     "by_status": {
       "blocked": 188,
       "deprecated": 10,
-      "implemented": 12457,
+      "implemented": 12465,
       "in_progress": 28,
       "tested": 929,
-      "verified": 1837
+      "verified": 1841
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1724,
+      "count": 1722,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1450,
+      "count": 1448,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1267,
+        "curated_graph_covered": 1265,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -11046,7 +11046,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1739,
+      "count": 1736,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -12651,10 +12651,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 434,
+      "count": 431,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 255,
+        "curated_graph_covered": 252,
         "historical_task_archive": 145,
         "top_level_app_mount": 1
       },

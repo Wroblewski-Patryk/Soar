@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:16:02.227Z",
+  "generatedAt": "2026-07-22T22:38:30.812Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5420,
-      "linkedRelationCount": 22744,
+      "entityCount": 5433,
+      "linkedRelationCount": 22782,
       "layers": {
         "frontend": {
-          "count": 237,
+          "count": 239,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 783,
+          "count": 785,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4209,
+          "count": 4218,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3581,7 +3581,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 1006,
-      "linkedRelationCount": 3563,
+      "linkedRelationCount": 3568,
       "layers": {
         "frontend": {
           "count": 360,
@@ -4765,8 +4765,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/assistant/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:114b5cc57c",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4068,
-      "linkedRelationCount": 13347,
+      "entityCount": 4078,
+      "linkedRelationCount": 13377,
       "layers": {
         "frontend": {
           "count": 398,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1328,
+          "count": 1329,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2130,
+          "count": 2139,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13300,
-      "linkedRelationCount": 39716,
+      "entityCount": 13312,
+      "linkedRelationCount": 39756,
       "layers": {
         "frontend": {
           "count": 1459,
@@ -13738,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1680,
+          "count": 1681,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9322,
+          "count": 9333,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
