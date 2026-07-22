@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-22T22:55:00.082Z
+Generated: 2026-07-22T23:01:22.151Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5271 |
+| document | 5269 |
 | feature | 291 |
 | function | 5319 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1971 |
+| task | 1972 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,10 +28,10 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 188 |
 | deprecated | 10 |
-| implemented | 12473 |
+| implemented | 12471 |
 | in_progress | 28 |
 | tested | 929 |
-| verified | 1845 |
+| verified | 1846 |
 
 ## Health Signals
 
@@ -40,11 +40,11 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - Raw implementation entities without inferred docs: 1720
 - Actionable implementation entities without inferred docs: 1450
 - Classified inferred-link noise: 1446
-- Raw tasks without architecture links: 145
+- Raw tasks without architecture links: 150
 - Actionable tasks without architecture links: 0
 - Raw implementation entities without task links: 1734
 - Actionable implementation entities without task links: 1450
-- Classified task-linkage noise: 429
+- Classified task-linkage noise: 434
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -188,7 +188,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - config_only_file: 33
 - curated_graph_covered: 250
-- historical_task_archive: 145
+- historical_task_archive: 150
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples

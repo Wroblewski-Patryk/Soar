@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-22T22:55:00.082Z",
+  "generated_at": "2026-07-22T23:01:22.151Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15473,
-    "relations": 43056,
+    "entities": 15472,
+    "relations": 42878,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5271,
+      "document": 5269,
       "feature": 291,
       "function": 5319,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1971,
+      "task": 1972,
       "test": 522
     },
     "by_status": {
       "blocked": 188,
       "deprecated": 10,
-      "implemented": 12473,
+      "implemented": 12471,
       "in_progress": 28,
       "tested": 929,
-      "verified": 1845
+      "verified": 1846
     }
   },
   "signals": {
@@ -8276,7 +8276,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 145,
+      "count": 150,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -8999,6 +8999,14 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:luc-5367-gap-register-and-repair-lane-refresh:b0121f5320",
+          "type": "task",
+          "name": "LUC-5367 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-5367-gap-register-and-repair-lane-refresh-2026-06-21-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:8fb559297d",
           "type": "task",
           "name": "Task",
@@ -9031,10 +9039,26 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:luc-5622-known-state-evidence-and-architecture-baseline:d23f74e32c",
+          "type": "task",
+          "name": "LUC-5622 Known-State Evidence And Architecture Baseline",
+          "path": "history/tasks/luc-5622-known-state-evidence-architecture-baseline-2026-06-27-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:44e4ea769f",
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-572-source-control-closure-for-luc-564-2026-07-12-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-5921-gap-register-and-repair-lane-refresh:e606f11f82",
+          "type": "task",
+          "name": "LUC-5921 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-5921-gap-register-and-repair-lane-refresh-2026-06-28-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -9051,6 +9075,14 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-5997-close-dirty-divergent-source-control-and-build-provenance-2026-06-28-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:6100a87d45",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-5998-app-completion-row-level-proof-backlog-by-flow-2026-06-28-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -9091,6 +9123,14 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-6387-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6411-daily-project-status-refresh-2026-06-30:e8a432c175",
+          "type": "task",
+          "name": "LUC-6411 Daily Project Status Refresh - 2026-06-30",
+          "path": "history/tasks/luc-6411-daily-project-status-refresh-2026-06-30-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -12651,11 +12691,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 429,
+      "count": 434,
       "by_reason": {
         "config_only_file": 33,
         "curated_graph_covered": 250,
-        "historical_task_archive": 145,
+        "historical_task_archive": 150,
         "top_level_app_mount": 1
       },
       "items": [
@@ -13470,6 +13510,15 @@
           "reason": "historical_task_archive"
         },
         {
+          "id": "task:luc-5367-gap-register-and-repair-lane-refresh:b0121f5320",
+          "type": "task",
+          "name": "LUC-5367 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-5367-gap-register-and-repair-lane-refresh-2026-06-21-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
           "id": "task:task:8fb559297d",
           "type": "task",
           "name": "Task",
@@ -13506,10 +13555,28 @@
           "reason": "historical_task_archive"
         },
         {
+          "id": "task:luc-5622-known-state-evidence-and-architecture-baseline:d23f74e32c",
+          "type": "task",
+          "name": "LUC-5622 Known-State Evidence And Architecture Baseline",
+          "path": "history/tasks/luc-5622-known-state-evidence-architecture-baseline-2026-06-27-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
           "id": "task:task:44e4ea769f",
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-572-source-control-closure-for-luc-564-2026-07-12-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-5921-gap-register-and-repair-lane-refresh:e606f11f82",
+          "type": "task",
+          "name": "LUC-5921 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-5921-gap-register-and-repair-lane-refresh-2026-06-28-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -13528,6 +13595,15 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-5997-close-dirty-divergent-source-control-and-build-provenance-2026-06-28-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:6100a87d45",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-5998-app-completion-row-level-proof-backlog-by-flow-2026-06-28-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -13573,6 +13649,15 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-6387-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6411-daily-project-status-refresh-2026-06-30:e8a432c175",
+          "type": "task",
+          "name": "LUC-6411 Daily Project Status Refresh - 2026-06-30",
+          "path": "history/tasks/luc-6411-daily-project-status-refresh-2026-06-30-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -14410,51 +14495,6 @@
           "type": "feature",
           "name": "useBacktestTimelineOrchestration.ts",
           "path": "apps/web/src/features/backtest/hooks/useBacktestTimelineOrchestration.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usebacktesttradesanalytics-ts:1a0157325e",
-          "type": "feature",
-          "name": "useBacktestTradesAnalytics.ts",
-          "path": "apps/web/src/features/backtest/hooks/useBacktestTradesAnalytics.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:backtests-service-ts:97b9d3c31b",
-          "type": "feature",
-          "name": "backtests.service.ts",
-          "path": "apps/web/src/features/backtest/services/backtests.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:backtestsymbolstats-ts:5738a3e21c",
-          "type": "feature",
-          "name": "backtestSymbolStats.ts",
-          "path": "apps/web/src/features/backtest/utils/backtestSymbolStats.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:nonoverlappingtradesegments-ts:b394271b25",
-          "type": "feature",
-          "name": "nonOverlappingTradeSegments.ts",
-          "path": "apps/web/src/features/backtest/utils/nonOverlappingTradeSegments.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:pairstatsmetricdisplay-ts:653eb5bfa5",
-          "type": "feature",
-          "name": "pairStatsMetricDisplay.ts",
-          "path": "apps/web/src/features/backtest/utils/pairStatsMetricDisplay.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
