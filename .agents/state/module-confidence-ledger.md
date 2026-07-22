@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1677 Dashboard Bots Overview Proof Ingest
+
+- Module row:
+  Dashboard overview / bots list page truth refresh.
+- Status delta:
+  `VERIFIED / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1677](/LUC/issues/LUC-1677) ingested the exact source item
+  `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`). The focused bots-list page test stayed green,
+  the direct doc/test links and scoped proof override were added, and the
+  canonical generator chain was rerun in sequence. The exact bots list route
+  no longer needs to remain as a generated dashboard browser-review gap.
+- Evidence:
+  `history/tasks/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact docs-memory ingest only; remaining dashboard
+  browser-review rows stay separate follow-up lanes.
+
 ## 2026-07-22 LUC-1674 Exact Bot New Alias Proof Ingest
 
 - Module row:
@@ -203,6 +224,24 @@
   this heartbeat now closes the exact dynamic assistant-route proof packet
   and its doc-link follow-up; any broader bots-cluster repair work belongs to
   a separate lane if it is still required.
+
+## 2026-07-22 LUC-1676 Dashboard Overview Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / page browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1676](/LUC/issues/LUC-1676) bound the exact bots list page
+  `apps/web/src/app/dashboard/bots/page.tsx` to fresh same-day local proof.
+  The focused route test passed and the `LUC-1665` protected-route packet
+  shows the authenticated `SOAR-ACTION-VISIT-PAGE-BOTS-LIST` row passing on
+  `/dashboard/bots` with `observedPath=/dashboard/bots`. The paired
+  unauthenticated row remains expected fail-closed guardrail coverage.
+- Evidence:
+  `history/tasks/luc-1676-dashboard-bots-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1676-dashboard-bots-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
 
 ## 2026-07-22 LUC-1643 Dashboard Overview Page Browser Proof Refresh
 

@@ -1,3 +1,60 @@
+## 2026-07-22 LUC-1678 source-control closure for LUC-1676 and LUC-1677 dashboard bots overview truth packet
+
+- Status: `VERIFIED`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the completed dashboard bots overview proof refresh and proof ingest.
+- Outcome:
+  classified the dirty worktree as one coherent docs/state/history packet for
+  `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`), ran bounded hygiene checks, and preserved the
+  packet with one local commit. No push, deploy, or runtime mutation was
+  performed.
+- Evidence:
+  `history/tasks/luc-1678-source-control-close-dashboard-bots-overview-truth-packet-2026-07-22-task.md`;
+  `history/evidence/luc-1678-source-control-closure-dashboard-bots-overview-truth-packet-2026-07-22.md`;
+  `history/artifacts/luc-1678-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1677 dashboard bots overview proof ingest
+
+- Status: `VERIFIED`.
+- Scope:
+  ingest the fresh `LUC-1676` exact browser-review proof for
+  `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`) into canonical docs-memory and generated-truth
+  inputs.
+- Outcome:
+  added the missing direct doc link, focused test link, and scoped verified
+  proof override for the bots list page; reran
+  `build-architecture-awareness-index -> build-app-completion-index -> build-project-truth-indexes --apply`
+  in sequence; and advanced generated truth past the exact `/dashboard/bots`
+  page row.
+- Evidence:
+  `history/tasks/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
+## 2026-07-22 LUC-1676 dashboard bots page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`).
+- Outcome:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/page.test.tsx --reporter=verbose`
+  passed (`1/1`), proving the bots list page keeps its create CTA wired to
+  `/dashboard/bots/create`. The authoritative browser proof for this heartbeat
+  reuses the same-day `LUC-1665` JSON `.routes` row:
+  `SOAR-ACTION-VISIT-PAGE-BOTS-LIST` passed on `/dashboard/bots` with
+  `observedPath=/dashboard/bots` under the local protected cookie gate. The
+  paired unauthenticated fail-closed row remains expected guardrail evidence,
+  not a blocker.
+- Evidence:
+  `history/tasks/luc-1676-dashboard-bots-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1676-dashboard-bots-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1671 source-control closure for LUC-1670 exact bot create page proof ingest
 
 - `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`

@@ -1,3 +1,61 @@
+## 2026-07-22 LUC-1678 source-control closure for the dashboard bots overview truth packet
+
+- The completed `LUC-1676` QA proof refresh and `LUC-1677` docs-memory ingest
+  for `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`) are now preserved by one local source-control
+  closure commit.
+- The classified dirty packet contained docs/generated truth, state, and
+  history artifacts only. No product/runtime code, dependency, env, deploy, or
+  account mutation was included.
+- Bounded closure checks passed: dirty-state classification matched the packet,
+  `git diff --check` stayed clean apart from line-ending warnings, the
+  high-confidence secret scan returned no matches, and post-commit
+  `git status --short` was clean.
+- Evidence:
+  `history/evidence/luc-1678-source-control-closure-dashboard-bots-overview-truth-packet-2026-07-22.md`;
+  `history/tasks/luc-1678-source-control-close-dashboard-bots-overview-truth-packet-2026-07-22-task.md`;
+  `history/artifacts/luc-1678-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1677 dashboard bots overview proof ingest
+
+- `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`) has been ingested into the canonical docs and
+  graph inputs through the exact route doc/test relations and scoped proof
+  override.
+- Focused bots-list verification remained green, and the
+  `architecture-awareness -> app-completion -> project-truth` generators were
+  rerun strictly in sequence.
+- The exact bots list page is no longer the target generated gap for dashboard
+  bots. This heartbeat changed docs/index/state files only; it did not mutate
+  runtime code, deploy state, production auth, or the underlying `LUC-1676`
+  proof packet.
+- Evidence:
+  `history/evidence/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22.md`;
+  `history/tasks/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
+## 2026-07-22 LUC-1676 dashboard bots page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`) now has exact QA evidence for the generated
+  Dashboard overview browser-review row.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/page.test.tsx --reporter=verbose`
+  passed `1/1` and proved the list page still drives the create CTA to
+  `/dashboard/bots/create`.
+- The authoritative browser proof for this heartbeat reuses the fresh same-day
+  `LUC-1665` JSON `.routes` row:
+  `SOAR-ACTION-VISIT-PAGE-BOTS-LIST` passed on `/dashboard/bots` and observed
+  `/dashboard/bots` with the local protected cookie gate. The paired
+  unauthenticated fail-closed row remains expected guardrail coverage.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1676-dashboard-bots-page-browser-review-2026-07-22.md`;
+  `history/tasks/luc-1676-dashboard-bots-page-browser-review-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1674 exact bot new alias proof ingest
 
 - `apps/web/src/app/dashboard/bots/new/page.tsx`

@@ -56,6 +56,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact bots list route wrapper for route:page-tsx:0101cdb776 through the fresh LUC-1676 local browser packet on 2026-07-22. The focused bots list page test passed, the protected-route harness visited /dashboard/bots and stayed on /dashboard/bots under the authenticated local cookie gate, and the paired unauthenticated fail-closed row remains separate guardrail evidence instead of a blocker against the authenticated page proof.",
+      "evidence": [
+        "history/tasks/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22-task.md",
+        "history/evidence/luc-1677-ingest-dashboard-bots-overview-proof-2026-07-22.md",
+        "history/evidence/luc-1676-dashboard-bots-page-browser-review-2026-07-22.md",
+        "history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

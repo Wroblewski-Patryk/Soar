@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T23:18:17.112Z",
+  "generatedAt": "2026-07-22T23:33:54.679Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5448,
-      "linkedRelationCount": 22714,
+      "entityCount": 5460,
+      "linkedRelationCount": 22759,
       "layers": {
         "frontend": {
-          "count": 252,
+          "count": 257,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -141,6 +141,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:e6f11a15e4",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1676-dashboard-bots-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -647,20 +655,12 @@
               "path": "apps/web/src/features/profile/hooks/useUser.ts#updateUser",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "function:useuser:2c9e28763d",
-              "type": "function",
-              "name": "useUser",
-              "path": "apps/web/src/features/profile/hooks/useUser.ts#useUser",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 788,
+          "count": 789,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4221,
+          "count": 4227,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1338,7 +1338,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -3127,7 +3127,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b",
@@ -3564,11 +3564,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 1012,
-      "linkedRelationCount": 3563,
+      "entityCount": 1018,
+      "linkedRelationCount": 3590,
       "layers": {
         "frontend": {
-          "count": 366,
+          "count": 369,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4773,8 +4773,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:02f88c4a44",
@@ -4860,7 +4860,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 372,
+          "count": 375,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -4892,7 +4892,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:task:925bb2530f",
@@ -7241,7 +7241,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728",
@@ -9414,7 +9414,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:luc-3885-stripe-webhook-subscription-lifecycle-reconciliation:d429702abc",
@@ -10460,7 +10460,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 4086,
-      "linkedRelationCount": 13342,
+      "linkedRelationCount": 13349,
       "layers": {
         "frontend": {
           "count": 405,
@@ -11795,7 +11795,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc",
@@ -13064,11 +13064,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13329,
-      "linkedRelationCount": 39666,
+      "entityCount": 13337,
+      "linkedRelationCount": 39704,
       "layers": {
         "frontend": {
-          "count": 1470,
+          "count": 1473,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -13267,6 +13267,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:e6f11a15e4",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1676-dashboard-bots-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13699,14 +13707,6 @@
               "type": "function",
               "name": "handleCreate",
               "path": "apps/web/src/features/backtest/components/BacktestsList.tsx#handleCreate",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:pnlclass:bce7a62c7c",
-              "type": "function",
-              "name": "pnlClass",
-              "path": "apps/web/src/features/backtest/components/BacktestsList.tsx#pnlClass",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -14360,7 +14360,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9342,
+          "count": 9347,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -17013,7 +17013,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "verified"
+              "status": "in_progress"
             },
             {
               "id": "task:backend-permission-and-data-isolation-review-task:6bbc4f70d1",
