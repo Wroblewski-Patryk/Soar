@@ -1,29 +1,37 @@
-## 2026-07-22 LUC-1628 dashboard bot assistant page browser-review proof
+## 2026-07-22 LUC-1629 assistant-route truth reconciliation follow-up
 
 - Status: `DONE`.
 - Scope:
-  QA-owned browser-review proof for the project-truth `needs_browser_review`
-  row currently emitted as `route:page-tsx:58248c9afe`.
+  verify how the generated truth/status layer currently routes
+  `route:page-tsx:58248c9afe`, preserve the existing LUC-1628 browser-proof
+  evidence, and classify the remaining mismatch.
 - Findings:
-  the current project-truth dispatcher still labels this row as
-  `Dashboard overview`, but the linked source item now resolves to
-  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`.
+  `docs/architecture/nodes/SOAR-PAGE-BOT-ASSISTANT.md` and
+  `docs/obsidian/route-action-map.md` already classify the exact dynamic route
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx` as the canonical
+  selected-bot assistant surface under `AI Assistant foundation`.
+  After rerunning the generators, `docs/status/project-truth-index.{md,json}`
+  now reports that exact route under `AI Assistant foundation`, but
+  `docs/status/app-completion-index.{md,json}` still lists the same route in
+  the broader `Dashboard overview` bucket. The truth rebuild also surfaced a
+  new `event_chain_gap` for `AI Assistant foundation`.
 - Verification:
-  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx`
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
   -> PASS;
-  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1628 --today 2026-07-22 --clusters bots --dynamic-fixtures-only --intercept-fixture-api ...`
-  -> aggregate FAIL because the bots cluster includes the expected
-  unauthenticated `/dashboard/bots` fail-closed row, while the requested
-  `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` route passed with `200` on
-  `/dashboard/bots/luc-2188-bot/assistant`.
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+  -> PASS;
+  `node C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-project-truth-indexes.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar --apply`
+  -> PASS;
+  LUC-1628 browser proof packet remains intact in
+  `history/evidence/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.md`
+  and `history/artifacts/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.json`.
 - Outcome:
-  the requested visible assistant route now has a fresh inspectable local proof
-  packet under `LUC-1628`; a follow-up truth/index reconciliation issue was
-  opened for the stale `Dashboard overview` classification.
+  the current generated truth layer is partially reconciled: the exact
+  assistant route moved to `AI Assistant foundation` in project truth, but the
+  app-completion layer still needs a follow-up repair before the route is
+  consistently classified across generated indexes.
 - Evidence:
-  `history/tasks/luc-1628-dashboard-bot-assistant-page-browser-review-2026-07-22-task.md`;
-  `history/evidence/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.md`;
-  `history/artifacts/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.json`.
+  `history/evidence/luc-1629-route-classification-reconciliation-2026-07-22.md`.
 
 ## 2026-07-22 LUC-1627 classify and close local dirty state for LUC-1467-LUC-1613
 

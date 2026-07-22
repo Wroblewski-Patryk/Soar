@@ -1,24 +1,26 @@
-## 2026-07-22 LUC-1628 dashboard bot assistant browser proof
+## 2026-07-22 LUC-1629 assistant-route truth reconciliation follow-up
 
-- `route:page-tsx:58248c9afe` currently dispatches as `Dashboard overview` in
-  `docs/status/project-truth-index.json`, but the linked source evidence now
-  resolves to `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`.
-- Focused route coverage stayed green:
-  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx`
-  passed for localized breadcrumbs and locked assistant-tab behavior.
-- Fresh browser proof for the exact dynamic assistant route now exists under
+- `route:page-tsx:58248c9afe` still resolves to the canonical selected-bot
+  assistant surface `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`,
+  and the supporting docs continue to classify that route under
+  `AI Assistant foundation`.
+- Rebuilding the generated status layer updated
+  `docs/status/project-truth-index.{md,json}` so the exact assistant route now
+  appears under `AI Assistant foundation`, but the regenerated
+  `docs/status/app-completion-index.{md,json}` still keeps the same route in
+  the broader `Dashboard overview` bucket.
+- The refreshed truth index also surfaced an `event_chain_gap` for
+  `AI Assistant foundation`, so the route-label mismatch is reduced but not
+  fully reconciled across all generated indexes.
+- Fresh browser proof for the exact dynamic assistant route still exists under
   `LUC-1628`; the local protected-route matrix shows
   `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` as `PASS` with `200` on
   `/dashboard/bots/luc-2188-bot/assistant`.
-- The aggregate proof runner status remains `FAIL` only because the bots
-  cluster also records the expected unauthenticated `/dashboard/bots`
-  fail-closed row; this does not invalidate the requested assistant-route
-  proof.
 - Evidence:
   `history/evidence/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.md`;
   `history/artifacts/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.json`;
-  `history/tasks/luc-1628-dashboard-bot-assistant-page-browser-review-2026-07-22-task.md`.
-
+  `history/evidence/luc-1629-route-classification-reconciliation-2026-07-22.md`;
+  `docs/status/project-truth-index.{md,json}`.
 ## 2026-07-22 LUC-1627 source-control closure for LUC-1467-LUC-1613
 
 - The local Soar dirty set left by the Wednesday, July 22, 2026 `LUC-1467`

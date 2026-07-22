@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-21T14:06:57.807Z
+Generated: 2026-07-22T07:26:53.322Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -9,8 +9,8 @@ This is the routing surface agents should use before guessing whether an app wor
 | Metric | Count |
 | --- | ---: |
 | appCompletionItems | 86 |
-| eventChains | 8 |
-| incompleteEventChains | 0 |
+| eventChains | 9 |
+| incompleteEventChains | 1 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
 | appCompletionGaps | 51 |
@@ -18,21 +18,22 @@ This is the routing surface agents should use before guessing whether an app wor
 | knownAppCompletionRiskItems | 51 |
 | appCompletionPriorityReviewItems | 51 |
 | appCompletionPriorityReviewTruncated | false |
-| operationalGateGaps | 0 |
-| indexedGaps | 51 |
-| totalGaps | 51 |
+| operationalGateGaps | 1 |
+| indexedGaps | 53 |
+| totalGaps | 53 |
 
 ## First Gap
 
-- high: Dashboard overview: page.tsx has app-completion risk needs_browser_review.
-- Owner: QA Regression Lead + Frontend Experience Lead
-- Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
+- high: Missing frontend, backend, worker layer(s) in event chain.
+- Owner: CTO Architect + Engineering Delivery Lead
+- Next action: Map frontend, backend, worker entities into this flow before claiming holistic status.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
+| high | event_chain_gap | AI Assistant foundation | Missing frontend, backend, worker layer(s) in event chain. | CTO Architect + Engineering Delivery Lead |
+| high | app_completion_gap | AI Assistant foundation | AI Assistant foundation: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
@@ -83,3 +84,4 @@ This is the routing surface agents should use before guessing whether an app wor
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: AuditTrailView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Unclassified user workflow | Unclassified user workflow: PerformanceReportsView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | User configuration | User configuration: ProfilePage.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
+| high | operational_gate_gap | - | event_chain_index: incomplete | Project Manager |

@@ -2,6 +2,23 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-22 - Large generated-file restores need streamed redirection
+- Symptom:
+  restoring large generated graph/status exports through `git show` in a Node
+  `execFileSync` wrapper hit `ENOBUFS`, and PowerShell redirection rewrote the
+  files with larger CRLF output.
+- Root cause:
+  buffered process output was too small for the graph exports, and the shell
+  redirection path used by PowerShell does not preserve the exact repository
+  bytes for these large generated files.
+- Correct response:
+  use streamed shell redirection through `cmd /c "git show HEAD:<path> > <path>"`
+  or another byte-preserving stream when restoring large generated exports.
+- Verified recovery:
+  the noisy generator side effects were pruned back out, leaving only the
+  intentional `PROJECT_STATE`, `TASK_BOARD`, `app-completion-index`,
+  `project-truth-index`, and evidence changes in the working tree.
+
 ### 2026-07-21 - Paperclip completionEvidence refs need ids for attachment and work-product links
 - Symptom:
   the Paperclip issue closeout PATCH for `LUC-1603` rejected the first
