@@ -1,3 +1,37 @@
+## 2026-07-22 LUC-1649 source-control closure for LUC-1643
+
+- Status: `VERIFIED`.
+- Scope:
+  classify and close the local Soar dirty state left by the completed
+  `LUC-1643` dashboard overview browser-proof refresh.
+- Outcome:
+  the worktree is one coherent state/evidence packet for `LUC-1643` only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1643-local-protected-route-action-proof-matrix-2026-07-22.md`,
+  `history/tasks/luc-1643-dashboard-overview-page-browser-review-2026-07-22-task.md`,
+  `history/artifacts/luc-1643-local-protected-route-action-proof-matrix-2026-07-22.json`,
+  `history/artifacts/luc-1643-paperclip-closeout-2026-07-22.md`,
+  and the `LUC-1649` closure packet.
+- Residual:
+  this heartbeat closes local source-control hygiene only; it does not reopen
+  or broaden the dashboard proof lane itself.
+
+## 2026-07-22 LUC-1643 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed with the existing fixture API interception path enabled, and
+  the focused dashboard route accessibility smoke also passed (`5/5`).
+- Residual:
+  this heartbeat refreshes the exact dashboard page proof packet only; broader
+  generated truth/index reconciliation remains a separate lane if required.
+
 ## 2026-07-22 LUC-1641 source-control closure for LUC-1639
 
 - Status: `VERIFIED`.
