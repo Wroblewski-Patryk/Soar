@@ -1,16 +1,24 @@
-# LUC-1663 Closeout
+# LUC-1663 Paperclip Closeout
 
-The completed `LUC-1662` dynamic bot-runtime redirect proof refresh was
-classified as one coherent local source-control packet.
+## Summary
+This PM packet closes the local source-control dirty set left by the completed
+`LUC-1662` dynamic bot-runtime proof refresh. It classifies the worktree as one
+coherent state/evidence bundle only and does not change runtime behavior.
 
-- Exact source item: `route:page-tsx:52de535d03`
-- Exact source path: `apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx`
-- Project Truth: `47 -> 46` gaps; exact item removed
-- Product/runtime code changed: no
-- Secrets or environment changed: no
-- Push/deploy performed: no
+## Evidence
+- Closure task record:
+  `history/tasks/luc-1663-source-control-closure-classify-and-close-local-dirty-state-for-luc-1662-2026-07-22-task.md`
+- Closure evidence:
+  `history/evidence/luc-1663-source-control-closure-luc-1662-2026-07-22.md`
+- Prior bot-runtime proof packet:
+  `history/tasks/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22-task.md`
+  `history/evidence/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22.md`
+  `history/artifacts/luc-1662-local-protected-route-action-proof-matrix-2026-07-22.json`
+  `history/artifacts/luc-1662-paperclip-closeout-2026-07-22.md`
 
-Verification includes the focused route test, the exact PASS row in the fresh
-browser artifact, sequential architecture/app-completion/project-truth
-generation, `git diff --check`, the local commit SHA recorded in the Paperclip
-issue comment, and a clean post-commit worktree.
+## Disposition
+- Dirty packet classification: coherent state/evidence only
+- Local commit: required
+- Push: not performed
+- Deploy: not performed
+- Runtime/product mutation: not performed
