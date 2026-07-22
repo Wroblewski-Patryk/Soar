@@ -1,15 +1,19 @@
-## 2026-07-22 LUC-1654 project-truth refresh after bot edit proof
+## 2026-07-22 LUC-1654 project-truth refresh after bot edit and preview proof
 
 - Status: `VERIFIED`.
 - Scope:
   docs-owned refresh of generated truth for
   `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`
-  (`route:page-tsx:63cfb064e6`) after the fresh `LUC-1653` local route proof.
+  (`route:page-tsx:63cfb064e6`) plus the board-approved sibling
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`) after the fresh `LUC-1653` local route proof.
 - Outcome:
   the exact edit route now has a scoped proof override plus the missing direct
-  doc/test relations. After the canonical graph/status refresh ran in
-  dependency order, `route:page-tsx:63cfb064e6` disappeared from
-  `docs/status/app-completion-index.json` as a priority-review item and the
+  doc/test relations, and the exact preview sibling now has the missing direct
+  doc relation plus a scoped proof override. After the canonical graph/status
+  refresh ran in dependency order, `route:page-tsx:63cfb064e6` and
+  `route:page-tsx:05ef3cc126` disappeared from
+  `docs/status/app-completion-index.json` as priority-review items and the
   first project-truth gap advanced to `route:page-tsx:256cdda64e`
   (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
 - Residual:

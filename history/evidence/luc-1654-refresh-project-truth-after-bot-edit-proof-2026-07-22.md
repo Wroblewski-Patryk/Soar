@@ -3,8 +3,10 @@
 - Issue: [LUC-1654](/LUC/issues/LUC-1654)
 - Date: 2026-07-22
 - Agent lane: Documentation Steward
-- Scope: refresh the exact Project Truth route item `route:page-tsx:63cfb064e6`
-  after the fresh `LUC-1653` local protected-route proof packet.
+- Scope: refresh the exact Project Truth route items
+  `route:page-tsx:63cfb064e6` and, after board review, the proven sibling
+  `route:page-tsx:05ef3cc126` after the fresh `LUC-1653` local
+  protected-route proof packet.
 - Boundary: docs/state/index refresh only; no runtime code change, deploy,
   push, restart, production auth, or live mutation.
 
@@ -14,14 +16,19 @@
   `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx` in
   `docs/architecture/scanner-overrides.json`, reusing the same evidence-backed
   mechanism previously used for the assistant route.
+- Added the exact preview-route proof override for
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx` in the same
+  override registry because the same `LUC-1653` packet includes an explicit
+  preview-route `PASS` with the expected final path.
 - Added the missing direct documentation and focused test relations in
   `docs/architecture/relations/documentation-links.csv` and
   `docs/architecture/relations/priority-test-links.csv` so the generated
   app-completion layer could see the route's doc/test coverage.
 - Rebuilt the architecture-awareness graph, reran the strict drift audit, then
   reran `app-completion` and `project-truth` in dependency order.
-- Final readback removed `route:page-tsx:63cfb064e6` from the indexed
-  priority-review queue and advanced the first Project Truth gap to
+- Final readback removed both `route:page-tsx:63cfb064e6` and
+  `route:page-tsx:05ef3cc126` from the indexed priority-review queue and
+  advanced the first Project Truth gap to
   `route:page-tsx:256cdda64e`
   (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
 
@@ -41,12 +48,13 @@
   `needsBrowserReview=35`, `missingTestLink=12`, `missingDocLink=2`,
   `riskItems=49`.
 - Final `docs/status/app-completion-index.json` no longer contains
-  `route:page-tsx:63cfb064e6` in `priorityReviewItems`.
+  `route:page-tsx:63cfb064e6` or `route:page-tsx:05ef3cc126` in
+  `priorityReviewItems`.
 - Final `docs/status/project-truth-index.json` first gap is now
   `route:page-tsx:256cdda64e` with evidence path
   `apps/web/src/app/dashboard/bots/[id]/page.tsx`.
 - Final `docs/status/project-truth-index.json` counts:
-  `appCompletionGaps=49`, `totalGaps=49`.
+  `appCompletionGaps=48`, `totalGaps=48`.
 
 ## Note On Refresh Order
 
@@ -60,8 +68,8 @@
 
 - This issue did not require a toolchain code repair.
 - The smallest correct repair was to add the exact edit-route doc/test
-  relations, keep the scoped proof override, and rerun the canonical
-  generators in dependency order.
+  relations, add the proven sibling preview-route doc link plus scoped proof
+  override, and rerun the canonical generators in dependency order.
 - The next docs/QA owner lane is the new first gap:
   `apps/web/src/app/dashboard/bots/[id]/page.tsx`
   (`route:page-tsx:256cdda64e`).

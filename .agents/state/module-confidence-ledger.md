@@ -1,15 +1,17 @@
-## 2026-07-22 LUC-1654 Project Truth Refresh After Bot Edit Proof
+## 2026-07-22 LUC-1654 Project Truth Refresh After Bot Edit And Preview Proof
 
 - Module row:
-  Dashboard overview / bot edit route truth refresh.
+  Dashboard overview / bot edit and preview route truth refresh.
 - Status delta:
   `VERIFIED / ISSUE_DONE`.
 - Confidence update:
   [LUC-1654](/LUC/issues/LUC-1654) ingested the fresh `LUC-1653` local route
   proof for `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`
-  (`route:page-tsx:63cfb064e6`) into the generated architecture-awareness,
-  app-completion, and project-truth outputs. The route no longer appears in
-  `docs/status/app-completion-index.json` as a priority-review item, and the
+  (`route:page-tsx:63cfb064e6`) and the qualifying sibling proof for
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`) into the generated architecture-awareness,
+  app-completion, and project-truth outputs. Those routes no longer appear in
+  `docs/status/app-completion-index.json` as priority-review items, and the
   first Project Truth gap now advances to
   `apps/web/src/app/dashboard/bots/[id]/page.tsx`
   (`route:page-tsx:256cdda64e`).
@@ -19,7 +21,7 @@
   `history/artifacts/luc-1654-paperclip-closeout-2026-07-22.md`.
 - Residual:
   the next docs/QA lane is the bot detail route; this issue closes the edit
-  route truth refresh only.
+  and preview route truth refresh only.
 
 ## 2026-07-22 LUC-1650 Dashboard Bot Assistant Page Browser Proof Refresh
 

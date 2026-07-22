@@ -1,16 +1,19 @@
-## 2026-07-22 LUC-1654 project-truth refresh after bot edit proof
+## 2026-07-22 LUC-1654 project-truth refresh after bot edit and preview proof
 
 - `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`
-  (`route:page-tsx:63cfb064e6`) is no longer the first generated Project Truth
-  gap after ingesting the fresh `LUC-1653` local route proof.
+  (`route:page-tsx:63cfb064e6`) and
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`) are no longer generated Project Truth gaps
+  after ingesting the fresh `LUC-1653` local route proof.
 - The fix was docs-state only:
   `docs/architecture/scanner-overrides.json` now carries the exact route proof
-  override, and the missing direct links were added in
+  overrides, and the missing direct links were added in
   `docs/architecture/relations/documentation-links.csv` and
   `docs/architecture/relations/priority-test-links.csv`.
-- Final generated counts are now `appCompletionGaps=49` and `totalGaps=49`.
+- Final generated counts are now `appCompletionGaps=48` and `totalGaps=48`.
   `docs/status/app-completion-index.json` no longer lists
-  `route:page-tsx:63cfb064e6` in `priorityReviewItems`.
+  `route:page-tsx:63cfb064e6` or `route:page-tsx:05ef3cc126` in
+  `priorityReviewItems`.
 - The refreshed first gap is `route:page-tsx:256cdda64e`
   (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
 - This heartbeat changed docs/index/state files only; it did not mutate

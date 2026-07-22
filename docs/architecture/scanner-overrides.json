@@ -55,6 +55,18 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact bot preview route wrapper for route:page-tsx:05ef3cc126 through the refreshed LUC-1653 local browser packet on 2026-07-22. The focused preview page test remained present, and the protected-route harness kept /dashboard/bots/luc-2188-bot/preview on the preview route. The aggregate bots packet stayed red only because it still includes the separate unauthenticated bots-list guardrail row tracked outside this issue.",
+      "evidence": [
+        "history/tasks/luc-1654-refresh-project-truth-after-bot-edit-proof-2026-07-22-task.md",
+        "history/evidence/luc-1653-local-protected-route-action-proof-matrix-2026-07-22.md",
+        "history/artifacts/luc-1653-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/[id]/preview/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

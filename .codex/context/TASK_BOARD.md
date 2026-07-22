@@ -1,16 +1,20 @@
-## 2026-07-22 LUC-1654 refresh Project Truth after bot edit proof
+## 2026-07-22 LUC-1654 refresh Project Truth after bot edit and preview proof
 
 - Status: `DONE`.
 - Scope:
   Documentation Steward refresh of generated truth after `LUC-1653` proved the
   exact bot edit route
   `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`
-  (`route:page-tsx:63cfb064e6`).
+  (`route:page-tsx:63cfb064e6`) and the qualifying sibling preview route
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`).
 - Outcome:
-  added the exact route proof override plus the missing direct doc/test
-  relations, reran the canonical graph/status refresh in dependency order, and
-  verified that `route:page-tsx:63cfb064e6` no longer appears in
-  `docs/status/app-completion-index.json` as a priority-review row. The new
+  added the exact edit-route proof override plus the missing direct doc/test
+  relations, added the exact preview-route proof override plus the missing
+  direct doc relation, reran the canonical graph/status refresh in dependency
+  order, and verified that `route:page-tsx:63cfb064e6` and
+  `route:page-tsx:05ef3cc126` no longer appear in
+  `docs/status/app-completion-index.json` as priority-review rows. The new
   first Project Truth gap is `route:page-tsx:256cdda64e`
   (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
 - Evidence:

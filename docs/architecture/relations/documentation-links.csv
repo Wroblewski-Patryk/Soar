@@ -70,6 +70,7 @@ apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts,docs/modules/
 apps/web/src/features/bots/utils/runtimeSignalLabelKeys.ts,docs/modules/web-bots.md
 apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts,docs/modules/web-bots.md
 apps/web/src/features/bots/utils/trailingStopDisplay.ts,docs/modules/web-bots.md
+apps/web/src/app/dashboard/bots/[id]/preview/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/[id]/edit/page.tsx,docs/modules/web-bots.md
 apps/web/src/features/shared/dcaLadderCell.tsx,docs/modules/web-shared.md
 apps/web/src/features/shared/runtimeMonitoringFormatters.ts,docs/modules/web-shared.md

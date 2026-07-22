@@ -2,14 +2,14 @@
 
 ## Header
 - ID: LUC-1654
-- Title: Refresh Project Truth after bot edit proof
+- Title: Refresh Project Truth after bot edit and preview proof
 - Task Type: research
 - Current Stage: verification
 - Status: DONE
 - Owner: Documentation/Memory
 - Depends on: LUC-1653
 - Priority: P1
-- Module Confidence Rows: dashboard overview / bot edit route browser-review truth
+- Module Confidence Rows: dashboard overview / bot edit and preview route browser-review truth
 - Requirement Rows: not applicable
 - Quality Scenario Rows: evidence freshness
 - Risk Rows: project-truth stale ingestion
@@ -34,7 +34,7 @@
 - [x] The task or mission improves release confidence, not only local code appearance.
 
 ## Mission Block
-- Mission objective: ingest the fresh LUC-1653 bot edit route proof into the generated project-truth outputs.
+- Mission objective: ingest the fresh LUC-1653 bot edit route proof and the qualifying preview sibling proof into the generated project-truth outputs.
 - Release objective advanced: reduce stale `needs_browser_review` routing for dashboard bot routes.
 - Included slices: scoped proof override, generator refresh, targeted readback, state/evidence updates.
 - Explicit exclusions: runtime code edits, new browser proof execution, deploy, push, production auth, FE/UX repair.
@@ -63,19 +63,19 @@
       is broad, repeated, partial, or subagent-heavy work.
 
 ## Context
-LUC-1650 already cleared the assistant route from generated project truth. The next first gap is the exact bot edit route `route:page-tsx:63cfb064e6`, even though LUC-1653 produced a fresh local protected-route proof packet showing `SOAR-ACTION-VISIT-PAGE-BOT-EDIT -> PASS` on `/dashboard/bots/luc-2188-bot/edit`.
+LUC-1650 already cleared the assistant route from generated project truth. The next first gap was the exact bot edit route `route:page-tsx:63cfb064e6`, even though LUC-1653 produced a fresh local protected-route proof packet showing `SOAR-ACTION-VISIT-PAGE-BOT-EDIT -> PASS` on `/dashboard/bots/luc-2188-bot/edit`. A same-day board comment allowed reconciling sibling bot routes from the same packet only if they mapped unambiguously, already had focused test linkage, and could be tied truthfully to canonical bot docs. That condition held for the exact preview route `route:page-tsx:05ef3cc126`.
 
 ## Goal
-Refresh the authoritative generated truth so the exact bot edit route consumes the existing LUC-1653 proof and no longer leads the project-truth queue.
+Refresh the authoritative generated truth so the exact bot edit route and the qualifying preview sibling route consume the existing LUC-1653 proof and no longer remain in the project-truth queue.
 
 ## Success Signal
 - User or operator problem: project-truth still routes follow-up work to an already-proven bot edit route.
 - Expected product or reliability outcome: generated truth reflects the current exact-route proof instead of stale `needs_browser_review` routing.
-- How success will be observed: `docs/status/app-completion-index.*` and `docs/status/project-truth-index.*` advance past `route:page-tsx:63cfb064e6`.
+- How success will be observed: `docs/status/app-completion-index.*` and `docs/status/project-truth-index.*` no longer carry `route:page-tsx:63cfb064e6` or `route:page-tsx:05ef3cc126`.
 - Post-launch learning needed: no
 
 ## Deliverable For This Stage
-Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proof is ingested by current generated truth, or document the exact blocker if the generator does not consume it.
+Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proof is ingested by current generated truth for the exact edit route and the single qualifying preview sibling route, or document the exact blocker if the generator does not consume it.
 
 ## Constraints
 - use existing systems and approved mechanisms
@@ -85,7 +85,7 @@ Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proo
 - stay within the declared current stage unless explicit approval changes it
 
 ## Definition of Done
-- [x] Scoped proof override exists for the exact bot edit route.
+- [x] Scoped proof overrides exist for the exact bot edit and preview routes.
 - [x] Canonical graph/status generators are rerun and read back.
 - [x] Durable task/evidence/state files record the result and residual.
 
@@ -162,7 +162,7 @@ Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proo
 ## Autonomous Loop Evidence
 
 ### 1. Analyze Current State
-- Issues: stale first gap in project-truth for `route:page-tsx:63cfb064e6`
+- Issues: stale project-truth gaps for `route:page-tsx:63cfb064e6` and board-approved sibling `route:page-tsx:05ef3cc126`
 - Gaps: generated truth has not consumed the latest exact-route proof
 - Inconsistencies: app-completion/project-truth still route work to a proven bot edit page
 - Architecture constraints: reuse scanner overrides and canonical generator chain
@@ -172,25 +172,25 @@ Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proo
 - Missing or template-like files: none required for this scoped issue
 - Sources scanned: `AGENTS.md`, `.agents/core/project-memory-index.md`, `.agents/state/active-mission.md`, `.agents/workflows/responsibility-lanes.md`, `docs/status/app-completion-index.*`, `docs/status/project-truth-index.*`, `docs/architecture/scanner-overrides.json`, `history/evidence/luc-1653-local-protected-route-action-proof-matrix-2026-07-22.md`
 - Rows created or corrected: pending
-- Assumptions recorded: the exact LUC-1653 edit-route proof is sufficient for a scoped local truth refresh
+- Assumptions recorded: the exact LUC-1653 edit-route proof is sufficient for a scoped local truth refresh, and the preview sibling is safe to reconcile because it already has focused test linkage and an exact PASS in the same packet
 - Blocking unknowns: none currently
 - Why it was safe to continue: prior route-proof closures use the same override plus generator-refresh mechanism
 
 ### 2. Select One Priority Mission Objective
-- Selected task: ingest the LUC-1653 bot edit route proof into generated project truth
+- Selected task: ingest the LUC-1653 bot edit route proof and the one qualifying preview sibling route into generated project truth
 - Priority rationale: it is the current first project-truth gap after LUC-1650 closed the prior exact route
 - Why other candidates were deferred: all other gaps remain downstream of this stale first-gap route
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: `docs/architecture/scanner-overrides.json`, `docs/graphs/*`, `docs/status/*`, `history/tasks/*`, `history/evidence/*`, `.agents/state/active-mission.md`, `.agents/state/module-confidence-ledger.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`
-- Logic: add the exact route proof override, rerun the canonical generator chain, then record targeted readback
+- Logic: add the exact route proof overrides and the one missing preview doc relation, rerun the canonical generator chain, then record targeted readback
 - Edge cases: aggregate proof packet may stay red while the exact target route still qualifies as verified
 
 ### 4. Execute Implementation
 - Implementation notes:
-  added the exact edit-route proof override in
+  added the exact edit-route proof override and a matching preview-route proof override in
   `docs/architecture/scanner-overrides.json`, plus the missing direct
-  doc/test relations in
+  doc/test relations for edit and the missing direct doc relation for preview in
   `docs/architecture/relations/documentation-links.csv` and
   `docs/architecture/relations/priority-test-links.csv`.
 
@@ -203,8 +203,9 @@ Produce a scoped docs/state/evidence packet proving that the LUC-1653 route proo
 - Result:
   the first parallel refresh left `project-truth` on a stale app-completion
   snapshot, so the app-completion and project-truth generators were rerun in
-  sequence. Final readback removed `route:page-tsx:63cfb064e6` from the
-  indexed priority-review queue and advanced the first project-truth gap to
+  sequence. Final readback removed `route:page-tsx:63cfb064e6` and
+  `route:page-tsx:05ef3cc126` from the indexed priority-review queue and
+  advanced the first project-truth gap to
   `route:page-tsx:256cdda64e`.
 
 ### 6. Self-Review
