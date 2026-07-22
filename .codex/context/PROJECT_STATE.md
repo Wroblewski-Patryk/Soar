@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1674 exact bot new alias proof ingest
+
+- `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`) has been ingested into the canonical docs and
+  graph inputs through the exact alias-route doc/test relations and scoped
+  scanner override.
+- Focused alias-route verification passed, and the
+  `architecture-awareness -> app-completion -> project-truth` generators were
+  rerun strictly in sequence.
+- The exact alias route is no longer the target generated gap for dashboard
+  bots. The next bot-related row is now
+  `apps/web/src/app/dashboard/bots/page.tsx`
+  (`route:page-tsx:0101cdb776`).
+- This heartbeat changed docs/index/state files only; it did not mutate runtime
+  code, deploy state, production auth, or the underlying `LUC-1673` proof
+  packet.
+- Evidence:
+  `history/evidence/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22.md`;
+  `history/tasks/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1673 dashboard bot legacy new-page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/bots/new/page.tsx`

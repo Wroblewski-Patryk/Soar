@@ -124,6 +124,9 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/bots/new/page.test.tsx`
+  - `app/dashboard/bots/assistant/page.test.tsx`
+  - `app/dashboard/bots/create/page.test.tsx`
   - `app/dashboard/bots/[id]/page.test.tsx`
   - `app/dashboard/bots/[id]/runtime/page.test.tsx`
   - `app/dashboard/bots/[id]/preview/page.test.tsx`

@@ -69,6 +69,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/new/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact bot new alias route wrapper for route:page-tsx:35ab7a2ecb through the fresh LUC-1673 local browser packet on 2026-07-22. The focused new alias page test passed, the protected-route harness visited /dashboard/bots/new and observed /dashboard/bots/create, and the exact alias source item stayed distinct from the canonical create page proof.",
+      "evidence": [
+        "history/tasks/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22-task.md",
+        "history/evidence/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22.md",
+        "history/evidence/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22.md",
+        "history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/new/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -1486,6 +1499,12 @@
       "toPath": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "type": "documents",
       "evidence": "LUC-1670 bot create route browser-review proof"
+    },
+    {
+      "fromPath": "docs/modules/web-bots.md",
+      "toPath": "apps/web/src/app/dashboard/bots/new/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1674 bot new alias route browser-review proof"
     },
     {
       "fromPath": "docs/modules/web-bots.md",

@@ -1,3 +1,25 @@
+## 2026-07-22 LUC-1674 Exact Bot New Alias Proof Ingest
+
+- Module row:
+  Dashboard overview / bot new alias page truth refresh.
+- Status delta:
+  `VERIFIED / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1674](/LUC/issues/LUC-1674) ingested the exact source item
+  `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`). The focused new-alias page test passed, the
+  direct doc/test links and scoped proof override were added, and the
+  canonical generator chain was rerun in sequence. The exact alias route no
+  longer appears as a generated review gap; the first remaining bot-related
+  row is now the separate `/dashboard/bots` page.
+- Evidence:
+  `history/tasks/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact docs-memory ingest only; the canonical bots
+  page and unrelated dashboard/browser gaps remain separate follow-up lanes.
+
 ## 2026-07-22 LUC-1670 Exact Bot Create Page Proof Ingest
 
 - Module row:

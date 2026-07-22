@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-22T23:01:22.151Z
+Generated: 2026-07-22T23:18:17.112Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,19 +15,19 @@ Internal functions and modules are implementation details: they receive proof th
 
 - Items: 86
 - User flows: 7
-- Needs browser/screenshot review: 30
+- Needs browser/screenshot review: 29
 - Missing test link: 12
 - Missing doc link: 2
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 44
-- Priority review items indexed: 44/44
+- Known non-ok risk items: 43
+- Priority review items indexed: 43/43
 - Priority review truncated: false
 
 ## Flow Summary
 
 - Account access: 36 entities; risks {"ok":36}; gates {"auth":36,"subscription":3,"configuration":2}
-- Dashboard overview: 24 entities; risks {"ok":5,"needs_browser_review":19}; gates {"configuration":1}
+- Dashboard overview: 24 entities; risks {"ok":6,"needs_browser_review":18}; gates {"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/new/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/runtime/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/logs/page.tsx | - |

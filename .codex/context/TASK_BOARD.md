@@ -1,3 +1,22 @@
+## 2026-07-22 LUC-1674 ingest exact bot new alias proof
+
+- Status: `DONE`.
+- Scope:
+  Documentation/Memory ingest lane for the exact bot new alias route
+  `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`).
+- Outcome:
+  added the exact alias-route source-to-doc relation, source-to-test relation,
+  and scoped proof override; reran architecture-awareness, app-completion, and
+  project-truth in the required sequence; and verified that the alias route no
+  longer appears in generated app-completion/project-truth gaps. The first
+  remaining bot-related gap is now `route:page-tsx:0101cdb776`
+  (`apps/web/src/app/dashboard/bots/page.tsx`).
+- Evidence:
+  `history/tasks/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1674-ingest-exact-bot-new-alias-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1673 prove dashboard overview needs-browser-review for app-dashboard-bots-new-page-tsx
 
 - Status: `DONE`.

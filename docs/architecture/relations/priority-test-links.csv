@@ -29,6 +29,7 @@ apps/web/src/features/auth/hooks/useHydrationReady.ts,apps/web/src/features/auth
 apps/web/src/features/auth/hooks/useHydrationReady.ts#useHydrationReady,apps/web/src/features/auth/hooks/useHydrationReady.test.tsx,LUC-1030 direct hydration-ready hook fail-closed server render and client hydration proof relation
 apps/web/src/app/dashboard/bots/assistant/page.tsx,apps/web/src/app/dashboard/bots/assistant/page.test.tsx,LUC-1667 direct global bot assistant alias route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/create/page.tsx,apps/web/src/app/dashboard/bots/create/page.test.tsx,LUC-1670 direct bot create route-shell relation to existing local route proof
+apps/web/src/app/dashboard/bots/new/page.tsx,apps/web/src/app/dashboard/bots/new/page.test.tsx,LUC-1674 direct bot new alias route-shell relation to exact local route proof
 apps/web/src/app/dashboard/bots/[id]/page.tsx,apps/web/src/app/dashboard/bots/[id]/page.test.tsx,LUC-1660 direct bot detail alias route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx,apps/web/src/app/dashboard/bots/[id]/runtime/page.test.tsx,LUC-1662 direct bot runtime redirect route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/[id]/edit/page.tsx,apps/web/src/app/dashboard/bots/[id]/edit/page.test.tsx,LUC-1654 direct bot edit route-shell relation to existing local route proof
