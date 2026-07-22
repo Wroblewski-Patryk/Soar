@@ -1,3 +1,66 @@
+## 2026-07-22 LUC-1680 dashboard bots runtime helper proof ingest
+
+- `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`) has been ingested into the canonical docs and
+  graph inputs through the exact route doc/test relations and scoped proof
+  override.
+- Focused runtime-helper verification remained green, and the
+  `architecture-awareness -> app-completion -> project-truth` generators were
+  rerun to completion in serial order after the first parallel downstream pass
+  preserved a stale `project-truth` readback.
+- The exact runtime helper page is no longer the target generated gap for
+  dashboard bots. The refreshed first generated gap is now
+  `apps/web/src/app/dashboard/logs/page.tsx`
+  (`route:page-tsx:5dc8509354`).
+- This heartbeat changed docs/index/state files only; it did not mutate
+  runtime code, deploy state, production auth, or the underlying `LUC-1679`
+  proof packet.
+- Evidence:
+  `history/evidence/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22.md`;
+  `history/tasks/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
+## 2026-07-22 LUC-1681 source-control closure for the dashboard bots runtime helper QA packet
+
+- The completed `LUC-1679` QA packet and `LUC-1680` docs-memory ingest for
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`) are now preserved by one local
+  source-control closure commit.
+- The classified dirty packet contained state/control files, docs/generated
+  truth refresh output, and the `LUC-1679` / `LUC-1680` / `LUC-1681` history
+  packet only. No product/runtime code, dependency, env, deploy, or account
+  mutation was included.
+- Bounded closure checks passed: `git status --short --untracked-files=all`
+  matched the scoped packet, `git diff --check` stayed clean apart from
+  line-ending warnings, the high-confidence secret scan returned no matches,
+  and post-commit `git status --short` was clean.
+- Evidence:
+  `history/evidence/luc-1681-source-control-closure-dashboard-bots-runtime-helper-qa-packet-2026-07-22.md`;
+  `history/tasks/luc-1681-source-control-close-dashboard-bots-runtime-helper-qa-packet-2026-07-22-task.md`;
+  `history/artifacts/luc-1681-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1679 dashboard bots runtime helper page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`) now has exact QA evidence for the generated
+  Dashboard overview browser-review row.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/runtime/page.test.tsx --reporter=verbose`
+  passed `1` file / `4` tests and proved the helper route still redirects
+  `botId` to canonical preview, maps legacy `orders` and `positions` to the
+  dashboard home anchors, and falls back to `/dashboard/bots`.
+- The authoritative browser proof for this heartbeat reuses the fresh same-day
+  `LUC-1665` JSON `.routes` row:
+  `SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME` passed on `/dashboard/bots/runtime` and
+  observed `/dashboard/bots` with the local protected cookie gate.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22.md`;
+  `history/tasks/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1678 source-control closure for the dashboard bots overview truth packet
 
 - The completed `LUC-1676` QA proof refresh and `LUC-1677` docs-memory ingest

@@ -69,6 +69,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/runtime/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact runtime helper route wrapper for route:page-tsx:02f88c4a44 through the fresh LUC-1679 local browser packet on 2026-07-22. The focused runtime helper page test passed, the protected-route harness visited /dashboard/bots/runtime and observed /dashboard/bots under the authenticated local cookie gate, and the helper route stayed distinct from the canonical bots list page proof.",
+      "evidence": [
+        "history/tasks/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22-task.md",
+        "history/evidence/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22.md",
+        "history/evidence/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22.md",
+        "history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/runtime/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

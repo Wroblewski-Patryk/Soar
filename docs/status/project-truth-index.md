@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-22T23:33:54.679Z
+Generated: 2026-07-22T23:46:54.137Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,14 +13,14 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 42 |
-| indexedAppCompletionGaps | 42 |
-| knownAppCompletionRiskItems | 42 |
-| appCompletionPriorityReviewItems | 42 |
+| appCompletionGaps | 41 |
+| indexedAppCompletionGaps | 41 |
+| knownAppCompletionRiskItems | 41 |
+| appCompletionPriorityReviewItems | 41 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 42 |
-| totalGaps | 42 |
+| indexedGaps | 41 |
+| totalGaps | 41 |
 
 ## First Gap
 
@@ -32,7 +32,6 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |

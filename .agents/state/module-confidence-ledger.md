@@ -1,3 +1,69 @@
+## 2026-07-22 LUC-1680 Dashboard Runtime Helper Proof Ingest
+
+- Module row:
+  Dashboard overview / runtime helper page truth refresh.
+- Status delta:
+  `VERIFIED / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1680](/LUC/issues/LUC-1680) ingested the exact source item
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`). The focused runtime-helper page test stayed
+  green, the direct doc/test links and scoped proof override were added, and
+  the canonical generator chain was rerun in the required serial order after a
+  stale parallel readback. The exact runtime helper route no longer needs to
+  remain as a generated dashboard browser-review gap.
+- Evidence:
+  `history/tasks/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  generated truth now advances to `apps/web/src/app/dashboard/logs/page.tsx`
+  (`route:page-tsx:5dc8509354`) as the next dashboard browser-review gap.
+
+## 2026-07-22 LUC-1681 Dashboard Runtime Helper QA Packet Source-Control Closure
+
+- Module row:
+  Dashboard overview / runtime helper page browser-review packet closure.
+- Status delta:
+  `VERIFIED_LOCAL_SOURCE_CONTROL / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1681](/LUC/issues/LUC-1681) classified the completed `LUC-1679` and
+  `LUC-1680` dirty set for
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`) as one coherent local source-control bundle.
+  The packet contained state/control files, canonical docs/generated-truth
+  refresh output, and bounded history artifacts only, then was preserved with
+  one local commit after scoped git and redaction checks.
+- Evidence:
+  `history/tasks/luc-1681-source-control-close-dashboard-bots-runtime-helper-qa-packet-2026-07-22-task.md`;
+  `history/evidence/luc-1681-source-control-closure-dashboard-bots-runtime-helper-qa-packet-2026-07-22.md`;
+  `history/artifacts/luc-1681-paperclip-closeout-2026-07-22.md`.
+- Residual:
+  this heartbeat closes the local source-control packet only; it does not add
+  new runtime proof beyond `LUC-1679` or new ingest scope beyond `LUC-1680`.
+
+## 2026-07-22 LUC-1679 Dashboard Runtime Helper Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / runtime helper page browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1679](/LUC/issues/LUC-1679) verified the exact runtime helper page
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`). The focused route test passed and the
+  `LUC-1665` protected-route packet shows the authenticated
+  `SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME` row passing on
+  `/dashboard/bots/runtime` with `observedPath=/dashboard/bots`.
+- Evidence:
+  `history/tasks/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact local QA proof packet only; any generated
+  truth/index ingest remains a separate docs lane if the project still wants
+  the row removed from `needs_browser_review`.
+
 ## 2026-07-22 LUC-1677 Dashboard Bots Overview Proof Ingest
 
 - Module row:

@@ -1,3 +1,19 @@
+## 2026-07-22 LUC-1680 dashboard bots runtime helper proof ingest complete
+
+- The scoped Dashboard overview browser-review gap for
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
+  (`route:page-tsx:02f88c4a44`) is no longer active after the refreshed
+  canonical generator-chain readback.
+- The next generated first gap is now browser-review proof on
+  `apps/web/src/app/dashboard/logs/page.tsx`
+  (`route:page-tsx:5dc8509354`), owned by QA Regression Lead + Frontend
+  Experience Lead.
+- The current local dirty packet now includes the `LUC-1680` docs/state/history
+  refresh and still requires a separate source-control closure lane if the work
+  is to be committed.
+- Evidence:
+  `history/evidence/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22.md`.
+
 ## 2026-07-21 LUC-1569 protected post-Redis readiness readback blocked by missing smoke auth binding
 
 - Read-only Coolify inventory is current:
