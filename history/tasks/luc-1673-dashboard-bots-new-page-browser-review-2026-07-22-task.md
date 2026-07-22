@@ -92,7 +92,9 @@ current app-completion row and leave a truthful issue disposition.
   the requested alias route has current QA evidence or a route-specific blocker.
 - How success will be observed:
   the focused alias test passes and a fresh same-day browser proof row shows
-  `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS` passed for `/dashboard/bots/new`.
+  `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS` passed for `/dashboard/bots/new`,
+  bound to `apps/web/src/app/dashboard/bots/new/page.tsx` and its focused
+  `page.test.tsx`.
 - Post-launch learning needed: no
 
 ## Deliverable For This Stage
@@ -131,7 +133,8 @@ focused validation results, exact route proof artifact path, and issue closeout.
 - Manual checks:
   `Get-Content history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json -Raw | ConvertFrom-Json | Select-Object -ExpandProperty routes | Where-Object { $_.actionId -eq 'SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS' -and $_.route -eq '/dashboard/bots/new' }`
   -> PASS with `observedPath=/dashboard/bots/create` from the fresh
-  `LUC-1665` same-day artifact.
+  `LUC-1665` same-day artifact. This is the exact static alias row for
+  `apps/web/src/app/dashboard/bots/new/page.tsx`.
 - Screenshots/logs:
   `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`;
   `history/evidence/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22.md`.
@@ -186,7 +189,7 @@ focused validation results, exact route proof artifact path, and issue closeout.
 - Accessibility checks:
   existing focused route test coverage only.
 - Parity evidence:
-  exact local protected-route proof row.
+  exact local protected-route alias proof row for `/dashboard/bots/new`.
 
 ## Deployment / Ops Evidence
 - Deploy impact: none
@@ -269,7 +272,9 @@ focused validation results, exact route proof artifact path, and issue closeout.
 - Scalability assessment:
   reusing the exact same-day alias route row is narrower and avoids unnecessary duplicate browser work.
 - Refinements made:
-  bound the exact alias proof row explicitly instead of citing the broader bots packet generically.
+  bound the exact alias proof row explicitly to
+  `apps/web/src/app/dashboard/bots/new/page.tsx` and its focused
+  `page.test.tsx` instead of citing the broader bots packet generically.
 
 ### 7. Update Documentation and Knowledge
 - Docs updated:

@@ -11,7 +11,9 @@
   `LUC-1665` JSON `.routes` row:
   `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS` passed and observed
   `/dashboard/bots/create` after visiting `/dashboard/bots/new` with the local
-  protected cookie gate.
+  protected cookie gate. That row is bound to the exact alias source item
+  `apps/web/src/app/dashboard/bots/new/page.tsx` and its focused
+  `page.test.tsx`, not to the create-page source item.
 - This heartbeat changed proof evidence and QA state only; it did not mutate
   runtime code, deploy state, production auth, or generated completion/truth
   indexes.

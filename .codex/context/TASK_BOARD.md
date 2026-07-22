@@ -12,8 +12,11 @@
   create route. The exact browser-proof source was then bound from the fresh
   same-day `LUC-1665` JSON `.routes` row for
   `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS`, which passes on
-  `/dashboard/bots/new` and observes `/dashboard/bots/create`; no duplicate
-  broad harness rerun was needed in this heartbeat.
+  `/dashboard/bots/new` and observes `/dashboard/bots/create`. The evidence is
+  tied to the exact alias source item
+  `apps/web/src/app/dashboard/bots/new/page.tsx` and its focused
+  `page.test.tsx`; no duplicate broad harness rerun was needed in this
+  heartbeat.
 - Evidence:
   `history/tasks/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22-task.md`;
   `history/evidence/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22.md`;

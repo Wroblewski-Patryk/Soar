@@ -9,9 +9,10 @@
 
 - Classification: `implemented and verified`
 - Verified proof basis:
-  - fresh focused alias-route redirect test pass on 2026-07-22
-  - fresh same-day exact local protected-route proof row already captured under
-    `LUC-1665`
+  - fresh focused alias-route redirect test pass on 2026-07-22 for
+    `apps/web/src/app/dashboard/bots/new/page.test.tsx`
+  - fresh same-day exact static alias-route proof row already captured under
+    `LUC-1665` for `/dashboard/bots/new`
 - Source-truth outcome:
   the alias page now has exact QA evidence showing `/dashboard/bots/new`
   redirects into the canonical create route under the protected local browser
@@ -21,13 +22,17 @@
 
 - `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/new/page.test.tsx --reporter=verbose`
   passed (`1` file / `1` test), proving:
-  - the page immediately calls `redirect("/dashboard/bots/create")`
+  - `apps/web/src/app/dashboard/bots/new/page.tsx` immediately calls
+    `redirect("/dashboard/bots/create")`
 - Targeted JSON readback from
   `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`
   confirms:
   - `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS` for `/dashboard/bots/new` is `PASS`
   - `observedPath` is `/dashboard/bots/create`
   - notes: `redirect reached expected bots route with local cookie gate`
+  - this row is the exact page-bound alias proof for
+    `apps/web/src/app/dashboard/bots/new/page.tsx`, not inherited from the
+    create-page source item
 
 ## Diagnosis
 
@@ -37,7 +42,8 @@
   route lands on `/dashboard/bots/create` inside the approved local protected
   route harness.
 - A separate full browser rerun was unnecessary because the fresh same-day
-  `LUC-1665` artifact already contains the exact alias route row.
+  `LUC-1665` artifact already contains the exact alias route row for
+  `/dashboard/bots/new`.
 
 ## Residual Risk
 
