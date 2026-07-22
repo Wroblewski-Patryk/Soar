@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1628 dashboard bot assistant browser proof
+
+- `route:page-tsx:58248c9afe` currently dispatches as `Dashboard overview` in
+  `docs/status/project-truth-index.json`, but the linked source evidence now
+  resolves to `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`.
+- Focused route coverage stayed green:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx`
+  passed for localized breadcrumbs and locked assistant-tab behavior.
+- Fresh browser proof for the exact dynamic assistant route now exists under
+  `LUC-1628`; the local protected-route matrix shows
+  `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` as `PASS` with `200` on
+  `/dashboard/bots/luc-2188-bot/assistant`.
+- The aggregate proof runner status remains `FAIL` only because the bots
+  cluster also records the expected unauthenticated `/dashboard/bots`
+  fail-closed row; this does not invalidate the requested assistant-route
+  proof.
+- Evidence:
+  `history/evidence/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/tasks/luc-1628-dashboard-bot-assistant-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1627 source-control closure for LUC-1467-LUC-1613
 
 - The local Soar dirty set left by the Wednesday, July 22, 2026 `LUC-1467`

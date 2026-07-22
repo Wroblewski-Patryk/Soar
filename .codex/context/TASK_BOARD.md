@@ -1,3 +1,30 @@
+## 2026-07-22 LUC-1628 dashboard bot assistant page browser-review proof
+
+- Status: `DONE`.
+- Scope:
+  QA-owned browser-review proof for the project-truth `needs_browser_review`
+  row currently emitted as `route:page-tsx:58248c9afe`.
+- Findings:
+  the current project-truth dispatcher still labels this row as
+  `Dashboard overview`, but the linked source item now resolves to
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`.
+- Verification:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx`
+  -> PASS;
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1628 --today 2026-07-22 --clusters bots --dynamic-fixtures-only --intercept-fixture-api ...`
+  -> aggregate FAIL because the bots cluster includes the expected
+  unauthenticated `/dashboard/bots` fail-closed row, while the requested
+  `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` route passed with `200` on
+  `/dashboard/bots/luc-2188-bot/assistant`.
+- Outcome:
+  the requested visible assistant route now has a fresh inspectable local proof
+  packet under `LUC-1628`; a follow-up truth/index reconciliation issue was
+  opened for the stale `Dashboard overview` classification.
+- Evidence:
+  `history/tasks/luc-1628-dashboard-bot-assistant-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1628-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1627 classify and close local dirty state for LUC-1467-LUC-1613
 
 - Status: `DONE`.
