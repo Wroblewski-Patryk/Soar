@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-20T15:26:35.322Z
+Generated: 2026-07-22T21:09:56.825Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 144
+- Raw tasks without architecture links: 145
 - Actionable implementation entities without task links: 1450
-- Raw implementation entities without task links: 1742
+- Raw implementation entities without task links: 1741
 - Classified task-linkage noise: 436
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 258
-- historical_task_archive: 144
+- curated_graph_covered: 257
+- historical_task_archive: 145
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -127,6 +127,7 @@ Every task should identify the feature/module it changes, dependency expectation
 - luc-1400-source-control-closure-2026-07-17-task (history/tasks/luc-1400-source-control-closure-2026-07-17-task.md)
 - Task (history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md)
 - Task (history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md)
+- LUC-1467 Review Productivity Resume Delta 2026-07-22 Task (history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md)
 - LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
 - LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
@@ -151,7 +152,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/luc-1556-confirm-coolify-team-workspace-2026-06-02-task.md)
 - Task (history/tasks/luc-1560-confirm-coolify-team-workspace-binding-2026-06-02-task.md)
 - Task (history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md)
-- LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
 
 ### Raw Implementation Without Task Links
 

@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-20T15:26:35.322Z",
+  "generated_at": "2026-07-22T21:09:56.825Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15363,
-    "relations": 42534,
+    "entities": 15435,
+    "relations": 42870,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5186,
+      "document": 5242,
       "feature": 291,
       "function": 5319,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1946,
+      "task": 1962,
       "test": 522
     },
     "by_status": {
-      "blocked": 190,
+      "blocked": 188,
       "deprecated": 10,
-      "implemented": 12395,
+      "implemented": 12450,
       "in_progress": 28,
-      "tested": 930,
-      "verified": 1810
+      "tested": 929,
+      "verified": 1830
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1728,
+      "count": 1727,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1454,
+      "count": 1453,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1271,
+        "curated_graph_covered": 1270,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -8276,7 +8276,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 144,
+      "count": 145,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -8395,7 +8395,15 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md",
-          "status": "blocked",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1467-review-productivity-resume-delta-2026-07-22-task:3e1bc15f6b",
+          "type": "task",
+          "name": "LUC-1467 Review Productivity Resume Delta 2026-07-22 Task",
+          "path": "history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md",
+          "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
         {
@@ -11038,7 +11046,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1742,
+      "count": 1741,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -12646,8 +12654,8 @@
       "count": 436,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 258,
-        "historical_task_archive": 144,
+        "curated_graph_covered": 257,
+        "historical_task_archive": 145,
         "top_level_app_mount": 1
       },
       "items": [
@@ -12782,7 +12790,16 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md",
-          "status": "blocked",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-1467-review-productivity-resume-delta-2026-07-22-task:3e1bc15f6b",
+          "type": "task",
+          "name": "LUC-1467 Review Productivity Resume Delta 2026-07-22 Task",
+          "path": "history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md",
+          "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
         },
@@ -14438,15 +14455,6 @@
           "type": "feature",
           "name": "pairStatsMetricDisplay.ts",
           "path": "apps/web/src/features/backtest/utils/pairStatsMetricDisplay.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:timelineindicatoroverlays-ts:a6acc19653",
-          "type": "feature",
-          "name": "timelineIndicatorOverlays.ts",
-          "path": "apps/web/src/features/backtest/utils/timelineIndicatorOverlays.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

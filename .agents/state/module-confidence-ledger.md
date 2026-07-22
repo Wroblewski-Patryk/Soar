@@ -1,3 +1,29 @@
+## 2026-07-22 LUC-1650 Dashboard Bot Assistant Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / dynamic bot assistant route browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1650](/LUC/issues/LUC-1650) reran the exact-route QA proof for
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`
+  (`route:page-tsx:58248c9afe`). The focused page test passed and proved the
+  localized assistant breadcrumb state plus `BotsManagement` locked to the
+  assistant tab for the selected bot id. The local protected-route harness
+  also passed the exact assistant action
+  `/dashboard/bots/luc-2188-bot/assistant` with `200` and the expected final
+  path. A follow-up doc relation from `docs/modules/web-bots.md` cleared the
+  remaining `missing_doc_link` classification, so the route no longer appears
+  in `docs/status/app-completion-index.json` as a priority-review item.
+- Evidence:
+  `history/tasks/luc-1650-dashboard-overview-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat now closes the exact dynamic assistant-route proof packet
+  and its doc-link follow-up; any broader bots-cluster repair work belongs to
+  a separate lane if it is still required.
+
 ## 2026-07-22 LUC-1643 Dashboard Overview Page Browser Proof Refresh
 
 - Module row:

@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1650 dashboard bot assistant page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`
+  (`route:page-tsx:58248c9afe`).
+- Outcome:
+  the focused route test for
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.test.tsx` passed, and
+  the local protected-route harness proved the exact dynamic route
+  `/dashboard/bots/luc-2188-bot/assistant` with a synthetic authenticated
+  session. The aggregate bots-cluster packet stayed red because it still
+  includes the expected unauthenticated guardrail row plus a non-target create
+  clickthrough failure.
+- Residual:
+  this heartbeat refreshes the exact dynamic assistant-route proof packet only;
+  broader bots-cluster or generated truth/index reconciliation remains a
+  separate lane if required.
+
 ## 2026-07-22 LUC-1649 source-control closure for LUC-1643
 
 - Status: `VERIFIED`.

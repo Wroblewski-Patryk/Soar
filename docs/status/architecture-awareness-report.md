@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-20T15:26:35.322Z
+Generated: 2026-07-22T21:09:56.825Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5186 |
+| document | 5242 |
 | feature | 291 |
 | function | 5319 |
 | migration | 57 |
@@ -19,30 +19,30 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1946 |
+| task | 1962 |
 | test | 522 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 190 |
+| blocked | 188 |
 | deprecated | 10 |
-| implemented | 12395 |
+| implemented | 12450 |
 | in_progress | 28 |
-| tested | 930 |
-| verified | 1810 |
+| tested | 929 |
+| verified | 1830 |
 
 ## Health Signals
 
 - Raw implementation entities without inferred tests: 3794
 - Actionable implementation entities without inferred tests: 2548
-- Raw implementation entities without inferred docs: 1728
+- Raw implementation entities without inferred docs: 1727
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1454
-- Raw tasks without architecture links: 144
+- Classified inferred-link noise: 1453
+- Raw tasks without architecture links: 145
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 1742
+- Raw implementation entities without task links: 1741
 - Actionable implementation entities without task links: 1450
 - Classified task-linkage noise: 436
 - Entities without owner attribution: 0
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1271
+- curated_graph_covered: 1270
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -187,8 +187,8 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 258
-- historical_task_archive: 144
+- curated_graph_covered: 257
+- historical_task_archive: 145
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples
@@ -208,6 +208,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: luc-1400-source-control-closure-2026-07-17-task (history/tasks/luc-1400-source-control-closure-2026-07-17-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1454-source-control-closure-luc-1443-luc-1448-luc-1449-2026-07-18-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1460-diagnose-production-ready-503-and-route-narrowest-recovery-lane-2026-07-18-task.md)
+- historical_task_archive: task: LUC-1467 Review Productivity Resume Delta 2026-07-22 Task (history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md)
 - historical_task_archive: task: LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
 - historical_task_archive: task: LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
 - historical_task_archive: task: LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
@@ -232,12 +233,11 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - historical_task_archive: task: Task (history/tasks/luc-1556-confirm-coolify-team-workspace-2026-06-02-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1560-confirm-coolify-team-workspace-binding-2026-06-02-task.md)
 - historical_task_archive: task: Task (history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md)
-- historical_task_archive: task: LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
 
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 80, relation entries: 94).
-- Override summary: excluded files 0, entity overrides 80, relation overrides 94, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 81, relation entries: 95).
+- Override summary: excluded files 0, entity overrides 81, relation overrides 95, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

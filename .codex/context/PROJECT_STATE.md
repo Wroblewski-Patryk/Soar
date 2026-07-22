@@ -1,3 +1,28 @@
+## 2026-07-22 LUC-1650 dashboard bot assistant page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`
+  (`route:page-tsx:58248c9afe`) now has a fresh local browser-review packet
+  under `LUC-1650`, plus the minimal doc relation needed for Project Truth to
+  treat it as documented.
+- Focused route verification is green:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx --reporter=verbose`
+  passed `1/1` and proved the localized assistant breadcrumb state plus
+  `BotsManagement` locked to the assistant tab for the selected bot id.
+- The local protected-route harness also proved the exact dynamic route:
+  `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` passed with `200` on
+  `/dashboard/bots/luc-2188-bot/assistant`.
+- The generated packet now reports `appCompletionGaps=50` and
+  `totalGaps=50`. `route:page-tsx:58248c9afe` no longer appears in
+  `docs/status/app-completion-index.json` as `needs_browser_review`; the
+  remaining first gap is `route:page-tsx:63cfb064e6`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or the remaining open
+  completion/truth gaps.
+- Evidence:
+  `history/evidence/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/tasks/luc-1650-dashboard-overview-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1649 source-control closure for LUC-1643
 
 - The local Soar dirty set left by the completed `LUC-1643` dashboard overview

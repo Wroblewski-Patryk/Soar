@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T14:06:53.407Z",
+  "generatedAt": "2026-07-22T21:09:56.862Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,14 +7,14 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 37,
+    "needsBrowserReview": 36,
     "missingTestLink": 12,
     "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 51,
-    "appCompletionRiskItems": 51,
-    "priorityReviewItems": 51,
+    "riskItems": 50,
+    "appCompletionRiskItems": 50,
+    "priorityReviewItems": 50,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -43,8 +43,8 @@
       "userFlow": "Dashboard overview",
       "total": 30,
       "risks": {
-        "ok": 4,
-        "needs_browser_review": 26
+        "ok": 5,
+        "needs_browser_review": 25
       },
       "gates": {
         "configuration": 1
@@ -92,25 +92,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "route:page-tsx:58248c9afe",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 5,
-      "risk": "needs_browser_review"
-    },
-    {
       "id": "route:page-tsx:63cfb064e6",
       "type": "route",
       "kind": "screen_or_route",
@@ -126,7 +107,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 5,
+      "relatedEntityCount": 7,
       "risk": "needs_browser_review"
     },
     {

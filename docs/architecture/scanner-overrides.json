@@ -43,6 +43,18 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact assistant route wrapper for route:page-tsx:58248c9afe through the corrected LUC-1650 local browser packet on 2026-07-22. The focused assistant page test passed, the protected-route harness kept /dashboard/bots/luc-2188-bot/assistant on the assistant route, and the unrelated aggregate bots rows stayed red without changing the exact route proof.",
+      "evidence": [
+        "history/tasks/luc-1650-dashboard-overview-page-browser-review-2026-07-22-task.md",
+        "history/evidence/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.md",
+        "history/artifacts/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/[id]/assistant/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/backtests/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -1394,6 +1406,12 @@
       "toPath": "apps/web/src/app/dashboard/backtests/list/page.tsx",
       "type": "documents",
       "evidence": "LUC-1437 backtests list route wrapper module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-bots.md",
+      "toPath": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1650 assistant route browser-review proof"
     }
   ]
 }

@@ -1,3 +1,29 @@
+## 2026-07-22 LUC-1650 dashboard bot assistant page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx`
+  (`route:page-tsx:58248c9afe`).
+- Outcome:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/assistant/page.test.tsx --reporter=verbose`
+  passed in `apps/web` (`1/1`), proving the localized assistant breadcrumb
+  state plus `BotsManagement` locked to the assistant tab for the selected bot
+  id. Then
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1650 --today 2026-07-22 --clusters bots --dynamic-fixtures-only --intercept-fixture-api ...`
+  wrote a fresh JSON/Markdown proof packet under the current issue id. The
+  exact target action `SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT` passed with `200`
+  on `/dashboard/bots/luc-2188-bot/assistant`. A follow-up doc relation from
+  `docs/modules/web-bots.md` cleared the remaining `missing_doc_link`
+  classification, so `route:page-tsx:58248c9afe` no longer appears in
+  `docs/status/app-completion-index.json` as a priority-review item and the
+  generated counts dropped to `appCompletionGaps=50` and `totalGaps=50`.
+- Evidence:
+  `history/tasks/luc-1650-dashboard-overview-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1650-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1649 classify and close local dirty state for LUC-1643
 
 - Status: `DONE`.
