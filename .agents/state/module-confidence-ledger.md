@@ -1,3 +1,50 @@
+## 2026-07-22 LUC-1670 Exact Bot Create Page Proof Ingest
+
+- Module row:
+  Dashboard overview / bot create page truth refresh.
+- Status delta:
+  `VERIFIED / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1670](/LUC/issues/LUC-1670) ingested the exact source item
+  `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`). The focused create-page test passed, the
+  direct doc/test links and scoped proof override were added, and the
+  canonical generator chain was rerun in sequence. The exact create route no
+  longer appears as the first generated gap; the remaining first bot-related
+  row is the separate `/dashboard/bots/new` alias route.
+- Evidence:
+  `history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`;
+  `history/artifacts/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact docs-memory ingest only; the legacy
+  `/dashboard/bots/new` alias row and unrelated bots-cluster/browser gaps
+  remain separate follow-up lanes.
+
+## 2026-07-22 LUC-1669 Dashboard Bot Create Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / bot create page browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1669](/LUC/issues/LUC-1669) verified the exact source item
+  `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`). The focused create-page test passed, and the
+  fresh `LUC-1665` local protected-route `.routes` row proved
+  `SOAR-ACTION-VISIT-PAGE-BOT-CREATE` by clicking the create/add action from
+  `/dashboard/bots` and landing on `/dashboard/bots/create`.
+- Evidence:
+  `history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact local proof packet only; the bots-cluster
+  aggregate still reports the separate unauthenticated protected-list
+  fail-closed row, and any generated truth/index ingest remains a separate
+  docs lane if the project still wants the row removed from
+  `needs_browser_review`.
+
 ## 2026-07-22 LUC-1665 Dashboard Assistant Page Browser Proof Refresh
 
 - Module row:

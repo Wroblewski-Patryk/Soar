@@ -2,6 +2,22 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-22 - Source Control closure requires a commit, not only classification
+- Symptom:
+  `LUC-1671` classified a coherent proof packet and marked the Paperclip issue
+  done while the Soar worktree was still dirty.
+- Root cause:
+  the agent treated "No push or deploy" as permission to omit the explicitly
+  required local commit.
+- Correct response:
+  a Source Control lane must create a local commit and verify clean
+  post-commit status unless it records an exact blocker and leaves the issue
+  open. Push and deploy remain separate governed actions.
+- Verified recovery:
+  supervisor recovery corrected the closeout files, committed the complete
+  packet, verified the worktree clean, and replaced the inaccurate completion
+  evidence in Paperclip.
+
 ### 2026-07-22 - Generated docs can appear dirty even when content matches HEAD
 - Symptom:
   a cancelled docs follow-up reopened the exact preview-route truth refresh
@@ -148,9 +164,17 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   `verified`. A sequential rerun dropped `implementedNeedsProof` from `112` to
   `111` and advanced the first Account access gap to
   `resolveSingleCanonicalStrategyId` as `missing_doc_link`.
+- Reconfirmed:
+  [LUC-1670](/LUC/issues/LUC-1670) initially preserved
+  `apps/web/src/app/dashboard/bots/create/page.tsx` as the first
+  `needs_browser_review` row when the three generators were launched in
+  parallel. Rerunning the same chain sequentially removed
+  `route:page-tsx:114b5cc57c` from generated truth and advanced the first
+  bot-related gap to `apps/web/src/app/dashboard/bots/new/page.tsx`.
 - Evidence:
   `history/evidence/luc-1054-account-access-resolveclosedresult-proof-2026-07-14.md`;
-  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`.
+  `history/tasks/luc-1054-account-access-resolveclosedresult-proof-2026-07-14-task.md`;
+  `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`.
 
 ### 2026-07-13 - Redirect architecture-awareness builder stdout to an artifact log
 - Symptom:

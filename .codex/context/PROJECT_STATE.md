@@ -1,3 +1,61 @@
+## 2026-07-22 LUC-1671 source-control closure for LUC-1670 exact bot create page proof ingest
+
+- Status: `DONE`.
+- Scope:
+  close the local dirty bundle left by `LUC-1670` after the exact bot create
+  page proof ingest completed.
+- Outcome:
+  the packet is classified as coherent state/evidence work only, with the new
+  `LUC-1671` task/evidence/closeout artifacts attached to the source-of-truth
+  history trail.
+- Evidence:
+  `history/tasks/luc-1671-source-control-close-bot-create-page-proof-packet-2026-07-22-task.md`;
+  `history/evidence/luc-1671-source-control-closure-bot-create-page-proof-packet-2026-07-22.md`;
+  `history/artifacts/luc-1671-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1670 exact bot create page proof ingest
+
+- `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`) has been ingested into the canonical docs and
+  graph inputs through the exact create-route doc/test relations and scoped
+  scanner override.
+- Focused create-route verification passed, and the
+  `architecture-awareness -> app-completion -> project-truth` generators were
+  rerun strictly in sequence.
+- The exact create route is no longer the target generated gap for dashboard
+  bots. The next bot-related row is now
+  `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`).
+- This heartbeat changed docs/index/state files only; it did not mutate runtime
+  code, deploy state, production auth, or the underlying `LUC-1669` proof
+  packet.
+- Evidence:
+  `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`;
+  `history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md`;
+  `history/artifacts/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
+## 2026-07-22 LUC-1669 dashboard bot create page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`) now has a fresh local browser-review packet
+  bound under `LUC-1669` from the fresh `LUC-1665` `.routes` proof row.
+- Focused route verification is green:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/create/page.test.tsx --reporter=verbose`
+  passed `3/3` and proved the legacy `editId` redirect plus create-mode
+  rendering when query params are absent.
+- The authoritative browser proof for this heartbeat reuses the exact
+  `LUC-1665` JSON `.routes` row:
+  `SOAR-ACTION-VISIT-PAGE-BOT-CREATE` passed and landed on
+  `/dashboard/bots/create` after clicking the create/add action from the bots
+  list. Only the focused create-page Vitest file was rerun in `LUC-1669`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/evidence/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1667 exact global bot assistant alias proof ingest
 
 - `apps/web/src/app/dashboard/bots/assistant/page.tsx`

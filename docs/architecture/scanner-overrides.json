@@ -56,6 +56,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact bot create route wrapper for route:page-tsx:114b5cc57c through the fresh LUC-1669 local browser packet on 2026-07-22. The focused create page test passed, the protected-route harness clicked the create/add action from /dashboard/bots and reached /dashboard/bots/create, and the aggregate bots packet stayed red only because it still includes the separate unauthenticated bots-list guardrail row tracked outside this issue.",
+      "evidence": [
+        "history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md",
+        "history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md",
+        "history/evidence/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.md",
+        "history/artifacts/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/bots/create/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
@@ -1467,6 +1480,12 @@
       "toPath": "apps/web/src/app/dashboard/backtests/list/page.tsx",
       "type": "documents",
       "evidence": "LUC-1437 backtests list route wrapper module ownership"
+    },
+    {
+      "fromPath": "docs/modules/web-bots.md",
+      "toPath": "apps/web/src/app/dashboard/bots/create/page.tsx",
+      "type": "documents",
+      "evidence": "LUC-1670 bot create route browser-review proof"
     },
     {
       "fromPath": "docs/modules/web-bots.md",

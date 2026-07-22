@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-22T22:36:37.884Z
+Generated: 2026-07-22T22:55:00.082Z
 
 ## Canonical Exports
 
@@ -1125,7 +1125,10 @@ Generated: 2026-07-22T22:36:37.884Z
 | connected_to | project:soar:7c70e892d7 | task:task:b6a578f4cc | history/tasks/luc-1666-reconcile-coolify-resource-inventory-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:503770f579 | history/tasks/luc-1667-ingest-exact-global-bot-assistant-alias-proof-2026-07-22-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:afacc52ac9 | history/tasks/luc-1668-confirm-coolify-team-workspace-2026-06-03-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:923a126e02 | history/tasks/luc-1668-source-control-close-global-bot-assistant-alias-proof-2026-07-22-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:df5e62ad9a | history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e39e1e4f5d | history/tasks/luc-167-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:9ab89872d5 | history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1672-confirm-coolify-team-workspace:260ac4fbc0 | history/tasks/luc-1672-confirm-coolify-team-workspace-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:f68a4e303a | history/tasks/luc-1673-reconcile-coolify-resource-inventory-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3f5e9dfb13 | history/tasks/luc-1677-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
@@ -1215,6 +1218,3 @@ Generated: 2026-07-22T22:36:37.884Z
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-196-security-account-access-gate-canonical-contract-follow-up-2026-05-26:9b54d0625b | history/tasks/luc-196-security-account-access-gate-canonical-contract-followup-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-196-security-and-account-access-gate-sweep-2026-05-26:db60422f6b | history/tasks/luc-196-security-account-access-gate-sweep-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-196-source-scoped-recovery-disposition-reconciliation-2026-05-26:7032fd05e2 | history/tasks/luc-196-source-scoped-recovery-disposition-reconciliation-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1968-source-control-closure-for-luc-241:2eb2fb2cc1 | history/tasks/luc-1968-source-control-close-local-dirty-state-for-luc-241-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1969-task-contract-coolify-read-only-production-status-access:2626dedc09 | history/tasks/luc-1969-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1973-task-contract-coolify-read-only-production-status-access:9d750950ff | history/tasks/luc-1973-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |

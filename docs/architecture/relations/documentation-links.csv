@@ -188,6 +188,7 @@ apps/api/src/modules/subscriptions/payments/paymentGateway.types.ts,docs/modules
 apps/api/src/observability/metrics.ts#InMemoryMetricsStore,docs/operations/service-reliability-and-observability.md
 apps/api/src/workers/workerHeartbeat.ts#WorkerHeartbeatClient,docs/pipelines/deployment-readiness.md
 apps/web/src/features/bots/types/bot.type.ts,docs/modules/web-bots.md
+apps/web/src/app/dashboard/bots/create/page.tsx,docs/modules/web-bots.md
 apps/web/src/features/icons/types/icon.type.ts,docs/modules/web-icons.md
 apps/web/src/features/profile/types/user.type.ts,docs/modules/web-profile.md
 apps/api/prisma.config.ts,docs/architecture/data-ownership-map.md

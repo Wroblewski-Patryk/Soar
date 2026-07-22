@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:37:21.368Z",
+  "generatedAt": "2026-07-22T22:55:17.986Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,26 +7,26 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 31,
+    "needsBrowserReview": 30,
     "missingTestLink": 12,
     "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 45,
-    "appCompletionRiskItems": 45,
-    "priorityReviewItems": 45,
+    "riskItems": 44,
+    "appCompletionRiskItems": 44,
+    "priorityReviewItems": 44,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 35,
+      "total": 36,
       "risks": {
-        "ok": 35
+        "ok": 36
       },
       "gates": {
-        "auth": 35,
+        "auth": 36,
         "subscription": 3,
         "configuration": 2
       }
@@ -41,10 +41,10 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 25,
+      "total": 24,
       "risks": {
         "ok": 5,
-        "needs_browser_review": 20
+        "needs_browser_review": 19
       },
       "gates": {
         "configuration": 1
@@ -92,25 +92,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "route:page-tsx:114b5cc57c",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": false,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 5,
-      "risk": "needs_browser_review"
-    },
-    {
       "id": "route:page-tsx:35ab7a2ecb",
       "type": "route",
       "kind": "screen_or_route",
@@ -126,7 +107,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 3,
+      "relatedEntityCount": 7,
       "risk": "needs_browser_review"
     },
     {

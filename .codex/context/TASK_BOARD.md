@@ -1,3 +1,58 @@
+## 2026-07-22 LUC-1671 close bot create page proof packet
+
+- Status: `DONE`.
+- Scope:
+  source-control closure lane for the completed `LUC-1670` exact bot create
+  page proof packet.
+- Outcome:
+  classified the dirty bundle as one coherent state/evidence packet, added the
+  dedicated `LUC-1671` task/evidence/closeout artifacts, and left the runtime
+  product state unchanged.
+- Evidence:
+  `history/tasks/luc-1671-source-control-close-bot-create-page-proof-packet-2026-07-22-task.md`;
+  `history/evidence/luc-1671-source-control-closure-bot-create-page-proof-packet-2026-07-22.md`;
+  `history/artifacts/luc-1671-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1670 ingest exact bot create page proof
+
+- Status: `DONE`.
+- Scope:
+  Documentation/Memory ingest lane for the exact bot create route
+  `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`).
+- Outcome:
+  added the exact create-route source-to-doc relation, source-to-test relation,
+  and scoped proof override; reran architecture-awareness, app-completion, and
+  project-truth in the required sequence; and verified that the create route no
+  longer appears in generated app-completion/project-truth gaps. The first
+  remaining bot-related gap is now `route:page-tsx:35ab7a2ecb`
+  (`apps/web/src/app/dashboard/bots/new/page.tsx`).
+- Evidence:
+  `history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`;
+  `history/artifacts/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
+## 2026-07-22 LUC-1669 prove dashboard overview needs-browser-review for app-dashboard-bots-create-page-tsx
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`).
+- Outcome:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/create/page.test.tsx --reporter=verbose`
+  passed (`3/3`), proving the legacy `editId` redirect and create-mode
+  rendering. The board then narrowed the exact browser-proof source to the
+  fresh `LUC-1665` JSON `.routes` row for
+  `SOAR-ACTION-VISIT-PAGE-BOT-CREATE`, which passes on
+  `/dashboard/bots/create`; no broad harness rerun was needed in this
+  heartbeat.
+- Evidence:
+  `history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1667 ingest exact global bot assistant alias proof
 
 - Status: `DONE`.

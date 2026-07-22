@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:38:30.812Z",
+  "generatedAt": "2026-07-22T22:55:18.269Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5433,
-      "linkedRelationCount": 22782,
+      "entityCount": 5446,
+      "linkedRelationCount": 22841,
       "layers": {
         "frontend": {
-          "count": 239,
+          "count": 246,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -125,6 +125,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:df5e62ad9a",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -647,20 +655,12 @@
               "path": "apps/web/src/i18n/I18nProvider.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "model:user-type-ts:d593d0ce2a",
-              "type": "model",
-              "name": "user.type.ts",
-              "path": "apps/web/src/features/profile/types/user.type.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 785,
+          "count": 788,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4218,
+          "count": 4221,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,11 +3580,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 1006,
-      "linkedRelationCount": 3568,
+      "entityCount": 1010,
+      "linkedRelationCount": 3603,
       "layers": {
         "frontend": {
-          "count": 360,
+          "count": 363,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 164,
+          "count": 165,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4773,8 +4773,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:35ab7a2ecb",
@@ -10483,11 +10483,11 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4078,
-      "linkedRelationCount": 13377,
+      "entityCount": 4087,
+      "linkedRelationCount": 13422,
       "layers": {
         "frontend": {
-          "count": 398,
+          "count": 402,
           "sample": [
             {
               "id": "component:botcreateeditform-tsx:07797ad8f9",
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1329,
+          "count": 1331,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2139,
+          "count": 2142,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,11 +13088,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13312,
-      "linkedRelationCount": 39756,
+      "entityCount": 13324,
+      "linkedRelationCount": 39816,
       "layers": {
         "frontend": {
-          "count": 1459,
+          "count": 1464,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -13203,6 +13203,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1264-adminuserspage-feature-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:df5e62ad9a",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1669-dashboard-bots-create-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13725,20 +13733,12 @@
               "path": "apps/web/src/features/backtest/components/BacktestsList.tsx#handleCreate",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "component:viewstate-tsx:3ff6a5410f",
-              "type": "component",
-              "name": "ViewState.tsx",
-              "path": "apps/web/src/ui/components/ViewState.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 1681,
+          "count": 1682,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9333,
+          "count": 9339,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

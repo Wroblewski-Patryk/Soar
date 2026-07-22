@@ -1,3 +1,33 @@
+## 2026-07-22 LUC-1671 source-control closure for LUC-1670 exact bot create page proof ingest
+
+- `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`
+  and the generated proof packet remain a coherent state/evidence bundle for
+  the exact bot create route
+  `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`).
+- The closure heartbeat classifies the dirty bundle as local source-control
+  hygiene only and leaves runtime product state unchanged.
+- Evidence:
+  `history/tasks/luc-1671-source-control-close-bot-create-page-proof-packet-2026-07-22-task.md`;
+  `history/evidence/luc-1671-source-control-closure-bot-create-page-proof-packet-2026-07-22.md`;
+  `history/artifacts/luc-1671-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1670 exact bot create page proof ingest
+
+- `apps/web/src/app/dashboard/bots/create/page.tsx`
+  (`route:page-tsx:114b5cc57c`) now has its exact create-route proof ingested
+  into the canonical docs/architecture inputs.
+- The focused create-page test passed and the required
+  `architecture-awareness -> app-completion -> project-truth` refresh was
+  rerun strictly in sequence after a stale parallel readback was detected.
+- The exact create route is no longer the target gap; the remaining first
+  bot-related generated row advances to the separate legacy
+  `/dashboard/bots/new` alias route.
+- Evidence:
+  `history/tasks/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1670-ingest-exact-bot-create-page-proof-2026-07-22.md`;
+  `history/artifacts/luc-1669-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1667 exact global bot assistant alias proof ingest
 
 - `apps/web/src/app/dashboard/bots/assistant/page.tsx`
