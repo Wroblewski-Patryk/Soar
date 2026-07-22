@@ -1,3 +1,22 @@
+## 2026-07-22 LUC-1654 project-truth refresh after bot edit proof
+
+- Status: `VERIFIED`.
+- Scope:
+  docs-owned refresh of generated truth for
+  `apps/web/src/app/dashboard/bots/[id]/edit/page.tsx`
+  (`route:page-tsx:63cfb064e6`) after the fresh `LUC-1653` local route proof.
+- Outcome:
+  the exact edit route now has a scoped proof override plus the missing direct
+  doc/test relations. After the canonical graph/status refresh ran in
+  dependency order, `route:page-tsx:63cfb064e6` disappeared from
+  `docs/status/app-completion-index.json` as a priority-review item and the
+  first project-truth gap advanced to `route:page-tsx:256cdda64e`
+  (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
+- Residual:
+  no toolchain repair was required; the only caution is that app-completion
+  must be regenerated before project-truth when both outputs are being
+  refreshed in the same heartbeat.
+
 ## 2026-07-22 LUC-1650 dashboard bot assistant page browser-review proof refresh
 
 - Status: `VERIFIED`.

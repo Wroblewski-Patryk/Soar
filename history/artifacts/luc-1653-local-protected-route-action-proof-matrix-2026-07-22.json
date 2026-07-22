@@ -1,0 +1,277 @@
+{
+  "status": "FAIL",
+  "today": "2026-07-22",
+  "generatedAt": "2026-07-22T21:21:44.842Z",
+  "issue": "LUC-1653",
+  "dynamicFixtures": {
+    "enabled": true,
+    "apiInterception": true,
+    "fixtureIds": [
+      "luc-2188-bot"
+    ]
+  },
+  "clusters": [
+    {
+      "name": "bots",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-BOTS-LIST",
+        "SOAR-ACTION-VISIT-PAGE-BOT-CREATE",
+        "SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS",
+        "SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT",
+        "SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+        "SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS",
+        "SOAR-ACTION-VISIT-PAGE-BOT-EDIT",
+        "SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW",
+        "SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+        "SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/bots",
+        "POST /dashboard/bots",
+        "GET /dashboard/bots/:id",
+        "PUT /dashboard/bots/:id",
+        "DELETE /dashboard/bots/:id",
+        "GET /dashboard/bots/:id/market-groups"
+      ],
+      "existingTests": [
+        "app/dashboard/bots/create/page.test.tsx",
+        "app/dashboard/bots/new/page.test.tsx",
+        "app/dashboard/bots/assistant/page.test.tsx",
+        "app/dashboard/bots/runtime/page.test.tsx",
+        "app/dashboard/bots/[id]/page.test.tsx",
+        "app/dashboard/bots/[id]/edit/page.test.tsx",
+        "app/dashboard/bots/[id]/preview/page.test.tsx",
+        "app/dashboard/bots/[id]/runtime/page.test.tsx",
+        "app/dashboard/bots/[id]/assistant/page.test.tsx",
+        "BotCreateEditForm.test.tsx",
+        "BotsManagement.test.tsx",
+        "apps/api/src/modules/bots/bots.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-bots.md",
+        "docs/modules/api-bots.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOTS-LIST",
+      "route": "/dashboard/bots",
+      "result": "FAIL",
+      "observedPath": "/dashboard/bots",
+      "notes": "unauthenticated protected bots list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOTS-LIST",
+      "route": "/dashboard/bots",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-CREATE",
+      "route": "/dashboard/bots/create",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/create",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS",
+      "route": "/dashboard/bots/new",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/create",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "redirect reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT",
+      "route": "/dashboard/bots/assistant",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "redirect reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+      "route": "/dashboard/bots/runtime",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "redirect reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS",
+      "route": "/dashboard/bots/luc-2188-bot",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/luc-2188-bot/preview",
+      "statusCode": null,
+      "fixtureId": "luc-2188-bot",
+      "fixtureKind": "bot",
+      "notes": "redirect reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-EDIT",
+      "route": "/dashboard/bots/luc-2188-bot/edit",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/luc-2188-bot/edit",
+      "statusCode": null,
+      "fixtureId": "luc-2188-bot",
+      "fixtureKind": "bot",
+      "notes": "route reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW",
+      "route": "/dashboard/bots/luc-2188-bot/preview",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/luc-2188-bot/preview",
+      "statusCode": null,
+      "fixtureId": "luc-2188-bot",
+      "fixtureKind": "bot",
+      "notes": "route reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+      "route": "/dashboard/bots/luc-2188-bot/runtime",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/luc-2188-bot/preview",
+      "statusCode": null,
+      "fixtureId": "luc-2188-bot",
+      "fixtureKind": "bot",
+      "notes": "redirect reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT",
+      "route": "/dashboard/bots/luc-2188-bot/assistant",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/luc-2188-bot/assistant",
+      "statusCode": null,
+      "fixtureId": "luc-2188-bot",
+      "fixtureKind": "bot",
+      "notes": "route reached expected bots route with local cookie gate"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-BOT-CREATE",
+      "route": "bots list-page add action",
+      "result": "PASS",
+      "observedPath": "/dashboard/bots/create",
+      "notes": "clicked create/add action (Create bot), expected create route"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/bots/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/new/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/assistant/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/runtime/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/_components/BotFormPageContent.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/bots/components/BotsListTable.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/bots/components/BotCreateEditForm.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/create/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/assistant/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/runtime/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/edit/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/preview/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/runtime/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/bots/[id]/assistant/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-bots.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-bots.md",
+      "present": true
+    },
+    {
+      "path": "docs/architecture/reference/assistant-runtime-contract.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}

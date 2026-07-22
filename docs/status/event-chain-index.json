@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T21:05:57.716Z",
+  "generatedAt": "2026-07-22T21:32:08.763Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5395,
-      "linkedRelationCount": 22643,
+      "entityCount": 5400,
+      "linkedRelationCount": 22666,
       "layers": {
         "frontend": {
-          "count": 226,
+          "count": 229,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 778,
+          "count": 779,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4200,
+          "count": 4201,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2597,10 +2597,10 @@
               "status": "implemented"
             },
             {
-              "id": "document:app-completion-index:507f64f96f",
+              "id": "document:web-deep-dive-bots-module:4f5a41c32f",
               "type": "document",
-              "name": "App Completion Index",
-              "path": "docs/status/app-completion-index.md",
+              "name": "Web Deep-Dive: Bots Module",
+              "path": "docs/modules/web-bots.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -3581,7 +3581,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 1002,
-      "linkedRelationCount": 3531,
+      "linkedRelationCount": 3534,
       "layers": {
         "frontend": {
           "count": 358,
@@ -4733,8 +4733,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:256cdda64e",
@@ -6186,7 +6186,7 @@
     {
       "userFlow": "Exchange connection and configuration",
       "entityCount": 819,
-      "linkedRelationCount": 3021,
+      "linkedRelationCount": 3022,
       "layers": {
         "frontend": {
           "count": 28,
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4056,
-      "linkedRelationCount": 13281,
+      "entityCount": 4060,
+      "linkedRelationCount": 13301,
       "layers": {
         "frontend": {
           "count": 398,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1323,
+          "count": 1325,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2123,
+          "count": 2125,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13286,
-      "linkedRelationCount": 39629,
+      "entityCount": 13289,
+      "linkedRelationCount": 39647,
       "layers": {
         "frontend": {
           "count": 1457,
@@ -13738,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1678,
+          "count": 1679,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9312,
+          "count": 9314,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T21:05:57.716Z",
+  "generatedAt": "2026-07-22T21:32:08.763Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 50,
-    "indexedAppCompletionGaps": 50,
-    "knownAppCompletionRiskItems": 50,
-    "appCompletionPriorityReviewItems": 50,
+    "appCompletionGaps": 49,
+    "indexedAppCompletionGaps": 49,
+    "knownAppCompletionRiskItems": 49,
+    "appCompletionPriorityReviewItems": 49,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 50,
-    "totalGaps": 50
+    "indexedGaps": 49,
+    "totalGaps": 49
   },
   "firstGap": {
     "kind": "app_completion_gap",
@@ -26,25 +26,12 @@
     "nextOwner": "QA Regression Lead + Frontend Experience Lead",
     "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
     "evidence": [
-      "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx"
+      "apps/web/src/app/dashboard/bots/[id]/page.tsx"
     ],
-    "sourceItemId": "route:page-tsx:63cfb064e6",
+    "sourceItemId": "route:page-tsx:256cdda64e",
     "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:63cfb064e6",
-      "risk": "needs_browser_review"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",

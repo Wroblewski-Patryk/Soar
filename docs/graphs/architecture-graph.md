@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-22T21:09:56.825Z
+Generated: 2026-07-22T21:31:21.517Z
 
 ## Canonical Exports
 
@@ -1110,6 +1110,7 @@ Generated: 2026-07-22T21:09:56.825Z
 | connected_to | project:soar:7c70e892d7 | task:task:084f907397 | history/tasks/luc-1650-dashboard-overview-page-browser-review-2026-07-22-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:68370257b7 | history/tasks/luc-1651-reconcile-coolify-resource-inventory-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:d04321d0da | history/tasks/luc-1654-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:e2b66b4c15 | history/tasks/luc-1654-refresh-project-truth-after-bot-edit-proof-2026-07-22-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ed347c9d3c | history/tasks/luc-1655-confirm-coolify-team-workspace-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:26b5901ad5 | history/tasks/luc-1656-reconcile-coolify-resource-inventory-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:aebba6439c | history/tasks/luc-1658-confirm-coolify-team-workspace-2026-06-03-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-22T21:09:56.825Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1982-task-contract-coolify-read-only-production-status-access:645bb6bd4f | history/tasks/luc-1982-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1986-task-contract-source-control-close-local-dirty-state-for-luc-1977-luc-1982:e7fa7e09ad | history/tasks/luc-1986-source-control-close-local-dirty-state-for-luc-1977-luc-1982-2026-06-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1987-task-contract-coolify-read-only-production-status-access:93c4b59baf | history/tasks/luc-1987-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-199-no-stall-queue-expeditor-2026-05-26:def023cb57 | history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md |
