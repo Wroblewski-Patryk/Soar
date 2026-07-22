@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1657 exact bot-preview proof refresh follow-up closure
+
+- Status: `VERIFIED`.
+- Scope:
+  verify the cancelled follow-up for
+  `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`) against the exact `LUC-1653` proof row and
+  rerun the canonical generator chain in sequence.
+- Outcome:
+  the exact `SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW` row still reads `PASS` on
+  `/dashboard/bots/luc-2188-bot/preview`; the generated preview-route truth
+  files already matched `HEAD` byte-for-byte before rerun; and the sequential
+  `architecture-awareness -> app-completion -> project-truth` refresh kept
+  `route:page-tsx:05ef3cc126` out of both indexed queues. The first gap
+  remains `route:page-tsx:256cdda64e`
+  (`apps/web/src/app/dashboard/bots/[id]/page.tsx`).
+- Residual:
+  no runtime or generator repair was required; local source-control closure is
+  a separate lane under `LUC-1658`, and the unauthenticated `/dashboard/bots`
+  finding remains with `LUC-1656`.
+
 ## 2026-07-22 LUC-1654 project-truth refresh after bot edit and preview proof
 
 - Status: `VERIFIED`.

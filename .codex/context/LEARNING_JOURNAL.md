@@ -2,6 +2,24 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-22 - Generated docs can appear dirty even when content matches HEAD
+- Symptom:
+  a cancelled docs follow-up reopened the exact preview-route truth refresh
+  because `git status` still showed generated graph/status files as modified.
+- Root cause:
+  on this Windows workspace, generator-heavy docs packets can remain stat-dirty
+  even when the repository content is already identical to `HEAD`, which makes
+  a stale follow-up look like an unfinished content repair.
+- Correct response:
+  before treating a generated docs packet as a real diff, compare the exact
+  file content with `git hash-object <path>` versus `git rev-parse HEAD:<path>`
+  and only retain changes that differ byte-for-byte or have targeted readback
+  evidence.
+- Verified recovery:
+  `LUC-1657` confirmed the preview-route generated files already matched
+  `HEAD`, reran the canonical generator chain sequentially, and closed the
+  follow-up as evidence-only work instead of inventing a repair.
+
 ### 2026-07-22 - Large generated-file restores need streamed redirection
 - Symptom:
   restoring large generated graph/status exports through `git show` in a Node

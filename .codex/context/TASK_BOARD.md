@@ -1,3 +1,25 @@
+## 2026-07-22 LUC-1657 complete exact bot-preview proof refresh after cancelled follow-up
+
+- Status: `DONE`.
+- Scope:
+  Documentation Steward verification-only closure for the exact bot preview
+  route `apps/web/src/app/dashboard/bots/[id]/preview/page.tsx`
+  (`route:page-tsx:05ef3cc126`) after a cancelled follow-up reopened
+  `LUC-1654`.
+- Outcome:
+  revalidated the exact `SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW` PASS row from the
+  `LUC-1653` JSON artifact, confirmed the generated preview-route files already
+  matched `HEAD` byte-for-byte, reran the canonical generator chain in strict
+  sequence, and verified that `route:page-tsx:05ef3cc126` still appears in
+  neither `docs/status/app-completion-index.json` nor
+  `docs/status/project-truth-index.json`. Before and after counts remained
+  stable at `riskItems=48`, `appCompletionGaps=48`, and `totalGaps=48`; the
+  first remaining gap is still `route:page-tsx:256cdda64e`.
+- Evidence:
+  `history/tasks/luc-1657-complete-exact-bot-preview-proof-refresh-after-cancelled-follow-up-2026-07-22-task.md`;
+  `history/evidence/luc-1657-exact-bot-preview-proof-refresh-follow-up-2026-07-22.md`;
+  `history/artifacts/luc-1657-paperclip-closeout-2026-07-22.md`.
+
 ## 2026-07-22 LUC-1654 refresh Project Truth after bot edit and preview proof
 
 - Status: `DONE`.
