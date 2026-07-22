@@ -1,3 +1,38 @@
+## 2026-07-22 LUC-1627 source-control closure for LUC-1467-LUC-1613
+
+- The local Soar dirty set left by the Wednesday, July 22, 2026 `LUC-1467`
+  recheck and the completed `LUC-1613` dashboard browser-proof refresh was
+  classified as one coherent state/evidence packet only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-22.md`,
+  `history/evidence/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.md`,
+  `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md`,
+  `history/tasks/luc-1613-dashboard-overview-page-browser-review-2026-07-21-task.md`,
+  and
+  `history/artifacts/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.json`.
+- No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the closure scope.
+- Wednesday, July 22, 2026 closure action created the `LUC-1627`
+  task/evidence/closeout packet and preserved the bundle with one local commit.
+
+## 2026-07-21 LUC-1613 dashboard overview page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/page.tsx` has a fresh local authenticated browser
+  proof packet under `LUC-1613`.
+- The local protected-route harness again passed the canonical `/dashboard`
+  pair: unauthenticated access failed closed to `/auth/login`, and the
+  synthetic-cookie authenticated route remained on `/dashboard`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.md`;
+  `history/artifacts/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.json`;
+  `history/tasks/luc-1613-dashboard-overview-page-browser-review-2026-07-21-task.md`.
+
 ## 2026-07-21 LUC-1612 source-control closure for LUC-1603
 
 - The local Soar dirty set left by the completed `LUC-1603` dashboard overview
@@ -33622,3 +33657,13 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - After scanner override linkage and index regeneration, the Dashboard overview
   `needs_browser_review` row for `apps/web/src/app/dashboard/page.tsx` is
   closed locally.
+## 2026-07-22 LUC-1467 review productivity resume delta recheck
+
+- The `LUC-1467` wake was rechecked on Wednesday, July 22, 2026.
+- Result: no new runnable lane appeared; the live unblock path still routes
+  through `LUC-4103` for the owner-login method-selection interaction.
+- Disposition: `blocked`.
+- Mutation-path note: this checkout used the local Paperclip issue-update
+  helper to write the blocked disposition back to the live issue.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-22.md`.

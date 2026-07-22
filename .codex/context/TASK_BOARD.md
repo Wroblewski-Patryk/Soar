@@ -1,3 +1,71 @@
+## 2026-07-22 LUC-1627 classify and close local dirty state for LUC-1467-LUC-1613
+
+- Status: `DONE`.
+- Scope:
+  PM-owned source-control closure lane for the current Soar dirty packet left
+  by the `LUC-1467` Wednesday, July 22, 2026 recheck and the completed
+  `LUC-1613` dashboard overview browser-proof refresh.
+- Findings:
+  the worktree was one coherent local state/evidence bundle only:
+  `.agents/state/active-mission.md`,
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`,
+  `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-22.md`,
+  `history/evidence/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.md`,
+  `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md`,
+  `history/tasks/luc-1613-dashboard-overview-page-browser-review-2026-07-21-task.md`,
+  and
+  `history/artifacts/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.json`.
+  No runtime/product code, dependency, env, deploy, migration, or
+  secret-bearing files were mixed into the packet.
+- Verification:
+  `git status --short` -> PASS before classification;
+  `git diff --stat` and `git diff --numstat` -> PASS with state/history scope
+  only;
+  `git diff --check` -> PASS with line-ending warnings only;
+  targeted `rg` readback on `LUC-1467|LUC-1613|LUC-1627|completionEvidence`
+  across touched files -> PASS;
+  bounded high-confidence secret-pattern scan on the dirty files -> PASS.
+- Outcome:
+  the packet satisfied the local source-control closure rule for one
+  reversible state/evidence commit, so it was preserved with one local commit
+  and no push/deploy.
+- Evidence:
+  `history/tasks/luc-1627-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-luc-1613-2026-07-22-task.md`;
+  `history/evidence/luc-1627-source-control-closure-luc-1467-luc-1613-2026-07-22.md`;
+  `history/artifacts/luc-1627-paperclip-closeout-2026-07-22.md`.
+
+## 2026-07-22 LUC-1467 review productivity resume delta recheck
+
+- Status: `blocked`.
+- Scope:
+  resumed productivity-review wake for `LUC-1438` with no new runnable lane.
+- Outcome:
+  the live Paperclip issue was updated to `blocked` again on 2026-07-22 after
+  rechecking the local Soar source of truth. The unblock path still routes
+  through `LUC-4103` for the owner-login method-selection interaction, and no
+  separate child or repair lane became actionable.
+- Evidence:
+  `history/evidence/luc-1467-review-productivity-resume-delta-2026-07-22.md`;
+  `history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md`.
+
+## 2026-07-21 LUC-1613 dashboard overview page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1613 --today 2026-07-21 --clusters dashboard --intercept-fixture-api ...`
+  passed and wrote a fresh JSON/Markdown proof packet under the current issue
+  id. Unauthenticated `/dashboard` failed closed to `/auth/login`, and the
+  authenticated synthetic-cookie route remained on `/dashboard`.
+- Evidence:
+  `history/tasks/luc-1613-dashboard-overview-page-browser-review-2026-07-21-task.md`;
+  `history/evidence/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.md`;
+  `history/artifacts/luc-1613-local-protected-route-action-proof-matrix-2026-07-21.json`.
+
 ## 2026-07-21 LUC-1612 classify and close local dirty state for LUC-1603
 
 - Status: `DONE`.

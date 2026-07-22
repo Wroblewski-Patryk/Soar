@@ -1,3 +1,16 @@
+## 2026-07-21 LUC-1613 dashboard page browser-review proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  the rerun passed with the existing fixture API interception path enabled, and
+  the fresh evidence pair was written under the current issue id.
+- Residual:
+  this heartbeat refreshes the exact dashboard page proof packet only; broader
+  generated truth/index reconciliation remains a separate lane if required.
+
 ## 2026-07-21 LUC-1602 dashboard page browser-review proof refresh
 
 - Status: `VERIFIED`.
