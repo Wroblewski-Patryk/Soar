@@ -1,3 +1,25 @@
+## 2026-07-22 LUC-1662 exact dynamic bot runtime redirect proof ingest
+
+- Module row:
+  Dashboard overview / dynamic bot runtime redirect truth refresh.
+- Status delta:
+  `VERIFIED / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1662](/LUC/issues/LUC-1662) ingested the exact runtime redirect proof
+  for `apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx`
+  (`route:page-tsx:52de535d03`). The focused runtime page test passed, the
+  runtime redirect proof was linked into the canonical docs/architecture
+  inputs, and the generators were rerun in dependency order. The exact route
+  no longer appears as the target gap; the remaining runtime helper row is the
+  separate `/dashboard/bots/runtime` surface.
+- Evidence:
+  `history/tasks/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22.md`;
+  `history/artifacts/luc-1662-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  the legacy runtime helper route stays indexed separately and can be handled
+  by a distinct follow-up if required.
+
 ## 2026-07-22 LUC-1659 Dashboard Bot Detail Alias Page Browser Proof Refresh
 
 - Module row:

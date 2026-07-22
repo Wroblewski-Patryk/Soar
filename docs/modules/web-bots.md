@@ -34,6 +34,7 @@ Out of scope:
   - `/dashboard/bots/:id`
   - `/dashboard/bots/create` (`/dashboard/bots/new` legacy redirect)
   - `/dashboard/bots/:id/edit`
+  - `/dashboard/bots/:id/runtime`
   - `/dashboard/bots/:id/preview`
   - `/dashboard/bots/:id/assistant`
 - Depends on:
@@ -77,6 +78,8 @@ Out of scope:
   - `BotsManagement` with tabs (`bots`, `monitoring`, `assistant`)
 - Legacy helper routes:
   - `/dashboard/bots/runtime` and `/dashboard/bots/assistant` resolve to canonical bot-specific routes.
+- Bot-specific runtime redirect routes send `/dashboard/bots/:id/runtime`
+  to the canonical preview route.
 - Bot-specific preview and assistant route breadcrumbs use the i18n provider
   instead of static English namespace imports.
 
@@ -122,6 +125,7 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `app/dashboard/bots/[id]/page.test.tsx`
+  - `app/dashboard/bots/[id]/runtime/page.test.tsx`
   - `app/dashboard/bots/[id]/preview/page.test.tsx`
   - `app/dashboard/bots/[id]/assistant/page.test.tsx`
   - `BotCreateEditForm.test.tsx`
@@ -137,7 +141,7 @@ Out of scope:
     sessions once on first aggregate-mode open.
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
+pnpm --filter web test -- src/app/dashboard/bots/[id]/runtime/page.test.tsx src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
 ```
 
 ## 8A. Architecture-Awareness Gap Triage

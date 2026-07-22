@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-22T22:02:32.242Z
+Generated: 2026-07-22T22:15:56.238Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,19 +15,19 @@ Internal functions and modules are implementation details: they receive proof th
 
 - Items: 86
 - User flows: 7
-- Needs browser/screenshot review: 33
+- Needs browser/screenshot review: 32
 - Missing test link: 12
 - Missing doc link: 2
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 47
-- Priority review items indexed: 47/47
+- Known non-ok risk items: 46
+- Priority review items indexed: 46/46
 - Priority review truncated: false
 
 ## Flow Summary
 
-- Account access: 33 entities; risks {"ok":33}; gates {"auth":33,"subscription":3,"configuration":2}
-- Dashboard overview: 27 entities; risks {"ok":5,"needs_browser_review":22}; gates {"configuration":1}
+- Account access: 34 entities; risks {"ok":34}; gates {"auth":34,"subscription":3,"configuration":2}
+- Dashboard overview: 26 entities; risks {"ok":5,"needs_browser_review":21}; gates {"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/assistant/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/create/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/bots/new/page.tsx | - |

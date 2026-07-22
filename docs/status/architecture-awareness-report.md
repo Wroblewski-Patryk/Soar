@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-22T22:02:08.642Z
+Generated: 2026-07-22T22:15:14.708Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -28,18 +28,18 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 188 |
 | deprecated | 10 |
-| implemented | 12458 |
+| implemented | 12457 |
 | in_progress | 28 |
 | tested | 929 |
-| verified | 1836 |
+| verified | 1837 |
 
 ## Health Signals
 
 - Raw implementation entities without inferred tests: 3794
 - Actionable implementation entities without inferred tests: 2548
-- Raw implementation entities without inferred docs: 1725
+- Raw implementation entities without inferred docs: 1724
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1451
+- Classified inferred-link noise: 1450
 - Raw tasks without architecture links: 145
 - Actionable tasks without architecture links: 0
 - Raw implementation entities without task links: 1739
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1268
+- curated_graph_covered: 1267
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 84, relation entries: 95).
-- Override summary: excluded files 0, entity overrides 84, relation overrides 95, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 85, relation entries: 95).
+- Override summary: excluded files 0, entity overrides 85, relation overrides 95, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

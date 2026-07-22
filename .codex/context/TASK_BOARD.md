@@ -1,3 +1,22 @@
+## 2026-07-22 LUC-1662 exact dynamic bot runtime redirect proof ingest
+
+- Status: `DONE`.
+- Scope:
+  Documentation/Memory ingest lane for the exact dynamic runtime redirect
+  route `apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx`
+  (`route:page-tsx:52de535d03`).
+- Outcome:
+  added the exact runtime source-to-doc relation, source-to-test relation,
+  and runtime node metadata; applied the scoped scanner proof; reran
+  architecture-awareness, app-completion, and project-truth in order. The
+  exact route is no longer the target gap, and the remaining runtime helper
+  gap is the separate `/dashboard/bots/runtime` surface.
+- Evidence:
+  `history/tasks/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22.md`;
+  `history/artifacts/luc-1662-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/artifacts/luc-1662-paperclip-closeout-2026-07-22.md`.
+
 ## 2026-07-22 LUC-1659 dashboard bot detail alias page browser-review proof refresh
 
 - Status: `DONE`.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:02:37.954Z",
+  "generatedAt": "2026-07-22T22:16:02.227Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5417,
-      "linkedRelationCount": 22739,
+      "entityCount": 5420,
+      "linkedRelationCount": 22744,
       "layers": {
         "frontend": {
-          "count": 235,
+          "count": 237,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 782,
+          "count": 783,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -3581,7 +3581,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 1006,
-      "linkedRelationCount": 3561,
+      "linkedRelationCount": 3563,
       "layers": {
         "frontend": {
           "count": 360,
@@ -4757,8 +4757,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:66a0b683f3",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4067,
-      "linkedRelationCount": 13345,
+      "entityCount": 4068,
+      "linkedRelationCount": 13347,
       "layers": {
         "frontend": {
           "count": 398,
@@ -11133,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1327,
+          "count": 1328,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -13089,7 +13089,7 @@
     {
       "userFlow": "Unclassified user workflow",
       "entityCount": 13300,
-      "linkedRelationCount": 39714,
+      "linkedRelationCount": 39716,
       "layers": {
         "frontend": {
           "count": 1459,

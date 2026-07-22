@@ -8,7 +8,7 @@ module: web-bots
 feature: bot-runtime
 risk_level: high
 completion_percent: 90
-last_verified_at: 2026-05-21
+last_verified_at: 2026-07-22
 verification_status: verified_local
 tags: [soar-map, page, frontend, verified_local]
 ---
@@ -17,7 +17,7 @@ tags: [soar-map, page, frontend, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Bot-specific runtime monitoring route and legacy runtime helper route. |
+| Description | Bot-specific runtime redirect route and legacy runtime helper route. |
 | File path | apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx |
 | Related files | apps/web/src/app/dashboard/bots/runtime/page.tsx, apps/web/src/app/dashboard/bots/[id]/runtime/page.test.tsx |
 | Parent | [[SOAR-FEATURE-BOT-RUNTIME]] |
@@ -30,11 +30,12 @@ tags: [soar-map, page, frontend, verified_local]
 | Tests related | [[SOAR-TEST-BOT-RUNTIME-WEB]] |
 | Docs related | [[SOAR-DOC-WEB-BOTS]] |
 | Agent related |  |
-| Notes | Canonical bot-specific monitoring route. |
+| Notes | Canonical bot-specific runtime redirect route. Exact redirect proof refreshed by LUC-1662 on 2026-07-22. |
 
 ## Relations
 
 - contains -> [[SOAR-COMP-BOTS-MANAGEMENT]] (verified_local)
+- redirects_to -> [[SOAR-PAGE-BOT-PREVIEW]] (verified_local)
 
 ## Evidence Rule
 

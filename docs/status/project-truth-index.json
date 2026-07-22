@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T22:02:37.954Z",
+  "generatedAt": "2026-07-22T22:16:02.227Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 47,
-    "indexedAppCompletionGaps": 47,
-    "knownAppCompletionRiskItems": 47,
-    "appCompletionPriorityReviewItems": 47,
+    "appCompletionGaps": 46,
+    "indexedAppCompletionGaps": 46,
+    "knownAppCompletionRiskItems": 46,
+    "appCompletionPriorityReviewItems": 46,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 47,
-    "totalGaps": 47
+    "indexedGaps": 46,
+    "totalGaps": 46
   },
   "firstGap": {
     "kind": "app_completion_gap",
@@ -26,25 +26,12 @@
     "nextOwner": "QA Regression Lead + Frontend Experience Lead",
     "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
     "evidence": [
-      "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx"
+      "apps/web/src/app/dashboard/bots/assistant/page.tsx"
     ],
-    "sourceItemId": "route:page-tsx:52de535d03",
+    "sourceItemId": "route:page-tsx:66a0b683f3",
     "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:52de535d03",
-      "risk": "needs_browser_review"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",

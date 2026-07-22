@@ -1,3 +1,20 @@
+## 2026-07-22 LUC-1662 exact dynamic bot runtime redirect proof ingest
+
+- `apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx`
+  (`route:page-tsx:52de535d03`) has been ingested into the canonical docs and
+  graph inputs through the runtime route doc/test relations, runtime node
+  metadata, and scoped scanner override.
+- Focused runtime page verification passed, and the architecture-awareness,
+  app-completion, and project-truth generators were rerun strictly in
+  sequence.
+- The exact route is no longer the target gap in generated truth; the
+  remaining runtime-related row is the separate legacy
+  `apps/web/src/app/dashboard/bots/runtime/page.tsx` helper route.
+- Evidence:
+  `history/tasks/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22-task.md`;
+  `history/evidence/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22.md`;
+  `history/artifacts/luc-1662-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1659 dashboard bot detail alias page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/bots/[id]/page.tsx`
