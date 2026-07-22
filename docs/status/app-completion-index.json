@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T21:32:06.313Z",
+  "generatedAt": "2026-07-22T21:39:25.618Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,26 +7,26 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 35,
+    "needsBrowserReview": 34,
     "missingTestLink": 12,
     "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 49,
-    "appCompletionRiskItems": 49,
-    "priorityReviewItems": 49,
+    "riskItems": 48,
+    "appCompletionRiskItems": 48,
+    "priorityReviewItems": 48,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 31,
+      "total": 32,
       "risks": {
-        "ok": 31
+        "ok": 32
       },
       "gates": {
-        "auth": 31,
+        "auth": 32,
         "subscription": 3,
         "configuration": 2
       }
@@ -41,10 +41,10 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 29,
+      "total": 28,
       "risks": {
         "ok": 5,
-        "needs_browser_review": 24
+        "needs_browser_review": 23
       },
       "gates": {
         "configuration": 1
@@ -107,26 +107,7 @@
         "needsBrowserProof": true,
         "needsScreenshotReview": true
       },
-      "relatedEntityCount": 3,
-      "risk": "needs_browser_review"
-    },
-    {
-      "id": "route:page-tsx:05ef3cc126",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 4,
+      "relatedEntityCount": 6,
       "risk": "needs_browser_review"
     },
     {
