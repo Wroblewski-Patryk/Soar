@@ -19,6 +19,7 @@ Canonical bot topology and operator-surface rules live in:
 - Owns bot UI lifecycle and runtime operator surfaces:
   - list and delete bots
   - create/edit bot form
+  - bot detail alias route
   - runtime monitoring workspace
   - assistant configuration and dry-run timeline
 - Enforces wallet-first bot creation contract in UI (`walletId` required).
@@ -30,6 +31,7 @@ Out of scope:
 ## 2. Boundaries and Dependencies
 - Route entrypoints:
   - `/dashboard/bots`
+  - `/dashboard/bots/:id`
   - `/dashboard/bots/create` (`/dashboard/bots/new` legacy redirect)
   - `/dashboard/bots/:id/edit`
   - `/dashboard/bots/:id/preview`
@@ -119,6 +121,7 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/bots/[id]/page.test.tsx`
   - `app/dashboard/bots/[id]/preview/page.test.tsx`
   - `app/dashboard/bots/[id]/assistant/page.test.tsx`
   - `BotCreateEditForm.test.tsx`

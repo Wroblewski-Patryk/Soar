@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1659 dashboard bot detail alias page browser proof refresh
+
+- Status: `VERIFIED`.
+- Scope:
+  fresh local browser/clickthrough proof for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/[id]/page.tsx`
+  (`route:page-tsx:256cdda64e`).
+- Outcome:
+  the focused redirect test for
+  `apps/web/src/app/dashboard/bots/[id]/page.test.tsx` passed, and the local
+  protected-route harness wrote a fresh `LUC-1659` JSON/Markdown packet. The
+  exact target action `SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS` passed with
+  `307` on `/dashboard/bots/luc-2188-bot` and resolved to the canonical
+  preview route `/dashboard/bots/luc-2188-bot/preview`.
+- Residual:
+  the aggregate bots packet stayed red because it still includes the separate
+  unauthenticated bots-list failure and the non-target create CTA failure.
+  Generated app-completion/project-truth refresh remains a distinct
+  Documentation/Memory lane.
+
 ## 2026-07-22 LUC-1657 exact bot-preview proof refresh follow-up closure
 
 - Status: `VERIFIED`.

@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1659 dashboard bot detail alias page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/[id]/page.tsx`
+  (`route:page-tsx:256cdda64e`) now has a fresh local browser-review packet
+  under `LUC-1659`.
+- Focused route verification is green:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/page.test.tsx --reporter=verbose`
+  passed `1/1` and proved the alias redirect contract to the canonical preview
+  route.
+- The local protected-route harness also proved the exact dynamic route:
+  `SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS` passed with `307` on
+  `/dashboard/bots/luc-2188-bot` and resolved to
+  `/dashboard/bots/luc-2188-bot/preview`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1657 exact bot-preview proof refresh follow-up closure
 
 - The cancelled follow-up for

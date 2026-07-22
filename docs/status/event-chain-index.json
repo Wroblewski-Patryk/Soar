@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T21:43:10.605Z",
+  "generatedAt": "2026-07-22T22:02:37.954Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5407,
-      "linkedRelationCount": 22692,
+      "entityCount": 5417,
+      "linkedRelationCount": 22739,
       "layers": {
         "frontend": {
-          "count": 231,
+          "count": 235,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -117,6 +117,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1264-adminuserspage-feature-doc-link-2026-07-15-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:d83ad314e6",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -647,20 +655,12 @@
               "path": "apps/web/src/features/profile/types/user.type.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "feature:profilebasiccache-ts:7c387a8a3f",
-              "type": "feature",
-              "name": "profileBasicCache.ts",
-              "path": "apps/web/src/features/profile/services/profileBasicCache.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 781,
+          "count": 782,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4204,
+          "count": 4209,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3580,11 +3580,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 1003,
-      "linkedRelationCount": 3552,
+      "entityCount": 1006,
+      "linkedRelationCount": 3561,
       "layers": {
         "frontend": {
-          "count": 358,
+          "count": 360,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4230,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 163,
+          "count": 164,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4741,8 +4741,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/bots/[id]/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:05ef3cc126",
@@ -10483,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4063,
-      "linkedRelationCount": 13319,
+      "entityCount": 4067,
+      "linkedRelationCount": 13345,
       "layers": {
         "frontend": {
           "count": 398,
@@ -11779,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2126,
+          "count": 2130,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -13088,11 +13088,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13291,
-      "linkedRelationCount": 39666,
+      "entityCount": 13300,
+      "linkedRelationCount": 39714,
       "layers": {
         "frontend": {
-          "count": 1457,
+          "count": 1459,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -13267,6 +13267,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-1643-dashboard-overview-page-browser-review-2026-07-22-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:d83ad314e6",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13725,20 +13733,12 @@
               "path": "apps/web/src/ui/components/ViewState.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "feature:useoptionali18n-ts:f37737d93e",
-              "type": "feature",
-              "name": "useOptionalI18n.ts",
-              "path": "apps/web/src/i18n/useOptionalI18n.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 1679,
+          "count": 1680,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14384,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9316,
+          "count": 9322,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

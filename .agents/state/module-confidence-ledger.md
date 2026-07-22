@@ -1,3 +1,26 @@
+## 2026-07-22 LUC-1659 Dashboard Bot Detail Alias Page Browser Proof Refresh
+
+- Module row:
+  Dashboard overview / dynamic bot detail alias route browser-review refresh.
+- Status delta:
+  `VERIFIED_LOCAL_PROOF / ISSUE_DONE`.
+- Confidence update:
+  [LUC-1659](/LUC/issues/LUC-1659) reran the exact-route QA proof for
+  `apps/web/src/app/dashboard/bots/[id]/page.tsx`
+  (`route:page-tsx:256cdda64e`). The focused page test passed and proved the
+  redirect contract from `/dashboard/bots/:id` to
+  `/dashboard/bots/:id/preview`. The local protected-route harness also passed
+  the exact alias action `/dashboard/bots/luc-2188-bot` with `307` and the
+  expected final path `/dashboard/bots/luc-2188-bot/preview`.
+- Evidence:
+  `history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.json`.
+- Residual:
+  this heartbeat closes the exact local QA proof packet only; a separate
+  Documentation/Memory lane still needs to ingest the proof into generated
+  app-completion/project-truth outputs for `route:page-tsx:256cdda64e`.
+
 ## 2026-07-22 LUC-1654 Project Truth Refresh After Bot Edit And Preview Proof
 
 - Module row:

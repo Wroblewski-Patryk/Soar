@@ -1,3 +1,31 @@
+## 2026-07-22 LUC-1659 dashboard bot detail alias page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/[id]/page.tsx`
+  (`route:page-tsx:256cdda64e`).
+- Outcome:
+  `pnpm --filter web exec vitest run src/app/dashboard/bots/[id]/page.test.tsx --reporter=verbose`
+  passed in `apps/web` (`1/1`), proving the redirect from
+  `/dashboard/bots/:id` to `/dashboard/bots/:id/preview`. Then
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1659 --today 2026-07-22 --clusters bots --dynamic-fixtures-only --intercept-fixture-api ...`
+  wrote a fresh JSON/Markdown proof packet under the current issue id. The
+  exact target action `SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS` passed with
+  `307` on `/dashboard/bots/luc-2188-bot` and resolved to
+  `/dashboard/bots/luc-2188-bot/preview`. The aggregate remained red because
+  the cluster still reports the separate unauthenticated bots-list failure and
+  the non-target create CTA failure.
+- Residual:
+  this heartbeat refreshes the exact dynamic detail-alias route proof packet
+  only; broader bots-cluster repair or generated truth/index reconciliation
+  remains a separate lane if required.
+- Evidence:
+  `history/tasks/luc-1659-dashboard-bot-detail-alias-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1659-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1657 complete exact bot-preview proof refresh after cancelled follow-up
 
 - Status: `DONE`.
