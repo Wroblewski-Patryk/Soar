@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1673 prove dashboard overview needs-browser-review for app-dashboard-bots-new-page-tsx
+
+- Status: `DONE`.
+- Scope:
+  QA-owned exact browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`).
+- Outcome:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/new/page.test.tsx --reporter=verbose`
+  passed (`1/1`), proving the page immediately redirects to the canonical bot
+  create route. The exact browser-proof source was then bound from the fresh
+  same-day `LUC-1665` JSON `.routes` row for
+  `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS`, which passes on
+  `/dashboard/bots/new` and observes `/dashboard/bots/create`; no duplicate
+  broad harness rerun was needed in this heartbeat.
+- Evidence:
+  `history/tasks/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1671 close bot create page proof packet
 
 - Status: `DONE`.

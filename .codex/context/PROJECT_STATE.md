@@ -1,3 +1,25 @@
+## 2026-07-22 LUC-1673 dashboard bot legacy new-page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/bots/new/page.tsx`
+  (`route:page-tsx:35ab7a2ecb`) now has exact QA evidence showing the legacy
+  alias route redirects into the canonical bot create route.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/new/page.test.tsx --reporter=verbose`
+  passed `1/1` and proved the page immediately calls
+  `redirect("/dashboard/bots/create")`.
+- The authoritative browser proof for this heartbeat reuses the fresh same-day
+  `LUC-1665` JSON `.routes` row:
+  `SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS` passed and observed
+  `/dashboard/bots/create` after visiting `/dashboard/bots/new` with the local
+  protected cookie gate.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22.md`;
+  `history/tasks/luc-1673-dashboard-bots-new-page-browser-review-2026-07-22-task.md`;
+  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1671 source-control closure for LUC-1670 exact bot create page proof ingest
 
 - Status: `DONE`.
