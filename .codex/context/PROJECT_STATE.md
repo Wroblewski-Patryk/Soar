@@ -1,3 +1,18 @@
+## 2026-07-22 LUC-1634 dashboard overview page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/page.tsx` has a fresh local authenticated browser
+  proof packet under `LUC-1634`.
+- The local protected-route harness again passed the canonical `/dashboard`
+  pair: unauthenticated access failed closed to `/auth/login`, and the
+  synthetic-cookie authenticated route remained on `/dashboard`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1634-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1634-local-protected-route-action-proof-matrix-2026-07-22.json`;
+  `history/tasks/luc-1634-dashboard-overview-page-browser-review-2026-07-22-task.md`.
+
 ## 2026-07-22 LUC-1629 assistant-route truth reconciliation follow-up
 
 - `route:page-tsx:58248c9afe` still resolves to the canonical selected-bot

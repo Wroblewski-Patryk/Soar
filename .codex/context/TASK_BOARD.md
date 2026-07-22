@@ -1,3 +1,19 @@
+## 2026-07-22 LUC-1634 dashboard overview page browser-review proof refresh
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/page.tsx`.
+- Outcome:
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1634 --today 2026-07-22 --clusters dashboard --intercept-fixture-api ...`
+  passed and wrote a fresh JSON/Markdown proof packet under the current issue
+  id. Unauthenticated `/dashboard` failed closed to `/auth/login`, and the
+  authenticated synthetic-cookie route remained on `/dashboard`.
+- Evidence:
+  `history/tasks/luc-1634-dashboard-overview-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1634-local-protected-route-action-proof-matrix-2026-07-22.md`;
+  `history/artifacts/luc-1634-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1629 assistant-route truth reconciliation follow-up
 
 - Status: `DONE`.
