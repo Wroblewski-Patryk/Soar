@@ -7,9 +7,9 @@ coherent state/evidence bundle only and does not change runtime behavior.
 
 ## Evidence
 - Closure task record:
-  `history/tasks/luc-1663-source-control-closure-classify-and-close-local-dirty-state-for-luc-1662-2026-07-22-task.md`
+  `history/tasks/luc-1663-source-control-close-dynamic-bot-runtime-proof-refresh-2026-07-22-task.md`
 - Closure evidence:
-  `history/evidence/luc-1663-source-control-closure-luc-1662-2026-07-22.md`
+  `history/evidence/luc-1663-source-control-closure-dynamic-bot-runtime-proof-refresh-2026-07-22.md`
 - Prior bot-runtime proof packet:
   `history/tasks/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22-task.md`
   `history/evidence/luc-1662-ingest-exact-dynamic-bot-runtime-redirect-proof-2026-07-22.md`

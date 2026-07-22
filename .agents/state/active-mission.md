@@ -5,8 +5,8 @@
 - The closure packet adds dedicated `LUC-1663` task, evidence, and closeout
   artifacts while leaving the runtime product state unchanged.
 - Evidence:
-  `history/tasks/luc-1663-source-control-closure-classify-and-close-local-dirty-state-for-luc-1662-2026-07-22-task.md`;
-  `history/evidence/luc-1663-source-control-closure-luc-1662-2026-07-22.md`;
+  `history/tasks/luc-1663-source-control-close-dynamic-bot-runtime-proof-refresh-2026-07-22-task.md`;
+  `history/evidence/luc-1663-source-control-closure-dynamic-bot-runtime-proof-refresh-2026-07-22.md`;
   `history/artifacts/luc-1663-paperclip-closeout-2026-07-22.md`.
 
 ## 2026-07-22 LUC-1662 exact dynamic bot runtime redirect proof ingest
