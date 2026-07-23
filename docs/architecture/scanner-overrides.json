@@ -100,10 +100,10 @@
       "owner": "QA Regression Lead",
       "description": "Verified the exact dynamic market edit wrapper for route:page-tsx:854e882541 through fresh LUC-1686 local proof on 2026-07-23. The focused test passed and the non-mutating fixture route /dashboard/markets/luc-2188-market/edit returned HTTP 200 at the expected observed path.",
       "evidence": [
-        "history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md",
-        "history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md",
-        "history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.md",
-        "history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22-task.md",
+        "history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22.md",
+        "history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.md",
+        "history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.json",
         "apps/web/src/app/dashboard/markets/[id]/edit/page.test.tsx"
       ]
     },

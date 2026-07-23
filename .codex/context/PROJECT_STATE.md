@@ -1,4 +1,4 @@
-## 2026-07-23 LUC-1686 dashboard market edit page browser-review proof refresh
+## 2026-07-22 LUC-1686 dashboard market edit page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/markets/[id]/edit/page.tsx`
   (`route:page-tsx:854e882541`) now has exact QA evidence for its generated
@@ -21,9 +21,9 @@
   runtime code, deploy state, production auth, or generated completion/truth
   indexes.
 - Evidence:
-  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md`;
-  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md`;
-  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json`.
+  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22.md`;
+  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22-task.md`;
+  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.json`.
 
 ## 2026-07-22 LUC-1683 dashboard logs page browser-review proof refresh
 

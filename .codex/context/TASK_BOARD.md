@@ -1,4 +1,4 @@
-## 2026-07-23 LUC-1686 prove dashboard overview needs-browser-review for dashboard-markets-id-edit-page-tsx
+## 2026-07-22 LUC-1686 prove dashboard overview needs-browser-review for dashboard-markets-id-edit-page-tsx
 
 - Status: `DONE`.
 - Scope:
@@ -19,9 +19,9 @@
   which remains separate follow-up work and does not block the exact edit-page
   proof.
 - Evidence:
-  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md`;
-  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md`;
-  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json`.
+  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.json`.
 
 ## 2026-07-22 LUC-1683 prove dashboard overview needs-browser-review for src-app-dashboard-logs-page-tsx
 

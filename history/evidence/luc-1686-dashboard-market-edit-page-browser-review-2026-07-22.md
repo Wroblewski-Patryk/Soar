@@ -33,7 +33,7 @@ corepack pnpm --filter web exec vitest run src/app/dashboard/markets/[id]/edit/p
 Result: `PASS` (`1` file, `1` test).
 
 ```powershell
-node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1686 --today 2026-07-23 --clusters markets --dynamic-fixtures-only --intercept-fixture-api --output-json history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json --output-md history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.md
+node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1686 --today 2026-07-22 --clusters markets --dynamic-fixtures-only --intercept-fixture-api --output-json history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.json --output-md history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.md
 ```
 
 Result: cluster `FAIL`, with exact target route row `PASS` and unrelated
@@ -66,10 +66,10 @@ create CTA row `FAIL`.
 
 ## Evidence Files
 
-- `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md`
-- `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md`
-- `history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.md`
-- `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json`
+- `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22-task.md`
+- `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-22.md`
+- `history/evidence/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.md`
+- `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-22.json`
 
 ## Conclusion
 
@@ -78,6 +78,8 @@ create CTA row `FAIL`.
 - Exact proof claim:
   `apps/web/src/app/dashboard/markets/[id]/edit/page.tsx` now has fresh
   route-specific QA evidence for `SOAR-ACTION-VISIT-PAGE-MARKET-EDIT`.
+- Source control status:
+  no commit, push, or deploy occurred in this QA-only lane.
 - Residual risk:
   the shared markets cluster still exposes a separate list/create CTA browser
   regression, so Documentation/Memory should ingest the edit-page proof while a
