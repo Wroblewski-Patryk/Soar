@@ -1,3 +1,65 @@
+## 2026-07-23 LUC-27 Soar build-to-production parent blocked closeout
+
+- Status: `BLOCKED / RELEASE_PARITY_NOT_ACHIEVED`.
+- Scope:
+  parent release closeout for the Soar build-to-production mission after the
+  child runtime-recovery, protected-proof, QA, docs, and release-truth lanes
+  converged.
+- Verified state:
+  generated project truth reports zero gaps; public `/health` and `/ready` are
+  green; protected `/ready/details` and `/workers/ready` are green; runtime
+  freshness passes; and the exact currently tested production SHA is
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Blocker:
+  local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` remains 142 commits ahead of the
+  deployed/tested production line. The local candidate is not yet independently
+  reviewed, pushed, deployed, and re-smoked on production.
+- Unblock owner path:
+  CRS/QVE/Security review exact candidate `40cfb8f2...`; Release requests
+  formal no-force push approval, verifies GitHub parity, requests
+  component-specific production deployment approval, and reruns fresh
+  public/protected smoke on the deployed candidate.
+- Evidence:
+  `history/tasks/luc-27-soar-build-to-production-blocked-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-27-soar-build-to-production-blocked-closeout-2026-07-23.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`.
+
+## 2026-07-23 LUC-1708 reconcile 142-commit source/deploy gap and release exact tested SHA
+
+- Status: `BLOCKED / INDEPENDENT RELEASE GATES RUNNING`.
+- Scope:
+  DRE-owned release-truth reconciliation after the Redis/worker recovery chain
+  reached a green runtime but local Soar `main` remained materially ahead of the
+  deployed production line.
+- Findings:
+  current production public readback still reports
+  `gitSha=b0b2c2ce9477a32fcda7717f447ad46aa4327589` on Web
+  `/api/build-info` with `metadataSource=env-runtime`.
+- Git lineage:
+  local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is exactly 142 commits ahead of
+  `origin/main`; the merge-base is the deployed SHA
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Release decision:
+  the exact SHA covered by the green Thursday, July 23, 2026 production proof
+  is `b0b2c2ce9477a32fcda7717f447ad46aa4327589`. The 142 newer local commits are
+  not released and must not inherit that production verification automatically.
+- Required completion path:
+  independent CRS/QVE/Security review of exact candidate `40cfb8f2...`, formal
+  no-force push approval, verified GitHub parity, separate component-specific
+  production deploy approval, and fresh public/protected smoke. Documentation
+  of the gap is blocker evidence, not completion.
+- Deployment impact:
+  none; this lane changed only evidence/state/task files and did not push,
+  deploy, restart, or mutate production.
+- Evidence:
+  `history/tasks/luc-1708-reconcile-142-commit-source-deploy-gap-and-release-exact-tested-sha-2026-07-23-task.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
+  accepted runtime verification
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1547 orchestrate post-approval Redis recovery across Security, DRE, QA, and Docs
 
 - Status: `DONE`.

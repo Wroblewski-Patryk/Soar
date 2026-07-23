@@ -1,3 +1,59 @@
+## 2026-07-23 LUC-27 build-to-production parent blocked closeout
+
+- The Soar parent build-to-production mission is runtime-green but remains
+  release-blocked.
+- Current verified parent state:
+  generated project truth reports `totalGaps=0`; public `/health -> 200` and
+  `/ready -> 200`; protected `/ready/details -> 200` and `/workers/ready -> 200`;
+  protected `/workers/runtime-freshness -> 200 PASS`.
+- Exact tested production SHA:
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Release blocker:
+  local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` remains 142 commits ahead and is
+  not covered by the July 23 production proof.
+- Unblock path:
+  independent review of the exact local candidate, formal no-force push
+  approval, GitHub parity, separate component-specific production deployment
+  approval, and fresh runtime smoke on the deployed candidate.
+- Evidence:
+  `history/tasks/luc-27-soar-build-to-production-blocked-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-27-soar-build-to-production-blocked-closeout-2026-07-23.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`.
+
+## 2026-07-23 LUC-1708 release SHA reconciliation after runtime recovery
+
+- The exact Soar production SHA that was actually tested on Thursday,
+  July 23, 2026 is
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Current public production readback still reports:
+  `GET /ready -> 200` and Web `/api/build-info -> 200` with
+  `gitSha=b0b2c2ce9477a32fcda7717f447ad46aa4327589`,
+  `gitRef=main`, `metadataSource=env-runtime`,
+  `checkedAt=2026-07-23T02:28:54.183Z`.
+- Local workspace source is not the tested release line:
+  local `HEAD` is `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa`, which is 142
+  commits ahead of deployed `origin/main`; the merge-base is the same deployed
+  `b0b2c2ce...` SHA.
+- Release-safe wording from this checkpoint:
+  tested production SHA = `b0b2c2ce9477a32fcda7717f447ad46aa4327589`;
+  local unreleased tip = `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa`;
+  source/deploy gap = `142 commits`.
+- Disposition: `BLOCKED / RELEASE_PARITY_NOT_ACHIEVED`.
+  `LUC-1708` must not close on documentation alone. Exact candidate
+  `40cfb8f2...` requires independent CRS/QVE/Security gates, a formal no-force
+  push approval, a separate component-specific production deployment approval,
+  and fresh public/protected parity evidence. `LUC-27` remains blocked.
+- This heartbeat changed only release evidence/state files. No push, deploy,
+  restart, rollback, env change, database action, account mutation, or secret
+  readback occurred.
+- Evidence:
+  `history/tasks/luc-1708-reconcile-142-commit-source-deploy-gap-and-release-exact-tested-sha-2026-07-23-task.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
+  accepted runtime verification
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1547 post-approval Redis recovery coordination closeout
 
 - The PM coordination lane for the post-approval Redis recovery chain is now

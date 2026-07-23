@@ -1,7 +1,7 @@
-## 2026-07-23 LUC-27 parent mission ready for evidence-backed closeout
+## 2026-07-23 LUC-27 parent mission blocked on release parity
 
 - Status:
-  `VERIFIED / ZERO_INDEXED_GAPS / PUBLIC_READY / PROTECTED_READY / WORKERS_READY`.
+  `BLOCKED / ZERO_INDEXED_GAPS / PUBLIC_READY / PROTECTED_READY / WORKERS_READY / RELEASE_PARITY_NOT_ACHIEVED`.
 - Health impact:
   Soar's current indexed and observed state is green: generated project truth
   has zero gaps; public API readiness passes; protected API and worker
@@ -11,9 +11,18 @@
   no direct remote `redis-cli PING` path was available, so Redis health remains
   accepted through managed `LUC-1569` Coolify projection evidence. Build-info
   still reports `metadataSource=env-runtime`; this is recorded diagnostic
-  provenance, not an observed readiness failure. The only remaining action is
-  local source-control preservation and typed parent closeout.
+  provenance, not an observed readiness failure. Runtime health does not close
+  the release gap: source review, exact-SHA verification, governed push,
+  governed component deployment, and fresh parity smoke remain required.
+- Release truth:
+  the exact tested production SHA is
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`. Local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is 142 commits ahead and is not
+  itself a deployed or production-tested runtime.
 - Evidence:
+  `history/tasks/luc-27-soar-build-to-production-blocked-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-27-soar-build-to-production-blocked-closeout-2026-07-23.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
   `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
   `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
   `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.

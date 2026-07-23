@@ -1,17 +1,29 @@
-## 2026-07-23 LUC-27 build-to-production closeout ready
+## 2026-07-23 LUC-27 build-to-production parent blocked on release parity
 
 - All first-class `LUC-27` blockers are terminal and the generated project
   truth index reports zero gaps.
 - Public `/health` and `/ready`, protected `/ready/details` and
   `/workers/ready`, plus `/workers/runtime-freshness` are green on Thursday,
   July 23, 2026.
+- Exact tested production SHA:
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Release boundary:
+  local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is 142 commits ahead of the
+  deployed/tested production line and must not inherit the Thursday,
+  July 23, 2026 release evidence automatically.
 - The governed Redis/worker recovery chain is complete through `LUC-1547`,
   `LUC-1556`, `LUC-1568`, and `LUC-1706`.
 - Immediate next step:
-  commit the coherent local evidence packet and close `LUC-27` with typed
-  test, review, documentation, security, deployment, monitoring, and
-  source-control evidence. No new production mutation is needed.
+  keep the parent blocked until the exact local candidate
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` receives independent
+  CRS/QVE/Security review, formal no-force push approval, verified GitHub
+  parity, separate component-specific production deployment approval, and
+  fresh public/protected smoke on the deployed candidate.
 - Evidence:
+  `history/tasks/luc-27-soar-build-to-production-blocked-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-27-soar-build-to-production-blocked-closeout-2026-07-23.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
   `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
   `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`;
   `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;

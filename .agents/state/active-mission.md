@@ -1,6 +1,6 @@
 ## 2026-07-23 LUC-27 Soar Build-To-Production Closeout
 
-- Status: `VERIFIED / PROJECT_TRUTH_ZERO_GAPS / PRODUCTION_RUNTIME_GREEN / CLOSEOUT_READY`.
+- Status: `BLOCKED / PROJECT_TRUTH_ZERO_GAPS / PRODUCTION_RUNTIME_GREEN / RELEASE_PARITY_NOT_ACHIEVED`.
 - Scope:
   integrate the final Soar build-to-production evidence across implementation,
   Security, DRE, QVE, Docs, and source-control closure.
@@ -10,11 +10,21 @@
   `/ready/details` and `/workers/ready` are green; runtime freshness is `PASS`;
   `workers-execution` is recovered; and the governed Redis recovery chain is
   complete through `LUC-1547`.
+- Release truth:
+  the exact tested production SHA for the green Thursday, July 23, 2026 runtime
+  is `b0b2c2ce9477a32fcda7717f447ad46aa4327589`. Local workspace `HEAD`
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` remains 142 commits ahead and is
+  not covered by that production proof.
 - Next step:
-  preserve this coherent evidence packet in local source control and close
-  `LUC-27` with typed test, review, documentation, security, deployment, and
-  monitoring evidence. No further production mutation is required.
+  keep `LUC-27` blocked on release parity for exact candidate
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa`. CRS/QVE/Security must review the
+  candidate, Release must obtain formal no-force push approval, verify GitHub
+  parity, then request component-specific production deployment approval and
+  rerun fresh runtime parity smoke.
 - Evidence:
+  `history/tasks/luc-27-soar-build-to-production-blocked-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-27-soar-build-to-production-blocked-closeout-2026-07-23.md`;
+  `history/evidence/luc-1708-release-sha-reconciliation-2026-07-23.md`;
   `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
   `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`;
   `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
