@@ -33,7 +33,9 @@ const sendText = (response, statusCode, body) => {
   response.end(body);
 };
 
-const startSmokeTargets = async ({ healthHandler }) => {
+const testSha = 'abcdef0123456789abcdef0123456789abcdef01';
+
+const startSmokeTargets = async ({ healthHandler, workersHandler }) => {
   const api = http.createServer((request, response) => {
     if (request.url === '/health') {
       healthHandler(request, response);
@@ -41,6 +43,10 @@ const startSmokeTargets = async ({ healthHandler }) => {
     }
     if (request.url === '/ready') {
       sendJson(response, 200, { status: 'ready' });
+      return;
+    }
+    if (request.url === '/workers/ready' && workersHandler) {
+      workersHandler(request, response);
       return;
     }
     sendJson(response, 404, { error: 'not_found' });
@@ -52,7 +58,7 @@ const startSmokeTargets = async ({ healthHandler }) => {
       return;
     }
     if (request.url === '/api/build-info') {
-      sendJson(response, 200, { gitSha: 'test-sha' });
+      sendJson(response, 200, { gitSha: testSha });
       return;
     }
     sendJson(response, 404, { error: 'not_found' });
@@ -67,7 +73,7 @@ const startSmokeTargets = async ({ healthHandler }) => {
   };
 };
 
-const runSmoke = ({ apiBaseUrl, webBaseUrl }) =>
+const runSmoke = ({ apiBaseUrl, webBaseUrl }, { includeWorkers = false } = {}) =>
   new Promise((resolve, reject) => {
     const child = spawn(
       process.execPath,
@@ -78,8 +84,8 @@ const runSmoke = ({ apiBaseUrl, webBaseUrl }) =>
         '--web-base-url',
         webBaseUrl,
         '--expected-sha',
-        'test-sha',
-        '--no-workers',
+        testSha,
+        ...(includeWorkers ? [] : ['--no-workers']),
       ],
       {
         cwd: new URL('..', import.meta.url),
@@ -112,10 +118,10 @@ test('deploy smoke retries a transient endpoint timeout and records the retry in
     healthHandler: (_request, response) => {
       healthAttempts += 1;
       if (healthAttempts === 1) {
-        setTimeout(() => sendJson(response, 200, { status: 'ok' }), 450);
+        setTimeout(() => sendJson(response, 200, { status: 'ok', release: { gitSha: testSha } }), 450);
         return;
       }
-      sendJson(response, 200, { status: 'ok' });
+      sendJson(response, 200, { status: 'ok', release: { gitSha: testSha } });
     },
   });
 
@@ -124,7 +130,7 @@ test('deploy smoke retries a transient endpoint timeout and records the retry in
 
     assert.equal(result.status, 0, result.stderr || result.stdout);
     assert.equal(healthAttempts, 2);
-    assert.match(result.stdout, /PASS API \/health -> 200 after 2 attempts/);
+    assert.match(result.stdout, /PASS API \/health .* -> 200 gitSha=.* after 2 attempts/);
     assert.match(result.stdout, /transient retry: attempt 1: timeout after 200ms/);
   } finally {
     await Promise.all([closeServer(targets.api), closeServer(targets.web)]);
@@ -145,8 +151,63 @@ test('deploy smoke does not retry real HTTP status failures', async () => {
 
     assert.equal(result.status, 1);
     assert.equal(healthAttempts, 1);
-    assert.match(result.stdout, /FAIL API \/health -> status 500/);
+    assert.match(result.stdout, /FAIL API \/health .* -> status 500/);
     assert.match(result.stderr, /\[deploy-smoke\] failed checks: 1/);
+  } finally {
+    await Promise.all([closeServer(targets.api), closeServer(targets.web)]);
+  }
+});
+
+test('deploy smoke accepts workers only when every heartbeat matches the candidate', async () => {
+  const targets = await startSmokeTargets({
+    healthHandler: (_request, response) => {
+      sendJson(response, 200, { status: 'ok', release: { gitSha: testSha } });
+    },
+    workersHandler: (_request, response) => {
+      sendJson(response, 200, {
+        status: 'ready',
+        topologyStatus: 'ready',
+        heartbeats: ['backtest', 'execution', 'market-data', 'market-stream'].map((worker) => ({
+          worker,
+          status: 'fresh',
+          releaseSha: testSha,
+        })),
+      });
+    },
+  });
+
+  try {
+    const result = await runSmoke(targets, { includeWorkers: true });
+
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    assert.match(result.stdout, /PASS API \/workers\/ready -> 200 workers=4 gitSha=/);
+  } finally {
+    await Promise.all([closeServer(targets.api), closeServer(targets.web)]);
+  }
+});
+
+test('deploy smoke rejects a fresh worker heartbeat from another release', async () => {
+  const targets = await startSmokeTargets({
+    healthHandler: (_request, response) => {
+      sendJson(response, 200, { status: 'ok', release: { gitSha: testSha } });
+    },
+    workersHandler: (_request, response) => {
+      sendJson(response, 200, {
+        status: 'ready',
+        topologyStatus: 'ready',
+        heartbeats: [
+          { worker: 'backtest', status: 'fresh', releaseSha: testSha },
+          { worker: 'execution', status: 'fresh', releaseSha: '1111111111111111111111111111111111111111' },
+        ],
+      });
+    },
+  });
+
+  try {
+    const result = await runSmoke(targets, { includeWorkers: true });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /FAIL API \/workers\/ready -> 200 worker release mismatch workers=execution/);
   } finally {
     await Promise.all([closeServer(targets.api), closeServer(targets.web)]);
   }

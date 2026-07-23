@@ -24,6 +24,9 @@ RUN rm -f apps/api/core apps/api/core.*
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
+ARG SOURCE_COMMIT
+ENV SOURCE_COMMIT=$SOURCE_COMMIT
+RUN node -e "if (!/^[0-9a-f]{40}$/i.test(process.env.SOURCE_COMMIT || '')) process.exit(1)"
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 

@@ -22,6 +22,7 @@ const originalBacktestQueue = process.env.WORKER_BACKTEST_QUEUE;
 const originalExecutionQueue = process.env.WORKER_EXECUTION_QUEUE;
 const originalMarketDataOwnership = process.env.WORKER_MARKET_DATA_OWNERSHIP;
 const originalBacktestOwnership = process.env.WORKER_BACKTEST_OWNERSHIP;
+const originalSourceCommit = process.env.SOURCE_COMMIT;
 type MockAuthUser = {
   id: string;
   email: string;
@@ -48,6 +49,8 @@ afterEach(() => {
   process.env.WORKER_EXECUTION_QUEUE = originalExecutionQueue;
   process.env.WORKER_MARKET_DATA_OWNERSHIP = originalMarketDataOwnership;
   process.env.WORKER_BACKTEST_OWNERSHIP = originalBacktestOwnership;
+  if (originalSourceCommit === undefined) delete process.env.SOURCE_COMMIT;
+  else process.env.SOURCE_COMMIT = originalSourceCommit;
   if (originalJwtSecret === undefined) delete process.env.JWT_SECRET;
   else process.env.JWT_SECRET = originalJwtSecret;
   vi.restoreAllMocks();
@@ -118,9 +121,10 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_MARKET_DATA_QUEUE = '';
     process.env.WORKER_BACKTEST_QUEUE = '';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    process.env.SOURCE_COMMIT = 'abcdef0123456789abcdef0123456789abcdef01';
     workerHeartbeatClientMock.readMany.mockResolvedValue([
-      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
     ]);
 
     const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
@@ -155,11 +159,12 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_MARKET_DATA_QUEUE = 'market-data';
     process.env.WORKER_BACKTEST_QUEUE = 'backtests';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    process.env.SOURCE_COMMIT = 'abcdef0123456789abcdef0123456789abcdef01';
     workerHeartbeatClientMock.readMany.mockResolvedValue([
-      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'market-data', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'market-data', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
     ]);
 
     const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
@@ -167,6 +172,29 @@ describe('workers health and readiness endpoints', () => {
     expect(res.body.status).toBe('ready');
     expect(res.body.mode).toBe('split');
     expect(res.body.heartbeats).toHaveLength(4);
+    expect(res.body.heartbeats.every((heartbeat: { releaseSha: string }) => heartbeat.releaseSha === process.env.SOURCE_COMMIT)).toBe(true);
+  });
+
+  it('returns not_ready when a fresh split worker runs a different release', async () => {
+    const authHeader = createAuthHeader('ADMIN');
+    process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
+    process.env.WORKER_MARKET_DATA_QUEUE = 'market-data';
+    process.env.WORKER_BACKTEST_QUEUE = 'backtests';
+    process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    process.env.SOURCE_COMMIT = 'abcdef0123456789abcdef0123456789abcdef01';
+    workerHeartbeatClientMock.readMany.mockResolvedValue([
+      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: '1111111111111111111111111111111111111111' },
+      { worker: 'market-data', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: process.env.SOURCE_COMMIT },
+    ]);
+
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
+    expect(res.status).toBe(503);
+    expect(res.body.releaseMismatchWorkers).toEqual(['execution']);
+    expect(res.body.expectedReleaseSha).toBe(process.env.SOURCE_COMMIT);
   });
 
   it('returns not_ready in split mode when a required worker heartbeat is stale', async () => {
@@ -178,10 +206,10 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_BACKTEST_QUEUE = 'backtests';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
     workerHeartbeatClientMock.readMany.mockResolvedValue([
-      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
-      { worker: 'market-data', status: 'stale', lastHeartbeatAt: '2000-01-01T00:00:00.000Z', ageMs: 1_000_000 },
-      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: null },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: null },
+      { worker: 'market-data', status: 'stale', lastHeartbeatAt: '2000-01-01T00:00:00.000Z', ageMs: 1_000_000, releaseSha: null },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1, releaseSha: null },
     ]);
 
     const res = await request(app).get('/workers/ready').set('Authorization', authHeader);

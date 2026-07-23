@@ -1,1220 +1,855 @@
-# Architecture Graph
+# Architecture Graph Export
 
-Generated: 2026-07-23T00:51:39.929Z
+Generated from CSV source-of-truth registries.
 
-## Canonical Exports
+- Nodes: 656
+- Relations: 842
+- Function chains: 27
 
-- `architecture-awareness.json`
-- `architecture-awareness.csv`
-- `architecture-graph.mmd`
-- `../status/architecture-awareness-report.md`
+## Mermaid Preview
 
-## Entity Index
-
-| Type | Status | Name | Path | Owner |
-| --- | --- | --- | --- | --- |
-| agent | implemented | Agent Checklists | .agents/checklists/README.md | Engineering Delivery Lead |
-| agent | implemented | Anti-Regression System | .agents/core/anti-regression.md | Engineering Delivery Lead |
-| agent | implemented | Execution Loop | .agents/core/execution-loop.md | Engineering Delivery Lead |
-| agent | implemented | Mission Control | .agents/core/mission-control.md | Engineering Delivery Lead |
-| agent | implemented | Agent Operating System | .agents/core/operating-system.md | Engineering Delivery Lead |
-| agent | implemented | Product Delivery System | .agents/core/product-delivery-system.md | Engineering Delivery Lead |
-| agent | implemented | Product Intake And Decision Handshake | .agents/core/product-intake-and-decision-handshake.md | Engineering Delivery Lead |
-| agent | implemented | Project Memory Index | .agents/core/project-memory-index.md | Engineering Delivery Lead |
-| agent | implemented | Quality Gates | .agents/core/quality-gates.md | Engineering Delivery Lead |
-| agent | implemented | Requirements Verification System | .agents/core/requirements-verification-system.md | Engineering Delivery Lead |
-| agent | implemented | backend-builder | .agents/prompts/backend-builder.md | Engineering Delivery Lead |
-| agent | implemented | code-reviewer | .agents/prompts/code-reviewer.md | Engineering Delivery Lead |
-| agent | implemented | db-migrations | .agents/prompts/db-migrations.md | Engineering Delivery Lead |
-| agent | implemented | frontend-builder | .agents/prompts/frontend-builder.md | Engineering Delivery Lead |
-| agent | implemented | ops-release | .agents/prompts/ops-release.md | Engineering Delivery Lead |
-| agent | implemented | planner | .agents/prompts/planner.md | Engineering Delivery Lead |
-| agent | implemented | product-docs | .agents/prompts/product-docs.md | Engineering Delivery Lead |
-| agent | implemented | qa-test | .agents/prompts/qa-test.md | Engineering Delivery Lead |
-| agent | implemented | security-auditor | .agents/prompts/security-auditor.md | Engineering Delivery Lead |
-| agent | implemented | Agent Reports | .agents/reports/README.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/_templates/SKILL.template.md | Engineering Delivery Lead |
-| agent | implemented | Adopt Template Into Existing Project | .agents/skills/adopt_template_into_existing_project/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/build_worker_job_pipeline/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Capture Agent Learnings | .agents/skills/capture-agent-learnings/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/implement_exchange_api_key_flow/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Skills Index | .agents/skills/README.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/run_release_gate_checks/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/scaffold_api_module/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Procedure | .agents/skills/ship_dashboard_feature_slice/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | 2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh | .agents/state/active-mission.md | Engineering Delivery Lead |
-| agent | implemented | Agent Process Evals | .agents/state/agent-evals.md | Engineering Delivery Lead |
-| agent | implemented | Current Focus | .agents/state/current-focus.md | Engineering Delivery Lead |
-| agent | implemented | Decision Register | .agents/state/decision-register.md | Engineering Delivery Lead |
-| agent | implemented | Delivery Map | .agents/state/delivery-map.md | Engineering Delivery Lead |
-| agent | implemented | Known Issues | .agents/state/known-issues.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-28 LUC-5862 App-Completion Browser Review Triage | .agents/state/module-confidence-ledger.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-29 LUC-6102 Production Watch Closure | .agents/state/next-steps.md | Engineering Delivery Lead |
-| agent | implemented | Quality Attribute Scenarios | .agents/state/quality-attribute-scenarios.md | Engineering Delivery Lead |
-| agent | implemented | Regression Log | .agents/state/regression-log.md | Engineering Delivery Lead |
-| agent | implemented | 2026-07-01 LUC-6662 Gap Register And Repair Lane Refresh | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
-| agent | implemented | Responsibility Learning | .agents/state/responsibility-learning.md | Engineering Delivery Lead |
-| agent | implemented | Risk Register | .agents/state/risk-register.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-28 LUC-5809 Protected Worker Readiness | .agents/state/system-health.md | Engineering Delivery Lead |
-| agent | implemented | Agent Tasks | .agents/tasks/README.md | Engineering Delivery Lead |
-| agent | implemented | Agent Hierarchy | .agents/workflows/agent-hierarchy.md | Engineering Delivery Lead |
-| agent | implemented | Codex Power Use Workflow | .agents/workflows/codex-power-use.md | Engineering Delivery Lead |
-| agent | implemented | Documentation Governance Workflow | .agents/workflows/documentation-governance.md | Engineering Delivery Lead |
-| agent | implemented | General Workspace Rules | .agents/workflows/general.md | Engineering Delivery Lead |
-| agent | implemented | Responsibility Lanes | .agents/workflows/responsibility-lanes.md | Engineering Delivery Lead |
-| agent | implemented | Subagent Orchestration Workflow | .agents/workflows/subagent-orchestration.md | Engineering Delivery Lead |
-| agent | implemented | User Collaboration Workflow | .agents/workflows/user-collaboration.md | Engineering Delivery Lead |
-| agent | implemented | World-Class Delivery Workflow | .agents/workflows/world-class-delivery.md | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /avatars | apps/api/src/index.ts#/avatars | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /webhooks/stripe | apps/api/src/index.ts#/webhooks/stripe | Engineering Delivery Lead |
-| api_endpoint | implemented | POST /login | apps/api/src/modules/auth/auth.routes.ts#/login | Engineering Delivery Lead |
-| api_endpoint | implemented | POST /logout | apps/api/src/modules/auth/auth.routes.ts#/logout | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /me | apps/api/src/modules/auth/auth.routes.ts#/me | Engineering Delivery Lead |
-| api_endpoint | implemented | POST /register | apps/api/src/modules/auth/auth.routes.ts#/register | Engineering Delivery Lead |
-| api_endpoint | implemented | GET / | apps/api/src/router/admin.routes.ts#/ | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /subscriptions/plans | apps/api/src/router/admin.routes.ts#/subscriptions/plans | Engineering Delivery Lead |
-| api_endpoint | verified | USE /users | apps/api/src/router/admin.routes.ts#/users | Test Automation Engineer |
-| api_endpoint | implemented | GET / | apps/api/src/router/dashboard.routes.ts#/ | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /backtests | apps/api/src/router/dashboard.routes.ts#/backtests | Engineering Delivery Lead |
-| api_endpoint | verified | USE /bots | apps/api/src/router/dashboard.routes.ts#/bots | Test Automation Engineer |
-| api_endpoint | verified | USE /icons | apps/api/src/router/dashboard.routes.ts#/icons | Test Automation Engineer |
-| api_endpoint | verified | USE /logs | apps/api/src/router/dashboard.routes.ts#/logs | Test Automation Engineer |
-| api_endpoint | verified | USE /market-stream | apps/api/src/router/dashboard.routes.ts#/market-stream | Test Automation Engineer |
-| api_endpoint | verified | USE /markets | apps/api/src/router/dashboard.routes.ts#/markets | Test Automation Engineer |
-| api_endpoint | implemented | USE /orders | apps/api/src/router/dashboard.routes.ts#/orders | Engineering Delivery Lead |
-| api_endpoint | verified | USE /positions | apps/api/src/router/dashboard.routes.ts#/positions | Test Automation Engineer |
-| api_endpoint | verified | USE /profile/apiKeys | apps/api/src/router/dashboard.routes.ts#/profile/apiKeys | Test Automation Engineer |
-| api_endpoint | verified | USE /profile/basic | apps/api/src/router/dashboard.routes.ts#/profile/basic | Test Automation Engineer |
-| api_endpoint | verified | USE /profile/security | apps/api/src/router/dashboard.routes.ts#/profile/security | Test Automation Engineer |
-| api_endpoint | implemented | USE /profile/subscription | apps/api/src/router/dashboard.routes.ts#/profile/subscription | Engineering Delivery Lead |
-| api_endpoint | verified | USE /reports | apps/api/src/router/dashboard.routes.ts#/reports | Test Automation Engineer |
-| api_endpoint | verified | USE /strategies | apps/api/src/router/dashboard.routes.ts#/strategies | Test Automation Engineer |
-| api_endpoint | verified | USE /wallets | apps/api/src/router/dashboard.routes.ts#/wallets | Test Automation Engineer |
-| api_endpoint | implemented | GET / | apps/api/src/router/index.ts#/ | Engineering Delivery Lead |
-| api_endpoint | verified | USE /admin | apps/api/src/router/index.ts#/admin | QA Regression Lead |
-| api_endpoint | implemented | GET /alerts | apps/api/src/router/index.ts#/alerts | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /auth | apps/api/src/router/index.ts#/auth | Engineering Delivery Lead |
-| api_endpoint | verified | USE /dashboard | apps/api/src/router/index.ts#/dashboard | Test Automation Engineer |
-| api_endpoint | implemented | GET /health | apps/api/src/router/index.ts#/health | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /metrics | apps/api/src/router/index.ts#/metrics | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /ready | apps/api/src/router/index.ts#/ready | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /ready/details | apps/api/src/router/index.ts#/ready/details | Engineering Delivery Lead |
-| api_endpoint | implemented | USE /upload | apps/api/src/router/index.ts#/upload | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /workers/health | apps/api/src/router/index.ts#/workers/health | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /workers/ready | apps/api/src/router/index.ts#/workers/ready | Engineering Delivery Lead |
-| api_endpoint | implemented | GET /workers/runtime-freshness | apps/api/src/router/index.ts#/workers/runtime-freshness | Engineering Delivery Lead |
-| component | implemented | AuthContext.tsx | apps/web/src/context/AuthContext.tsx | Engineering Delivery Lead |
-| component | implemented | AdminLayoutShell.tsx | apps/web/src/features/admin/layout/AdminLayoutShell.tsx | Engineering Delivery Lead |
-| component | implemented | LoginForm.tsx | apps/web/src/features/auth/components/LoginForm.tsx | Engineering Delivery Lead |
-| component | implemented | PasswordVisibilityToggle.tsx | apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx | Engineering Delivery Lead |
-| component | implemented | RegisterForm.tsx | apps/web/src/features/auth/components/RegisterForm.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestCreateForm.tsx | apps/web/src/features/backtest/components/BacktestCreateForm.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestRunDetails.tsx | apps/web/src/features/backtest/components/BacktestRunDetails.tsx | Engineering Delivery Lead |
-| component | implemented | backtestRunDetailsCharts.tsx | apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestRunDetailsTabPanels.tsx | apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestRunHeaderSection.tsx | apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestsList.tsx | apps/web/src/features/backtest/components/BacktestsList.tsx | Engineering Delivery Lead |
-| component | verified | BacktestsListView.tsx | apps/web/src/features/backtest/components/BacktestsListView.tsx | QA Regression Lead |
-| component | implemented | BacktestsRunsTable.tsx | apps/web/src/features/backtest/components/BacktestsRunsTable.tsx | Engineering Delivery Lead |
-| component | implemented | BotCreateEditForm.tsx | apps/web/src/features/bots/components/BotCreateEditForm.tsx | Engineering Delivery Lead |
-| component | implemented | BotsManagementTabs.tsx | apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx | Engineering Delivery Lead |
-| component | implemented | BotsMonitoringAttributionPills.tsx | apps/web/src/features/bots/components/bots-management/BotsMonitoringAttributionPills.tsx | Engineering Delivery Lead |
-| component | implemented | BotsMonitoringProtectionCell.tsx | apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx | Engineering Delivery Lead |
-| component | implemented | BotsMonitoringRuntimeStateCell.tsx | apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx | Engineering Delivery Lead |
-| component | implemented | BotsMonitoringSections.tsx | apps/web/src/features/bots/components/bots-management/BotsMonitoringSections.tsx | Engineering Delivery Lead |
-| component | implemented | BotsMonitoringTab.tsx | apps/web/src/features/bots/components/bots-management/BotsMonitoringTab.tsx | Engineering Delivery Lead |
-| component | implemented | BotsPortfolioHistorySection.tsx | apps/web/src/features/bots/components/bots-management/BotsPortfolioHistorySection.tsx | Engineering Delivery Lead |
-| component | implemented | MonitoringFutureSignalsSection.tsx | apps/web/src/features/bots/components/bots-management/MonitoringFutureSignalsSection.tsx | Engineering Delivery Lead |
-| component | implemented | BotsAssistantTab.tsx | apps/web/src/features/bots/components/BotsAssistantTab.tsx | Engineering Delivery Lead |
-| component | implemented | BotsListTable.tsx | apps/web/src/features/bots/components/BotsListTable.tsx | Engineering Delivery Lead |
-| component | implemented | BotsManagement.tsx | apps/web/src/features/bots/components/BotsManagement.tsx | Engineering Delivery Lead |
-| component | implemented | RuntimeDataSection.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx | Engineering Delivery Lead |
-| component | implemented | runtimeDataTablePresenters.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.tsx | Engineering Delivery Lead |
-| component | implemented | runtimeOnboardingConfig.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeOnboardingConfig.tsx | Engineering Delivery Lead |
-| component | implemented | RuntimeOnboardingSection.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx | Engineering Delivery Lead |
-| component | implemented | RuntimeSidebarSection.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSidebarSection.tsx | Engineering Delivery Lead |
-| component | implemented | RuntimeSignalsSection.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.tsx | Engineering Delivery Lead |
-| component | implemented | runtimeUiHelpers.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx | Engineering Delivery Lead |
-| component | implemented | HomeLiveWidgets.tsx | apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx | Engineering Delivery Lead |
-| component | implemented | LiveMarketBar.tsx | apps/web/src/features/dashboard-home/components/LiveMarketBar.tsx | Engineering Delivery Lead |
-| component | verified | ExchangeConnectionsView.tsx | apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx | QA Regression Lead |
-| component | verified | AuditTrailView.tsx | apps/web/src/features/logs/components/AuditTrailView.tsx | QA Regression Lead |
-| component | implemented | MarketUniverseForm.tsx | apps/web/src/features/markets/components/MarketUniverseForm.tsx | Engineering Delivery Lead |
-| component | implemented | MarketUniversesTable.tsx | apps/web/src/features/markets/components/MarketUniversesTable.tsx | Engineering Delivery Lead |
-| component | implemented | SearchableMultiSelect.tsx | apps/web/src/features/markets/components/SearchableMultiSelect.tsx | Engineering Delivery Lead |
-| component | implemented | ApiKeyForm.tsx | apps/web/src/features/profile/components/ApiKeyForm.tsx | Engineering Delivery Lead |
-| component | implemented | ApiKeysList.tsx | apps/web/src/features/profile/components/ApiKeysList.tsx | Engineering Delivery Lead |
-| component | implemented | BasicForm.tsx | apps/web/src/features/profile/components/BasicForm.tsx | Engineering Delivery Lead |
-| component | implemented | Security.tsx | apps/web/src/features/profile/components/Security.tsx | Engineering Delivery Lead |
-| component | implemented | Subscription.tsx | apps/web/src/features/profile/components/Subscription.tsx | Engineering Delivery Lead |
-| component | verified | PerformanceReportsView.tsx | apps/web/src/features/reports/components/PerformanceReportsView.tsx | QA Regression Lead |
-| component | implemented | StrategiesList.tsx | apps/web/src/features/strategies/components/StrategiesList.tsx | Engineering Delivery Lead |
-| component | implemented | StrategyForm.tsx | apps/web/src/features/strategies/components/StrategyForm.tsx | Engineering Delivery Lead |
-| component | implemented | Additional.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Additional.tsx | Engineering Delivery Lead |
-| component | implemented | Basic.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Basic.tsx | Engineering Delivery Lead |
-| component | implemented | Close.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Close.tsx | Engineering Delivery Lead |
-| component | implemented | Indicators.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx | Engineering Delivery Lead |
-| component | implemented | Open.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Open.tsx | Engineering Delivery Lead |
-| component | implemented | SortableThresholdListEditor.tsx | apps/web/src/features/strategies/components/StrategyFormSections/SortableThresholdListEditor.tsx | Engineering Delivery Lead |
-| component | implemented | StrategyPresetPicker.tsx | apps/web/src/features/strategies/components/StrategyPresetPicker.tsx | Engineering Delivery Lead |
-| component | implemented | sections.tsx | apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx | Engineering Delivery Lead |
-| component | implemented | WalletCreateEditForm.tsx | apps/web/src/features/wallets/components/WalletCreateEditForm.tsx | Engineering Delivery Lead |
-| component | implemented | WalletPreviewPanel.tsx | apps/web/src/features/wallets/components/WalletPreviewPanel.tsx | Engineering Delivery Lead |
-| component | implemented | WalletsListTable.tsx | apps/web/src/features/wallets/components/WalletsListTable.tsx | Engineering Delivery Lead |
-| component | implemented | I18nProvider.tsx | apps/web/src/i18n/I18nProvider.tsx | Engineering Delivery Lead |
-| component | implemented | AppLogoLink.tsx | apps/web/src/ui/components/AppLogoLink.tsx | Engineering Delivery Lead |
-| component | implemented | AssetSymbol.tsx | apps/web/src/ui/components/AssetSymbol.tsx | Engineering Delivery Lead |
-| component | implemented | ConfirmModal.tsx | apps/web/src/ui/components/ConfirmModal.tsx | Engineering Delivery Lead |
-| component | implemented | DataTable.tsx | apps/web/src/ui/components/DataTable.tsx | Engineering Delivery Lead |
-| component | implemented | FooterPreferencesSwitchers.tsx | apps/web/src/ui/components/FooterPreferencesSwitchers.tsx | Engineering Delivery Lead |
-| component | implemented | FormModal.tsx | apps/web/src/ui/components/FormModal.tsx | Engineering Delivery Lead |
-| component | implemented | InlinePager.tsx | apps/web/src/ui/components/InlinePager.tsx | Engineering Delivery Lead |
-| component | implemented | SkeletonCardBlock.tsx | apps/web/src/ui/components/loading/SkeletonCardBlock.tsx | Engineering Delivery Lead |
-| component | implemented | SkeletonFormBlock.tsx | apps/web/src/ui/components/loading/SkeletonFormBlock.tsx | Engineering Delivery Lead |
-| component | implemented | SkeletonKpiRow.tsx | apps/web/src/ui/components/loading/SkeletonKpiRow.tsx | Engineering Delivery Lead |
-| component | implemented | SkeletonTableRows.tsx | apps/web/src/ui/components/loading/SkeletonTableRows.tsx | Engineering Delivery Lead |
-| component | implemented | ProfileButton.tsx | apps/web/src/ui/components/ProfileButton.tsx | Engineering Delivery Lead |
-| component | implemented | SkipToContentLink.tsx | apps/web/src/ui/components/SkipToContentLink.tsx | Engineering Delivery Lead |
-| component | implemented | StatusBadge.tsx | apps/web/src/ui/components/StatusBadge.tsx | Engineering Delivery Lead |
-| component | implemented | TableUi.tsx | apps/web/src/ui/components/TableUi.tsx | Engineering Delivery Lead |
-| component | implemented | Tabs.tsx | apps/web/src/ui/components/Tabs.tsx | Engineering Delivery Lead |
-| component | implemented | ThemeSwitch.tsx | apps/web/src/ui/components/ThemeSwitch.tsx | Engineering Delivery Lead |
-| component | implemented | useAsyncConfirm.tsx | apps/web/src/ui/components/useAsyncConfirm.tsx | Engineering Delivery Lead |
-| component | implemented | ViewState.tsx | apps/web/src/ui/components/ViewState.tsx | Engineering Delivery Lead |
-| component | implemented | FormAlert.tsx | apps/web/src/ui/forms/FormAlert.tsx | Engineering Delivery Lead |
-| component | implemented | FormField.tsx | apps/web/src/ui/forms/FormField.tsx | Engineering Delivery Lead |
-| component | implemented | FormFields.tsx | apps/web/src/ui/forms/FormFields.tsx | Engineering Delivery Lead |
-| component | implemented | FormGrid.tsx | apps/web/src/ui/forms/FormGrid.tsx | Engineering Delivery Lead |
-| component | implemented | FormMobileActionBar.tsx | apps/web/src/ui/forms/FormMobileActionBar.tsx | Engineering Delivery Lead |
-| component | implemented | FormPageShell.tsx | apps/web/src/ui/forms/FormPageShell.tsx | Engineering Delivery Lead |
-| component | implemented | FormSectionCard.tsx | apps/web/src/ui/forms/FormSectionCard.tsx | Engineering Delivery Lead |
-| component | implemented | FormValidationSummary.tsx | apps/web/src/ui/forms/FormValidationSummary.tsx | Engineering Delivery Lead |
-| component | implemented | DashboardRouteProgress.tsx | apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx | Engineering Delivery Lead |
-| component | implemented | Footer.tsx | apps/web/src/ui/layout/dashboard/Footer.tsx | Engineering Delivery Lead |
-| component | implemented | Header.tsx | apps/web/src/ui/layout/dashboard/Header.tsx | Engineering Delivery Lead |
-| component | implemented | IsometricModeToggle.tsx | apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx | Engineering Delivery Lead |
-| component | implemented | LanguageSwitcher.tsx | apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx | Engineering Delivery Lead |
-| component | implemented | PageTitle.tsx | apps/web/src/ui/layout/dashboard/PageTitle.tsx | Engineering Delivery Lead |
-| component | implemented | RiskNoticeFooter.tsx | apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx | Engineering Delivery Lead |
-| component | implemented | SafetyBar.tsx | apps/web/src/ui/layout/dashboard/SafetyBar.tsx | Engineering Delivery Lead |
-| component | implemented | Footer.tsx | apps/web/src/ui/layout/public/Footer.tsx | Engineering Delivery Lead |
-| component | implemented | Header.tsx | apps/web/src/ui/layout/public/Header.tsx | Engineering Delivery Lead |
-| component | implemented | ServiceWorkerRegistration.tsx | apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx | Engineering Delivery Lead |
-| document | implemented | pull_request_template.md | .github/pull_request_template.md | Engineering Delivery Lead |
-| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof-intercept.md | Engineering Delivery Lead |
-| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof-localhost.md | Engineering Delivery Lead |
-| document | implemented | LUC-1519 Local Protected Route Action Proof Matrix | .tmp/luc-1519-dashboard-proof.md | Engineering Delivery Lead |
-| document | implemented | Architecture Graph | .tmp/luc-2957-architecture-output/graphs/architecture-graph.md | Engineering Delivery Lead |
-| document | deprecated | Architecture Awareness Report | .tmp/luc-2957-architecture-output/status/architecture-awareness-report.md | Engineering Delivery Lead |
-| document | implemented | Dependency Report | .tmp/luc-2957-architecture-output/status/architecture-dependency-report.md | Engineering Delivery Lead |
-| document | deprecated | Ownership Report | .tmp/luc-2957-architecture-output/status/architecture-ownership-report.md | Engineering Delivery Lead |
-| document | implemented | Task Synchronization Report | .tmp/luc-2957-architecture-output/status/task-synchronization-report.md | Engineering Delivery Lead |
-| document | implemented | AGENTS.md - CryptoSparrow / Soar | AGENTS.md | Engineering Delivery Lead |
-| document | implemented | AI Testing Protocol | AI_TESTING_PROTOCOL.md | Engineering Delivery Lead |
-| document | implemented | CryptoSparrow Mobile (Bootstrap) | apps/mobile/README.md | Engineering Delivery Lead |
-| document | implemented | or | apps/web/README.md | Engineering Delivery Lead |
-| document | implemented | Changelog | CHANGELOG.md | Engineering Delivery Lead |
-| document | implemented | Definition Of Done | DEFINITION_OF_DONE.md | Engineering Delivery Lead |
-| document | implemented | Deployment Gate | DEPLOYMENT_GATE.md | Engineering Delivery Lead |
-| document | implemented | ADR 0001: Agent Governance Baseline | docs/adr/0001-agent-governance-baseline.md | Docs Memory Lead |
-| document | deprecated | ADR Index | docs/adr/architecture-decision-records.md | Docs Memory Lead |
-| document | implemented | ADR | docs/adr/README.md | Docs Memory Lead |
-| document | implemented | Analysis Documentation | docs/analysis/analysis-documentation.md | Docs Memory Lead |
-| document | implemented | Documentation Drift Report | docs/analysis/documentation-drift.md | Docs Memory Lead |
-| document | implemented | Documentation Inventory | docs/analysis/documentation-inventory.md | Docs Memory Lead |
-| document | implemented | LUC-113 Docs Analysis Provenance Closure | docs/analysis/luc-113-docs-analysis-provenance-closure-2026-05-26.md | Docs Memory Lead |
-| document | implemented | LUC-1494 Docs And Memory Loop Checkpoint | docs/analysis/luc-1494-docs-memory-loop-2026-06-02.md | Docs Memory Lead |
-| document | implemented | LUC-1740 Docs And Memory Loop Checkpoint | docs/analysis/luc-1740-docs-memory-loop-2026-06-03.md | Docs Memory Lead |
-| document | implemented | LUC-197 Docs And Memory Loop Checkpoint | docs/analysis/luc-197-docs-memory-loop-2026-05-26.md | Docs Memory Lead |
-| document | implemented | LUC-20 Docs/index/template feedback audit | docs/analysis/luc-20-docs-index-template-feedback-audit-2026-05-25.md | Docs Memory Lead |
-| document | implemented | LUC-2191 Docs And Memory Loop Checkpoint | docs/analysis/luc-2191-docs-memory-loop-2026-06-05.md | Docs Memory Lead |
-| document | implemented | LUC-333 Docs And Memory Loop Checkpoint | docs/analysis/luc-333-docs-memory-loop-2026-05-27.md | Docs Memory Lead |
-| document | implemented | LUC-48 Autonomous map inventory and UI polish readiness gate | docs/analysis/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25.md | Docs Memory Lead |
-| document | implemented | LUC-49 UI state browser proof matrix | docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md | Docs Memory Lead |
-| document | implemented | LUC-81 Docs And Memory Loop Audit | docs/analysis/luc-81-docs-memory-loop-2026-05-26.md | Docs Memory Lead |
-| document | implemented | Analysis | docs/analysis/README.md | Docs Memory Lead |
-| document | implemented | Reusable Audit Registry | docs/analysis/reusable-audit-registry.md | Docs Memory Lead |
-| document | implemented | 01 Overview and Principles | docs/architecture/01_overview-and-principles.md | Docs Memory Lead |
-| document | implemented | 02 System Topology | docs/architecture/02_system-topology.md | Docs Memory Lead |
-| document | implemented | 03 Domain Model | docs/architecture/03_domain-model.md | Docs Memory Lead |
-| document | implemented | 04 Runtime Contexts | docs/architecture/04_runtime-contexts.md | Docs Memory Lead |
-| document | implemented | 05 Strategy, Signal, and Decision Flow | docs/architecture/05_strategy-signal-and-decision-flow.md | Docs Memory Lead |
-| document | implemented | 06 Execution Lifecycle | docs/architecture/06_execution-lifecycle.md | Docs Memory Lead |
-| document | implemented | 07 Modes, Parity, and Data | docs/architecture/07_modes-parity-and-data.md | Docs Memory Lead |
-| document | implemented | 08 Operator Surfaces and Routing | docs/architecture/08_operator-surfaces-and-routing.md | Docs Memory Lead |
-| document | implemented | 09 Integrations, Deployment, and Runtime Services | docs/architecture/09_integrations-deployment-and-runtime-services.md | Docs Memory Lead |
-| document | implemented | 10 Safety, Entitlements, and Risk | docs/architecture/10_safety-entitlements-and-risk.md | Docs Memory Lead |
-| document | implemented | 11 Assistant Runtime | docs/architecture/11_assistant-runtime.md | Docs Memory Lead |
-| document | implemented | 12 Documentation Governance | docs/architecture/12_documentation-governance.md | Docs Memory Lead |
-| document | implemented | Agent System Primitives | docs/architecture/agent-system-primitives.md | Docs Memory Lead |
-| document | implemented | Architecture Documentation for Soar | docs/architecture/architecture-documentation.md | Docs Memory Lead |
-| document | implemented | Architecture Evidence Graph System | docs/architecture/architecture-evidence-graph-system.md | Docs Memory Lead |
-| document | implemented | Architecture Source Of Truth | docs/architecture/architecture-source-of-truth.md | Docs Memory Lead |
-| document | implemented | Architecture Archive | docs/architecture/archive/architecture-archive.md | Docs Memory Lead |
-| document | implemented | Bot V2 Create/Update Contract (Historical Compatibility Note) | docs/architecture/archive/bot-v2-create-update-contract.md | Docs Memory Lead |
-| document | implemented | Database (Compatibility Stub) | docs/architecture/archive/database.md | Docs Memory Lead |
-| document | implemented | Legacy CryptoBot Positions Module - Deep Analysis | docs/architecture/archive/legacy-cryptobot-positions-analysis.md | Docs Memory Lead |
-| document | implemented | modules.md | docs/architecture/archive/modules.md | Docs Memory Lead |
-| document | implemented | Runtime Critical-Path Decomposition Contract | docs/architecture/archive/runtime-critical-path-decomposition-contract.md | Docs Memory Lead |
-| document | implemented | System Architecture (Compatibility Stub) | docs/architecture/archive/system-architecture.md | Docs Memory Lead |
-| document | implemented | Tech Stack (Compatibility Stub) | docs/architecture/archive/tech-stack.md | Docs Memory Lead |
-| document | implemented | Trading Logic (Compatibility Stub) | docs/architecture/archive/trading-logic.md | Docs Memory Lead |
-| document | implemented | AI Assistant foundation chain | docs/architecture/chains/CHAIN-AI-ASSISTANT-FOUNDATION.md | Docs Memory Lead |
-| document | implemented | API platform safety chain | docs/architecture/chains/CHAIN-API-PLATFORM-SAFETY.md | Docs Memory Lead |
-| document | implemented | API support routes chain | docs/architecture/chains/CHAIN-API-SUPPORT-ROUTES.md | Docs Memory Lead |
-| document | implemented | Auth session deep chain | docs/architecture/chains/CHAIN-AUTH-SESSION-DEEP.md | Docs Memory Lead |
-| document | implemented | Auth session login chain | docs/architecture/chains/CHAIN-AUTH-SESSION.md | Docs Memory Lead |
-| document | implemented | Backtest run lifecycle and replay chain | docs/architecture/chains/CHAIN-BACKTESTS.md | Docs Memory Lead |
-| document | implemented | Bot Runtime monitoring core chain | docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md | Docs Memory Lead |
-| document | implemented | Bot setup and canonical topology chain | docs/architecture/chains/CHAIN-BOT-SETUP.md | Docs Memory Lead |
-| document | implemented | Dashboard runtime monitoring chain | docs/architecture/chains/CHAIN-DASHBOARD-RUNTIME.md | Docs Memory Lead |
-| document | implemented | Engine runtime core chain | docs/architecture/chains/CHAIN-ENGINE-RUNTIME-CORE.md | Docs Memory Lead |
-| document | implemented | Exchange adapter deep capability and connector chain | docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md | Docs Memory Lead |
-| document | implemented | Logs Audit Trail evidence chain | docs/architecture/chains/CHAIN-LOGS-AUDIT.md | Docs Memory Lead |
-| document | implemented | Manual order deep execution chain | docs/architecture/chains/CHAIN-MANUAL-ORDER-DEEP.md | Docs Memory Lead |
-| document | implemented | Manual order execution chain | docs/architecture/chains/CHAIN-MANUAL-ORDER.md | Docs Memory Lead |
-| document | implemented | Market data and stream adapters chain | docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md | Docs Memory Lead |
-| document | implemented | Market universe authoring and catalog chain | docs/architecture/chains/CHAIN-MARKETS.md | Docs Memory Lead |
-| document | implemented | Operations config and pipeline chain | docs/architecture/chains/CHAIN-OPS-CONFIG-PIPELINE.md | Docs Memory Lead |
-| document | implemented | Positions read reconciliation and manual update chain | docs/architecture/chains/CHAIN-POSITIONS-CORE.md | Docs Memory Lead |
-| document | implemented | Profile API Keys credential lifecycle chain | docs/architecture/chains/CHAIN-PROFILE-API-KEYS.md | Docs Memory Lead |
-| document | implemented | Release audit tooling evidence chain | docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md | Docs Memory Lead |
-| document | implemented | Reports performance evidence chain | docs/architecture/chains/CHAIN-REPORTS.md | Docs Memory Lead |
-| document | implemented | Runtime DCA exchange PnL chain | docs/architecture/chains/CHAIN-RUNTIME-DCA-PNL.md | Docs Memory Lead |
-| document | implemented | Runtime support services chain | docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md | Docs Memory Lead |
-| document | implemented | Strategy authoring and indicator catalog chain | docs/architecture/chains/CHAIN-STRATEGIES.md | Docs Memory Lead |
-| document | implemented | Subscriptions Admin entitlement and management chain | docs/architecture/chains/CHAIN-SUBSCRIPTIONS-ADMIN.md | Docs Memory Lead |
-| document | implemented | Wallets core lifecycle and analytics chain | docs/architecture/chains/CHAIN-WALLETS-CORE.md | Docs Memory Lead |
-| document | implemented | Web runtime surfaces chain | docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md | Docs Memory Lead |
-| document | implemented | Function Chains | docs/architecture/chains/README.md | Docs Memory Lead |
-| document | implemented | Codebase Map | docs/architecture/codebase-map.md | Docs Memory Lead |
-| document | implemented | Data Ownership Map | docs/architecture/data-ownership-map.md | Docs Memory Lead |
-| document | implemented | AI Red Team agent | docs/architecture/nodes/SOAR-AGENT-AI-RED-TEAM.md | Docs Memory Lead |
-| document | implemented | Coordinator agent workflow | docs/architecture/nodes/SOAR-AGENT-COORDINATOR.md | Docs Memory Lead |
-| document | implemented | PUT /admin/subscriptions/plans/:code | docs/architecture/nodes/SOAR-API-ADMIN-SUBSCRIPTION-PLAN-UPDATE.md | Docs Memory Lead |
-| document | implemented | GET /admin/subscriptions/plans | docs/architecture/nodes/SOAR-API-ADMIN-SUBSCRIPTION-PLANS-LIST.md | Docs Memory Lead |
-| document | implemented | GET /admin/users | docs/architecture/nodes/SOAR-API-ADMIN-USERS-LIST.md | Docs Memory Lead |
-| document | implemented | PATCH /admin/users/:userId | docs/architecture/nodes/SOAR-API-ADMIN-USERS-UPDATE.md | Docs Memory Lead |
-| document | implemented | POST /auth/login | docs/architecture/nodes/SOAR-API-AUTH-LOGIN.md | Docs Memory Lead |
-| document | implemented | POST /auth/logout | docs/architecture/nodes/SOAR-API-AUTH-LOGOUT.md | Docs Memory Lead |
-| document | implemented | GET /auth/me | docs/architecture/nodes/SOAR-API-AUTH-ME.md | Docs Memory Lead |
-| document | implemented | POST /auth/register | docs/architecture/nodes/SOAR-API-AUTH-REGISTER.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/backtests/runs | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/backtests/runs/:id | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/backtests/runs/:id | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/backtests/runs | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-LIST.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/backtests/runs/:id/report | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-REPORT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/backtests/runs/:id/timeline | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-TIMELINE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/backtests/runs/:id/trades | docs/architecture/nodes/SOAR-API-BACKTEST-RUN-TRADES.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/assistant-config | docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-CONFIG-GET.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/bots/:id/assistant-config | docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-CONFIG-UPSERT.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/bots/:id/assistant-config/dry-run | docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-DRY-RUN.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/bots | docs/architecture/nodes/SOAR-API-BOT-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/bots/:id | docs/architecture/nodes/SOAR-API-BOT-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id | docs/architecture/nodes/SOAR-API-BOT-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots | docs/architecture/nodes/SOAR-API-BOT-LIST.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/bots/:id/market-groups | docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUP-CREATE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/bots/:id/market-groups/:groupId/strategies | docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUP-STRATEGY-ATTACH.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/market-groups | docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUPS-LIST.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-monitoring/aggregate | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-AGGREGATE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-CLOSE-POSITION.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-graph | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-GRAPH.md | Docs Memory Lead |
-| document | implemented | GET bot runtime positions | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-POSITIONS.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-sessions/:sessionId | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SESSION-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-sessions | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SESSIONS.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SYMBOL-STATS.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/bots/:id/runtime-sessions/:sessionId/trades | docs/architecture/nodes/SOAR-API-BOT-RUNTIME-TRADES.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/bots/:id/assistant-config/subagents/:slotIndex | docs/architecture/nodes/SOAR-API-BOT-SUBAGENT-DELETE.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/bots/:id/assistant-config/subagents/:slotIndex | docs/architecture/nodes/SOAR-API-BOT-SUBAGENT-UPSERT.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/bots/:id | docs/architecture/nodes/SOAR-API-BOT-UPDATE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/icons/lookup | docs/architecture/nodes/SOAR-API-ICON-LOOKUP.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/logs | docs/architecture/nodes/SOAR-API-LOGS-LIST.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/orders/manual-context | docs/architecture/nodes/SOAR-API-MANUAL-CONTEXT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/markets/catalog | docs/architecture/nodes/SOAR-API-MARKET-CATALOG.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/market-stream/events | docs/architecture/nodes/SOAR-API-MARKET-STREAM-EVENTS.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/markets/universes | docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/markets/universes/:id | docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/markets/universes/:id | docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/markets/universes | docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-LIST.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/markets/universes/:id | docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-UPDATE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/orders/:id/cancel | docs/architecture/nodes/SOAR-API-ORDER-CANCEL.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/orders/:id/close | docs/architecture/nodes/SOAR-API-ORDER-CLOSE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/orders/:id | docs/architecture/nodes/SOAR-API-ORDER-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/orders | docs/architecture/nodes/SOAR-API-ORDER-LIST.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/orders/open | docs/architecture/nodes/SOAR-API-ORDER-OPEN.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/positions/exchange-snapshot | docs/architecture/nodes/SOAR-API-POSITION-EXCHANGE-SNAPSHOT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/positions/:id | docs/architecture/nodes/SOAR-API-POSITION-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/positions | docs/architecture/nodes/SOAR-API-POSITION-LIST.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/positions/live-status | docs/architecture/nodes/SOAR-API-POSITION-LIVE-STATUS.md | Docs Memory Lead |
-| document | implemented | PATCH /dashboard/positions/:id/management-mode | docs/architecture/nodes/SOAR-API-POSITION-MANAGEMENT-MODE.md | Docs Memory Lead |
-| document | implemented | PATCH /dashboard/positions/:id/manual-update | docs/architecture/nodes/SOAR-API-POSITION-MANUAL-UPDATE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/positions/orphan-repair | docs/architecture/nodes/SOAR-API-POSITION-ORPHAN-REPAIR.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/positions/takeover-rebind | docs/architecture/nodes/SOAR-API-POSITION-TAKEOVER-REBIND.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/positions/takeover-status | docs/architecture/nodes/SOAR-API-POSITION-TAKEOVER-STATUS.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/apiKeys | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/profile/apiKeys/:id | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/profile/apiKeys | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-LIST.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/apiKeys/:id/revoke | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-REVOKE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/apiKeys/:id/rotate | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-ROTATE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/apiKeys/:id/test | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-STORED-TEST.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/apiKeys/test | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-TEST.md | Docs Memory Lead |
-| document | implemented | PATCH /dashboard/profile/apiKeys/:id | docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-UPDATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/profile/basic | docs/architecture/nodes/SOAR-API-PROFILE-BASIC-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/profile/basic | docs/architecture/nodes/SOAR-API-PROFILE-BASIC-GET.md | Docs Memory Lead |
-| document | implemented | PATCH /dashboard/profile/basic | docs/architecture/nodes/SOAR-API-PROFILE-BASIC-UPDATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/profile/security/account | docs/architecture/nodes/SOAR-API-PROFILE-SECURITY-ACCOUNT.md | Docs Memory Lead |
-| document | implemented | PATCH /dashboard/profile/security/password | docs/architecture/nodes/SOAR-API-PROFILE-SECURITY-PASSWORD.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/profile/subscription/checkout-intents | docs/architecture/nodes/SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/profile/subscription | docs/architecture/nodes/SOAR-API-PROFILE-SUBSCRIPTION-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/reports/cross-mode-performance | docs/architecture/nodes/SOAR-API-REPORTS-CROSS-MODE-PERFORMANCE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/strategies | docs/architecture/nodes/SOAR-API-STRATEGY-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/strategies/:id | docs/architecture/nodes/SOAR-API-STRATEGY-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/strategies/:id/export | docs/architecture/nodes/SOAR-API-STRATEGY-EXPORT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/strategies/:id | docs/architecture/nodes/SOAR-API-STRATEGY-GET.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/strategies/import | docs/architecture/nodes/SOAR-API-STRATEGY-IMPORT.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/strategies/indicators | docs/architecture/nodes/SOAR-API-STRATEGY-INDICATORS.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/strategies | docs/architecture/nodes/SOAR-API-STRATEGY-LIST.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/strategies/:id | docs/architecture/nodes/SOAR-API-STRATEGY-UPDATE.md | Docs Memory Lead |
-| document | implemented | POST /webhooks/stripe | docs/architecture/nodes/SOAR-API-STRIPE-WEBHOOK.md | Docs Memory Lead |
-| document | implemented | POST /upload/avatar | docs/architecture/nodes/SOAR-API-UPLOAD-AVATAR.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets/:id/cashflow-events | docs/architecture/nodes/SOAR-API-WALLET-CASHFLOW-EVENTS.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/wallets | docs/architecture/nodes/SOAR-API-WALLET-CREATE.md | Docs Memory Lead |
-| document | implemented | DELETE /dashboard/wallets/:id | docs/architecture/nodes/SOAR-API-WALLET-DELETE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets/:id/equity-timeline | docs/architecture/nodes/SOAR-API-WALLET-EQUITY-TIMELINE.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets/:id | docs/architecture/nodes/SOAR-API-WALLET-GET.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets | docs/architecture/nodes/SOAR-API-WALLET-LIST.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets/metadata | docs/architecture/nodes/SOAR-API-WALLET-METADATA.md | Docs Memory Lead |
-| document | implemented | GET /dashboard/wallets/:id/performance-summary | docs/architecture/nodes/SOAR-API-WALLET-PERFORMANCE-SUMMARY.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/wallets/preview-balance | docs/architecture/nodes/SOAR-API-WALLET-PREVIEW-BALANCE.md | Docs Memory Lead |
-| document | implemented | POST /dashboard/wallets/:id/reset-paper | docs/architecture/nodes/SOAR-API-WALLET-RESET-PAPER.md | Docs Memory Lead |
-| document | implemented | PUT /dashboard/wallets/:id | docs/architecture/nodes/SOAR-API-WALLET-UPDATE.md | Docs Memory Lead |
-| document | implemented | AdminLayoutShell | docs/architecture/nodes/SOAR-COMP-ADMIN-LAYOUT-SHELL.md | Docs Memory Lead |
-| document | implemented | AdminSubscriptionsPage | docs/architecture/nodes/SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE.md | Docs Memory Lead |
-| document | implemented | AdminUsersPage | docs/architecture/nodes/SOAR-COMP-ADMIN-USERS-PAGE.md | Docs Memory Lead |
-| document | implemented | ApiKeyForm | docs/architecture/nodes/SOAR-COMP-API-KEY-FORM.md | Docs Memory Lead |
-| document | implemented | ApiKeysList | docs/architecture/nodes/SOAR-COMP-API-KEYS-LIST.md | Docs Memory Lead |
-| document | implemented | AuditTrailView | docs/architecture/nodes/SOAR-COMP-AUDIT-TRAIL-VIEW.md | Docs Memory Lead |
-| document | implemented | BacktestCreateForm | docs/architecture/nodes/SOAR-COMP-BACKTEST-CREATE-FORM.md | Docs Memory Lead |
-| document | implemented | Backtest detail presenters | docs/architecture/nodes/SOAR-COMP-BACKTEST-DETAIL-PRESENTERS.md | Docs Memory Lead |
-| document | implemented | BacktestRunDetails | docs/architecture/nodes/SOAR-COMP-BACKTEST-RUN-DETAILS.md | Docs Memory Lead |
-| document | implemented | BacktestsListView | docs/architecture/nodes/SOAR-COMP-BACKTESTS-LIST-VIEW.md | Docs Memory Lead |
-| document | implemented | BotCreateEditForm | docs/architecture/nodes/SOAR-COMP-BOT-CREATE-EDIT-FORM.md | Docs Memory Lead |
-| document | implemented | BotFormPageContent | docs/architecture/nodes/SOAR-COMP-BOT-FORM-PAGE-CONTENT.md | Docs Memory Lead |
-| document | implemented | BotsAssistantTab | docs/architecture/nodes/SOAR-COMP-BOTS-ASSISTANT-TAB.md | Docs Memory Lead |
-| document | implemented | BotsListTable | docs/architecture/nodes/SOAR-COMP-BOTS-LIST-TABLE.md | Docs Memory Lead |
-| document | implemented | BotsManagementTabs | docs/architecture/nodes/SOAR-COMP-BOTS-MANAGEMENT-TABS.md | Docs Memory Lead |
-| document | implemented | BotsManagement runtime monitoring component | docs/architecture/nodes/SOAR-COMP-BOTS-MANAGEMENT.md | Docs Memory Lead |
-| document | implemented | BotsMonitoringAttributionPills | docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-ATTRIBUTION-PILLS.md | Docs Memory Lead |
-| document | implemented | BotsMonitoringProtectionCell | docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-PROTECTION-CELL.md | Docs Memory Lead |
-| document | implemented | BotsMonitoringSections | docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-SECTIONS.md | Docs Memory Lead |
-| document | implemented | BotsMonitoringTab | docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-TAB.md | Docs Memory Lead |
-| document | implemented | BotsPortfolioHistorySection | docs/architecture/nodes/SOAR-COMP-BOTS-PORTFOLIO-HISTORY-SECTION.md | Docs Memory Lead |
-| document | implemented | ExchangeConnectionsView | docs/architecture/nodes/SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW.md | Docs Memory Lead |
-| document | implemented | HomeLiveWidgets | docs/architecture/nodes/SOAR-COMP-HOME-LIVE-WIDGETS.md | Docs Memory Lead |
-| document | implemented | LiveMarketBar | docs/architecture/nodes/SOAR-COMP-LIVE-MARKET-BAR.md | Docs Memory Lead |
-| document | implemented | LoginForm | docs/architecture/nodes/SOAR-COMP-LOGIN-FORM.md | Docs Memory Lead |
-| document | implemented | SearchableMultiSelect | docs/architecture/nodes/SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT.md | Docs Memory Lead |
-| document | implemented | MarketUniverseForm | docs/architecture/nodes/SOAR-COMP-MARKET-UNIVERSE-FORM.md | Docs Memory Lead |
-| document | implemented | MarketUniversesTable | docs/architecture/nodes/SOAR-COMP-MARKET-UNIVERSES-TABLE.md | Docs Memory Lead |
-| document | implemented | MonitoringFutureSignalsSection | docs/architecture/nodes/SOAR-COMP-MONITORING-FUTURE-SIGNALS.md | Docs Memory Lead |
-| document | implemented | PerformanceReportsView | docs/architecture/nodes/SOAR-COMP-PERFORMANCE-REPORTS-VIEW.md | Docs Memory Lead |
-| document | implemented | Profile BasicForm | docs/architecture/nodes/SOAR-COMP-PROFILE-BASIC-FORM.md | Docs Memory Lead |
-| document | implemented | Profile Security | docs/architecture/nodes/SOAR-COMP-PROFILE-SECURITY.md | Docs Memory Lead |
-| document | implemented | Profile Subscription component | docs/architecture/nodes/SOAR-COMP-PROFILE-SUBSCRIPTION.md | Docs Memory Lead |
-| document | implemented | RegisterForm | docs/architecture/nodes/SOAR-COMP-REGISTER-FORM.md | Docs Memory Lead |
-| document | implemented | runtimeDataTablePresenters | docs/architecture/nodes/SOAR-COMP-RUNTIME-DATA-PRESENTERS.md | Docs Memory Lead |
-| document | implemented | RuntimeDataSection | docs/architecture/nodes/SOAR-COMP-RUNTIME-DATA-SECTION.md | Docs Memory Lead |
-| document | implemented | RuntimeOnboardingSection | docs/architecture/nodes/SOAR-COMP-RUNTIME-ONBOARDING-SECTION.md | Docs Memory Lead |
-| document | implemented | RuntimeSidebarSection | docs/architecture/nodes/SOAR-COMP-RUNTIME-SIDEBAR-SECTION.md | Docs Memory Lead |
-| document | implemented | RuntimeSignalsSection | docs/architecture/nodes/SOAR-COMP-RUNTIME-SIGNALS-SECTION.md | Docs Memory Lead |
-| document | implemented | SortableThresholdListEditor | docs/architecture/nodes/SOAR-COMP-SORTABLE-THRESHOLD-LIST-EDITOR.md | Docs Memory Lead |
-| document | implemented | StrategiesList | docs/architecture/nodes/SOAR-COMP-STRATEGIES-LIST.md | Docs Memory Lead |
-| document | implemented | Strategy form sections | docs/architecture/nodes/SOAR-COMP-STRATEGY-FORM-SECTIONS.md | Docs Memory Lead |
-| document | implemented | StrategyForm | docs/architecture/nodes/SOAR-COMP-STRATEGY-FORM.md | Docs Memory Lead |
-| document | implemented | StrategyPresetPicker | docs/architecture/nodes/SOAR-COMP-STRATEGY-PRESET-PICKER.md | Docs Memory Lead |
-| document | implemented | WalletCreateEditForm | docs/architecture/nodes/SOAR-COMP-WALLET-CREATE-EDIT-FORM.md | Docs Memory Lead |
-| document | implemented | WalletFormPageContent | docs/architecture/nodes/SOAR-COMP-WALLET-FORM-PAGE-CONTENT.md | Docs Memory Lead |
-| document | implemented | WalletPreviewPanel | docs/architecture/nodes/SOAR-COMP-WALLET-PREVIEW-PANEL.md | Docs Memory Lead |
-| document | implemented | WalletsListTable | docs/architecture/nodes/SOAR-COMP-WALLETS-LIST-TABLE.md | Docs Memory Lead |
-| document | implemented | API package manifest | docs/architecture/nodes/SOAR-CONFIG-API-PACKAGE.md | Docs Memory Lead |
-| document | implemented | Coolify Service Stack compose topology | docs/architecture/nodes/SOAR-CONFIG-COOLIFY-STACK-COMPOSE.md | Docs Memory Lead |
-| document | implemented | Critical secrets readiness config | docs/architecture/nodes/SOAR-CONFIG-CRITICAL-SECRETS-READINESS.md | Docs Memory Lead |
-| document | implemented | Local docker compose topology | docs/architecture/nodes/SOAR-CONFIG-LOCAL-COMPOSE.md | Docs Memory Lead |
-| document | implemented | Mobile package manifest | docs/architecture/nodes/SOAR-CONFIG-MOBILE-PACKAGE.md | Docs Memory Lead |
-| document | implemented | pnpm workspace manifest | docs/architecture/nodes/SOAR-CONFIG-PNPM-WORKSPACE.md | Docs Memory Lead |
-| document | implemented | Proxy trust config | docs/architecture/nodes/SOAR-CONFIG-PROXY-TRUST.md | Docs Memory Lead |
-| document | implemented | Root package manifest | docs/architecture/nodes/SOAR-CONFIG-ROOT-PACKAGE.md | Docs Memory Lead |
-| document | implemented | Runtime execution config | docs/architecture/nodes/SOAR-CONFIG-RUNTIME-EXECUTION.md | Docs Memory Lead |
-| document | implemented | Shared package manifest | docs/architecture/nodes/SOAR-CONFIG-SHARED-PACKAGE.md | Docs Memory Lead |
-| document | implemented | VPS docker compose topology | docs/architecture/nodes/SOAR-CONFIG-VPS-COMPOSE.md | Docs Memory Lead |
-| document | implemented | Web package manifest | docs/architecture/nodes/SOAR-CONFIG-WEB-PACKAGE.md | Docs Memory Lead |
-| document | implemented | AuthContext | docs/architecture/nodes/SOAR-CONTEXT-WEB-AUTH.md | Docs Memory Lead |
-| document | implemented | Admin subscription plans controller | docs/architecture/nodes/SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS.md | Docs Memory Lead |
-| document | implemented | Admin users controller | docs/architecture/nodes/SOAR-CONTROLLER-ADMIN-USERS.md | Docs Memory Lead |
-| document | implemented | Auth controller | docs/architecture/nodes/SOAR-CONTROLLER-AUTH.md | Docs Memory Lead |
-| document | implemented | Backtests controller | docs/architecture/nodes/SOAR-CONTROLLER-BACKTESTS.md | Docs Memory Lead |
-| document | implemented | Bots controller | docs/architecture/nodes/SOAR-CONTROLLER-BOTS.md | Docs Memory Lead |
-| document | implemented | Icons controller | docs/architecture/nodes/SOAR-CONTROLLER-ICONS.md | Docs Memory Lead |
-| document | implemented | Logs controller | docs/architecture/nodes/SOAR-CONTROLLER-LOGS.md | Docs Memory Lead |
-| document | implemented | Markets controller | docs/architecture/nodes/SOAR-CONTROLLER-MARKETS.md | Docs Memory Lead |
-| document | implemented | Orders controller | docs/architecture/nodes/SOAR-CONTROLLER-ORDERS.md | Docs Memory Lead |
-| document | implemented | Positions controller | docs/architecture/nodes/SOAR-CONTROLLER-POSITIONS.md | Docs Memory Lead |
-| document | implemented | Profile API-key controller | docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-API-KEYS.md | Docs Memory Lead |
-| document | implemented | Profile basic controller | docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-BASIC.md | Docs Memory Lead |
-| document | implemented | Profile security controller | docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-SECURITY.md | Docs Memory Lead |
-| document | implemented | Profile subscription controller | docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-SUBSCRIPTION.md | Docs Memory Lead |
-| document | implemented | Reports controller | docs/architecture/nodes/SOAR-CONTROLLER-REPORTS.md | Docs Memory Lead |
-| document | implemented | Strategies controller | docs/architecture/nodes/SOAR-CONTROLLER-STRATEGIES.md | Docs Memory Lead |
-| document | implemented | Wallets controller | docs/architecture/nodes/SOAR-CONTROLLER-WALLETS.md | Docs Memory Lead |
-| document | implemented | ApiKey model | docs/architecture/nodes/SOAR-DB-API-KEY.md | Docs Memory Lead |
-| document | implemented | BacktestReport model | docs/architecture/nodes/SOAR-DB-BACKTEST-REPORT.md | Docs Memory Lead |
-| document | implemented | BacktestRun model | docs/architecture/nodes/SOAR-DB-BACKTEST-RUN.md | Docs Memory Lead |
-| document | implemented | BacktestTrade model | docs/architecture/nodes/SOAR-DB-BACKTEST-TRADE.md | Docs Memory Lead |
-| document | implemented | BotAssistantConfig model | docs/architecture/nodes/SOAR-DB-BOT-ASSISTANT-CONFIG.md | Docs Memory Lead |
-| document | implemented | BotMarketGroup model | docs/architecture/nodes/SOAR-DB-BOT-MARKET-GROUP.md | Docs Memory Lead |
-| document | implemented | BotSubagentConfig model | docs/architecture/nodes/SOAR-DB-BOT-SUBAGENT-CONFIG.md | Docs Memory Lead |
-| document | implemented | Bot model | docs/architecture/nodes/SOAR-DB-BOT.md | Docs Memory Lead |
-| document | implemented | Log model | docs/architecture/nodes/SOAR-DB-LOG.md | Docs Memory Lead |
-| document | implemented | MarketGroupStrategyLink model | docs/architecture/nodes/SOAR-DB-MARKET-GROUP-STRATEGY-LINK.md | Docs Memory Lead |
-| document | implemented | MarketUniverse model | docs/architecture/nodes/SOAR-DB-MARKET-UNIVERSE.md | Docs Memory Lead |
-| document | implemented | OrderFill model | docs/architecture/nodes/SOAR-DB-ORDER-FILL.md | Docs Memory Lead |
-| document | implemented | Order model | docs/architecture/nodes/SOAR-DB-ORDER.md | Docs Memory Lead |
-| document | implemented | PaymentIntent model | docs/architecture/nodes/SOAR-DB-PAYMENT-INTENT.md | Docs Memory Lead |
-| document | implemented | Position model | docs/architecture/nodes/SOAR-DB-POSITION.md | Docs Memory Lead |
-| document | implemented | BotRuntimeSession model | docs/architecture/nodes/SOAR-DB-RUNTIME-SESSION.md | Docs Memory Lead |
-| document | implemented | Strategy model | docs/architecture/nodes/SOAR-DB-STRATEGY.md | Docs Memory Lead |
-| document | implemented | SubscriptionPlan model | docs/architecture/nodes/SOAR-DB-SUBSCRIPTION-PLAN.md | Docs Memory Lead |
-| document | implemented | SymbolGroup model | docs/architecture/nodes/SOAR-DB-SYMBOL-GROUP.md | Docs Memory Lead |
-| document | implemented | Trade model | docs/architecture/nodes/SOAR-DB-TRADE.md | Docs Memory Lead |
-| document | implemented | UserSubscription model | docs/architecture/nodes/SOAR-DB-USER-SUBSCRIPTION.md | Docs Memory Lead |
-| document | implemented | User model | docs/architecture/nodes/SOAR-DB-USER.md | Docs Memory Lead |
-| document | implemented | Wallet model | docs/architecture/nodes/SOAR-DB-WALLET.md | Docs Memory Lead |
-| document | implemented | AI integration product documentation | docs/architecture/nodes/SOAR-DOC-AI-INTEGRATION.md | Docs Memory Lead |
-| document | implemented | AI testing protocol | docs/architecture/nodes/SOAR-DOC-AI-TESTING-PROTOCOL.md | Docs Memory Lead |
-| document | implemented | API admin module documentation | docs/architecture/nodes/SOAR-DOC-API-ADMIN.md | Docs Memory Lead |
-| document | implemented | API auth module doc | docs/architecture/nodes/SOAR-DOC-API-AUTH.md | Docs Memory Lead |
-| document | implemented | API backtests module documentation | docs/architecture/nodes/SOAR-DOC-API-BACKTESTS.md | Docs Memory Lead |
-| document | implemented | API bots module doc | docs/architecture/nodes/SOAR-DOC-API-BOTS.md | Docs Memory Lead |
-| document | implemented | API icons module documentation | docs/architecture/nodes/SOAR-DOC-API-ICONS.md | Docs Memory Lead |
-| document | implemented | API logs module documentation | docs/architecture/nodes/SOAR-DOC-API-LOGS.md | Docs Memory Lead |
-| document | implemented | API market stream module documentation | docs/architecture/nodes/SOAR-DOC-API-MARKET-STREAM.md | Docs Memory Lead |
-| document | implemented | API markets module documentation | docs/architecture/nodes/SOAR-DOC-API-MARKETS.md | Docs Memory Lead |
-| document | implemented | API orders module doc | docs/architecture/nodes/SOAR-DOC-API-ORDERS.md | Docs Memory Lead |
-| document | implemented | API positions module doc | docs/architecture/nodes/SOAR-DOC-API-POSITIONS.md | Docs Memory Lead |
-| document | implemented | API profile module documentation | docs/architecture/nodes/SOAR-DOC-API-PROFILE.md | Docs Memory Lead |
-| document | implemented | API reports module documentation | docs/architecture/nodes/SOAR-DOC-API-REPORTS.md | Docs Memory Lead |
-| document | implemented | API root module documentation | docs/architecture/nodes/SOAR-DOC-API-ROOT.md | Docs Memory Lead |
-| document | implemented | API strategies module documentation | docs/architecture/nodes/SOAR-DOC-API-STRATEGIES.md | Docs Memory Lead |
-| document | implemented | API subscriptions module documentation | docs/architecture/nodes/SOAR-DOC-API-SUBSCRIPTIONS.md | Docs Memory Lead |
-| document | implemented | API upload module documentation | docs/architecture/nodes/SOAR-DOC-API-UPLOAD.md | Docs Memory Lead |
-| document | implemented | API wallets module documentation | docs/architecture/nodes/SOAR-DOC-API-WALLETS.md | Docs Memory Lead |
-| document | implemented | Architecture contract documentation index | docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-CONTRACT-INDEX.md | Docs Memory Lead |
-| document | implemented | Architecture governance documentation index | docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX.md | Docs Memory Lead |
-| document | implemented | Architecture evidence graph system doc | docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM.md | Docs Memory Lead |
-| document | implemented | Assistant runtime contract | docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME-CONTRACT.md | Docs Memory Lead |
-| document | implemented | Assistant runtime architecture | docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME.md | Docs Memory Lead |
-
-## Relation Index
-
-| Type | From | To | Evidence |
-| --- | --- | --- | --- |
-| connected_to | api_endpoint:get-alerts:1897f480e5 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-health:ba01ef0056 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-me:6a7167adbd | module:apps-api-src:3261657fad | apps/api/src/modules/auth/auth.routes.ts |
-| connected_to | api_endpoint:get-metrics:c8c3bc223e | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-ready-details:2eb3ce564e | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-ready:5f58f81b1e | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-workers-health:f2ac053027 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-workers-ready:7a43033f4b | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get-workers-runtime-freshness:cb5ccf9adb | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:get:1f75b583ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:get:6708703663 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
-| connected_to | api_endpoint:get:ec3f1b71d9 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:post-login:66031e164c | module:apps-api-src:3261657fad | apps/api/src/modules/auth/auth.routes.ts |
-| connected_to | api_endpoint:post-logout:a5a7195fe9 | module:apps-api-src:3261657fad | apps/api/src/modules/auth/auth.routes.ts |
-| connected_to | api_endpoint:post-register:47bef35779 | module:apps-api-src:3261657fad | apps/api/src/modules/auth/auth.routes.ts |
-| connected_to | api_endpoint:use-admin:9b16797c60 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:use-auth:ac44845d3f | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:use-avatars:1e1c441a3a | module:apps-api-src:3261657fad | apps/api/src/index.ts |
-| connected_to | api_endpoint:use-backtests:1db01efff8 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-bots:d49fee56cc | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-dashboard:2e7ff2f1fa | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:use-icons:309c3997b9 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-logs:39b6910aae | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-market-stream:33f6cb2c91 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-markets:583f095d82 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-orders:b0814be10f | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-positions:e3a48a2408 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-profile-apikeys:680f20cf0c | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-profile-basic:567948ce49 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-profile-security:61552c894b | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-profile-subscription:e9d8631f88 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-reports:cc94abde59 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-strategies:673ded2ac7 | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-subscriptions-plans:b5026ab209 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
-| connected_to | api_endpoint:use-upload:59c4f6ed00 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
-| connected_to | api_endpoint:use-users:2f4d7609a6 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
-| connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
-| connected_to | api_endpoint:use-webhooks-stripe:b502d56cea | module:apps-api-src:3261657fad | apps/api/src/index.ts |
-| connected_to | project:soar:7c70e892d7 | task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0 | .codex/context/TASK_BOARD.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e | .codex/context/PROJECT_STATE.md |
-| connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
-| connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-ai-assistant-foundation-backfill-2026-05-24:bb9f438af4 | history/tasks/architecture-graph-ai-assistant-foundation-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-drift-detection-2026-05-24:8a4424886d | history/tasks/architecture-graph-drift-detection-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-logs-audit-backfill-2026-05-24:e7375e9047 | history/tasks/architecture-graph-logs-audit-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-ops-config-pipeline-backfill-2026-05-24:a3a5ff99de | history/tasks/architecture-graph-ops-config-pipeline-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-reports-backfill-2026-05-24:eb5ca63ba2 | history/tasks/architecture-graph-reports-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:arch-graph-subscriptions-admin-backfill-2026-05-24:db6f9fe944 | history/tasks/architecture-graph-subscriptions-admin-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-auth-session-deep-backfill-2026-05-24:31f7730b74 | history/tasks/architecture-graph-auth-session-deep-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-backtests-backfill-2026-05-24:964c85fde8 | history/tasks/architecture-graph-backtests-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-full-drift-closure-2026-05-24:53d6ec9a98 | history/tasks/architecture-graph-full-drift-closure-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-markets-backfill-2026-05-24:727c9ba565 | history/tasks/architecture-graph-markets-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-strategies-backfill-2026-05-24:100cd67353 | history/tasks/architecture-graph-strategies-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:architecture-graph-web-runtime-surfaces-backfill-2026-05-24:3fdaea0b90 | history/tasks/architecture-graph-web-runtime-surfaces-backfill-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:backend-permission-and-data-isolation-review-task:6bbc4f70d1 | history/tasks/backend-permission-isolation-review-2026-05-21-task.md |
-| connected_to | project:soar:7c70e892d7 | task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728 | history/tasks/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md |
-| connected_to | project:soar:7c70e892d7 | task:bhist-01-bot-portfolio-history-and-capital-events-task:f4932dbe7b | history/tasks/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md |
-| connected_to | project:soar:7c70e892d7 | task:botdrift-01-bot-read-projection-canonical-context-task:5bcfa3d6de | history/tasks/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md |
-| connected_to | project:soar:7c70e892d7 | task:botdrift-02-bot-update-canonical-guard-task:d7cf111912 | history/tasks/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md |
-| connected_to | project:soar:7c70e892d7 | task:coolify-auto-deploy-and-worker-recovery-2026-05-26:b99a704cbd | history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:coolify-service-stack-liveness-gate-task:088e2ed985 | history/tasks/coolify-service-stack-liveness-gate-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:coolify-service-stack-migration-2026-05-25:7006202444 | history/tasks/coolify-service-stack-migration-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:coolify-stack-profile-gated-cutover-2026-05-25:c24faafdc3 | history/tasks/coolify-stack-profile-gated-cutover-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:dashboard-runtime-current-state-aggregate-task-2026-05-09:04d02141e9 | history/tasks/dashboard-runtime-current-state-aggregate-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:dashboard-runtime-widget-aggregate-current-render-task-2026-05-09:9daa556da3 | history/tasks/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:dashdrift-02-position-edit-strategy-display-task:054bc1381d | history/tasks/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md |
-| connected_to | project:soar:7c70e892d7 | task:deploy-freshness-9c125683:e08e777e63 | history/tasks/deploy-freshness-9c125683-task-2026-05-10.md |
-| connected_to | project:soar:7c70e892d7 | task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc | history/tasks/deploy-freshness-e8cd748e-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:deploy-lag-e70f5cf6-2026-05-10:9b71503178 | history/tasks/deploy-lag-e70f5cf6-task-2026-05-10.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-01-gate-io-fail-closed-placeholder-task-2026-05-08:763ffb7a0f | history/tasks/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-02-gate-io-public-market-catalog-task-2026-05-08:c055b19c65 | history/tasks/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08:fd86ac7d92 | history/tasks/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-04-gate-io-public-market-data-reader-task-2026-05-08:2bff76927f | history/tasks/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-05-gate-io-market-stream-polling-task-2026-05-08:8f9dd8dcc3 | history/tasks/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-06-gate-io-runtime-consumption-regression-task-2026-05-08:2d91f7f74d | history/tasks/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-07-gate-io-market-stream-fanout-regression-task-2026-05-08:75bc556db0 | history/tasks/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-09-gate-io-market-stream-worker-config-task-2026-05-08:7546703222 | history/tasks/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-10-gate-io-web-capability-gating-task-2026-05-08:79dd3b00f0 | history/tasks/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-11-gate-io-wallet-bot-ui-gating-task-2026-05-08:9f66a27029 | history/tasks/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-12-gate-io-api-wallet-fail-closed-task-2026-05-08:7137ef0b08 | history/tasks/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-13-gate-io-api-wallet-update-fail-closed-task-2026-05-08:2341020a85 | history/tasks/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-14-gate-io-stored-api-key-probe-fail-closed-task-2026-05-08:096f5f54ed | history/tasks/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-15-gate-io-wallet-balance-preview-fail-closed-task-2026-05-08:06c6cbb594 | history/tasks/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-24-gate-io-api-key-probe:d7037f9851 | history/tasks/exchange2-24-gateio-api-key-probe-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-25-gate-io-balance-preview:f484d8a05b | history/tasks/exchange2-25-gateio-balance-preview-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-26-gate-io-positions-snapshot:1f95756005 | history/tasks/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-27-gate-io-open-orders-snapshot:59f847ad8b | history/tasks/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-28-gate-io-trade-history-snapshot:565b41d3fb | history/tasks/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-29-gate-io-wallet-cashflow-history:8fd0c3b75d | history/tasks/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-30-gate-io-live-order-submit:20934fb453 | history/tasks/exchange2-30-gateio-live-order-submit-task-2026-05-10.md |
-| connected_to | project:soar:7c70e892d7 | task:exchange2-31-live-order-cancel-boundary:8d2a786dc4 | history/tasks/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md |
-| connected_to | project:soar:7c70e892d7 | task:fullarch-fix-04-web-navigation-mock-harness:f13d01bb45 | history/tasks/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md |
-| connected_to | project:soar:7c70e892d7 | task:fullarch-fix-05-api-single-active-bot-scope-closure:f54cea4cbc | history/tasks/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md |
-| connected_to | project:soar:7c70e892d7 | task:gate-io-live-bot-context-repair-2026-05-23:0652c33832 | history/tasks/gateio-live-bot-context-repair-2026-05-23-task.md |
-| connected_to | project:soar:7c70e892d7 | task:gate-io-live-manual-order-ada-short-attempt-2026-05-23:88bc4e9f48 | history/tasks/gateio-live-manual-order-ada-short-2026-05-23-task.md |
-| connected_to | project:soar:7c70e892d7 | task:gate-io-live-reconciliation-scope:84f645d2e8 | history/tasks/gateio-live-reconciliation-scope-2026-05-24-task.md |
-| connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1009-source-control-closure-luc-983-luc-994-and-luc-1004:e9f7ada751 | history/tasks/luc-1009-source-control-closure-luc-983-luc-994-luc-1004-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1026-account-access-useauth-local-proof:c92ff7d740 | history/tasks/luc-1026-account-access-useauth-local-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31:7aabac40e4 | history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1027-soar-coolify-production-deploy-health-sweep-2026-05-31:08222209df | history/tasks/luc-1027-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-103-source-control-closure-2026-05-26-task:5797dc0746 | history/tasks/luc-103-source-control-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1032-resolveopsauthtoken-and-runcontrolledlivesessionproof-runtime-proof-refresh:83a2bf0f21 | history/tasks/luc-1032-runtime-proof-refresh-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-105-runtime-signal-loop-test-closure-repair-2026-05-26:aa7633a58c | history/tasks/luc-105-runtime-signal-loop-test-closure-repair-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31:662535a06a | history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-107-coolify-production-deploy-health-sweep-2026-05-26:24df882fdd | history/tasks/luc-107-coolify-production-deploy-health-sweep-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1071-account-access-countruntimemanagedpositions-proof:aabc4e88ef | history/tasks/luc-1071-account-access-countruntimemanagedpositions-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1075-account-access-getruntimepositionbotcontext-proof:74fe68f4e5 | history/tasks/luc-1075-account-access-getruntimepositionbotcontext-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1079-account-access-listruntimemanagedpositions-proof:b0b621030f | history/tasks/luc-1079-account-access-listruntimemanagedpositions-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task:7ce4e4941f | history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1083-account-access-listruntimeopenorders-proof:03797ca706 | history/tasks/luc-1083-account-access-listruntimeopenorders-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1085-account-access-listruntimeopenorders-doc-link-closure:251bd9dad2 | history/tasks/luc-1085-account-access-listruntimeopenorders-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1087-account-access-listruntimepositionlastprices-proof:18797e03d8 | history/tasks/luc-1087-account-access-listruntimepositionlastprices-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1089-account-access-listruntimepositionlastprices-doc-link-closure:418d870d18 | history/tasks/luc-1089-account-access-listruntimepositionlastprices-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1091-account-access-listruntimepositionstrategies-proof:795aacecd4 | history/tasks/luc-1091-account-access-listruntimepositionstrategies-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1094-account-access-listruntimepositionstrategies-doc-link-closure:93caeed90e | history/tasks/luc-1094-account-access-listruntimepositionstrategies-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1096-account-access-listruntimepositiontraderows-proof:11de1ab48b | history/tasks/luc-1096-account-access-listruntimepositiontraderows-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1098-account-access-listruntimepositiontraderows-doc-link-closure:e75012b2e8 | history/tasks/luc-1098-account-access-listruntimepositiontraderows-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1100-account-access-sumruntimemanagedpositionmarginused-proof:31df3a2003 | history/tasks/luc-1100-account-access-sumruntimemanagedpositionmarginused-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-closure:a46ac399c2 | history/tasks/luc-1102-account-access-sumruntimemanagedpositionmarginused-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069:5b3958ff3b | history/tasks/luc-1104-source-control-closure-classify-and-close-local-dirty-state-for-luc-1067-luc-1069-luc-1071-luc-1073-plus-14-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31:68ba559700 | history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1108-account-access-sumruntimemanagedpositionquantity-proof:8474c88aea | history/tasks/luc-1108-account-access-sumruntimemanagedpositionquantity-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-closure:611d10f85c | history/tasks/luc-1111-account-access-sumruntimemanagedpositionquantity-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1116-task-account-access-sumruntimemanagedpositionrealizedpnl-proof:7c7a8bc70e | history/tasks/luc-1116-account-access-sumruntimemanagedpositionrealizedpnl-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1120-source-control-closure-classify-and-close-local-dirty-state-for-luc-149:66a9a2c378 | history/tasks/luc-1120-source-control-closure-classify-and-close-local-dirty-state-for-luc-149-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1124-public-read-only-browser-proof:876fe4f1c1 | history/tasks/luc-1124-public-read-only-browser-proof-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-115-luc-86-ops-evidence-closure-2026-05-26:c22069664f | history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b | history/tasks/luc-1152-admin-operation-get-doc-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1155-admin-operation-use-users-missing-test-link-closure:9033f8f025 | history/tasks/luc-1155-admin-operation-use-users-missing-test-link-2026-07-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2:165294b858 | history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1162-account-access-use-users-doc-link-closure:f46f93f7f3 | history/tasks/luc-1162-account-access-use-users-doc-link-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1165-gate-io-position-ingestion-and-exchange-sync-fix:dabee5ce03 | history/tasks/luc-1165-soar-gateio-fix-production-position-ingestion-and-exchange-sync-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1166-admin-operation-use-admin-missing-test-link-closure:a05de8c133 | history/tasks/luc-1166-admin-operation-use-admin-missing-test-link-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1175-account-access-use-admin-missing-doc-link-closure:f5d6c8a4bb | history/tasks/luc-1175-account-access-use-admin-missing-doc-link-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1175-soar-v1-conformance-frontend-verification-2026-06-01:2b61a67754 | history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map:789f23f45e | history/tasks/luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-rea:abd1440228 | history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-118-luc-107-coolify-health-evidence-closure-2026-05-26:1106793307 | history/tasks/luc-118-luc-107-coolify-health-evidence-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01:ceabf40a9e | history/tasks/luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-execu:3fa6fc3be2 | history/tasks/luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-executable-regression-checks-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-119-luc-98-release-permit-evidence-closure-2026-05-26:114a7e96b8 | history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readines:3d496682a8 | history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1216-source-control-closure-task:484fcd077c | history/tasks/luc-1216-source-control-closure-for-luc-1198-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01:72ff555902 | history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1246-source-control-closure-task:5923836921 | history/tasks/luc-1246-source-control-closure-for-luc-1240-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task:d69613fb31 | history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1263-source-control-closure-task:a427214e66 | history/tasks/luc-1263-source-control-closure-for-luc-1259-2026-07-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01:9f05e8ba4b | history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-130-luc-88-productivity-review-evidence-closure-2026-05-26:4c8237b1c5 | history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01:f2b6c63f0f | history/tasks/luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26:2ecee2d981 | history/tasks/luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-132-luc-19-runtime-readiness-task-closure-2026-05-26:fb150b0445 | history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-135-source-control-closure-artifacts-lane-2026-05-26:0f14e401a7 | history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-137-docs-operations-closure-bundle-2026-05-26:d3cd9bdf63 | history/tasks/luc-137-docs-operations-closure-bundle-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1371-reconcile-coolify-resource-inventory:23deaf26cf | history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1371-soar-coolify-resource-inventory-task:2bb9896e56 | history/tasks/luc-1371-soar-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1399-reconcile-coolify-resource-inventory-task:b04fc726ea | history/tasks/luc-1399-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-140-closure-lane-provenance-packets-2026-05-26:23127d5941 | history/tasks/luc-140-closure-lane-provenance-packets-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1400-source-control-closure-2026-07-17-task:600d967e74 | history/tasks/luc-1400-source-control-closure-2026-07-17-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1405-use-profile-security-stale-missing-doc-link-reconciliation:1c1f54e32a | history/tasks/luc-1405-use-profile-security-stale-missing-doc-link-reconciliation-2026-07-18-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof:8f1c70f6ef | history/tasks/luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-142-history-evidence-closure-bundle-2026-05-26:5bdd3087aa | history/tasks/luc-142-history-evidence-closure-bundle-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1435-verify-coolify-redeploy-and-production-smoke:da1601b18a | history/tasks/luc-1435-verify-coolify-redeploy-production-smoke-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-145-recent-closure-provenance-packets-2026-05-26:70468bc416 | history/tasks/luc-145-recent-closure-provenance-packets-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1456-account-access-use-dashboard-missing-doc-link-closure:72e4786407 | history/tasks/luc-1456-account-access-use-dashboard-missing-doc-link-2026-07-18-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1458-source-control-closure-for-luc-1456:f3a91589c5 | history/tasks/luc-1458-source-control-closure-classify-and-close-local-dirty-state-for-luc-1456-2026-07-18-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1461-source-control-closure-for-luc-1460:d74273868f | history/tasks/luc-1461-source-control-closure-classify-and-close-local-dirty-state-for-luc-1460-2026-07-18-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1465-source-control-closure-for-luc-1464:8e6b8a8390 | history/tasks/luc-1465-source-control-closure-classify-and-close-local-dirty-state-for-luc-1464-2026-07-18-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1467-review-productivity-resume-delta-2026-07-22-task:3e1bc15f6b | history/tasks/luc-1467-review-productivity-resume-delta-2026-07-22-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-147-history-plans-closure-bundle-2026-05-26:5609dd3b49 | history/tasks/luc-147-history-plans-closure-bundle-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15-live-project-status-and-decision-dashboard:b7637847fc | history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-152-latest-closure-provenance-packets-2026-05-26:7c9819a920 | history/tasks/luc-152-latest-closure-provenance-packets-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-153-coolify-production-deploy-health-sweep-2026-05-26:0587bfeebd | history/tasks/luc-153-coolify-production-deploy-health-sweep-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1531-source-control-closure-for-luc-1359-luc-1460-luc-1528:2dbd4a7313 | history/tasks/luc-1531-source-control-closure-classify-and-close-local-dirty-state-for-luc-1359-luc-1460-luc-1528-2026-07-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1565-reconcile-coolify-resource-inventory-2026-06-02:5a5d64106d | history/tasks/luc-1565-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1569-reconcile-coolify-resource-inventory-2026-06-02:d39c0fbf30 | history/tasks/luc-1569-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1574-confirm-coolify-team-workspace-task:00c6f258d5 | history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1575-reconcile-coolify-resource-inventory-2026-06-02:a7393b9357 | history/tasks/luc-1575-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-158-luc-153-coolify-health-evidence-closure-2026-05-26:b541acd428 | history/tasks/luc-158-luc-153-coolify-health-evidence-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1580-confirm-coolify-team-workspace-task:910c57a802 | history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1581-reconcile-coolify-resource-inventory-2026-06-02:a6a52516a7 | history/tasks/luc-1581-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1584-reconcile-coolify-resource-inventory-2026-06-02:5ba9a079ed | history/tasks/luc-1584-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1585-confirm-coolify-team-workspace-task:eff88cdf35 | history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1592-confirm-coolify-team-workspace-task:5fa6b69914 | history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1593-reconcile-coolify-resource-inventory-2026-06-02:ca1be4dc3f | history/tasks/luc-1593-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1595-source-control-closure-for-luc-1591:a87e096978 | history/tasks/luc-1595-source-control-closure-classify-and-close-local-dirty-state-for-luc-1591-2026-07-21-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1599-reconcile-coolify-resource-inventory-2026-06-02:7b93f98645 | history/tasks/luc-1599-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15c-cto-lane-child-issue:3a88094a29 | history/tasks/luc-15-cto-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15d-docs-lane-child-issue:d76bc7e2f3 | history/tasks/luc-15-docs-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15i-implementation-lane-child-issue:fd2cf05628 | history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15o-ops-lane-child-issue:4453679051 | history/tasks/luc-15-ops-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15p-product-lane-child-issue:3c56fc2d12 | history/tasks/luc-15-product-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15q-qa-lane-child-issue:b3d4fa0376 | history/tasks/luc-15-qa-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-15x-ux-lane-child-issue:41deb76613 | history/tasks/luc-15-ux-lane-child-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-160-luc-158-provenance-packet-closure-2026-05-26:e58e5a521a | history/tasks/luc-160-luc-158-provenance-packet-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1605-reconcile-coolify-resource-inventory-2026-06-02:1cce5a41ce | history/tasks/luc-1605-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1610-reconcile-coolify-resource-inventory-2026-06-02:5b6af7a7aa | history/tasks/luc-1610-reconcile-coolify-resource-inventory-2026-06-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1612-source-control-closure-for-luc-1603:5d67d3e572 | history/tasks/luc-1612-source-control-closure-classify-and-close-local-dirty-state-for-luc-1603-2026-07-21-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1620-reconcile-coolify-resource-inventory-2026-06-03:8dfd70fa60 | history/tasks/luc-1620-reconcile-coolify-resource-inventory-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1624-reconcile-coolify-resource-inventory-2026-06-03:5b46c36a08 | history/tasks/luc-1624-reconcile-coolify-resource-inventory-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1627-source-control-closure-for-luc-1467-luc-1613:90067237d9 | history/tasks/luc-1627-source-control-closure-classify-and-close-local-dirty-state-for-luc-1467-luc-1613-2026-07-22-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-164-luc-160-provenance-packet-closure-2026-05-26:18b71b16b5 | history/tasks/luc-164-luc-160-provenance-packet-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1641-source-control-closure-for-luc-1639:df6cff3096 | history/tasks/luc-1641-source-control-closure-classify-and-close-local-dirty-state-for-luc-1639-2026-07-22-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-166-luc-164-provenance-packet-closure-2026-05-26:d2cc5d83e8 | history/tasks/luc-166-luc-164-provenance-packet-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1663-source-control-closure:68d4eb1377 | history/tasks/luc-1663-source-control-close-dynamic-bot-runtime-proof-refresh-2026-07-22-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1672-confirm-coolify-team-workspace:260ac4fbc0 | history/tasks/luc-1672-confirm-coolify-team-workspace-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-169-luc-166-provenance-packet-closure-2026-05-26:70d252d3ed | history/tasks/luc-169-luc-166-provenance-packet-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-170-account-access-first-doc-rows:f81caa350f | history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-171-luc-169-provenance-packet-closure-2026-05-26:93b4d576c3 | history/tasks/luc-171-luc-169-provenance-packet-closure-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-172-protected-authenticated-browser-proof-packet:c23c159399 | history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1734-restore-owner-path-for-coolify-inventory-lane:effa2c2808 | history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1739-coolify-read-only-access-source-control-closure:00bda71cb9 | history/tasks/luc-1739-coolify-read-only-access-source-control-closure-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-174-protected-trading-readback-vs-live-mutation-approval-packet:9ef895074b | history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1755-rollback-guard-protected-evidence:c8c0bba716 | history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-176-account-access-clearsession-project-truth-proof:402d42c4ac | history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1763-bind-rollback-guard-protected-inputs:036d0b8ef4 | history/tasks/luc-1763-bind-rollback-guard-protected-inputs-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1767-bind-rollback-guard-protected-runner-inputs:d7b4d105ae | history/tasks/luc-1767-bind-rollback-guard-protected-runner-inputs-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1769-approve-source-read-only-app-smoke-auth-class:da836da80f | history/tasks/luc-1769-approve-source-read-only-app-smoke-auth-class-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-18-qa-regression-and-smoke-evidence-baseline-2026-05-25:cfe6a58488 | history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1822-operator-coolify-read-only-production-status-access:d121137c2c | history/tasks/luc-1822-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1828-operator-coolify-read-only-production-status-access:f559d9c78f | history/tasks/luc-1828-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1831-operator-coolify-read-only-production-status-access:7823dcf416 | history/tasks/luc-1831-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1838-source-control-dirty-worktree-classification-and-closure:29b99b8cdf | history/tasks/luc-1838-source-control-classify-and-close-local-dirty-worktree-groups-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1843-operator-coolify-read-only-production-status-access:13c7e05be7 | history/tasks/luc-1843-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1850-operator-coolify-bind-read-only-production-status-access:3546336585 | history/tasks/luc-1850-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1857-operator-coolify-bind-read-only-production-status-access:c751aadb7d | history/tasks/luc-1857-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-192-no-stall-queue-expeditor-2026-05-26:65b826544b | history/tasks/luc-192-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1925-source-control-closure-task:9373aeee9f | history/tasks/luc-1925-source-control-close-local-dirty-state-for-luc-1910-luc-1916-luc-1919-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1933-task-contract-coolify-read-only-production-status-access:cc5307829f | history/tasks/luc-1933-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1940-api-data-n-a-semantics-for-medium-graph-gaps:f953896f9d | history/tasks/luc-1940-api-data-na-semantics-medium-graph-gaps-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1941-medium-graph-cleanup-queue-closure:e38e720057 | history/tasks/luc-1941-medium-graph-cleanup-queue-closure-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1944-assistant-dry-run-boundary-and-schema-drift:b69017d9f7 | history/tasks/luc-1944-assistant-dry-run-boundary-schema-drift-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1945-adversarial-api-platform-and-assistant-regression-proof:e4dbd1adbd | history/tasks/luc-1945-adversarial-api-assistant-regression-proof-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1946-route-rate-limit-redis-client-errors-through-redacted-logger:572775ba1e | history/tasks/luc-1946-route-rate-limit-redis-client-errors-through-redacted-logger-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1951-task-contract-coolify-read-only-production-status-access:a559f50f50 | history/tasks/luc-1951-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1952-source-control-closure-for-luc-1933-luc-1939-luc-1940-luc-1941-plus-five:d481c8772b | history/tasks/luc-1952-source-control-close-local-dirty-state-for-luc-1933-luc-1939-luc-1940-luc-1941-plus-5-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1953-task-contract-coolify-read-only-production-status-access:f2522ded82 | history/tasks/luc-1953-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1968-source-control-closure-for-luc-241:2eb2fb2cc1 | history/tasks/luc-1968-source-control-close-local-dirty-state-for-luc-241-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1969-task-contract-coolify-read-only-production-status-access:2626dedc09 | history/tasks/luc-1969-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1973-task-contract-coolify-read-only-production-status-access:9d750950ff | history/tasks/luc-1973-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1976-task-contract-source-control-close-local-dirty-state-for-luc-1973:000c6efac2 | history/tasks/luc-1976-source-control-close-local-dirty-state-for-luc-1973-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1977-task-contract-coolify-read-only-production-status-access:9f9b5bc55f | history/tasks/luc-1977-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1982-task-contract-coolify-read-only-production-status-access:645bb6bd4f | history/tasks/luc-1982-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1986-task-contract-source-control-close-local-dirty-state-for-luc-1977-luc-1982:e7fa7e09ad | history/tasks/luc-1986-source-control-close-local-dirty-state-for-luc-1977-luc-1982-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1987-task-contract-coolify-read-only-production-status-access:93c4b59baf | history/tasks/luc-1987-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-199-no-stall-queue-expeditor-2026-05-26:def023cb57 | history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1990-task-contract-coolify-read-only-production-status-access:e28ff2966b | history/tasks/luc-1990-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1992-task-contract-source-control-closure-for-luc-1987-luc-1990:ee53f58307 | history/tasks/luc-1992-source-control-close-local-dirty-state-for-luc-1987-luc-1990-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1993-task-contract-coolify-read-only-production-status-access:5a7e6af7c6 | history/tasks/luc-1993-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1996-task-contract-source-control-closure-for-luc-1993:8eb9b911ee | history/tasks/luc-1996-source-control-close-local-dirty-state-for-luc-1993-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-1997-task-contract-coolify-read-only-production-status-access:cbb2a56e2b | history/tasks/luc-1997-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2003-task-contract-source-control-closure-for-luc-1997:0deb8044d8 | history/tasks/luc-2003-source-control-close-local-dirty-state-for-luc-1997-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2004-task-contract-coolify-read-only-production-status-access:7d6eaae5dc | history/tasks/luc-2004-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2014-task-contract-coolify-read-only-production-status-access:aa20e6effb | history/tasks/luc-2014-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2018-api-platform-safety-and-assistant-red-team-proof-map:084395af78 | history/tasks/luc-2018-api-platform-safety-assistant-red-team-proof-map-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-202-no-stall-queue-expeditor-2026-05-26:fea4c180ea | history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2034-task-contract-coolify-read-only-production-status-access:d697717a68 | history/tasks/luc-2034-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2039-task-contract-coolify-read-only-production-status-access:636e063fa4 | history/tasks/luc-2039-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-204-no-stall-queue-expeditor-2026-05-26:a358ddf826 | history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2043-task-contract-coolify-read-only-production-status-access:04fca5999d | history/tasks/luc-2043-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2044-source-control-closure:54c94a7be2 | history/tasks/luc-2044-source-control-close-local-dirty-state-for-luc-2014-luc-2018-luc-2020-luc-2021-plus-4-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2045-task-contract-coolify-read-only-production-status-access:7eef2b9cfe | history/tasks/luc-2045-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2046-task-contract-source-control-closure-for-luc-2045:35b1a63723 | history/tasks/luc-2046-source-control-close-local-dirty-state-for-luc-2045-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2054-task-contract-coolify-read-only-production-status-access:115d47b9f4 | history/tasks/luc-2054-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2055-api-platform-safety-architecture-gap-review:fc9c88f33d | history/tasks/luc-2055-api-platform-safety-architecture-gap-review-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684 | history/tasks/luc-2057-local-protected-wallet-route-action-proof-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2064-source-control-closure-current-luc-402-dirty-packet:09ba7b1bdc | history/tasks/luc-2064-source-control-classify-current-luc-402-dirty-packet-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2069-operator-coolify-bind-read-only-production-status-access:6bdaabd484 | history/tasks/luc-2069-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-207-v1-audit-to-completion-controller-2026-05-26:b7f0720532 | history/tasks/luc-207-v1-audit-to-completion-controller-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2072-operator-coolify-bind-read-only-production-status-access:136eb49614 | history/tasks/luc-2072-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2078-source-control-closure-for-luc-2069-through-luc-2072:d6aeccca26 | history/tasks/luc-2078-source-control-classify-and-close-local-dirty-state-for-luc-2069-luc-2072-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2079-operator-coolify-bind-read-only-production-status-access:75d712cb79 | history/tasks/luc-2079-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-208-no-stall-queue-expeditor-2026-05-26:c132972851 | history/tasks/luc-208-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2085-operator-coolify-bind-read-only-production-status-access:9c6892208d | history/tasks/luc-2085-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2086-task-contract-source-control-closure-for-luc-2079-through-luc-2085:87e01415df | history/tasks/luc-2086-source-control-close-local-dirty-state-for-luc-2079-luc-2085-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2087-operator-coolify-bind-read-only-production-status-access:9fd7161da6 | history/tasks/luc-2087-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2091-operator-coolify-bind-read-only-production-status-access:0a36e36d72 | history/tasks/luc-2091-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2093-source-control-close-local-dirty-state-for-luc-2087-luc-2091:3452b08ff9 | history/tasks/luc-2093-source-control-close-local-dirty-state-for-luc-2087-luc-2091-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2094-operator-coolify-bind-read-only-production-status-access:9872f60acd | history/tasks/luc-2094-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2095-source-control-close-local-dirty-state-for-luc-2094:a3090a5866 | history/tasks/luc-2095-source-control-close-local-dirty-state-for-luc-2094-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2099-operator-coolify-bind-read-only-production-status-access:1fee3311a2 | history/tasks/luc-2099-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-21-soar-local-architecture-and-repo-preflight:f20d9ed387 | history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2112-operator-coolify-bind-read-only-production-status-access:b39374dc83 | history/tasks/luc-2112-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2117-operator-coolify-bind-read-only-production-status-access:d5e88b3137 | history/tasks/luc-2117-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2122-operator-coolify-bind-read-only-production-status-access:11c98d2240 | history/tasks/luc-2122-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2130-operator-coolify-bind-read-only-production-status-access:ccadfb8e43 | history/tasks/luc-2130-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2136-operator-coolify-bind-read-only-production-status-access:e4d724a07a | history/tasks/luc-2136-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2149-operator-coolify-bind-read-only-production-status-access:76bf53818f | history/tasks/luc-2149-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2162-operator-coolify-bind-read-only-production-status-access:b880ca8253 | history/tasks/luc-2162-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2168-engine-runtime-model-doc-graph-relations:cc6639d032 | history/tasks/luc-2168-engine-runtime-model-doc-graph-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2171-operator-coolify-bind-read-only-production-status-access:4a08b63672 | history/tasks/luc-2171-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2173-operator-coolify-bind-read-only-production-status-access:f9a17da310 | history/tasks/luc-2173-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2181-operator-coolify-bind-read-only-production-status-access:f6638f79a7 | history/tasks/luc-2181-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2185-operator-coolify-bind-read-only-production-status-access:ccff751018 | history/tasks/luc-2185-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2187-inspect-high-signal-missing-test-relation-families:7669b437b7 | history/tasks/luc-2187-inspect-high-signal-missing-test-relation-families-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2188-dynamic-protected-route-fixture-proof:bb91787e43 | history/tasks/luc-2188-dynamic-protected-route-fixture-proof-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-219-no-stall-queue-expeditor-2026-05-26:978ad404b3 | history/tasks/luc-219-no-stall-queue-expeditor-2026-05-26-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2196-operator-coolify-bind-read-only-production-status-access:3e8f0c19cd | history/tasks/luc-2196-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2197-classify-current-actionable-missing-test-rows-from-architecture-awareness:f64f78bfa8 | history/tasks/luc-2197-classify-current-actionable-missing-test-rows-architecture-awareness-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2198-repair-script-tooling-missing-test-relation-backlog:e17604685e | history/tasks/luc-2198-repair-script-tooling-missing-test-relation-backlog-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-22-first-safe-repair-lane-task:8baf28a3ae | history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2200-money-facing-runtime-residual-missing-test-families:6fbc67ddd5 | history/tasks/luc-2200-money-facing-runtime-residual-missing-test-families-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2204-operator-coolify-bind-read-only-production-status-access:1bce2afedf | history/tasks/luc-2204-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2208-operator-coolify-bind-read-only-production-status-access:c30518f72d | history/tasks/luc-2208-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-221-no-stall-queue-expeditor-2026-05-27:465dab6e06 | history/tasks/luc-221-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2222-operator-coolify-bind-read-only-production-status-access:ab4986e0b2 | history/tasks/luc-2222-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2225-operator-coolify-bind-read-only-production-status-access:a4db5d2792 | history/tasks/luc-2225-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2230-close-current-actionable-missing-test-relation-buckets:033d271301 | history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2233-refresh-journey-evidence-indexes-after-current-graph-state:6cf4de4a24 | history/tasks/luc-2233-refresh-journey-evidence-indexes-current-graph-state-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2239-operator-coolify-bind-read-only-production-status-access:1b239409be | history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2251-operator-coolify-bind-read-only-production-status-access:a003c8fb86 | history/tasks/luc-2251-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2252-repair-top-release-ops-script-missing-test-relations:b87c608007 | history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2253-repair-api-script-tooling-missing-test-relations:e11ead77f9 | history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2260-operator-coolify-bind-read-only-production-status-access:d502d93352 | history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2264-operator-coolify-bind-read-only-production-status-access:996cff8193 | history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2269-operator-coolify-bind-read-only-production-status-access:1d38b3fd79 | history/tasks/luc-2269-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart:47d83a752d | history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-228-v1-audit-to-completion-controller-2026-05-27:06b4ec96fb | history/tasks/luc-228-v1-audit-to-completion-controller-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05:2c971cf95e | history/tasks/luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2280-controlled-soar-web-restart:cc08910835 | history/tasks/luc-2280-controlled-soar-web-restart-503-restarting-state-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2281-approve-redacted-host-log-export-path-for-soar-api-crash-window:55cb8827d3 | history/tasks/luc-2281-approve-redacted-host-log-export-path-for-soar-api-crash-window-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2282-prepare-soar-web-rollback-or-redeploy-permit:8c5294f11c | history/tasks/luc-2282-prepare-soar-web-rollback-or-redeploy-permit-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha:4f94a76138 | history/tasks/luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2286-choose-next-soar-web-recovery-action-after-restart-503:15a7d0de3f | history/tasks/luc-2286-choose-next-soar-web-recovery-action-after-restart-503-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2287-clear-stuck-coolify-soar-web-deploy-queue:45777bc4cd | history/tasks/luc-2287-clear-stuck-coolify-soar-web-deploy-queue-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2289-approve-redacted-soar-web-deployment-log-export:d40b93e30a | history/tasks/luc-2289-approve-redacted-soar-web-deployment-log-export-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2290-operator-coolify-bind-read-only-production-status-access:8da3c3971b | history/tasks/luc-2290-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2291-investigate-soar-api-node-heap-oom-root-cause:687994a26c | history/tasks/luc-2291-investigate-soar-api-node-heap-oom-root-cause-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2292-task-contract-controlled-soar-web-redeploy-from-pushed-main:d9762503de | history/tasks/luc-2292-controlled-soar-web-redeploy-from-pushed-main-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2293-task-contract-controlled-soar-web-rollback-to-previous-candidate:928725de1d | history/tasks/luc-2293-controlled-soar-web-rollback-to-previous-candidate-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2293-task-contract-controlled-soar-web-rollback-to-previous-source-candidate:bdee7646fa | history/tasks/luc-2293-controlled-soar-web-rollback-to-previous-source-candidate-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2294-security-approval-for-redacted-soar-web-rollback-log-export-path:67cfa85881 | history/tasks/luc-2294-approve-redacted-soar-web-rollback-log-export-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2297-retrieve-redacted-soar-web-crash-logs-after-queue-clear:548f0c83e8 | history/tasks/luc-2297-retrieve-redacted-soar-web-crash-logs-after-queue-clear-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2298-retrieve-redacted-soar-web-deployment-history-and-prepare-rollback-permit:15c9b0ac14 | history/tasks/luc-2298-retrieve-redacted-soar-web-deployment-history-and-prepare-rollback-permit-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-230-no-stall-queue-expeditor-2026-05-27:78ebcd6427 | history/tasks/luc-230-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2300-bound-runtime-aggregate-trade-position-materialization:885cc1f9fd | history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2302-task-contract-select-next-soar-web-recovery-path-after-rollback-failed-closed:bcffbc9bd6 | history/tasks/luc-2302-select-next-soar-web-recovery-path-after-rollback-failed-closed-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2305-redacted-soar-web-container-runtime-crash-investigation:bfa3e9791b | history/tasks/luc-2305-redacted-soar-web-container-runtime-crash-investigation-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2312-source-control-closure:53bc9e9e14 | history/tasks/luc-2312-source-control-closure-luc-1160-plus-2026-06-05-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2313-operator-coolify-bind-read-only-production-status-access:b344ac1388 | history/tasks/luc-2313-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2316-operator-coolify-bind-read-only-production-status-access:1c71eedc8e | history/tasks/luc-2316-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2329-gap-register-and-repair-lane-refresh-task:9b3e416602 | history/tasks/luc-2329-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2340-source-control-closure:76ff6bbf38 | history/tasks/luc-2340-source-control-close-post-luc-2312-v1-controller-dirty-state-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2341-source-control-closure-post-aggregate-proof-dirty-state:aa444f3ae0 | history/tasks/luc-2341-source-control-closure-post-aggregate-proof-dirty-state-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-235-no-stall-queue-expeditor-2026-05-27:1464183418 | history/tasks/luc-235-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2354-gap-register-and-repair-lane-refresh-task:3367ffb2ab | history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2356-no-stall-queue-expeditor-2026-06-06:fa2e79b603 | history/tasks/luc-2356-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2361-final-post-aggregate-release-gate-for-de3db789:6257e8d8c6 | history/tasks/luc-2361-final-post-aggregate-release-gate-de3db789-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2364-repair-release-guardrails-blocking-de3db789:b0c5b3bf4a | history/tasks/luc-2364-repair-release-guardrails-blocking-de3db789-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2365-decide-push-and-production-promotion-path-for-de3db789:b724af920a | history/tasks/luc-2365-decide-push-and-production-promotion-path-for-de3db789-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths:d2173e357f | history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths:6d7f73ba0f | history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2374-close-dirty-source-state-before-de3db789-push-decision:803969de16 | history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit:1099a2f756 | history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion:0828b47396 | history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2390-no-stall-queue-expeditor:d65acd41e2 | history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit:25e5062e06 | history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2395-gap-register-and-repair-lane-refresh-task:cf15a7a8ac | history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2403-no-stall-queue-expeditor:ef93e79f77 | history/tasks/luc-2403-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2406-source-control-closure-for-luc-2403:2edc147d46 | history/tasks/luc-2406-source-control-closure-for-luc-2403-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2409-no-stall-queue-expeditor:1cd764d221 | history/tasks/luc-2409-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2414-autonomous-idle-and-map-drift-sweep:39ed3d5952 | history/tasks/luc-2414-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-243-protected-production-input-inventory:8d4fef99da | history/tasks/luc-243-protected-production-input-inventory-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-244-no-stall-queue-expeditor-2026-05-27:63e3325672 | history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-244-route-browser-review-slice-checklist-task:9250ac393e | history/tasks/luc-244-route-browser-review-slice-checklist-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2461-security-and-account-access-gate-sweep:f1bd2230bc | history/tasks/luc-2461-security-account-access-gate-sweep-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2463-autonomous-idle-and-map-drift-sweep:d845255bd4 | history/tasks/luc-2463-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2479-runtime-automation-helper-tests:937715bc9f | history/tasks/luc-2479-runtime-automation-helper-tests-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-251-no-stall-queue-expeditor-2026-05-27:473fad3ca2 | history/tasks/luc-251-no-stall-queue-expeditor-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-252-arb-001-security-disposition:c0e8cd7b7e | history/tasks/luc-252-arb-001-security-disposition-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth:eac17f9eca | history/tasks/luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2553-no-stall-queue-expeditor:c0072272bb | history/tasks/luc-2553-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-256-arb-005-docs-parity-pipeline-enforcement:a35f7cb637 | history/tasks/luc-256-arb-005-docs-parity-pipeline-enforcement-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2565-architecture-high-risk-security-proof-gap-review:978a7eea39 | history/tasks/luc-2565-architecture-high-risk-security-proof-gap-review-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2566-runtime-and-exchange-local-only-chain-audit-2026-06-06:22f485994d | history/tasks/luc-2566-runtime-exchange-local-only-chain-audit-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2568-sync-architecture-gap-backlog-ledgers-task:e922ba9a8d | history/tasks/luc-2568-sync-architecture-gap-backlog-ledgers-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2578-position-reconciliation-helper-missing-test-links:13715785cd | history/tasks/luc-2578-position-reconciliation-helper-missing-test-links-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2587-autonomous-idle-and-map-drift-sweep:4106db12b3 | history/tasks/luc-2587-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2588-v1-audit-to-completion-controller:de8c2bb352 | history/tasks/luc-2588-v1-audit-to-completion-controller-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2590-coolify-production-deploy-health-sweep-2026-06-07:7d6f9510d1 | history/tasks/luc-2590-coolify-production-deploy-health-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2591-soar-pm-no-stall-queue-expeditor:af7f105d81 | history/tasks/luc-2591-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2594-workers-execution-coolify-crash-metadata-diagnosis-2026-06-07:948d5e291b | history/tasks/luc-2594-workers-execution-coolify-crash-metadata-diagnosis-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2595-gap-register-and-repair-lane-refresh:934ff744a1 | history/tasks/luc-2595-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2597-web-architecture-missing-test-link-families:0e1e42b4de | history/tasks/luc-2597-web-architecture-missing-test-link-families-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2598-no-stall-queue-expeditor:bad6e22d96 | history/tasks/luc-2598-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2601-web-api-and-form-utility-missing-test-links:64cd53e38c | history/tasks/luc-2601-web-api-form-utility-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2604-no-stall-queue-expeditor:093858a8dd | history/tasks/luc-2604-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2607-web-theme-and-datatable-missing-test-links:80263e00d5 | history/tasks/luc-2607-web-theme-datatable-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2608-no-stall-queue-expeditor:e98f0e03fc | history/tasks/luc-2608-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2611-shared-ui-form-primitive-missing-test-links:2870dbe48f | history/tasks/luc-2611-shared-ui-form-primitive-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2618-smoke-auth-binding-for-workers-ready:b40f356560 | history/tasks/luc-2618-smoke-auth-binding-workers-ready-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2619-provision-smoke-auth-binding-for-workers-ready:f88d97fb15 | history/tasks/luc-2619-provision-smoke-auth-binding-workers-ready-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2621-no-stall-queue-expeditor:cfdf6a8975 | history/tasks/luc-2621-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2624-web-ui-form-layout-missing-test-links:549c168e5b | history/tasks/luc-2624-web-ui-form-layout-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2628-no-stall-queue-expeditor:70ef06eaba | history/tasks/luc-2628-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-263-account-access-requireauth-app-completion-proof-row:c01bd6bca1 | history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2631-web-pwa-service-worker-missing-test-links:247f33d41a | history/tasks/luc-2631-web-pwa-service-worker-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458 | history/tasks/luc-2638-v1-audit-to-completion-controller-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-264-protected-input-readiness-binding-follow-up:6a11897db8 | history/tasks/luc-264-protected-input-readiness-binding-follow-up-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2644-gap-register-and-repair-lane-refresh:54937aff46 | history/tasks/luc-2644-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2645-dashboard-language-switcher-missing-test-link:8886ef154b | history/tasks/luc-2645-dashboard-language-switcher-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07:3ac71689fd | history/tasks/luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2647-no-stall-queue-expeditor:00654be220 | history/tasks/luc-2647-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07:63fc2113f1 | history/tasks/luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2661-ops-request-header-helper-missing-test-links:0da9e0a00e | history/tasks/luc-2661-ops-request-header-helper-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2664-buildprojectindex-architecture-proof-gaps:9816f84c0b | history/tasks/luc-2664-buildprojectindex-architecture-proof-gaps-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2665-autonomous-idle-and-map-drift-sweep:f5a5e97d04 | history/tasks/luc-2665-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2667-coolify-production-deploy-health-sweep-2026-06-07:0e7bc29d0d | history/tasks/luc-2667-coolify-production-deploy-health-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2668-no-stall-queue-expeditor:ee0d26a2ee | history/tasks/luc-2668-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2671-reconcile-residual-architecture-awareness-top-samples:7ee6f11390 | history/tasks/luc-2671-reconcile-residual-architecture-awareness-top-samples-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2672-exclude-test-fixture-functions-from-actionable-missing-test-samples:cfb773f22d | history/tasks/luc-2672-exclude-test-fixture-functions-from-actionable-missing-test-samples-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2674-release-rc-slo-script-missing-test-links-2026-06-07:8abea56c4a | history/tasks/luc-2674-release-rc-slo-script-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2678-rc-signoff-and-slo-window-missing-test-links-2026-06-07:55ac74fb4f | history/tasks/luc-2678-rc-signoff-slo-window-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2685-v1-completion-scorecard-missing-test-links-2026-06-07:c2f1afb4da | history/tasks/luc-2685-v1-completion-scorecard-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07:7a80222449 | history/tasks/luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2695-no-stall-queue-expeditor-2026-06-07:e793733823 | history/tasks/luc-2695-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2714-daily-project-status-refresh-2026-06-07:0cba1cae71 | history/tasks/luc-2714-daily-project-status-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2718-source-control-closure:d86031bcfb | history/tasks/luc-2718-source-control-closure-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2719-regression-evidence-sweep-2026-06-07:5539eb542a | history/tasks/luc-2719-regression-evidence-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2720-no-stall-queue-expeditor:8064f693ee | history/tasks/luc-2720-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2725-docs-parity-checker-missing-test-links:ebb4475c35 | history/tasks/luc-2725-docs-parity-checker-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2731-post-deploy-runtime-freshness-missing-test-links:bf8972612e | history/tasks/luc-2731-post-deploy-runtime-freshness-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2733-protected-input-readiness-checker-missing-test-links-2026-06-07:25a26adc8e | history/tasks/luc-2733-protected-input-readiness-checker-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2734-security-and-account-access-gate-sweep:fed5e275d5 | history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2738-architecture-awareness-after-protected-input-readiness-proof-closure-2026-06-07:3ef8325281 | history/tasks/luc-2738-architecture-awareness-after-protected-input-readiness-proof-closure-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2740-rc-external-gate-evidence-checker-missing-test-links:c65bae25b4 | history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2746-no-stall-queue-expeditor:a3f30b76c4 | history/tasks/luc-2746-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07:f78d7e409d | history/tasks/luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2750-live-import-readback-collector-missing-test-links:b3ef820ceb | history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2760-autonomous-idle-and-map-drift-sweep:b61b23ca1f | history/tasks/luc-2760-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2764-architecture-missing-test-script-cluster:8b420b125b | history/tasks/luc-2764-architecture-missing-test-script-cluster-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2767-coolify-production-deploy-health-sweep-2026-06-07:0090945c22 | history/tasks/luc-2767-coolify-production-deploy-health-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2773-soar-assistant-ai-001-v1-scope-decision:3edd229c07 | history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2774-gap-register-and-repair-lane-refresh:d344ee01d7 | history/tasks/luc-2774-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2775-dev-backend-helper-missing-test-links:a354b3636f | history/tasks/luc-2775-dev-backend-helper-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2779-architecture-awareness-after-dev-backend-proof-closure:371e02b540 | history/tasks/luc-2779-architecture-awareness-after-dev-backend-proof-closure-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2781-dev-backend-shutdownimpl-test-link:bfe2007e6a | history/tasks/luc-2781-dev-backend-shutdownimpl-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2786-dashboard-locale-encoding-integrity-drift:1dd3854cc7 | history/tasks/luc-2786-dashboard-locale-encoding-integrity-drift-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2791-function-and-user-action-index-generator-missing-test-links:0d2c46bdf2 | history/tasks/luc-2791-function-user-action-index-generator-missing-test-links-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2792-go-live-smoke-helper-missing-test-links:53a03d145e | history/tasks/luc-2792-go-live-smoke-helper-missing-test-links-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2793-mobile-traceability-v1-scope-classification:30062c5cb8 | history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2799-workers-ready-smoke-principal-gate-blocked-disposition:3871bcf266 | history/tasks/luc-2799-workers-ready-smoke-principal-gate-blocked-disposition-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2801-soar-protected-recheck:113f42f49c | history/tasks/luc-2801-soar-protected-recheck-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2803-no-stall-queue-expeditor:963e106dd3 | history/tasks/luc-2803-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2807-gap-register-and-repair-lane-refresh:9bd66e37e4 | history/tasks/luc-2807-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2808-resolve-ops-auth-token-cookie-parser-missing-test-link:f76203f404 | history/tasks/luc-2808-resolve-ops-auth-token-cookie-parser-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2821-no-stall-queue-expeditor:20382e6290 | history/tasks/luc-2821-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2824-backup-verification-profile-env-helper-missing-test-link:fb50216877 | history/tasks/luc-2824-backup-verification-profile-env-helper-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2827-controlled-live-proof-no-order-guard-missing-test-link:81eed8d2ce | history/tasks/luc-2827-controlled-live-proof-no-order-guard-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2834-controlled-live-proof-target-discovery-missing-test-link:b1de598c79 | history/tasks/luc-2834-controlled-live-proof-target-discovery-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2845-controlled-live-proof-fetchjson-missing-test-link:427fafc685 | history/tasks/luc-2845-controlled-live-proof-fetchjson-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2846-gap-register-and-repair-lane-refresh:8195c73da7 | history/tasks/luc-2846-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2847-controlled-live-proof-hashid-missing-test-link-2026-06-07:04650378f5 | history/tasks/luc-2847-controlled-live-proof-hashid-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-285-safe-lane-continuation-2026-05-27:94bfd2df19 | history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-continuation-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-285-safe-lane-source-scoped-recovery-2026-05-27:eaac7346f6 | history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-source-scoped-recovery-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2857-no-stall-queue-expeditor:70db2ebbf7 | history/tasks/luc-2857-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2861-no-stall-queue-expeditor:9529809858 | history/tasks/luc-2861-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2871-function-journey-index-generator-local-proof:f31e427a2a | history/tasks/luc-2871-function-journey-index-generator-local-proof-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2874-coolify-production-deploy-health-sweep:c146ec1426 | history/tasks/luc-2874-coolify-production-deploy-health-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2878-controlled-live-proof-printusage-missing-test-link:503de02edc | history/tasks/luc-2878-controlled-live-proof-printusage-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2879-web-server-action-deploy-mismatch-diagnosis:2117503ad6 | history/tasks/luc-2879-web-server-action-deploy-mismatch-diagnosis-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2881-gap-register-and-repair-lane-refresh:23f72e3ab0 | history/tasks/luc-2881-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2882-controlled-live-proof-redactbot-missing-test-link:04cfb914cc | history/tasks/luc-2882-controlled-live-proof-redactbot-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2886-controlled-live-proof-resolvebuildinfo-missing-test-link:8aa0e0e212 | history/tasks/luc-2886-controlled-live-proof-resolvebuildinfo-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2889-no-stall-queue-expeditor:fc03aafb8b | history/tasks/luc-2889-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2892-controlled-live-proof-runcollector-missing-test-link:100cf4b0ef | history/tasks/luc-2892-controlled-live-proof-runcollector-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2896-controlled-live-proof-runsimultaneousruntimereadback-missing-test-link:b58bc90d7d | history/tasks/luc-2896-controlled-live-proof-runsimultaneousruntimereadback-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2899-controlled-live-proof-sleep-missing-test-link:80bf9d198b | history/tasks/luc-2899-controlled-live-proof-sleep-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2901-no-stall-queue-expeditor:d640499554 | history/tasks/luc-2901-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2904-controlled-live-proof-updatebotactivestate-missing-test-link:6331847f85 | history/tasks/luc-2904-controlled-live-proof-updatebotactivestate-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2905-gap-register-and-repair-lane-refresh:d9c981b89c | history/tasks/luc-2905-gap-register-and-repair-lane-refresh-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link:4e6ce8ba49 | history/tasks/luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2907-no-stall-queue-expeditor:709e708a4b | history/tasks/luc-2907-no-stall-queue-expeditor-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2910-cutover-dry-run-main-missing-test-link-2026-06-07:dc9acbdce3 | history/tasks/luc-2910-cutover-dry-run-main-missing-test-link-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2931-local-external-gates-pipeline-missing-test-links:93431708bd | history/tasks/luc-2931-local-external-gates-pipeline-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2939-prod-auth-session-browser-proof-helper-missing-test-links:c8c6b7d2ac | history/tasks/luc-2939-prod-auth-session-browser-proof-helper-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2955-v1-audit-to-completion-controller:094b7d483b | history/tasks/luc-2955-v1-audit-to-completion-controller-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2956-prod-security-exchange-proof-helper-missing-test-links:8b9eb22dd9 | history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2961-coolify-production-deploy-health-sweep-2026-06-07:53ae91dd25 | history/tasks/luc-2961-coolify-production-deploy-health-sweep-2026-06-07-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c | history/tasks/luc-2966-auth-security-qa-proof-task-entity-link-backfill-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2970-gap-register-and-repair-lane-refresh-2026-06-08:5fe3ef6a23 | history/tasks/luc-2970-gap-register-and-repair-lane-refresh-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2975-public-read-only-browser-proof-helper-test-lane:a9add25baf | history/tasks/luc-2975-public-read-only-browser-proof-helper-test-lane-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2982-no-stall-queue-expeditor:e609491750 | history/tasks/luc-2982-no-stall-queue-expeditor-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2985-function-journey-chains-missing-test-row:6ad37aea44 | history/tasks/luc-2985-function-journey-chains-missing-test-row-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2986-no-stall-queue-expeditor:d28295b846 | history/tasks/luc-2986-no-stall-queue-expeditor-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2989-go-live-smoke-helper-proof-lane-disposition-2026-06-08:30ed29bc66 | history/tasks/luc-2989-go-live-smoke-helper-proof-lane-disposition-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2992-no-stall-queue-expeditor:af6b2f4b5b | history/tasks/luc-2992-no-stall-queue-expeditor-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2996-gap-register-and-repair-lane-refresh-2026-06-08:a110026afe | history/tasks/luc-2996-gap-register-and-repair-lane-refresh-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3008-prod-like-and-worker-startup-wrapper-missing-test-rows:cc1eb406e0 | history/tasks/luc-3008-prod-like-worker-startup-wrapper-missing-test-rows-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3009-rc-gate-summary-and-checklist-missing-test-rows:b7a710092c | history/tasks/luc-3009-rc-gate-summary-checklist-missing-test-rows-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3011-no-stall-queue-expeditor:17a2dc0689 | history/tasks/luc-3011-no-stall-queue-expeditor-2026-06-08-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-306-account-access-controller-clearsession-test-link:8ec231b936 | history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3071-daily-project-status-refresh-2026-06-11:82f6378458 | history/tasks/luc-3071-daily-project-status-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-310-source-control-closure:c807a54881 | history/tasks/luc-310-source-control-closure-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-322-safe-lane-non-production-architecture-status-refresh-2026-05-27:90f7fe7b49 | history/tasks/luc-322-safe-lane-non-production-architecture-status-refresh-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3313-autonomous-idle-and-map-drift-sweep:456898366f | history/tasks/luc-3313-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3364-autonomous-idle-and-map-drift-sweep:c99a0b08e4 | history/tasks/luc-3364-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3366-gap-register-and-repair-lane-refresh-2026-06-11:3afb99dfc5 | history/tasks/luc-3366-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3373-regression-evidence-sweep-2026-06-11:ef7495ae32 | history/tasks/luc-3373-regression-evidence-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3375-security-and-account-access-gate-sweep:71c2f1ef2e | history/tasks/luc-3375-security-account-access-gate-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3381-static-issue-scan-helper-missing-test-rows-2026-06-11:d11f6cc682 | history/tasks/luc-3381-static-issue-scan-helper-missing-test-rows-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3382-coolify-failed-deploy-read-only-diagnosis:9ddf863d48 | history/tasks/luc-3382-coolify-failed-deploy-readonly-diagnosis-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3394-gap-register-and-repair-lane-refresh-2026-06-11:48e07ccca9 | history/tasks/luc-3394-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3404-architecture-awareness-refresh-after-closed-relation-lanes-2026-06-11:c4c7eb4e2b | history/tasks/luc-3404-architecture-awareness-refresh-after-closed-relation-lanes-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3405-public-read-only-browser-proof-process-anchor-classification:449e956c6b | history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3409-owner-login-verification-path:3cb240fa92 | history/tasks/luc-3409-owner-login-verification-path-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3410-web-next-production-command-wrapper-missing-test-row:dfcf1b77a2 | history/tasks/luc-3410-web-next-production-command-wrapper-missing-test-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3419-no-stall-queue-expeditor:7c77f78396 | history/tasks/luc-3419-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-342-protected-input-binding-readiness-rerun:e2a6900df0 | history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-342-protected-input-binding-readiness:aad3a4c4ee | history/tasks/luc-342-protected-input-binding-readiness-2026-07-10-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3425-autonomous-idle-and-map-drift-sweep:b219ba79e8 | history/tasks/luc-3425-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3434-static-scan-qa-execution-path-recovery-2026-06-11:b1719da435 | history/tasks/luc-3434-static-scan-qa-execution-path-recovery-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3445-no-stall-queue-expeditor:16d6335198 | history/tasks/luc-3445-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3455-regression-evidence-sweep-2026-06-11:3f98123c04 | history/tasks/luc-3455-regression-evidence-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3457-security-and-account-access-gate-sweep:8e865e9b73 | history/tasks/luc-3457-security-account-access-gate-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3465-gap-register-and-repair-lane-refresh-2026-06-11:0e7caea0aa | history/tasks/luc-3465-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3466-prod-like-worker-wrapper-relation-rows-2026-06-11:fac7d2f849 | history/tasks/luc-3466-prod-like-worker-wrapper-relation-rows-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3468-no-stall-queue-expeditor:8f803c8b6f | history/tasks/luc-3468-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3476-no-stall-queue-expeditor:f475d6365d | history/tasks/luc-3476-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3480-no-stall-queue-expeditor:7a808c124b | history/tasks/luc-3480-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3484-v1-audit-to-completion-controller-2026-06-11:5d454c4189 | history/tasks/luc-3484-v1-audit-to-completion-controller-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3487-no-stall-queue-expeditor:356fefc80d | history/tasks/luc-3487-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3490-gap-register-and-repair-lane-refresh-2026-06-11:138ff1aa78 | history/tasks/luc-3490-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3491-rc-summary-checklist-residual-relation-rows:88fc0e35a8 | history/tasks/luc-3491-rc-summary-checklist-residual-relation-rows-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3493-no-stall-queue-expeditor:0bb500736c | history/tasks/luc-3493-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3503-validate-scripts-source-control-closure-lane:e7357771bf | history/tasks/luc-3503-validate-scripts-source-control-closure-lane-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3504-dashboard-i18n-source-control-closure:f446fdbbb6 | history/tasks/luc-3504-dashboard-i18n-source-control-closure-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3506-classify-nul-workspace-artifact-before-source-control-closure:4bbd3f4ac1 | history/tasks/luc-3506-classify-nul-workspace-artifact-before-source-control-closure-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3510-source-control-closure-batch-after-validated-dirty-lane-evidence:85f467c8b0 | history/tasks/luc-3510-source-control-closure-batch-after-validated-dirty-lane-evidence-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3513-autonomous-idle-and-map-drift-sweep:8321271be6 | history/tasks/luc-3513-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3515-coolify-production-deploy-health-sweep:315b92a3f0 | history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3515-coolify-production-deploy-health-sweep:6d311c0f0e | history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3516-no-stall-queue-expeditor:7938fffe71 | history/tasks/luc-3516-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3519-gap-register-and-repair-lane-refresh-2026-06-11:f4d081576a | history/tasks/luc-3519-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3520-waitforwebbuildinfo-fetchjsonwithtimeout-relation-row:01aa175d43 | history/tasks/luc-3520-waitforwebbuildinfo-fetchjson-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3530-no-stall-queue-expeditor:92c3bde6b9 | history/tasks/luc-3530-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3536-architecture-awareness-after-closed-relation-rows:ea4af84f12 | history/tasks/luc-3536-architecture-awareness-after-closed-relation-rows-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3538-waitforwebbuildinfo-isdeploybuildidaccepted-relation-row:c9db582e03 | history/tasks/luc-3538-waitforwebbuildinfo-isdeploybuildidaccepted-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3546-no-stall-queue-expeditor:13d10c8cda | history/tasks/luc-3546-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3549-architecture-awareness-after-isdeploybuildidaccepted:4ebfb210f6 | history/tasks/luc-3549-architecture-awareness-after-isdeploybuildidaccepted-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3551-waitforwebbuildinfo-isdeploymetadatasourceaccepted-relation-row:1e6f42b61d | history/tasks/luc-3551-waitforwebbuildinfo-isdeploymetadatasourceaccepted-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3552-v1-audit-to-completion-controller:494f1cb492 | history/tasks/luc-3552-v1-audit-to-completion-controller-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3554-waitforwebbuildinfo-hasflag-relation-row:d0f13a89cf | history/tasks/luc-3554-waitforwebbuildinfo-hasflag-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3555-no-stall-queue-expeditor:71b6c81b41 | history/tasks/luc-3555-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3558-architecture-awareness-refresh-after-luc-3554:1b748acaa0 | history/tasks/luc-3558-architecture-awareness-after-hasflag-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3559-waitforwebbuildinfo-main-relation-row:1fd9156577 | history/tasks/luc-3559-waitforwebbuildinfo-main-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3560-gap-register-and-repair-lane-refresh:0b1c2e088b | history/tasks/luc-3560-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3561-waitforwebbuildinfo-feature-level-relation-row:eb51f8b9d8 | history/tasks/luc-3561-waitforwebbuildinfo-feature-level-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3565-architecture-awareness-after-feature-level-relation-row:ff71d0bb08 | history/tasks/luc-3565-architecture-awareness-after-feature-level-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3567-waitforwebbuildinfo-normalizebaseurl-relation-row:3f4a114630 | history/tasks/luc-3567-waitforwebbuildinfo-normalizebaseurl-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3569-no-stall-queue-expeditor:1feddbc84a | history/tasks/luc-3569-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3572-architecture-awareness-after-normalizebaseurl:ae679fc8e8 | history/tasks/luc-3572-architecture-awareness-after-normalizebaseurl-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3574-waitforwebbuildinfo-normalizenonemptystring-relation-row:22057b8e89 | history/tasks/luc-3574-waitforwebbuildinfo-normalizenonemptystring-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3581-source-control-closure-docs-evidence-packet:6a1d109498 | history/tasks/luc-3581-source-control-closure-docs-evidence-packet-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3587-architecture-awareness-after-normalizenonemptystring:347a3f24e2 | history/tasks/luc-3587-architecture-awareness-after-normalizenonemptystring-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3588-waitforwebbuildinfo-printusage-relation-row:356346a305 | history/tasks/luc-3588-waitforwebbuildinfo-printusage-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3589-gap-register-and-repair-lane-refresh:0bae4976ab | history/tasks/luc-3589-gap-register-and-repair-lane-refresh-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3595-no-stall-queue-expeditor:fc9c49fcea | history/tasks/luc-3595-no-stall-queue-expeditor-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3598-waitforwebbuildinfo-resolveoptions-relation-row:7585e3b08f | history/tasks/luc-3598-waitforwebbuildinfo-resolveoptions-relation-row-2026-06-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3600-v1-audit-to-completion-controller-architecture-refresh:6c2af0673a | history/tasks/luc-3600-v1-audit-to-completion-controller-architecture-refresh-2026-06-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3684-primary-source-control-closure-after-sidecar-routing-fix:6e9e94e07b | history/tasks/luc-3684-primary-source-control-closure-after-sidecar-routing-fix-2026-06-13-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3722-clear-architecture-graph-drift-guardrail-2026-06-13:7d75d21e1a | history/tasks/luc-3722-clear-architecture-graph-drift-guardrail-2026-06-13-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3726-production-ui-audit-helper-test-repair:9190172508 | history/tasks/luc-3726-prod-ui-audit-helper-test-repair-2026-06-13-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-376-read-only-source-control-classification-2026-05-27:3c17098b00 | history/tasks/luc-376-read-only-source-control-classification-docs-state-evidence-drift-2026-05-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3779-backend-runtime-task-link-reconciliation:f11b257fe2 | history/tasks/luc-3779-backend-runtime-task-link-reconciliation-2026-06-13-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3832-production-dashboard-performance-diagnosis:4d74cfdef3 | history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3840-reduce-dashboard-runtime-fan-out-and-loading-stalls:c1acead2f1 | history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3841-protected-dashboard-performance-recheck:fbf51c7972 | history/tasks/luc-3841-protected-dashboard-performance-recheck-2026-06-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-3885-stripe-webhook-subscription-lifecycle-reconciliation:d429702abc | history/tasks/luc-3885-stripe-webhook-subscription-lifecycle-2026-06-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-39-backend-api-service-boundary-known-state-2026-05-25:2249aac05c | history/tasks/luc-39-backend-api-service-boundary-known-state-2026-05-25.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4005-soar-architecture-implementation-task-link-reconciliation:b3fcbffebf | history/tasks/luc-4005-soar-architecture-implementation-task-link-reconciliation-2026-06-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-41-runtime-boundary-checkpoint-2026-05-25:6bbdf78f97 | history/tasks/luc-41-runtime-boundary-checkpoint-2026-05-25.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4103-owner-login-verification-path:0bc90da359 | history/tasks/luc-4103-owner-login-verification-path-2026-06-14-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02:cd219523e8 | history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4121-protected-test-account-smoke-path:96db9f5aa9 | history/tasks/luc-4121-protected-test-account-smoke-path-2026-06-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4174-repair-local-vitest-startup-for-dashboard-fan-out-regression-proof:1eaa2dc1b7 | history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4201-promote-dashboard-performance-repair-bundle:1349917b3e | history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4204-v1-audit-to-completion-controller-architecture-refresh:4b280fee84 | history/tasks/luc-4204-v1-audit-to-completion-controller-architecture-refresh-2026-06-15-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28:f1a83ac1e0 | history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4493-close-main-dirty-stripe-webhook-packet:134c592358 | history/tasks/luc-4493-close-main-dirty-stripe-webhook-packet-2026-06-19-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4766-production-performance-and-server-health-watch-task:d408c69912 | history/tasks/luc-4766-production-performance-health-watch-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4767-coolify-vps-health-readback-blocked-task:8aba7bf689 | history/tasks/luc-4767-coolify-vps-health-readback-blocked-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4806-bind-read-only-coolify-vps-status-inputs:3aa4c08c39 | history/tasks/luc-4806-bind-read-only-coolify-vps-status-inputs-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4811-inject-read-only-coolify-vps-status-bindings:f75d37ddad | history/tasks/luc-4811-inject-read-only-coolify-vps-status-bindings-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4815-v1-audit-to-completion-controller-stripe-relation-sync:d37c7a63c8 | history/tasks/luc-4815-v1-audit-to-completion-controller-stripe-relation-sync-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4819-production-performance-and-server-health-watch-task:3b924c7ae3 | history/tasks/luc-4819-production-performance-health-watch-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4833-authenticated-production-acceptance-and-performance-sweep-task:957677878e | history/tasks/luc-4833-authenticated-production-acceptance-performance-sweep-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4843-gap-register-and-repair-lane-refresh:881e6c58a0 | history/tasks/luc-4843-gap-register-and-repair-lane-refresh-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4893-production-performance-and-server-health-watch-task:dfe492c96f | history/tasks/luc-4893-production-performance-health-watch-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4950-source-control-classification-packet-from-luc-4946:a1355a1450 | history/tasks/luc-4950-source-control-classification-packet-from-luc-4946-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-4971-security-and-account-access-gate-sweep:5be479c345 | history/tasks/luc-4971-security-account-access-gate-sweep-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-498-account-access-doc-link-burn-down:ff5803d619 | history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-499-account-access-auth-controller-test-link-rows:a035f1e41c | history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-500-protected-browser-runtime-trading-read-only-proof:b7dd108f50 | history/tasks/luc-500-protected-browser-runtime-trading-readonly-proof-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5001-no-stall-queue-expeditor:bf6975d957 | history/tasks/luc-5001-no-stall-queue-expeditor-2026-06-20-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-501-browser-review-owner-route-bundles-task:26a0e3a5fc | history/tasks/luc-501-browser-review-owner-route-bundles-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-503-protected-ops-diagnostics-read-only-proof:9bf6543f78 | history/tasks/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-528-account-access-auth-e2e-restoreenv-doc-link:c4bcfbfa54 | history/tasks/luc-528-account-access-auth-e2e-restoreenv-doc-link-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5362-authenticated-production-acceptance-and-performance-sweep:50343f5020 | history/tasks/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5367-gap-register-and-repair-lane-refresh:b0121f5320 | history/tasks/luc-5367-gap-register-and-repair-lane-refresh-2026-06-21-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-539-account-access-auth-jwt-getjwtsecrets-doc-link:fe8111ccf9 | history/tasks/luc-539-account-access-auth-jwt-getjwtsecrets-doc-link-2026-07-11-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-541-account-access-getjwtsecrets-proof:a6d8b8e291 | history/tasks/luc-541-account-access-getjwtsecrets-proof-2026-07-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-549-account-access-getprevioussecretexpiry-proof:eba6bfa20f | history/tasks/luc-549-account-access-getprevioussecretexpiry-proof-2026-07-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5542-regression-evidence-sweep-2026-06-27:c8a988001f | history/tasks/luc-5542-regression-evidence-sweep-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5543-security-and-account-access-gate-sweep:b3142cd64f | history/tasks/luc-5543-security-account-access-gate-sweep-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5577-repair-qa-smoke-runner-pnpm-11-and-local-db-availability:101624d4c8 | history/tasks/luc-5577-repair-qa-smoke-runner-pnpm11-db-availability-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5581-no-stall-queue-expeditor:a47f3b98fe | history/tasks/luc-5581-no-stall-queue-expeditor-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5586-restore-local-docker-postgres-redis-availability:27a18a37d0 | history/tasks/luc-5586-restore-local-docker-postgres-redis-availability-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5588-v1-audit-to-completion-controller:3665193e00 | history/tasks/luc-5588-v1-audit-to-completion-controller-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5590-repair-qa-repeatable-api-backtests-infra-teardown-sequencing:1debc7c8d1 | history/tasks/luc-5590-repair-qa-repeatable-api-backtests-infra-teardown-sequencing-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5591-v1-app-completion-admin-operation-proof-lane:6fe83e9fbe | history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5598-gap-register-and-repair-lane-refresh:acb7b830fc | history/tasks/luc-5598-gap-register-and-repair-lane-refresh-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5604-api-backtests-shared-db-cleanup-repair:c35ffc0d67 | history/tasks/luc-5604-api-backtests-shared-db-cleanup-repair-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5608-production-performance-and-server-health-watch:967060d4cf | history/tasks/luc-5608-production-performance-server-health-watch-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5622-known-state-evidence-and-architecture-baseline:d23f74e32c | history/tasks/luc-5622-known-state-evidence-architecture-baseline-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5634-account-access-proof-slice:9f4f9e0edf | history/tasks/luc-5634-account-access-proof-slice-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5636-exchange-connection-and-configuration-parent-closure-2026-06-29:03c4e83b76 | history/tasks/luc-5636-exchange-connection-configuration-parent-closure-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5650-production-performance-and-server-health-watch:b0903ccc93 | history/tasks/luc-5650-production-performance-server-health-watch-2026-06-27-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5680-names-only-exchange-configuration-and-fail-closed-api-proof:c8d9d404ae | history/tasks/luc-5680-names-only-exchange-configuration-fail-closed-api-proof-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5687-v1-audit-to-completion-controller:4122c14b76 | history/tasks/luc-5687-v1-audit-to-completion-controller-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5693-profile-api-key-e2e-cleanup-isolation-repair-2026-06-28:5406e30823 | history/tasks/luc-5693-profile-api-key-e2e-cleanup-isolation-repair-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5706-gap-register-and-repair-lane-refresh-2026-06-28:0cf4d32849 | history/tasks/luc-5706-gap-register-and-repair-lane-refresh-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5796-v1-audit-to-completion-controller-2026-06-28:99f0a1ae78 | history/tasks/luc-5796-v1-audit-to-completion-controller-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5803-authenticated-production-acceptance-and-performance-sweep:9a4cffb0bb | history/tasks/luc-5803-authenticated-production-acceptance-performance-sweep-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5806-gap-register-and-repair-lane-refresh-2026-06-28:ca77456d4e | history/tasks/luc-5806-gap-register-and-repair-lane-refresh-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5822-no-stall-queue-expeditor:00b82b0487 | history/tasks/luc-5822-no-stall-queue-expeditor-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5862-app-completion-browser-review-proof-triage:7c0bf53cfb | history/tasks/luc-5862-app-completion-browser-review-proof-triage-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5863-account-and-subscription-proof-link-reconciliation:44f72141ac | history/tasks/luc-5863-account-subscription-proof-link-reconciliation-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5865-evidence-link-reconciliation:8ddbc85614 | history/tasks/luc-5865-evidence-link-reconciliation-architecture-app-completion-baseline-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5870-regression-evidence-sweep-2026-06-28:e2a8054e71 | history/tasks/luc-5870-regression-evidence-sweep-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5886-security-and-account-access-gate-sweep:d3b0bc4c8f | history/tasks/luc-5886-security-account-access-gate-sweep-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5900-no-stall-queue-expeditor:c37e0d54c0 | history/tasks/luc-5900-no-stall-queue-expeditor-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5905-v1-audit-to-completion-controller-2026-06-28:7c04df8d71 | history/tasks/luc-5905-v1-audit-to-completion-controller-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5915-authenticated-production-acceptance-and-performance-sweep:336237740f | history/tasks/luc-5915-authenticated-production-acceptance-performance-sweep-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5921-gap-register-and-repair-lane-refresh:e606f11f82 | history/tasks/luc-5921-gap-register-and-repair-lane-refresh-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5938-no-stall-queue-expeditor:79a2d2174f | history/tasks/luc-5938-no-stall-queue-expeditor-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-5975-no-stall-queue-expeditor:ccaa90481b | history/tasks/luc-5975-no-stall-queue-expeditor-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6025-v1-audit-to-completion-controller:d611f47f09 | history/tasks/luc-6025-v1-audit-to-completion-controller-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6038-gap-register-and-repair-lane-refresh:6e57efe2e9 | history/tasks/luc-6038-gap-register-and-repair-lane-refresh-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6070-restore-v1-execution-flow-from-blocked-queue-audit-task:162f407faa | history/tasks/luc-6070-restore-v1-execution-flow-from-blocked-queue-audit-2026-06-28-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6091-v1-audit-to-completion-controller:d1431498b2 | history/tasks/luc-6091-v1-audit-to-completion-controller-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6105-restore-local-postgresql-docker-runtime:955e8b34f5 | history/tasks/luc-6105-restore-local-postgresql-docker-runtime-user-config-db-proof-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6119-gap-register-and-repair-lane-refresh:c9865b01eb | history/tasks/luc-6119-gap-register-and-repair-lane-refresh-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6139-production-performance-and-server-health-watch-task-contract:9ae4fc5e27 | history/tasks/luc-6139-production-performance-server-health-watch-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6164-repeatable-backtests-cleanup-isolation-repair:a697f25a99 | history/tasks/luc-6164-repeatable-backtests-cleanup-isolation-repair-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6170-production-performance-and-server-health-watch-task-contract:57a8fdd845 | history/tasks/luc-6170-production-performance-server-health-watch-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6177-v1-audit-to-completion-controller:fdde818f95 | history/tasks/luc-6177-v1-audit-to-completion-controller-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6181-gap-register-and-repair-lane-refresh:25ec99b07b | history/tasks/luc-6181-gap-register-and-repair-lane-refresh-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6197-daily-project-status-refresh-2026-06-29:d37694bbc1 | history/tasks/luc-6197-daily-project-status-refresh-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6198-coolify-production-deploy-health-sweep-task-contract:e623cfff44 | history/tasks/luc-6198-coolify-production-deploy-health-sweep-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6205-regression-evidence-sweep-2026-06-29:74dd6d1198 | history/tasks/luc-6205-regression-evidence-sweep-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6208-no-stall-queue-expeditor:96d95421fa | history/tasks/luc-6208-no-stall-queue-expeditor-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6215-production-performance-and-server-health-watch-task-contract:fc669792f7 | history/tasks/luc-6215-production-performance-server-health-watch-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6234-security-and-account-access-gate-sweep:6de55661fe | history/tasks/luc-6234-security-account-access-gate-sweep-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6241-no-stall-queue-expeditor:0a60aeb0b5 | history/tasks/luc-6241-no-stall-queue-expeditor-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6250-gap-register-and-repair-lane-refresh:72747800a1 | history/tasks/luc-6250-gap-register-and-repair-lane-refresh-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6252-production-performance-and-server-health-watch-task-contract:95be2c33a4 | history/tasks/luc-6252-production-performance-server-health-watch-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6269-no-stall-queue-expeditor:1450477e57 | history/tasks/luc-6269-no-stall-queue-expeditor-2026-06-29-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6271-production-performance-and-server-health-watch-task-contract:1f7c928026 | history/tasks/luc-6271-production-performance-server-health-watch-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6290-production-performance-and-server-health-watch-task-record:1cd3ae363a | history/tasks/luc-6290-production-performance-server-health-watch-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6303-gap-register-and-repair-lane-refresh:239f081ce8 | history/tasks/luc-6303-gap-register-and-repair-lane-refresh-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-631-browser-proof-plan-and-public-read-only-proof:9ce06f053c | history/tasks/luc-631-browser-proof-plan-and-public-readonly-proof-2026-07-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6312-architecture-baseline-missing-test-link-reconciliation:29042127c5 | history/tasks/luc-6312-architecture-baseline-missing-test-link-reconciliation-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-632-test-automation-proof-burn-down:a095b06daa | history/tasks/luc-632-test-automation-proof-burndown-2026-07-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6322-no-stall-queue-expeditor:324b3c80e1 | history/tasks/luc-6322-no-stall-queue-expeditor-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6329-production-performance-and-server-health-watch-task-record:f9ee97beff | history/tasks/luc-6329-production-performance-server-health-watch-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6356-no-stall-queue-expeditor:284968d9eb | history/tasks/luc-6356-no-stall-queue-expeditor-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6369-production-performance-and-server-health-watch-task-record:fe32417679 | history/tasks/luc-6369-production-performance-server-health-watch-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-637-account-access-session-token-proof:1fcd69fb0e | history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6411-daily-project-status-refresh-2026-06-30:e8a432c175 | history/tasks/luc-6411-daily-project-status-refresh-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6413-regression-evidence-sweep-2026-06-30:fa6ee93d60 | history/tasks/luc-6413-regression-evidence-sweep-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6416-security-and-account-access-gate-sweep:4e478dbe27 | history/tasks/luc-6416-security-account-access-gate-sweep-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6459-known-state-evidence-and-architecture-baseline-task:8eccc644ed | history/tasks/luc-6459-known-state-evidence-architecture-baseline-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6463-package-next-app-completion-proof-burn-down-lanes-task:688073c6ad | history/tasks/luc-6463-package-next-app-completion-proof-burn-down-lanes-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6465-shared-ui-form-component-state-app-completion-proof-packet-task:696acc8442 | history/tasks/luc-6465-shared-ui-form-component-state-proof-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6466-backtest-strategy-reports-public-shell-journey-proof-task:9730ac558c | history/tasks/luc-6466-backtest-strategy-reports-public-shell-journey-proof-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6468-runtime-worker-contract-proof-slice:9b5cdd04ad | history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6473-no-stall-queue-expeditor-task:a7a21c5338 | history/tasks/luc-6473-no-stall-queue-expeditor-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6483-no-stall-queue-expeditor-task:3ee29ad73f | history/tasks/luc-6483-no-stall-queue-expeditor-2026-06-30-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6518-classify-product-code-dirty-lane-from-luc-6516-control-tick:673c4a4fb7 | history/tasks/luc-6518-classify-product-code-dirty-lane-from-luc-6516-control-tick-2026-07-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6579-daily-project-status-refresh-2026-07-01:3f6f33c89b | history/tasks/luc-6579-daily-project-status-refresh-2026-07-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6584-regression-evidence-sweep-2026-07-01:4d2b18d55b | history/tasks/luc-6584-regression-evidence-sweep-2026-07-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6688-production-performance-and-server-health-watch:7b47b477b9 | history/tasks/luc-6688-production-performance-server-health-watch-2026-07-01-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6719-production-acceptance-technical-matrix:45268b1c30 | history/tasks/luc-6719-production-acceptance-technical-matrix-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6736-no-stall-queue-expeditor:28af9d012d | history/tasks/luc-6736-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6760-no-stall-queue-expeditor:f811942b01 | history/tasks/luc-6760-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6771-no-stall-queue-expeditor:ca77ebd807 | history/tasks/luc-6771-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6786-no-stall-queue-expeditor:7971b34336 | history/tasks/luc-6786-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6790-no-stall-queue-expeditor:53ab62b32d | history/tasks/luc-6790-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6794-no-stall-queue-expeditor:ac414fb0c5 | history/tasks/luc-6794-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6815-daily-project-status-refresh-2026-07-02:57813f114a | history/tasks/luc-6815-daily-project-status-refresh-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6817-no-stall-queue-expeditor-2026-07-02:6d054d1d1c | history/tasks/luc-6817-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6820-regression-evidence-sweep-2026-07-02:d66c524447 | history/tasks/luc-6820-regression-evidence-sweep-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6820-regression-evidence-sweep-rerun-2026-07-02:ade13fbd67 | history/tasks/luc-6820-regression-evidence-sweep-rerun-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6822-no-stall-queue-expeditor-2026-07-02:3bf71ad7f0 | history/tasks/luc-6822-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6838-no-stall-queue-expeditor:76fea7c1d3 | history/tasks/luc-6838-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6850-production-performance-and-server-health-watch-task:9e61791f94 | history/tasks/luc-6850-production-performance-server-health-watch-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6867-no-stall-queue-expeditor-2026-07-02:f9198fd6be | history/tasks/luc-6867-no-stall-queue-expeditor-2026-07-02-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-6873-no-stall-queue-expeditor-2026-07-02:bea2979db9 | history/tasks/luc-6873-no-stall-queue-expeditor-2026-07-02-task.md |
+```mermaid
+graph TD
+  SOAR_PAGE_LOGIN["SOAR-PAGE-LOGIN"] -->|contains| SOAR_COMP_LOGIN_FORM["SOAR-COMP-LOGIN-FORM"]
+  SOAR_COMP_LOGIN_FORM["SOAR-COMP-LOGIN-FORM"] -->|calls| SOAR_API_AUTH_LOGIN["SOAR-API-AUTH-LOGIN"]
+  SOAR_API_AUTH_LOGIN["SOAR-API-AUTH-LOGIN"] -->|reads_writes| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_API_AUTH_ME["SOAR-API-AUTH-ME"] -->|reads| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_PAGE_DASHBOARD["SOAR-PAGE-DASHBOARD"] -->|contains| SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|calls| SOAR_API_BOT_RUNTIME_POSITIONS["SOAR-API-BOT-RUNTIME-POSITIONS"]
+  SOAR_API_BOT_RUNTIME_POSITIONS["SOAR-API-BOT-RUNTIME-POSITIONS"] -->|reads| SOAR_DB_RUNTIME_SESSION["SOAR-DB-RUNTIME-SESSION"]
+  SOAR_API_BOT_RUNTIME_POSITIONS["SOAR-API-BOT-RUNTIME-POSITIONS"] -->|reads| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|uses| SOAR_HOOK_MANUAL_ORDER_CONTROLLER["SOAR-HOOK-MANUAL-ORDER-CONTROLLER"]
+  SOAR_HOOK_MANUAL_ORDER_CONTROLLER["SOAR-HOOK-MANUAL-ORDER-CONTROLLER"] -->|calls| SOAR_API_MANUAL_CONTEXT["SOAR-API-MANUAL-CONTEXT"]
+  SOAR_HOOK_MANUAL_ORDER_CONTROLLER["SOAR-HOOK-MANUAL-ORDER-CONTROLLER"] -->|calls| SOAR_API_ORDER_OPEN["SOAR-API-ORDER-OPEN"]
+  SOAR_API_MANUAL_CONTEXT["SOAR-API-MANUAL-CONTEXT"] -->|delegates| SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"]
+  SOAR_API_ORDER_OPEN["SOAR-API-ORDER-OPEN"] -->|delegates| SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|reads_writes| SOAR_DB_ORDER["SOAR-DB-ORDER"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|writes| SOAR_DB_TRADE["SOAR-DB-TRADE"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|owns| SOAR_SERVICE_EXCHANGE_REGISTRY["SOAR-SERVICE-EXCHANGE-REGISTRY"]
+  SOAR_FEATURE_RUNTIME_DCA_PNL["SOAR-FEATURE-RUNTIME-DCA-PNL"] -->|implemented_by| SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"]
+  SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"] -->|uses| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|extends| SOAR_DOC_TRACEABILITY["SOAR-DOC-TRACEABILITY"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|extends| SOAR_DOC_CODEBASE_MAP["SOAR-DOC-CODEBASE-MAP"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|verified_by| SOAR_TEST_ARCHITECTURE_GRAPH["SOAR-TEST-ARCHITECTURE-GRAPH"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|contains| SOAR_COMP_RUNTIME_DATA_SECTION["SOAR-COMP-RUNTIME-DATA-SECTION"]
+  SOAR_COMP_RUNTIME_DATA_SECTION["SOAR-COMP-RUNTIME-DATA-SECTION"] -->|uses| SOAR_COMP_RUNTIME_DATA_PRESENTERS["SOAR-COMP-RUNTIME-DATA-PRESENTERS"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|uses| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_ORDER_OPEN["SOAR-API-ORDER-OPEN"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_ORDER_CANCEL["SOAR-API-ORDER-CANCEL"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_ORDER_CLOSE["SOAR-API-ORDER-CLOSE"]
+  SOAR_API_ORDER_LIST["SOAR-API-ORDER-LIST"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_API_ORDER_GET["SOAR-API-ORDER-GET"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_API_MANUAL_CONTEXT["SOAR-API-MANUAL-CONTEXT"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_API_ORDER_OPEN["SOAR-API-ORDER-OPEN"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_API_ORDER_CANCEL["SOAR-API-ORDER-CANCEL"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_API_ORDER_CLOSE["SOAR-API-ORDER-CLOSE"] -->|delegates| SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"]
+  SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"] -->|validates_with| SOAR_TYPES_ORDERS["SOAR-TYPES-ORDERS"]
+  SOAR_CONTROLLER_ORDERS["SOAR-CONTROLLER-ORDERS"] -->|delegates| SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_MANUAL_CONTEXT["SOAR-SERVICE-MANUAL-CONTEXT"]
+  SOAR_SERVICE_MANUAL_CONTEXT["SOAR-SERVICE-MANUAL-CONTEXT"] -->|uses| SOAR_SERVICE_ORDER_QUANTITY_RULES["SOAR-SERVICE-ORDER-QUANTITY-RULES"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_PRETRADE["SOAR-SERVICE-PRETRADE"]
+  SOAR_SERVICE_PRETRADE["SOAR-SERVICE-PRETRADE"] -->|uses| SOAR_SERVICE_ORDER_QUANTITY_RULES["SOAR-SERVICE-ORDER-QUANTITY-RULES"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_EXECUTION_ORCHESTRATOR["SOAR-SERVICE-EXECUTION-ORCHESTRATOR"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_ORDER_LIFECYCLE["SOAR-SERVICE-ORDER-LIFECYCLE"]
+  SOAR_SERVICE_ORDER_LIFECYCLE["SOAR-SERVICE-ORDER-LIFECYCLE"] -->|reads_writes| SOAR_DB_ORDER_FILL["SOAR-DB-ORDER-FILL"]
+  SOAR_SERVICE_ORDER_EXCHANGE_EVENTS["SOAR-SERVICE-ORDER-EXCHANGE-EVENTS"] -->|feeds| SOAR_SERVICE_ORDER_LIFECYCLE["SOAR-SERVICE-ORDER-LIFECYCLE"]
+  SOAR_SERVICE_ORDER_EXCHANGE_EVENTS["SOAR-SERVICE-ORDER-EXCHANGE-EVENTS"] -->|reads_writes| SOAR_DB_ORDER_FILL["SOAR-DB-ORDER-FILL"]
+  SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"] -->|verified_by| SOAR_TEST_ORDER_SERVICE["SOAR-TEST-ORDER-SERVICE"]
+  SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"] -->|verified_by| SOAR_TEST_ORDER_POSITIONS_E2E["SOAR-TEST-ORDER-POSITIONS-E2E"]
+  SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"] -->|verified_by| SOAR_TEST_WEB_MANUAL_ORDER["SOAR-TEST-WEB-MANUAL-ORDER"]
+  SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"] -->|documented_by| SOAR_DOC_WEB_ORDERS["SOAR-DOC-WEB-ORDERS"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|documented_by| SOAR_DOC_API_POSITIONS["SOAR-DOC-API-POSITIONS"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|documented_by| SOAR_DOC_WEB_POSITIONS["SOAR-DOC-WEB-POSITIONS"]
+  SOAR_PAGE_POSITIONS_LEGACY["SOAR-PAGE-POSITIONS-LEGACY"] -->|redirects_to| SOAR_PAGE_DASHBOARD["SOAR-PAGE-DASHBOARD"]
+  SOAR_COMP_RUNTIME_DATA_SECTION["SOAR-COMP-RUNTIME-DATA-SECTION"] -->|uses| SOAR_WEB_POSITIONS_SERVICE["SOAR-WEB-POSITIONS-SERVICE"]
+  SOAR_WEB_POSITIONS_SERVICE["SOAR-WEB-POSITIONS-SERVICE"] -->|calls| SOAR_API_POSITION_MANUAL_UPDATE["SOAR-API-POSITION-MANUAL-UPDATE"]
+  SOAR_API_POSITION_LIST["SOAR-API-POSITION-LIST"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_GET["SOAR-API-POSITION-GET"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_LIVE_STATUS["SOAR-API-POSITION-LIVE-STATUS"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_EXCHANGE_SNAPSHOT["SOAR-API-POSITION-EXCHANGE-SNAPSHOT"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_TAKEOVER_STATUS["SOAR-API-POSITION-TAKEOVER-STATUS"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_TAKEOVER_REBIND["SOAR-API-POSITION-TAKEOVER-REBIND"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_ORPHAN_REPAIR["SOAR-API-POSITION-ORPHAN-REPAIR"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_MANAGEMENT_MODE["SOAR-API-POSITION-MANAGEMENT-MODE"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_API_POSITION_MANUAL_UPDATE["SOAR-API-POSITION-MANUAL-UPDATE"] -->|delegates| SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"]
+  SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"] -->|validates_with| SOAR_TYPES_POSITIONS["SOAR-TYPES-POSITIONS"]
+  SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"] -->|delegates| SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"]
+  SOAR_CONTROLLER_POSITIONS["SOAR-CONTROLLER-POSITIONS"] -->|uses| SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"]
+  SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"] -->|uses| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"] -->|uses| SOAR_SERVICE_POSITION_SNAPSHOT_NORMALIZATION["SOAR-SERVICE-POSITION-SNAPSHOT-NORMALIZATION"]
+  SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"] -->|uses| SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"]
+  SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"] -->|uses| SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|verified_by| SOAR_TEST_POSITIONS_SERVICE["SOAR-TEST-POSITIONS-SERVICE"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|verified_by| SOAR_TEST_POSITIONS_SNAPSHOT["SOAR-TEST-POSITIONS-SNAPSHOT"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|verified_by| SOAR_TEST_POSITIONS_RECONCILIATION["SOAR-TEST-POSITIONS-RECONCILIATION"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|verified_by| SOAR_TEST_POSITIONS_TAKEOVER_ORPHAN["SOAR-TEST-POSITIONS-TAKEOVER-ORPHAN"]
+  SOAR_FEATURE_POSITIONS["SOAR-FEATURE-POSITIONS"] -->|verified_by| SOAR_TEST_WEB_POSITIONS["SOAR-TEST-WEB-POSITIONS"]
+  SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"] -->|governed_by| SOAR_DOC_LIVE_POSITION_RESTART["SOAR-DOC-LIVE-POSITION-RESTART"]
+  SOAR_PAGE_BOT_RUNTIME["SOAR-PAGE-BOT-RUNTIME"] -->|contains| SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"]
+  SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"] -->|uses| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_RUNTIME_AGGREGATE["SOAR-API-BOT-RUNTIME-AGGREGATE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_RUNTIME_CLOSE_POSITION["SOAR-API-BOT-RUNTIME-CLOSE-POSITION"]
+  SOAR_API_BOT_RUNTIME_AGGREGATE["SOAR-API-BOT-RUNTIME-AGGREGATE"] -->|delegates| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_RUNTIME_POSITIONS["SOAR-API-BOT-RUNTIME-POSITIONS"] -->|delegates| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_RUNTIME_CLOSE_POSITION["SOAR-API-BOT-RUNTIME-CLOSE-POSITION"] -->|delegates| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|validates_with| SOAR_TYPES_BOTS["SOAR-TYPES-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|delegates| SOAR_SERVICE_RUNTIME_AGGREGATE["SOAR-SERVICE-RUNTIME-AGGREGATE"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|delegates| SOAR_SERVICE_RUNTIME_POSITIONS_READ["SOAR-SERVICE-RUNTIME-POSITIONS-READ"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|delegates| SOAR_SERVICE_RUNTIME_POSITION_COMMAND["SOAR-SERVICE-RUNTIME-POSITION-COMMAND"]
+  SOAR_SERVICE_RUNTIME_AGGREGATE["SOAR-SERVICE-RUNTIME-AGGREGATE"] -->|uses| SOAR_SERVICE_RUNTIME_SESSIONS["SOAR-SERVICE-RUNTIME-SESSIONS"]
+  SOAR_SERVICE_RUNTIME_AGGREGATE["SOAR-SERVICE-RUNTIME-AGGREGATE"] -->|uses| SOAR_SERVICE_RUNTIME_POSITIONS_READ["SOAR-SERVICE-RUNTIME-POSITIONS-READ"]
+  SOAR_SERVICE_RUNTIME_AGGREGATE["SOAR-SERVICE-RUNTIME-AGGREGATE"] -->|uses| SOAR_SERVICE_RUNTIME_SYMBOL_STATS["SOAR-SERVICE-RUNTIME-SYMBOL-STATS"]
+  SOAR_SERVICE_RUNTIME_AGGREGATE["SOAR-SERVICE-RUNTIME-AGGREGATE"] -->|uses| SOAR_SERVICE_RUNTIME_TRADES["SOAR-SERVICE-RUNTIME-TRADES"]
+  SOAR_SERVICE_RUNTIME_POSITIONS_READ["SOAR-SERVICE-RUNTIME-POSITIONS-READ"] -->|reads| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_RUNTIME_POSITIONS_READ["SOAR-SERVICE-RUNTIME-POSITIONS-READ"] -->|uses| SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"]
+  SOAR_SERVICE_RUNTIME_POSITION_COMMAND["SOAR-SERVICE-RUNTIME-POSITION-COMMAND"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_RUNTIME_POSITION_COMMAND["SOAR-SERVICE-RUNTIME-POSITION-COMMAND"] -->|uses| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"] -->|verified_by| SOAR_TEST_BOT_RUNTIME_API["SOAR-TEST-BOT-RUNTIME-API"]
+  SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"] -->|verified_by| SOAR_TEST_BOT_RUNTIME_WEB["SOAR-TEST-BOT-RUNTIME-WEB"]
+  SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"] -->|documented_by| SOAR_DOC_API_BOTS["SOAR-DOC-API-BOTS"]
+  SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|owns| SOAR_SERVICE_EXCHANGE_CAPABILITIES["SOAR-SERVICE-EXCHANGE-CAPABILITIES"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|owns| SOAR_SERVICE_EXCHANGE_EXECUTION_CAPABILITY["SOAR-SERVICE-EXCHANGE-EXECUTION-CAPABILITY"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|owns| SOAR_SERVICE_EXCHANGE_AUTH_READ_CONTRACT["SOAR-SERVICE-EXCHANGE-AUTH-READ-CONTRACT"]
+  SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"] -->|governed_by| SOAR_SERVICE_EXCHANGE_AUTH_READ_CONTRACT["SOAR-SERVICE-EXCHANGE-AUTH-READ-CONTRACT"]
+  SOAR_SERVICE_EXCHANGE_ADAPTER_BOUNDARY["SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY"] -->|governed_by| SOAR_SERVICE_EXCHANGE_EXECUTION_CAPABILITY["SOAR-SERVICE-EXCHANGE-EXECUTION-CAPABILITY"]
+  SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"] -->|uses| SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"]
+  SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"] -->|uses| SOAR_SERVICE_CCXT_FUTURES_CONNECTOR["SOAR-SERVICE-CCXT-FUTURES-CONNECTOR"]
+  SOAR_SERVICE_LIVE_ORDER_ADAPTER["SOAR-SERVICE-LIVE-ORDER-ADAPTER"] -->|uses| SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"]
+  SOAR_SERVICE_LIVE_ORDER_ADAPTER["SOAR-SERVICE-LIVE-ORDER-ADAPTER"] -->|uses| SOAR_SERVICE_LIVE_FEE_RECONCILIATION["SOAR-SERVICE-LIVE-FEE-RECONCILIATION"]
+  SOAR_SERVICE_EXCHANGE_ADAPTER_BOUNDARY["SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY"] -->|uses| SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"]
+  SOAR_SERVICE_EXCHANGE_SYMBOL_RULES["SOAR-SERVICE-EXCHANGE-SYMBOL-RULES"] -->|uses| SOAR_SERVICE_EXCHANGE_PUBLIC_READ["SOAR-SERVICE-EXCHANGE-PUBLIC-READ"]
+  SOAR_SERVICE_EXCHANGE_PUBLIC_READ["SOAR-SERVICE-EXCHANGE-PUBLIC-READ"] -->|uses| SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"]
+  SOAR_SERVICE_EXCHANGE_PUBLIC_MARKET_DATA["SOAR-SERVICE-EXCHANGE-PUBLIC-MARKET-DATA"] -->|uses| SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"]
+  SOAR_SERVICE_EXCHANGE_MARKET_CATALOG["SOAR-SERVICE-EXCHANGE-MARKET-CATALOG"] -->|uses| SOAR_SERVICE_EXCHANGE_PUBLIC_READ["SOAR-SERVICE-EXCHANGE-PUBLIC-READ"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_LIVE_ORDER_ADAPTER["SOAR-SERVICE-LIVE-ORDER-ADAPTER"]
+  SOAR_SERVICE_ORDERS["SOAR-SERVICE-ORDERS"] -->|uses| SOAR_SERVICE_EXCHANGE_ADAPTER_BOUNDARY["SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY"]
+  SOAR_SERVICE_POSITIONS["SOAR-SERVICE-POSITIONS"] -->|uses| SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"]
+  SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"] -->|uses| SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"]
+  SOAR_SERVICE_MANUAL_CONTEXT["SOAR-SERVICE-MANUAL-CONTEXT"] -->|uses| SOAR_SERVICE_EXCHANGE_SYMBOL_RULES["SOAR-SERVICE-EXCHANGE-SYMBOL-RULES"]
+  SOAR_SERVICE_PRETRADE["SOAR-SERVICE-PRETRADE"] -->|uses| SOAR_SERVICE_EXCHANGE_SYMBOL_RULES["SOAR-SERVICE-EXCHANGE-SYMBOL-RULES"]
+  SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"] -->|uses| SOAR_SERVICE_EXCHANGE_PUBLIC_MARKET_DATA["SOAR-SERVICE-EXCHANGE-PUBLIC-MARKET-DATA"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|verified_by| SOAR_TEST_EXCHANGE_CAPABILITY_CONTRACTS["SOAR-TEST-EXCHANGE-CAPABILITY-CONTRACTS"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|verified_by| SOAR_TEST_EXCHANGE_AUTH_READ["SOAR-TEST-EXCHANGE-AUTH-READ"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|verified_by| SOAR_TEST_LIVE_ORDER_ADAPTER["SOAR-TEST-LIVE-ORDER-ADAPTER"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|governed_by| SOAR_DOC_VENUE_CONTEXT["SOAR-DOC-VENUE-CONTEXT"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|documented_by| SOAR_DOC_EXCHANGE_OWNERSHIP["SOAR-DOC-EXCHANGE-OWNERSHIP"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|verified_by| SOAR_TEST_EXCHANGE_CAPABILITY_CONTRACTS["SOAR-TEST-EXCHANGE-CAPABILITY-CONTRACTS"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|has_entrypoint| SOAR_PAGE_WALLETS_LIST["SOAR-PAGE-WALLETS-LIST"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|has_entrypoint| SOAR_PAGE_WALLET_CREATE["SOAR-PAGE-WALLET-CREATE"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|has_entrypoint| SOAR_PAGE_WALLET_EDIT["SOAR-PAGE-WALLET-EDIT"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|has_entrypoint| SOAR_PAGE_WALLET_PREVIEW["SOAR-PAGE-WALLET-PREVIEW"]
+  SOAR_PAGE_WALLETS_ROOT["SOAR-PAGE-WALLETS-ROOT"] -->|redirects_to| SOAR_PAGE_WALLETS_LIST["SOAR-PAGE-WALLETS-LIST"]
+  SOAR_PAGE_WALLET_ID_ROOT["SOAR-PAGE-WALLET-ID-ROOT"] -->|redirects_to| SOAR_PAGE_WALLET_EDIT["SOAR-PAGE-WALLET-EDIT"]
+  SOAR_PAGE_WALLETS_LIST["SOAR-PAGE-WALLETS-LIST"] -->|contains| SOAR_COMP_WALLETS_LIST_TABLE["SOAR-COMP-WALLETS-LIST-TABLE"]
+  SOAR_PAGE_WALLET_CREATE["SOAR-PAGE-WALLET-CREATE"] -->|contains| SOAR_COMP_WALLET_FORM_PAGE_CONTENT["SOAR-COMP-WALLET-FORM-PAGE-CONTENT"]
+  SOAR_PAGE_WALLET_EDIT["SOAR-PAGE-WALLET-EDIT"] -->|contains| SOAR_COMP_WALLET_FORM_PAGE_CONTENT["SOAR-COMP-WALLET-FORM-PAGE-CONTENT"]
+  SOAR_COMP_WALLET_FORM_PAGE_CONTENT["SOAR-COMP-WALLET-FORM-PAGE-CONTENT"] -->|contains| SOAR_COMP_WALLET_CREATE_EDIT_FORM["SOAR-COMP-WALLET-CREATE-EDIT-FORM"]
+  SOAR_PAGE_WALLET_PREVIEW["SOAR-PAGE-WALLET-PREVIEW"] -->|contains| SOAR_COMP_WALLET_PREVIEW_PANEL["SOAR-COMP-WALLET-PREVIEW-PANEL"]
+  SOAR_COMP_WALLETS_LIST_TABLE["SOAR-COMP-WALLETS-LIST-TABLE"] -->|calls| SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"]
+  SOAR_COMP_WALLET_CREATE_EDIT_FORM["SOAR-COMP-WALLET-CREATE-EDIT-FORM"] -->|calls| SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"]
+  SOAR_COMP_WALLET_PREVIEW_PANEL["SOAR-COMP-WALLET-PREVIEW-PANEL"] -->|calls| SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_LIST["SOAR-API-WALLET-LIST"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_METADATA["SOAR-API-WALLET-METADATA"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_PREVIEW_BALANCE["SOAR-API-WALLET-PREVIEW-BALANCE"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_CREATE["SOAR-API-WALLET-CREATE"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_UPDATE["SOAR-API-WALLET-UPDATE"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_DELETE["SOAR-API-WALLET-DELETE"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_RESET_PAPER["SOAR-API-WALLET-RESET-PAPER"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_PERFORMANCE_SUMMARY["SOAR-API-WALLET-PERFORMANCE-SUMMARY"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_EQUITY_TIMELINE["SOAR-API-WALLET-EQUITY-TIMELINE"]
+  SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"] -->|calls| SOAR_API_WALLET_CASHFLOW_EVENTS["SOAR-API-WALLET-CASHFLOW-EVENTS"]
+  SOAR_API_WALLET_LIST["SOAR-API-WALLET-LIST"] -->|routes_to| SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"]
+  SOAR_API_WALLET_CREATE["SOAR-API-WALLET-CREATE"] -->|routes_to| SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"]
+  SOAR_API_WALLET_UPDATE["SOAR-API-WALLET-UPDATE"] -->|routes_to| SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"]
+  SOAR_API_WALLET_RESET_PAPER["SOAR-API-WALLET-RESET-PAPER"] -->|routes_to| SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"]
+  SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"] -->|validates_with| SOAR_TYPES_WALLETS["SOAR-TYPES-WALLETS"]
+  SOAR_CONTROLLER_WALLETS["SOAR-CONTROLLER-WALLETS"] -->|calls| SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|reads_writes| SOAR_DB_WALLET["SOAR-DB-WALLET"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|guards_with| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|guards_with| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|guards_with| SOAR_DB_ORDER["SOAR-DB-ORDER"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|uses| SOAR_SERVICE_EXCHANGE_CAPABILITIES["SOAR-SERVICE-EXCHANGE-CAPABILITIES"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|uses| SOAR_SERVICE_EXCHANGE_MARKET_CATALOG["SOAR-SERVICE-EXCHANGE-MARKET-CATALOG"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|uses| SOAR_SERVICE_EXCHANGE_AUTH_READ["SOAR-SERVICE-EXCHANGE-AUTH-READ"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|uses| SOAR_SERVICE_EXCHANGE_ADAPTER_BOUNDARY["SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY"]
+  SOAR_SERVICE_WALLETS["SOAR-SERVICE-WALLETS"] -->|uses| SOAR_SERVICE_WALLET_LEDGER["SOAR-SERVICE-WALLET-LEDGER"]
+  SOAR_SERVICE_WALLET_LEDGER["SOAR-SERVICE-WALLET-LEDGER"] -->|uses| SOAR_SERVICE_WALLET_CASHFLOW_CLASSIFIER["SOAR-SERVICE-WALLET-CASHFLOW-CLASSIFIER"]
+  SOAR_SERVICE_WALLET_LEDGER["SOAR-SERVICE-WALLET-LEDGER"] -->|reads| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|verified_by| SOAR_TEST_WALLETS_API["SOAR-TEST-WALLETS-API"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|verified_by| SOAR_TEST_WALLETS_WEB["SOAR-TEST-WALLETS-WEB"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|verified_by| SOAR_TEST_WALLET_LEDGER["SOAR-TEST-WALLET-LEDGER"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|documented_by| SOAR_DOC_API_WALLETS["SOAR-DOC-API-WALLETS"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|documented_by| SOAR_DOC_WEB_WALLETS["SOAR-DOC-WEB-WALLETS"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|unblocks| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"] -->|context_for| SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|has_entrypoint| SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"]
+  SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"] -->|contains| SOAR_COMP_API_KEYS_LIST["SOAR-COMP-API-KEYS-LIST"]
+  SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"] -->|contains| SOAR_COMP_API_KEY_FORM["SOAR-COMP-API-KEY-FORM"]
+  SOAR_COMP_API_KEYS_LIST["SOAR-COMP-API-KEYS-LIST"] -->|uses| SOAR_HOOK_USE_API_KEYS["SOAR-HOOK-USE-API-KEYS"]
+  SOAR_COMP_API_KEY_FORM["SOAR-COMP-API-KEY-FORM"] -->|uses| SOAR_HOOK_USE_API_KEYS["SOAR-HOOK-USE-API-KEYS"]
+  SOAR_HOOK_USE_API_KEYS["SOAR-HOOK-USE-API-KEYS"] -->|calls| SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_LIST["SOAR-API-PROFILE-APIKEY-LIST"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_CREATE["SOAR-API-PROFILE-APIKEY-CREATE"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_UPDATE["SOAR-API-PROFILE-APIKEY-UPDATE"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_DELETE["SOAR-API-PROFILE-APIKEY-DELETE"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_TEST["SOAR-API-PROFILE-APIKEY-TEST"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_STORED_TEST["SOAR-API-PROFILE-APIKEY-STORED-TEST"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_ROTATE["SOAR-API-PROFILE-APIKEY-ROTATE"]
+  SOAR_SERVICE_WEB_API_KEYS["SOAR-SERVICE-WEB-API-KEYS"] -->|calls| SOAR_API_PROFILE_APIKEY_REVOKE["SOAR-API-PROFILE-APIKEY-REVOKE"]
+  SOAR_API_PROFILE_APIKEY_LIST["SOAR-API-PROFILE-APIKEY-LIST"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_API_PROFILE_APIKEY_CREATE["SOAR-API-PROFILE-APIKEY-CREATE"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_API_PROFILE_APIKEY_TEST["SOAR-API-PROFILE-APIKEY-TEST"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_API_PROFILE_APIKEY_STORED_TEST["SOAR-API-PROFILE-APIKEY-STORED-TEST"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_API_PROFILE_APIKEY_ROTATE["SOAR-API-PROFILE-APIKEY-ROTATE"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_API_PROFILE_APIKEY_REVOKE["SOAR-API-PROFILE-APIKEY-REVOKE"] -->|routes_to| SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"]
+  SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"] -->|validates_with| SOAR_TYPES_PROFILE_API_KEYS["SOAR-TYPES-PROFILE-API-KEYS"]
+  SOAR_CONTROLLER_PROFILE_API_KEYS["SOAR-CONTROLLER-PROFILE-API-KEYS"] -->|calls| SOAR_SERVICE_PROFILE_API_KEYS["SOAR-SERVICE-PROFILE-API-KEYS"]
+  SOAR_SERVICE_PROFILE_API_KEYS["SOAR-SERVICE-PROFILE-API-KEYS"] -->|reads_writes| SOAR_DB_API_KEY["SOAR-DB-API-KEY"]
+  SOAR_SERVICE_PROFILE_API_KEYS["SOAR-SERVICE-PROFILE-API-KEYS"] -->|writes| SOAR_DB_LOG["SOAR-DB-LOG"]
+  SOAR_SERVICE_PROFILE_API_KEYS["SOAR-SERVICE-PROFILE-API-KEYS"] -->|uses| SOAR_SERVICE_PROFILE_API_KEY_PROBE["SOAR-SERVICE-PROFILE-API-KEY-PROBE"]
+  SOAR_SERVICE_PROFILE_API_KEY_PROBE["SOAR-SERVICE-PROFILE-API-KEY-PROBE"] -->|uses| SOAR_SERVICE_EXCHANGE_API_KEY_PROBE_CLIENT["SOAR-SERVICE-EXCHANGE-API-KEY-PROBE-CLIENT"]
+  SOAR_SERVICE_PROFILE_API_KEYS["SOAR-SERVICE-PROFILE-API-KEYS"] -->|uses| SOAR_SERVICE_EXCHANGE_CAPABILITIES["SOAR-SERVICE-EXCHANGE-CAPABILITIES"]
+  SOAR_DB_API_KEY["SOAR-DB-API-KEY"] -->|enables| SOAR_API_WALLET_PREVIEW_BALANCE["SOAR-API-WALLET-PREVIEW-BALANCE"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|enables| SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|enables| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|verified_by| SOAR_TEST_PROFILE_API_KEYS_API["SOAR-TEST-PROFILE-API-KEYS-API"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|verified_by| SOAR_TEST_PROFILE_API_KEY_PROBE["SOAR-TEST-PROFILE-API-KEY-PROBE"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|verified_by| SOAR_TEST_PROFILE_API_KEYS_WEB["SOAR-TEST-PROFILE-API-KEYS-WEB"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|documented_by| SOAR_DOC_API_PROFILE["SOAR-DOC-API-PROFILE"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|documented_by| SOAR_DOC_WEB_PROFILE["SOAR-DOC-WEB-PROFILE"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|has_entrypoint| SOAR_PAGE_BOTS_LIST["SOAR-PAGE-BOTS-LIST"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|has_entrypoint| SOAR_PAGE_BOT_CREATE["SOAR-PAGE-BOT-CREATE"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|has_entrypoint| SOAR_PAGE_BOT_EDIT["SOAR-PAGE-BOT-EDIT"]
+  SOAR_PAGE_BOTS_LIST["SOAR-PAGE-BOTS-LIST"] -->|contains| SOAR_COMP_BOTS_LIST_TABLE["SOAR-COMP-BOTS-LIST-TABLE"]
+  SOAR_PAGE_BOT_CREATE["SOAR-PAGE-BOT-CREATE"] -->|contains| SOAR_COMP_BOT_FORM_PAGE_CONTENT["SOAR-COMP-BOT-FORM-PAGE-CONTENT"]
+  SOAR_PAGE_BOT_EDIT["SOAR-PAGE-BOT-EDIT"] -->|contains| SOAR_COMP_BOT_FORM_PAGE_CONTENT["SOAR-COMP-BOT-FORM-PAGE-CONTENT"]
+  SOAR_COMP_BOT_FORM_PAGE_CONTENT["SOAR-COMP-BOT-FORM-PAGE-CONTENT"] -->|contains| SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"]
+  SOAR_COMP_BOTS_LIST_TABLE["SOAR-COMP-BOTS-LIST-TABLE"] -->|calls| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"] -->|calls| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"] -->|uses| SOAR_SERVICE_WEB_WALLETS["SOAR-SERVICE-WEB-WALLETS"]
+  SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"] -->|selects| SOAR_DB_STRATEGY["SOAR-DB-STRATEGY"]
+  SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"] -->|selects| SOAR_DB_MARKET_UNIVERSE["SOAR-DB-MARKET-UNIVERSE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_LIST["SOAR-API-BOT-LIST"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_GET["SOAR-API-BOT-GET"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_CREATE["SOAR-API-BOT-CREATE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_UPDATE["SOAR-API-BOT-UPDATE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_DELETE["SOAR-API-BOT-DELETE"]
+  SOAR_API_BOT_LIST["SOAR-API-BOT-LIST"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_CREATE["SOAR-API-BOT-CREATE"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_UPDATE["SOAR-API-BOT-UPDATE"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_DELETE["SOAR-API-BOT-DELETE"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|validates_with| SOAR_TYPES_BOTS["SOAR-TYPES-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|calls| SOAR_SERVICE_BOTS["SOAR-SERVICE-BOTS"]
+  SOAR_SERVICE_BOTS["SOAR-SERVICE-BOTS"] -->|uses| SOAR_SERVICE_BOT_CONTEXT_VALIDATION["SOAR-SERVICE-BOT-CONTEXT-VALIDATION"]
+  SOAR_SERVICE_BOTS["SOAR-SERVICE-BOTS"] -->|uses| SOAR_SERVICE_BOT_ACTIVATION_POLICY["SOAR-SERVICE-BOT-ACTIVATION-POLICY"]
+  SOAR_SERVICE_BOTS["SOAR-SERVICE-BOTS"] -->|uses| SOAR_SERVICE_BOT_CANONICAL_UPDATE_SCOPE["SOAR-SERVICE-BOT-CANONICAL-UPDATE-SCOPE"]
+  SOAR_SERVICE_BOTS["SOAR-SERVICE-BOTS"] -->|reads_writes| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_BOT_CONTEXT_VALIDATION["SOAR-SERVICE-BOT-CONTEXT-VALIDATION"] -->|reads| SOAR_DB_WALLET["SOAR-DB-WALLET"]
+  SOAR_SERVICE_BOT_CONTEXT_VALIDATION["SOAR-SERVICE-BOT-CONTEXT-VALIDATION"] -->|reads| SOAR_DB_STRATEGY["SOAR-DB-STRATEGY"]
+  SOAR_SERVICE_BOT_CONTEXT_VALIDATION["SOAR-SERVICE-BOT-CONTEXT-VALIDATION"] -->|reads| SOAR_DB_MARKET_UNIVERSE["SOAR-DB-MARKET-UNIVERSE"]
+  SOAR_SERVICE_BOT_ACTIVATION_POLICY["SOAR-SERVICE-BOT-ACTIVATION-POLICY"] -->|depends_on| SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"]
+  SOAR_SERVICE_BOT_ACTIVATION_POLICY["SOAR-SERVICE-BOT-ACTIVATION-POLICY"] -->|depends_on| SOAR_FEATURE_WALLETS["SOAR-FEATURE-WALLETS"]
+  SOAR_SERVICE_BOT_MARKET_GROUPS["SOAR-SERVICE-BOT-MARKET-GROUPS"] -->|reads_writes| SOAR_DB_BOT_MARKET_GROUP["SOAR-DB-BOT-MARKET-GROUP"]
+  SOAR_SERVICE_BOT_MARKET_GROUPS["SOAR-SERVICE-BOT-MARKET-GROUPS"] -->|reads_writes| SOAR_DB_MARKET_GROUP_STRATEGY_LINK["SOAR-DB-MARKET-GROUP-STRATEGY-LINK"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|enables| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|verified_by| SOAR_TEST_BOT_SETUP_API["SOAR-TEST-BOT-SETUP-API"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|verified_by| SOAR_TEST_BOT_SETUP_WEB["SOAR-TEST-BOT-SETUP-WEB"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|documented_by| SOAR_DOC_API_BOTS["SOAR-DOC-API-BOTS"]
+  SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|has_entrypoint| SOAR_PAGE_STRATEGIES_LIST["SOAR-PAGE-STRATEGIES-LIST"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|has_entrypoint| SOAR_PAGE_STRATEGY_CREATE["SOAR-PAGE-STRATEGY-CREATE"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|has_entrypoint| SOAR_PAGE_STRATEGY_EDIT["SOAR-PAGE-STRATEGY-EDIT"]
+  SOAR_PAGE_STRATEGIES_LIST["SOAR-PAGE-STRATEGIES-LIST"] -->|renders| SOAR_COMP_STRATEGIES_LIST["SOAR-COMP-STRATEGIES-LIST"]
+  SOAR_PAGE_STRATEGY_CREATE["SOAR-PAGE-STRATEGY-CREATE"] -->|renders| SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"]
+  SOAR_PAGE_STRATEGY_EDIT["SOAR-PAGE-STRATEGY-EDIT"] -->|renders| SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"]
+  SOAR_PAGE_STRATEGY_ID_ROOT["SOAR-PAGE-STRATEGY-ID-ROOT"] -->|redirects_to| SOAR_PAGE_STRATEGY_EDIT["SOAR-PAGE-STRATEGY-EDIT"]
+  SOAR_COMP_STRATEGIES_LIST["SOAR-COMP-STRATEGIES-LIST"] -->|calls| SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|calls| SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|composes| SOAR_COMP_STRATEGY_FORM_SECTIONS["SOAR-COMP-STRATEGY-FORM-SECTIONS"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|composes| SOAR_COMP_STRATEGY_PRESET_PICKER["SOAR-COMP-STRATEGY-PRESET-PICKER"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|uses| SOAR_SERVICE_STRATEGY_FORM_MAPPER["SOAR-SERVICE-STRATEGY-FORM-MAPPER"]
+  SOAR_COMP_STRATEGY_PRESET_PICKER["SOAR-COMP-STRATEGY-PRESET-PICKER"] -->|uses| SOAR_SERVICE_STRATEGY_PRESETS["SOAR-SERVICE-STRATEGY-PRESETS"]
+  SOAR_COMP_STRATEGY_FORM_SECTIONS["SOAR-COMP-STRATEGY-FORM-SECTIONS"] -->|reads| SOAR_API_STRATEGY_INDICATORS["SOAR-API-STRATEGY-INDICATORS"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_LIST["SOAR-API-STRATEGY-LIST"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_GET["SOAR-API-STRATEGY-GET"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_CREATE["SOAR-API-STRATEGY-CREATE"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_UPDATE["SOAR-API-STRATEGY-UPDATE"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_DELETE["SOAR-API-STRATEGY-DELETE"]
+  SOAR_SERVICE_WEB_STRATEGIES["SOAR-SERVICE-WEB-STRATEGIES"] -->|calls| SOAR_API_STRATEGY_INDICATORS["SOAR-API-STRATEGY-INDICATORS"]
+  SOAR_API_STRATEGY_LIST["SOAR-API-STRATEGY-LIST"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_GET["SOAR-API-STRATEGY-GET"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_CREATE["SOAR-API-STRATEGY-CREATE"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_UPDATE["SOAR-API-STRATEGY-UPDATE"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_DELETE["SOAR-API-STRATEGY-DELETE"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_IMPORT["SOAR-API-STRATEGY-IMPORT"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_API_STRATEGY_EXPORT["SOAR-API-STRATEGY-EXPORT"] -->|routes_to| SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"]
+  SOAR_CONTROLLER_STRATEGIES["SOAR-CONTROLLER-STRATEGIES"] -->|calls| SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"]
+  SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"] -->|validates_with| SOAR_TYPES_STRATEGIES["SOAR-TYPES-STRATEGIES"]
+  SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"] -->|uses| SOAR_SERVICE_STRATEGY_CONFIG_VALIDATION["SOAR-SERVICE-STRATEGY-CONFIG-VALIDATION"]
+  SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"] -->|reads_writes| SOAR_DB_STRATEGY["SOAR-DB-STRATEGY"]
+  SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"] -->|guards_against| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_STRATEGIES["SOAR-SERVICE-STRATEGIES"] -->|guards_against| SOAR_DB_MARKET_GROUP_STRATEGY_LINK["SOAR-DB-MARKET-GROUP-STRATEGY-LINK"]
+  SOAR_API_STRATEGY_INDICATORS["SOAR-API-STRATEGY-INDICATORS"] -->|routes_to| SOAR_SERVICE_STRATEGY_INDICATORS["SOAR-SERVICE-STRATEGY-INDICATORS"]
+  SOAR_API_STRATEGY_INDICATORS["SOAR-API-STRATEGY-INDICATORS"] -->|reads| SOAR_SERVICE_STRATEGY_INDICATORS["SOAR-SERVICE-STRATEGY-INDICATORS"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|feeds| SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|feeds| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|verified_by| SOAR_TEST_STRATEGIES_API["SOAR-TEST-STRATEGIES-API"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|verified_by| SOAR_TEST_STRATEGY_INDICATORS["SOAR-TEST-STRATEGY-INDICATORS"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|verified_by| SOAR_TEST_STRATEGIES_WEB["SOAR-TEST-STRATEGIES-WEB"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|verified_by| SOAR_TEST_STRATEGY_FORM_UTILS["SOAR-TEST-STRATEGY-FORM-UTILS"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|documented_by| SOAR_DOC_API_STRATEGIES["SOAR-DOC-API-STRATEGIES"]
+  SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"] -->|documented_by| SOAR_DOC_WEB_STRATEGIES["SOAR-DOC-WEB-STRATEGIES"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|has_entrypoint| SOAR_PAGE_MARKETS_LIST["SOAR-PAGE-MARKETS-LIST"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|has_entrypoint| SOAR_PAGE_MARKET_CREATE["SOAR-PAGE-MARKET-CREATE"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|has_entrypoint| SOAR_PAGE_MARKET_EDIT["SOAR-PAGE-MARKET-EDIT"]
+  SOAR_PAGE_MARKETS_LIST["SOAR-PAGE-MARKETS-LIST"] -->|renders| SOAR_COMP_MARKET_UNIVERSES_TABLE["SOAR-COMP-MARKET-UNIVERSES-TABLE"]
+  SOAR_PAGE_MARKET_CREATE["SOAR-PAGE-MARKET-CREATE"] -->|renders| SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"]
+  SOAR_PAGE_MARKET_EDIT["SOAR-PAGE-MARKET-EDIT"] -->|renders| SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"]
+  SOAR_COMP_MARKET_UNIVERSES_TABLE["SOAR-COMP-MARKET-UNIVERSES-TABLE"] -->|calls| SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"]
+  SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"] -->|calls| SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"]
+  SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"] -->|composes| SOAR_COMP_MARKET_SEARCHABLE_MULTISELECT["SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT"]
+  SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"] -->|uses| SOAR_SERVICE_MARKET_UNIVERSE_HELPERS["SOAR-SERVICE-MARKET-UNIVERSE-HELPERS"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_UNIVERSE_LIST["SOAR-API-MARKET-UNIVERSE-LIST"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_UNIVERSE_GET["SOAR-API-MARKET-UNIVERSE-GET"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_CATALOG["SOAR-API-MARKET-CATALOG"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_UNIVERSE_CREATE["SOAR-API-MARKET-UNIVERSE-CREATE"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_UNIVERSE_UPDATE["SOAR-API-MARKET-UNIVERSE-UPDATE"]
+  SOAR_SERVICE_WEB_MARKETS["SOAR-SERVICE-WEB-MARKETS"] -->|calls| SOAR_API_MARKET_UNIVERSE_DELETE["SOAR-API-MARKET-UNIVERSE-DELETE"]
+  SOAR_API_MARKET_UNIVERSE_LIST["SOAR-API-MARKET-UNIVERSE-LIST"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_API_MARKET_UNIVERSE_GET["SOAR-API-MARKET-UNIVERSE-GET"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_API_MARKET_CATALOG["SOAR-API-MARKET-CATALOG"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_API_MARKET_CATALOG["SOAR-API-MARKET-CATALOG"] -->|uses| SOAR_SERVICE_EXCHANGE_MARKET_CATALOG["SOAR-SERVICE-EXCHANGE-MARKET-CATALOG"]
+  SOAR_API_MARKET_UNIVERSE_CREATE["SOAR-API-MARKET-UNIVERSE-CREATE"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_API_MARKET_UNIVERSE_UPDATE["SOAR-API-MARKET-UNIVERSE-UPDATE"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_API_MARKET_UNIVERSE_DELETE["SOAR-API-MARKET-UNIVERSE-DELETE"] -->|routes_to| SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"]
+  SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"] -->|validates_with| SOAR_TYPES_MARKETS["SOAR-TYPES-MARKETS"]
+  SOAR_CONTROLLER_MARKETS["SOAR-CONTROLLER-MARKETS"] -->|calls| SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|uses| SOAR_SERVICE_EXCHANGE_MARKET_CATALOG["SOAR-SERVICE-EXCHANGE-MARKET-CATALOG"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|uses| SOAR_SERVICE_MARKET_CATALOG_SYMBOL_RESOLVER["SOAR-SERVICE-MARKET-CATALOG-SYMBOL-RESOLVER"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|reads_writes| SOAR_DB_MARKET_UNIVERSE["SOAR-DB-MARKET-UNIVERSE"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|reads_writes| SOAR_DB_SYMBOL_GROUP["SOAR-DB-SYMBOL-GROUP"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|guards_against| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_MARKETS["SOAR-SERVICE-MARKETS"] -->|guards_against| SOAR_DB_BOT_MARKET_GROUP["SOAR-DB-BOT-MARKET-GROUP"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|feeds| SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|feeds| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|verified_by| SOAR_TEST_MARKETS_API["SOAR-TEST-MARKETS-API"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|verified_by| SOAR_TEST_MARKETS_WEB["SOAR-TEST-MARKETS-WEB"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|documented_by| SOAR_DOC_API_MARKETS["SOAR-DOC-API-MARKETS"]
+  SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"] -->|documented_by| SOAR_DOC_WEB_MARKETS["SOAR-DOC-WEB-MARKETS"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|has_entrypoint| SOAR_PAGE_BACKTESTS_LIST["SOAR-PAGE-BACKTESTS-LIST"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|has_entrypoint| SOAR_PAGE_BACKTEST_CREATE["SOAR-PAGE-BACKTEST-CREATE"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|has_entrypoint| SOAR_PAGE_BACKTEST_DETAIL["SOAR-PAGE-BACKTEST-DETAIL"]
+  SOAR_PAGE_BACKTESTS_LIST["SOAR-PAGE-BACKTESTS-LIST"] -->|renders| SOAR_COMP_BACKTESTS_LIST_VIEW["SOAR-COMP-BACKTESTS-LIST-VIEW"]
+  SOAR_PAGE_BACKTEST_CREATE["SOAR-PAGE-BACKTEST-CREATE"] -->|renders| SOAR_COMP_BACKTEST_CREATE_FORM["SOAR-COMP-BACKTEST-CREATE-FORM"]
+  SOAR_PAGE_BACKTEST_DETAIL["SOAR-PAGE-BACKTEST-DETAIL"] -->|renders| SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"]
+  SOAR_COMP_BACKTESTS_LIST_VIEW["SOAR-COMP-BACKTESTS-LIST-VIEW"] -->|calls| SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_CREATE_FORM["SOAR-COMP-BACKTEST-CREATE-FORM"] -->|calls| SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"] -->|calls| SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"] -->|uses| SOAR_SERVICE_BACKTEST_WEB_VIEWMODEL["SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL"]
+  SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"] -->|composes| SOAR_COMP_BACKTEST_DETAIL_PRESENTERS["SOAR-COMP-BACKTEST-DETAIL-PRESENTERS"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_LIST["SOAR-API-BACKTEST-RUN-LIST"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_GET["SOAR-API-BACKTEST-RUN-GET"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_TRADES["SOAR-API-BACKTEST-RUN-TRADES"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_REPORT["SOAR-API-BACKTEST-RUN-REPORT"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_TIMELINE["SOAR-API-BACKTEST-RUN-TIMELINE"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_CREATE["SOAR-API-BACKTEST-RUN-CREATE"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_DELETE["SOAR-API-BACKTEST-RUN-DELETE"]
+  SOAR_API_BACKTEST_RUN_LIST["SOAR-API-BACKTEST-RUN-LIST"] -->|routes_to| SOAR_CONTROLLER_BACKTESTS["SOAR-CONTROLLER-BACKTESTS"]
+  SOAR_API_BACKTEST_RUN_CREATE["SOAR-API-BACKTEST-RUN-CREATE"] -->|routes_to| SOAR_CONTROLLER_BACKTESTS["SOAR-CONTROLLER-BACKTESTS"]
+  SOAR_API_BACKTEST_RUN_TIMELINE["SOAR-API-BACKTEST-RUN-TIMELINE"] -->|routes_to| SOAR_CONTROLLER_BACKTESTS["SOAR-CONTROLLER-BACKTESTS"]
+  SOAR_CONTROLLER_BACKTESTS["SOAR-CONTROLLER-BACKTESTS"] -->|validates_with| SOAR_TYPES_BACKTESTS["SOAR-TYPES-BACKTESTS"]
+  SOAR_CONTROLLER_BACKTESTS["SOAR-CONTROLLER-BACKTESTS"] -->|calls| SOAR_SERVICE_BACKTESTS["SOAR-SERVICE-BACKTESTS"]
+  SOAR_SERVICE_BACKTESTS["SOAR-SERVICE-BACKTESTS"] -->|uses| SOAR_SERVICE_BACKTEST_RANGE["SOAR-SERVICE-BACKTEST-RANGE"]
+  SOAR_SERVICE_BACKTESTS["SOAR-SERVICE-BACKTESTS"] -->|uses| SOAR_SERVICE_BACKTEST_RUN_QUEUE["SOAR-SERVICE-BACKTEST-RUN-QUEUE"]
+  SOAR_SERVICE_BACKTEST_RUN_QUEUE["SOAR-SERVICE-BACKTEST-RUN-QUEUE"] -->|executes| SOAR_SERVICE_BACKTEST_RUN_JOB["SOAR-SERVICE-BACKTEST-RUN-JOB"]
+  SOAR_SERVICE_BACKTEST_RUN_JOB["SOAR-SERVICE-BACKTEST-RUN-JOB"] -->|uses| SOAR_SERVICE_BACKTEST_DATA_GATEWAY["SOAR-SERVICE-BACKTEST-DATA-GATEWAY"]
+  SOAR_SERVICE_BACKTEST_RUN_JOB["SOAR-SERVICE-BACKTEST-RUN-JOB"] -->|uses| SOAR_SERVICE_BACKTEST_REPLAY_CORE["SOAR-SERVICE-BACKTEST-REPLAY-CORE"]
+  SOAR_SERVICE_BACKTEST_REPLAY_CORE["SOAR-SERVICE-BACKTEST-REPLAY-CORE"] -->|uses| SOAR_SERVICE_BACKTEST_FILL_MODEL["SOAR-SERVICE-BACKTEST-FILL-MODEL"]
+  SOAR_SERVICE_BACKTEST_RUN_JOB["SOAR-SERVICE-BACKTEST-RUN-JOB"] -->|uses| SOAR_SERVICE_BACKTEST_REPORT_LIFECYCLE["SOAR-SERVICE-BACKTEST-REPORT-LIFECYCLE"]
+  SOAR_SERVICE_BACKTESTS["SOAR-SERVICE-BACKTESTS"] -->|uses| SOAR_SERVICE_BACKTEST_STRATEGY_SNAPSHOTS["SOAR-SERVICE-BACKTEST-STRATEGY-SNAPSHOTS"]
+  SOAR_SERVICE_BACKTESTS["SOAR-SERVICE-BACKTESTS"] -->|reads_writes| SOAR_DB_BACKTEST_RUN["SOAR-DB-BACKTEST-RUN"]
+  SOAR_SERVICE_BACKTEST_RUN_JOB["SOAR-SERVICE-BACKTEST-RUN-JOB"] -->|writes| SOAR_DB_BACKTEST_TRADE["SOAR-DB-BACKTEST-TRADE"]
+  SOAR_SERVICE_BACKTEST_REPORT_LIFECYCLE["SOAR-SERVICE-BACKTEST-REPORT-LIFECYCLE"] -->|reads_writes| SOAR_DB_BACKTEST_REPORT["SOAR-DB-BACKTEST-REPORT"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|depends_on| SOAR_FEATURE_STRATEGIES["SOAR-FEATURE-STRATEGIES"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|depends_on| SOAR_FEATURE_MARKETS["SOAR-FEATURE-MARKETS"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|feeds| SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|verified_by| SOAR_TEST_BACKTESTS_API["SOAR-TEST-BACKTESTS-API"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|verified_by| SOAR_TEST_BACKTEST_REPLAY["SOAR-TEST-BACKTEST-REPLAY"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|verified_by| SOAR_TEST_BACKTESTS_WEB["SOAR-TEST-BACKTESTS-WEB"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|documented_by| SOAR_DOC_API_BACKTESTS["SOAR-DOC-API-BACKTESTS"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|documented_by| SOAR_DOC_WEB_BACKTESTS["SOAR-DOC-WEB-BACKTESTS"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|has_entrypoint| SOAR_PAGE_REPORTS["SOAR-PAGE-REPORTS"]
+  SOAR_PAGE_REPORTS["SOAR-PAGE-REPORTS"] -->|renders| SOAR_COMP_PERFORMANCE_REPORTS_VIEW["SOAR-COMP-PERFORMANCE-REPORTS-VIEW"]
+  SOAR_COMP_PERFORMANCE_REPORTS_VIEW["SOAR-COMP-PERFORMANCE-REPORTS-VIEW"] -->|calls| SOAR_SERVICE_WEB_REPORTS["SOAR-SERVICE-WEB-REPORTS"]
+  SOAR_COMP_PERFORMANCE_REPORTS_VIEW["SOAR-COMP-PERFORMANCE-REPORTS-VIEW"] -->|calls| SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"]
+  SOAR_SERVICE_WEB_REPORTS["SOAR-SERVICE-WEB-REPORTS"] -->|calls| SOAR_API_REPORTS_CROSS_MODE_PERFORMANCE["SOAR-API-REPORTS-CROSS-MODE-PERFORMANCE"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_LIST["SOAR-API-BACKTEST-RUN-LIST"]
+  SOAR_SERVICE_WEB_BACKTESTS["SOAR-SERVICE-WEB-BACKTESTS"] -->|calls| SOAR_API_BACKTEST_RUN_REPORT["SOAR-API-BACKTEST-RUN-REPORT"]
+  SOAR_API_REPORTS_CROSS_MODE_PERFORMANCE["SOAR-API-REPORTS-CROSS-MODE-PERFORMANCE"] -->|routes_to| SOAR_CONTROLLER_REPORTS["SOAR-CONTROLLER-REPORTS"]
+  SOAR_CONTROLLER_REPORTS["SOAR-CONTROLLER-REPORTS"] -->|calls| SOAR_SERVICE_REPORTS["SOAR-SERVICE-REPORTS"]
+  SOAR_SERVICE_REPORTS["SOAR-SERVICE-REPORTS"] -->|uses| SOAR_SERVICE_REPORT_MODE_AGGREGATOR["SOAR-SERVICE-REPORT-MODE-AGGREGATOR"]
+  SOAR_SERVICE_REPORTS["SOAR-SERVICE-REPORTS"] -->|reads| SOAR_DB_BACKTEST_REPORT["SOAR-DB-BACKTEST-REPORT"]
+  SOAR_SERVICE_REPORTS["SOAR-SERVICE-REPORTS"] -->|reads| SOAR_DB_TRADE["SOAR-DB-TRADE"]
+  SOAR_SERVICE_REPORTS["SOAR-SERVICE-REPORTS"] -->|reads| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_REPORT_MODE_AGGREGATOR["SOAR-SERVICE-REPORT-MODE-AGGREGATOR"] -->|aggregates| SOAR_DB_BACKTEST_REPORT["SOAR-DB-BACKTEST-REPORT"]
+  SOAR_SERVICE_REPORT_MODE_AGGREGATOR["SOAR-SERVICE-REPORT-MODE-AGGREGATOR"] -->|aggregates| SOAR_DB_TRADE["SOAR-DB-TRADE"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|depends_on| SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|depends_on| SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|reads| SOAR_DB_BACKTEST_TRADE["SOAR-DB-BACKTEST-TRADE"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|verified_by| SOAR_TEST_REPORTS_API["SOAR-TEST-REPORTS-API"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|verified_by| SOAR_TEST_REPORTS_WEB["SOAR-TEST-REPORTS-WEB"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|documented_by| SOAR_DOC_API_REPORTS["SOAR-DOC-API-REPORTS"]
+  SOAR_FEATURE_REPORTS["SOAR-FEATURE-REPORTS"] -->|documented_by| SOAR_DOC_WEB_REPORTS["SOAR-DOC-WEB-REPORTS"]
+  SOAR_DOC_WEB_REPORTS["SOAR-DOC-WEB-REPORTS"] -->|depends_on| SOAR_DOC_API_REPORTS["SOAR-DOC-API-REPORTS"]
+  SOAR_TEST_REPORTS_WEB["SOAR-TEST-REPORTS-WEB"] -->|verifies| SOAR_COMP_PERFORMANCE_REPORTS_VIEW["SOAR-COMP-PERFORMANCE-REPORTS-VIEW"]
+  SOAR_TEST_REPORTS_API["SOAR-TEST-REPORTS-API"] -->|verifies| SOAR_SERVICE_REPORT_MODE_AGGREGATOR["SOAR-SERVICE-REPORT-MODE-AGGREGATOR"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|has_entrypoint| SOAR_PAGE_LOGS["SOAR-PAGE-LOGS"]
+  SOAR_PAGE_LOGS["SOAR-PAGE-LOGS"] -->|renders| SOAR_COMP_AUDIT_TRAIL_VIEW["SOAR-COMP-AUDIT-TRAIL-VIEW"]
+  SOAR_COMP_AUDIT_TRAIL_VIEW["SOAR-COMP-AUDIT-TRAIL-VIEW"] -->|calls| SOAR_SERVICE_WEB_LOGS["SOAR-SERVICE-WEB-LOGS"]
+  SOAR_SERVICE_WEB_LOGS["SOAR-SERVICE-WEB-LOGS"] -->|calls| SOAR_API_LOGS_LIST["SOAR-API-LOGS-LIST"]
+  SOAR_API_LOGS_LIST["SOAR-API-LOGS-LIST"] -->|routes_to| SOAR_CONTROLLER_LOGS["SOAR-CONTROLLER-LOGS"]
+  SOAR_CONTROLLER_LOGS["SOAR-CONTROLLER-LOGS"] -->|validates_with| SOAR_TYPES_LOGS["SOAR-TYPES-LOGS"]
+  SOAR_CONTROLLER_LOGS["SOAR-CONTROLLER-LOGS"] -->|calls| SOAR_SERVICE_LOGS["SOAR-SERVICE-LOGS"]
+  SOAR_SERVICE_LOGS["SOAR-SERVICE-LOGS"] -->|reads| SOAR_DB_LOG["SOAR-DB-LOG"]
+  SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"] -->|writes| SOAR_DB_LOG["SOAR-DB-LOG"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|observes| SOAR_FEATURE_PROFILE_API_KEYS["SOAR-FEATURE-PROFILE-API-KEYS"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|observes| SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|verified_by| SOAR_TEST_LOGS_API["SOAR-TEST-LOGS-API"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|verified_by| SOAR_TEST_LOGS_WEB["SOAR-TEST-LOGS-WEB"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|documented_by| SOAR_DOC_API_LOGS["SOAR-DOC-API-LOGS"]
+  SOAR_FEATURE_LOGS_AUDIT["SOAR-FEATURE-LOGS-AUDIT"] -->|documented_by| SOAR_DOC_WEB_LOGS["SOAR-DOC-WEB-LOGS"]
+  SOAR_TEST_LOGS_API["SOAR-TEST-LOGS-API"] -->|verifies| SOAR_SERVICE_LOGS["SOAR-SERVICE-LOGS"]
+  SOAR_TEST_LOGS_WEB["SOAR-TEST-LOGS-WEB"] -->|verifies| SOAR_COMP_AUDIT_TRAIL_VIEW["SOAR-COMP-AUDIT-TRAIL-VIEW"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|contains| SOAR_TOOL_REPOSITORY_PATH_RESOLVER["SOAR-TOOL-REPOSITORY-PATH-RESOLVER"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|contains| SOAR_TOOL_OPERATOR_UNBLOCK_PACKET_CHECK["SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|contains| SOAR_TOOL_REUSABLE_AUDIT_CHECKERS["SOAR-TOOL-REUSABLE-AUDIT-CHECKERS"]
+  SOAR_TOOL_OPERATOR_UNBLOCK_PACKET_CHECK["SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK"] -->|uses| SOAR_TOOL_REPOSITORY_PATH_RESOLVER["SOAR-TOOL-REPOSITORY-PATH-RESOLVER"]
+  SOAR_TOOL_REUSABLE_AUDIT_CHECKERS["SOAR-TOOL-REUSABLE-AUDIT-CHECKERS"] -->|uses| SOAR_TOOL_REPOSITORY_PATH_RESOLVER["SOAR-TOOL-REPOSITORY-PATH-RESOLVER"]
+  SOAR_TOOL_OPERATOR_UNBLOCK_PACKET_CHECK["SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK"] -->|verified_by| SOAR_TEST_RELEASE_AUDIT_TOOLING["SOAR-TEST-RELEASE-AUDIT-TOOLING"]
+  SOAR_TOOL_REUSABLE_AUDIT_CHECKERS["SOAR-TOOL-REUSABLE-AUDIT-CHECKERS"] -->|verified_by| SOAR_TEST_RELEASE_AUDIT_TOOLING["SOAR-TEST-RELEASE-AUDIT-TOOLING"]
+  SOAR_TEST_RELEASE_AUDIT_TOOLING["SOAR-TEST-RELEASE-AUDIT-TOOLING"] -->|verifies| SOAR_TOOL_REPOSITORY_PATH_RESOLVER["SOAR-TOOL-REPOSITORY-PATH-RESOLVER"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|documented_by| SOAR_DOC_TESTING["SOAR-DOC-TESTING"]
+  SOAR_WORKFLOW_RELEASE_AUDIT_TOOLING_CHAIN["SOAR-WORKFLOW-RELEASE-AUDIT-TOOLING-CHAIN"] -->|documents_chain| SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|has_entrypoint| SOAR_PAGE_ADMIN_SUBSCRIPTIONS["SOAR-PAGE-ADMIN-SUBSCRIPTIONS"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|has_entrypoint| SOAR_PAGE_ADMIN_USERS["SOAR-PAGE-ADMIN-USERS"]
+  SOAR_PAGE_ADMIN_ROOT["SOAR-PAGE-ADMIN-ROOT"] -->|redirects_to| SOAR_PAGE_ADMIN_SUBSCRIPTIONS["SOAR-PAGE-ADMIN-SUBSCRIPTIONS"]
+  SOAR_PAGE_ADMIN_SUBSCRIPTIONS["SOAR-PAGE-ADMIN-SUBSCRIPTIONS"] -->|renders_with| SOAR_COMP_ADMIN_LAYOUT_SHELL["SOAR-COMP-ADMIN-LAYOUT-SHELL"]
+  SOAR_PAGE_ADMIN_USERS["SOAR-PAGE-ADMIN-USERS"] -->|renders_with| SOAR_COMP_ADMIN_LAYOUT_SHELL["SOAR-COMP-ADMIN-LAYOUT-SHELL"]
+  SOAR_PAGE_ADMIN_SUBSCRIPTIONS["SOAR-PAGE-ADMIN-SUBSCRIPTIONS"] -->|renders| SOAR_COMP_ADMIN_SUBSCRIPTIONS_PAGE["SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE"]
+  SOAR_COMP_ADMIN_SUBSCRIPTIONS_PAGE["SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE"] -->|calls| SOAR_SERVICE_WEB_ADMIN_SUBSCRIPTIONS["SOAR-SERVICE-WEB-ADMIN-SUBSCRIPTIONS"]
+  SOAR_SERVICE_WEB_ADMIN_SUBSCRIPTIONS["SOAR-SERVICE-WEB-ADMIN-SUBSCRIPTIONS"] -->|calls| SOAR_API_ADMIN_SUBSCRIPTION_PLANS_LIST["SOAR-API-ADMIN-SUBSCRIPTION-PLANS-LIST"]
+  SOAR_SERVICE_WEB_ADMIN_SUBSCRIPTIONS["SOAR-SERVICE-WEB-ADMIN-SUBSCRIPTIONS"] -->|calls| SOAR_API_ADMIN_SUBSCRIPTION_PLAN_UPDATE["SOAR-API-ADMIN-SUBSCRIPTION-PLAN-UPDATE"]
+  SOAR_API_ADMIN_SUBSCRIPTION_PLANS_LIST["SOAR-API-ADMIN-SUBSCRIPTION-PLANS-LIST"] -->|routes_to| SOAR_CONTROLLER_ADMIN_SUBSCRIPTION_PLANS["SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS"]
+  SOAR_API_ADMIN_SUBSCRIPTION_PLAN_UPDATE["SOAR-API-ADMIN-SUBSCRIPTION-PLAN-UPDATE"] -->|routes_to| SOAR_CONTROLLER_ADMIN_SUBSCRIPTION_PLANS["SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS"]
+  SOAR_CONTROLLER_ADMIN_SUBSCRIPTION_PLANS["SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS"] -->|validates_with| SOAR_TYPES_ADMIN_SUBSCRIPTION_PLANS["SOAR-TYPES-ADMIN-SUBSCRIPTION-PLANS"]
+  SOAR_CONTROLLER_ADMIN_SUBSCRIPTION_PLANS["SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS"] -->|calls| SOAR_SERVICE_ADMIN_SUBSCRIPTION_PLANS["SOAR-SERVICE-ADMIN-SUBSCRIPTION-PLANS"]
+  SOAR_SERVICE_ADMIN_SUBSCRIPTION_PLANS["SOAR-SERVICE-ADMIN-SUBSCRIPTION-PLANS"] -->|uses| SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"]
+  SOAR_TYPES_ADMIN_SUBSCRIPTION_PLANS["SOAR-TYPES-ADMIN-SUBSCRIPTION-PLANS"] -->|depends_on| SOAR_SERVICE_SUBSCRIPTION_ENTITLEMENTS["SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS"]
+  SOAR_SERVICE_ADMIN_SUBSCRIPTION_PLANS["SOAR-SERVICE-ADMIN-SUBSCRIPTION-PLANS"] -->|reads_writes| SOAR_DB_SUBSCRIPTION_PLAN["SOAR-DB-SUBSCRIPTION-PLAN"]
+  SOAR_PAGE_ADMIN_USERS["SOAR-PAGE-ADMIN-USERS"] -->|renders| SOAR_COMP_ADMIN_USERS_PAGE["SOAR-COMP-ADMIN-USERS-PAGE"]
+  SOAR_COMP_ADMIN_USERS_PAGE["SOAR-COMP-ADMIN-USERS-PAGE"] -->|calls| SOAR_SERVICE_WEB_ADMIN_USERS["SOAR-SERVICE-WEB-ADMIN-USERS"]
+  SOAR_SERVICE_WEB_ADMIN_USERS["SOAR-SERVICE-WEB-ADMIN-USERS"] -->|calls| SOAR_API_ADMIN_USERS_LIST["SOAR-API-ADMIN-USERS-LIST"]
+  SOAR_SERVICE_WEB_ADMIN_USERS["SOAR-SERVICE-WEB-ADMIN-USERS"] -->|calls| SOAR_API_ADMIN_USERS_UPDATE["SOAR-API-ADMIN-USERS-UPDATE"]
+  SOAR_API_ADMIN_USERS_LIST["SOAR-API-ADMIN-USERS-LIST"] -->|routes_to| SOAR_CONTROLLER_ADMIN_USERS["SOAR-CONTROLLER-ADMIN-USERS"]
+  SOAR_API_ADMIN_USERS_UPDATE["SOAR-API-ADMIN-USERS-UPDATE"] -->|routes_to| SOAR_CONTROLLER_ADMIN_USERS["SOAR-CONTROLLER-ADMIN-USERS"]
+  SOAR_CONTROLLER_ADMIN_USERS["SOAR-CONTROLLER-ADMIN-USERS"] -->|validates_with| SOAR_TYPES_ADMIN_USERS["SOAR-TYPES-ADMIN-USERS"]
+  SOAR_CONTROLLER_ADMIN_USERS["SOAR-CONTROLLER-ADMIN-USERS"] -->|calls| SOAR_SERVICE_ADMIN_USERS["SOAR-SERVICE-ADMIN-USERS"]
+  SOAR_SERVICE_ADMIN_USERS["SOAR-SERVICE-ADMIN-USERS"] -->|uses| SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"]
+  SOAR_SERVICE_ADMIN_USERS["SOAR-SERVICE-ADMIN-USERS"] -->|reads_writes| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_SERVICE_ADMIN_USERS["SOAR-SERVICE-ADMIN-USERS"] -->|reads_writes| SOAR_DB_USER_SUBSCRIPTION["SOAR-DB-USER-SUBSCRIPTION"]
+  SOAR_COMP_PROFILE_SUBSCRIPTION["SOAR-COMP-PROFILE-SUBSCRIPTION"] -->|calls| SOAR_SERVICE_WEB_PROFILE_SUBSCRIPTION["SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION"]
+  SOAR_SERVICE_WEB_PROFILE_SUBSCRIPTION["SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION"] -->|calls| SOAR_API_PROFILE_SUBSCRIPTION_GET["SOAR-API-PROFILE-SUBSCRIPTION-GET"]
+  SOAR_SERVICE_WEB_PROFILE_SUBSCRIPTION["SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION"] -->|calls| SOAR_API_PROFILE_SUBSCRIPTION_CHECKOUT["SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT"]
+  SOAR_API_PROFILE_SUBSCRIPTION_GET["SOAR-API-PROFILE-SUBSCRIPTION-GET"] -->|routes_to| SOAR_CONTROLLER_PROFILE_SUBSCRIPTION["SOAR-CONTROLLER-PROFILE-SUBSCRIPTION"]
+  SOAR_API_PROFILE_SUBSCRIPTION_CHECKOUT["SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT"] -->|routes_to| SOAR_CONTROLLER_PROFILE_SUBSCRIPTION["SOAR-CONTROLLER-PROFILE-SUBSCRIPTION"]
+  SOAR_CONTROLLER_PROFILE_SUBSCRIPTION["SOAR-CONTROLLER-PROFILE-SUBSCRIPTION"] -->|calls| SOAR_SERVICE_PROFILE_SUBSCRIPTION["SOAR-SERVICE-PROFILE-SUBSCRIPTION"]
+  SOAR_CONTROLLER_PROFILE_SUBSCRIPTION["SOAR-CONTROLLER-PROFILE-SUBSCRIPTION"] -->|calls| SOAR_SERVICE_PAYMENT_CHECKOUT["SOAR-SERVICE-PAYMENT-CHECKOUT"]
+  SOAR_SERVICE_PROFILE_SUBSCRIPTION["SOAR-SERVICE-PROFILE-SUBSCRIPTION"] -->|uses| SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"]
+  SOAR_SERVICE_PROFILE_SUBSCRIPTION["SOAR-SERVICE-PROFILE-SUBSCRIPTION"] -->|reads| SOAR_DB_USER_SUBSCRIPTION["SOAR-DB-USER-SUBSCRIPTION"]
+  SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"] -->|reads_writes| SOAR_DB_SUBSCRIPTION_PLAN["SOAR-DB-SUBSCRIPTION-PLAN"]
+  SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"] -->|reads_writes| SOAR_DB_USER_SUBSCRIPTION["SOAR-DB-USER-SUBSCRIPTION"]
+  SOAR_SERVICE_SUBSCRIPTION_ENTITLEMENTS["SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS"] -->|reads| SOAR_DB_SUBSCRIPTION_PLAN["SOAR-DB-SUBSCRIPTION-PLAN"]
+  SOAR_SERVICE_SUBSCRIPTION_ENTITLEMENTS["SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS"] -->|guards| SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"]
+  SOAR_SERVICE_PAYMENT_CHECKOUT["SOAR-SERVICE-PAYMENT-CHECKOUT"] -->|uses| SOAR_SERVICE_SUBSCRIPTIONS["SOAR-SERVICE-SUBSCRIPTIONS"]
+  SOAR_SERVICE_PAYMENT_CHECKOUT["SOAR-SERVICE-PAYMENT-CHECKOUT"] -->|writes| SOAR_DB_PAYMENT_INTENT["SOAR-DB-PAYMENT-INTENT"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|verified_by| SOAR_TEST_SUBSCRIPTIONS_ADMIN_API["SOAR-TEST-SUBSCRIPTIONS-ADMIN-API"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|verified_by| SOAR_TEST_SUBSCRIPTIONS_ENTITLEMENTS["SOAR-TEST-SUBSCRIPTIONS-ENTITLEMENTS"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|verified_by| SOAR_TEST_SUBSCRIPTIONS_ADMIN_WEB["SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|documented_by| SOAR_DOC_API_ADMIN["SOAR-DOC-API-ADMIN"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|documented_by| SOAR_DOC_API_SUBSCRIPTIONS["SOAR-DOC-API-SUBSCRIPTIONS"]
+  SOAR_FEATURE_SUBSCRIPTIONS_ADMIN["SOAR-FEATURE-SUBSCRIPTIONS-ADMIN"] -->|documented_by| SOAR_DOC_WEB_ADMIN["SOAR-DOC-WEB-ADMIN"]
+  SOAR_TEST_SUBSCRIPTIONS_ADMIN_API["SOAR-TEST-SUBSCRIPTIONS-ADMIN-API"] -->|verifies| SOAR_SERVICE_ADMIN_USERS["SOAR-SERVICE-ADMIN-USERS"]
+  SOAR_TEST_SUBSCRIPTIONS_ADMIN_WEB["SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB"] -->|verifies| SOAR_COMP_ADMIN_SUBSCRIPTIONS_PAGE["SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|has_entrypoint| SOAR_PAGE_BOT_ASSISTANT["SOAR-PAGE-BOT-ASSISTANT"]
+  SOAR_PAGE_BOT_ASSISTANT["SOAR-PAGE-BOT-ASSISTANT"] -->|renders| SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"]
+  SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"] -->|renders| SOAR_COMP_BOTS_ASSISTANT_TAB["SOAR-COMP-BOTS-ASSISTANT-TAB"]
+  SOAR_COMP_BOTS_ASSISTANT_TAB["SOAR-COMP-BOTS-ASSISTANT-TAB"] -->|uses| SOAR_HOOK_BOTS_ASSISTANT_CONTROLLER["SOAR-HOOK-BOTS-ASSISTANT-CONTROLLER"]
+  SOAR_HOOK_BOTS_ASSISTANT_CONTROLLER["SOAR-HOOK-BOTS-ASSISTANT-CONTROLLER"] -->|calls| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_ASSISTANT_CONFIG_GET["SOAR-API-BOT-ASSISTANT-CONFIG-GET"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_ASSISTANT_CONFIG_UPSERT["SOAR-API-BOT-ASSISTANT-CONFIG-UPSERT"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_SUBAGENT_UPSERT["SOAR-API-BOT-SUBAGENT-UPSERT"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_SUBAGENT_DELETE["SOAR-API-BOT-SUBAGENT-DELETE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_ASSISTANT_DRY_RUN["SOAR-API-BOT-ASSISTANT-DRY-RUN"]
+  SOAR_API_BOT_ASSISTANT_CONFIG_GET["SOAR-API-BOT-ASSISTANT-CONFIG-GET"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_ASSISTANT_CONFIG_UPSERT["SOAR-API-BOT-ASSISTANT-CONFIG-UPSERT"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_SUBAGENT_UPSERT["SOAR-API-BOT-SUBAGENT-UPSERT"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_SUBAGENT_DELETE["SOAR-API-BOT-SUBAGENT-DELETE"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_API_BOT_ASSISTANT_DRY_RUN["SOAR-API-BOT-ASSISTANT-DRY-RUN"] -->|routes_to| SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|validates_with| SOAR_TYPES_BOTS["SOAR-TYPES-BOTS"]
+  SOAR_CONTROLLER_BOTS["SOAR-CONTROLLER-BOTS"] -->|calls| SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"]
+  SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"] -->|reads_writes| SOAR_DB_BOT_ASSISTANT_CONFIG["SOAR-DB-BOT-ASSISTANT-CONFIG"]
+  SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"] -->|reads_writes| SOAR_DB_BOT_SUBAGENT_CONFIG["SOAR-DB-BOT-SUBAGENT-CONFIG"]
+  SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"] -->|reads| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"] -->|calls| SOAR_SERVICE_ASSISTANT_ORCHESTRATOR["SOAR-SERVICE-ASSISTANT-ORCHESTRATOR"]
+  SOAR_API_BOT_ASSISTANT_DRY_RUN["SOAR-API-BOT-ASSISTANT-DRY-RUN"] -->|calls| SOAR_SERVICE_ASSISTANT_ORCHESTRATOR["SOAR-SERVICE-ASSISTANT-ORCHESTRATOR"]
+  SOAR_SERVICE_ASSISTANT_ORCHESTRATOR["SOAR-SERVICE-ASSISTANT-ORCHESTRATOR"] -->|implements_contract| SOAR_DOC_ASSISTANT_RUNTIME_CONTRACT["SOAR-DOC-ASSISTANT-RUNTIME-CONTRACT"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|extends| SOAR_FEATURE_BOT_SETUP["SOAR-FEATURE-BOT-SETUP"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|verified_by| SOAR_TEST_AI_ASSISTANT_API["SOAR-TEST-AI-ASSISTANT-API"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|verified_by| SOAR_TEST_AI_ASSISTANT_ORCHESTRATOR["SOAR-TEST-AI-ASSISTANT-ORCHESTRATOR"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|verified_by| SOAR_TEST_AI_ASSISTANT_WEB["SOAR-TEST-AI-ASSISTANT-WEB"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|verified_by| SOAR_TEST_AI_PROTOCOL_HARNESS["SOAR-TEST-AI-PROTOCOL-HARNESS"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|documented_by| SOAR_DOC_ASSISTANT_RUNTIME["SOAR-DOC-ASSISTANT-RUNTIME"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|documented_by| SOAR_DOC_AI_INTEGRATION["SOAR-DOC-AI-INTEGRATION"]
+  SOAR_TEST_AI_ASSISTANT_API["SOAR-TEST-AI-ASSISTANT-API"] -->|verifies| SOAR_SERVICE_BOT_ASSISTANT["SOAR-SERVICE-BOT-ASSISTANT"]
+  SOAR_TEST_AI_ASSISTANT_ORCHESTRATOR["SOAR-TEST-AI-ASSISTANT-ORCHESTRATOR"] -->|verifies| SOAR_SERVICE_ASSISTANT_ORCHESTRATOR["SOAR-SERVICE-ASSISTANT-ORCHESTRATOR"]
+  SOAR_TEST_AI_ASSISTANT_WEB["SOAR-TEST-AI-ASSISTANT-WEB"] -->|verifies| SOAR_COMP_BOTS_ASSISTANT_TAB["SOAR-COMP-BOTS-ASSISTANT-TAB"]
+  SOAR_AGENT_AI_RED_TEAM["SOAR-AGENT-AI-RED-TEAM"] -->|enforces| SOAR_DOC_AI_TESTING_PROTOCOL["SOAR-DOC-AI-TESTING-PROTOCOL"]
+  SOAR_PROMPT_AI_RED_TEAM["SOAR-PROMPT-AI-RED-TEAM"] -->|drives| SOAR_AGENT_AI_RED_TEAM["SOAR-AGENT-AI-RED-TEAM"]
+  SOAR_FEATURE_AI_ASSISTANT_FOUNDATION["SOAR-FEATURE-AI-ASSISTANT-FOUNDATION"] -->|governed_by| SOAR_AGENT_AI_RED_TEAM["SOAR-AGENT-AI-RED-TEAM"]
+  SOAR_FEATURE_OPS_CONFIG_PIPELINE["SOAR-FEATURE-OPS-CONFIG-PIPELINE"] -->|has_source| SOAR_CONFIG_ROOT_PACKAGE["SOAR-CONFIG-ROOT-PACKAGE"]
+  SOAR_CONFIG_ROOT_PACKAGE["SOAR-CONFIG-ROOT-PACKAGE"] -->|uses| SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"]
+  SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"] -->|includes| SOAR_CONFIG_API_PACKAGE["SOAR-CONFIG-API-PACKAGE"]
+  SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"] -->|includes| SOAR_CONFIG_WEB_PACKAGE["SOAR-CONFIG-WEB-PACKAGE"]
+  SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"] -->|includes| SOAR_CONFIG_MOBILE_PACKAGE["SOAR-CONFIG-MOBILE-PACKAGE"]
+  SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"] -->|includes| SOAR_CONFIG_SHARED_PACKAGE["SOAR-CONFIG-SHARED-PACKAGE"]
+  SOAR_CONFIG_ROOT_PACKAGE["SOAR-CONFIG-ROOT-PACKAGE"] -->|defines_command| SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"]
+  SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"] -->|checks| SOAR_CONFIG_API_PACKAGE["SOAR-CONFIG-API-PACKAGE"]
+  SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"] -->|checks| SOAR_CONFIG_WEB_PACKAGE["SOAR-CONFIG-WEB-PACKAGE"]
+  SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"] -->|checks| SOAR_CONFIG_LOCAL_COMPOSE["SOAR-CONFIG-LOCAL-COMPOSE"]
+  SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"] -->|checks| SOAR_CONFIG_VPS_COMPOSE["SOAR-CONFIG-VPS-COMPOSE"]
+  SOAR_CONFIG_LOCAL_COMPOSE["SOAR-CONFIG-LOCAL-COMPOSE"] -->|parallels| SOAR_CONFIG_VPS_COMPOSE["SOAR-CONFIG-VPS-COMPOSE"]
+  SOAR_PIPELINE_GITHUB_CI["SOAR-PIPELINE-GITHUB-CI"] -->|executes| SOAR_CONFIG_ROOT_PACKAGE["SOAR-CONFIG-ROOT-PACKAGE"]
+  SOAR_PIPELINE_GITHUB_CI["SOAR-PIPELINE-GITHUB-CI"] -->|executes| SOAR_CONFIG_PNPM_WORKSPACE["SOAR-CONFIG-PNPM-WORKSPACE"]
+  SOAR_PIPELINE_GITHUB_CI["SOAR-PIPELINE-GITHUB-CI"] -->|executes| SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"]
+  SOAR_FEATURE_OPS_CONFIG_PIPELINE["SOAR-FEATURE-OPS-CONFIG-PIPELINE"] -->|documented_by| SOAR_DOC_LOCAL_DEVELOPMENT["SOAR-DOC-LOCAL-DEVELOPMENT"]
+  SOAR_FEATURE_OPS_CONFIG_PIPELINE["SOAR-FEATURE-OPS-CONFIG-PIPELINE"] -->|documented_by| SOAR_DOC_TESTING["SOAR-DOC-TESTING"]
+  SOAR_FEATURE_OPS_CONFIG_PIPELINE["SOAR-FEATURE-OPS-CONFIG-PIPELINE"] -->|documented_by| SOAR_DOC_COOLIFY_VPS["SOAR-DOC-COOLIFY-VPS"]
+  SOAR_DOC_COOLIFY_VPS["SOAR-DOC-COOLIFY-VPS"] -->|describes| SOAR_CONFIG_VPS_COMPOSE["SOAR-CONFIG-VPS-COMPOSE"]
+  SOAR_DOC_LOCAL_DEVELOPMENT["SOAR-DOC-LOCAL-DEVELOPMENT"] -->|describes| SOAR_CONFIG_LOCAL_COMPOSE["SOAR-CONFIG-LOCAL-COMPOSE"]
+  SOAR_FEATURE_API_SUPPORT_ROUTES["SOAR-FEATURE-API-SUPPORT-ROUTES"] -->|has_source| SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|mounts| SOAR_ROUTER_DASHBOARD["SOAR-ROUTER-DASHBOARD"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|mounts| SOAR_ROUTER_ADMIN["SOAR-ROUTER-ADMIN"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|mounts| SOAR_API_UPLOAD_AVATAR["SOAR-API-UPLOAD-AVATAR"]
+  SOAR_ROUTER_DASHBOARD["SOAR-ROUTER-DASHBOARD"] -->|mounts| SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"]
+  SOAR_ROUTER_DASHBOARD["SOAR-ROUTER-DASHBOARD"] -->|mounts| SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"]
+  SOAR_ROUTER_DASHBOARD["SOAR-ROUTER-DASHBOARD"] -->|mounts| SOAR_API_PROFILE_BASIC_GET["SOAR-API-PROFILE-BASIC-GET"]
+  SOAR_ROUTER_DASHBOARD["SOAR-ROUTER-DASHBOARD"] -->|mounts| SOAR_API_PROFILE_SECURITY_PASSWORD["SOAR-API-PROFILE-SECURITY-PASSWORD"]
+  SOAR_ROUTER_ADMIN["SOAR-ROUTER-ADMIN"] -->|mounts| SOAR_API_ADMIN_USERS_LIST["SOAR-API-ADMIN-USERS-LIST"]
+  SOAR_ROUTER_ADMIN["SOAR-ROUTER-ADMIN"] -->|mounts| SOAR_API_ADMIN_SUBSCRIPTION_PLANS_LIST["SOAR-API-ADMIN-SUBSCRIPTION-PLANS-LIST"]
+  SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"] -->|routes_to| SOAR_CONTROLLER_ICONS["SOAR-CONTROLLER-ICONS"]
+  SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"] -->|uses| SOAR_SERVICE_ICONS["SOAR-SERVICE-ICONS"]
+  SOAR_CONTROLLER_ICONS["SOAR-CONTROLLER-ICONS"] -->|calls| SOAR_SERVICE_ICONS["SOAR-SERVICE-ICONS"]
+  SOAR_CONTROLLER_ICONS["SOAR-CONTROLLER-ICONS"] -->|validates_with| SOAR_TYPES_ICONS["SOAR-TYPES-ICONS"]
+  SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"] -->|subscribes_to| SOAR_SERVICE_MARKET_STREAM_FANOUT["SOAR-SERVICE-MARKET-STREAM-FANOUT"]
+  SOAR_SERVICE_MARKET_STREAM_FANOUT["SOAR-SERVICE-MARKET-STREAM-FANOUT"] -->|calls| SOAR_SERVICE_MARKET_STREAM["SOAR-SERVICE-MARKET-STREAM"]
+  SOAR_API_PROFILE_BASIC_GET["SOAR-API-PROFILE-BASIC-GET"] -->|routes_to| SOAR_CONTROLLER_PROFILE_BASIC["SOAR-CONTROLLER-PROFILE-BASIC"]
+  SOAR_API_PROFILE_BASIC_UPDATE["SOAR-API-PROFILE-BASIC-UPDATE"] -->|routes_to| SOAR_CONTROLLER_PROFILE_BASIC["SOAR-CONTROLLER-PROFILE-BASIC"]
+  SOAR_API_PROFILE_BASIC_DELETE["SOAR-API-PROFILE-BASIC-DELETE"] -->|routes_to| SOAR_CONTROLLER_PROFILE_BASIC["SOAR-CONTROLLER-PROFILE-BASIC"]
+  SOAR_CONTROLLER_PROFILE_BASIC["SOAR-CONTROLLER-PROFILE-BASIC"] -->|validates_with| SOAR_TYPES_PROFILE_BASIC["SOAR-TYPES-PROFILE-BASIC"]
+  SOAR_CONTROLLER_PROFILE_BASIC["SOAR-CONTROLLER-PROFILE-BASIC"] -->|calls| SOAR_SERVICE_PROFILE_BASIC["SOAR-SERVICE-PROFILE-BASIC"]
+  SOAR_SERVICE_PROFILE_BASIC["SOAR-SERVICE-PROFILE-BASIC"] -->|reads_writes| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_API_PROFILE_SECURITY_PASSWORD["SOAR-API-PROFILE-SECURITY-PASSWORD"] -->|routes_to| SOAR_CONTROLLER_PROFILE_SECURITY["SOAR-CONTROLLER-PROFILE-SECURITY"]
+  SOAR_API_PROFILE_SECURITY_ACCOUNT["SOAR-API-PROFILE-SECURITY-ACCOUNT"] -->|routes_to| SOAR_CONTROLLER_PROFILE_SECURITY["SOAR-CONTROLLER-PROFILE-SECURITY"]
+  SOAR_CONTROLLER_PROFILE_SECURITY["SOAR-CONTROLLER-PROFILE-SECURITY"] -->|validates_with| SOAR_TYPES_PROFILE_SECURITY["SOAR-TYPES-PROFILE-SECURITY"]
+  SOAR_CONTROLLER_PROFILE_SECURITY["SOAR-CONTROLLER-PROFILE-SECURITY"] -->|calls| SOAR_SERVICE_PROFILE_SECURITY["SOAR-SERVICE-PROFILE-SECURITY"]
+  SOAR_SERVICE_PROFILE_SECURITY["SOAR-SERVICE-PROFILE-SECURITY"] -->|reads_writes| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_API_UPLOAD_AVATAR["SOAR-API-UPLOAD-AVATAR"] -->|calls| SOAR_SERVICE_UPLOAD_AVATAR_PROCESSING["SOAR-SERVICE-UPLOAD-AVATAR-PROCESSING"]
+  SOAR_SERVICE_UPLOAD_AVATAR_PROCESSING["SOAR-SERVICE-UPLOAD-AVATAR-PROCESSING"] -->|scoped_by| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_FEATURE_API_SUPPORT_ROUTES["SOAR-FEATURE-API-SUPPORT-ROUTES"] -->|verified_by| SOAR_TEST_API_SUPPORT_ROUTES["SOAR-TEST-API-SUPPORT-ROUTES"]
+  SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"] -->|verified_by| SOAR_TEST_ICONS_API["SOAR-TEST-ICONS-API"]
+  SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"] -->|verified_by| SOAR_TEST_MARKET_STREAM_API["SOAR-TEST-MARKET-STREAM-API"]
+  SOAR_API_PROFILE_BASIC_GET["SOAR-API-PROFILE-BASIC-GET"] -->|verified_by| SOAR_TEST_PROFILE_BASIC_API["SOAR-TEST-PROFILE-BASIC-API"]
+  SOAR_API_PROFILE_SECURITY_PASSWORD["SOAR-API-PROFILE-SECURITY-PASSWORD"] -->|verified_by| SOAR_TEST_PROFILE_SECURITY_API["SOAR-TEST-PROFILE-SECURITY-API"]
+  SOAR_API_UPLOAD_AVATAR["SOAR-API-UPLOAD-AVATAR"] -->|verified_by| SOAR_TEST_UPLOAD_API["SOAR-TEST-UPLOAD-API"]
+  SOAR_FEATURE_API_SUPPORT_ROUTES["SOAR-FEATURE-API-SUPPORT-ROUTES"] -->|documented_by| SOAR_DOC_API_ROOT["SOAR-DOC-API-ROOT"]
+  SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"] -->|documented_by| SOAR_DOC_API_ICONS["SOAR-DOC-API-ICONS"]
+  SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"] -->|documented_by| SOAR_DOC_API_MARKET_STREAM["SOAR-DOC-API-MARKET-STREAM"]
+  SOAR_API_UPLOAD_AVATAR["SOAR-API-UPLOAD-AVATAR"] -->|documented_by| SOAR_DOC_API_UPLOAD["SOAR-DOC-API-UPLOAD"]
+  SOAR_API_PROFILE_BASIC_GET["SOAR-API-PROFILE-BASIC-GET"] -->|documented_by| SOAR_DOC_API_PROFILE["SOAR-DOC-API-PROFILE"]
+  SOAR_API_PROFILE_SECURITY_PASSWORD["SOAR-API-PROFILE-SECURITY-PASSWORD"] -->|documented_by| SOAR_DOC_API_PROFILE["SOAR-DOC-API-PROFILE"]
+  SOAR_FEATURE_RUNTIME_SUPPORT_SERVICES["SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES"] -->|has_source| SOAR_SERVICE_BOTS_RUNTIME_READ["SOAR-SERVICE-BOTS-RUNTIME-READ"]
+  SOAR_SERVICE_BOT_OWNERSHIP["SOAR-SERVICE-BOT-OWNERSHIP"] -->|checks| SOAR_DB_BOT["SOAR-DB-BOT"]
+  SOAR_SERVICE_BOT_API_KEY_RESOLVER["SOAR-SERVICE-BOT-API-KEY-RESOLVER"] -->|reads| SOAR_DB_API_KEY["SOAR-DB-API-KEY"]
+  SOAR_SERVICE_BOTS_RUNTIME_READ["SOAR-SERVICE-BOTS-RUNTIME-READ"] -->|calls| SOAR_SERVICE_BOT_PORTFOLIO_HISTORY_READ["SOAR-SERVICE-BOT-PORTFOLIO-HISTORY-READ"]
+  SOAR_SERVICE_BOTS_RUNTIME_READ["SOAR-SERVICE-BOTS-RUNTIME-READ"] -->|calls| SOAR_SERVICE_RUNTIME_MARKET_TRUTH_STATE["SOAR-SERVICE-RUNTIME-MARKET-TRUTH-STATE"]
+  SOAR_SERVICE_RUNTIME_MARKET_TRUTH_STATE["SOAR-SERVICE-RUNTIME-MARKET-TRUTH-STATE"] -->|calls| SOAR_SERVICE_RUNTIME_MARKET_DATA_FALLBACK["SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK"]
+  SOAR_SERVICE_RUNTIME_STRATEGY_DISPLAY_BY_SYMBOL["SOAR-SERVICE-RUNTIME-STRATEGY-DISPLAY-BY-SYMBOL"] -->|calls| SOAR_SERVICE_RUNTIME_STRATEGY_CONFIG_PARSER["SOAR-SERVICE-RUNTIME-STRATEGY-CONFIG-PARSER"]
+  SOAR_SERVICE_RUNTIME_SYMBOL_UNIVERSE["SOAR-SERVICE-RUNTIME-SYMBOL-UNIVERSE"] -->|calls| SOAR_SERVICE_RUNTIME_SYMBOL_CATALOG_RESOLVER["SOAR-SERVICE-RUNTIME-SYMBOL-CATALOG-RESOLVER"]
+  SOAR_SERVICE_RUNTIME_EXTERNAL_POSITION_OWNER["SOAR-SERVICE-RUNTIME-EXTERNAL-POSITION-OWNER"] -->|checks| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_SERVICE_PAPER_RUNTIME["SOAR-SERVICE-PAPER-RUNTIME"] -->|calls| SOAR_SERVICE_PAPER_LIFECYCLE["SOAR-SERVICE-PAPER-LIFECYCLE"]
+  SOAR_SERVICE_PAPER_RUNTIME["SOAR-SERVICE-PAPER-RUNTIME"] -->|calls| SOAR_SERVICE_RULE_EVALUATOR["SOAR-SERVICE-RULE-EVALUATOR"]
+  SOAR_SERVICE_PRETRADE_RISK["SOAR-SERVICE-PRETRADE-RISK"] -->|calls| SOAR_SERVICE_RUNTIME_CAPITAL_CONTEXT["SOAR-SERVICE-RUNTIME-CAPITAL-CONTEXT"]
+  SOAR_FEATURE_RUNTIME_SUPPORT_SERVICES["SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES"] -->|verified_by| SOAR_TEST_RUNTIME_SUPPORT_SERVICES["SOAR-TEST-RUNTIME-SUPPORT-SERVICES"]
+  SOAR_SERVICE_BOT_OWNERSHIP["SOAR-SERVICE-BOT-OWNERSHIP"] -->|verified_by| SOAR_TEST_BOT_OWNERSHIP["SOAR-TEST-BOT-OWNERSHIP"]
+  SOAR_SERVICE_BOT_STRATEGY_PROJECTION_DRIFT["SOAR-SERVICE-BOT-STRATEGY-PROJECTION-DRIFT"] -->|verified_by| SOAR_TEST_BOT_STRATEGY_PROJECTION_DRIFT["SOAR-TEST-BOT-STRATEGY-PROJECTION-DRIFT"]
+  SOAR_SERVICE_RUNTIME_EXTERNAL_POSITION_OWNER["SOAR-SERVICE-RUNTIME-EXTERNAL-POSITION-OWNER"] -->|verified_by| SOAR_TEST_RUNTIME_EXTERNAL_POSITION_OWNER["SOAR-TEST-RUNTIME-EXTERNAL-POSITION-OWNER"]
+  SOAR_FEATURE_RUNTIME_SUPPORT_SERVICES["SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES"] -->|documented_by| SOAR_DOC_API_BOTS["SOAR-DOC-API-BOTS"]
+  SOAR_FEATURE_RUNTIME_SUPPORT_SERVICES["SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES"] -->|documented_by| SOAR_DOC_EXECUTION_LIFECYCLE["SOAR-DOC-EXECUTION-LIFECYCLE"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|has_source| SOAR_CONFIG_RUNTIME_EXECUTION["SOAR-CONFIG-RUNTIME-EXECUTION"]
+  SOAR_CONFIG_RUNTIME_EXECUTION["SOAR-CONFIG-RUNTIME-EXECUTION"] -->|uses| SOAR_CONFIG_CRITICAL_SECRETS_READINESS["SOAR-CONFIG-CRITICAL-SECRETS-READINESS"]
+  SOAR_CONFIG_RUNTIME_EXECUTION["SOAR-CONFIG-RUNTIME-EXECUTION"] -->|uses| SOAR_LIB_ENV["SOAR-LIB-ENV"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|protected_by| SOAR_MIDDLEWARE_REQUIRE_AUTH["SOAR-MIDDLEWARE-REQUIRE-AUTH"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|observed_by| SOAR_MIDDLEWARE_REQUEST_LOGGER["SOAR-MIDDLEWARE-REQUEST-LOGGER"]
+  SOAR_ROUTER_API_ROOT["SOAR-ROUTER-API-ROOT"] -->|handled_by| SOAR_MIDDLEWARE_ERROR_HANDLER["SOAR-MIDDLEWARE-ERROR-HANDLER"]
+  SOAR_MIDDLEWARE_REQUIRE_AUTH["SOAR-MIDDLEWARE-REQUIRE-AUTH"] -->|reads| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_MIDDLEWARE_RATE_LIMIT["SOAR-MIDDLEWARE-RATE-LIMIT"] -->|protects| SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"]
+  SOAR_MIDDLEWARE_TRUSTED_ORIGIN["SOAR-MIDDLEWARE-TRUSTED-ORIGIN"] -->|uses| SOAR_CONFIG_PROXY_TRUST["SOAR-CONFIG-PROXY-TRUST"]
+  SOAR_MIDDLEWARE_OPS_NETWORK["SOAR-MIDDLEWARE-OPS-NETWORK"] -->|uses| SOAR_CONFIG_RUNTIME_EXECUTION["SOAR-CONFIG-RUNTIME-EXECUTION"]
+  SOAR_MIDDLEWARE_REQUEST_LOGGER["SOAR-MIDDLEWARE-REQUEST-LOGGER"] -->|calls| SOAR_LIB_LOGGER["SOAR-LIB-LOGGER"]
+  SOAR_MIDDLEWARE_ERROR_HANDLER["SOAR-MIDDLEWARE-ERROR-HANDLER"] -->|calls| SOAR_LIB_HTTP_ERROR_MAPPER["SOAR-LIB-HTTP-ERROR-MAPPER"]
+  SOAR_LIB_HTTP_ERROR_MAPPER["SOAR-LIB-HTTP-ERROR-MAPPER"] -->|uses| SOAR_LIB_ERRORS["SOAR-LIB-ERRORS"]
+  SOAR_LIB_SYMBOLS["SOAR-LIB-SYMBOLS"] -->|used_by| SOAR_SERVICE_MARKET_CATALOG_SYMBOL_RESOLVER["SOAR-SERVICE-MARKET-CATALOG-SYMBOL-RESOLVER"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|verified_by| SOAR_TEST_API_PLATFORM_SAFETY["SOAR-TEST-API-PLATFORM-SAFETY"]
+  SOAR_CONFIG_RUNTIME_EXECUTION["SOAR-CONFIG-RUNTIME-EXECUTION"] -->|verified_by| SOAR_TEST_API_CONFIG_SAFETY["SOAR-TEST-API-CONFIG-SAFETY"]
+  SOAR_MIDDLEWARE_REQUIRE_AUTH["SOAR-MIDDLEWARE-REQUIRE-AUTH"] -->|verified_by| SOAR_TEST_API_MIDDLEWARE_SAFETY["SOAR-TEST-API-MIDDLEWARE-SAFETY"]
+  SOAR_LIB_ERRORS["SOAR-LIB-ERRORS"] -->|verified_by| SOAR_TEST_API_LIB_SAFETY["SOAR-TEST-API-LIB-SAFETY"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|documented_by| SOAR_DOC_API_ROOT["SOAR-DOC-API-ROOT"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|documented_by| SOAR_DOC_LOCAL_DEVELOPMENT["SOAR-DOC-LOCAL-DEVELOPMENT"]
+  SOAR_FEATURE_WEB_RUNTIME_SURFACES["SOAR-FEATURE-WEB-RUNTIME-SURFACES"] -->|extends| SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|composes| SOAR_COMP_RUNTIME_SIDEBAR_SECTION["SOAR-COMP-RUNTIME-SIDEBAR-SECTION"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|composes| SOAR_COMP_RUNTIME_ONBOARDING_SECTION["SOAR-COMP-RUNTIME-ONBOARDING-SECTION"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|composes| SOAR_COMP_RUNTIME_SIGNALS_SECTION["SOAR-COMP-RUNTIME-SIGNALS-SECTION"]
+  SOAR_COMP_RUNTIME_SIGNALS_SECTION["SOAR-COMP-RUNTIME-SIGNALS-SECTION"] -->|uses| SOAR_UTIL_RUNTIME_DERIVATIONS["SOAR-UTIL-RUNTIME-DERIVATIONS"]
+  SOAR_COMP_RUNTIME_SIGNALS_SECTION["SOAR-COMP-RUNTIME-SIGNALS-SECTION"] -->|uses| SOAR_UTIL_RUNTIME_UI_HELPERS["SOAR-UTIL-RUNTIME-UI-HELPERS"]
+  SOAR_COMP_RUNTIME_SIGNALS_SECTION["SOAR-COMP-RUNTIME-SIGNALS-SECTION"] -->|uses| SOAR_UTIL_RUNTIME_SIGNAL_CONDITION_STATE["SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE"]
+  SOAR_COMP_RUNTIME_ONBOARDING_SECTION["SOAR-COMP-RUNTIME-ONBOARDING-SECTION"] -->|uses| SOAR_UTIL_RUNTIME_UI_HELPERS["SOAR-UTIL-RUNTIME-UI-HELPERS"]
+  SOAR_COMP_RUNTIME_DATA_PRESENTERS["SOAR-COMP-RUNTIME-DATA-PRESENTERS"] -->|uses| SOAR_UTIL_RUNTIME_TRADE_META["SOAR-UTIL-RUNTIME-TRADE-META"]
+  SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"] -->|composes| SOAR_COMP_BOTS_MANAGEMENT_TABS["SOAR-COMP-BOTS-MANAGEMENT-TABS"]
+  SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"] -->|composes| SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"]
+  SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"] -->|composes| SOAR_COMP_BOTS_MONITORING_SECTIONS["SOAR-COMP-BOTS-MONITORING-SECTIONS"]
+  SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"] -->|composes| SOAR_COMP_MONITORING_FUTURE_SIGNALS["SOAR-COMP-MONITORING-FUTURE-SIGNALS"]
+  SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"] -->|composes| SOAR_COMP_BOTS_PORTFOLIO_HISTORY_SECTION["SOAR-COMP-BOTS-PORTFOLIO-HISTORY-SECTION"]
+  SOAR_COMP_BOTS_MONITORING_SECTIONS["SOAR-COMP-BOTS-MONITORING-SECTIONS"] -->|composes| SOAR_COMP_BOTS_MONITORING_PROTECTION_CELL["SOAR-COMP-BOTS-MONITORING-PROTECTION-CELL"]
+  SOAR_COMP_BOTS_MONITORING_SECTIONS["SOAR-COMP-BOTS-MONITORING-SECTIONS"] -->|composes| SOAR_COMP_BOTS_MONITORING_ATTRIBUTION_PILLS["SOAR-COMP-BOTS-MONITORING-ATTRIBUTION-PILLS"]
+  SOAR_COMP_BOTS_MONITORING_SECTIONS["SOAR-COMP-BOTS-MONITORING-SECTIONS"] -->|uses| SOAR_UTIL_BOTS_MONITORING_FORMATTERS["SOAR-UTIL-BOTS-MONITORING-FORMATTERS"]
+  SOAR_COMP_BOTS_MONITORING_ATTRIBUTION_PILLS["SOAR-COMP-BOTS-MONITORING-ATTRIBUTION-PILLS"] -->|uses| SOAR_UTIL_BOTS_MONITORING_LABELS["SOAR-UTIL-BOTS-MONITORING-LABELS"]
+  SOAR_COMP_MONITORING_FUTURE_SIGNALS["SOAR-COMP-MONITORING-FUTURE-SIGNALS"] -->|uses| SOAR_UTIL_BOTS_MONITORING_LABELS["SOAR-UTIL-BOTS-MONITORING-LABELS"]
+  SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"] -->|calls| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_RUNTIME_AGGREGATE["SOAR-API-BOT-RUNTIME-AGGREGATE"]
+  SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"] -->|calls| SOAR_API_BOT_RUNTIME_POSITIONS["SOAR-API-BOT-RUNTIME-POSITIONS"]
+  SOAR_FEATURE_WEB_RUNTIME_SURFACES["SOAR-FEATURE-WEB-RUNTIME-SURFACES"] -->|verified_by| SOAR_TEST_WEB_RUNTIME_SURFACES["SOAR-TEST-WEB-RUNTIME-SURFACES"]
+  SOAR_COMP_RUNTIME_SIGNALS_SECTION["SOAR-COMP-RUNTIME-SIGNALS-SECTION"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_SIGNALS["SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS"]
+  SOAR_UTIL_RUNTIME_SIGNAL_CONDITION_STATE["SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_SIGNALS["SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS"]
+  SOAR_COMP_MONITORING_FUTURE_SIGNALS["SOAR-COMP-MONITORING-FUTURE-SIGNALS"] -->|verified_by| SOAR_TEST_BOTS_MONITORING_FUTURE_SIGNALS["SOAR-TEST-BOTS-MONITORING-FUTURE-SIGNALS"]
+  SOAR_COMP_BOTS_PORTFOLIO_HISTORY_SECTION["SOAR-COMP-BOTS-PORTFOLIO-HISTORY-SECTION"] -->|verified_by| SOAR_TEST_BOTS_PORTFOLIO_HISTORY_WEB["SOAR-TEST-BOTS-PORTFOLIO-HISTORY-WEB"]
+  SOAR_FEATURE_WEB_RUNTIME_SURFACES["SOAR-FEATURE-WEB-RUNTIME-SURFACES"] -->|documented_by| SOAR_DOC_WEB_DASHBOARD_HOME["SOAR-DOC-WEB-DASHBOARD-HOME"]
+  SOAR_FEATURE_WEB_RUNTIME_SURFACES["SOAR-FEATURE-WEB-RUNTIME-SURFACES"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|has_entrypoint| SOAR_PAGE_PUBLIC_HOME["SOAR-PAGE-PUBLIC-HOME"]
+  SOAR_PAGE_PUBLIC_HOME["SOAR-PAGE-PUBLIC-HOME"] -->|links_to| SOAR_PAGE_LOGIN["SOAR-PAGE-LOGIN"]
+  SOAR_PAGE_PUBLIC_HOME["SOAR-PAGE-PUBLIC-HOME"] -->|links_to| SOAR_PAGE_REGISTER["SOAR-PAGE-REGISTER"]
+  SOAR_PAGE_REGISTER["SOAR-PAGE-REGISTER"] -->|contains| SOAR_COMP_REGISTER_FORM["SOAR-COMP-REGISTER-FORM"]
+  SOAR_COMP_LOGIN_FORM["SOAR-COMP-LOGIN-FORM"] -->|uses| SOAR_HOOK_USE_LOGIN_FORM["SOAR-HOOK-USE-LOGIN-FORM"]
+  SOAR_COMP_REGISTER_FORM["SOAR-COMP-REGISTER-FORM"] -->|uses| SOAR_HOOK_USE_REGISTER_FORM["SOAR-HOOK-USE-REGISTER-FORM"]
+  SOAR_COMP_LOGIN_FORM["SOAR-COMP-LOGIN-FORM"] -->|uses| SOAR_UI_PASSWORD_VISIBILITY_TOGGLE["SOAR-UI-PASSWORD-VISIBILITY-TOGGLE"]
+  SOAR_COMP_REGISTER_FORM["SOAR-COMP-REGISTER-FORM"] -->|uses| SOAR_UI_PASSWORD_VISIBILITY_TOGGLE["SOAR-UI-PASSWORD-VISIBILITY-TOGGLE"]
+  SOAR_HOOK_USE_LOGIN_FORM["SOAR-HOOK-USE-LOGIN-FORM"] -->|calls| SOAR_SERVICE_WEB_AUTH["SOAR-SERVICE-WEB-AUTH"]
+  SOAR_HOOK_USE_REGISTER_FORM["SOAR-HOOK-USE-REGISTER-FORM"] -->|calls| SOAR_SERVICE_WEB_AUTH["SOAR-SERVICE-WEB-AUTH"]
+  SOAR_SERVICE_WEB_AUTH["SOAR-SERVICE-WEB-AUTH"] -->|calls| SOAR_API_AUTH_LOGIN["SOAR-API-AUTH-LOGIN"]
+  SOAR_SERVICE_WEB_AUTH["SOAR-SERVICE-WEB-AUTH"] -->|calls| SOAR_API_AUTH_REGISTER["SOAR-API-AUTH-REGISTER"]
+  SOAR_CONTEXT_WEB_AUTH["SOAR-CONTEXT-WEB-AUTH"] -->|calls| SOAR_API_AUTH_ME["SOAR-API-AUTH-ME"]
+  SOAR_CONTEXT_WEB_AUTH["SOAR-CONTEXT-WEB-AUTH"] -->|calls| SOAR_API_AUTH_LOGOUT["SOAR-API-AUTH-LOGOUT"]
+  SOAR_API_AUTH_REGISTER["SOAR-API-AUTH-REGISTER"] -->|routes_to| SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"]
+  SOAR_API_AUTH_LOGIN["SOAR-API-AUTH-LOGIN"] -->|routes_to| SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"]
+  SOAR_API_AUTH_ME["SOAR-API-AUTH-ME"] -->|routes_to| SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"]
+  SOAR_API_AUTH_LOGOUT["SOAR-API-AUTH-LOGOUT"] -->|routes_to| SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"]
+  SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"] -->|validates_with| SOAR_TYPES_AUTH["SOAR-TYPES-AUTH"]
+  SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"] -->|calls| SOAR_SERVICE_AUTH["SOAR-SERVICE-AUTH"]
+  SOAR_CONTROLLER_AUTH["SOAR-CONTROLLER-AUTH"] -->|uses| SOAR_SERVICE_AUTH_COOKIE["SOAR-SERVICE-AUTH-COOKIE"]
+  SOAR_SERVICE_AUTH["SOAR-SERVICE-AUTH"] -->|uses| SOAR_SERVICE_AUTH_JWT["SOAR-SERVICE-AUTH-JWT"]
+  SOAR_SERVICE_AUTH["SOAR-SERVICE-AUTH"] -->|uses| SOAR_SERVICE_AUTH_ERRORS["SOAR-SERVICE-AUTH-ERRORS"]
+  SOAR_SERVICE_AUTH["SOAR-SERVICE-AUTH"] -->|reads_writes| SOAR_DB_USER["SOAR-DB-USER"]
+  SOAR_SERVICE_AUTH_JWT["SOAR-SERVICE-AUTH-JWT"] -->|uses| SOAR_SERVICE_AUTH_SESSION_TOKEN["SOAR-SERVICE-AUTH-SESSION-TOKEN"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|verified_by| SOAR_TEST_WEB_AUTH_FORMS["SOAR-TEST-WEB-AUTH-FORMS"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|verified_by| SOAR_TEST_WEB_AUTH_HOOKS["SOAR-TEST-WEB-AUTH-HOOKS"]
+  SOAR_CONTEXT_WEB_AUTH["SOAR-CONTEXT-WEB-AUTH"] -->|verified_by| SOAR_TEST_WEB_AUTH_CONTEXT["SOAR-TEST-WEB-AUTH-CONTEXT"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|verified_by| SOAR_TEST_API_AUTH_SESSION_DEEP["SOAR-TEST-API-AUTH-SESSION-DEEP"]
+  SOAR_SERVICE_AUTH["SOAR-SERVICE-AUTH"] -->|verified_by| SOAR_TEST_API_AUTH_SERVICE["SOAR-TEST-API-AUTH-SERVICE"]
+  SOAR_SERVICE_AUTH_COOKIE["SOAR-SERVICE-AUTH-COOKIE"] -->|verified_by| SOAR_TEST_API_AUTH_COOKIE["SOAR-TEST-API-AUTH-COOKIE"]
+  SOAR_SERVICE_AUTH_JWT["SOAR-SERVICE-AUTH-JWT"] -->|verified_by| SOAR_TEST_API_AUTH_JWT["SOAR-TEST-API-AUTH-JWT"]
+  SOAR_SERVICE_AUTH_ERRORS["SOAR-SERVICE-AUTH-ERRORS"] -->|verified_by| SOAR_TEST_API_AUTH_ERRORS["SOAR-TEST-API-AUTH-ERRORS"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|documented_by| SOAR_DOC_API_AUTH["SOAR-DOC-API-AUTH"]
+  SOAR_FEATURE_AUTH_SESSION["SOAR-FEATURE-AUTH-SESSION"] -->|documented_by| SOAR_DOC_WEB_AUTH["SOAR-DOC-WEB-AUTH"]
+  SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"] -->|uses| SOAR_UTIL_BACKTEST_RUN_DETAILS_COPY["SOAR-UTIL-BACKTEST-RUN-DETAILS-COPY"]
+  SOAR_COMP_BACKTEST_DETAIL_PRESENTERS["SOAR-COMP-BACKTEST-DETAIL-PRESENTERS"] -->|uses| SOAR_SERVICE_BACKTEST_WEB_VIEWMODEL["SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL"]
+  SOAR_SERVICE_BACKTEST_WEB_VIEWMODEL["SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL"] -->|verified_by| SOAR_TEST_BACKTEST_WEB_UTILITIES["SOAR-TEST-BACKTEST-WEB-UTILITIES"]
+  SOAR_COMP_BACKTEST_DETAIL_PRESENTERS["SOAR-COMP-BACKTEST-DETAIL-PRESENTERS"] -->|verified_by| SOAR_TEST_BACKTEST_WEB_UTILITIES["SOAR-TEST-BACKTEST-WEB-UTILITIES"]
+  SOAR_FEATURE_BACKTESTS["SOAR-FEATURE-BACKTESTS"] -->|verified_by| SOAR_TEST_BACKTEST_WEB_UTILITIES["SOAR-TEST-BACKTEST-WEB-UTILITIES"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|composes| SOAR_COMP_LIVE_MARKET_BAR["SOAR-COMP-LIVE-MARKET-BAR"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|uses| SOAR_HOOK_RUNTIME_SELECTION_VIEWMODEL["SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL"]
+  SOAR_HOOK_RUNTIME_SELECTION_VIEWMODEL["SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL"] -->|uses| SOAR_TYPES_DASHBOARD_RUNTIME["SOAR-TYPES-DASHBOARD-RUNTIME"]
+  SOAR_HOOK_RUNTIME_SELECTION_VIEWMODEL["SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL"] -->|uses| SOAR_UTIL_RUNTIME_DERIVATIONS["SOAR-UTIL-RUNTIME-DERIVATIONS"]
+  SOAR_COMP_LIVE_MARKET_BAR["SOAR-COMP-LIVE-MARKET-BAR"] -->|observes| SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"]
+  SOAR_FEATURE_DASHBOARD_RUNTIME["SOAR-FEATURE-DASHBOARD-RUNTIME"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_RESIDUAL_WEB["SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_RESIDUAL_WEB["SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB"]
+  SOAR_COMP_LIVE_MARKET_BAR["SOAR-COMP-LIVE-MARKET-BAR"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_RESIDUAL_WEB["SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB"]
+  SOAR_COMP_RUNTIME_SIDEBAR_SECTION["SOAR-COMP-RUNTIME-SIDEBAR-SECTION"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_RESIDUAL_WEB["SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB"]
+  SOAR_HOOK_RUNTIME_SELECTION_VIEWMODEL["SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL"] -->|verified_by| SOAR_TEST_DASHBOARD_RUNTIME_RESIDUAL_WEB["SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|has_ui| SOAR_COMP_EXCHANGE_CONNECTIONS_VIEW["SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW"]
+  SOAR_COMP_EXCHANGE_CONNECTIONS_VIEW["SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW"] -->|uses| SOAR_UTIL_WEB_EXCHANGE_CAPABILITIES["SOAR-UTIL-WEB-EXCHANGE-CAPABILITIES"]
+  SOAR_UTIL_WEB_EXCHANGE_CAPABILITIES["SOAR-UTIL-WEB-EXCHANGE-CAPABILITIES"] -->|mirrors| SOAR_SERVICE_EXCHANGE_CAPABILITIES["SOAR-SERVICE-EXCHANGE-CAPABILITIES"]
+  SOAR_COMP_EXCHANGE_CONNECTIONS_VIEW["SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW"] -->|verified_by| SOAR_TEST_WEB_EXCHANGE_CONNECTIONS["SOAR-TEST-WEB-EXCHANGE-CONNECTIONS"]
+  SOAR_UTIL_WEB_EXCHANGE_CAPABILITIES["SOAR-UTIL-WEB-EXCHANGE-CAPABILITIES"] -->|verified_by| SOAR_TEST_WEB_EXCHANGE_CONNECTIONS["SOAR-TEST-WEB-EXCHANGE-CONNECTIONS"]
+  SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"] -->|documented_by| SOAR_DOC_WEB_EXCHANGES["SOAR-DOC-WEB-EXCHANGES"]
+  SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"] -->|contains| SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"]
+  SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"] -->|contains| SOAR_COMP_PROFILE_SECURITY["SOAR-COMP-PROFILE-SECURITY"]
+  SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"] -->|uses| SOAR_HOOK_USE_USER["SOAR-HOOK-USE-USER"]
+  SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"] -->|uses| SOAR_SERVICE_PROFILE_BASIC_CACHE["SOAR-SERVICE-PROFILE-BASIC-CACHE"]
+  SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"] -->|calls| SOAR_API_PROFILE_BASIC_GET["SOAR-API-PROFILE-BASIC-GET"]
+  SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"] -->|calls| SOAR_API_PROFILE_BASIC_UPDATE["SOAR-API-PROFILE-BASIC-UPDATE"]
+  SOAR_COMP_PROFILE_SECURITY["SOAR-COMP-PROFILE-SECURITY"] -->|calls| SOAR_SERVICE_WEB_PROFILE_SECURITY["SOAR-SERVICE-WEB-PROFILE-SECURITY"]
+  SOAR_SERVICE_WEB_PROFILE_SECURITY["SOAR-SERVICE-WEB-PROFILE-SECURITY"] -->|calls| SOAR_API_PROFILE_SECURITY_PASSWORD["SOAR-API-PROFILE-SECURITY-PASSWORD"]
+  SOAR_SERVICE_WEB_PROFILE_SECURITY["SOAR-SERVICE-WEB-PROFILE-SECURITY"] -->|calls| SOAR_API_PROFILE_SECURITY_ACCOUNT["SOAR-API-PROFILE-SECURITY-ACCOUNT"]
+  SOAR_COMP_PROFILE_BASIC_FORM["SOAR-COMP-PROFILE-BASIC-FORM"] -->|verified_by| SOAR_TEST_WEB_PROFILE_BASIC_SECURITY["SOAR-TEST-WEB-PROFILE-BASIC-SECURITY"]
+  SOAR_COMP_PROFILE_SECURITY["SOAR-COMP-PROFILE-SECURITY"] -->|verified_by| SOAR_TEST_WEB_PROFILE_BASIC_SECURITY["SOAR-TEST-WEB-PROFILE-BASIC-SECURITY"]
+  SOAR_PAGE_PROFILE["SOAR-PAGE-PROFILE"] -->|verified_by| SOAR_TEST_WEB_PROFILE_BASIC_SECURITY["SOAR-TEST-WEB-PROFILE-BASIC-SECURITY"]
+  SOAR_FEATURE_ENGINE_RUNTIME_CORE["SOAR-FEATURE-ENGINE-RUNTIME-CORE"] -->|has_service| SOAR_SERVICE_RUNTIME_SCAN_LOOP["SOAR-SERVICE-RUNTIME-SCAN-LOOP"]
+  SOAR_SERVICE_RUNTIME_SCAN_LOOP["SOAR-SERVICE-RUNTIME-SCAN-LOOP"] -->|calls| SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"]
+  SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"] -->|uses| SOAR_SERVICE_RUNTIME_TOPOLOGY_CACHE["SOAR-SERVICE-RUNTIME-TOPOLOGY-CACHE"]
+  SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"] -->|uses| SOAR_SERVICE_RUNTIME_FINAL_CANDLE_DECISION["SOAR-SERVICE-RUNTIME-FINAL-CANDLE-DECISION"]
+  SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"] -->|uses| SOAR_SERVICE_RULE_EVALUATOR["SOAR-SERVICE-RULE-EVALUATOR"]
+  SOAR_SERVICE_RUNTIME_EXCHANGE_ORDER_GUARD["SOAR-SERVICE-RUNTIME-EXCHANGE-ORDER-GUARD"] -->|checks| SOAR_SERVICE_PRETRADE_RISK["SOAR-SERVICE-PRETRADE-RISK"]
+  SOAR_SERVICE_RUNTIME_EXCHANGE_ORDER_GUARD["SOAR-SERVICE-RUNTIME-EXCHANGE-ORDER-GUARD"] -->|checks| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_SERVICE_RUNTIME_EXECUTION_DEDUPE["SOAR-SERVICE-RUNTIME-EXECUTION-DEDUPE"] -->|reads_writes| SOAR_DB_ORDER["SOAR-DB-ORDER"]
+  SOAR_SERVICE_RUNTIME_LIFECYCLE_MARK_PRICE["SOAR-SERVICE-RUNTIME-LIFECYCLE-MARK-PRICE"] -->|uses| SOAR_SERVICE_RUNTIME_MARKET_DATA_FALLBACK["SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK"]
+  SOAR_SERVICE_RUNTIME_ORDER_LIFETIME["SOAR-SERVICE-RUNTIME-ORDER-LIFETIME"] -->|uses| SOAR_SERVICE_RUNTIME_LIFECYCLE_MARK_PRICE["SOAR-SERVICE-RUNTIME-LIFECYCLE-MARK-PRICE"]
+  SOAR_SERVICE_RUNTIME_POSITION_LIFETIME["SOAR-SERVICE-RUNTIME-POSITION-LIFETIME"] -->|uses| SOAR_SERVICE_RUNTIME_LIFECYCLE_MARK_PRICE["SOAR-SERVICE-RUNTIME-LIFECYCLE-MARK-PRICE"]
+  SOAR_SERVICE_RUNTIME_POSITION_LIFETIME["SOAR-SERVICE-RUNTIME-POSITION-LIFETIME"] -->|calls| SOAR_SERVICE_RUNTIME_AUTOMATION["SOAR-SERVICE-RUNTIME-AUTOMATION"]
+  SOAR_SERVICE_RUNTIME_METRICS["SOAR-SERVICE-RUNTIME-METRICS"] -->|feeds| SOAR_SERVICE_RUNTIME_TELEMETRY["SOAR-SERVICE-RUNTIME-TELEMETRY"]
+  SOAR_SERVICE_RUNTIME_TELEMETRY["SOAR-SERVICE-RUNTIME-TELEMETRY"] -->|observes| SOAR_DB_RUNTIME_SESSION["SOAR-DB-RUNTIME-SESSION"]
+  SOAR_SERVICE_SIMULATOR["SOAR-SERVICE-SIMULATOR"] -->|uses| SOAR_SERVICE_PAPER_RUNTIME["SOAR-SERVICE-PAPER-RUNTIME"]
+  SOAR_FEATURE_ENGINE_RUNTIME_CORE["SOAR-FEATURE-ENGINE-RUNTIME-CORE"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_EXCHANGE_ORDER_GUARD["SOAR-SERVICE-RUNTIME-EXCHANGE-ORDER-GUARD"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_EXECUTION_DEDUPE["SOAR-SERVICE-RUNTIME-EXECUTION-DEDUPE"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_SCAN_LOOP["SOAR-SERVICE-RUNTIME-SCAN-LOOP"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_LIFECYCLE_MARK_PRICE["SOAR-SERVICE-RUNTIME-LIFECYCLE-MARK-PRICE"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_ORDER_LIFETIME["SOAR-SERVICE-RUNTIME-ORDER-LIFETIME"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_POSITION_LIFETIME["SOAR-SERVICE-RUNTIME-POSITION-LIFETIME"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_SERVICE_RUNTIME_TELEMETRY["SOAR-SERVICE-RUNTIME-TELEMETRY"] -->|verified_by| SOAR_TEST_ENGINE_RUNTIME_CORE["SOAR-TEST-ENGINE-RUNTIME-CORE"]
+  SOAR_FEATURE_ENGINE_RUNTIME_CORE["SOAR-FEATURE-ENGINE-RUNTIME-CORE"] -->|documented_by| SOAR_DOC_EXECUTION_LIFECYCLE["SOAR-DOC-EXECUTION-LIFECYCLE"]
+  SOAR_FEATURE_ENGINE_RUNTIME_CORE["SOAR-FEATURE-ENGINE-RUNTIME-CORE"] -->|documented_by| SOAR_DOC_API_BOTS["SOAR-DOC-API-BOTS"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|has_service| SOAR_SERVICE_MARKET_DATA["SOAR-SERVICE-MARKET-DATA"]
+  SOAR_SERVICE_MARKET_DATA["SOAR-SERVICE-MARKET-DATA"] -->|uses| SOAR_SERVICE_BINANCE_PUBLIC_REST["SOAR-SERVICE-BINANCE-PUBLIC-REST"]
+  SOAR_SERVICE_MARKET_DATA["SOAR-SERVICE-MARKET-DATA"] -->|uses| SOAR_SERVICE_EXCHANGE_PUBLIC_MARKET_DATA["SOAR-SERVICE-EXCHANGE-PUBLIC-MARKET-DATA"]
+  SOAR_SERVICE_INDICATOR_ADAPTER["SOAR-SERVICE-INDICATOR-ADAPTER"] -->|uses| SOAR_SERVICE_MARKET_DATA["SOAR-SERVICE-MARKET-DATA"]
+  SOAR_SERVICE_RUNTIME_SIGNAL_LOOP["SOAR-SERVICE-RUNTIME-SIGNAL-LOOP"] -->|uses| SOAR_SERVICE_INDICATOR_ADAPTER["SOAR-SERVICE-INDICATOR-ADAPTER"]
+  SOAR_SERVICE_CCXT_SPOT_CONNECTOR["SOAR-SERVICE-CCXT-SPOT-CONNECTOR"] -->|created_by| SOAR_SERVICE_EXCHANGE_CONNECTOR_FACTORY["SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY"]
+  SOAR_SERVICE_BINANCE_STREAM["SOAR-SERVICE-BINANCE-STREAM"] -->|feeds| SOAR_SERVICE_MARKET_STREAM["SOAR-SERVICE-MARKET-STREAM"]
+  SOAR_SERVICE_MARKET_STREAM["SOAR-SERVICE-MARKET-STREAM"] -->|uses| SOAR_SERVICE_BINANCE_STREAM["SOAR-SERVICE-BINANCE-STREAM"]
+  SOAR_WORKER_MARKET_STREAM_SUBSCRIPTIONS["SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS"] -->|publishes_to| SOAR_SERVICE_MARKET_STREAM_FANOUT["SOAR-SERVICE-MARKET-STREAM-FANOUT"]
+  SOAR_WORKER_MARKET_STREAM_SUBSCRIPTIONS["SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS"] -->|subscribes_to| SOAR_SERVICE_BINANCE_STREAM["SOAR-SERVICE-BINANCE-STREAM"]
+  SOAR_API_MARKET_STREAM_EVENTS["SOAR-API-MARKET-STREAM-EVENTS"] -->|observes| SOAR_WORKER_MARKET_STREAM_SUBSCRIPTIONS["SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS"]
+  SOAR_SERVICE_BINANCE_USER_DATA_STREAM["SOAR-SERVICE-BINANCE-USER-DATA-STREAM"] -->|implements_adapter| SOAR_FEATURE_EXCHANGE_ADAPTER["SOAR-FEATURE-EXCHANGE-ADAPTER"]
+  SOAR_SERVICE_BINANCE_USER_DATA_STREAM["SOAR-SERVICE-BINANCE-USER-DATA-STREAM"] -->|feeds| SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"]
+  SOAR_SERVICE_IMPORTED_POSITION_HISTORY_HYDRATOR["SOAR-SERVICE-IMPORTED-POSITION-HISTORY-HYDRATOR"] -->|supports| SOAR_SERVICE_LIVE_POSITION_RECONCILIATION["SOAR-SERVICE-LIVE-POSITION-RECONCILIATION"]
+  SOAR_SERVICE_IMPORTED_POSITION_HISTORY_HYDRATOR["SOAR-SERVICE-IMPORTED-POSITION-HISTORY-HYDRATOR"] -->|reads_writes| SOAR_DB_POSITION["SOAR-DB-POSITION"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_SERVICE_MARKET_DATA["SOAR-SERVICE-MARKET-DATA"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_SERVICE_INDICATOR_ADAPTER["SOAR-SERVICE-INDICATOR-ADAPTER"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_SERVICE_BINANCE_STREAM["SOAR-SERVICE-BINANCE-STREAM"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_WORKER_MARKET_STREAM_SUBSCRIPTIONS["SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_SERVICE_BINANCE_USER_DATA_STREAM["SOAR-SERVICE-BINANCE-USER-DATA-STREAM"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_SERVICE_IMPORTED_POSITION_HISTORY_HYDRATOR["SOAR-SERVICE-IMPORTED-POSITION-HISTORY-HYDRATOR"] -->|verified_by| SOAR_TEST_MARKET_DATA_STREAM_ADAPTERS["SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|documented_by| SOAR_DOC_API_MARKET_STREAM["SOAR-DOC-API-MARKET-STREAM"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|documented_by| SOAR_DOC_API_MARKETS["SOAR-DOC-API-MARKETS"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|documented_by| SOAR_DOC_EXCHANGE_OWNERSHIP["SOAR-DOC-EXCHANGE-OWNERSHIP"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|has_entrypoint| SOAR_PAGE_BOT_NEW_ALIAS["SOAR-PAGE-BOT-NEW-ALIAS"]
+  SOAR_PAGE_BOT_NEW_ALIAS["SOAR-PAGE-BOT-NEW-ALIAS"] -->|aliases| SOAR_PAGE_BOT_CREATE["SOAR-PAGE-BOT-CREATE"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|has_entrypoint| SOAR_PAGE_BOT_DETAIL_ALIAS["SOAR-PAGE-BOT-DETAIL-ALIAS"]
+  SOAR_PAGE_BOT_DETAIL_ALIAS["SOAR-PAGE-BOT-DETAIL-ALIAS"] -->|aliases| SOAR_PAGE_BOT_PREVIEW["SOAR-PAGE-BOT-PREVIEW"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|has_entrypoint| SOAR_PAGE_OFFLINE["SOAR-PAGE-OFFLINE"]
+  SOAR_PAGE_BOTS_LIST["SOAR-PAGE-BOTS-LIST"] -->|uses| SOAR_HOOK_BOTS_LIST_CONTROLLER["SOAR-HOOK-BOTS-LIST-CONTROLLER"]
+  SOAR_HOOK_BOTS_LIST_CONTROLLER["SOAR-HOOK-BOTS-LIST-CONTROLLER"] -->|calls| SOAR_SERVICE_WEB_BOTS_API["SOAR-SERVICE-WEB-BOTS-API"]
+  SOAR_COMP_BOTS_MONITORING_TAB["SOAR-COMP-BOTS-MONITORING-TAB"] -->|uses| SOAR_HOOK_BOTS_MONITORING_CONTROLLER["SOAR-HOOK-BOTS-MONITORING-CONTROLLER"]
+  SOAR_HOOK_BOTS_MONITORING_CONTROLLER["SOAR-HOOK-BOTS-MONITORING-CONTROLLER"] -->|calls| SOAR_SERVICE_BOTS_MONITORING_AGGREGATE["SOAR-SERVICE-BOTS-MONITORING-AGGREGATE"]
+  SOAR_SERVICE_BOTS_MONITORING_AGGREGATE["SOAR-SERVICE-BOTS-MONITORING-AGGREGATE"] -->|calls| SOAR_API_BOT_RUNTIME_AGGREGATE["SOAR-API-BOT-RUNTIME-AGGREGATE"]
+  SOAR_HOOK_COIN_ICON_LOOKUP["SOAR-HOOK-COIN-ICON-LOOKUP"] -->|calls| SOAR_SERVICE_WEB_ICONS["SOAR-SERVICE-WEB-ICONS"]
+  SOAR_SERVICE_WEB_ICONS["SOAR-SERVICE-WEB-ICONS"] -->|calls| SOAR_API_ICON_LOOKUP["SOAR-API-ICON-LOOKUP"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|composes| SOAR_COMP_SORTABLE_THRESHOLD_LIST_EDITOR["SOAR-COMP-SORTABLE-THRESHOLD-LIST-EDITOR"]
+  SOAR_COMP_SORTABLE_THRESHOLD_LIST_EDITOR["SOAR-COMP-SORTABLE-THRESHOLD-LIST-EDITOR"] -->|uses| SOAR_SERVICE_STRATEGY_FORM_MAPPER["SOAR-SERVICE-STRATEGY-FORM-MAPPER"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|verified_by| SOAR_TEST_WEB_RESIDUAL_SURFACES["SOAR-TEST-WEB-RESIDUAL-SURFACES"]
+  SOAR_PAGE_BOT_NEW_ALIAS["SOAR-PAGE-BOT-NEW-ALIAS"] -->|verified_by| SOAR_TEST_WEB_RESIDUAL_SURFACES["SOAR-TEST-WEB-RESIDUAL-SURFACES"]
+  SOAR_PAGE_BOT_DETAIL_ALIAS["SOAR-PAGE-BOT-DETAIL-ALIAS"] -->|verified_by| SOAR_TEST_WEB_RESIDUAL_SURFACES["SOAR-TEST-WEB-RESIDUAL-SURFACES"]
+  SOAR_PAGE_OFFLINE["SOAR-PAGE-OFFLINE"] -->|verified_by| SOAR_TEST_WEB_RESIDUAL_SURFACES["SOAR-TEST-WEB-RESIDUAL-SURFACES"]
+  SOAR_SERVICE_BOTS_MONITORING_AGGREGATE["SOAR-SERVICE-BOTS-MONITORING-AGGREGATE"] -->|verified_by| SOAR_TEST_WEB_RESIDUAL_SURFACES["SOAR-TEST-WEB-RESIDUAL-SURFACES"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|documented_by| SOAR_DOC_WEB_ICONS["SOAR-DOC-WEB-ICONS"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|documented_by| SOAR_DOC_WEB_SHARED["SOAR-DOC-WEB-SHARED"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_HOOK_CLOSE_RUNTIME_POSITION_ACTION["SOAR-HOOK-CLOSE-RUNTIME-POSITION-ACTION"] -->|calls| SOAR_API_BOT_RUNTIME_CLOSE_POSITION["SOAR-API-BOT-RUNTIME-CLOSE-POSITION"]
+  SOAR_HOOK_CLOSE_RUNTIME_POSITION_ACTION["SOAR-HOOK-CLOSE-RUNTIME-POSITION-ACTION"] -->|verified_by| SOAR_TEST_WEB_SHELL_UI["SOAR-TEST-WEB-SHELL-UI"]
+  SOAR_FEATURE_ENGINE_RUNTIME_CORE["SOAR-FEATURE-ENGINE-RUNTIME-CORE"] -->|verified_by| SOAR_TEST_API_RESIDUAL_EVIDENCE["SOAR-TEST-API-RESIDUAL-EVIDENCE"]
+  SOAR_FEATURE_BOT_RUNTIME["SOAR-FEATURE-BOT-RUNTIME"] -->|verified_by| SOAR_TEST_API_RESIDUAL_EVIDENCE["SOAR-TEST-API-RESIDUAL-EVIDENCE"]
+  SOAR_FEATURE_MANUAL_ORDER["SOAR-FEATURE-MANUAL-ORDER"] -->|verified_by| SOAR_TEST_API_RESIDUAL_EVIDENCE["SOAR-TEST-API-RESIDUAL-EVIDENCE"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|verified_by| SOAR_TEST_API_RESIDUAL_EVIDENCE["SOAR-TEST-API-RESIDUAL-EVIDENCE"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|verified_by| SOAR_TEST_WEB_SHELL_UI["SOAR-TEST-WEB-SHELL-UI"]
+  SOAR_FEATURE_WEB_RESIDUAL_SURFACES["SOAR-FEATURE-WEB-RESIDUAL-SURFACES"] -->|has_ui_action| SOAR_HOOK_CLOSE_RUNTIME_POSITION_ACTION["SOAR-HOOK-CLOSE-RUNTIME-POSITION-ACTION"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|documents| SOAR_DOC_MODULE_GOVERNANCE_INDEX["SOAR-DOC-MODULE-GOVERNANCE-INDEX"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|documents| SOAR_DOC_ARCHITECTURE_GOVERNANCE_INDEX["SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX"]
+  SOAR_DOC_ARCHITECTURE_GOVERNANCE_INDEX["SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX"] -->|related_to| SOAR_DOC_ARCHITECTURE_GRAPH_SYSTEM["SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM"]
+  SOAR_DOC_MODULE_GOVERNANCE_INDEX["SOAR-DOC-MODULE-GOVERNANCE-INDEX"] -->|related_to| SOAR_DOC_ARCHITECTURE_GRAPH_SYSTEM["SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM"]
+  SOAR_FEATURE_API_PLATFORM_SAFETY["SOAR-FEATURE-API-PLATFORM-SAFETY"] -->|verified_by| SOAR_TEST_API_INFRASTRUCTURE_RESIDUAL["SOAR-TEST-API-INFRASTRUCTURE-RESIDUAL"]
+  SOAR_FEATURE_MARKET_DATA_STREAM_ADAPTERS["SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS"] -->|verified_by| SOAR_TEST_API_INFRASTRUCTURE_RESIDUAL["SOAR-TEST-API-INFRASTRUCTURE-RESIDUAL"]
+  SOAR_FEATURE_ARCHITECTURE_EVIDENCE_GRAPH["SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH"] -->|documents| SOAR_DOC_ARCHITECTURE_CONTRACT_INDEX["SOAR-DOC-ARCHITECTURE-CONTRACT-INDEX"]
+  SOAR_DOC_ARCHITECTURE_CONTRACT_INDEX["SOAR-DOC-ARCHITECTURE-CONTRACT-INDEX"] -->|extends| SOAR_DOC_ARCHITECTURE_GOVERNANCE_INDEX["SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|contains| SOAR_TOOL_V1_FINAL_PREFLIGHT["SOAR-TOOL-V1-FINAL-PREFLIGHT"]
+  SOAR_FEATURE_RELEASE_AUDIT_TOOLING["SOAR-FEATURE-RELEASE-AUDIT-TOOLING"] -->|contains| SOAR_TOOL_V1_RELEASE_GATE["SOAR-TOOL-V1-RELEASE-GATE"]
+  SOAR_TOOL_V1_RELEASE_GATE["SOAR-TOOL-V1-RELEASE-GATE"] -->|uses| SOAR_TOOL_V1_FINAL_PREFLIGHT["SOAR-TOOL-V1-FINAL-PREFLIGHT"]
+  SOAR_TOOL_V1_FINAL_PREFLIGHT["SOAR-TOOL-V1-FINAL-PREFLIGHT"] -->|uses| SOAR_TOOL_REPOSITORY_PATH_RESOLVER["SOAR-TOOL-REPOSITORY-PATH-RESOLVER"]
+  SOAR_TOOL_V1_FINAL_PREFLIGHT["SOAR-TOOL-V1-FINAL-PREFLIGHT"] -->|verified_by| SOAR_TEST_RELEASE_AUDIT_TOOLING["SOAR-TEST-RELEASE-AUDIT-TOOLING"]
+  SOAR_TOOL_V1_RELEASE_GATE["SOAR-TOOL-V1-RELEASE-GATE"] -->|verified_by| SOAR_TEST_RELEASE_AUDIT_TOOLING["SOAR-TEST-RELEASE-AUDIT-TOOLING"]
+  SOAR_TOOL_OPERATOR_UNBLOCK_PACKET_CHECK["SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK"] -->|uses| SOAR_TOOL_V1_FINAL_PREFLIGHT["SOAR-TOOL-V1-FINAL-PREFLIGHT"]
+  SOAR_FEATURE_OPS_CONFIG_PIPELINE["SOAR-FEATURE-OPS-CONFIG-PIPELINE"] -->|has_source| SOAR_CONFIG_COOLIFY_STACK_COMPOSE["SOAR-CONFIG-COOLIFY-STACK-COMPOSE"]
+  SOAR_CONFIG_COOLIFY_STACK_COMPOSE["SOAR-CONFIG-COOLIFY-STACK-COMPOSE"] -->|extends| SOAR_CONFIG_VPS_COMPOSE["SOAR-CONFIG-VPS-COMPOSE"]
+  SOAR_DOC_COOLIFY_VPS["SOAR-DOC-COOLIFY-VPS"] -->|describes| SOAR_CONFIG_COOLIFY_STACK_COMPOSE["SOAR-CONFIG-COOLIFY-STACK-COMPOSE"]
+  SOAR_CONFIG_COOLIFY_STACK_COMPOSE["SOAR-CONFIG-COOLIFY-STACK-COMPOSE"] -->|verified_by| SOAR_TEST_GUARDRAILS["SOAR-TEST-GUARDRAILS"]
+  SOAR_DOC_MODULE_GOVERNANCE_INDEX["SOAR-DOC-MODULE-GOVERNANCE-INDEX"] -->|documents| SOAR_DOC_MOBILE_MODULE_INDEX["SOAR-DOC-MOBILE-MODULE-INDEX"]
+  SOAR_DOC_MOBILE_MODULE_INDEX["SOAR-DOC-MOBILE-MODULE-INDEX"] -->|documents| SOAR_DOC_MOBILE_BOOTSTRAP["SOAR-DOC-MOBILE-BOOTSTRAP"]
+  SOAR_COMP_LOGIN_FORM["SOAR-COMP-LOGIN-FORM"] -->|documented_by| SOAR_DOC_WEB_AUTH["SOAR-DOC-WEB-AUTH"]
+  SOAR_COMP_HOME_LIVE_WIDGETS["SOAR-COMP-HOME-LIVE-WIDGETS"] -->|documented_by| SOAR_DOC_WEB_DASHBOARD_HOME["SOAR-DOC-WEB-DASHBOARD-HOME"]
+  SOAR_COMP_RUNTIME_DATA_SECTION["SOAR-COMP-RUNTIME-DATA-SECTION"] -->|documented_by| SOAR_DOC_WEB_DASHBOARD_HOME["SOAR-DOC-WEB-DASHBOARD-HOME"]
+  SOAR_COMP_RUNTIME_DATA_PRESENTERS["SOAR-COMP-RUNTIME-DATA-PRESENTERS"] -->|documented_by| SOAR_DOC_WEB_DASHBOARD_HOME["SOAR-DOC-WEB-DASHBOARD-HOME"]
+  SOAR_COMP_BOTS_MANAGEMENT["SOAR-COMP-BOTS-MANAGEMENT"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_COMP_WALLETS_LIST_TABLE["SOAR-COMP-WALLETS-LIST-TABLE"] -->|documented_by| SOAR_DOC_WEB_WALLETS["SOAR-DOC-WEB-WALLETS"]
+  SOAR_COMP_WALLET_FORM_PAGE_CONTENT["SOAR-COMP-WALLET-FORM-PAGE-CONTENT"] -->|documented_by| SOAR_DOC_WEB_WALLETS["SOAR-DOC-WEB-WALLETS"]
+  SOAR_COMP_WALLET_CREATE_EDIT_FORM["SOAR-COMP-WALLET-CREATE-EDIT-FORM"] -->|documented_by| SOAR_DOC_WEB_WALLETS["SOAR-DOC-WEB-WALLETS"]
+  SOAR_COMP_WALLET_PREVIEW_PANEL["SOAR-COMP-WALLET-PREVIEW-PANEL"] -->|documented_by| SOAR_DOC_WEB_WALLETS["SOAR-DOC-WEB-WALLETS"]
+  SOAR_COMP_API_KEYS_LIST["SOAR-COMP-API-KEYS-LIST"] -->|documented_by| SOAR_DOC_WEB_PROFILE["SOAR-DOC-WEB-PROFILE"]
+  SOAR_COMP_API_KEY_FORM["SOAR-COMP-API-KEY-FORM"] -->|documented_by| SOAR_DOC_WEB_PROFILE["SOAR-DOC-WEB-PROFILE"]
+  SOAR_COMP_BOTS_LIST_TABLE["SOAR-COMP-BOTS-LIST-TABLE"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_COMP_BOT_FORM_PAGE_CONTENT["SOAR-COMP-BOT-FORM-PAGE-CONTENT"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_COMP_BOT_CREATE_EDIT_FORM["SOAR-COMP-BOT-CREATE-EDIT-FORM"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+  SOAR_COMP_STRATEGIES_LIST["SOAR-COMP-STRATEGIES-LIST"] -->|documented_by| SOAR_DOC_WEB_STRATEGIES["SOAR-DOC-WEB-STRATEGIES"]
+  SOAR_COMP_STRATEGY_FORM["SOAR-COMP-STRATEGY-FORM"] -->|documented_by| SOAR_DOC_WEB_STRATEGIES["SOAR-DOC-WEB-STRATEGIES"]
+  SOAR_COMP_STRATEGY_FORM_SECTIONS["SOAR-COMP-STRATEGY-FORM-SECTIONS"] -->|documented_by| SOAR_DOC_WEB_STRATEGIES["SOAR-DOC-WEB-STRATEGIES"]
+  SOAR_COMP_STRATEGY_PRESET_PICKER["SOAR-COMP-STRATEGY-PRESET-PICKER"] -->|documented_by| SOAR_DOC_WEB_STRATEGIES["SOAR-DOC-WEB-STRATEGIES"]
+  SOAR_COMP_MARKET_UNIVERSES_TABLE["SOAR-COMP-MARKET-UNIVERSES-TABLE"] -->|documented_by| SOAR_DOC_WEB_MARKETS["SOAR-DOC-WEB-MARKETS"]
+  SOAR_COMP_MARKET_UNIVERSE_FORM["SOAR-COMP-MARKET-UNIVERSE-FORM"] -->|documented_by| SOAR_DOC_WEB_MARKETS["SOAR-DOC-WEB-MARKETS"]
+  SOAR_COMP_MARKET_SEARCHABLE_MULTISELECT["SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT"] -->|documented_by| SOAR_DOC_WEB_MARKETS["SOAR-DOC-WEB-MARKETS"]
+  SOAR_COMP_BACKTESTS_LIST_VIEW["SOAR-COMP-BACKTESTS-LIST-VIEW"] -->|documented_by| SOAR_DOC_WEB_BACKTESTS["SOAR-DOC-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_CREATE_FORM["SOAR-COMP-BACKTEST-CREATE-FORM"] -->|documented_by| SOAR_DOC_WEB_BACKTESTS["SOAR-DOC-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_RUN_DETAILS["SOAR-COMP-BACKTEST-RUN-DETAILS"] -->|documented_by| SOAR_DOC_WEB_BACKTESTS["SOAR-DOC-WEB-BACKTESTS"]
+  SOAR_COMP_BACKTEST_DETAIL_PRESENTERS["SOAR-COMP-BACKTEST-DETAIL-PRESENTERS"] -->|documented_by| SOAR_DOC_WEB_BACKTESTS["SOAR-DOC-WEB-BACKTESTS"]
+  SOAR_COMP_PERFORMANCE_REPORTS_VIEW["SOAR-COMP-PERFORMANCE-REPORTS-VIEW"] -->|documented_by| SOAR_DOC_WEB_REPORTS["SOAR-DOC-WEB-REPORTS"]
+  SOAR_COMP_AUDIT_TRAIL_VIEW["SOAR-COMP-AUDIT-TRAIL-VIEW"] -->|documented_by| SOAR_DOC_WEB_LOGS["SOAR-DOC-WEB-LOGS"]
+  SOAR_COMP_ADMIN_LAYOUT_SHELL["SOAR-COMP-ADMIN-LAYOUT-SHELL"] -->|documented_by| SOAR_DOC_WEB_ADMIN["SOAR-DOC-WEB-ADMIN"]
+  SOAR_COMP_ADMIN_SUBSCRIPTIONS_PAGE["SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE"] -->|documented_by| SOAR_DOC_WEB_ADMIN["SOAR-DOC-WEB-ADMIN"]
+  SOAR_COMP_ADMIN_USERS_PAGE["SOAR-COMP-ADMIN-USERS-PAGE"] -->|documented_by| SOAR_DOC_WEB_ADMIN["SOAR-DOC-WEB-ADMIN"]
+  SOAR_COMP_PROFILE_SUBSCRIPTION["SOAR-COMP-PROFILE-SUBSCRIPTION"] -->|documented_by| SOAR_DOC_API_SUBSCRIPTIONS["SOAR-DOC-API-SUBSCRIPTIONS"]
+  SOAR_COMP_BOTS_ASSISTANT_TAB["SOAR-COMP-BOTS-ASSISTANT-TAB"] -->|documented_by| SOAR_DOC_WEB_BOTS["SOAR-DOC-WEB-BOTS"]
+```

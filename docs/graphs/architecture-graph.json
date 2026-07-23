@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T03:39:30.411Z",
+  "generatedAt": "2026-07-23T04:59:46.221Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",
@@ -2552,7 +2552,7 @@
       "layer": "frontend",
       "module": "web-bots",
       "feature": "bot-runtime",
-      "description": "Bot-specific runtime monitoring route and legacy runtime helper route.",
+      "description": "Bot-specific runtime redirect route and legacy runtime helper route.",
       "file_path": "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx",
       "related_files": "apps/web/src/app/dashboard/bots/runtime/page.tsx;apps/web/src/app/dashboard/bots/[id]/runtime/page.test.tsx",
       "parent_id": "SOAR-FEATURE-BOT-RUNTIME",
@@ -2567,9 +2567,9 @@
       "agent_related": "",
       "risk_level": "high",
       "completion_percent": "90",
-      "last_verified_at": "2026-05-21",
+      "last_verified_at": "2026-07-22",
       "verification_status": "verified_local",
-      "notes": "Canonical bot-specific monitoring route."
+      "notes": "Canonical bot-specific runtime redirect route. Exact redirect proof refreshed by LUC-1662 on 2026-07-22."
     },
     {
       "id": "SOAR-COMP-BOTS-MANAGEMENT",
@@ -16823,9 +16823,9 @@
       "agent_related": "",
       "risk_level": "high",
       "completion_percent": "85",
-      "last_verified_at": "2026-05-24",
+      "last_verified_at": "2026-07-22",
       "verification_status": "verified_local",
-      "notes": "Selected-bot compatibility surface."
+      "notes": "Selected-bot compatibility surface. Exact alias proof refreshed by LUC-1659 on 2026-07-22."
     },
     {
       "id": "SOAR-PAGE-OFFLINE",
@@ -17296,7 +17296,7 @@
       "feature": "api-platform-safety",
       "description": "Residual API infrastructure tests for health readiness metrics security headers utility crypto and worker health ownership heartbeat config.",
       "file_path": "apps/api/src/router/health-readiness.test.ts",
-      "related_files": "apps/api/src/router/metrics.test.ts;apps/api/src/router/security-headers.test.ts;apps/api/src/router/workers-health-readiness.test.ts;apps/api/src/router/workers-runtime-freshness.test.ts;apps/api/src/utils/apiError.test.ts;apps/api/src/utils/crypto.test.ts;apps/api/src/workers/marketStreamWorkerConfig.test.ts;apps/api/src/workers/workerHeartbeat.test.ts;apps/api/src/workers/workerOwnership.test.ts",
+      "related_files": "apps/api/src/lib/releaseIdentity.test.ts;apps/api/src/router/metrics.test.ts;apps/api/src/router/release-identity-health.test.ts;apps/api/src/router/security-headers.test.ts;apps/api/src/router/workers-health-readiness.test.ts;apps/api/src/router/workers-runtime-freshness.test.ts;apps/api/src/utils/apiError.test.ts;apps/api/src/utils/crypto.test.ts;apps/api/src/workers/marketStreamWorkerConfig.test.ts;apps/api/src/workers/workerHeartbeat.test.ts;apps/api/src/workers/workerOwnership.test.ts",
       "parent_id": "SOAR-FEATURE-API-PLATFORM-SAFETY",
       "child_ids": "",
       "depends_on": "SOAR-ROUTER-API-ROOT;SOAR-LIB-ERRORS;SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS",

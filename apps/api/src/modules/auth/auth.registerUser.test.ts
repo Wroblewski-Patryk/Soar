@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { INVALID_CREDENTIALS_MESSAGE } from "./auth.errors";
+import { registerUser } from "./auth.service";
 
 const mocks = vi.hoisted(() => ({
   findUnique: vi.fn(),
@@ -32,8 +33,6 @@ vi.mock("../subscriptions/subscriptions.service", () => ({
   ensureSubscriptionCatalog: mocks.ensureSubscriptionCatalog,
   ensureDefaultSubscriptionForUser: mocks.ensureDefaultSubscriptionForUser,
 }));
-
-const { registerUser } = await import("./auth.service");
 
 describe("registerUser", () => {
   const createdUser = {

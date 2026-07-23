@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { INVALID_CREDENTIALS_MESSAGE } from "./auth.errors";
+import { loginUser } from "./auth.service";
 
 const mocks = vi.hoisted(() => ({
   findUnique: vi.fn(),
@@ -27,8 +28,6 @@ vi.mock("./auth.session", () => ({
 vi.mock("./auth.jwt", () => ({
   signAuthToken: mocks.signAuthToken,
 }));
-
-const { loginUser } = await import("./auth.service");
 
 describe("loginUser", () => {
   const dbUser = {

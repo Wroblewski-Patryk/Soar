@@ -115,6 +115,7 @@ describe('listBotRuntimeSessionTrades', () => {
 
   it('keeps trade reads scoped to the owned session and selected canonical symbol filters', async () => {
     const result = await listBotRuntimeSessionTrades('user-1', 'bot-1', 'session-1', {
+      limit: 5,
       symbol: 'btcusdt',
       side: 'BUY',
       action: 'OPEN',

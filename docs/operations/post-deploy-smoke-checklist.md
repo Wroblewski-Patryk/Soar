@@ -44,6 +44,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 1) API baseline
 - `GET /health` returns `200`.
+- `GET /health` reports `release.gitSha` equal to the exact 40-character
+  candidate SHA baked into the API image.
 - `GET /ready` returns `200`.
 - `GET /ready` implicitly verifies required runtime dependencies, including
   production Redis reachability.
@@ -82,6 +84,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 6) Workers and queue baseline
 - workers health/readiness is green,
+- protected `/workers/ready` reports a fresh heartbeat for every required
+  worker and every `releaseSha` equals the API candidate SHA; missing or mixed
+  release identities fail readiness during a rolling replacement,
 - no crash-loop in worker logs,
 - market/signal updates visible in runtime within expected interval.
 - Coolify Redis resource is `running:healthy`; Redis restart-count growth or

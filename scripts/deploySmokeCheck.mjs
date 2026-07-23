@@ -89,7 +89,13 @@ const authHeaders = buildOpsRequestHeaders({
 });
 
 const checks = [
-  { name: 'API /health', url: `${apiBase}/health`, method: 'GET', headers: authHeaders },
+  {
+    name: expectedSha ? `API /health (gitSha=${expectedSha})` : 'API /health',
+    url: `${apiBase}/health`,
+    method: 'GET',
+    headers: authHeaders,
+    expectReleaseSha: expectedSha || null,
+  },
   { name: 'API /ready', url: `${apiBase}/ready`, method: 'GET', headers: authHeaders },
   { name: 'WEB /', url: `${webBase}/`, method: 'GET' },
   {
@@ -107,6 +113,7 @@ if (requireWorkers) {
     method: 'GET',
     headers: authHeaders,
     expectReadyBody: true,
+    expectWorkerReleaseSha: expectedSha || null,
   });
 }
 
@@ -166,6 +173,30 @@ const runCheckAttempt = async (check) => {
           };
         }
         return { ok: true, detail: `${response.status} gitSha=${observedSha}` };
+      }
+      if (check.expectReleaseSha) {
+        const observedSha = typeof body?.release?.gitSha === 'string' ? body.release.gitSha.trim() : '';
+        if (observedSha !== check.expectReleaseSha) {
+          return {
+            ok: false,
+            detail: `${response.status} API release mismatch observed=${observedSha || 'missing'} expected=${check.expectReleaseSha}`,
+          };
+        }
+        return { ok: true, detail: `${response.status} gitSha=${observedSha}` };
+      }
+      if (check.expectWorkerReleaseSha) {
+        const heartbeats = Array.isArray(body?.heartbeats) ? body.heartbeats : [];
+        const mismatches = heartbeats.filter(
+          (heartbeat) => heartbeat?.releaseSha !== check.expectWorkerReleaseSha
+        );
+        if (heartbeats.length === 0 || mismatches.length > 0) {
+          const workers = mismatches.map((heartbeat) => heartbeat?.worker ?? 'unknown').join(',');
+          return {
+            ok: false,
+            detail: `${response.status} worker release mismatch workers=${workers || 'missing-heartbeats'} expected=${check.expectWorkerReleaseSha}`,
+          };
+        }
+        return { ok: true, detail: `${response.status} workers=${heartbeats.length} gitSha=${check.expectWorkerReleaseSha}` };
       }
       return { ok: true, detail: `${response.status}` };
     }
