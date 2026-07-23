@@ -185,6 +185,25 @@ const hasUsableVersionedKeyring = (value) => {
   });
 };
 
+const inferSingleKeyringVersion = (value) => {
+  const versions = new Set();
+
+  for (const entry of (value ?? '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)) {
+    const separatorIndex = entry.indexOf(':');
+    const version = separatorIndex > 0 ? entry.slice(0, separatorIndex).trim() : '';
+    const material = separatorIndex > 0 ? entry.slice(separatorIndex + 1).trim() : '';
+    if (!version || !material || looksWeakSecret(material, 32)) return null;
+    versions.add(version);
+    if (versions.size > 1) return null;
+  }
+
+  const [onlyVersion] = versions;
+  return onlyVersion ?? null;
+};
+
 const buildLocalReadinessEnv = ({
   env = process.env,
   readEnvValueImpl = readEnvValue,
@@ -193,8 +212,12 @@ const buildLocalReadinessEnv = ({
 } = {}) => {
   const overlay = {};
   const keyring = readConfiguredEnvValue('API_KEY_ENCRYPTION_KEYS', { env, readEnvValueImpl });
-  const activeVersion =
-    readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', { env, readEnvValueImpl }) || 'v1';
+  const configuredActiveVersion = readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', {
+    env,
+    readEnvValueImpl,
+  });
+  const inferredKeyringVersion = inferSingleKeyringVersion(keyring);
+  const activeVersion = configuredActiveVersion || inferredKeyringVersion || 'v1';
 
   if (!hasUsableVersionedKeyring(keyring)) {
     overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = activeVersion;
@@ -202,8 +225,8 @@ const buildLocalReadinessEnv = ({
     consoleImpl.log(
       '[backend/dev] Injected local-only API key encryption keyring for this process.'
     );
-  } else if (!readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', { env, readEnvValueImpl })) {
-    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+  } else if (!configuredActiveVersion && inferredKeyringVersion) {
+    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = inferredKeyringVersion;
   }
 
   return overlay;

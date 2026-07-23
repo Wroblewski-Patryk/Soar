@@ -192,6 +192,23 @@ test('buildLocalReadinessEnv preserves explicit strong keyrings', () => {
   assert.deepEqual(overlay, {});
 });
 
+test('buildLocalReadinessEnv infers a single non-v1 keyring version when active version is absent', () => {
+  const overlay = buildLocalReadinessEnv({
+    env: {
+      API_KEY_ENCRYPTION_KEYS: 'v3:generated-local-readiness-material-32-plus',
+    },
+    readEnvValueImpl: () => undefined,
+    randomBytes: () => {
+      throw new Error('random bytes should not be needed');
+    },
+    consoleImpl: { log: () => {} },
+  });
+
+  assert.deepEqual(overlay, {
+    API_KEY_ENCRYPTION_ACTIVE_VERSION: 'v3',
+  });
+});
+
 test('run exits with the failing command status', () => {
   const recorder = createExitRecorder();
 
