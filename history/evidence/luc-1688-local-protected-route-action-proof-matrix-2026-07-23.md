@@ -5,7 +5,7 @@
 - Result: **FAIL**
 - Environment: local-only
 - Evidence date: 2026-07-23
-- Generated at (UTC): 2026-07-23T00:21:00.984Z
+- Generated at (UTC): 2026-07-23T00:22:12.247Z
 - Raw JSON: `history\artifacts\luc-1688-local-protected-route-action-proof-matrix-2026-07-23.json`
 - Dynamic fixtures: disabled
 - Fixture API interception: enabled

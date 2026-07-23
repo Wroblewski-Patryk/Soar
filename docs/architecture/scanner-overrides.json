@@ -121,6 +121,17 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/markets/list/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified route:page-tsx:6cbd1c33d7 through the fresh LUC-1688 markets packet. The authenticated CTA attempt remained on /dashboard/markets/list, proving the exact list page was reached, and the focused list test passed its route-shell and canonical Create-link contract. The intercepted fixture did not render the CTA and that harness limitation remains explicit.",
+      "evidence": [
+        "history/evidence/luc-1688-dashboard-market-create-page-browser-review-2026-07-23.md",
+        "history/artifacts/luc-1688-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "apps/web/src/app/dashboard/markets/list/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

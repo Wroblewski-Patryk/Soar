@@ -33,6 +33,7 @@ apps/web/src/app/dashboard/bots/runtime/page.tsx,apps/web/src/app/dashboard/bots
 apps/web/src/app/dashboard/logs/page.tsx,apps/web/src/app/dashboard/logs/page.test.tsx,LUC-1684 direct dashboard logs route-shell relation to exact local browser proof
 apps/web/src/app/dashboard/markets/[id]/edit/page.tsx,apps/web/src/app/dashboard/markets/[id]/edit/page.test.tsx,LUC-1687 direct market edit route-shell relation to exact local browser proof
 apps/web/src/app/dashboard/markets/create/page.tsx,apps/web/src/app/dashboard/markets/create/page.test.tsx,LUC-1690 direct market create route-shell relation to exact local browser proof
+apps/web/src/app/dashboard/markets/list/page.tsx,apps/web/src/app/dashboard/markets/list/page.test.tsx,LUC-1691 direct market list route-shell relation to fresh authenticated local proof
 apps/web/src/app/dashboard/bots/create/page.tsx,apps/web/src/app/dashboard/bots/create/page.test.tsx,LUC-1670 direct bot create route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/new/page.tsx,apps/web/src/app/dashboard/bots/new/page.test.tsx,LUC-1674 direct bot new alias route-shell relation to exact local route proof
 apps/web/src/app/dashboard/bots/[id]/page.tsx,apps/web/src/app/dashboard/bots/[id]/page.test.tsx,LUC-1660 direct bot detail alias route-shell relation to existing local route proof
