@@ -1,3 +1,23 @@
+## 2026-07-23 LUC-1796 exact-candidate acceptance rerun closed SRG-002
+
+- Exact deployed sale-readiness candidate
+  `ca712e98b70e157b643db4f57726a02821a140bc` now has fresh QA rerun evidence
+  for public smoke, protected admin readback, worker identity/freshness,
+  authenticated browser/UI baseline, security fail-closed behavior, and one
+  approved paper-safe write path.
+- `SRG-002` is closed for the current candidate.
+- Remaining active sale-readiness blocker is only
+  [LUC-4103](/LUC/issues/LUC-4103) owner method selection and redacted owner
+  acceptance.
+- Residual note:
+  the broader fixture helper found a backtest report lifecycle still
+  `PENDING`; this did not invalidate the required single write baseline for
+  `SRG-002`, but it remains useful follow-up evidence if PM wants a broader
+  fixture-readiness lane.
+- Evidence:
+  `history/evidence/luc-1796-soar-v1-exact-candidate-acceptance-rerun-ca712e98-2026-07-23.md`;
+  `history/tasks/luc-1796-exact-candidate-sale-readiness-acceptance-rerun-2026-07-23-task.md`.
+
 ## 2026-07-23 LUC-1787 integrated next steps after child completion
 
 - Current exact sale-readiness candidate is

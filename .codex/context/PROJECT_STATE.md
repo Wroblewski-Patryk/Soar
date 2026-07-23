@@ -1,3 +1,53 @@
+## 2026-07-23 LUC-1800 source-control closure for LUC-1787-LUC-1796
+
+- Local source-control closure classified the current dirty tree as one
+  coherent sale-readiness docs/state/evidence packet for
+  [LUC-1787](/LUC/issues/LUC-1787) and [LUC-1796](/LUC/issues/LUC-1796).
+- Baseline before adding `LUC-1800` artifacts was `8` dirty paths:
+  `4` state/context, `1` planning-truth, `3` history evidence/tasks, and
+  `0` runtime/product-code paths.
+- `git diff --check` passed with only expected LF/CRLF warnings, and scoped
+  added-line redaction review found no secret-shaped values.
+- Disposition: one local source-control closure commit is valid for the full
+  packet; push held for batch; deploy impact none.
+- Evidence:
+  `history/evidence/luc-1800-source-control-closure-2026-07-23.md`;
+  `history/tasks/luc-1800-source-control-closure-classify-and-close-local-dirty-state-for-luc-1787-luc-1796-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1796 exact-candidate acceptance rerun
+
+- QVE executed the exact-candidate sale-readiness rerun for deployed
+  production SHA `ca712e98b70e157b643db4f57726a02821a140bc`.
+- Verified current-candidate proof:
+  public `/health -> 200`,
+  public `/ready -> 200`,
+  Web `/api/build-info -> 200` with `gitSha=ca712e98...`,
+  admin protected `/ready/details -> 200`,
+  protected `/workers/ready -> 200` with four worker heartbeats on
+  `releaseSha=ca712e98...`,
+  protected `/workers/runtime-freshness -> 200 PASS`,
+  production auth browser proof `PASS`,
+  production UI clickthrough `PASS`,
+  security fail-closed proof `PASS`,
+  and one approved paper-safe write path passed through manual paper limit
+  order open/readback/cancel/readback with cleanup.
+- Build-info provenance boundary remains explicit:
+  `metadataSource=env-runtime`.
+- Current sale-readiness consequence:
+  `SRG-002` is closed for the current candidate; Soar remains `NO-GO` only on
+  `SRG-003` owner acceptance through `LUC-4103`.
+- Residual:
+  the broader fixture action helper later stopped on a separate backtest
+  report lifecycle `PENDING` state. This is evidence-worthy but did not block
+  the single required paper-safe write baseline for `SRG-002`.
+- Evidence:
+  `history/evidence/luc-1796-soar-v1-exact-candidate-acceptance-rerun-ca712e98-2026-07-23.md`;
+  `history/tasks/luc-1796-exact-candidate-sale-readiness-acceptance-rerun-2026-07-23-task.md`;
+  `history/artifacts/luc-1796-prod-auth-session-browser-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-ui-module-clickthrough-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-security-exchange-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-fixture-action-proof-ca712e98-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1787 sale-readiness follow-up integrated after child completion
 
 - `LUC-1791`, `LUC-1792`, and `LUC-1793` are now terminal and their outputs are

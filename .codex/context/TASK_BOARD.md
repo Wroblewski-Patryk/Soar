@@ -1,3 +1,25 @@
+## 2026-07-23 LUC-1800 source-control closure for LUC-1787-LUC-1796
+
+- Status: `DONE / LOCAL_COMMIT_VALID / PUSH_HELD`.
+- Scope:
+  classify and close the local dirty sale-readiness packet after `LUC-1796`
+  produced new exact-candidate QA artifacts and `LUC-1787` synced the parent
+  contract/gap/state truth.
+- Dirty-tree baseline before `LUC-1800` artifacts:
+  `8` paths total:
+  `4` state/context,
+  `1` planning truth,
+  `3` history evidence/tasks,
+  `0` runtime/product-code,
+  `0` out-of-scope.
+- Closure decision:
+  the dirty set is one coherent `LUC-1787` plus `LUC-1796`
+  docs/state/evidence packet; `git diff --check` passed; no secret-shaped
+  values were introduced; one local closure commit is valid.
+- Evidence:
+  `history/evidence/luc-1800-source-control-closure-2026-07-23.md`;
+  `history/tasks/luc-1800-source-control-closure-classify-and-close-local-dirty-state-for-luc-1787-luc-1796-2026-07-23-task.md`.
+
 ## 2026-07-23 LUC-1787 child outputs integrated and next execution lane delegated
 
 - Status: `DONE_READY / NO-GO_REMAINS / LIVE_FOLLOW_UP_LANE_CREATED`.
@@ -22,6 +44,46 @@
   `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
   `history/evidence/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23.md`;
   `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`.
+
+## 2026-07-23 LUC-1796 exact-candidate sale-readiness acceptance rerun
+
+- Status: `DONE / SRG-002_CLOSED / OWNER_ACCEPTANCE_STILL_BLOCKING`.
+- Scope:
+  execute the exact-candidate QA sale-readiness rerun for deployed Soar
+  production candidate `ca712e98b70e157b643db4f57726a02821a140bc`.
+- Outcome:
+  exact public/protected smoke, worker identity/freshness, auth/browser proof,
+  UI clickthrough, security fail-closed checks, and one approved paper-safe
+  write path are now recorded for the deployed candidate.
+- Verified gate outcomes:
+  `/health -> 200` with `release.gitSha=ca712e98...`;
+  `/ready -> 200`;
+  Web `/api/build-info -> 200` with `gitSha=ca712e98...`,
+  `gitRef=main`, `metadataSource=env-runtime`;
+  admin `/ready/details -> 200`, `missingCount=0`, `issueCount=0`,
+  `noOrderGuardActive=true`;
+  `/workers/ready -> 200` with four worker heartbeats on
+  `releaseSha=ca712e98...`;
+  `/workers/runtime-freshness -> 200 PASS`;
+  production auth browser proof `PASS`;
+  production UI clickthrough `PASS`;
+  security fail-closed proof `PASS`;
+  manual paper limit order open/readback/cancel/readback with cleanup `PASS`.
+- Decision:
+  `SRG-002` is closed for current candidate `ca712e98...`.
+  Sale-readiness remains `NO-GO` only because owner acceptance remains open
+  under [LUC-4103](/LUC/issues/LUC-4103).
+- Residual:
+  the broader fixture helper later observed a separate backtest report
+  lifecycle `PENDING` state; this did not invalidate the required single
+  paper-safe write baseline for `SRG-002`.
+- Evidence:
+  `history/evidence/luc-1796-soar-v1-exact-candidate-acceptance-rerun-ca712e98-2026-07-23.md`;
+  `history/tasks/luc-1796-exact-candidate-sale-readiness-acceptance-rerun-2026-07-23-task.md`;
+  `history/artifacts/luc-1796-prod-auth-session-browser-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-ui-module-clickthrough-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-security-exchange-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-fixture-action-proof-ca712e98-2026-07-23.md`.
 
 ## 2026-07-23 LUC-1792 owner-acceptance and protected-proof gate review
 

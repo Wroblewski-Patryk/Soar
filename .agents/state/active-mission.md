@@ -1,3 +1,29 @@
+## 2026-07-23 LUC-1796 exact-candidate sale-readiness acceptance rerun complete
+
+- Status: `VERIFIED / SRG-002_CLOSED / SRG-003_REMAINS`.
+- Scope:
+  execute the exact-candidate QA sale-readiness rerun for deployed production
+  SHA `ca712e98b70e157b643db4f57726a02821a140bc`.
+- Outcome:
+  public smoke, protected admin readback, worker identity/freshness,
+  auth/browser proof, UI clickthrough, security fail-closed checks, and one
+  approved paper-safe write path were all proven for `ca712e98...`.
+- Current decision:
+  `SRG-002` is closed for the current exact candidate. Soar still remains
+  `NO-GO` only because owner acceptance under [LUC-4103](/LUC/issues/LUC-4103)
+  is still pending.
+- Important residual:
+  the broader fixture helper later observed a separate backtest report
+  lifecycle stall (`PENDING`), but the required single paper-safe write
+  baseline already passed and cleaned up safely in this lane.
+- Evidence:
+  `history/evidence/luc-1796-soar-v1-exact-candidate-acceptance-rerun-ca712e98-2026-07-23.md`;
+  `history/tasks/luc-1796-exact-candidate-sale-readiness-acceptance-rerun-2026-07-23-task.md`;
+  `history/artifacts/luc-1796-prod-auth-session-browser-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-ui-module-clickthrough-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-security-exchange-proof-ca712e98-2026-07-23.md`;
+  `history/artifacts/luc-1796-prod-fixture-action-proof-ca712e98-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1787 child outputs integrated and execution handoff created
 
 - Status: `DONE_READY / CONTRACT_INTEGRATED / NEXT_LANE_LIVE`.

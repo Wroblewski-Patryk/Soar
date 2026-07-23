@@ -100,32 +100,32 @@ If any gate is not `PASS`, the disposition remains `NO-GO`.
 
 Current decision for Thursday, July 23, 2026:
 
-`NO-GO / PROTECTED_ACCEPTANCE_PENDING / OWNER_ACCEPTANCE_PENDING`
+`NO-GO / SRG-002_CLOSED_FOR_CA712E98 / OWNER_ACCEPTANCE_PENDING`
 
 Why:
 
-- current exact candidate alignment is public for
-  `ca712e98b70e157b643db4f57726a02821a140bc`, but protected acceptance is not
-  yet rerun and recorded for this contract
+- current exact candidate acceptance rerun now records exact public smoke,
+  protected admin readback, worker freshness, auth/UI baseline, and one
+  approved paper-safe write path for
+  `ca712e98b70e157b643db4f57726a02821a140bc`
 - owner-login / owner-acceptance remains a live gated interaction path
 - owner acceptance still requires the approved `LUC-4103` method and matching
   principal-class proof; current protected proof does not replace that gate
-- supportability and protected acceptance are not yet refreshed for the exact
-  current candidate
+- release provenance still relies on current accepted diagnostic readback
+  (`metadataSource=env-runtime`), but `SRG-001` and `SRG-002` are both closed
+  for the current candidate
 
 ## Minimal Next Legal Lanes
 
-1. QA execution lane:
-   [LUC-1796](/LUC/issues/LUC-1796) exact-candidate acceptance rerun for
-   deployed candidate `ca712e98b70e157b643db4f57726a02821a140bc`.
-2. Owner-acceptance lane:
+1. Owner-acceptance lane:
    [LUC-4103](/LUC/issues/LUC-4103) remains the approved owner-verification
    method-selection and evidence path.
-3. Closed prerequisite lanes:
+2. Closed prerequisite lanes:
    [LUC-1791](/LUC/issues/LUC-1791) resolved release provenance for the current
    candidate; [LUC-1792](/LUC/issues/LUC-1792) confirmed the owner-acceptance
    boundary; [LUC-1793](/LUC/issues/LUC-1793) published the verification
-   matrix that `LUC-1796` now executes against the current candidate.
+   matrix; and [LUC-1796](/LUC/issues/LUC-1796) executed the current-candidate
+   acceptance rerun and closed `SRG-002`.
 
 ## Transition Rule Out Of 11 Innovation
 
