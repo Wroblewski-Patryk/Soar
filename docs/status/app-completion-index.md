@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-23T00:24:40.285Z
+Generated: 2026-07-23T00:28:27.602Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,19 +15,19 @@ Internal functions and modules are implementation details: they receive proof th
 
 - Items: 86
 - User flows: 7
-- Needs browser/screenshot review: 23
+- Needs browser/screenshot review: 22
 - Missing test link: 12
 - Missing doc link: 2
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 37
-- Priority review items indexed: 37/37
+- Known non-ok risk items: 36
+- Priority review items indexed: 36/36
 - Priority review truncated: false
 
 ## Flow Summary
 
-- Account access: 41 entities; risks {"ok":41}; gates {"auth":41,"subscription":3,"configuration":2}
-- Dashboard overview: 19 entities; risks {"ok":7,"needs_browser_review":12}; gates {"configuration":1}
+- Account access: 42 entities; risks {"ok":42}; gates {"auth":42,"subscription":3,"configuration":2}
+- Dashboard overview: 18 entities; risks {"ok":7,"needs_browser_review":11}; gates {"configuration":1}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
@@ -38,7 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/profile/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/reports/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/[id]/page.tsx | - |

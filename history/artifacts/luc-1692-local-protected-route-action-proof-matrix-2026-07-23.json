@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "today": "2026-07-23",
+  "generatedAt": "2026-07-23T00:27:36.457Z",
+  "issue": "LUC-1692",
+  "dynamicFixtures": {
+    "enabled": false,
+    "apiInterception": true,
+    "fixtureIds": []
+  },
+  "clusters": [
+    {
+      "name": "profile",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-PROFILE"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/profile/basic",
+        "PUT /dashboard/profile/basic",
+        "GET /dashboard/profile/apiKeys",
+        "POST /dashboard/profile/apiKeys",
+        "POST /dashboard/profile/apiKeys/:id/test",
+        "GET /dashboard/profile/subscription"
+      ],
+      "existingTests": [
+        "app/dashboard/profile/page.test.tsx",
+        "ApiKeysList.test.tsx",
+        "ApiKeyForm.test.tsx",
+        "apps/api/src/modules/profile/apiKeys.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-profile.md",
+        "docs/modules/api-profile.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-PROFILE",
+      "route": "/dashboard/profile",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected profile list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-PROFILE",
+      "route": "/dashboard/profile",
+      "result": "PASS",
+      "observedPath": "/dashboard/profile",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected profile route with local cookie gate"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/profile/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/profile/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/profile/pages/ProfilePage.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/profile/components/ApiKeysList.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/profile/components/ApiKeyForm.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-profile.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-profile.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}

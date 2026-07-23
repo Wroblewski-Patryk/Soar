@@ -132,6 +132,17 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/profile/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified route:page-tsx:10f9e10267 through LUC-1692. Focused profile route tests passed 2/2, unauthenticated access failed closed to /auth/login, and authenticated local access stayed on /dashboard/profile.",
+      "evidence": [
+        "history/artifacts/luc-1692-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "history/evidence/luc-1692-local-protected-route-action-proof-matrix-2026-07-23.md",
+        "apps/web/src/app/dashboard/profile/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
