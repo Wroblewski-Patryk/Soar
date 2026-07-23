@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T00:02:17.885Z",
+  "generatedAt": "2026-07-23T00:11:14.637Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,14 +7,14 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 26,
+    "needsBrowserReview": 25,
     "missingTestLink": 12,
     "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 40,
-    "appCompletionRiskItems": 40,
-    "priorityReviewItems": 40,
+    "riskItems": 39,
+    "appCompletionRiskItems": 39,
+    "priorityReviewItems": 39,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
@@ -43,8 +43,8 @@
       "userFlow": "Dashboard overview",
       "total": 21,
       "risks": {
-        "ok": 6,
-        "needs_browser_review": 15
+        "ok": 7,
+        "needs_browser_review": 14
       },
       "gates": {
         "configuration": 1
@@ -91,25 +91,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "route:page-tsx:854e882541",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/markets/[id]/edit/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 8,
-      "risk": "needs_browser_review"
-    },
     {
       "id": "route:page-tsx:220e4e1fa3",
       "type": "route",

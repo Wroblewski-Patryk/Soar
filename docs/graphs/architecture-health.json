@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-23T00:02:17.885Z",
+  "generated_at": "2026-07-23T00:11:14.637Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15511,
-    "relations": 43038,
+    "entities": 15524,
+    "relations": 43078,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5298,
+      "document": 5308,
       "feature": 291,
       "function": 5319,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1982,
+      "task": 1985,
       "test": 522
     },
     "by_status": {
       "blocked": 188,
       "deprecated": 10,
-      "implemented": 12496,
-      "in_progress": 28,
+      "implemented": 12505,
+      "in_progress": 31,
       "tested": 929,
-      "verified": 1860
+      "verified": 1861
     }
   },
   "signals": {
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 1720,
+      "count": 1719,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6453,10 +6453,10 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1446,
+      "count": 1445,
       "by_reason": {
         "config_only_file": 63,
-        "curated_graph_covered": 1263,
+        "curated_graph_covered": 1262,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -11086,7 +11086,7 @@
       ]
     },
     "raw_implementation_without_task": {
-      "count": 1734,
+      "count": 1733,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -12691,10 +12691,10 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 434,
+      "count": 433,
       "by_reason": {
         "config_only_file": 33,
-        "curated_graph_covered": 250,
+        "curated_graph_covered": 249,
         "historical_task_archive": 150,
         "top_level_app_mount": 1
       },

@@ -1,3 +1,30 @@
+## 2026-07-23 LUC-1686 dashboard market edit page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/markets/[id]/edit/page.tsx`
+  (`route:page-tsx:854e882541`) now has exact QA evidence for its generated
+  Dashboard overview browser-review row.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/markets/[id]/edit/page.test.tsx --reporter=verbose`
+  passed `1` file / `1` test and proved the page still loads the requested
+  market universe id, renders the canonical dashboard shell, and mounts the
+  shared edit form.
+- The authoritative browser proof for this heartbeat is the fresh same-day
+  `LUC-1686` local protected-route packet row:
+  `SOAR-ACTION-VISIT-PAGE-MARKET-EDIT` passed on
+  `/dashboard/markets/luc-2188-market/edit`.
+- The shared `markets` cluster packet also logged an unrelated list-page create
+  CTA failure (`SOAR-ACTION-VISIT-PAGE-MARKET-CREATE` -> `create/add button
+  not found`), so the cluster packet is not a full family-green markets proof.
+  This does not invalidate the exact edit-page route proof, but it leaves
+  separate follow-up risk on the markets list/create path.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md`;
+  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md`;
+  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json`.
+
 ## 2026-07-22 LUC-1683 dashboard logs page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/logs/page.tsx`

@@ -1,3 +1,28 @@
+## 2026-07-23 LUC-1686 prove dashboard overview needs-browser-review for dashboard-markets-id-edit-page-tsx
+
+- Status: `DONE`.
+- Scope:
+  QA-owned exact browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on
+  `apps/web/src/app/dashboard/markets/[id]/edit/page.tsx`
+  (`route:page-tsx:854e882541`).
+- Outcome:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/markets/[id]/edit/page.test.tsx --reporter=verbose`
+  passed (`1` file, `1` test), proving the market edit route still loads the
+  expected universe id, renders the canonical dashboard title/breadcrumb
+  shell, and mounts `MarketUniverseForm` in edit mode. A fresh same-day local
+  protected-route packet then recorded the exact target row
+  `SOAR-ACTION-VISIT-PAGE-MARKET-EDIT` as `PASS` on
+  `/dashboard/markets/luc-2188-market/edit`. The shared `markets` cluster also
+  surfaced an unrelated create CTA failure
+  (`SOAR-ACTION-VISIT-PAGE-MARKET-CREATE`: `create/add button not found`),
+  which remains separate follow-up work and does not block the exact edit-page
+  proof.
+- Evidence:
+  `history/tasks/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23-task.md`;
+  `history/evidence/luc-1686-dashboard-market-edit-page-browser-review-2026-07-23.md`;
+  `history/artifacts/luc-1686-local-protected-route-action-proof-matrix-2026-07-23.json`.
+
 ## 2026-07-22 LUC-1683 prove dashboard overview needs-browser-review for src-app-dashboard-logs-page-tsx
 
 - Status: `DONE`.
