@@ -1,3 +1,25 @@
+## 2026-07-22 LUC-1683 dashboard logs page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/logs/page.tsx`
+  (`route:page-tsx:5dc8509354`) now has exact QA evidence for the generated
+  Dashboard overview browser-review row.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/logs/page.test.tsx --reporter=verbose`
+  passed `1` file / `1` test and proved the page still renders the canonical
+  logs shell with `AuditTrailView`.
+- The authoritative browser proof for this heartbeat is the fresh same-day
+  `LUC-1683` local protected-route packet:
+  `SOAR-ACTION-VISIT-PAGE-LOGS` passed on `/dashboard/logs` with expected
+  unauthenticated fail-closed redirect to `/auth/login` and authenticated pass
+  at `/dashboard/logs`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1683-dashboard-logs-page-browser-review-2026-07-22.md`;
+  `history/tasks/luc-1683-dashboard-logs-page-browser-review-2026-07-22-task.md`;
+  `history/artifacts/luc-1683-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1680 dashboard bots runtime helper proof ingest
 
 - `apps/web/src/app/dashboard/bots/runtime/page.tsx`

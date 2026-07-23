@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T23:46:54.137Z",
+  "generatedAt": "2026-07-23T00:02:17.885Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,26 +7,26 @@
   "counts": {
     "items": 86,
     "flows": 7,
-    "needsBrowserReview": 27,
+    "needsBrowserReview": 26,
     "missingTestLink": 12,
     "missingDocLink": 2,
     "implementedNeedsProof": 0,
     "blocked": 0,
-    "riskItems": 41,
-    "appCompletionRiskItems": 41,
-    "priorityReviewItems": 41,
+    "riskItems": 40,
+    "appCompletionRiskItems": 40,
+    "priorityReviewItems": 40,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": false
   },
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 38,
+      "total": 39,
       "risks": {
-        "ok": 38
+        "ok": 39
       },
       "gates": {
-        "auth": 38,
+        "auth": 39,
         "subscription": 3,
         "configuration": 2
       }
@@ -41,10 +41,10 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "total": 22,
+      "total": 21,
       "risks": {
         "ok": 6,
-        "needs_browser_review": 16
+        "needs_browser_review": 15
       },
       "gates": {
         "configuration": 1
@@ -91,25 +91,6 @@
     }
   ],
   "priorityReviewItems": [
-    {
-      "id": "route:page-tsx:5dc8509354",
-      "type": "route",
-      "kind": "screen_or_route",
-      "name": "page.tsx",
-      "path": "apps/web/src/app/dashboard/logs/page.tsx",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Dashboard overview",
-      "gates": [],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": true,
-        "needsScreenshotReview": true
-      },
-      "relatedEntityCount": 5,
-      "risk": "needs_browser_review"
-    },
     {
       "id": "route:page-tsx:854e882541",
       "type": "route",

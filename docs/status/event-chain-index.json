@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T23:46:54.137Z",
+  "generatedAt": "2026-07-23T00:02:17.885Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5470,
-      "linkedRelationCount": 22795,
+      "entityCount": 5485,
+      "linkedRelationCount": 22847,
       "layers": {
         "frontend": {
-          "count": 262,
+          "count": 267,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 789,
+          "count": 790,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4232,
+          "count": 4240,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 186,
+          "count": 187,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -3564,11 +3564,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 1028,
-      "linkedRelationCount": 3627,
+      "entityCount": 1038,
+      "linkedRelationCount": 3668,
       "layers": {
         "frontend": {
-          "count": 372,
+          "count": 375,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4214,7 +4214,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 165,
+          "count": 166,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4797,8 +4797,8 @@
               "type": "route",
               "name": "page.tsx",
               "path": "apps/web/src/app/dashboard/logs/page.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:page-tsx:854e882541",
@@ -4860,7 +4860,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 382,
+          "count": 388,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -13064,11 +13064,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13349,
-      "linkedRelationCount": 39747,
+      "entityCount": 13362,
+      "linkedRelationCount": 39798,
       "layers": {
         "frontend": {
-          "count": 1476,
+          "count": 1479,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -13714,7 +13714,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1682,
+          "count": 1683,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14360,7 +14360,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9356,
+          "count": 9365,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

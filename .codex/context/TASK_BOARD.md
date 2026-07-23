@@ -1,3 +1,24 @@
+## 2026-07-22 LUC-1683 prove dashboard overview needs-browser-review for src-app-dashboard-logs-page-tsx
+
+- Status: `DONE`.
+- Scope:
+  QA-owned exact browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/logs/page.tsx`
+  (`route:page-tsx:5dc8509354`).
+- Outcome:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/logs/page.test.tsx --reporter=verbose`
+  passed (`1` file, `1` test), proving the logs route still renders the
+  canonical dashboard title/breadcrumb shell and mounts `AuditTrailView`. A
+  fresh same-day protected-route packet was then generated with
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1683 --today 2026-07-22 --clusters logs --intercept-fixture-api`,
+  and the exact `SOAR-ACTION-VISIT-PAGE-LOGS` rows passed for both expected
+  states: unauthenticated fail-closed to `/auth/login` and authenticated pass
+  to `/dashboard/logs`.
+- Evidence:
+  `history/tasks/luc-1683-dashboard-logs-page-browser-review-2026-07-22-task.md`;
+  `history/evidence/luc-1683-dashboard-logs-page-browser-review-2026-07-22.md`;
+  `history/artifacts/luc-1683-local-protected-route-action-proof-matrix-2026-07-22.json`.
+
 ## 2026-07-22 LUC-1680 ingest dashboard bots runtime helper proof
 
 - Status: `DONE`.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T23:46:54.137Z",
+  "generatedAt": "2026-07-23T00:02:17.885Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,14 +9,14 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 41,
-    "indexedAppCompletionGaps": 41,
-    "knownAppCompletionRiskItems": 41,
-    "appCompletionPriorityReviewItems": 41,
+    "appCompletionGaps": 40,
+    "indexedAppCompletionGaps": 40,
+    "knownAppCompletionRiskItems": 40,
+    "appCompletionPriorityReviewItems": 40,
     "appCompletionPriorityReviewTruncated": false,
     "operationalGateGaps": 0,
-    "indexedGaps": 41,
-    "totalGaps": 41
+    "indexedGaps": 40,
+    "totalGaps": 40
   },
   "firstGap": {
     "kind": "app_completion_gap",
@@ -26,25 +26,12 @@
     "nextOwner": "QA Regression Lead + Frontend Experience Lead",
     "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
     "evidence": [
-      "apps/web/src/app/dashboard/logs/page.tsx"
+      "apps/web/src/app/dashboard/markets/[id]/edit/page.tsx"
     ],
-    "sourceItemId": "route:page-tsx:5dc8509354",
+    "sourceItemId": "route:page-tsx:854e882541",
     "risk": "needs_browser_review"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "high",
-      "userFlow": "Dashboard overview",
-      "summary": "Dashboard overview: page.tsx has app-completion risk needs_browser_review.",
-      "nextOwner": "QA Regression Lead + Frontend Experience Lead",
-      "nextAction": "Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.",
-      "evidence": [
-        "apps/web/src/app/dashboard/logs/page.tsx"
-      ],
-      "sourceItemId": "route:page-tsx:5dc8509354",
-      "risk": "needs_browser_review"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "high",

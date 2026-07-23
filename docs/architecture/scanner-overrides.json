@@ -82,6 +82,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/logs/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified the exact dashboard logs route wrapper for route:page-tsx:5dc8509354 through the fresh LUC-1683 local browser packet on 2026-07-22. The focused logs page test passed, authenticated protected-route proof stayed on /dashboard/logs, and the paired unauthenticated row passed by failing closed to /auth/login.",
+      "evidence": [
+        "history/tasks/luc-1683-dashboard-logs-page-browser-review-2026-07-22-task.md",
+        "history/evidence/luc-1683-dashboard-logs-page-browser-review-2026-07-22.md",
+        "history/evidence/luc-1683-local-protected-route-action-proof-matrix-2026-07-22.md",
+        "history/artifacts/luc-1683-local-protected-route-action-proof-matrix-2026-07-22.json",
+        "apps/web/src/app/dashboard/logs/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

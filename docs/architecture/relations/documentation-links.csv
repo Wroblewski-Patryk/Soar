@@ -73,6 +73,7 @@ apps/web/src/features/bots/utils/trailingStopDisplay.ts,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/assistant/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/runtime/page.tsx,docs/modules/web-bots.md
+apps/web/src/app/dashboard/logs/page.tsx,docs/modules/web-logs.md
 apps/web/src/app/dashboard/bots/new/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/[id]/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx,docs/modules/web-bots.md
