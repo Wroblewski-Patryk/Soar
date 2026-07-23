@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-23T00:13:57.635Z
+Generated: 2026-07-23T00:22:49.377Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5308 |
+| document | 5314 |
 | feature | 291 |
 | function | 5319 |
 | migration | 57 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1985 |
+| task | 1986 |
 | test | 522 |
 
 ## Counts By Status
@@ -28,23 +28,23 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 188 |
 | deprecated | 10 |
-| implemented | 12505 |
+| implemented | 12510 |
 | in_progress | 31 |
 | tested | 929 |
-| verified | 1861 |
+| verified | 1863 |
 
 ## Health Signals
 
 - Raw implementation entities without inferred tests: 3794
 - Actionable implementation entities without inferred tests: 2548
-- Raw implementation entities without inferred docs: 1719
+- Raw implementation entities without inferred docs: 1718
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1445
+- Classified inferred-link noise: 1444
 - Raw tasks without architecture links: 150
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 1733
+- Raw implementation entities without task links: 1732
 - Actionable implementation entities without task links: 1450
-- Classified task-linkage noise: 433
+- Classified task-linkage noise: 432
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1262
+- curated_graph_covered: 1261
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -187,7 +187,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Task-Linkage Noise
 
 - config_only_file: 33
-- curated_graph_covered: 249
+- curated_graph_covered: 248
 - historical_task_archive: 150
 - top_level_app_mount: 1
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 92, relation entries: 97).
-- Override summary: excluded files 0, entity overrides 92, relation overrides 97, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 93, relation entries: 97).
+- Override summary: excluded files 0, entity overrides 93, relation overrides 97, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

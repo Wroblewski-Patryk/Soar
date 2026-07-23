@@ -108,6 +108,19 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/markets/create/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified route:page-tsx:220e4e1fa3 through LUC-1688: fresh authenticated /dashboard/markets/create proof passed and focused create/list route tests passed 2/2. The intercepted list fixture did not render its CTA, recorded separately as a harness limitation.",
+      "evidence": [
+        "history/tasks/luc-1688-dashboard-market-create-page-browser-review-2026-07-23-task.md",
+        "history/evidence/luc-1688-dashboard-market-create-page-browser-review-2026-07-23.md",
+        "history/artifacts/luc-1688-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "apps/web/src/app/dashboard/markets/create/page.test.tsx",
+        "apps/web/src/app/dashboard/markets/list/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",
