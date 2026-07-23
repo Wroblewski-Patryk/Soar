@@ -155,6 +155,34 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "LUC-1699 focused tests and dynamic fixture browser proof passed for the exact strategy edit route.",
+      "evidence": ["history/artifacts/luc-1699-dynamic-local-protected-route-action-proof-matrix-2026-07-23.json", "apps/web/src/app/dashboard/strategies/[id]/edit/page.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "LUC-1699 focused redirect test and dynamic fixture proof passed from the exact strategy detail route to its canonical edit route.",
+      "evidence": ["history/artifacts/luc-1699-dynamic-local-protected-route-action-proof-matrix-2026-07-23.json", "apps/web/src/app/dashboard/strategies/[id]/page.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/create/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "LUC-1699 focused create test, direct authenticated route, and list CTA click all passed.",
+      "evidence": ["history/artifacts/luc-1699-local-protected-route-action-proof-matrix-2026-07-23.json", "apps/web/src/app/dashboard/strategies/create/page.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/list/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "LUC-1699 focused list test and authenticated list browser proof passed.",
+      "evidence": ["history/artifacts/luc-1699-local-protected-route-action-proof-matrix-2026-07-23.json", "apps/web/src/app/dashboard/strategies/list/page.test.tsx"]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

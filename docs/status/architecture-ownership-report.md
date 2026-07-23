@@ -1,6 +1,6 @@
 # Ownership Report
 
-Generated: 2026-07-23T00:33:17.456Z
+Generated: 2026-07-23T00:36:29.878Z
 
 | Owner | Entities | Planned | In Progress | Implemented | Tested | Verified | Blocked | Deprecated |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -10,7 +10,7 @@ Generated: 2026-07-23T00:33:17.456Z
 | Engineering Delivery Lead | 14394 | 0 | 30 | 11471 | 929 | 1771 | 187 | 6 |
 | Frontend Web Engineer | 3 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
 | Integration Domain Engineer | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| QA Regression Lead | 39 | 0 | 0 | 0 | 0 | 39 | 0 | 0 |
+| QA Regression Lead | 43 | 0 | 0 | 0 | 0 | 43 | 0 | 0 |
 | QA Verification Engineer | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 0 |
 | Soar Project Manager | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 | Test Automation Engineer | 42 | 0 | 0 | 0 | 0 | 42 | 0 | 0 |

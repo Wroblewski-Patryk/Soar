@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-23T00:33:17.456Z
+Generated: 2026-07-23T00:36:29.878Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -15,20 +15,20 @@ Internal functions and modules are implementation details: they receive proof th
 
 - Items: 86
 - User flows: 7
-- Needs browser/screenshot review: 21
+- Needs browser/screenshot review: 17
 - Missing test link: 12
 - Missing doc link: 2
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 35
-- Priority review items indexed: 35/35
+- Known non-ok risk items: 31
+- Priority review items indexed: 31/31
 - Priority review truncated: false
 
 ## Flow Summary
 
-- Account access: 43 entities; risks {"ok":43}; gates {"auth":43,"subscription":3,"configuration":2}
+- Account access: 45 entities; risks {"ok":45}; gates {"auth":45,"subscription":3,"configuration":2}
 - Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
-- Dashboard overview: 17 entities; risks {"ok":7,"needs_browser_review":10}; gates {"configuration":1}
+- Dashboard overview: 15 entities; risks {"ok":9,"needs_browser_review":6}; gates {"configuration":1}
 - Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
 - Exchange connection and configuration: 1 entities; risks {"needs_browser_review":1}; gates {"configuration":1}
@@ -38,10 +38,6 @@ Internal functions and modules are implementation details: they receive proof th
 
 | User flow | Risk | Kind | Entity | Owner | Path | Gates |
 | --- | --- | --- | --- | --- | --- | --- |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx | - |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/[id]/page.tsx | - |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/create/page.tsx | - |
-| Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/strategies/list/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/wallets/[id]/edit/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/wallets/[id]/page.tsx | - |
 | Dashboard overview | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/dashboard/wallets/[id]/preview/page.tsx | - |

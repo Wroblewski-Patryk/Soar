@@ -36,6 +36,10 @@ apps/web/src/app/dashboard/markets/create/page.tsx,apps/web/src/app/dashboard/ma
 apps/web/src/app/dashboard/markets/list/page.tsx,apps/web/src/app/dashboard/markets/list/page.test.tsx,LUC-1691 direct market list route-shell relation to fresh authenticated local proof
 apps/web/src/app/dashboard/profile/page.tsx,apps/web/src/app/dashboard/profile/page.test.tsx,LUC-1692 direct dashboard profile route-shell relation to fresh local browser proof
 apps/web/src/app/dashboard/reports/page.tsx,apps/web/src/app/dashboard/reports/page.test.tsx,LUC-1694 direct dashboard reports route-shell relation to successful retry proof
+apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx,apps/web/src/app/dashboard/strategies/[id]/edit/page.test.tsx,LUC-1699 strategy edit exact proof
+apps/web/src/app/dashboard/strategies/[id]/page.tsx,apps/web/src/app/dashboard/strategies/[id]/page.test.tsx,LUC-1699 strategy detail redirect exact proof
+apps/web/src/app/dashboard/strategies/create/page.tsx,apps/web/src/app/dashboard/strategies/create/page.test.tsx,LUC-1699 strategy create exact proof
+apps/web/src/app/dashboard/strategies/list/page.tsx,apps/web/src/app/dashboard/strategies/list/page.test.tsx,LUC-1699 strategy list exact proof
 apps/web/src/app/dashboard/bots/create/page.tsx,apps/web/src/app/dashboard/bots/create/page.test.tsx,LUC-1670 direct bot create route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/new/page.tsx,apps/web/src/app/dashboard/bots/new/page.test.tsx,LUC-1674 direct bot new alias route-shell relation to exact local route proof
 apps/web/src/app/dashboard/bots/[id]/page.tsx,apps/web/src/app/dashboard/bots/[id]/page.test.tsx,LUC-1660 direct bot detail alias route-shell relation to existing local route proof

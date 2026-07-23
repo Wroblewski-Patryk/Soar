@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-23T00:33:17.456Z
+Generated: 2026-07-23T00:36:29.878Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 5325 |
+| document | 5329 |
 | feature | 291 |
 | function | 5319 |
 | migration | 57 |
@@ -31,15 +31,15 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | implemented | 12518 |
 | in_progress | 31 |
 | tested | 929 |
-| verified | 1867 |
+| verified | 1871 |
 
 ## Health Signals
 
 - Raw implementation entities without inferred tests: 3794
 - Actionable implementation entities without inferred tests: 2548
-- Raw implementation entities without inferred docs: 1718
+- Raw implementation entities without inferred docs: 1715
 - Actionable implementation entities without inferred docs: 1450
-- Classified inferred-link noise: 1444
+- Classified inferred-link noise: 1441
 - Raw tasks without architecture links: 150
 - Actionable tasks without architecture links: 0
 - Raw implementation entities without task links: 1732
@@ -137,7 +137,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 63
-- curated_graph_covered: 1261
+- curated_graph_covered: 1258
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -238,6 +238,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
 - Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
-- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 96, relation entries: 97).
-- Override summary: excluded files 0, entity overrides 96, relation overrides 97, critical entities tagged 0.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 100, relation entries: 97).
+- Override summary: excluded files 0, entity overrides 100, relation overrides 97, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

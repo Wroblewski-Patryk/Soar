@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "today": "2026-07-23",
+  "generatedAt": "2026-07-23T00:35:22.413Z",
+  "issue": "LUC-1699-dynamic",
+  "dynamicFixtures": {
+    "enabled": true,
+    "apiInterception": true,
+    "fixtureIds": [
+      "luc-2188-strategy"
+    ]
+  },
+  "clusters": [
+    {
+      "name": "strategies",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-STRATEGY-ID-ROOT",
+        "SOAR-ACTION-VISIT-PAGE-STRATEGY-EDIT"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/strategies",
+        "POST /dashboard/strategies",
+        "GET /dashboard/strategies/:id",
+        "PUT /dashboard/strategies/:id",
+        "DELETE /dashboard/strategies/:id",
+        "GET /dashboard/strategies/indicators",
+        "POST /dashboard/strategies/import",
+        "GET /dashboard/strategies/:id/export"
+      ],
+      "existingTests": [
+        "app/dashboard/strategies/list/page.test.tsx",
+        "app/dashboard/strategies/create/page.test.tsx",
+        "app/dashboard/strategies/[id]/page.test.tsx",
+        "app/dashboard/strategies/[id]/edit/page.test.tsx",
+        "StrategiesList.test.tsx",
+        "StrategyForm.test.tsx",
+        "apps/api/src/modules/strategies/strategies.e2e.test.ts",
+        "apps/api/src/modules/strategies/indicators/indicators.service.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-strategies.md",
+        "docs/modules/api-strategies.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-STRATEGIES-LIST",
+      "route": "/dashboard/strategies/list",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected strategies list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-STRATEGY-ID-ROOT",
+      "route": "/dashboard/strategies/luc-2188-strategy",
+      "result": "PASS",
+      "observedPath": "/dashboard/strategies/luc-2188-strategy/edit",
+      "statusCode": 307,
+      "fixtureId": "luc-2188-strategy",
+      "fixtureKind": "strategy",
+      "notes": "redirect reached expected route through local HTTP fixture-id proof"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-STRATEGY-EDIT",
+      "route": "/dashboard/strategies/luc-2188-strategy/edit",
+      "result": "PASS",
+      "observedPath": "/dashboard/strategies/luc-2188-strategy/edit",
+      "statusCode": 200,
+      "fixtureId": "luc-2188-strategy",
+      "fixtureKind": "strategy",
+      "notes": "route reached expected route through local HTTP fixture-id proof"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-STRATEGY-CREATE",
+      "route": "strategies list-page add action",
+      "result": "PASS",
+      "observedPath": "/dashboard/strategies/create",
+      "notes": "clicked create/add action (Create), expected create route"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/strategies/list/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/create/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/strategies/components/StrategiesList.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/strategies/components/StrategyForm.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/strategies/[id]/edit/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-strategies.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-strategies.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}
