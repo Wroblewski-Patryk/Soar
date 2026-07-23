@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-23T00:39:47.330Z",
+  "generated_at": "2026-07-23T00:51:39.929Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 15551,
-    "relations": 43172,
+    "entities": 15554,
+    "relations": 43222,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 5333,
+      "document": 5334,
       "feature": 291,
       "function": 5319,
       "migration": 57,
@@ -20,37 +20,21 @@
       "project": 1,
       "route": 355,
       "task": 1987,
-      "test": 522
+      "test": 524
     },
     "by_status": {
       "blocked": 188,
       "deprecated": 10,
-      "implemented": 12516,
+      "implemented": 12506,
       "in_progress": 31,
-      "tested": 929,
-      "verified": 1877
+      "tested": 931,
+      "verified": 1888
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 3794,
+      "count": 3782,
       "items": [
-        {
-          "id": "api_endpoint:use-avatars:1e1c441a3a",
-          "type": "api_endpoint",
-          "name": "USE /avatars",
-          "path": "apps/api/src/index.ts#/avatars",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-webhooks-stripe:b502d56cea",
-          "type": "api_endpoint",
-          "name": "USE /webhooks/stripe",
-          "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "api_endpoint:get:6708703663",
           "type": "api_endpoint",
@@ -60,90 +44,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "api_endpoint:use-subscriptions-plans:b5026ab209",
-          "type": "api_endpoint",
-          "name": "USE /subscriptions/plans",
-          "path": "apps/api/src/router/admin.routes.ts#/subscriptions/plans",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "api_endpoint:use-backtests:1db01efff8",
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-profile-subscription:e9d8631f88",
-          "type": "api_endpoint",
-          "name": "USE /profile/subscription",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get:ec3f1b71d9",
-          "type": "api_endpoint",
-          "name": "GET /",
-          "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-health:ba01ef0056",
-          "type": "api_endpoint",
-          "name": "GET /health",
-          "path": "apps/api/src/router/index.ts#/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-ready:5f58f81b1e",
-          "type": "api_endpoint",
-          "name": "GET /ready",
-          "path": "apps/api/src/router/index.ts#/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-ready-details:2eb3ce564e",
-          "type": "api_endpoint",
-          "name": "GET /ready/details",
-          "path": "apps/api/src/router/index.ts#/ready/details",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-upload:59c4f6ed00",
-          "type": "api_endpoint",
-          "name": "USE /upload",
-          "path": "apps/api/src/router/index.ts#/upload",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-health:f2ac053027",
-          "type": "api_endpoint",
-          "name": "GET /workers/health",
-          "path": "apps/api/src/router/index.ts#/workers/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-ready:7a43033f4b",
-          "type": "api_endpoint",
-          "name": "GET /workers/ready",
-          "path": "apps/api/src/router/index.ts#/workers/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-runtime-freshness:cb5ccf9adb",
-          "type": "api_endpoint",
-          "name": "GET /workers/runtime-freshness",
-          "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1634,92 +1538,108 @@
           "path": "apps/web/src/i18n/namespaces/public.en.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-pl-ts:c8d4146c3d",
+          "type": "feature",
+          "name": "public.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/public.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-pt-ts:c36b7211c9",
+          "type": "feature",
+          "name": "public.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/public.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:clonenaming-ts:401f99e2cc",
+          "type": "feature",
+          "name": "cloneNaming.ts",
+          "path": "apps/web/src/lib/cloneNaming.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:storage-ts:a05fe5490a",
+          "type": "feature",
+          "name": "storage.ts",
+          "path": "apps/web/src/lib/storage.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:symbols-ts:c373fcbc03",
+          "type": "feature",
+          "name": "symbols.ts",
+          "path": "apps/web/src/lib/symbols.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:text-ts:cb6cccaefb",
+          "type": "feature",
+          "name": "text.ts",
+          "path": "apps/web/src/lib/text.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:time-ts:5c9cc0ad22",
+          "type": "feature",
+          "name": "time.ts",
+          "path": "apps/web/src/lib/time.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:index-ts:e10f7ccccc",
+          "type": "feature",
+          "name": "index.ts",
+          "path": "apps/web/src/ui/components/loading/index.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:tabcontentframe-ts:b8de24c977",
+          "type": "feature",
+          "name": "tabContentFrame.ts",
+          "path": "apps/web/src/ui/components/tabContentFrame.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:index-ts:224fc49d4a",
+          "type": "feature",
+          "name": "index.ts",
+          "path": "apps/web/src/ui/forms/index.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboardroutes-ts:44436f65d6",
+          "type": "feature",
+          "name": "dashboardRoutes.ts",
+          "path": "apps/web/src/ui/layout/dashboard/dashboardRoutes.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:index-js:f6716b7db6",
+          "type": "feature",
+          "name": "index.js",
+          "path": "libs/shared/index.js",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 1709,
+      "count": 1691,
       "items": [
-        {
-          "id": "api_endpoint:use-avatars:1e1c441a3a",
-          "type": "api_endpoint",
-          "name": "USE /avatars",
-          "path": "apps/api/src/index.ts#/avatars",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-webhooks-stripe:b502d56cea",
-          "type": "api_endpoint",
-          "name": "USE /webhooks/stripe",
-          "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get:ec3f1b71d9",
-          "type": "api_endpoint",
-          "name": "GET /",
-          "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-health:ba01ef0056",
-          "type": "api_endpoint",
-          "name": "GET /health",
-          "path": "apps/api/src/router/index.ts#/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-ready:5f58f81b1e",
-          "type": "api_endpoint",
-          "name": "GET /ready",
-          "path": "apps/api/src/router/index.ts#/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-ready-details:2eb3ce564e",
-          "type": "api_endpoint",
-          "name": "GET /ready/details",
-          "path": "apps/api/src/router/index.ts#/ready/details",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:use-upload:59c4f6ed00",
-          "type": "api_endpoint",
-          "name": "USE /upload",
-          "path": "apps/api/src/router/index.ts#/upload",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-health:f2ac053027",
-          "type": "api_endpoint",
-          "name": "GET /workers/health",
-          "path": "apps/api/src/router/index.ts#/workers/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-ready:7a43033f4b",
-          "type": "api_endpoint",
-          "name": "GET /workers/ready",
-          "path": "apps/api/src/router/index.ts#/workers/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "api_endpoint:get-workers-runtime-freshness:cb5ccf9adb",
-          "type": "api_endpoint",
-          "name": "GET /workers/runtime-freshness",
-          "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "component:backtestcreateform-tsx:b19562d0a5",
           "type": "component",
@@ -1749,14 +1669,6 @@
           "type": "component",
           "name": "BacktestsList.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestsList.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:backtestslistview-tsx:9b6433612a",
-          "type": "component",
-          "name": "BacktestsListView.tsx",
-          "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1821,22 +1733,6 @@
           "type": "component",
           "name": "RuntimeOnboardingSection.tsx",
           "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:exchangeconnectionsview-tsx:620fe34b65",
-          "type": "component",
-          "name": "ExchangeConnectionsView.tsx",
-          "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:audittrailview-tsx:d8e8d81fa3",
-          "type": "component",
-          "name": "AuditTrailView.tsx",
-          "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3237,6 +3133,110 @@
           "type": "model",
           "name": "Ec",
           "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ec",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:el:d7438a7c09",
+          "type": "model",
+          "name": "El",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#El",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:er:ee4d70b794",
+          "type": "model",
+          "name": "er",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#er",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:er:bdcfbe281c",
+          "type": "model",
+          "name": "Er",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Er",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:extends:e874b9fd81",
+          "type": "model",
+          "name": "extends",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#extends",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:fa:c75bf31fd2",
+          "type": "model",
+          "name": "fa",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#fa",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:fi:03b43030cf",
+          "type": "model",
+          "name": "fi",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#fi",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:fl:63b55c96de",
+          "type": "model",
+          "name": "Fl",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Fl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:fr:cb25177420",
+          "type": "model",
+          "name": "fr",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#fr",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:fr:ca5998d76d",
+          "type": "model",
+          "name": "Fr",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Fr",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ga:2e9152d2bc",
+          "type": "model",
+          "name": "ga",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#ga",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:ga:c9798679f6",
+          "type": "model",
+          "name": "Ga",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Ga",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:gl:51eabce91f",
+          "type": "model",
+          "name": "gl",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#gl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "model:gl:03e78640b9",
+          "type": "model",
+          "name": "Gl",
+          "path": ".tmp/luc-1227-modal-1784081534559/Default/Extensions/fheoggkfdfchfphceeifdbepaooicaho/8.1.0.9425_0/background.js#Gl",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6453,32 +6453,13 @@
       ]
     },
     "classified_inferred_link_noise": {
-      "count": 1435,
+      "count": 1415,
       "by_reason": {
-        "config_only_file": 63,
-        "curated_graph_covered": 1252,
-        "test_fixture_function": 119,
-        "top_level_app_mount": 1
+        "config_only_file": 62,
+        "curated_graph_covered": 1234,
+        "test_fixture_function": 119
       },
       "items": [
-        {
-          "id": "api_endpoint:use-avatars:1e1c441a3a",
-          "type": "api_endpoint",
-          "name": "USE /avatars",
-          "path": "apps/api/src/index.ts#/avatars",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "top_level_app_mount"
-        },
-        {
-          "id": "api_endpoint:use-webhooks-stripe:b502d56cea",
-          "type": "api_endpoint",
-          "name": "USE /webhooks/stripe",
-          "path": "apps/api/src/index.ts#/webhooks/stripe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
         {
           "id": "api_endpoint:get:6708703663",
           "type": "api_endpoint",
@@ -6489,100 +6470,10 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:use-subscriptions-plans:b5026ab209",
-          "type": "api_endpoint",
-          "name": "USE /subscriptions/plans",
-          "path": "apps/api/src/router/admin.routes.ts#/subscriptions/plans",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:use-backtests:1db01efff8",
           "type": "api_endpoint",
           "name": "USE /backtests",
           "path": "apps/api/src/router/dashboard.routes.ts#/backtests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-profile-subscription:e9d8631f88",
-          "type": "api_endpoint",
-          "name": "USE /profile/subscription",
-          "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get:ec3f1b71d9",
-          "type": "api_endpoint",
-          "name": "GET /",
-          "path": "apps/api/src/router/index.ts#/",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-health:ba01ef0056",
-          "type": "api_endpoint",
-          "name": "GET /health",
-          "path": "apps/api/src/router/index.ts#/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-ready:5f58f81b1e",
-          "type": "api_endpoint",
-          "name": "GET /ready",
-          "path": "apps/api/src/router/index.ts#/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-ready-details:2eb3ce564e",
-          "type": "api_endpoint",
-          "name": "GET /ready/details",
-          "path": "apps/api/src/router/index.ts#/ready/details",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:use-upload:59c4f6ed00",
-          "type": "api_endpoint",
-          "name": "USE /upload",
-          "path": "apps/api/src/router/index.ts#/upload",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-workers-health:f2ac053027",
-          "type": "api_endpoint",
-          "name": "GET /workers/health",
-          "path": "apps/api/src/router/index.ts#/workers/health",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-workers-ready:7a43033f4b",
-          "type": "api_endpoint",
-          "name": "GET /workers/ready",
-          "path": "apps/api/src/router/index.ts#/workers/ready",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "api_endpoint:get-workers-runtime-freshness:cb5ccf9adb",
-          "type": "api_endpoint",
-          "name": "GET /workers/runtime-freshness",
-          "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -8257,6 +8148,114 @@
           "type": "function",
           "name": "resolveEffectiveMaxCandlesFromSeed",
           "path": "apps/api/src/modules/backtests/backtestRange.service.ts#resolveEffectiveMaxCandlesFromSeed",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resolvereplaysymbolsfortimeline:6729985623",
+          "type": "function",
+          "name": "resolveReplaySymbolsForTimeline",
+          "path": "apps/api/src/modules/backtests/backtestRange.service.ts#resolveReplaySymbolsForTimeline",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resolverequestedmaxcandles:dd2987770d",
+          "type": "function",
+          "name": "resolveRequestedMaxCandles",
+          "path": "apps/api/src/modules/backtests/backtestRange.service.ts#resolveRequestedMaxCandles",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resolvetimelineendtimems:5d126879a6",
+          "type": "function",
+          "name": "resolveTimelineEndTimeMs",
+          "path": "apps/api/src/modules/backtests/backtestRange.service.ts#resolveTimelineEndTimeMs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:aspercent:5efb5e1646",
+          "type": "function",
+          "name": "asPercent",
+          "path": "apps/api/src/modules/backtests/backtestReplayCore.ts#asPercent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:assignedpercent:34e8db1cfb",
+          "type": "function",
+          "name": "asSignedPercent",
+          "path": "apps/api/src/modules/backtests/backtestReplayCore.ts#asSignedPercent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:pushevent:7bf03fc3e1",
+          "type": "function",
+          "name": "pushEvent",
+          "path": "apps/api/src/modules/backtests/backtestReplayCore.ts#pushEvent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:resolvereplaydcaprobeprice:8ec1f9a263",
+          "type": "function",
+          "name": "resolveReplayDcaProbePrice",
+          "path": "apps/api/src/modules/backtests/backtestReplayCore.ts#resolveReplayDcaProbePrice",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:settletoaccount:44902b02b3",
+          "type": "function",
+          "name": "settleToAccount",
+          "path": "apps/api/src/modules/backtests/backtestReplayCore.ts#settleToAccount",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:buildrunlifecyclepayload:5ce5d593ce",
+          "type": "function",
+          "name": "buildRunLifecyclePayload",
+          "path": "apps/api/src/modules/backtests/backtestReportLifecycle.service.ts#buildRunLifecyclePayload",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:ismissingbacktestreportparenterror:106df4c939",
+          "type": "function",
+          "name": "isMissingBacktestReportParentError",
+          "path": "apps/api/src/modules/backtests/backtestReportLifecycle.service.ts#isMissingBacktestReportParentError",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:ismissingrunupdateerror:2d5a4ed160",
+          "type": "function",
+          "name": "isMissingRunUpdateError",
+          "path": "apps/api/src/modules/backtests/backtestReportLifecycle.service.ts#isMissingRunUpdateError",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:isterminalbackteststatus:10271aed1b",
+          "type": "function",
+          "name": "isTerminalBacktestStatus",
+          "path": "apps/api/src/modules/backtests/backtestReportLifecycle.service.ts#isTerminalBacktestStatus",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -11205,8 +11204,8 @@
           "type": "component",
           "name": "BacktestsListView.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "QA Regression Lead"
         },
         {
           "id": "component:backtestsrunstable-tsx:88fa31ad19",
@@ -11277,16 +11276,16 @@
           "type": "component",
           "name": "ExchangeConnectionsView.tsx",
           "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "QA Regression Lead"
         },
         {
           "id": "component:audittrailview-tsx:d8e8d81fa3",
           "type": "component",
           "name": "AuditTrailView.tsx",
           "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "QA Regression Lead"
         },
         {
           "id": "component:marketuniversestable-tsx:d384e3ade4",
@@ -14180,8 +14179,8 @@
           "type": "component",
           "name": "BacktestsListView.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "QA Regression Lead",
           "reason": "curated_graph_covered"
         },
         {
@@ -14261,8 +14260,8 @@
           "type": "component",
           "name": "ExchangeConnectionsView.tsx",
           "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "QA Regression Lead",
           "reason": "curated_graph_covered"
         },
         {
@@ -14270,8 +14269,8 @@
           "type": "component",
           "name": "AuditTrailView.tsx",
           "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "QA Regression Lead",
           "reason": "curated_graph_covered"
         },
         {

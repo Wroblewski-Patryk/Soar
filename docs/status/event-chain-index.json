@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T00:39:47.330Z",
+  "generatedAt": "2026-07-23T00:51:39.929Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5521,
-      "linkedRelationCount": 22949,
+      "entityCount": 5549,
+      "linkedRelationCount": 23054,
       "layers": {
         "frontend": {
-          "count": 288,
+          "count": 310,
           "sample": [
             {
               "id": "task:task:084f907397",
@@ -345,6 +345,182 @@
               "status": "tested"
             },
             {
+              "id": "function:backtestslistview:8ac466ae63",
+              "type": "function",
+              "name": "BacktestsListView",
+              "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx#BacktestsListView",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "component:backtestsrunstable-tsx:88fa31ad19",
+              "type": "component",
+              "name": "BacktestsRunsTable.tsx",
+              "path": "apps/web/src/features/backtest/components/BacktestsRunsTable.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "component:i18nprovider-tsx:e2b655d80e",
+              "type": "component",
+              "name": "I18nProvider.tsx",
+              "path": "apps/web/src/i18n/I18nProvider.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "feature:backtests-service-ts:97b9d3c31b",
+              "type": "feature",
+              "name": "backtests.service.ts",
+              "path": "apps/web/src/features/backtest/services/backtests.service.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "model:backtest-type-ts:7d0bc32f1e",
+              "type": "model",
+              "name": "backtest.type.ts",
+              "path": "apps/web/src/features/backtest/types/backtest.type.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:backtestslistview-test-tsx:76565cbcd5",
+              "type": "test",
+              "name": "BacktestsListView.test.tsx",
+              "path": "apps/web/src/features/backtest/components/BacktestsListView.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:exchangeconnectionsview:ac1f61b1c1",
+              "type": "function",
+              "name": "ExchangeConnectionsView",
+              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx#ExchangeConnectionsView",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "component:apikeyslist-tsx:4f6a218c63",
+              "type": "component",
+              "name": "ApiKeysList.tsx",
+              "path": "apps/web/src/features/profile/components/ApiKeysList.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:exchangeconnectionsview-test-tsx:c456e5044c",
+              "type": "test",
+              "name": "ExchangeConnectionsView.test.tsx",
+              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:audittrailview:8d764aff29",
+              "type": "function",
+              "name": "AuditTrailView",
+              "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#AuditTrailView",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "function:rendermetadata:3892569e61",
+              "type": "function",
+              "name": "renderMetadata",
+              "path": "apps/web/src/features/logs/components/AuditTrailView.tsx#renderMetadata",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "component:viewstate-tsx:3ff6a5410f",
+              "type": "component",
+              "name": "ViewState.tsx",
+              "path": "apps/web/src/ui/components/ViewState.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "feature:index-ts:e10f7ccccc",
+              "type": "feature",
+              "name": "index.ts",
+              "path": "apps/web/src/ui/components/loading/index.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "feature:logs-service-ts:2dbed3acdd",
+              "type": "feature",
+              "name": "logs.service.ts",
+              "path": "apps/web/src/features/logs/services/logs.service.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "feature:uselocaleformatting-ts:35610219de",
+              "type": "feature",
+              "name": "useLocaleFormatting.ts",
+              "path": "apps/web/src/i18n/useLocaleFormatting.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "model:log-type-ts:ea457e7a17",
+              "type": "model",
+              "name": "log.type.ts",
+              "path": "apps/web/src/features/logs/types/log.type.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:audittrailview-test-tsx:3f5fa87cdd",
+              "type": "test",
+              "name": "AuditTrailView.test.tsx",
+              "path": "apps/web/src/features/logs/components/AuditTrailView.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
+              "id": "function:avg:c45e741db6",
+              "type": "function",
+              "name": "avg",
+              "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx#avg",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "function:performancereportsview:0db6eb7b60",
+              "type": "function",
+              "name": "PerformanceReportsView",
+              "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx#PerformanceReportsView",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "feature:reports-service-ts:5e2a303fca",
+              "type": "feature",
+              "name": "reports.service.ts",
+              "path": "apps/web/src/features/reports/services/reports.service.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "task:task:2026ed0dbb",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/frontend-engine-ux-dca-sweep-2026-05-21-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "test:performancereportsview-test-tsx:5bf8c5d26b",
+              "type": "test",
+              "name": "PerformanceReportsView.test.tsx",
+              "path": "apps/web/src/features/reports/components/PerformanceReportsView.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "document:adminuserspage:6ca2775777",
               "type": "document",
               "name": "AdminUsersPage",
@@ -479,188 +655,12 @@
               "path": "history/tasks/luc-1027-registerpage-frontend-proof-2026-07-14-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:task:0f51b036ae",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1240-admin-users-page-browser-review-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:643e09718e",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1249-account-access-admin-users-page-doc-link-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:9dcca38d68",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1259-adminuserspage-browser-review-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:d25f3004cb",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-baseline-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:93aac75f30",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1261-adminuserspage-missing-doc-link-closeout-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:c52288056c",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-1264-adminuserspage-feature-doc-link-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task-luc-1265-clear-stale-adminuserspage-project-truth-emission:c471927123",
-              "type": "document",
-              "name": "Task: LUC-1265 clear stale AdminUsersPage project-truth emission",
-              "path": "history/tasks/luc-1265-stale-adminuserspage-project-truth-refresh-2026-07-15-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:adminusers-service-ts:2c986a3e0d",
-              "type": "feature",
-              "name": "adminUsers.service.ts",
-              "path": "apps/web/src/features/admin/users/services/adminUsers.service.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:adminuser-type-ts:72f1246ef1",
-              "type": "model",
-              "name": "adminUser.type.ts",
-              "path": "apps/web/src/features/admin/users/types/adminUser.type.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:usehydrationready-test-tsx:cb9f4ce3bf",
-              "type": "test",
-              "name": "useHydrationReady.test.tsx",
-              "path": "apps/web/src/features/auth/hooks/useHydrationReady.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:submithandler:f8af7ee0f1",
-              "type": "function",
-              "name": "submitHandler",
-              "path": "apps/web/src/features/auth/hooks/useLoginForm.ts#submitHandler",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:useloginform:15e6d962d0",
-              "type": "function",
-              "name": "useLoginForm",
-              "path": "apps/web/src/features/auth/hooks/useLoginForm.ts#useLoginForm",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:auth-service-ts:6429778519",
-              "type": "feature",
-              "name": "auth.service.ts",
-              "path": "apps/web/src/features/auth/services/auth.service.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:handleerror-ts:25b3290b5e",
-              "type": "feature",
-              "name": "handleError.ts",
-              "path": "apps/web/src/lib/handleError.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "deprecated"
-            },
-            {
-              "id": "model:form-types-ts:6581f36e32",
-              "type": "model",
-              "name": "form.types.ts",
-              "path": "apps/web/src/features/auth/types/form.types.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:useloginform-test-tsx:ea02932ca2",
-              "type": "test",
-              "name": "useLoginForm.test.tsx",
-              "path": "apps/web/src/features/auth/hooks/useLoginForm.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:submithandler:f266552c9e",
-              "type": "function",
-              "name": "submitHandler",
-              "path": "apps/web/src/features/auth/hooks/useRegisterForm.ts#submitHandler",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:useregisterform:2e41daf74b",
-              "type": "function",
-              "name": "useRegisterForm",
-              "path": "apps/web/src/features/auth/hooks/useRegisterForm.ts#useRegisterForm",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:useregisterform-test-tsx:d2fdbd5330",
-              "type": "test",
-              "name": "useRegisterForm.test.tsx",
-              "path": "apps/web/src/features/auth/hooks/useRegisterForm.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:loginuser:b188f87cc5",
-              "type": "function",
-              "name": "loginUser",
-              "path": "apps/web/src/features/auth/services/auth.service.ts#loginUser",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:registeruser:d1e75aa549",
-              "type": "function",
-              "name": "registerUser",
-              "path": "apps/web/src/features/auth/services/auth.service.ts#registerUser",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "feature:useuser-ts:f4e0ed924e",
-              "type": "feature",
-              "name": "useUser.ts",
-              "path": "apps/web/src/features/profile/hooks/useUser.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 799,
+          "count": 805,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -2053,6 +2053,38 @@
               "status": "implemented"
             },
             {
+              "id": "document:web-deep-dive-backtest-module:b0342286e3",
+              "type": "document",
+              "name": "Web Deep-Dive: Backtest Module",
+              "path": "docs/modules/web-backtest.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:web-deep-dive-profile-module:9c39e1a357",
+              "type": "document",
+              "name": "Web Deep-Dive: Profile Module",
+              "path": "docs/modules/web-profile.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:web-deep-dive-logs-module:8832cab32b",
+              "type": "document",
+              "name": "Web Deep-Dive: Logs Module",
+              "path": "docs/modules/web-logs.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:web-deep-dive-reports-module:2ce2e56731",
+              "type": "document",
+              "name": "Web Deep-Dive: Reports Module",
+              "path": "docs/modules/web-reports.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:auth-session-deep-chain:f7d5fd2ef8",
               "type": "document",
               "name": "Auth session deep chain",
@@ -2571,38 +2603,6 @@
               "path": "docs/modules/api-backtests.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:web-deep-dive-profile-module:9c39e1a357",
-              "type": "document",
-              "name": "Web Deep-Dive: Profile Module",
-              "path": "docs/modules/web-profile.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:web-deep-dive-admin-module:62c6205d4d",
-              "type": "document",
-              "name": "Web Deep-Dive: Admin Module",
-              "path": "docs/modules/web-admin.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:web-deep-dive-backtest-module:b0342286e3",
-              "type": "document",
-              "name": "Web Deep-Dive: Backtest Module",
-              "path": "docs/modules/web-backtest.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:web-deep-dive-bots-module:4f5a41c32f",
-              "type": "document",
-              "name": "Web Deep-Dive: Bots Module",
-              "path": "docs/modules/web-bots.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 114,
-      "linkedRelationCount": 389,
+      "entityCount": 116,
+      "linkedRelationCount": 394,
       "layers": {
         "frontend": {
           "count": 30,
@@ -2865,7 +2865,7 @@
           "truncated": false
         },
         "backend": {
-          "count": 30,
+          "count": 32,
           "sample": [
             {
               "id": "api_endpoint:get:6708703663",
@@ -2940,10 +2940,26 @@
               "status": "verified"
             },
             {
+              "id": "route:adminsubscriptionspage-tsx:c2ebfe2546",
+              "type": "route",
+              "name": "AdminSubscriptionsPage.tsx",
+              "path": "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
               "id": "route:adminuserspage-tsx:784aa77abb",
               "type": "route",
               "name": "AdminUsersPage.tsx",
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "route:page-tsx:118688d807",
+              "type": "route",
+              "name": "page.tsx",
+              "path": "apps/web/src/app/admin/subscriptions/page.tsx",
               "owner": "QA Regression Lead",
               "status": "verified"
             },
@@ -3564,11 +3580,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 1055,
-      "linkedRelationCount": 3748,
+      "entityCount": 1058,
+      "linkedRelationCount": 3755,
       "layers": {
         "frontend": {
-          "count": 384,
+          "count": 386,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -4214,7 +4230,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 167,
+          "count": 168,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -6169,52 +6185,12 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 818,
-      "linkedRelationCount": 3016,
+      "entityCount": 816,
+      "linkedRelationCount": 3009,
       "layers": {
         "frontend": {
-          "count": 28,
+          "count": 26,
           "sample": [
-            {
-              "id": "component:exchangeconnectionsview-tsx:620fe34b65",
-              "type": "component",
-              "name": "ExchangeConnectionsView.tsx",
-              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:exchangeconnectionsview:ac1f61b1c1",
-              "type": "function",
-              "name": "ExchangeConnectionsView",
-              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx#ExchangeConnectionsView",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "component:apikeyslist-tsx:4f6a218c63",
-              "type": "component",
-              "name": "ApiKeysList.tsx",
-              "path": "apps/web/src/features/profile/components/ApiKeysList.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "module:apps-web-src:cde25d2b80",
-              "type": "module",
-              "name": "apps/web/src",
-              "path": "apps/web/src",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:exchangeconnectionsview-test-tsx:c456e5044c",
-              "type": "test",
-              "name": "ExchangeConnectionsView.test.tsx",
-              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
             {
               "id": "feature:exchangecapabilities-ts:cc55e0b30d",
               "type": "feature",
@@ -6228,6 +6204,14 @@
               "type": "function",
               "name": "supportsExchangeCapability",
               "path": "apps/web/src/features/exchanges/exchangeCapabilities.ts#supportsExchangeCapability",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "module:apps-web-src:cde25d2b80",
+              "type": "module",
+              "name": "apps/web/src",
+              "path": "apps/web/src",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             },
@@ -6278,6 +6262,22 @@
               "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "function:exchangeconnectionsview:ac1f61b1c1",
+              "type": "function",
+              "name": "ExchangeConnectionsView",
+              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx#ExchangeConnectionsView",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:exchangeconnectionsview-test-tsx:c456e5044c",
+              "type": "test",
+              "name": "ExchangeConnectionsView.test.tsx",
+              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.test.tsx",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "function:handleexchangechange:a76acbc42d",
@@ -6405,14 +6405,6 @@
         "backend": {
           "count": 300,
           "sample": [
-            {
-              "id": "route:profilepage-tsx:f1dab93865",
-              "type": "route",
-              "name": "ProfilePage.tsx",
-              "path": "apps/web/src/features/profile/pages/ProfilePage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
             {
               "id": "task:task:facc8f06f1",
               "type": "task",
@@ -7042,6 +7034,14 @@
               "type": "function",
               "name": "buildCatalogCacheKey",
               "path": "apps/api/src/modules/exchange/exchangeMarketCatalog.service.ts#buildCatalogCacheKey",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "route:exchangemarketcatalog-service-ts:730059fca1",
+              "type": "route",
+              "name": "exchangeMarketCatalog.service.ts",
+              "path": "apps/api/src/modules/exchange/exchangeMarketCatalog.service.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -8358,8 +8358,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 939,
-      "linkedRelationCount": 3523,
+      "entityCount": 941,
+      "linkedRelationCount": 3546,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8595,6 +8595,14 @@
               "status": "implemented"
             },
             {
+              "id": "test:stripewebhook-e2e-test-ts:0730df08d9",
+              "type": "test",
+              "name": "stripeWebhook.e2e.test.ts",
+              "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:use-subscriptions-plans:b5026ab209",
               "type": "api_endpoint",
               "name": "USE /subscriptions/plans",
@@ -8609,6 +8617,14 @@
               "path": "apps/api/src/router/admin.routes.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:subscriptionplans-e2e-test-ts:3684329575",
+              "type": "test",
+              "name": "subscriptionPlans.e2e.test.ts",
+              "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "api_endpoint:use-profile-subscription:e9d8631f88",
@@ -8627,12 +8643,20 @@
               "status": "implemented"
             },
             {
+              "id": "test:subscription-e2e-test-ts:474147ab9c",
+              "type": "test",
+              "name": "subscription.e2e.test.ts",
+              "path": "apps/api/src/modules/profile/subscription/subscription.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "route:profilepage-tsx:f1dab93865",
               "type": "route",
               "name": "ProfilePage.tsx",
               "path": "apps/web/src/features/profile/pages/ProfilePage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "document:admin-subscription-plans-controller:1d274a1685",
@@ -8759,8 +8783,8 @@
               "type": "route",
               "name": "AdminSubscriptionsPage.tsx",
               "path": "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:adminuserspage-tsx:784aa77abb",
@@ -8799,14 +8823,6 @@
               "type": "function",
               "name": "createAdminAgent",
               "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts#createAdminAgent",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "test:subscriptionplans-e2e-test-ts:3684329575",
-              "type": "test",
-              "name": "subscriptionPlans.e2e.test.ts",
-              "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
             },
@@ -8993,14 +9009,6 @@
               "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "test:stripewebhook-e2e-test-ts:0730df08d9",
-              "type": "test",
-              "name": "stripeWebhook.e2e.test.ts",
-              "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             },
             {
               "id": "function:getstripewebhooksecret:071f4ed28e",
@@ -9199,14 +9207,6 @@
               "type": "route",
               "name": "subscriptions.service.ts",
               "path": "apps/api/src/modules/subscriptions/subscriptions.service.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:buildsubscriptionfingerprint:beabe833d7",
-              "type": "function",
-              "name": "buildSubscriptionFingerprint",
-              "path": "apps/api/src/workers/marketStream.worker.ts#buildSubscriptionFingerprint",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }
@@ -9870,8 +9870,24 @@
           "truncated": false
         },
         "docs": {
-          "count": 72,
+          "count": 74,
           "sample": [
+            {
+              "id": "document:api-deep-dive-subscriptions-module:d31bd221bb",
+              "type": "document",
+              "name": "API Deep-Dive: Subscriptions Module",
+              "path": "docs/modules/api-subscriptions.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-profile-module:fe29e29088",
+              "type": "document",
+              "name": "API Deep-Dive: Profile Module",
+              "path": "docs/modules/api-profile.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
             {
               "id": "document:10-safety-entitlements-and-risk:4f433d7625",
               "type": "document",
@@ -10081,14 +10097,6 @@
               "status": "deprecated"
             },
             {
-              "id": "document:api-deep-dive-subscriptions-module:d31bd221bb",
-              "type": "document",
-              "name": "API Deep-Dive: Subscriptions Module",
-              "path": "docs/modules/api-subscriptions.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
               "id": "document:subscription-admin-billing-provider-runbook:4d54fee7f5",
               "type": "document",
               "name": "Subscription Admin + Billing Provider Runbook",
@@ -10229,6 +10237,14 @@
               "type": "document",
               "name": "Work Package Template",
               "path": "docs/planning/work-package-template.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:web-deep-dive-admin-module:62c6205d4d",
+              "type": "document",
+              "name": "Web Deep-Dive: Admin Module",
+              "path": "docs/modules/web-admin.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             },
@@ -10459,11 +10475,11 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4102,
-      "linkedRelationCount": 13387,
+      "entityCount": 4104,
+      "linkedRelationCount": 13403,
       "layers": {
         "frontend": {
-          "count": 405,
+          "count": 404,
           "sample": [
             {
               "id": "component:botcreateeditform-tsx:07797ad8f9",
@@ -11109,7 +11125,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1342,
+          "count": 1345,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11216,6 +11232,14 @@
               "status": "implemented"
             },
             {
+              "id": "test:workers-health-readiness-test-ts:c6cbe2e242",
+              "type": "test",
+              "name": "workers-health-readiness.test.ts",
+              "path": "apps/api/src/router/workers-health-readiness.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:get-workers-ready:7a43033f4b",
               "type": "api_endpoint",
               "name": "GET /workers/ready",
@@ -11230,6 +11254,14 @@
               "path": "apps/api/src/router/index.ts#/workers/runtime-freshness",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:workers-runtime-freshness-test-ts:13fe3f5a15",
+              "type": "test",
+              "name": "workers-runtime-freshness.test.ts",
+              "path": "apps/api/src/router/workers-runtime-freshness.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "feature:usebotsassistantcontroller-ts:6f3fa4133e",
@@ -11733,22 +11765,6 @@
               "name": "listRuntimePositionStrategies",
               "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionStrategies",
               "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:listruntimepositiontraderows:b47a76c5a0",
-              "type": "function",
-              "name": "listRuntimePositionTradeRows",
-              "path": "apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#listRuntimePositionTradeRows",
-              "owner": "Test Automation Engineer",
-              "status": "verified"
-            },
-            {
-              "id": "function:registerandlogin:d16ee9a69d",
-              "type": "function",
-              "name": "registerAndLogin",
-              "path": "apps/api/src/modules/bots/bots.e2e.shared.ts#registerAndLogin",
-              "owner": "QA Regression Lead",
               "status": "verified"
             }
           ],
@@ -12414,6 +12430,14 @@
           "count": 208,
           "sample": [
             {
+              "id": "document:service-reliability-and-observability:ed864dc06a",
+              "type": "document",
+              "name": "Service Reliability And Observability",
+              "path": "docs/operations/service-reliability-and-observability.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
               "type": "document",
               "name": "Web Deep-Dive: Shared Feature Helpers",
@@ -13044,14 +13068,6 @@
               "path": "docs/architecture/nodes/SOAR-SERVICE-MARKET-DATA.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:markets-service:b9908c2b8c",
-              "type": "document",
-              "name": "Markets service",
-              "path": "docs/architecture/nodes/SOAR-SERVICE-MARKETS.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -13064,11 +13080,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13402,
-      "linkedRelationCount": 39932,
+      "entityCount": 13405,
+      "linkedRelationCount": 39982,
       "layers": {
         "frontend": {
-          "count": 1488,
+          "count": 1485,
           "sample": [
             {
               "id": "task:task:0b53f47ce7",
@@ -13714,7 +13730,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1694,
+          "count": 1700,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14117,12 +14133,28 @@
               "status": "implemented"
             },
             {
+              "id": "document:api-deep-dive-root-and-operations-routes:9fa51581f3",
+              "type": "document",
+              "name": "API Deep-Dive: Root And Operations Routes",
+              "path": "docs/modules/api-root.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "route:index-ts:48515efd20",
               "type": "route",
               "name": "index.ts",
               "path": "apps/api/src/index.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:security-headers-test-ts:117a281436",
+              "type": "test",
+              "name": "security-headers.test.ts",
+              "path": "apps/api/src/router/security-headers.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "api_endpoint:get:ec3f1b71d9",
@@ -14139,6 +14171,14 @@
               "path": "apps/api/src/router/index.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "test:root-health-test-ts:9054e75cf6",
+              "type": "test",
+              "name": "root-health.test.ts",
+              "path": "apps/api/src/router/root-health.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
             },
             {
               "id": "api_endpoint:get-alerts:1897f480e5",
@@ -14189,6 +14229,22 @@
               "status": "implemented"
             },
             {
+              "id": "document:deployment-readiness-gates-web-api-workers:cdf49c0bf9",
+              "type": "document",
+              "name": "Deployment Readiness Gates (Web/API/Workers)",
+              "path": "docs/operations/deployment-readiness-gates.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "test:health-readiness-test-ts:a92bb75a1a",
+              "type": "test",
+              "name": "health-readiness.test.ts",
+              "path": "apps/api/src/router/health-readiness.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "api_endpoint:get-ready-details:2eb3ce564e",
               "type": "api_endpoint",
               "name": "GET /ready/details",
@@ -14205,12 +14261,28 @@
               "status": "implemented"
             },
             {
+              "id": "test:upload-e2e-test-ts:e644376e43",
+              "type": "test",
+              "name": "upload.e2e.test.ts",
+              "path": "apps/api/src/modules/upload/upload.e2e.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "route:strategies-api-ts:9d2b78b543",
               "type": "route",
               "name": "strategies.api.ts",
               "path": "apps/web/src/features/strategies/api/strategies.api.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "component:backtestslistview-tsx:9b6433612a",
+              "type": "component",
+              "name": "BacktestsListView.tsx",
+              "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "function:detectroutepath:df86a4b559",
@@ -14242,6 +14314,22 @@
               "name": "V1UI-03 Public Access Header Route Contract",
               "path": "history/tasks/v1ui-03-public-access-header-route-contract-task-2026-05-07.md",
               "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "component:audittrailview-tsx:d8e8d81fa3",
+              "type": "component",
+              "name": "AuditTrailView.tsx",
+              "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "component:performancereportsview-tsx:bb1b010dc7",
+              "type": "component",
+              "name": "PerformanceReportsView.tsx",
+              "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx",
+              "owner": "QA Regression Lead",
               "status": "verified"
             },
             {
@@ -14281,80 +14369,8 @@
               "type": "route",
               "name": "ProfilePage.tsx",
               "path": "apps/web/src/features/profile/pages/ProfilePage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:registerpage-tsx:61822becff",
-              "type": "route",
-              "name": "RegisterPage.tsx",
-              "path": "apps/web/src/features/auth/pages/RegisterPage.tsx",
               "owner": "QA Regression Lead",
               "status": "verified"
-            },
-            {
-              "id": "test:i18nprovider-route-loading-test-tsx:879f70138e",
-              "type": "test",
-              "name": "I18nProvider.route-loading.test.tsx",
-              "path": "apps/web/src/i18n/I18nProvider.route-loading.test.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "route:layout-tsx:8e5e923156",
-              "type": "route",
-              "name": "layout.tsx",
-              "path": "apps/web/src/app/layout.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:positionmanagement-types-ts:bcf1b4c0ff",
-              "type": "model",
-              "name": "positionManagement.types.ts",
-              "path": "apps/api/src/modules/engine/positionManagement.types.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:runtimepositionautomation-types-ts:a89435b9fa",
-              "type": "model",
-              "name": "runtimePositionAutomation.types.ts",
-              "path": "apps/api/src/modules/engine/runtimePositionAutomation.types.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:runtimepositionstatestore:0eb3d546cd",
-              "type": "model",
-              "name": "RuntimePositionStateStore",
-              "path": "apps/api/src/modules/engine/runtimePositionState.store.ts#RuntimePositionStateStore",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:simulator-types-ts:1cafa4264a",
-              "type": "model",
-              "name": "simulator.types.ts",
-              "path": "apps/api/src/modules/engine/simulator.types.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:lifecyclecloseparity-golden-ts:934a40bf56",
-              "type": "route",
-              "name": "lifecycleCloseParity.golden.ts",
-              "path": "apps/api/src/modules/engine/fixtures/lifecycleCloseParity.golden.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "model:runtimesignalmarketdatagateway:7720bbb943",
-              "type": "model",
-              "name": "RuntimeSignalMarketDataGateway",
-              "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#RuntimeSignalMarketDataGateway",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -15019,6 +15035,22 @@
           "count": 834,
           "sample": [
             {
+              "id": "document:service-reliability-and-observability:ed864dc06a",
+              "type": "document",
+              "name": "Service Reliability And Observability",
+              "path": "docs/operations/service-reliability-and-observability.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:api-deep-dive-profile-module:fe29e29088",
+              "type": "document",
+              "name": "API Deep-Dive: Profile Module",
+              "path": "docs/modules/api-profile.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
               "type": "document",
               "name": "Web Deep-Dive: Shared Feature Helpers",
@@ -15641,22 +15673,6 @@
               "path": "docs/architecture/nodes/SOAR-DOC-COOLIFY-VPS.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:data-model-source:e56d0a592a",
-              "type": "document",
-              "name": "Data model source",
-              "path": "docs/architecture/nodes/SOAR-DOC-DATA-MODEL.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:execution-lifecycle-architecture-doc:49c9ab2eac",
-              "type": "document",
-              "name": "Execution lifecycle architecture doc",
-              "path": "docs/architecture/nodes/SOAR-DOC-EXECUTION-LIFECYCLE.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
@@ -15669,11 +15685,11 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 347,
-      "linkedRelationCount": 863,
+      "entityCount": 348,
+      "linkedRelationCount": 867,
       "layers": {
         "frontend": {
-          "count": 94,
+          "count": 92,
           "sample": [
             {
               "id": "component:apikeyform-tsx:5c8d1d06f0",
@@ -15866,14 +15882,6 @@
               "path": "apps/web/src/features/profile/components/ApiKeysList.test.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "component:exchangeconnectionsview-tsx:620fe34b65",
-              "type": "component",
-              "name": "ExchangeConnectionsView.tsx",
-              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             },
             {
               "id": "component:basicform-tsx:cd61be698b",
@@ -16314,20 +16322,36 @@
               "path": "apps/web/src/features/profile/services/profileBasicCache.ts#setCachedProfile",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "function:changepassword:5caa371fa7",
+              "type": "function",
+              "name": "changePassword",
+              "path": "apps/web/src/features/profile/services/security.service.ts#changePassword",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "backend": {
-          "count": 102,
+          "count": 105,
           "sample": [
+            {
+              "id": "component:exchangeconnectionsview-tsx:620fe34b65",
+              "type": "component",
+              "name": "ExchangeConnectionsView.tsx",
+              "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
             {
               "id": "route:profilepage-tsx:f1dab93865",
               "type": "route",
               "name": "ProfilePage.tsx",
               "path": "apps/web/src/features/profile/pages/ProfilePage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "document:profile-api-key-controller:4d95d669ec",
@@ -16376,6 +16400,22 @@
               "path": "apps/api/src/router/dashboard.routes.ts#/profile/security",
               "owner": "Test Automation Engineer",
               "status": "verified"
+            },
+            {
+              "id": "api_endpoint:use-profile-subscription:e9d8631f88",
+              "type": "api_endpoint",
+              "name": "USE /profile/subscription",
+              "path": "apps/api/src/router/dashboard.routes.ts#/profile/subscription",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "api_endpoint:use-upload:59c4f6ed00",
+              "type": "api_endpoint",
+              "name": "USE /upload",
+              "path": "apps/api/src/router/index.ts#/upload",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             },
             {
               "id": "function:resetapikeye2edatabase:23ec97f7ab",
@@ -16934,30 +16974,6 @@
               "type": "route",
               "name": "apiKey.routes.ts",
               "path": "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:ratelimit-ts:0131e98639",
-              "type": "route",
-              "name": "rateLimit.ts",
-              "path": "apps/api/src/middleware/rateLimit.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:dashboard-routes-ts:c06b6d5b58",
-              "type": "route",
-              "name": "dashboard.routes.ts",
-              "path": "apps/api/src/router/dashboard.routes.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:rotateapikeysecretpair:fd3d22d645",
-              "type": "function",
-              "name": "rotateApiKeySecretPair",
-              "path": "apps/api/src/modules/profile/apiKey/apiKey.service.ts#rotateApiKeySecretPair",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
             }

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-23T00:39:47.330Z
+Generated: 2026-07-23T00:51:39.929Z
 
 ## Canonical Exports
 
@@ -114,7 +114,7 @@ Generated: 2026-07-23T00:39:47.330Z
 | component | implemented | BacktestRunDetailsTabPanels.tsx | apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx | Engineering Delivery Lead |
 | component | implemented | BacktestRunHeaderSection.tsx | apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx | Engineering Delivery Lead |
 | component | implemented | BacktestsList.tsx | apps/web/src/features/backtest/components/BacktestsList.tsx | Engineering Delivery Lead |
-| component | implemented | BacktestsListView.tsx | apps/web/src/features/backtest/components/BacktestsListView.tsx | Engineering Delivery Lead |
+| component | verified | BacktestsListView.tsx | apps/web/src/features/backtest/components/BacktestsListView.tsx | QA Regression Lead |
 | component | implemented | BacktestsRunsTable.tsx | apps/web/src/features/backtest/components/BacktestsRunsTable.tsx | Engineering Delivery Lead |
 | component | implemented | BotCreateEditForm.tsx | apps/web/src/features/bots/components/BotCreateEditForm.tsx | Engineering Delivery Lead |
 | component | implemented | BotsManagementTabs.tsx | apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx | Engineering Delivery Lead |
@@ -137,8 +137,8 @@ Generated: 2026-07-23T00:39:47.330Z
 | component | implemented | runtimeUiHelpers.tsx | apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx | Engineering Delivery Lead |
 | component | implemented | HomeLiveWidgets.tsx | apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx | Engineering Delivery Lead |
 | component | implemented | LiveMarketBar.tsx | apps/web/src/features/dashboard-home/components/LiveMarketBar.tsx | Engineering Delivery Lead |
-| component | implemented | ExchangeConnectionsView.tsx | apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx | Engineering Delivery Lead |
-| component | implemented | AuditTrailView.tsx | apps/web/src/features/logs/components/AuditTrailView.tsx | Engineering Delivery Lead |
+| component | verified | ExchangeConnectionsView.tsx | apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx | QA Regression Lead |
+| component | verified | AuditTrailView.tsx | apps/web/src/features/logs/components/AuditTrailView.tsx | QA Regression Lead |
 | component | implemented | MarketUniverseForm.tsx | apps/web/src/features/markets/components/MarketUniverseForm.tsx | Engineering Delivery Lead |
 | component | implemented | MarketUniversesTable.tsx | apps/web/src/features/markets/components/MarketUniversesTable.tsx | Engineering Delivery Lead |
 | component | implemented | SearchableMultiSelect.tsx | apps/web/src/features/markets/components/SearchableMultiSelect.tsx | Engineering Delivery Lead |
@@ -147,7 +147,7 @@ Generated: 2026-07-23T00:39:47.330Z
 | component | implemented | BasicForm.tsx | apps/web/src/features/profile/components/BasicForm.tsx | Engineering Delivery Lead |
 | component | implemented | Security.tsx | apps/web/src/features/profile/components/Security.tsx | Engineering Delivery Lead |
 | component | implemented | Subscription.tsx | apps/web/src/features/profile/components/Subscription.tsx | Engineering Delivery Lead |
-| component | implemented | PerformanceReportsView.tsx | apps/web/src/features/reports/components/PerformanceReportsView.tsx | Engineering Delivery Lead |
+| component | verified | PerformanceReportsView.tsx | apps/web/src/features/reports/components/PerformanceReportsView.tsx | QA Regression Lead |
 | component | implemented | StrategiesList.tsx | apps/web/src/features/strategies/components/StrategiesList.tsx | Engineering Delivery Lead |
 | component | implemented | StrategyForm.tsx | apps/web/src/features/strategies/components/StrategyForm.tsx | Engineering Delivery Lead |
 | component | implemented | Additional.tsx | apps/web/src/features/strategies/components/StrategyFormSections/Additional.tsx | Engineering Delivery Lead |

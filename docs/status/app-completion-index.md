@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-07-23T00:39:47.330Z
+Generated: 2026-07-23T00:51:39.929Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -14,55 +14,27 @@ Internal functions and modules are implementation details: they receive proof th
 ## Counts
 
 - Items: 86
-- User flows: 7
-- Needs browser/screenshot review: 11
-- Missing test link: 12
-- Missing doc link: 2
+- User flows: 5
+- Needs browser/screenshot review: 0
+- Missing test link: 0
+- Missing doc link: 0
 - Implemented, needs proof: 0
 - Blocked: 0
-- Known non-ok risk items: 25
-- Priority review items indexed: 25/25
+- Known non-ok risk items: 0
+- Priority review items indexed: 0/0
 - Priority review truncated: false
 
 ## Flow Summary
 
-- Account access: 46 entities; risks {"ok":46}; gates {"auth":46,"subscription":3,"configuration":2}
-- Unclassified user workflow: 18 entities; risks {"missing_test_link":9,"missing_doc_link":2,"needs_browser_review":7}; gates {}
-- Dashboard overview: 14 entities; risks {"ok":14}; gates {"configuration":1}
-- Subscription and entitlement: 5 entities; risks {"missing_test_link":3,"needs_browser_review":2}; gates {"subscription":5}
+- Account access: 52 entities; risks {"ok":52}; gates {"auth":52,"subscription":4,"configuration":3}
+- Dashboard overview: 15 entities; risks {"ok":15}; gates {"configuration":1}
+- Unclassified user workflow: 14 entities; risks {"ok":14}; gates {}
+- Subscription and entitlement: 4 entities; risks {"ok":4}; gates {"subscription":4}
 - Admin operation: 1 entities; risks {"ok":1}; gates {}
-- Exchange connection and configuration: 1 entities; risks {"needs_browser_review":1}; gates {"configuration":1}
-- User configuration: 1 entities; risks {"needs_browser_review":1}; gates {}
 
 ## Priority Review Queue
 
-| User flow | Risk | Kind | Entity | Owner | Path | Gates |
-| --- | --- | --- | --- | --- | --- | --- |
-| Exchange connection and configuration | needs_browser_review | screen_or_route | ExchangeConnectionsView.tsx | Engineering Delivery Lead | apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx | configuration |
-| Subscription and entitlement | missing_test_link | api_endpoint | USE /webhooks/stripe | Engineering Delivery Lead | apps/api/src/index.ts#/webhooks/stripe | subscription |
-| Subscription and entitlement | missing_test_link | api_endpoint | USE /subscriptions/plans | Engineering Delivery Lead | apps/api/src/router/admin.routes.ts#/subscriptions/plans | subscription |
-| Subscription and entitlement | missing_test_link | api_endpoint | USE /profile/subscription | Engineering Delivery Lead | apps/api/src/router/dashboard.routes.ts#/profile/subscription | subscription |
-| Subscription and entitlement | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/admin/subscriptions/page.tsx | subscription |
-| Subscription and entitlement | needs_browser_review | screen_or_route | AdminSubscriptionsPage.tsx | Engineering Delivery Lead | apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.tsx | subscription |
-| Unclassified user workflow | missing_test_link | api_endpoint | USE /avatars | Engineering Delivery Lead | apps/api/src/index.ts#/avatars | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET / | Engineering Delivery Lead | apps/api/src/router/index.ts#/ | - |
-| Unclassified user workflow | missing_doc_link | api_endpoint | GET /alerts | Engineering Delivery Lead | apps/api/src/router/index.ts#/alerts | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /health | Engineering Delivery Lead | apps/api/src/router/index.ts#/health | - |
-| Unclassified user workflow | missing_doc_link | api_endpoint | GET /metrics | Engineering Delivery Lead | apps/api/src/router/index.ts#/metrics | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /ready | Engineering Delivery Lead | apps/api/src/router/index.ts#/ready | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /ready/details | Engineering Delivery Lead | apps/api/src/router/index.ts#/ready/details | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | USE /upload | Engineering Delivery Lead | apps/api/src/router/index.ts#/upload | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /workers/health | Engineering Delivery Lead | apps/api/src/router/index.ts#/workers/health | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /workers/ready | Engineering Delivery Lead | apps/api/src/router/index.ts#/workers/ready | - |
-| Unclassified user workflow | missing_test_link | api_endpoint | GET /workers/runtime-freshness | Engineering Delivery Lead | apps/api/src/router/index.ts#/workers/runtime-freshness | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/(public)/page.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/(public)/privacy/page.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/(public)/terms/page.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | page.tsx | Engineering Delivery Lead | apps/web/src/app/offline/page.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | BacktestsListView.tsx | Engineering Delivery Lead | apps/web/src/features/backtest/components/BacktestsListView.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | AuditTrailView.tsx | Engineering Delivery Lead | apps/web/src/features/logs/components/AuditTrailView.tsx | - |
-| Unclassified user workflow | needs_browser_review | screen_or_route | PerformanceReportsView.tsx | Engineering Delivery Lead | apps/web/src/features/reports/components/PerformanceReportsView.tsx | - |
-| User configuration | needs_browser_review | screen_or_route | ProfilePage.tsx | Engineering Delivery Lead | apps/web/src/features/profile/pages/ProfilePage.tsx | - |
+_None._
 
 ## Agent Rule
 

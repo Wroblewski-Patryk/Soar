@@ -46,6 +46,22 @@ apps/web/src/app/dashboard/wallets/[id]/preview/page.tsx,apps/web/src/app/dashbo
 apps/web/src/app/dashboard/wallets/create/page.tsx,apps/web/src/app/dashboard/wallets/create/page.test.tsx,LUC-1700 wallet create exact proof
 apps/web/src/app/dashboard/wallets/list/page.tsx,apps/web/src/app/dashboard/wallets/list/page.test.tsx,LUC-1700 wallet list exact proof
 apps/web/src/app/dashboard/wallets/page.tsx,apps/web/src/app/dashboard/wallets/page.test.tsx,LUC-1700 wallet root redirect exact proof
+apps/api/src/index.ts#/webhooks/stripe,apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts,LUC-1701 Stripe webhook route has direct existing e2e proof
+apps/api/src/router/admin.routes.ts#/subscriptions/plans,apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts,LUC-1701 admin subscription plans route has direct existing e2e proof
+apps/api/src/router/dashboard.routes.ts#/profile/subscription,apps/api/src/modules/profile/subscription/subscription.e2e.test.ts,LUC-1701 profile subscription route has direct existing e2e proof
+apps/api/src/index.ts#/avatars,apps/api/src/router/security-headers.test.ts,LUC-1701 avatar static mount has direct security header route proof
+apps/api/src/router/index.ts#/,apps/api/src/router/root-health.test.ts,LUC-1701 API root banner has direct database-independent focused route proof
+apps/api/src/router/index.ts#/health,apps/api/src/router/root-health.test.ts,LUC-1701 health endpoint has direct database-independent focused route proof
+apps/api/src/router/index.ts#/ready,apps/api/src/router/health-readiness.test.ts,LUC-1701 readiness endpoint has direct focused route proof
+apps/api/src/router/index.ts#/ready/details,apps/api/src/router/health-readiness.test.ts,LUC-1701 protected readiness details endpoint has direct focused route proof
+apps/api/src/router/index.ts#/upload,apps/api/src/modules/upload/upload.e2e.test.ts,LUC-1701 upload mount has direct avatar upload e2e proof
+apps/api/src/router/index.ts#/workers/health,apps/api/src/router/workers-health-readiness.test.ts,LUC-1701 worker health endpoint has direct focused route proof
+apps/api/src/router/index.ts#/workers/ready,apps/api/src/router/workers-health-readiness.test.ts,LUC-1701 worker readiness endpoint has direct focused route proof
+apps/api/src/router/index.ts#/workers/runtime-freshness,apps/api/src/router/workers-runtime-freshness.test.ts,LUC-1701 worker runtime freshness endpoint has direct focused route proof
+apps/web/src/app/(public)/page.tsx,apps/web/src/app/(public)/public-pages.test.tsx,LUC-1701 public landing route has focused render proof plus unchanged Chromium evidence
+apps/web/src/app/(public)/privacy/page.tsx,apps/web/src/app/(public)/public-pages.test.tsx,LUC-1701 privacy route has focused render proof plus unchanged Chromium evidence
+apps/web/src/app/(public)/terms/page.tsx,apps/web/src/app/(public)/public-pages.test.tsx,LUC-1701 terms route has focused render proof plus unchanged Chromium evidence
+apps/web/src/app/offline/page.tsx,apps/web/src/app/(public)/public-pages.test.tsx,LUC-1701 offline route has focused render proof plus unchanged Chromium evidence
 apps/web/src/app/dashboard/bots/create/page.tsx,apps/web/src/app/dashboard/bots/create/page.test.tsx,LUC-1670 direct bot create route-shell relation to existing local route proof
 apps/web/src/app/dashboard/bots/new/page.tsx,apps/web/src/app/dashboard/bots/new/page.test.tsx,LUC-1674 direct bot new alias route-shell relation to exact local route proof
 apps/web/src/app/dashboard/bots/[id]/page.tsx,apps/web/src/app/dashboard/bots/[id]/page.test.tsx,LUC-1660 direct bot detail alias route-shell relation to existing local route proof

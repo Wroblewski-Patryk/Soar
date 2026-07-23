@@ -201,6 +201,39 @@
       "path": "apps/web/src/app/dashboard/wallets/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1700 focused and browser wallet root redirect proofs passed.", "evidence": ["history/artifacts/luc-1700-local-protected-route-action-proof-matrix-2026-07-23.json", "apps/web/src/app/dashboard/wallets/page.test.tsx"]
     },
     {
+      "path": "apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused ExchangeConnectionsView test passed and the containing authenticated profile route passed fresh local Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/exchanges/components/ExchangeConnectionsView.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/app/admin/subscriptions/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 authenticated admin subscriptions route passed fresh local Chromium proof and its page component passed focused verification.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused AdminSubscriptionsPage tests passed and the exact containing admin route passed fresh local Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/app/(public)/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1124 local Chromium proof passed public home on desktop and mobile; the source has not changed since that evidence was captured.", "evidence": ["history/artifacts/luc-1124-public-read-only-browser-proof-2026-07-14.json", "history/evidence/luc-1124-public-read-only-browser-proof-2026-07-14.md"]
+    },
+    {
+      "path": "apps/web/src/app/(public)/privacy/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1124 local Chromium proof passed privacy on desktop and mobile; the source has not changed since that evidence was captured.", "evidence": ["history/artifacts/luc-1124-public-read-only-browser-proof-2026-07-14.json", "history/evidence/luc-1124-public-read-only-browser-proof-2026-07-14.md"]
+    },
+    {
+      "path": "apps/web/src/app/(public)/terms/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1124 local Chromium proof passed terms on desktop and mobile; the source has not changed since that evidence was captured.", "evidence": ["history/artifacts/luc-1124-public-read-only-browser-proof-2026-07-14.json", "history/evidence/luc-1124-public-read-only-browser-proof-2026-07-14.md"]
+    },
+    {
+      "path": "apps/web/src/app/offline/page.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1124 local Chromium proof passed the offline route on desktop and mobile; the source has not changed since that evidence was captured.", "evidence": ["history/artifacts/luc-1124-public-read-only-browser-proof-2026-07-14.json", "history/evidence/luc-1124-public-read-only-browser-proof-2026-07-14.md"]
+    },
+    {
+      "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused BacktestsListView tests passed and the containing backtests list route passed fresh authenticated Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/backtest/components/BacktestsListView.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/features/logs/components/AuditTrailView.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused AuditTrailView tests passed and the containing logs route passed fresh authenticated Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/logs/components/AuditTrailView.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused PerformanceReportsView tests passed and the containing reports route passed fresh authenticated Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/features/reports/components/PerformanceReportsView.test.tsx"]
+    },
+    {
+      "path": "apps/web/src/features/profile/pages/ProfilePage.tsx", "status": "verified", "owner": "QA Regression Lead", "description": "LUC-1701 focused profile tests passed and the exact authenticated profile page passed fresh local Chromium proof.", "evidence": ["history/artifacts/luc-1701-local-protected-route-action-proof-matrix-2026-07-22.json", "apps/web/src/app/dashboard/profile/page.test.tsx"]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

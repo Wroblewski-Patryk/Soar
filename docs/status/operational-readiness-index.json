@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T00:39:47.330Z",
+  "generatedAt": "2026-07-23T00:51:39.929Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "ready_for_repair_flow",
@@ -30,7 +30,7 @@
     },
     {
       "gate": "app_completion_risk_index",
-      "status": "gaps_indexed",
+      "status": "covered",
       "evidence": "docs/status/app-completion-index.json",
       "requiredFor": "user-facing flow verification across frontend, backend, tests, docs, auth/config, and browser proof"
     },
