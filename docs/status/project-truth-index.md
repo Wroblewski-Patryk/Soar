@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-23T00:02:17.885Z
+Generated: 2026-07-23T00:39:47.330Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,18 +13,18 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 40 |
-| indexedAppCompletionGaps | 40 |
-| knownAppCompletionRiskItems | 40 |
-| appCompletionPriorityReviewItems | 40 |
+| appCompletionGaps | 25 |
+| indexedAppCompletionGaps | 25 |
+| knownAppCompletionRiskItems | 25 |
+| appCompletionPriorityReviewItems | 25 |
 | appCompletionPriorityReviewTruncated | false |
 | operationalGateGaps | 0 |
-| indexedGaps | 40 |
-| totalGaps | 40 |
+| indexedGaps | 25 |
+| totalGaps | 25 |
 
 ## First Gap
 
-- high: Dashboard overview: page.tsx has app-completion risk needs_browser_review.
+- high: Exchange connection and configuration: ExchangeConnectionsView.tsx has app-completion risk needs_browser_review.
 - Owner: QA Regression Lead + Frontend Experience Lead
 - Next action: Capture browser/clickthrough proof or create the smallest Frontend/UX repair lane for this visible flow.
 
@@ -32,21 +32,6 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
-| high | app_completion_gap | Dashboard overview | Dashboard overview: page.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | high | app_completion_gap | Exchange connection and configuration | Exchange connection and configuration: ExchangeConnectionsView.tsx has app-completion risk needs_browser_review. | QA Regression Lead + Frontend Experience Lead |
 | medium | app_completion_gap | Subscription and entitlement | Subscription and entitlement: USE /webhooks/stripe has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Subscription and entitlement | Subscription and entitlement: USE /subscriptions/plans has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
