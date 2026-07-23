@@ -1,26 +1,22 @@
 # Current Focus
 
-Last updated: 2026-07-20
+Last updated: 2026-07-23
 
 ## Active Focus
 
-2026-07-20 startup anchor:
+2026-07-23 startup anchor:
 Read `docs/status/project-truth-index.md`,
 `docs/status/operational-readiness-index.md`, and
 `.agents/state/next-steps.md` before older historical focus entries. The
-current project truth is `gaps_require_routing`; the first gap is
-`api_ready https://api.soar.luckysparrow.ch/ready returned 503: {"status":"not_ready","service":"api"}`
-owned by Deployment Reliability Engineer + Ops Release Lead. The current
-operational readiness snapshot is `truth_incomplete`, with
-`runtime_error_index` at `critical_findings` and `public_runtime_probe` at
-`failed`.
-
-Active Redis coordination remains
-`LUC-1359` -> `LUC-1374` -> `LUC-1524`: Security records the accepted/rejected
-decision on `LUC-1524`; if accepted, DRE resumes `LUC-1374` for the approved
-Redis backup/rebuild path; QA gets a separate verification child; Docs closes
-out only after verification; SPM integrates the evidence back into `LUC-1359`.
-No product-completion claim is valid until that full chain passes.
+current mission is the `LUC-27` Soar build-to-production closeout. Generated
+project truth is `known_and_routable` with zero indexed gaps, the public
+runtime gate passes, and fresh protected evidence verifies `/ready/details`,
+`/workers/ready`, and `/workers/runtime-freshness` as green. The recovered
+`workers-execution` heartbeat is fresh and the Redis recovery chain is
+complete through `LUC-1547`; `LUC-1359`, `LUC-1374`, and `LUC-1524` are also
+terminal. The remaining action is local source-control preservation of the
+coherent evidence packet followed by typed `LUC-27` closeout. No new runtime,
+secret, deploy, database, Redis, or trading mutation is required.
 
 Historical focus below is retained for context only.
 

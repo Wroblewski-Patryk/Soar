@@ -1,3 +1,53 @@
+## 2026-07-23 LUC-1547 post-approval Redis recovery coordination closeout
+
+- The PM coordination lane for the post-approval Redis recovery chain is now
+  complete.
+- The required downstream owners all finished their bounded responsibilities:
+  `LUC-1559` preserved closeout docs/project-truth parity; `LUC-1568`
+  completed approved protected proof; `LUC-1706` recovered
+  `workers-execution`; and `LUC-1556` closed with fresh green public and
+  protected readiness evidence.
+- The final accepted runtime readback for this chain is:
+  public `/health -> 200`, public `/ready -> 200`, protected
+  `/ready/details -> 200`, protected `/workers/ready -> 200`, and protected
+  `/workers/runtime-freshness -> 200 PASS`.
+- Redis health remains explicitly bounded:
+  this runner still lacks a direct remote `redis-cli PING`, so Redis is
+  accepted through managed `LUC-1569` Coolify projection evidence
+  (`redis -> running:healthy`).
+- Residual ownership is narrowed:
+  `LUC-1547` no longer carries an open blocker and `LUC-1359` is terminal.
+  The remaining action is evidence-backed `LUC-27` parent closeout.
+- Evidence:
+  `history/evidence/luc-1547-post-approval-redis-recovery-coordination-closeout-2026-07-23.md`;
+  `history/tasks/luc-1547-orchestrate-post-approval-redis-recovery-closeout-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1556 Redis recovery verification ledger refresh
+
+- The Redis recovery verification lane is now independently green after the
+  follow-up `workers-execution` recovery.
+- Fresh production proof from Thursday, July 23, 2026:
+  public `GET /health -> 200`, public `GET /ready -> 200`, protected
+  `GET /ready/details -> 200`, protected `GET /workers/ready -> 200`, and
+  protected `GET /workers/runtime-freshness -> 200 PASS`.
+- The exact protected worker-readiness rerun now reports all split worker
+  families fresh, including `execution`, so the prior `LUC-1706` runtime
+  degradation no longer blocks `LUC-1556`.
+- The Web build-info endpoint remained `200` and still reports
+  `gitSha=b0b2c2ce9477a32fcda7717f447ad46aa4327589` with
+  `metadataSource=env-runtime`.
+- This heartbeat changed QA/state/history files only; it did not mutate runtime
+  code, deployment state, production secrets, or infrastructure configuration.
+- Redis proof boundary remains explicit:
+  the current runner has no direct remote `redis-cli PING`, so Redis health is
+  inherited from accepted managed `LUC-1569` Coolify projection evidence
+  (`redis -> running:healthy`).
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/tasks/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23-task.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1692 dashboard profile page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/profile/page.tsx`

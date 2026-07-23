@@ -1,3 +1,50 @@
+## 2026-07-23 LUC-1547 orchestrate post-approval Redis recovery across Security, DRE, QA, and Docs
+
+- Status: `DONE`.
+- Scope:
+  parent coordination closeout after the approved Redis recovery chain
+  completed across separate docs, security, DRE, and QA lanes.
+- Outcome:
+  the child chain is terminal and integrated:
+  `LUC-1559` docs/project-truth parity done,
+  `LUC-1568` protected proof done,
+  `LUC-1706` execution-worker recovery done,
+  and `LUC-1556` verification done with final green public/protected
+  readiness results.
+- Residual boundary:
+  this closes the coordination issue only; `LUC-1359` is also terminal, and
+  the remaining action is the evidence-backed `LUC-27` parent closeout.
+- Evidence:
+  `history/tasks/luc-1547-orchestrate-post-approval-redis-recovery-closeout-2026-07-23-task.md`;
+  `history/evidence/luc-1547-post-approval-redis-recovery-coordination-closeout-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 verify Redis recovery smoke and acceptance ledger after cache-only rebuild
+
+- Status: `DONE`.
+- Scope:
+  QA-owned independent verification after the Redis cache-only rebuild and the
+  follow-up `workers-execution` start recovery.
+- Outcome:
+  fresh public production probes passed on Thursday, July 23, 2026:
+  `GET /health -> 200`, `GET /ready -> 200`, and Web `/api/build-info -> 200`
+  with SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589`. A fresh protected
+  admin-smoke rerun from this runner also passed:
+  `GET /ready/details -> 200`, `GET /workers/ready -> 200`, and
+  `GET /workers/runtime-freshness -> 200 PASS`. The protected worker payload
+  now reports the `execution` worker heartbeat as fresh, so the prior
+  `LUC-1706` blocker is cleared for this lane.
+- Proof boundary:
+  no direct remote `redis-cli PING` path exists in this runner. Redis health is
+  therefore accepted through the managed `LUC-1569` Coolify resource
+  projection (`redis -> running:healthy`) plus the restored public/protected
+  readiness results.
+- Evidence:
+  `history/tasks/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23-task.md`;
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/artifacts/luc-1556-paperclip-closeout-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1692 prove dashboard overview needs-browser-review for src-app-dashboard-profile-page-tsx
 
 - Status: `DONE`.

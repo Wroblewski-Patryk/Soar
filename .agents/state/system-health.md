@@ -1,3 +1,140 @@
+## 2026-07-23 LUC-27 parent mission ready for evidence-backed closeout
+
+- Status:
+  `VERIFIED / ZERO_INDEXED_GAPS / PUBLIC_READY / PROTECTED_READY / WORKERS_READY`.
+- Health impact:
+  Soar's current indexed and observed state is green: generated project truth
+  has zero gaps; public API readiness passes; protected API and worker
+  readiness pass; all required worker heartbeats are fresh; and the Redis
+  recovery chain is complete through independent verification and docs parity.
+- Residual boundary:
+  no direct remote `redis-cli PING` path was available, so Redis health remains
+  accepted through managed `LUC-1569` Coolify projection evidence. Build-info
+  still reports `metadataSource=env-runtime`; this is recorded diagnostic
+  provenance, not an observed readiness failure. The only remaining action is
+  local source-control preservation and typed parent closeout.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
+## 2026-07-23 LUC-1547 coordinator closeout after Redis recovery chain completion
+
+- Status:
+  `DONE / COORDINATION_CHAIN_COMPLETE / CHILD_LANES_TERMINAL`.
+- Health impact:
+  the parent coordination gap is closed. The Redis recovery follow-up no
+  longer depends on missing docs parity, missing protected proof, missing QA
+  verification, or missing execution-worker recovery.
+- Integrated chain:
+  `LUC-1559` docs/project-truth parity complete;
+  `LUC-1568` protected proof complete;
+  `LUC-1706` workers-execution recovery complete;
+  `LUC-1556` verification complete with
+  `/health -> 200`, `/ready -> 200`, `/ready/details -> 200`,
+  `/workers/ready -> 200`, and `/workers/runtime-freshness -> 200 PASS`.
+- Residual boundary:
+  this closes the coordinator issue only. `LUC-1359` is also terminal; the
+  remaining action is evidence-backed `LUC-27` parent closeout, not another
+  runtime recovery lane.
+- Evidence:
+  `history/evidence/luc-1547-post-approval-redis-recovery-coordination-closeout-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 verification rerun after workers-execution recovery
+
+- Status:
+  `VERIFIED / PUBLIC_READY_200 / PROTECTED_READY_DETAILS_200 /
+  WORKERS_READY_200 / RUNTIME_FRESHNESS_PASS`.
+- Health impact:
+  the Redis incident chain is no longer leaving the Soar production readiness
+  path degraded. Fresh QVE proof from Thursday, July 23, 2026 shows API
+  `/health` and `/ready` are green, protected `/ready/details` is green, and
+  protected `/workers/ready` plus `/workers/runtime-freshness` are green after
+  the `workers-execution` recovery.
+- Verification:
+  public `https://api.soar.luckysparrow.ch/health -> 200`;
+  public `https://api.soar.luckysparrow.ch/ready -> 200`;
+  Web `https://soar.luckysparrow.ch/api/build-info -> 200` with SHA
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`;
+  protected `GET /ready/details -> 200`;
+  protected `GET /workers/ready -> 200`;
+  protected `GET /workers/runtime-freshness -> 200 PASS`;
+  accepted managed Redis/Coolify evidence still shows `redis -> running:healthy`.
+- Residual risk:
+  no direct remote `redis-cli PING` exists in this runner, so Redis remains
+  accepted via managed `LUC-1569` projection evidence rather than a fresh shell
+  command; build-info provenance still reports `metadataSource=env-runtime`.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 QVE acceptance evidence ready for review
+
+- Status:
+  `READY_FOR_REVIEW / PUBLIC_API_HEALTHY / ACCEPTED_PROTECTED_PROOF_PRESENT / QVE_CLOSEOUT_PENDING`.
+- Health impact:
+  fresh public probes on Thursday, July 23, 2026 confirmed
+  `GET /health -> 200` and `GET /ready -> 200` after the workers-execution
+  repair completed in `LUC-1706`.
+- Verification:
+  accepted protected evidence from `LUC-1706` records
+  `/ready/details -> 200`, `/workers/ready -> 200`, and
+  `/workers/runtime-freshness -> 200 PASS`; a fresh local evidence packet was
+  written at `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`.
+- Review path:
+  the issue is assigned to 09 QVE for independent closeout. The current SPM
+  actor hit an authorization boundary when attempting to upload the artifact,
+  so the remaining closeout step must be performed from the authorized QVE
+  context.
+- Next action:
+  QVE attaches the evidence packet, updates the acceptance ledger, and closes
+  `LUC-1556` once the inspected evidence is accepted.
+
+## 2026-07-23 LUC-1556 now blocked on DRE workers-execution recovery
+
+- Status:
+  `BLOCKED / ACCEPTED_PROTECTED_PROOF_PRESENT / WORKERS_EXECUTION_DEGRADED / WAITING_ON_LUC-1706`.
+- Health impact:
+  the protected proof lane is no longer blocked on auth. Accepted board
+  evidence already shows `/ready/details -> 200` and `/workers/ready -> 503`
+  with `staleWorkers=["execution"]`, while Coolify reports
+  `workers-execution=exited:unhealthy` and Redis/PostgreSQL remain healthy.
+- Verification:
+  `LUC-1568` and `LUC-1569` are complete accepted proof sources; `LUC-1706`
+  is the active DRE recovery issue for the degraded execution worker.
+- Next action:
+  DRE repairs `workers-execution` through `LUC-1706`; QVE then reruns the
+  protected worker readiness check and refreshes the acceptance ledger.
+- Evidence:
+  `history/evidence/luc-1568-security-disposition-post-managed-protected-proof-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`;
+  board comment `024731b5-f785-465a-af40-d5d9b45895d8`.
+
+## 2026-07-23 LUC-1568 protected proof executed, execution worker degraded
+
+- Status:
+  `PARTIALLY VERIFIED / PROTECTED_AUTH_PATH_WORKING / API_PROTECTED_READY / WORKERS_PROTECTED_NOT_READY`.
+- Health impact:
+  approved managed protected proof now passes the auth boundary on Thursday,
+  July 23, 2026. `GET /ready/details` returned `200 ready`, while
+  `GET /workers/ready` returned `503 not_ready` and identified
+  `staleWorkers=["execution"]`.
+- Verification:
+  ordinary production smoke account stayed fail-closed on protected ops routes
+  (`/ready/details -> 403`, `/workers/ready -> 403`);
+  admin smoke account completed the approved protected readback
+  (`/ready/details -> 200`, `/workers/ready -> 503`);
+  Coolify read-only projection simultaneously showed
+  `workers-execution -> exited:unhealthy` and `redis -> running:healthy`.
+- Security disposition:
+  the prior missing-auth-path blocker is closed. The protected proof path is
+  verified and the remaining problem is runtime degradation on the execution
+  worker, not secret access or authorization.
+- Evidence:
+  `history/evidence/luc-1568-security-disposition-post-managed-protected-proof-2026-07-23.md`;
+  child proof `LUC-1569` evidence dated `2026-07-23`.
+
 ## 2026-07-21 LUC-1547 Redis recovery coordination chain clarified
 
 - Coordination chain is now explicit:
@@ -29,7 +166,23 @@
   `SMOKE_AUTH_*` binding or directly execute the protected `ready/details`
   and worker readiness proof.
 - Evidence:
-  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-21.md`.
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 protected proof rerun still blocked
+
+- Status:
+  `PARTIALLY VERIFIED / PUBLIC_HEALTH_READY / PROTECTED_PROOF_BLOCKED / NO_SMOKE_AUTH_PATH`.
+- Health impact:
+  public Web `/api/build-info` remained `200` on Thursday, July 23, 2026 with SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589` and `metadataSource=env-runtime`; protected API `/ready/details` and `/workers/ready` both returned `401`.
+- Verification:
+  `https://soar.luckysparrow.ch/api/build-info -> 200`;
+  `https://api.soar.luckysparrow.ch/ready/details -> 401`;
+  `https://api.soar.luckysparrow.ch/workers/ready -> 401`;
+  no usable `SMOKE_AUTH_*`, `PROD_*`, or `ADMIN_JWT` binding is present in this runner.
+- Unblock owner/action:
+  Security Review Lead or Ops Release Lead must provide the approved protected smoke path, then QVE reruns the protected readiness and worker checks plus acceptance ledger refresh.
+- Evidence:
+  `history/evidence/luc-1556-protected-proof-still-blocked-2026-07-23.md`.
 
 ## 2026-07-21 LUC-1556 Redis recovery verification recheck
 

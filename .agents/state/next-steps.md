@@ -1,3 +1,99 @@
+## 2026-07-23 LUC-27 build-to-production closeout ready
+
+- All first-class `LUC-27` blockers are terminal and the generated project
+  truth index reports zero gaps.
+- Public `/health` and `/ready`, protected `/ready/details` and
+  `/workers/ready`, plus `/workers/runtime-freshness` are green on Thursday,
+  July 23, 2026.
+- The governed Redis/worker recovery chain is complete through `LUC-1547`,
+  `LUC-1556`, `LUC-1568`, and `LUC-1706`.
+- Immediate next step:
+  commit the coherent local evidence packet and close `LUC-27` with typed
+  test, review, documentation, security, deployment, monitoring, and
+  source-control evidence. No new production mutation is needed.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
+## 2026-07-23 LUC-1547 Redis recovery coordination closeout complete
+
+- The post-approval Redis recovery coordination issue is now complete.
+- The governed chain finished through distinct lanes:
+  docs parity `LUC-1559`, protected proof `LUC-1568`, worker recovery
+  `LUC-1706`, and final QA verification `LUC-1556`.
+- Immediate next step:
+  preserve the integrated evidence for `LUC-27` parent closeout. `LUC-1359`
+  and the recovery issues are terminal, so `LUC-1547` has no residual unblock
+  path.
+- Evidence:
+  `history/evidence/luc-1547-post-approval-redis-recovery-coordination-closeout-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 Redis recovery verification is complete
+
+- QVE reran the production acceptance smoke after the `LUC-1706`
+  `workers-execution` recovery and independently verified the runtime is green.
+- Current verified state:
+  public `GET /health -> 200`, public `GET /ready -> 200`, protected
+  `GET /ready/details -> 200`, protected `GET /workers/ready -> 200`,
+  protected `GET /workers/runtime-freshness -> 200 PASS`.
+- Redis proof boundary:
+  this runner still has no direct remote `redis-cli PING` path, so Redis stays
+  accepted through managed `LUC-1569` Coolify projection evidence
+  (`redis -> running:healthy`).
+- Immediate next step:
+  PM/Docs can consume the `LUC-1556` verified packet for parent closeout and
+  ledger/doc parity. `LUC-1556` no longer waits on `LUC-1706`.
+- Evidence:
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
+
+## 2026-07-23 LUC-1556 evidence packet ready; QVE closeout pending
+
+- Fresh public probes confirm the API is healthy:
+  `/health -> 200` and `/ready -> 200`.
+- Accepted protected proof from `LUC-1706` confirms the worker repair:
+  `/ready/details -> 200`, `/workers/ready -> 200`, and
+  `/workers/runtime-freshness -> 200 PASS`.
+- Durable evidence exists at
+  `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`.
+- Remaining action:
+  09 QVE must attach/review the evidence from its authorized context and then
+  close `LUC-1556`.
+
+## 2026-07-23 LUC-1556 acceptance ledger refresh waits on LUC-1706
+
+- QVE issue `LUC-1556` is correctly blocked on the DRE recovery lane
+  `LUC-1706`, not on protected auth credentials.
+- Current verified state:
+  `/ready/details -> 200`, `/workers/ready -> 503`,
+  `staleWorkers=["execution"]`, Coolify `workers-execution=exited:unhealthy`,
+  Redis healthy, PostgreSQL healthy.
+- Immediate next step:
+  DRE completes `LUC-1706`; QVE then reruns the protected worker readiness
+  check and refreshes the acceptance ledger from the accepted board evidence.
+- Evidence:
+  `LUC-1568`, `LUC-1569`, and issue comment
+  `024731b5-f785-465a-af40-d5d9b45895d8`.
+
+## 2026-07-23 LUC-1568 protected proof obligation satisfied
+
+- The protected proof lane is complete:
+  approved managed bindings now prove the auth path works for the admin smoke
+  account, and the ordinary production smoke account remains correctly
+  fail-closed on protected ops routes.
+- Current protected outcome:
+  `/ready/details` is `200 ready`, while `/workers/ready` is `503 not_ready`
+  with `staleWorkers=["execution"]`.
+- Next action:
+  QVE resumes `LUC-1556` to refresh the acceptance ledger with the fresh
+  protected result, and the runtime recovery chain continues on the degraded
+  `execution` worker rather than on auth-path access.
+- Evidence:
+  `history/evidence/luc-1568-security-disposition-post-managed-protected-proof-2026-07-23.md`.
+
 ## 2026-07-22 LUC-1680 dashboard bots runtime helper proof ingest complete
 
 - The scoped Dashboard overview browser-review gap for
@@ -30,7 +126,7 @@
   `/workers/ready` proof directly, then DRE/QVE can refresh the acceptance
   ledger.
 - Evidence:
-  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-21.md`.
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
 
 ## 2026-07-21 LUC-1568 protected readiness proof blocked after Redis recovery
 
@@ -46,6 +142,17 @@
   checks and refreshes the acceptance ledger.
 - Evidence:
   `history/evidence/luc-1568-protected-readiness-post-redis-recovery-2026-07-21.md`.
+
+## 2026-07-23 LUC-1556 protected proof rerun still blocked
+
+- Public build-info is still healthy:
+  `https://soar.luckysparrow.ch/api/build-info -> 200` with SHA `b0b2c2ce9477a32fcda7717f447ad46aa4327589`.
+- Remaining gap:
+  protected `/ready/details` and `/workers/ready` still return `401` without an approved operator smoke credential/session in this runner.
+- Next action:
+  Security Review Lead or Ops Release Lead supplies the protected smoke path, then QVE reruns the protected readiness checks and acceptance ledger refresh.
+- Evidence:
+  `history/evidence/luc-1556-protected-proof-still-blocked-2026-07-23.md`.
 
 ## 2026-07-21 LUC-1556 Redis recovery verification follow-up
 

@@ -1,62 +1,24 @@
-## 2026-07-22 LUC-1680 dashboard bots runtime helper proof ingest
+## 2026-07-23 LUC-27 Soar Build-To-Production Closeout
 
-- Status: `VERIFIED`.
+- Status: `VERIFIED / PROJECT_TRUTH_ZERO_GAPS / PRODUCTION_RUNTIME_GREEN / CLOSEOUT_READY`.
 - Scope:
-  ingest the fresh `LUC-1679` exact browser-review proof for
-  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
-  (`route:page-tsx:02f88c4a44`) into canonical docs-memory and generated-truth
-  inputs.
+  integrate the final Soar build-to-production evidence across implementation,
+  Security, DRE, QVE, Docs, and source-control closure.
 - Outcome:
-  added the missing direct doc link, focused test link, and scoped verified
-  proof override for the runtime helper page; reran
-  `build-architecture-awareness -> build-app-completion -> build-project-truth --apply`
-  with the downstream refresh corrected to serial order after the first stale
-  parallel readback; and advanced generated truth past the exact
-  `/dashboard/bots/runtime` route.
+  all first-class blockers on `LUC-27` are terminal; generated project truth
+  reports zero gaps; public `/health` and `/ready` are green; protected
+  `/ready/details` and `/workers/ready` are green; runtime freshness is `PASS`;
+  `workers-execution` is recovered; and the governed Redis recovery chain is
+  complete through `LUC-1547`.
+- Next step:
+  preserve this coherent evidence packet in local source control and close
+  `LUC-27` with typed test, review, documentation, security, deployment, and
+  monitoring evidence. No further production mutation is required.
 - Evidence:
-  `history/tasks/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22-task.md`;
-  `history/evidence/luc-1680-ingest-dashboard-bots-runtime-helper-proof-2026-07-22.md`;
-  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
-
-## 2026-07-22 LUC-1681 source-control closure for the dashboard bots runtime helper QA packet
-
-- Status: `VERIFIED`.
-- Scope:
-  local source-control closure for the completed `LUC-1679` QA proof refresh
-  and `LUC-1680` docs-memory ingest packet tied to
-  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
-  (`route:page-tsx:02f88c4a44`).
-- Outcome:
-  classified the dirty worktree as one coherent docs/generated-truth/state and
-  history packet, added the dedicated `LUC-1681` closure task/evidence
-  artifacts, ran bounded hygiene checks, and preserved the packet with one
-  local commit. No push, deploy, runtime mutation, or production auth work was
-  performed.
-- Evidence:
-  `history/tasks/luc-1681-source-control-close-dashboard-bots-runtime-helper-qa-packet-2026-07-22-task.md`;
-  `history/evidence/luc-1681-source-control-closure-dashboard-bots-runtime-helper-qa-packet-2026-07-22.md`;
-  `history/artifacts/luc-1681-paperclip-closeout-2026-07-22.md`.
-
-## 2026-07-22 LUC-1679 dashboard bots runtime helper page browser-review proof refresh
-
-- Status: `VERIFIED`.
-- Scope:
-  fresh local browser/clickthrough proof for the generated Dashboard overview
-  `needs_browser_review` row on
-  `apps/web/src/app/dashboard/bots/runtime/page.tsx`
-  (`route:page-tsx:02f88c4a44`).
-- Outcome:
-  `corepack pnpm --filter web exec vitest run src/app/dashboard/bots/runtime/page.test.tsx --reporter=verbose`
-  passed (`1` file / `4` tests), proving the helper route preserves the
-  redirect contract for `botId`, empty-query fallback, and legacy dashboard
-  anchor branches. The authoritative browser proof for this heartbeat reuses
-  the same-day `LUC-1665` JSON `.routes` row:
-  `SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME` passed on `/dashboard/bots/runtime`
-  with `observedPath=/dashboard/bots` under the local protected cookie gate.
-- Evidence:
-  `history/tasks/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22-task.md`;
-  `history/evidence/luc-1679-dashboard-bots-runtime-page-browser-review-2026-07-22.md`;
-  `history/artifacts/luc-1665-local-protected-route-action-proof-matrix-2026-07-22.json`.
+  `history/evidence/luc-1556-redis-recovery-verification-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1556-qve-acceptance-ledger-refresh-2026-07-23.md`;
+  `history/evidence/luc-1706-workers-execution-start-recovery-2026-07-23.md`;
+  `history/evidence/luc-1569-protected-post-redis-readback-managed-bindings-2026-07-23.md`.
 
 ## 2026-07-22 LUC-1678 source-control closure for LUC-1676 and LUC-1677 dashboard bots overview truth packet
 
