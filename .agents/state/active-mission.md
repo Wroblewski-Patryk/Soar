@@ -1,3 +1,75 @@
+## 2026-07-23 LUC-1787 child outputs integrated and execution handoff created
+
+- Status: `DONE_READY / CONTRACT_INTEGRATED / NEXT_LANE_LIVE`.
+- Scope:
+  integrate the completed child sale-readiness lanes back into the PM parent
+  and leave the next legal execution owner in place.
+- Outcome:
+  `LUC-1791` resolved `SRG-001` release provenance for current deployed
+  candidate `ca712e98b70e157b643db4f57726a02821a140bc`; `LUC-1792` confirmed
+  `LUC-4103` remains the owner-acceptance boundary; `LUC-1793` published the
+  verification matrix; and [LUC-1796](/LUC/issues/LUC-1796) now owns execution
+  of `SRG-002`.
+- Current decision:
+  Soar remains `NO-GO`, but the parent program now has only two active
+  sale-readiness gates:
+  exact-candidate protected acceptance/supportability and owner-acceptance.
+- Evidence:
+  `docs/planning/soar-v1-sale-readiness-contract.md`;
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`;
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/evidence/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23.md`;
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`.
+
+## 2026-07-23 LUC-1793 Soar v1.0 exact-candidate verification matrix
+
+- Status: `VERIFIED / MATRIX_PUBLISHED / WAITING_DEPLOY_EXECUTION`.
+- Scope:
+  turn `SRG-002` into one exact-candidate QA verification matrix and exact
+  acceptance rerun path for candidate `40cfb8f2...`.
+- Outcome:
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`
+  now freezes the QA proof order, PASS rules, dependencies, and evidence
+  bundle for the candidate.
+- Current decision:
+  QA planning is complete, but proof execution is not yet legal until
+  [LUC-1791](/LUC/issues/LUC-1791) establishes deploy parity and
+  [LUC-1792](/LUC/issues/LUC-1792) plus
+  [LUC-4103](/LUC/issues/LUC-4103) keep the protected/owner path approved.
+- Next step:
+  rerun the matrix only after the exact candidate is deployed and the approved
+  protected-owner path is available.
+- Evidence:
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`;
+  `history/tasks/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1787 Soar v1.0 sale-readiness contract and gap register
+
+- Status: `VERIFIED / NO-GO / FOLLOW_UP_LANES_CREATED`.
+- Scope:
+  establish a PM-owned v1.0 sale-readiness contract, deduplicate the current
+  evidence-backed blocker set, and leave accountable follow-up lanes.
+- Outcome:
+  `docs/planning/soar-v1-sale-readiness-contract.md` now defines the bounded
+  v1.0 gate model for Soar inside `11 Innovation`, and
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`
+  records the deduplicated current blockers.
+- Current decision:
+  Soar is `NO-GO` for v1.0 sale-readiness on Thursday, July 23, 2026 because
+  the green runtime proof applies to deployed SHA `b0b2c2ce...`, while local
+  candidate `40cfb8f2...` remains unproven and owner-acceptance is still gated
+  through `LUC-4103`.
+- Next step:
+  [LUC-1791](/LUC/issues/LUC-1791) owns exact-candidate provenance and
+  deploy-approval packet; [LUC-1793](/LUC/issues/LUC-1793) owns the
+  exact-candidate verification matrix and acceptance rerun path;
+  [LUC-1792](/LUC/issues/LUC-1792) owns owner-acceptance / protected-proof
+  gate review.
+- Evidence:
+  `history/tasks/luc-1787-sale-readiness-contract-and-gap-register-2026-07-23-task.md`;
+  `docs/planning/soar-v1-sale-readiness-contract.md`;
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`.
+
 ## 2026-07-23 LUC-27 Soar Build-To-Production Closeout
 
 - Status: `BLOCKED / PROJECT_TRUTH_ZERO_GAPS / PRODUCTION_RUNTIME_GREEN / RELEASE_PARITY_NOT_ACHIEVED`.
@@ -16996,3 +17068,31 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   no remaining action on `LUC-1223`. The preserved LUC-1220 proof still
   reports `/admin/users` as `FAIL`, which requires a separate runtime/product
   lane if still in scope.
+
+## 2026-07-23 LUC-1791 release-parity packet refreshed candidate truth
+
+- Mission:
+  `LUC-1791-EXACT-CANDIDATE-RELEASE-PARITY-PACKET-2026-07-23`.
+- Status:
+  `DONE / SUPERSEDED_40CFB8F2_CANDIDATE_RETIRED / CURRENT_CANDIDATE_PUBLICLY_ALIGNED /
+SRG_001_RESOLVED / SALE_READINESS_STILL_NO_GO`.
+- Scope:
+  Release coordination and source-of-truth repair only. No push, deploy,
+  restart, rollback, env edit, secret readback, protected credential use, or
+  production mutation.
+- Result:
+  the earlier same-day sale-readiness candidate
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is no longer the live release
+  target. Current truth on Thursday, July 23, 2026 is
+  `HEAD = origin/main = public production build-info gitSha =
+  ca712e98b70e157b643db4f57726a02821a140bc`. Release-parity packet scope is
+  closed; remaining sale-readiness blockers are protected
+  acceptance/supportability and owner-acceptance.
+- Evidence:
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
+- Residual:
+  `09 QVE` continues [LUC-1793](/LUC/issues/LUC-1793) for exact-candidate
+  protected acceptance/supportability proof; `10 SPA` continues
+  [LUC-1792](/LUC/issues/LUC-1792) for owner-acceptance and protected-proof
+  boundary closure.

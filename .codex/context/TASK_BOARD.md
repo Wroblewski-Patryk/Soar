@@ -1,3 +1,99 @@
+## 2026-07-23 LUC-1787 child outputs integrated and next execution lane delegated
+
+- Status: `DONE_READY / NO-GO_REMAINS / LIVE_FOLLOW_UP_LANE_CREATED`.
+- Scope:
+  integrate child outputs from `LUC-1791`, `LUC-1792`, and `LUC-1793` back
+  into the Soar v1.0 sale-readiness parent and leave a live next legal worker
+  handoff.
+- Integrated decision:
+  current exact candidate is
+  `ca712e98b70e157b643db4f57726a02821a140bc`; `SRG-001` release provenance is
+  resolved; remaining active gates are `SRG-002` protected
+  acceptance/supportability and `SRG-003` owner-acceptance.
+- New follow-up lane:
+  [LUC-1796](/LUC/issues/LUC-1796) now owns execution of the exact-candidate
+  acceptance rerun for `ca712e98...`.
+- Owner boundary:
+  [LUC-4103](/LUC/issues/LUC-4103) remains the only approved owner
+  method-selection and redacted owner-acceptance path.
+- Evidence:
+  `docs/planning/soar-v1-sale-readiness-contract.md`;
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`;
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/evidence/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23.md`;
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`.
+
+## 2026-07-23 LUC-1792 owner-acceptance and protected-proof gate review
+
+- Status: `DONE / KEEP_CURRENT_BOUNDARY / NO_ADDITIONAL_SECURITY_GATE`.
+- Scope:
+  security review of Soar v1.0 sale-readiness owner acceptance and
+  protected-proof wording.
+- Findings:
+  `LUC-4103` remains the correct owner-login method-selection and
+  owner-acceptance boundary; managed/admin protected proof remains a separate
+  read-only security gate and cannot substitute for owner acceptance.
+- Required wording:
+  sale-readiness language should explicitly require principal-class match for
+  owner acceptance and preserve redacted/fail-closed evidence rules.
+- Release impact:
+  no new standalone security gate was found; Soar still remains `NO-GO` until
+  exact-candidate parity completes and the approved `LUC-4103` path runs.
+- Evidence:
+  `history/evidence/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23.md`;
+  `history/tasks/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1793 Soar v1.0 exact-candidate verification matrix
+
+- Status: `DONE / MATRIX_PUBLISHED / WAITING_DEPLOY_AND_PROTECTED_RERUN`.
+- Scope:
+  translate `SRG-002` from the Soar v1.0 sale-readiness contract into one
+  exact-candidate QA verification matrix and acceptance rerun path bound to
+  local candidate `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa`.
+- Outcome:
+  published `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`
+  plus task packet
+  `history/tasks/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23-task.md`.
+- Current decision:
+  QA scope is now frozen, but execution remains blocked on
+  [LUC-1791](/LUC/issues/LUC-1791) exact-candidate deploy parity and
+  [LUC-1792](/LUC/issues/LUC-1792) / [LUC-4103](/LUC/issues/LUC-4103)
+  protected-owner acceptance boundaries.
+- Verification rule:
+  no historical July 23 runtime proof may be reused for local candidate
+  `40cfb8f2...`; future smoke must prove the exact deployed candidate SHA
+  across API, Web build-info, worker readiness, protected routes, dashboard,
+  and one paper-safe write path.
+- Evidence:
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`;
+  `history/tasks/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1787 Soar v1.0 sale-readiness contract and verified gap register
+
+- Status: `VERIFIED / BLOCKED_ON_FOLLOW_UPS`.
+- Scope:
+  create a versioned Soar v1.0 sale-readiness contract, produce a
+  deduplicated evidence-backed gap register, and delegate next legal worker
+  lanes.
+- Outcome:
+  canonical contract added at
+  `docs/planning/soar-v1-sale-readiness-contract.md`; deduplicated blocker
+  packet added at
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`.
+- Current decision:
+  Soar remains `NO-GO` on Thursday, July 23, 2026 because release-ready proof
+  exists for deployed SHA `b0b2c2ce...`, not for local candidate
+  `40cfb8f2...`, and owner-acceptance remains gated through `LUC-4103`.
+- Follow-up lanes:
+  [LUC-1791](/LUC/issues/LUC-1791) Release/EDL exact-candidate parity packet;
+  [LUC-1793](/LUC/issues/LUC-1793) QVE exact-candidate verification matrix;
+  [LUC-1792](/LUC/issues/LUC-1792) SPA owner-acceptance/protected-proof gate
+  review.
+- Evidence:
+  `history/tasks/luc-1787-sale-readiness-contract-and-gap-register-2026-07-23-task.md`;
+  `docs/planning/soar-v1-sale-readiness-contract.md`;
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`.
+
 ## 2026-07-23 LUC-1739 independent verification of release identity candidate 46557f4a
 
 - Status: `DONE`.
@@ -48938,3 +49034,32 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `history/tasks/luc-1528-dashboard-overview-page-browser-review-2026-07-20-task.md`;
   `history/evidence/luc-1528-local-protected-route-action-proof-matrix-2026-07-20.md`;
   `history/artifacts/luc-1528-local-protected-route-action-proof-matrix-2026-07-20.json`.
+
+## 2026-07-23 LUC-1791 exact-candidate release-parity packet
+
+- Status: `done / SUPERSEDED_CANDIDATE_RETIRED / CURRENT_CANDIDATE_PUBLICLY_ALIGNED / SRG_001_RESOLVED`.
+- Scope:
+  release coordination and source-of-truth refresh for Soar v1.0
+  sale-readiness candidate identity. No push, deploy, restart, rollback, env
+  edit, secret readback, or protected production mutation.
+- Result:
+  the old sale-readiness candidate
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is no longer the active release
+  target. Current truth on Thursday, July 23, 2026 is
+  `HEAD = origin/main = public production build-info gitSha =
+  ca712e98b70e157b643db4f57726a02821a140bc`. This closes the EDL release-parity
+  packet scope and resolves `SRG-001` for the current candidate.
+- Verification:
+  `git rev-parse HEAD` -> `ca712e98b70e157b643db4f57726a02821a140bc`;
+  `git rev-parse origin/main` -> same SHA;
+  `git rev-list --left-right --count 40cfb8f2...ca712e98` -> `0 5`;
+  `Invoke-RestMethod https://api.soar.luckysparrow.ch/health` -> `{"status":"ok","service":"api"}`;
+  `Invoke-RestMethod https://api.soar.luckysparrow.ch/ready` -> `{"status":"ready","service":"api"}`;
+  `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` -> `gitSha=ca712e98...`, `gitRef=main`, `metadataSource=env-runtime`, checked at `2026-07-23T13:50:26.096Z`.
+- Remaining blockers:
+  [LUC-1793](/LUC/issues/LUC-1793) exact-candidate protected
+  acceptance/supportability proof and
+  [LUC-1792](/LUC/issues/LUC-1792) owner-acceptance / protected-proof boundary.
+- Evidence:
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.

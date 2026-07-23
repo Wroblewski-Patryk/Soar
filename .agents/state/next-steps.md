@@ -1,3 +1,62 @@
+## 2026-07-23 LUC-1787 integrated next steps after child completion
+
+- Current exact sale-readiness candidate is
+  `ca712e98b70e157b643db4f57726a02821a140bc`, not the earlier superseded
+  `40cfb8f2...`.
+- `SRG-001` release provenance is resolved for the current candidate.
+- Immediate live next lanes are now:
+  [LUC-1796](/LUC/issues/LUC-1796) for exact-candidate
+  protected acceptance/supportability execution and
+  [LUC-4103](/LUC/issues/LUC-4103) for owner method selection plus redacted
+  owner-acceptance proof.
+- Truthful PM disposition remains:
+  `NO-GO / SRG-002_PENDING_EXECUTION / SRG-003_OWNER_ACCEPTANCE_PENDING`.
+- Evidence:
+  `docs/planning/soar-v1-sale-readiness-contract.md`;
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`;
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/evidence/luc-1792-owner-acceptance-and-protected-proof-gate-review-2026-07-23.md`;
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`.
+
+## 2026-07-23 LUC-1793 Soar v1.0 exact-candidate verification matrix published
+
+- `09 QVE` has frozen the exact-candidate QA rerun path in
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`.
+- The matrix binds all future QA proof to candidate SHA
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` and blocks reuse of historical
+  proof from deployed SHA `b0b2c2ce...`.
+- Immediate dependency order remains:
+  [LUC-1791](/LUC/issues/LUC-1791) deploy parity,
+  [LUC-1792](/LUC/issues/LUC-1792) protected-scope review,
+  [LUC-4103](/LUC/issues/LUC-4103) owner-login method,
+  then QVE rerun of the published matrix.
+- Evidence:
+  `history/evidence/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23.md`;
+  `history/tasks/luc-1793-soar-v1-exact-candidate-verification-matrix-2026-07-23-task.md`.
+
+## 2026-07-23 LUC-1787 Soar v1.0 sale-readiness contract established
+
+- Soar now has an explicit PM-owned v1.0 sale-readiness contract at
+  `docs/planning/soar-v1-sale-readiness-contract.md`.
+- Current disposition is `NO-GO`:
+  green runtime proof exists for deployed SHA
+  `b0b2c2ce9477a32fcda7717f447ad46aa4327589`, but local candidate
+  `40cfb8f2cf913966f9c7159b49ae256b2aebbcaa` is 142 commits ahead and not yet
+  independently reviewed, deployed, and re-smoked.
+- Deduplicated active gaps:
+  `SRG-001` release provenance parity,
+  `SRG-002` exact-candidate protected acceptance/supportability proof,
+  `SRG-003` owner-acceptance via `LUC-4103`.
+- Immediate next lane order:
+  [LUC-1791](/LUC/issues/LUC-1791) `09 EDL` release-parity packet,
+  [LUC-1793](/LUC/issues/LUC-1793) `09 QVE` exact-candidate verification
+  matrix,
+  [LUC-1792](/LUC/issues/LUC-1792) `10 SPA` owner-acceptance /
+  protected-proof gate review.
+- Evidence:
+  `history/evidence/luc-1787-soar-v1-sale-readiness-gap-register-2026-07-23.md`;
+  `history/tasks/luc-1787-sale-readiness-contract-and-gap-register-2026-07-23-task.md`.
+
 ## 2026-07-23 LUC-27 build-to-production parent blocked on release parity
 
 - All first-class `LUC-27` blockers are terminal and the generated project
@@ -12955,3 +13014,19 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-621-account-access-registeruser-proof-2026-07-12.md`;
   `history/tasks/luc-621-account-access-registeruser-proof-2026-07-12-task.md`.
+
+## 2026-07-23 LUC-1791 release-parity packet
+
+- The old sale-readiness candidate `40cfb8f2...` is superseded and must not be
+  used as the active release target.
+- Current exact candidate truth on Thursday, July 23, 2026 is
+  `ca712e98b70e157b643db4f57726a02821a140bc`, aligned across local `HEAD`,
+  `origin/main`, and public production build-info.
+- `SRG-001` release provenance is resolved for the current candidate.
+- The next legal sale-readiness lanes are now:
+  [LUC-1793](/LUC/issues/LUC-1793) for exact-candidate protected
+  acceptance/supportability proof and
+  [LUC-1792](/LUC/issues/LUC-1792) for owner-acceptance.
+- Evidence:
+  `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
+  `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
