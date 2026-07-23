@@ -1,3 +1,30 @@
+## 2026-07-23 LUC-1739 independent verification of release identity candidate 46557f4a
+
+- Independent local QA verification for exact candidate
+  `46557f4a1cade4492b0e2ec164d4fcfab2628637` is complete.
+- Verified local scope:
+  `apps/api/src/lib/releaseIdentity.ts` accepts only full 40-character SHAs;
+  API `/health`, `/ready`, and `/ready/details` expose the same
+  `release.gitSha`; worker readiness rejects mixed release identities; and
+  deploy smoke checks fail closed when API, Web build-info, or worker
+  heartbeats do not match the expected candidate SHA.
+- Focused proof passed:
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts src/router/workers-health-readiness.test.ts src/workers/workerHeartbeat.test.ts`
+  (`4` files / `16` tests) and
+  `node --test scripts/deploySmokeCheck.test.mjs` (`4` tests).
+- One incorrect runner attempt was recorded and corrected in the same
+  heartbeat:
+  `pnpm exec vitest run scripts/deploySmokeCheck.test.mjs` failed with
+  `No test suite found` because that file uses the built-in `node:test`
+  runner.
+- Release-safe boundary:
+  this verifies the local candidate contract only. It does not prove GitHub
+  parity, pushed-image provenance, deployed freshness, or production smoke for
+  `46557f4a`.
+- Evidence:
+  `history/tasks/luc-1739-release-identity-candidate-46557f4a-independent-verification-2026-07-23-task.md`;
+  `history/evidence/luc-1739-release-identity-candidate-46557f4a-independent-verification-2026-07-23.md`.
+
 ## 2026-07-23 LUC-27 build-to-production parent blocked closeout
 
 - The Soar parent build-to-production mission is runtime-green but remains

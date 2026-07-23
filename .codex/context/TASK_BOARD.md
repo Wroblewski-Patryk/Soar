@@ -1,3 +1,32 @@
+## 2026-07-23 LUC-1739 independent verification of release identity candidate 46557f4a
+
+- Status: `DONE`.
+- Scope:
+  QA-owned local verification of exact candidate
+  `46557f4a1cade4492b0e2ec164d4fcfab2628637` for the release-identity
+  contract added by commit `ops: attest Soar runtime release identity`.
+- Verified outcome:
+  release identity fails closed for abbreviated SHAs, API health/readiness
+  surfaces expose the exact runtime `release.gitSha`, worker readiness rejects
+  mixed worker/API release identities, and deploy smoke checks enforce the
+  expected candidate SHA for API, Web build-info, and worker heartbeats.
+- Commands:
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts src/router/workers-health-readiness.test.ts src/workers/workerHeartbeat.test.ts`
+  passed (`4` files / `16` tests);
+  `node --test scripts/deploySmokeCheck.test.mjs` passed (`4` tests).
+- Recorded correction:
+  `pnpm exec vitest run scripts/deploySmokeCheck.test.mjs` failed with
+  `No test suite found` because the smoke test file is authored for
+  `node:test`, not Vitest; the corrected Node runner passed in the same
+  heartbeat.
+- Boundary:
+  this issue closes local candidate verification only. GitHub parity, push,
+  deployment, protected production smoke, and release sign-off remain outside
+  this lane.
+- Evidence:
+  `history/tasks/luc-1739-release-identity-candidate-46557f4a-independent-verification-2026-07-23-task.md`;
+  `history/evidence/luc-1739-release-identity-candidate-46557f4a-independent-verification-2026-07-23.md`.
+
 ## 2026-07-23 LUC-27 Soar build-to-production parent blocked closeout
 
 - Status: `BLOCKED / RELEASE_PARITY_NOT_ACHIEVED`.
