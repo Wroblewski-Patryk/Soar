@@ -1,3 +1,25 @@
+## 2026-07-23 LUC-1692 prove dashboard overview needs-browser-review for src-app-dashboard-profile-page-tsx
+
+- Status: `DONE`.
+- Scope:
+  QA-owned exact browser-proof refresh for the generated Dashboard overview
+  `needs_browser_review` row on `apps/web/src/app/dashboard/profile/page.tsx`
+  (`route:page-tsx:10f9e10267`).
+- Outcome:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/profile/page.test.tsx --reporter=verbose`
+  passed (`1` file, `2` tests), proving the exact profile route still renders
+  the canonical dashboard shell with the default basic tab and honors the
+  `#api` hash entrypoint for API key management. A fresh same-day
+  protected-route packet was then generated with
+  `node scripts/runLocalProtectedRouteActionProof.mjs --issue LUC-1692 --today 2026-07-23 --clusters profile --intercept-fixture-api`,
+  and the exact `SOAR-ACTION-VISIT-PAGE-PROFILE` rows passed for both expected
+  states: unauthenticated fail-closed to `/auth/login` and authenticated pass
+  to `/dashboard/profile`.
+- Evidence:
+  `history/tasks/luc-1692-dashboard-profile-page-browser-review-2026-07-23-task.md`;
+  `history/evidence/luc-1692-dashboard-profile-page-browser-review-2026-07-23.md`;
+  `history/artifacts/luc-1692-local-protected-route-action-proof-matrix-2026-07-23.json`.
+
 ## 2026-07-22 LUC-1686 prove dashboard overview needs-browser-review for dashboard-markets-id-edit-page-tsx
 
 - Status: `DONE`.

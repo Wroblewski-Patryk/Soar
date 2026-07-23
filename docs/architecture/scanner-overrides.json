@@ -143,6 +143,18 @@
       ]
     },
     {
+      "path": "apps/web/src/app/dashboard/reports/page.tsx",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified route:page-tsx:77f43bb7cd through LUC-1694. Focused reports page test passed 1/1. The first browser run timed out in CDP and remains recorded; a controlled retry passed unauthenticated fail-closed and authenticated /dashboard/reports access.",
+      "evidence": [
+        "history/artifacts/luc-1694-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "history/artifacts/luc-1694-retry-local-protected-route-action-proof-matrix-2026-07-23.json",
+        "history/evidence/luc-1694-retry-local-protected-route-action-proof-matrix-2026-07-23.md",
+        "apps/web/src/app/dashboard/reports/page.test.tsx"
+      ]
+    },
+    {
       "path": "apps/web/src/app/dashboard/bots/create/page.tsx",
       "status": "verified",
       "owner": "QA Regression Lead",

@@ -1,3 +1,25 @@
+## 2026-07-23 LUC-1692 dashboard profile page browser-review proof refresh
+
+- `apps/web/src/app/dashboard/profile/page.tsx`
+  (`route:page-tsx:10f9e10267`) now has exact QA evidence for the generated
+  Dashboard overview browser-review row.
+- Focused route verification is green:
+  `corepack pnpm --filter web exec vitest run src/app/dashboard/profile/page.test.tsx --reporter=verbose`
+  passed `1` file / `2` tests and proved the page still renders the canonical
+  profile shell, defaults to the basic tab, and honors the `#api` deep-link.
+- The authoritative browser proof for this heartbeat is the fresh same-day
+  `LUC-1692` local protected-route packet:
+  `SOAR-ACTION-VISIT-PAGE-PROFILE` passed on `/dashboard/profile` with
+  expected unauthenticated fail-closed redirect to `/auth/login` and
+  authenticated pass at `/dashboard/profile`.
+- This heartbeat changed proof evidence and QA state only; it did not mutate
+  runtime code, deploy state, production auth, or generated completion/truth
+  indexes.
+- Evidence:
+  `history/evidence/luc-1692-dashboard-profile-page-browser-review-2026-07-23.md`;
+  `history/tasks/luc-1692-dashboard-profile-page-browser-review-2026-07-23-task.md`;
+  `history/artifacts/luc-1692-local-protected-route-action-proof-matrix-2026-07-23.json`.
+
 ## 2026-07-22 LUC-1686 dashboard market edit page browser-review proof refresh
 
 - `apps/web/src/app/dashboard/markets/[id]/edit/page.tsx`

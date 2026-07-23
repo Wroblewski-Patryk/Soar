@@ -78,6 +78,7 @@ apps/web/src/app/dashboard/markets/[id]/edit/page.tsx,docs/modules/web-markets.m
 apps/web/src/app/dashboard/markets/create/page.tsx,docs/modules/web-markets.md
 apps/web/src/app/dashboard/markets/list/page.tsx,docs/modules/web-markets.md
 apps/web/src/app/dashboard/profile/page.tsx,docs/modules/web-profile.md
+apps/web/src/app/dashboard/reports/page.tsx,docs/modules/web-reports.md
 apps/web/src/app/dashboard/bots/new/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/[id]/page.tsx,docs/modules/web-bots.md
 apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx,docs/modules/web-bots.md

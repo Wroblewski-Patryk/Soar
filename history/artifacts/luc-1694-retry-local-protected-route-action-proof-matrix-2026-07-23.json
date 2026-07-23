@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "today": "2026-07-23",
+  "generatedAt": "2026-07-23T00:32:08.949Z",
+  "issue": "LUC-1694-retry",
+  "dynamicFixtures": {
+    "enabled": false,
+    "apiInterception": true,
+    "fixtureIds": []
+  },
+  "clusters": [
+    {
+      "name": "reports",
+      "actions": [
+        "SOAR-ACTION-VISIT-PAGE-REPORTS"
+      ],
+      "apiRoutes": [
+        "GET /dashboard/reports/cross-mode-performance",
+        "GET /dashboard/backtests/runs",
+        "GET /dashboard/backtests/runs/:id/report"
+      ],
+      "existingTests": [
+        "app/dashboard/reports/page.test.tsx",
+        "PerformanceReportsView.test.tsx",
+        "apps/api/src/modules/reports/reports.e2e.test.ts"
+      ],
+      "docs": [
+        "docs/modules/web-reports.md",
+        "docs/modules/api-reports.md"
+      ]
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:3217",
+  "staticMapping": {
+    "result": "PASS",
+    "missingActions": [],
+    "missingFiles": []
+  },
+  "routes": [
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-REPORTS",
+      "route": "/dashboard/reports",
+      "result": "PASS",
+      "observedPath": "/auth/login",
+      "notes": "unauthenticated protected reports list route fails closed to login"
+    },
+    {
+      "actionId": "SOAR-ACTION-VISIT-PAGE-REPORTS",
+      "route": "/dashboard/reports",
+      "result": "PASS",
+      "observedPath": "/dashboard/reports",
+      "statusCode": null,
+      "fixtureId": null,
+      "fixtureKind": null,
+      "notes": "route reached expected reports route with local cookie gate"
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/web/src/app/dashboard/reports/page.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/app/dashboard/reports/page.test.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx",
+      "present": true
+    },
+    {
+      "path": "apps/web/src/features/reports/components/PerformanceReportsView.test.tsx",
+      "present": true
+    },
+    {
+      "path": "docs/modules/web-reports.md",
+      "present": true
+    },
+    {
+      "path": "docs/modules/api-reports.md",
+      "present": true
+    }
+  ],
+  "blockers": []
+}
