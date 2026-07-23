@@ -5,8 +5,8 @@
 - Title: Fix non-v1 local readiness keyring version inference
 - Task Type: fix
 - Current Stage: verification
-- Status: DONE
-- Owner: Review
+- Status: VERIFIED
+- Owner: 09 EDL
 - Depends on: none
 - Priority: P0
 - Module Confidence Rows: not updated; scoped local dev helper fix
@@ -31,8 +31,8 @@ Keep local readiness fail-closed while correctly inferring the single configured
 
 ## Definition of Done
 - [x] local readiness overlay infers the single configured keyring version when active version is absent
-- [x] API critical secret readiness accepts the same single-version non-`v1` local keyring case
-- [x] focused automated tests prove both paths
+- [x] production/API critical secret readiness semantics remain unchanged
+- [x] focused automated script regression test proves the non-`v1` path
 
 ## Forbidden
 - defaulting multi-version keyrings to an arbitrary version
@@ -41,12 +41,12 @@ Keep local readiness fail-closed while correctly inferring the single configured
 
 ## Validation Evidence
 - Tests: `node --test scripts/dev-backend.test.mjs`
-- Manual checks: code-path review of `buildLocalReadinessEnv()` and confirmation that production critical-readiness files are unchanged
+- Manual checks: code-path review of `buildLocalReadinessEnv()` and zero diff confirmation for `apps/api/src/config/criticalSecretsReadiness.*`
 - Screenshots/logs: see `history/evidence/luc-1717-non-v1-local-readiness-keyring-version-inference-2026-07-23.md`
 - High-risk checks: not applicable; local/dev readiness only
 - Reality status: verified
 
 ## Result Report
 - Added single-version keyring inference to the local backend/dev readiness overlay.
-- Aligned API critical-secret readiness with the same single-version inference rule.
-- Added focused regression tests for the non-`v1` path.
+- Kept `apps/api/src/config/criticalSecretsReadiness.*` on `HEAD` semantics per board scope correction.
+- Added the focused script regression test for the non-`v1` path.
