@@ -14144,3 +14144,27 @@ no runtime mutation`.
   high for source-of-truth coverage of the bots auth bootstrap helper
   contract. Remaining `registerAndLogin` helper rows in adjacent modules are
   separate follow-ups.
+## 2026-07-24 LUC-1814 Web Build-Info Workspace Provenance Repair
+
+- Module row: SOAR-OPERATIONS-001 / Web build-info release provenance.
+- Status delta:
+  `DONE / VERIFIED / WORKSPACE_ARTIFACT_SYNC_REPAIRED`.
+- Confidence update:
+  [LUC-1814](/LUC/issues/LUC-1814) confirmed the Soar workspace already
+  generated `apps/web/.build-meta/BUILD_META.json`, but the Web production
+  wrapper did not copy that metadata into `apps/web/.next/BUILD_META.json`.
+  The wrapper now performs that post-build sync so runtime `/api/build-info`
+  can continue to serve build-time metadata from the artifact tree instead of
+  drifting to diagnostic-only runtime fallback when `.build-meta` is absent at
+  runtime.
+- Verification:
+  `node --test scripts/runWebNextProductionCommand.test.mjs` PASS (`8/8`);
+  `pnpm --filter web exec vitest run src/app/api/build-info/route.test.ts`
+  PASS (`2/2`);
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`8/8`).
+- Residual:
+  production has not been rebuilt or redeployed in this task, so public
+  readback still needs a later deploy lane to prove non-diagnostic
+  `metadataSource` on the selected release SHA.
+- Evidence:
+  `history/tasks/luc-1814-diagnose-and-repair-soar-web-build-info-provenance-in-soar-workspace-2026-07-24-task.md`.

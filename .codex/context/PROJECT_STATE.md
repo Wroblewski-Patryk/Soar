@@ -1,3 +1,24 @@
+## 2026-07-24 LUC-1814 workspace web build-info provenance repair
+
+- Root cause confirmed:
+  `scripts/runWebNextProductionCommand.mjs` generated
+  `apps/web/.build-meta/BUILD_META.json` before `next build`, but it did not
+  promote that file into `apps/web/.next/BUILD_META.json`, even though the
+  runtime route checks both locations.
+- Code repair:
+  the Web production wrapper now copies `.build-meta/BUILD_META.json` into
+  `.next/BUILD_META.json` after a successful `next build`.
+- Safety boundary preserved:
+  no change was made to `metadataSource` acceptance policy; diagnostic
+  `env-runtime` remains non-authoritative deploy provenance.
+- Verification:
+  `node --test scripts/runWebNextProductionCommand.test.mjs` PASS (`8/8`);
+  `pnpm --filter web exec vitest run src/app/api/build-info/route.test.ts`
+  PASS (`2/2`);
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`8/8`).
+- Evidence:
+  `history/tasks/luc-1814-diagnose-and-repair-soar-web-build-info-provenance-in-soar-workspace-2026-07-24-task.md`.
+
 ## 2026-07-23 LUC-1800 source-control closure for LUC-1787-LUC-1796
 
 - Local source-control closure classified the current dirty tree as one

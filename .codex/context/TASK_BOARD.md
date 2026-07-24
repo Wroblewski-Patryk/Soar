@@ -1,3 +1,23 @@
+## 2026-07-24 LUC-1814 diagnose and repair Soar web build-info provenance in Soar workspace
+
+- Status:
+  `DONE / VERIFIED / BUILD_ARTIFACT_PROVENANCE_SYNC_RESTORED`.
+- Scope:
+  diagnose why Web build metadata in the Soar workspace could regress to
+  diagnostic `env-runtime` provenance and repair the bounded workspace build
+  path without weakening release-gate policy.
+- Outcome:
+  `scripts/runWebNextProductionCommand.mjs` now copies
+  `apps/web/.build-meta/BUILD_META.json` into `apps/web/.next/BUILD_META.json`
+  after a successful `next build`, and focused regression coverage proves the
+  sync.
+- Validation:
+  `node --test scripts/runWebNextProductionCommand.test.mjs`,
+  `pnpm --filter web exec vitest run src/app/api/build-info/route.test.ts`,
+  `node --test scripts/waitForWebBuildInfo.test.mjs`.
+- Evidence:
+  `history/tasks/luc-1814-diagnose-and-repair-soar-web-build-info-provenance-in-soar-workspace-2026-07-24-task.md`.
+
 ## 2026-07-23 LUC-1800 source-control closure for LUC-1787-LUC-1796
 
 - Status: `DONE / LOCAL_COMMIT_VALID / PUSH_HELD`.

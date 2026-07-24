@@ -2,7 +2,12 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import test from 'node:test';
 
-import { main, parseArgs, run } from './runWebNextProductionCommand.mjs';
+import {
+  main,
+  parseArgs,
+  run,
+  syncBuildMetadataIntoNextOutput,
+} from './runWebNextProductionCommand.mjs';
 
 test('parseArgs removes the separator before forwarding Next args', () => {
   assert.deepEqual(parseArgs(['start', '--', '-p', '4000']), {
@@ -88,6 +93,7 @@ test('main rejects unsupported commands without spawning Next', async () => {
 
 test('main writes build metadata before running the Next production build', async () => {
   const calls = [];
+  const syncCalls = [];
   const repoRoot = path.resolve('repo-root');
 
   const result = await main({
@@ -97,6 +103,9 @@ test('main writes build metadata before running the Next production build', asyn
     repoRoot,
     runCommand: async (command, args, options) => {
       calls.push({ command, args, options });
+    },
+    syncBuildMetadata: async (webDir) => {
+      syncCalls.push(webDir);
     },
   });
 
@@ -123,6 +132,7 @@ test('main writes build metadata before running the Next production build', asyn
       },
     },
   ]);
+  assert.deepEqual(syncCalls, [path.join(repoRoot, 'apps', 'web')]);
 });
 
 test('main adds production start host and port defaults unless explicitly supplied', async () => {
@@ -189,4 +199,31 @@ test('main fails closed when a spawned production command rejects', async () => 
   assert.equal(result.status, 1);
   assert.deepEqual(exits, [1]);
   assert.deepEqual(errors, ['next failed']);
+});
+
+test('syncBuildMetadataIntoNextOutput copies build metadata into the Next output tree', async () => {
+  const mkdirCalls = [];
+  const copyCalls = [];
+
+  await syncBuildMetadataIntoNextOutput('repo/apps/web', {
+    mkdirImpl: async (target, options) => {
+      mkdirCalls.push({ target, options });
+    },
+    copyFileImpl: async (source, destination) => {
+      copyCalls.push({ source, destination });
+    },
+  });
+
+  assert.deepEqual(mkdirCalls, [
+    {
+      target: path.join('repo/apps/web', '.next'),
+      options: { recursive: true },
+    },
+  ]);
+  assert.deepEqual(copyCalls, [
+    {
+      source: path.join('repo/apps/web', '.build-meta', 'BUILD_META.json'),
+      destination: path.join('repo/apps/web', '.next', 'BUILD_META.json'),
+    },
+  ]);
 });

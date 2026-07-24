@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { copyFile, mkdir } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -43,6 +44,21 @@ export const run = (cmd, cmdArgs, deps = {}) =>
     });
   });
 
+export const syncBuildMetadataIntoNextOutput = async (webDir, deps = {}) => {
+  const {
+    mkdirImpl = mkdir,
+    copyFileImpl = copyFile,
+  } = deps;
+
+  const metadataDir = path.join(webDir, '.build-meta');
+  const nextDir = path.join(webDir, '.next');
+  await mkdirImpl(nextDir, { recursive: true });
+  await copyFileImpl(
+    path.join(metadataDir, 'BUILD_META.json'),
+    path.join(nextDir, 'BUILD_META.json'),
+  );
+};
+
 export const main = async (deps = {}) => {
   const {
     argv = process.argv.slice(2),
@@ -53,6 +69,7 @@ export const main = async (deps = {}) => {
     parseArgsFn = parseArgs,
     repoRoot = path.resolve(import.meta.dirname, '..'),
     runCommand = run,
+    syncBuildMetadata = syncBuildMetadataIntoNextOutput,
   } = deps;
 
   const { command, args } = parseArgsFn(argv);
@@ -91,6 +108,9 @@ export const main = async (deps = {}) => {
       [nextCli, command, ...startArgs],
       { cwd: webDir, env: productionEnv },
     );
+    if (command === 'build') {
+      await syncBuildMetadata(webDir);
+    }
     return { status: 0, command, args: startArgs };
   } catch (error) {
     consoleImpl.error(error instanceof Error ? error.message : String(error));
