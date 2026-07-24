@@ -25,8 +25,12 @@ RUN rm -f apps/api/core apps/api/core.*
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
 ARG SOURCE_COMMIT
-ENV SOURCE_COMMIT=$SOURCE_COMMIT
-RUN node -e "if (!/^[0-9a-f]{40}$/i.test(process.env.SOURCE_COMMIT || '')) process.exit(1)"
+ARG COOLIFY_GIT_COMMIT_SHA
+ARG COOLIFY_COMMIT_SHA
+ARG GITHUB_SHA
+RUN SOURCE_COMMIT_RESOLVED="${SOURCE_COMMIT:-${COOLIFY_GIT_COMMIT_SHA:-${COOLIFY_COMMIT_SHA:-$GITHUB_SHA}}}" \
+    && node -e "if (!/^[0-9a-f]{40}$/i.test(process.argv[1] || '')) process.exit(1)" "$SOURCE_COMMIT_RESOLVED" \
+    && printf '%s\n' "$SOURCE_COMMIT_RESOLVED" > /etc/soar-source-commit
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
@@ -34,9 +38,10 @@ COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/p
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
 COPY --from=build --chown=node:node /app/apps/api /app/apps/api
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
-RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars && chown -R node:node /app
+RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars \
+    && chown -R node:node /app/apps/api/tmp /app/apps/api/public/avatars
 
 EXPOSE 3001
 WORKDIR /app/apps/api
 USER node
-CMD ["node", "scripts/start-with-migrate.mjs"]
+CMD ["sh", "-c", "export SOURCE_COMMIT=\"$(cat /etc/soar-source-commit)\"; exec node scripts/start-with-migrate.mjs"]

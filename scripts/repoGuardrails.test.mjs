@@ -6,6 +6,7 @@ import test from "node:test";
 
 import {
   validateApiStartScript,
+  validateApiDockerfileBuildMetadataArgs,
   validateArchitectureGraphDriftCoverage,
   validateOpsScriptsDoNotAcceptSecretCliArgs,
   validateRuntimeDockerfilesRunAsNonRoot,
@@ -196,6 +197,49 @@ test("validateWebDockerfileBuildMetadataArgs rejects unforwarded Coolify commit 
   assert.match(errors[0], /COOLIFY_GIT_COMMIT_SHA/);
   assert.match(errors[0], /COOLIFY_COMMIT_SHA/);
   assert.match(errors[0], /GITHUB_SHA/);
+});
+
+test("validateApiDockerfileBuildMetadataArgs accepts immutable SHA fallbacks and scoped ownership", () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-api-build-meta-safe-"));
+  const dockerfilePath = path.join(rootDir, "apps/api/Dockerfile");
+  fs.mkdirSync(path.dirname(dockerfilePath), { recursive: true });
+  fs.writeFileSync(
+    dockerfilePath,
+    [
+      "FROM node:20-bookworm-slim AS runtime",
+      "ARG SOURCE_COMMIT",
+      "ARG COOLIFY_GIT_COMMIT_SHA",
+      "ARG COOLIFY_COMMIT_SHA",
+      "ARG GITHUB_SHA",
+      'RUN SOURCE_COMMIT_RESOLVED="${SOURCE_COMMIT:-${COOLIFY_GIT_COMMIT_SHA:-${COOLIFY_COMMIT_SHA:-$GITHUB_SHA}}}" && printf \'%s\\n\' "$SOURCE_COMMIT_RESOLVED" > /etc/soar-source-commit',
+      "RUN chown -R node:node /app/apps/api/tmp /app/apps/api/public/avatars",
+      'CMD ["sh", "-c", "export SOURCE_COMMIT=\\"$(cat /etc/soar-source-commit)\\"; exec node scripts/start-with-migrate.mjs"]',
+    ].join("\n"),
+  );
+
+  assert.deepEqual(validateApiDockerfileBuildMetadataArgs({ rootDir }), []);
+});
+
+test("validateApiDockerfileBuildMetadataArgs rejects missing aliases and broad app chown", () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-api-build-meta-unsafe-"));
+  const dockerfilePath = path.join(rootDir, "apps/api/Dockerfile");
+  fs.mkdirSync(path.dirname(dockerfilePath), { recursive: true });
+  fs.writeFileSync(
+    dockerfilePath,
+    [
+      "FROM node:20-bookworm-slim AS runtime",
+      "ARG SOURCE_COMMIT",
+      'RUN SOURCE_COMMIT_RESOLVED="$SOURCE_COMMIT" && printf \'%s\\n\' "$SOURCE_COMMIT_RESOLVED" > /etc/soar-source-commit',
+      "RUN chown -R node:node /app",
+      'CMD ["sh", "-c", "export SOURCE_COMMIT=\\"$(cat /etc/soar-source-commit)\\"; exec node scripts/start-with-migrate.mjs"]',
+    ].join("\n"),
+  );
+
+  const errors = validateApiDockerfileBuildMetadataArgs({ rootDir });
+
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /COOLIFY_GIT_COMMIT_SHA/);
+  assert.match(errors[0], /Broad recursive \/app chown present: yes/);
 });
 
 test("validateWebDockerfileBuildMetadataArgs rejects forbidden build-stage git metadata copies", () => {

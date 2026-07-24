@@ -51,6 +51,7 @@ const DUPLICATE_HELPER_SNAPSHOT_PATH =
   "history/artifacts/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
 const API_PACKAGE_JSON_PATH = "apps/api/package.json";
+const API_DOCKERFILE_PATH = "apps/api/Dockerfile";
 const WEB_PACKAGE_JSON_PATH = "apps/web/package.json";
 const WEB_DOCKERFILE_PATH = "apps/web/Dockerfile";
 const WEB_PRODUCTION_START_WRAPPER = "scripts/runWebNextProductionCommand.mjs";
@@ -693,6 +694,58 @@ export const validateWebDockerfileBuildMetadataArgs = ({
       ];
 };
 
+export const validateApiDockerfileBuildMetadataArgs = ({
+  rootDir = ROOT_DIR,
+  apiDockerfilePath = API_DOCKERFILE_PATH,
+} = {}) => {
+  const dockerfileAbsolute = path.join(rootDir, apiDockerfilePath);
+
+  if (!fs.existsSync(dockerfileAbsolute)) {
+    return [`Missing API Dockerfile: ${apiDockerfilePath}`];
+  }
+
+  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
+  const runtimeStage = content.split(/(?:^|\n)FROM\s+\S+\s+AS\s+runtime\b/i)[1] ?? "";
+  if (!runtimeStage) {
+    return [`${apiDockerfilePath} must define a runtime stage for the API production image.`];
+  }
+
+  const requiredArgs = [
+    "SOURCE_COMMIT",
+    "COOLIFY_GIT_COMMIT_SHA",
+    "COOLIFY_COMMIT_SHA",
+    "GITHUB_SHA",
+  ];
+  const missingArgs = requiredArgs.filter(
+    (argName) => !new RegExp(String.raw`^\s*ARG\s+${escapeRegex(argName)}(?:\s|$)`, "m").test(runtimeStage),
+  );
+  const missingFallbacks = requiredArgs.filter(
+    (argName) => !new RegExp(String.raw`\$(?:\{)?${escapeRegex(argName)}\b`).test(runtimeStage),
+  );
+  const writesImmutableSourceCommit =
+    runtimeStage.includes("SOURCE_COMMIT_RESOLVED=") &&
+    runtimeStage.includes("> /etc/soar-source-commit");
+  const runtimeLoadsImmutableSourceCommit =
+    /CMD\s+\[[^\]]*SOURCE_COMMIT=.*\/etc\/soar-source-commit[^\]]*\]/m.test(runtimeStage);
+  const hasBroadRecursiveAppChown = /\bchown\s+-R\s+node:node\s+\/app(?:\s|$)/m.test(runtimeStage);
+
+  return missingArgs.length === 0 &&
+    missingFallbacks.length === 0 &&
+    writesImmutableSourceCommit &&
+    runtimeLoadsImmutableSourceCommit &&
+    !hasBroadRecursiveAppChown
+    ? []
+    : [
+        `API Dockerfile must resolve immutable image provenance from supported deploy SHA aliases and avoid a broad recursive /app ownership rewrite.\n  - Missing ARG declarations: ${
+          missingArgs.length ? missingArgs.join(", ") : "none"
+        }\n  - Missing SHA fallbacks: ${
+          missingFallbacks.length ? missingFallbacks.join(", ") : "none"
+        }\n  - Immutable source commit written: ${writesImmutableSourceCommit ? "yes" : "no"}\n  - Runtime loads immutable source commit: ${
+          runtimeLoadsImmutableSourceCommit ? "yes" : "no"
+        }\n  - Broad recursive /app chown present: ${hasBroadRecursiveAppChown ? "yes" : "no"}`,
+      ];
+};
+
 export const validateTrackedEnvFilePolicy = ({ trackedFiles = readTrackedFiles() } = {}) => {
   const offenders = trackedFiles.filter(
     (filePath) => TRACKED_ENV_FILE_RE.test(filePath) && !TRACKED_ENV_FILE_ALLOWLIST_RE.test(filePath)
@@ -774,6 +827,7 @@ const run = () => {
     ...validateCodeQualityGuardrailsDoc(),
     ...validateApiStartScript(),
     ...validateRuntimeDockerfilesRunAsNonRoot(),
+    ...validateApiDockerfileBuildMetadataArgs(),
     ...validateWebRuntimeImageIncludesStartWrapper(),
     ...validateWebDockerfileBuildMetadataArgs(),
     ...validateTrackedEnvFilePolicy({ trackedFiles }),
@@ -805,6 +859,7 @@ const run = () => {
   );
   console.log(`- API start script: OK (production-safe launcher)`);
   console.log(`- Runtime Dockerfiles: OK (non-root runtime user)`);
+  console.log(`- API deploy metadata: OK (immutable SHA fallback chain embedded in image)`);
   console.log(`- Web runtime image: OK (production start wrapper present)`);
   console.log(`- Web deploy metadata: OK (build args forwarded)`);
   console.log(`- Env file policy: OK (only redacted .env examples tracked)`);
