@@ -35,7 +35,6 @@ tags: [soar-map, page, frontend, verified_local]
 ## Relations
 
 - contains -> [[SOAR-COMP-BOTS-MANAGEMENT]] (verified_local)
-- redirects_to -> [[SOAR-PAGE-BOT-PREVIEW]] (verified_local)
 
 ## Evidence Rule
 
