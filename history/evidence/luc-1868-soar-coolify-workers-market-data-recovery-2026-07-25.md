@@ -129,3 +129,38 @@ the direct recovery lane is now blocked on Coolify mutation permission rather
 than missing diagnosis. Public Soar remained healthy, configuration drift is
 documented, and the acceptance blocker stays isolated to
 `workers-market-data`.
+
+## Resume-delta retry after blocker-resolution wake
+
+- Wake context:
+  `issue_blockers_resolved` resumed `LUC-1868` after
+  [LUC-1871](/LUC/issues/LUC-1871) routed the least-privilege owner path above
+  DRE.
+- Fresh pre-action readback at `2026-07-25T20:38Z` still showed:
+  - `workers-market-data -> exited:unhealthy`
+  - `last_online_at=2026-07-25 18:17:37`
+  - `restart_count=0`
+  - `git_commit_sha=ca712e98b70e157b643db4f57726a02821a140bc`
+- Fresh retry of the exact approved action:
+  - `POST /api/v1/applications/{workers-market-data}/start -> 403 Forbidden`
+  - response body: none returned to this runner
+- Post-retry polling for about fifty seconds still showed:
+  - `workers-market-data -> exited:unhealthy`
+  - unchanged `last_online_at=2026-07-25 18:17:37`
+  - unchanged `restart_count=0`
+- Fresh read-only logs probe after the retry:
+  - `GET /api/v1/applications/{uuid}/logs -> 400`
+  - message class remained `Application is not running.`
+- Public Soar remained healthy through the retry window:
+  - `GET https://soar.luckysparrow.ch -> 200`
+  - `GET https://api.soar.luckysparrow.ch/health -> 200`
+  - `GET https://api.soar.luckysparrow.ch/ready -> 200`
+
+### Updated blocker interpretation
+
+- The earlier blocker did not resolve at runtime.
+- The approved owner path did not actually grant a token that can execute the
+  targeted Coolify write for `workers-market-data`.
+- The live blocker is now narrower:
+  the exact credential bound to this DRE recovery lane still lacks effective
+  permission for `POST /api/v1/applications/{workers-market-data}/start`.

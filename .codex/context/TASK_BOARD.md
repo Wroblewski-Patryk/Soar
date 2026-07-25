@@ -24273,6 +24273,61 @@ high-signal missing-test relation families`
   - `history/evidence/luc-1878-coolify-read-only-production-status-access-2026-06-04.md`
   - `history/tasks/luc-1878-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
 
+## 2026-07-25 LUC-1875 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1868-LUC-1872
+
+- Status: `DONE / LOCAL_COMMIT_VALID / PUSH_HELD`.
+- Scope:
+  - consumed the scoped closure wake for [LUC-1875](/LUC/issues/LUC-1875);
+  - classified the local dirty set left by the `LUC-1868` retry and the
+    `LUC-1872` owner-path denial packet;
+  - preserved the no runtime change, no push, and no deploy boundary.
+- Verification:
+  - `git status --short` showed `6` dirty paths total:
+    `2` `.codex/context/*`, `2` `history/evidence/*`, `2` `history/tasks/*`,
+    and `0` runtime/product-code paths.
+  - `git diff --stat` and `git diff --numstat` stayed bounded to the same
+    docs/state/history packet.
+  - `git diff --check` passed.
+  - bounded credential-signature scan over the authored packet found no
+    high-confidence matches.
+- Evidence:
+  - `history/evidence/luc-1875-source-control-closure-luc-1868-luc-1872-2026-07-25.md`
+  - `history/tasks/luc-1875-source-control-close-luc-1868-luc-1872-2026-07-25-task.md`
+- Residual:
+  - the closure decision preserves proof only; `LUC-1868` remains blocked on
+    an external deploy-capable Coolify owner action.
+
+## 2026-07-25 LUC-1872 [Soar][DRE Owner Path] Execute least-privilege Coolify write for workers-market-data recovery
+
+- Status: `BLOCKED / OWNER_PATH_STILL_NOT_DEPLOY_CAPABLE`.
+- Scope:
+  - consumed the scoped owner-path wake for [LUC-1872](/LUC/issues/LUC-1872);
+  - retried exactly one legal Coolify write against `workers-market-data`;
+  - preserved the no broad deploy, no unrelated mutation, and no secret
+    disclosure boundary.
+- Verification:
+  - direct preflight readback still showed
+    `workers-market-data -> exited:unhealthy`.
+  - targeted `POST /api/v1/applications/{workers-market-data}/start` ->
+    `403 Forbidden` with explicit body
+    `Missing required permissions: deploy`.
+  - public reachability remained green:
+    `https://soar.luckysparrow.ch -> 200`,
+    `https://api.soar.luckysparrow.ch/health -> 200`,
+    `https://api.soar.luckysparrow.ch/ready -> 200`.
+  - `pnpm run softwarehouse:coolify-reconciler` ->
+    `workers-market-data -> exited:unhealthy`.
+  - `pnpm run softwarehouse:soar-acceptance-ledger` ->
+    blocker `coolify_resources_reconciled` because
+    `workers-market-data:exited:unhealthy`.
+- Evidence:
+  - `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`
+  - `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`
+- Residual:
+  - `LUC-1868` remains blocked until the Coolify credential owner or Ops
+    Release Lead grants a truly deploy-capable targeted path or performs the
+    exact resource-scoped recovery action outside this lane.
+
 ## 2026-06-04 LUC-1875 [Operator][Coolify] Bind Coolify read-only production status access
 
 - Status: done.

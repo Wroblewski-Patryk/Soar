@@ -1,3 +1,53 @@
+## 2026-07-25 LUC-1875 source-control closure for LUC-1868-LUC-1872 packet
+
+- Scope:
+  classify and close the remaining local dirty state after the blocked
+  `workers-market-data` recovery lane and its routed owner-path retry.
+- Dirty-tree baseline:
+  `6` paths total:
+  `2` source-of-truth/context files,
+  `2` history evidence files,
+  `2` history task files,
+  `0` runtime/product-code paths,
+  `0` out-of-scope paths.
+- Closure decision:
+  the dirty set is one coherent docs/state/evidence packet for `LUC-1868` and
+  `LUC-1872`; `git diff --check` passes; bounded redaction review over the
+  authored paths found no high-confidence credential signatures; one local
+  reversible closure commit is valid.
+- Evidence:
+  `history/evidence/luc-1875-source-control-closure-luc-1868-luc-1872-2026-07-25.md`;
+  `history/tasks/luc-1875-source-control-close-luc-1868-luc-1872-2026-07-25-task.md`.
+- Residual:
+  no runtime recovery was performed in this closure lane; `LUC-1868` remains
+  blocked on an external deploy-capable Coolify owner action.
+
+## 2026-07-25 LUC-1872 workers-market-data owner-path write still blocked on deploy permission
+
+- Scope:
+  execute the routed least-privilege Coolify owner-path write for Soar
+  production `workers-market-data` and return the result to `LUC-1868`.
+- Result:
+  direct preflight still showed `workers-market-data -> exited:unhealthy`;
+  the targeted `POST /api/v1/applications/{workers-market-data}/start`
+  returned `403 Forbidden` with explicit body
+  `Missing required permissions: deploy`; public
+  `https://soar.luckysparrow.ch`, `https://api.soar.luckysparrow.ch/health`,
+  and `https://api.soar.luckysparrow.ch/ready` all remained `200`.
+- Verification:
+  `pnpm run softwarehouse:coolify-reconciler` still reports
+  `workers-market-data -> exited:unhealthy`;
+  `pnpm run softwarehouse:soar-acceptance-ledger` still blocks on
+  `coolify_resources_reconciled` because of
+  `workers-market-data:exited:unhealthy`.
+- Evidence:
+  `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`.
+- Residual:
+  `LUC-1868` remains blocked until the Coolify credential owner or Ops Release
+  Lead provides a truly deploy-capable targeted mutation path or executes the
+  exact resource-scoped action outside DRE.
+
 ## 2026-07-25 LUC-1867 workers-backtest Coolify recovery
 
 - Production Coolify recovery confirmed for `workers-backtest`.
@@ -34708,3 +34758,26 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual:
   no remaining action on `LUC-1869`; runtime follow-up remains isolated to the
   already-blocked `LUC-1868` external-owner path.
+
+## 2026-07-25 LUC-1868 blocker-resolution wake retried and failed unchanged
+
+- Scope:
+  rerun the exact approved Coolify write path for Soar production
+  `workers-market-data` after the `issue_blockers_resolved` wake and
+  `LUC-1871` owner-path routing outcome.
+- Result:
+  fresh pre-action readback still showed `workers-market-data ->
+  exited:unhealthy`; the exact retried `POST /api/v1/applications/{uuid}/start`
+  again returned `403 Forbidden`; about fifty seconds of post-retry polling
+  kept `status=exited:unhealthy`, `last_online_at=2026-07-25 18:17:37`, and
+  `restart_count=0`; public Web/API health stayed green.
+- Evidence:
+  `history/evidence/luc-1868-soar-coolify-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1868-soar-coolify-diagnose-and-recover-workers-market-data-exited-unhealthy-2026-07-25-task.md`.
+- Residual:
+  the blocker is no longer just "permission may be needed"; it is now proven
+  that the approved retry path still lacks effective deploy/start permission at
+  runtime. `LUC-1868` must remain blocked until the credential owner binds an
+  actually deploy-capable token to this lane or executes the exact targeted
+  worker start/restart and returns refreshed reconciler plus acceptance-ledger
+  proof.

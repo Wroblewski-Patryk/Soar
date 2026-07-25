@@ -246,6 +246,10 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
 - Implementation notes:
   executed `POST /api/v1/applications/{workers-market-data}/start`; Coolify
   returned `403 Forbidden`; no code or env mutation was made.
+  After the later `issue_blockers_resolved` wake and `LUC-1871` routing
+  outcome, reran the exact same `start` action; Coolify still returned
+  `403 Forbidden`, proving the owner-path unblock did not actually reach the
+  live runtime credential.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -254,6 +258,7 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
 - Result:
   blocked; worker remained `exited:unhealthy` and the acceptance ledger still
   reports `coolify_resources_reconciled` blocked on `workers-market-data`.
+  The blocker recurred unchanged after the approved retry wake.
 
 ### 6. Self-Review
 - Simpler option considered:
@@ -281,13 +286,16 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
   worker env keys omitted `WORKER_MODE`, `WORKER_MARKET_DATA_OWNERSHIP`, and
   `WORKER_MARKET_DATA_QUEUE`; targeted `start` returned `403`; public Soar
   remained healthy; reconciler and acceptance ledger still isolate the blocker
-  to `workers-market-data`.
+  to `workers-market-data`. The later blocker-resolution wake reran the exact
+  approved `start` path and received the same `403`, so the runtime permission
+  boundary remains unresolved in practice.
 - Residual risk:
   production split-worker topology remains degraded until an approved operator
   performs the targeted start/restart or grants the required deploy capability.
 - Unblock owner:
   Coolify credential owner / Ops Release Lead.
 - Unblock action:
-  grant deploy/start permission for `workers-market-data` to this recovery path
-  or execute the same targeted `start`/`restart` action and hand back the
-  before/after readback plus refreshed reconciler and acceptance-ledger output.
+  bind an actually deploy-capable Coolify credential to this exact DRE lane or
+  execute the same targeted `start`/`restart` action on behalf of the lane and
+  hand back the before/after readback plus refreshed reconciler and
+  acceptance-ledger output.
