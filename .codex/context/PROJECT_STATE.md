@@ -1,3 +1,26 @@
+## 2026-07-25 LUC-1867 workers-backtest Coolify recovery
+
+- Production Coolify recovery confirmed for `workers-backtest`.
+- One targeted `POST /api/v1/applications/{workers-backtest}/start` queued
+  deployment `ree11oesp4xmxlest1x0flim`; later deployment readback finished and
+  the resource returned to `running:unknown`.
+- Public Soar remained healthy during the recovery window:
+  `https://soar.luckysparrow.ch -> 200`,
+  `https://api.soar.luckysparrow.ch/health -> 200`,
+  `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Fresh `softwarehouse:coolify-reconciler` output now lists
+  `workers-backtest -> running:unknown`.
+- Fresh sequential `softwarehouse:soar-acceptance-ledger` refresh no longer
+  lists `workers-backtest`; the remaining
+  `coolify_resources_reconciled` blocker is
+  `workers-market-data:exited:unhealthy`.
+- Follow-up owner lane:
+  [LUC-1868](/LUC/issues/LUC-1868)
+  `[Soar][Coolify] Diagnose and recover workers-market-data exited:unhealthy`.
+- Evidence:
+  `history/evidence/luc-1867-soar-coolify-workers-backtest-recovery-2026-07-25.md`;
+  `history/tasks/luc-1867-soar-coolify-diagnose-and-recover-workers-backtest-exited-unhealthy-2026-07-25-task.md`.
+
 ## 2026-07-25 LUC-1840 known-state `.tmp` exclusion repair
 
 - Root cause confirmed:
@@ -34646,3 +34669,42 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual:
   no remaining action on `LUC-1842`; `LUC-1840` remains the only follow-up for
   scanner boundary repair.
+
+## 2026-07-25 LUC-1868 workers-market-data recovery blocked on Coolify mutation permission
+
+- Scope:
+  DRE diagnosis and smallest-governed recovery attempt for Soar production
+  `workers-market-data`, after `LUC-1867` already recovered
+  `workers-backtest`.
+- Result:
+  direct Coolify readback still shows `workers-market-data ->
+  exited:unhealthy`; the worker app lacks `WORKER_MODE`,
+  `WORKER_MARKET_DATA_OWNERSHIP`, and `WORKER_MARKET_DATA_QUEUE` env keys that
+  exist on `soar-api`; the targeted `POST /api/v1/applications/{uuid}/start`
+  attempt returned `403 Forbidden`; public Web/API health stayed green and
+  `/workers/ready` remained expected fail-closed `401`.
+- Evidence:
+  `history/evidence/luc-1868-soar-coolify-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1868-soar-coolify-diagnose-and-recover-workers-market-data-exited-unhealthy-2026-07-25-task.md`.
+- Residual:
+  acceptance remains blocked on `coolify_resources_reconciled` until the
+  Coolify credential owner or Ops Release Lead grants deploy/start permission
+  for this lane or executes the exact targeted `workers-market-data`
+  start/restart action and refreshes reconciler plus acceptance-ledger truth.
+
+## 2026-07-25 LUC-1869 source-control closure for LUC-1867/LUC-1868 packet
+
+- Scope:
+  PM source-control closure for the local proof packet left by
+  `LUC-1867` and `LUC-1868`. No runtime code, deploy, push, restart,
+  rollback, env edit, protected-smoke, secret access, or production mutation.
+- Result:
+  classified the remaining worktree as one coherent docs/state/history packet
+  limited to the `LUC-1867` and `LUC-1868` task/evidence artifacts plus the
+  project-state append, then preserved it with a narrow local closure commit.
+- Evidence:
+  `history/evidence/luc-1869-source-control-closure-luc-1867-luc-1868-2026-07-25.md`;
+  `history/tasks/luc-1869-source-control-close-luc-1867-luc-1868-2026-07-25-task.md`.
+- Residual:
+  no remaining action on `LUC-1869`; runtime follow-up remains isolated to the
+  already-blocked `LUC-1868` external-owner path.

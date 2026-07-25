@@ -49237,3 +49237,32 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   - `history/evidence/luc-1842-source-control-closure-luc-1838-known-state-packet-2026-07-25.md`
   - `history/tasks/luc-1842-source-control-close-luc-1838-known-state-packet-2026-07-25-task.md`
+
+## 2026-07-25 LUC-1869 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1867-LUC-1868
+
+- Status: `DONE / VERIFIED / LOCAL_COMMIT_CREATED`.
+- Scope:
+  - acknowledged the active closure wake for the `LUC-1867/LUC-1868` worker
+    recovery packet;
+  - rechecked the local worktree and confirmed the dirty scope is limited to
+    one source-of-truth append plus four `history/*` artifacts for the two
+    worker issues;
+  - preserved the no push / no deploy / no runtime-mutation boundary.
+- Verification:
+  - `git status --short --branch` -> branch `main...origin/main [ahead 4]`
+    before closure, with the packet limited to `.codex/context/PROJECT_STATE.md`
+    and four `history/*` files tied directly to `LUC-1867/LUC-1868`.
+  - `git diff --stat` and `git diff --numstat` -> project-state plus the
+    untracked `history/*` evidence/task packet only before authored closure
+    updates.
+  - `git diff --check` -> PASS.
+  - bounded credential signature scan over authored closure/state files ->
+    PASS.
+- Disposition:
+  - commit: local closure commit created for the full `LUC-1867/LUC-1868`
+    packet;
+  - push: `not needed`;
+  - deploy impact: `none`.
+- Evidence:
+  - `history/evidence/luc-1869-source-control-closure-luc-1867-luc-1868-2026-07-25.md`
+  - `history/tasks/luc-1869-source-control-close-luc-1867-luc-1868-2026-07-25-task.md`

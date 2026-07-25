@@ -17157,3 +17157,25 @@ SRG_001_RESOLVED / SALE_READINESS_STILL_NO_GO`.
   validate the dirty packet as one coherent bookkeeping-only batch, run bounded
   git hygiene checks, create one reversible local commit, and leave no residual
   source-control ambiguity for `LUC-342`.
+
+## 2026-07-25 LUC-1869 source-control closure for LUC-1867/LUC-1868 packet
+
+- Status: `VERIFIED / DOCS_STATE_HISTORY_ONLY / COMMIT_REQUIRED`.
+- Scope:
+  classify and close the local dirty packet left by the `LUC-1867`
+  `workers-backtest` recovery and the `LUC-1868` `workers-market-data`
+  blocked-recovery packet.
+- Included:
+  `.codex/context/PROJECT_STATE.md`,
+  `history/evidence/luc-1867-soar-coolify-workers-backtest-recovery-2026-07-25.md`,
+  `history/evidence/luc-1868-soar-coolify-workers-market-data-recovery-2026-07-25.md`,
+  `history/tasks/luc-1867-soar-coolify-diagnose-and-recover-workers-backtest-exited-unhealthy-2026-07-25-task.md`,
+  `history/tasks/luc-1868-soar-coolify-diagnose-and-recover-workers-market-data-exited-unhealthy-2026-07-25-task.md`,
+  and the `LUC-1869` closure packet.
+- Excluded:
+  runtime fixes, Coolify mutations, push, deploy, protected smoke, and
+  secret-bearing paths.
+- Success gate:
+  validate the packet as one coherent worker-proof batch, run bounded git
+  hygiene checks, create one reversible local commit, and leave `LUC-1868`
+  as the sole residual runtime follow-up.
