@@ -105,3 +105,34 @@ Production public health stayed green, no unrelated Soar resource was mutated,
 and the remaining blocker is external to DRE execution. The resume wake did
 not materially change the mutation boundary: even after the fresh owner-path
 retry, the exact same `deploy` permission denial remains in force.
+
+## Final resolved state after upstream owner-path repair
+
+- Upstream owner-path follow-up is now complete:
+  [LUC-1879](/LUC/issues/LUC-1879) closed by integrating the exact child
+  recovery proof from `LUC-1882`.
+- Fresh direct app readback at the end of this lane showed:
+  - `workers-market-data -> running:unknown`
+  - `last_online_at=2026-07-25 21:35:36`
+  - `restart_count=0`
+  - `git_commit_sha=ca712e98b70e157b643db4f57726a02821a140bc`
+- Fresh `pnpm run softwarehouse:coolify-reconciler` showed:
+  - `8/8` Soar production resources reconciled
+  - `workers-market-data -> running:unknown`
+  - no unhealthy Coolify resource remained in the canonical Soar set
+- Fresh public Soar reachability remained healthy:
+  - `GET https://soar.luckysparrow.ch -> 200`
+  - `GET https://api.soar.luckysparrow.ch/health -> 200`
+  - `GET https://api.soar.luckysparrow.ch/ready -> 200`
+- Fresh `pnpm run softwarehouse:soar-acceptance-ledger` no longer blocks on
+  `coolify_resources_reconciled`; that check is now `pass`.
+- The same acceptance-ledger run remains `overall=blocked` only because the
+  Soar worktree is locally dirty from separate docs/state packets outside this
+  DRE runtime lane.
+
+## Final interpretation
+
+`LUC-1872` is now complete. The exact `workers-market-data` owner-path problem
+that DRE was asked to isolate is resolved, the worker is recovered in Coolify,
+and the remaining acceptance-ledger blocker is a separate source-control
+closure concern rather than a runtime recovery failure.

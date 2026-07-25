@@ -4,10 +4,10 @@
 - ID: LUC-1879
 - Title: [Softwarehouse][Ops Owner Path] Execute or designate board-capable Coolify recovery for workers-market-data
 - Task Type: release
-- Current Stage: planning
-- Status: BLOCKED
+- Current Stage: release
+- Status: DONE
 - Owner: Ops/Release
-- Depends on: board confirmation of the exact board-capable operator path
+- Depends on: `LUC-1882` exact deploy-token recovery proof
 - Priority: P0
 - Module Confidence Rows: not applicable
 - Requirement Rows: not applicable
@@ -16,7 +16,7 @@
 - Iteration: 1
 - Operation Mode: BUILDER
 - Mission ID: LUC-1879-COO-OWNER-PATH-2026-07-25
-- Mission Status: BLOCKED
+- Mission Status: VERIFIED
 
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
@@ -30,6 +30,21 @@
 - [x] Affected module confidence rows were identified.
 - [x] Affected requirement, quality scenario, and risk rows were identified or marked not applicable.
 - [x] The task or mission improves release confidence, not only local code appearance.
+
+## 2026-07-25 Resolution Addendum
+- Superseding child proof:
+  `LUC-1882` proved the exact higher-privilege owner action above DRE by
+  returning `POST /api/v1/applications/{workers-market-data}/start -> 200`,
+  finishing deployment `fd5ok3jdxg69lonnyeyagt9y`, and restoring
+  `workers-market-data -> running:unknown`.
+- Public verification inherited from child proof:
+  `https://soar.luckysparrow.ch -> 200`,
+  `https://api.soar.luckysparrow.ch/health -> 200`,
+  `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Final interpretation:
+  the earlier `LUC-1879` blocked owner-gap packet is superseded. This issue now
+  closes as `DONE` because the real deploy-capable owner action above DRE is
+  proven for the exact `workers-market-data` mutation boundary.
 
 ## Mission Block
 - Mission objective:

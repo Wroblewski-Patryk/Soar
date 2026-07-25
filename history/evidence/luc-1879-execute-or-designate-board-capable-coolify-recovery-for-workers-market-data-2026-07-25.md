@@ -5,6 +5,20 @@ Issue: `LUC-1879`
 Scope: board-capable owner designation for `workers-market-data` only
 Mode: COO owner-path verification and board-decision routing
 
+## 2026-07-25 Resolution Addendum
+
+- Child issue `LUC-1882` now supersedes the earlier blocked interpretation.
+- `LUC-1882` proved the exact higher-privilege owner action above DRE:
+  - `POST /api/v1/applications/{workers-market-data}/start -> 200`
+  - deployment `fd5ok3jdxg69lonnyeyagt9y -> finished`
+  - `workers-market-data -> running:unknown`
+  - `https://soar.luckysparrow.ch -> 200`
+  - `https://api.soar.luckysparrow.ch/health -> 200`
+  - `https://api.soar.luckysparrow.ch/ready -> 200`
+- Final interpretation:
+  the owner-path question for this exact mutation boundary is resolved. The
+  blocked `LUC-1879` packet below remains as historical context only.
+
 ## Inputs revalidated
 
 - `LUC-1872` remains the latest direct runtime proof for the exact targeted

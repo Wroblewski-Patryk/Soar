@@ -260,9 +260,18 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
   read-only Coolify app/env calls, logs-route probe, repeated post-attempt
   polling, public route probes, reconciler refresh, acceptance-ledger refresh.
 - Result:
-  blocked; worker remained `exited:unhealthy` and the acceptance ledger still
-  reports `coolify_resources_reconciled` blocked on `workers-market-data`.
-  The blocker recurred unchanged after the approved retry wake.
+  initially blocked; worker remained `exited:unhealthy` and the acceptance
+  ledger reported `coolify_resources_reconciled` blocked on
+  `workers-market-data`. After the final `issue_blockers_resolved` wake,
+  upstream issues `LUC-1879` and `LUC-1882` returned real owner-executed
+  recovery proof and fresh live Coolify readback in this lane confirmed
+  `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:38:36`. A local rerun of
+  `pnpm run softwarehouse:coolify-reconciler` returned `overall=ready`, and
+  `pnpm run softwarehouse:soar-acceptance-ledger` flipped
+  `coolify_resources_reconciled` to `pass`. The ledger `overall` field stayed
+  `blocked` only because the Soar worktree is locally dirty, which is a
+  separate source-control gate rather than a remaining worker-runtime failure.
 
 ### 6. Self-Review
 - Simpler option considered:
@@ -284,26 +293,26 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
 
 ## Result Report
 - Outcome:
-  diagnosis complete, recovery blocked by Coolify mutation permission.
+  diagnosis complete, resource recovery verified done after upstream
+  owner-executed Coolify mutation proof.
 - Evidence summary:
-  direct app readback kept `workers-market-data` at `exited:unhealthy`;
-  worker env keys omitted `WORKER_MODE`, `WORKER_MARKET_DATA_OWNERSHIP`, and
-  `WORKER_MARKET_DATA_QUEUE`; targeted `start` returned `403`; public Soar
-  remained healthy; reconciler and acceptance ledger still isolate the blocker
-  to `workers-market-data`. The later blocker-resolution wake reran the exact
-  approved `start` path and received the same `403`, so the runtime permission
-  boundary remains unresolved in practice. The later `LUC-1877` reroute wake
-  also retried both exact allowed actions (`start` and `restart`) and both
-  still returned `403`, so the live blocker is now the upstream operational
-  owner lane `LUC-1879`, not missing diagnosis.
+  this lane proved the initial runtime failure and configuration drift,
+  including missing `WORKER_MODE`, `WORKER_MARKET_DATA_OWNERSHIP`, and
+  `WORKER_MARKET_DATA_QUEUE` env keys on the standalone worker app, while the
+  exact DRE-bound `start` and `restart` mutations repeatedly failed with
+  `403 Forbidden`. The final blocker-resolution wake confirmed
+  `LUC-1879 -> done`, citing child recovery proof from `LUC-1882`; fresh
+  Coolify readback in this lane then showed
+  `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:38:36`. A local reconciler rerun returned
+  `overall=ready`, public Soar stayed green on `/`, `/health`, and `/ready`,
+  and the acceptance ledger now marks `coolify_resources_reconciled` as `pass`.
 - Residual risk:
-  production split-worker topology remains degraded until an approved operator
-  performs the targeted start/restart or grants the required deploy capability.
+  the recovered worker still has previously observed configuration drift
+  relative to `soar-api`, and the acceptance ledger `overall` field remains
+  blocked by unrelated local source-control cleanliness outside this runtime
+  lane.
 - Unblock owner:
-  active upstream owner lane `LUC-1879` / its assigned board-capable
-  operational owner.
+  not applicable for `LUC-1868`; the resource-recovery objective is met.
 - Unblock action:
-  either execute the exact targeted `workers-market-data` `start`/`restart`
-  or designate/bind a truly deploy-capable credential path above DRE, then
-  hand back the before/after readback plus refreshed reconciler and
-  acceptance-ledger output.
+  not applicable.

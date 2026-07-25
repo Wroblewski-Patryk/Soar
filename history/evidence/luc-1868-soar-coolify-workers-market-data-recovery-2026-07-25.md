@@ -193,3 +193,41 @@ documented, and the acceptance blocker stays isolated to
   [LUC-1879](/LUC/issues/LUC-1879)
   `[Softwarehouse][Ops Owner Path] Execute or designate board-capable Coolify recovery for workers-market-data`,
   which remains the active blocker above DRE.
+
+## Final blocker-resolution wake after LUC-1879 and LUC-1882
+
+- Wake context:
+  `issue_blockers_resolved` resumed `LUC-1868` after
+  [LUC-1879](/LUC/issues/LUC-1879) closed by integrating
+  `LUC-1882` owner-executed recovery proof above DRE.
+- Fresh live readback at `2026-07-25T21:38Z` showed:
+  - `workers-market-data -> running:unknown`
+  - `last_online_at=2026-07-25 21:38:36`
+  - `restart_count=0`
+  - unchanged `git_commit_sha=ca712e98b70e157b643db4f57726a02821a140bc`
+- Upstream owner-path outcome confirmed in Paperclip:
+  - `LUC-1879 -> done`
+  - completion evidence cites exact owner recovery proof:
+    `POST /api/v1/applications/{workers-market-data}/start -> 200`
+  - child recovery proof came from `LUC-1882`
+- Required post-recovery verification in this lane:
+  - `pnpm run softwarehouse:coolify-reconciler -> overall=ready`
+  - resource inventory now shows all 8/8 Soar production resources healthy
+    enough for reconciliation, including
+    `workers-market-data -> running:unknown`
+  - `pnpm run softwarehouse:soar-acceptance-ledger`
+    now reports `coolify_resources_reconciled -> pass`
+  - public Soar smoke remained green:
+    - `GET https://soar.luckysparrow.ch -> 200`
+    - `GET https://api.soar.luckysparrow.ch/health -> 200`
+    - `GET https://api.soar.luckysparrow.ch/ready -> 200`
+
+### Closeout interpretation
+
+- The production reliability objective of `LUC-1868` is satisfied:
+  `workers-market-data` is no longer unhealthy and the reconciliation gate for
+  this resource now passes.
+- The acceptance ledger `overall` field remained `blocked`, but only because
+  the Soar workspace has unrelated local source-control changes. That is a
+  separate repository-governance gate, not a remaining runtime failure in
+  `workers-market-data`.

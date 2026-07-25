@@ -1,3 +1,26 @@
+## 2026-07-25 LUC-1882 workers-market-data recovered with deploy token
+
+- Scope:
+  consume the deploy-token credential-routing repair wake for the exact
+  `workers-market-data` production resource.
+- Result:
+  read-only preflight still showed `workers-market-data -> exited:unhealthy`
+  with `last_online_at=2026-07-25 18:17:37`, but the exact targeted mutation
+  `POST /api/v1/applications/{workers-market-data}/start` using
+  `COOLIFY_DEPLOY_API_TOKEN` returned `200` with deployment
+  `fd5ok3jdxg69lonnyeyagt9y`; read-only deployment polling later showed
+  `status=finished`, and application polling showed
+  `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:26:35`.
+- Verification:
+  public `https://soar.luckysparrow.ch`,
+  `https://api.soar.luckysparrow.ch/health`, and
+  `https://api.soar.luckysparrow.ch/ready` all returned `200` after the
+  recovery.
+- Evidence:
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
+
 ## 2026-07-25 LUC-1880 source-control closure for the workers-market-data escalation packet
 
 - Scope:
@@ -21,6 +44,30 @@
 - Residual:
   `LUC-1880` changes local source-control state only. `workers-market-data`
   remains blocked operationally behind `LUC-1879`.
+
+## 2026-07-25 LUC-1872 owner-path recovery lane complete
+
+- Scope:
+  close the DRE owner-path lane for `workers-market-data` after the upstream
+  operational recovery path above DRE completed.
+- Final runtime state:
+  direct Coolify readback now shows `workers-market-data -> running:unknown`
+  with `last_online_at=2026-07-25 21:35:36` on commit
+  `ca712e98b70e157b643db4f57726a02821a140bc`.
+- Verification:
+  `pnpm run softwarehouse:coolify-reconciler` now reconciles `8/8` Soar
+  resources with no unhealthy status; public
+  `https://soar.luckysparrow.ch`,
+  `https://api.soar.luckysparrow.ch/health`, and
+  `https://api.soar.luckysparrow.ch/ready` all return `200`.
+- Acceptance consequence:
+  `pnpm run softwarehouse:soar-acceptance-ledger` now marks
+  `coolify_resources_reconciled` as `pass`; the remaining ledger `overall`
+  blocker is separate source-control dirtiness in the Soar worktree, not a
+  Coolify/runtime failure.
+- Evidence:
+  `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`.
 
 ## 2026-07-25 LUC-1872 resumed owner-path retry still denied deploy permission
 
@@ -48,31 +95,31 @@
   `LUC-1879` remains the live blocker above DRE:
   `BLOCKED / BOARD_OWNER_DECISION_REQUIRED / NO_DEPLOY_CAPABLE_OWNER_EVIDENCED`.
 
-## 2026-07-25 LUC-1879 COO owner-path verification for workers-market-data
+## 2026-07-25 LUC-1879 COO owner-path resolution for workers-market-data
 
 - Scope:
-  verify whether the COO follow-up lane created from `LUC-1878` already
-  includes a real deploy-capable operator identity for the exact
+  integrate the exact higher-privilege owner action above DRE for the
   `workers-market-data` Coolify mutation boundary.
-- Revalidated facts:
-  `LUC-1872` still provides the last direct runtime proof and still ends at
-  `POST /api/v1/applications/{workers-market-data}/start -> 403 Forbidden`
-  with `Missing required permissions: deploy`; no new mutation evidence
-  supersedes that result.
-- Clarified ownership boundary:
-  the `LUC-1878` closeout packet restored a board-capable COO coordination
-  lane, but this heartbeat found no separate evidenced deploy-capable operator
-  identity inside that lane yet.
-- Current next step:
-  board/user must either confirm `00 AIA` as the exact board-capable
-  execution / operator-designation owner for `workers-market-data`, or name
-  another active deploy-capable owner; an attempted Paperclip
-  `request_confirmation` creation returned `500 Internal server error`, so the
-  control-plane issue is blocked on that owner decision rather than waiting in
-  review.
+- Resolved facts:
+  `LUC-1882` supersedes the earlier blocked owner-gap packet by proving the
+  exact bounded mutation
+  `POST /api/v1/applications/{workers-market-data}/start -> 200`, deployment
+  `fd5ok3jdxg69lonnyeyagt9y -> finished`, and post-state
+  `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:26:35`.
+- Public health after resolution:
+  `https://soar.luckysparrow.ch -> 200`,
+  `https://api.soar.luckysparrow.ch/health -> 200`,
+  `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Decision:
+  the real owner action above DRE is now evidenced through the deploy-capable
+  Coolify token route, so `LUC-1879` can close as resolved without broader
+  deploy or release claims.
 - Evidence:
   `history/evidence/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25.md`;
-  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`.
+  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`;
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
 
 ## 2026-07-25 LUC-1877 CTO reroute for workers-market-data owner path
 
@@ -34903,3 +34950,48 @@ QA_PROOF_FOLLOWUP_CREATED`.
   upstream blocker is now [LUC-1879](/LUC/issues/LUC-1879), which owns either
   the exact owner-executed recovery or a truly deploy-capable designation
   above DRE.
+
+## 2026-07-25 LUC-1868 workers-market-data recovery verified after owner-path execution
+
+- Scope:
+  close the DRE recovery lane after the upstream operational owner path
+  completed and returned real Coolify mutation proof for
+  `workers-market-data`.
+- Result:
+  fresh live readback now shows `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:38:36`; `LUC-1879` closed by integrating the
+  owner-executed `LUC-1882` proof chain; local reruns of
+  `pnpm run softwarehouse:coolify-reconciler` and
+  `pnpm run softwarehouse:soar-acceptance-ledger` now show
+  `coolify_resources_reconciled -> pass`, while public Soar remained green on
+  `/`, `/health`, and `/ready`.
+- Evidence:
+  `history/evidence/luc-1868-soar-coolify-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1868-soar-coolify-diagnose-and-recover-workers-market-data-exited-unhealthy-2026-07-25-task.md`;
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
+- Residual:
+  `LUC-1868` no longer blocks on runtime health. The acceptance ledger
+  `overall` field remains blocked only by unrelated local source-control
+  cleanliness, and the earlier worker-env drift remains documented for future
+  hardening work.
+
+## 2026-07-25 LUC-1883 source-control closure for LUC-1868/LUC-1872/LUC-1879/LUC-1882 packet
+
+- Scope:
+  PM source-control closure for the local proof packet left by `LUC-1868`,
+  `LUC-1872`, `LUC-1879`, and `LUC-1882`. No runtime code, push, deploy,
+  restart, rollback, env edit, protected smoke, secret access, or production
+  mutation.
+- Result:
+  classified the current worktree as one coherent docs/state/history packet
+  limited to four source-of-truth/context files plus the four `history/evidence`
+  and four `history/tasks` artifacts tied directly to the July 25
+  `workers-market-data` recovery chain, then preserved it with a narrow local
+  closure commit.
+- Evidence:
+  `history/evidence/luc-1883-source-control-closure-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25.md`;
+  `history/tasks/luc-1883-source-control-close-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25-task.md`.
+- Residual:
+  no remaining action on `LUC-1883`; runtime recovery is already proven and the
+  closure lane was limited to local source control.

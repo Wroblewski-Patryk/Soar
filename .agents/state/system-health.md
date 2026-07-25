@@ -1,3 +1,23 @@
+## 2026-07-25 LUC-1882 workers-market-data deploy-token recovery
+
+- Status:
+  `DONE / DEPLOY_TOKEN_ROUTE_CONFIRMED / WORKERS_MARKET_DATA_RUNNING_UNKNOWN`.
+- Health impact:
+  the exact worker that had been blocked at `403 Missing required permissions:
+  deploy` is now back to `running:unknown`; public Soar Web `/`, API `/health`,
+  and API `/ready` all returned `200` after the recovery.
+- Verification:
+  read-only Coolify preflight showed `workers-market-data -> exited:unhealthy`
+  at `2026-07-25T21:23:04Z`; one deploy-token
+  `POST /api/v1/applications/{workers-market-data}/start` returned `200` with
+  deployment `fd5ok3jdxg69lonnyeyagt9y`; follow-up deployment polling showed
+  `status=finished` at `2026-07-25T21:25:19.000000Z`; follow-up application
+  polling showed `workers-market-data -> running:unknown` with
+  `last_online_at=2026-07-25 21:26:35`.
+- Evidence:
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
+
 ## 2026-07-23 LUC-27 parent mission blocked on release parity
 
 - Status:
@@ -11103,3 +11123,28 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-1359-restore-production-api-ready-503-runtime-2026-07-17.md`;
   `history/tasks/luc-1359-restore-production-api-ready-503-runtime-2026-07-17-task.md`.
+
+## 2026-07-25 LUC-1883 source-control closure for LUC-1868 LUC-1872 LUC-1879 and LUC-1882
+
+- Status:
+  `DONE / LOCAL_COMMIT_VALID / WORKTREE_CLEAN`.
+- Scope:
+  classify and close the remaining local dirty state after the
+  `workers-market-data` blocked runtime lane, DRE owner-path retry, operational
+  owner-path execution, and deploy-token recovery proof.
+- Dirty-tree baseline:
+  `12` paths total:
+  `4` state/context files,
+  `4` history evidence files,
+  `4` history task files,
+  `0` runtime/product-code paths,
+  `0` out-of-scope paths.
+- Closure decision:
+  the dirty set is one coherent docs/state/evidence packet for `LUC-1868`,
+  `LUC-1872`, `LUC-1879`, and `LUC-1882`; `git diff --check` passed; bounded
+  redaction review over the authored paths found no high-confidence credential
+  signatures; one local reversible closure commit was created and the worktree
+  returned clean.
+- Evidence:
+  `history/evidence/luc-1883-source-control-closure-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25.md`;
+  `history/tasks/luc-1883-source-control-close-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25-task.md`.

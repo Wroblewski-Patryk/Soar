@@ -245,6 +245,19 @@ or proves the owner path still lacks the required mutation permission.
   public Soar stayed healthy; `workers-market-data` remained unhealthy; the
   exact missing permission is explicit and unchanged after the resumed retry.
 
+### 5a. Final Recovery Verification
+- Validation performed:
+  fresh direct readback after upstream owner-path repair,
+  `pnpm run softwarehouse:coolify-reconciler`,
+  `pnpm run softwarehouse:soar-acceptance-ledger`,
+  and public `web` / `health` / `ready` probes.
+- Result:
+  `workers-market-data` is now `running:unknown`,
+  `coolify_resources_reconciled` is `pass`,
+  and public Soar remains healthy. The acceptance-ledger still reports
+  `overall=blocked`, but only because the Soar worktree is dirty from separate
+  docs/state packets outside this runtime recovery lane.
+
 ### 6. Self-Review
 - Simpler option considered:
   carrying forward `LUC-1868` unchanged; rejected because the new owner path
@@ -274,6 +287,14 @@ or proves the owner path still lacks the required mutation permission.
 - Final interpretation:
   the wake did not resolve the actual mutation blocker; `LUC-1879` remains the
   active first-class blocker above DRE.
+
+## Closure Addendum
+- Upstream resolution consumed:
+  `LUC-1879` is now done and its closeout states that the exact higher-privilege
+  owner action was proven through child `LUC-1882`.
+- DRE closeout decision:
+  this lane is complete because the target resource is recovered and the
+  DRE-owned verification path now confirms runtime success.
 
 ## Review Checklist
 - [x] Process self-audit completed before implementation.

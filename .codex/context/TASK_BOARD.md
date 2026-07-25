@@ -1,3 +1,25 @@
+## 2026-07-25 LUC-1882 deploy-token recovery for workers-market-data
+
+- Status:
+  `DONE / DEPLOY_TOKEN_ROUTE_CONFIRMED / WORKER_RECOVERED`.
+- Scope:
+  execute the exact `workers-market-data` Coolify start action with the newly
+  present deploy-capable token and verify the runtime result.
+- Outcome:
+  pre-state remained `exited:unhealthy`; the deploy-token mutation
+  `POST /api/v1/applications/{workers-market-data}/start` returned `200` with
+  deployment `fd5ok3jdxg69lonnyeyagt9y`; the deployment later finished; and
+  `workers-market-data` returned to `running:unknown` with
+  `last_online_at=2026-07-25 21:26:35`.
+- Verification:
+  public smoke via `curl.exe` returned
+  `https://soar.luckysparrow.ch -> 200`,
+  `https://api.soar.luckysparrow.ch/health -> 200`,
+  and `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Evidence:
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
+
 ## 2026-07-25 LUC-1880 source-control closure for LUC-1868-LUC-1872-LUC-1877-LUC-1878-LUC-1879 packet
 
 - Status: `DONE / LOCAL_COMMIT_VALID / PUSH_NOT_NEEDED`.
@@ -24,6 +46,35 @@
 - Residual:
   no runtime recovery was performed in this closure lane;
   `LUC-1879` remains the active operational blocker above DRE.
+
+## 2026-07-25 LUC-1872 owner-path recovery lane closed
+
+- Status:
+  `DONE / WORKER_RECOVERED / COOLIFY_RESOURCES_RECONCILED`.
+- Scope:
+  - close the DRE owner-path lane after the higher-privilege operational path
+    above DRE completed the exact `workers-market-data` recovery;
+  - verify the live Coolify runtime and return the concrete outcome to
+    `LUC-1868`.
+- Verification:
+  - direct readback now shows `workers-market-data -> running:unknown`,
+    `last_online_at=2026-07-25 21:35:36`,
+    `git_sha=ca712e98b70e157b643db4f57726a02821a140bc`.
+  - `pnpm run softwarehouse:coolify-reconciler` -> `8/8` resources reconciled,
+    no unhealthy Soar resource remains.
+  - `pnpm run softwarehouse:soar-acceptance-ledger` -> check
+    `coolify_resources_reconciled` is now `pass`.
+  - public reachability remained green:
+    `https://soar.luckysparrow.ch -> 200`,
+    `https://api.soar.luckysparrow.ch/health -> 200`,
+    `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Residual:
+  - the acceptance-ledger still reports `overall=blocked`, but only because the
+    Soar worktree is dirty from separate docs/state packets outside this DRE
+    runtime lane.
+- Evidence:
+  - `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`
+  - `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`
 
 ## 2026-07-25 LUC-1872 resumed owner-path retry for workers-market-data
 
@@ -53,28 +104,28 @@
   - the wake did not resolve the actual Coolify mutation boundary;
     [LUC-1879](/LUC/issues/LUC-1879) remains the active blocker above DRE.
 
-## 2026-07-25 LUC-1879 COO owner-path verification for workers-market-data
+## 2026-07-25 LUC-1879 COO owner-path resolution for workers-market-data
 
 - Status:
-  `BLOCKED / BOARD_OWNER_DECISION_REQUIRED / NO_DEPLOY_CAPABLE_OWNER_EVIDENCED`.
+  `DONE / CHILD_RECOVERY_INTEGRATED / DEPLOY_CAPABLE_OWNER_ACTION_PROVEN`.
 - Scope:
-  verify whether the COO follow-up lane created by [LUC-1878](/LUC/issues/LUC-1878)
-  already names a real deploy-capable owner for the exact
+  integrate the exact higher-privilege owner action above DRE for the
   `workers-market-data` Coolify mutation boundary.
 - Outcome:
-  `LUC-1872` still remains the last direct runtime proof and still ends at
-  `403 Missing required permissions: deploy`; `LUC-1878` proved only that the
-  board-capable operational lane moved to COO, not that a deploy-capable
-  operator identity was evidenced. An attempted Paperclip
-  `request_confirmation` creation returned `500 Internal server error`, so this
-  lane left an explicit blocker instead of claiming the owner gap is solved.
-- Blocker:
-  board/user must confirm whether `00 AIA` owns the exact board-capable
-  execution or equivalent operator-designation path for `workers-market-data`,
-  or name another active deploy-capable owner.
+  child issue [LUC-1882](/LUC/issues/LUC-1882) proved the deploy-capable token
+  route by returning
+  `POST /api/v1/applications/{workers-market-data}/start -> 200`,
+  finishing deployment `fd5ok3jdxg69lonnyeyagt9y`, restoring
+  `workers-market-data -> running:unknown`, and preserving green public smoke.
+- Decision:
+  the earlier blocked `LUC-1879` owner-gap interpretation is superseded. The
+  exact owner action above DRE is now proven and this parent owner-path issue
+  can close without broader deploy claims.
 - Evidence:
   `history/evidence/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25.md`;
-  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`.
+  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`;
+  `history/evidence/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25.md`;
+  `history/tasks/luc-1882-workers-market-data-deploy-token-recovery-2026-07-25-task.md`.
 
 ## 2026-07-25 LUC-1878 board-capable deploy owner path restored for workers-market-data
 
@@ -49439,3 +49490,34 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   - `history/evidence/luc-1869-source-control-closure-luc-1867-luc-1868-2026-07-25.md`
   - `history/tasks/luc-1869-source-control-close-luc-1867-luc-1868-2026-07-25-task.md`
+
+## 2026-07-25 LUC-1883 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1868-LUC-1872-LUC-1879-LUC-1882
+
+- Status: `DONE / VERIFIED / LOCAL_COMMIT_CREATED`.
+- Scope:
+  - acknowledged the active closure wake for the `LUC-1868/LUC-1872/LUC-1879/LUC-1882`
+    worker recovery packet;
+  - rechecked the local worktree and confirmed the dirty scope is limited to
+    four source-of-truth/context files plus eight `history/*` evidence/task
+    artifacts tied directly to the July 25 `workers-market-data` recovery chain;
+  - preserved the no push / no deploy / no runtime-mutation boundary.
+- Verification:
+  - `git status --short --branch` -> branch `main...origin/main [ahead 5]`
+    before closure, with the packet limited to `.agents/state/system-health.md`,
+    `.codex/context/LEARNING_JOURNAL.md`, `.codex/context/PROJECT_STATE.md`,
+    `.codex/context/TASK_BOARD.md`, and the four `history/evidence/*` plus four
+    `history/tasks/*` files tied directly to `LUC-1868`, `LUC-1872`,
+    `LUC-1879`, and `LUC-1882`.
+  - `git diff --stat` and `git diff --numstat` -> coherent docs/state/history
+    packet only, with no runtime/product-code paths.
+  - `git diff --check` -> PASS.
+  - bounded credential signature scan over authored closure/state files ->
+    PASS.
+- Disposition:
+  - commit: local closure commit created for the full
+    `LUC-1868/LUC-1872/LUC-1879/LUC-1882` packet;
+  - push: `not needed`;
+  - deploy impact: `none`.
+- Evidence:
+  - `history/evidence/luc-1883-source-control-closure-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25.md`
+  - `history/tasks/luc-1883-source-control-close-luc-1868-luc-1872-luc-1879-luc-1882-2026-07-25-task.md`

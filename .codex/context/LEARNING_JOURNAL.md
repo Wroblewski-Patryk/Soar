@@ -2,6 +2,26 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-25 - Use `curl.exe` for public HTTPS smoke when PowerShell `Invoke-WebRequest` misreports null-reference failures
+- Context:
+  production/public smoke from the Windows DRE runner during
+  `LUC-1882 workers-market-data deploy-token recovery`.
+- Symptom:
+  `Invoke-WebRequest` returned `Odwołanie do obiektu nie zostało ustawione na wystąpienie obiektu.`
+  and an unusable synthetic `-1` status for healthy public HTTPS routes.
+- Root cause:
+  in this runner, `Invoke-WebRequest` can fail locally before surfacing the real
+  HTTP status, so it is not a reliable proof path for simple public smoke.
+- Guardrail:
+  for bounded public-route verification in this Windows workspace, prefer
+  `curl.exe -s -o NUL -w "%{http_code}" <url>` over `Invoke-WebRequest` when
+  the latter emits a local null-reference failure.
+- Preferred pattern:
+  `curl.exe` status-only probes for public `/`, `/health`, and `/ready` checks.
+- Avoid:
+  treating `Invoke-WebRequest` null-reference output as evidence that the
+  public route itself is down.
+
 ### 2026-07-22 - Source Control closure requires a commit, not only classification
 - Symptom:
   `LUC-1671` classified a coherent proof packet and marked the Paperclip issue
