@@ -24,6 +24,7 @@ export function walk(dir, predicate, results = [], options = {}) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (
       entry.name === "node_modules" ||
+      entry.name === ".tmp" ||
       entry.name === ".next" ||
       entry.name === ".paperclip" ||
       entry.name === "dist" ||

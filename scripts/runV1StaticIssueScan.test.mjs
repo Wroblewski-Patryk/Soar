@@ -57,6 +57,7 @@ test('parseArgs resolves defaults, overrides, and help without reading process a
 test('path and filesystem helpers stay scoped to the captured repository root', async () => {
   await writeFixture('apps/api/src/modules/example.ts', 'export const value = 1;\n');
   await writeFixture('apps/api/src/modules/example.test.ts', 'test("fixture", () => {});\n');
+  await writeFixture('.tmp/browser-proof/ignored.ts', 'export const ignored = true;\n');
   await writeFixture('node_modules/ignored.ts', 'export const ignored = true;\n');
 
   assert.equal(scanner.toPosixPath(`apps${path.sep}api${path.sep}src`), 'apps/api/src');

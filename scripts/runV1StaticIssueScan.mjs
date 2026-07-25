@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = process.cwd();
 
 const ignoredDirectories = new Set([
+  '.tmp',
   '.git',
   '.next',
   '.turbo',

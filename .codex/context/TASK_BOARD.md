@@ -49146,6 +49146,23 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
   `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
 
+## 2026-07-25 LUC-1840 [Soar][Architecture Awareness] Exclude browser-proof `.tmp` artifacts from known-state graph refresh
+
+- Status: `DONE / VERIFIED / KNOWN_STATE_SCANNERS_FILTER_TMP`.
+- Scope:
+  - repaired known-state repository walkers so transient repo `.tmp/` browser-profile artifacts are excluded from refresh inputs;
+  - kept the scope to code/test/state only with no browser rerun, deploy, or protected-smoke work.
+- Implemented:
+  - `scripts/buildProjectIndex.mjs` now ignores `.tmp` alongside existing generated/temp roots;
+  - `scripts/runV1StaticIssueScan.mjs` now ignores `.tmp` during recursive repository scans;
+  - `scripts/auditArchitectureGraphDrift.mjs` now skips `.tmp` during inventory walks.
+- Verification:
+  - `node --test scripts/buildProjectIndex.test.mjs scripts/runV1StaticIssueScan.test.mjs scripts/auditArchitectureGraphDrift.test.mjs` PASS.
+- Residual:
+  - this issue repairs the scanner boundary only; the fresh before/after known-state baseline rerun remains the follow-up proof step from `LUC-1838`.
+- Evidence:
+  - `history/tasks/luc-1840-exclude-browser-proof-tmp-artifacts-from-known-state-graph-refresh-2026-07-25-task.md`
+
 ## 2026-07-25 LUC-1838 [Soar] [Known State] Evidence collection and architecture baseline
 
 - Status: `DONE / VERIFIED_BASELINE / FOLLOW_UPS_ROUTED`.

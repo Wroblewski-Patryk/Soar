@@ -100,15 +100,17 @@ test('filesystem helpers ignore generated folders and normalize repository paths
   const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'build-project-index-'));
   try {
     await mkdir(path.join(fixtureRoot, 'alpha'));
+    await mkdir(path.join(fixtureRoot, '.tmp'));
     await mkdir(path.join(fixtureRoot, 'node_modules'));
     await writeFile(path.join(fixtureRoot, 'alpha', 'keep.test.mjs'), 'test fixture', 'utf8');
+    await writeFile(path.join(fixtureRoot, '.tmp', 'skip.test.mjs'), 'ignored tmp artifact', 'utf8');
     await writeFile(path.join(fixtureRoot, 'node_modules', 'skip.test.mjs'), 'ignored', 'utf8');
 
     assert.equal(await directoryExists(path.join(fixtureRoot, 'alpha')), true);
     assert.equal(await directoryExists(path.join(fixtureRoot, 'missing')), false);
     assert.equal(await fileExists(path.join(fixtureRoot, 'alpha', 'keep.test.mjs')), true);
     assert.equal(await fileExists(path.join(fixtureRoot, 'alpha')), false);
-    assert.deepEqual(await listDirectories(fixtureRoot), ['alpha', 'node_modules']);
+    assert.deepEqual(await listDirectories(fixtureRoot), ['.tmp', 'alpha', 'node_modules']);
     assert.equal(await readTextIfExists(path.join(fixtureRoot, 'missing.txt')), '');
 
     const walked = await walkFiles(fixtureRoot, (_fullPath, name) => name.endsWith('.mjs'));

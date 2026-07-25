@@ -1,3 +1,24 @@
+## 2026-07-25 LUC-1840 known-state `.tmp` exclusion repair
+
+- Root cause confirmed:
+  browser-proof helpers write transient Chromium profile content under repo
+  `.tmp/`, while multiple known-state walkers excluded `tmp` but not `.tmp`,
+  allowing `architecture-awareness` and related refreshes to ingest
+  browser-extension noise.
+- Code repair:
+  `.tmp` is now excluded by the recursive walkers in
+  `scripts/buildProjectIndex.mjs`,
+  `scripts/runV1StaticIssueScan.mjs`, and
+  `scripts/auditArchitectureGraphDrift.mjs`.
+- Verification:
+  `node --test scripts/buildProjectIndex.test.mjs scripts/runV1StaticIssueScan.test.mjs scripts/auditArchitectureGraphDrift.test.mjs`
+  PASS.
+- Remaining proof step:
+  rerun the canonical known-state baseline to publish the clean before/after
+  readback promised by `LUC-1838`.
+- Evidence:
+  `history/tasks/luc-1840-exclude-browser-proof-tmp-artifacts-from-known-state-graph-refresh-2026-07-25-task.md`.
+
 ## 2026-07-24 LUC-1814 workspace web build-info provenance repair
 
 - Root cause confirmed:
