@@ -34557,3 +34557,52 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Evidence:
   `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
   `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
+
+## 2026-07-25 LUC-1838 known-state evidence and architecture baseline
+
+- A fresh local Soar known-state refresh was executed from the canonical
+  Paperclip generators on Friday, July 24, 2026 at `20:55:38.132Z`.
+- Current trustworthy routing picture:
+  - `docs/status/app-completion-index.md` is green with `86` items,
+    `5` user flows, and zero browser/test/doc/blocker gaps.
+  - `docs/status/project-truth-index.{md,json}` reports
+    `known_and_routable` with `totalGaps=0`.
+- Current non-trustworthy architecture picture:
+  - `docs/status/architecture-awareness-report.md` still reports
+    `2549` actionable missing-test rows and `1450` actionable
+    missing-doc/task-link rows, but the top actionable samples are polluted by
+    `.tmp/luc-1227-modal-1784081534559/Default/Extensions/...` browser-profile
+    artifacts rather than clean Soar product surfaces.
+  - `docs/status/task-synchronization-report.md` reflects the same pollution in
+    actionable implementation-without-task-link rows.
+- Routing decision:
+  - PM known-state routing should use the refreshed app-completion/project-truth
+    outputs immediately;
+  - do not treat current architecture-awareness top actionable rows as clean
+    product backlog until the `.tmp` contamination path is repaired.
+- Follow-up issues created:
+  - [LUC-1840](/LUC/issues/LUC-1840) for Architecture / Engineering Delivery to
+    exclude `.tmp` browser-proof artifacts from canonical graph refresh and
+    rerun the baseline.
+  - [LUC-1842](/LUC/issues/LUC-1842) for source-control closure of the
+    generated LUC-1838 evidence packet.
+- Evidence:
+  `history/tasks/luc-1838-known-state-evidence-architecture-baseline-2026-07-25-task.md`.
+
+## 2026-07-25 LUC-1842 source-control closure for LUC-1838 evidence packet
+
+- Scope:
+  PM source-control closure for the local generated known-state packet left by
+  `LUC-1838`. No runtime code, deploy, push, restart, rollback, env edit,
+  protected-smoke, secret disclosure, or production mutation.
+- Result:
+  corrected the stale follow-up reference from `LUC-1841` to active issue
+  `LUC-1842`, classified the remaining worktree as one coherent docs/state/
+  history/generated-evidence packet, and preserved it with a narrow local
+  closure commit.
+- Evidence:
+  `history/evidence/luc-1842-source-control-closure-luc-1838-known-state-packet-2026-07-25.md`;
+  `history/tasks/luc-1842-source-control-close-luc-1838-known-state-packet-2026-07-25-task.md`.
+- Residual:
+  no remaining action on `LUC-1842`; `LUC-1840` remains the only follow-up for
+  scanner boundary repair.

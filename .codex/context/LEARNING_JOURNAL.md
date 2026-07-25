@@ -4058,3 +4058,21 @@ Test-Path $dst
   when closing a high-risk issue, gather same-issue evidence refs first or
   prepare an issue-owned comment/attachment artifact before attempting the
   final status patch.
+
+## 2026-07-25 Architecture-awareness can be polluted by repo `.tmp` browser profiles
+
+- Context:
+  `LUC-1838` reran the canonical Soar architecture-awareness refresh after
+  earlier browser-proof work had left temp profiles under repo `.tmp/`.
+- Observation:
+  the refresh still surfaced `.tmp/luc-1227-modal-.../Default/Extensions/...`
+  files as top actionable missing-test, missing-doc, and missing-task-link
+  rows, even while `app-completion` and `project-truth` were green.
+- Implication:
+  PM/architecture known-state work must not treat top actionable
+  architecture-awareness rows as trustworthy backlog when they point into repo
+  `.tmp` browser-profile artifacts. First repair the scanner/input boundary or
+  cleanup discipline, then rerun the canonical baseline.
+- Evidence:
+  `history/tasks/luc-1838-known-state-evidence-architecture-baseline-2026-07-25-task.md`;
+  [LUC-1840](/LUC/issues/LUC-1840).

@@ -17122,3 +17122,19 @@ SRG_001_RESOLVED / SALE_READINESS_STILL_NO_GO`.
   protected acceptance/supportability proof; `10 SPA` continues
   [LUC-1792](/LUC/issues/LUC-1792) for owner-acceptance and protected-proof
   boundary closure.
+## 2026-07-25 LUC-1842 source-control closure for LUC-1838 packet
+
+- Status: `VERIFIED / DOCS_STATE_HISTORY_ONLY / COMMIT_REQUIRED`.
+- Scope:
+  classify and close the local dirty packet left by the `LUC-1838` known-state
+  baseline refresh.
+- Included:
+  generated `docs/graphs/*`, `docs/status/*`, source-of-truth updates, the
+  `LUC-1838` task artifact, and the `LUC-1842` closure packet.
+- Excluded:
+  runtime fixes, scanner logic changes, push, deploy, protected smoke, and
+  secret-bearing paths.
+- Success gate:
+  correct follow-up issue reference, validate docs/state/history-only scope,
+  run bounded hygiene checks, create one reversible local commit, and leave
+  `LUC-1840` as the sole residual follow-up.

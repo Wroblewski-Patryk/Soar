@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T00:51:39.929Z",
+  "generatedAt": "2026-07-24T20:55:38.132Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 5549,
-      "linkedRelationCount": 23054,
+      "entityCount": 5590,
+      "linkedRelationCount": 23256,
       "layers": {
         "frontend": {
           "count": 310,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 805,
+          "count": 806,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 4243,
+          "count": 4281,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1338,7 +1338,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 190,
+          "count": 192,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -3143,7 +3143,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:luc-1152-admin-operation-get-root-doc-link-closure:61267e411b",
@@ -4908,7 +4908,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:task:925bb2530f",
@@ -6185,8 +6185,8 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 816,
-      "linkedRelationCount": 3009,
+      "entityCount": 818,
+      "linkedRelationCount": 3018,
       "layers": {
         "frontend": {
           "count": 26,
@@ -7049,7 +7049,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 406,
+          "count": 408,
           "sample": [
             {
               "id": "agent:procedure:f48c47c027",
@@ -7241,7 +7241,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728",
@@ -8358,8 +8358,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 941,
-      "linkedRelationCount": 3546,
+      "entityCount": 947,
+      "linkedRelationCount": 3577,
       "layers": {
         "frontend": {
           "count": 25,
@@ -9214,7 +9214,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 699,
+          "count": 704,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -9414,7 +9414,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:luc-3885-stripe-webhook-subscription-lifecycle-reconciliation:d429702abc",
@@ -9870,7 +9870,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 74,
+          "count": 75,
           "sample": [
             {
               "id": "document:api-deep-dive-subscriptions-module:d31bd221bb",
@@ -10225,6 +10225,14 @@
               "status": "implemented"
             },
             {
+              "id": "document:soar-v1-0-sale-readiness-contract:fc69dd18ca",
+              "type": "document",
+              "name": "Soar V1.0 Sale-Readiness Contract",
+              "path": "docs/planning/soar-v1-sale-readiness-contract.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:v1-0-official-live-plan-world-ready:478dbe2033",
               "type": "document",
               "name": "V1.0 Official Live Plan (World-Ready)",
@@ -10475,8 +10483,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 4104,
-      "linkedRelationCount": 13403,
+      "entityCount": 4114,
+      "linkedRelationCount": 13451,
       "layers": {
         "frontend": {
           "count": 404,
@@ -11125,7 +11133,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1345,
+          "count": 1346,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11771,7 +11779,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 2146,
+          "count": 2155,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -11811,7 +11819,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc",
@@ -13080,8 +13088,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 13405,
-      "linkedRelationCount": 39982,
+      "entityCount": 13469,
+      "linkedRelationCount": 40250,
       "layers": {
         "frontend": {
           "count": 1485,
@@ -13730,7 +13738,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1700,
+          "count": 1703,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -14376,7 +14384,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 9385,
+          "count": 9445,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14939,6 +14947,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:0db8afe38d",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-1814-diagnose-and-repair-soar-web-build-info-provenance-in-soar-workspace-2026-07-24-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:0ffdc80cb4",
               "type": "task",
               "name": "Task",
@@ -15009,14 +15025,6 @@
               "path": "history/tasks/luc-722-account-access-missing-doc-link-proof-2026-07-12-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:1da6834ebc",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-6331-production-web-backtest-worker-restoration-recheck-2026-07-01-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "blocked"
             }
           ],
           "truncated": true
@@ -15032,7 +15040,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 834,
+          "count": 835,
           "sample": [
             {
               "id": "document:service-reliability-and-observability:ed864dc06a",
@@ -17029,7 +17037,7 @@
               "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
-              "status": "in_progress"
+              "status": "verified"
             },
             {
               "id": "task:backend-permission-and-data-isolation-review-task:6bbc4f70d1",

@@ -49145,3 +49145,61 @@ PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
   `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
+
+## 2026-07-25 LUC-1838 [Soar] [Known State] Evidence collection and architecture baseline
+
+- Status: `DONE / VERIFIED_BASELINE / FOLLOW_UPS_ROUTED`.
+- Scope:
+  - reran canonical Soar known-state generators from `Paperclip_Softwarehouse`;
+  - refreshed architecture-awareness, app-completion, and project-truth outputs;
+  - classified trustworthy versus polluted evidence;
+  - preserved the no feature-code / no deploy / no protected-smoke boundary.
+- Verified:
+  - `build-architecture-awareness-index.mjs` PASS at `2026-07-24T20:55:38.132Z`
+    with `15618` entities, `43490` relations, `16426` files scanned;
+  - `build-app-completion-index.mjs` PASS with `86` items, `5` flows, and
+    zero browser/test/doc/blocker gaps;
+  - `build-project-truth-indexes.mjs --apply` PASS with `known_and_routable`
+    project truth and public probes `web_home`, `web_build_info`,
+    `api_health`, and `api_ready` all returning `200`.
+- Findings:
+  - `app-completion` and `project-truth` are currently usable for PM routing;
+  - `architecture-awareness` and `task-synchronization` remain polluted by
+    `.tmp/luc-1227-modal-.../Default/Extensions/...` browser-profile artifacts,
+    so their top actionable missing-test/missing-doc/task-link rows are not
+    trustworthy product backlog.
+- Follow-ups:
+  - [LUC-1840](/LUC/issues/LUC-1840) excludes browser-proof `.tmp` artifacts
+    from canonical graph refresh and reruns the baseline.
+  - [LUC-1842](/LUC/issues/LUC-1842) closes the local source-control packet for
+    the generated evidence/state changes.
+- Evidence:
+  - `history/tasks/luc-1838-known-state-evidence-architecture-baseline-2026-07-25-task.md`
+
+## 2026-07-25 LUC-1842 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1838
+
+- Status: `DONE / VERIFIED / LOCAL_COMMIT_CREATED`.
+- Scope:
+  - acknowledged the active closure wake for the generated `LUC-1838`
+    known-state packet;
+  - rechecked the local worktree and confirmed the dirty scope is limited to
+    docs/state/history/generated evidence plus the untracked `LUC-1838` task
+    artifact;
+  - corrected the stale local follow-up reference from `LUC-1841` to
+    `LUC-1842`;
+  - preserved the no push / no deploy / no protected-smoke boundary.
+- Verification:
+  - `git status --short --branch` -> branch `main...origin/main [ahead 1]`;
+    dirty packet contains no runtime/product code paths.
+  - `git diff --stat` and `git diff --numstat` -> coherent docs/state/history
+    plus generated `docs/graphs/*` and `docs/status/*` outputs only.
+  - `git diff --check` -> PASS.
+  - bounded credential signature scan over authored closure/state files ->
+    PASS.
+- Disposition:
+  - commit: local closure commit created for the full `LUC-1838` packet;
+  - push: `not needed`;
+  - deploy impact: `none`.
+- Evidence:
+  - `history/evidence/luc-1842-source-control-closure-luc-1838-known-state-packet-2026-07-25.md`
+  - `history/tasks/luc-1842-source-control-close-luc-1838-known-state-packet-2026-07-25-task.md`

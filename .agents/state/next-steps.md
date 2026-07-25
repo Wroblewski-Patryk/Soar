@@ -13050,3 +13050,21 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
 - Evidence:
   `history/evidence/luc-1791-soar-v1-exact-candidate-release-parity-packet-2026-07-23.md`;
   `history/tasks/luc-1791-exact-candidate-release-parity-packet-2026-07-23-task.md`.
+
+## 2026-07-25 LUC-1838 Known-State Baseline Next Step
+
+- [LUC-1838](/LUC/issues/LUC-1838) completed as a PM known-state checkpoint.
+- Use the refreshed `app-completion` and `project-truth` outputs as the current
+  routable baseline.
+- Do not route new product proof or feature work from the current top
+  `architecture-awareness` actionable rows while they still point at
+  `.tmp/luc-1227-modal-1784081534559/Default/Extensions/...`.
+- Next owner/action:
+  - Architecture / Engineering Delivery executes
+    [LUC-1840](/LUC/issues/LUC-1840) to exclude browser-proof `.tmp` artifacts
+    from the canonical graph refresh and publish the before/after baseline.
+  - Source-control closure executes
+    [LUC-1842](/LUC/issues/LUC-1842) to classify and close the generated
+    `LUC-1838` dirty packet.
+- Evidence:
+  `history/tasks/luc-1838-known-state-evidence-architecture-baseline-2026-07-25-task.md`.
