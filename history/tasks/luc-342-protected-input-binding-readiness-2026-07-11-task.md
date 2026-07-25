@@ -165,3 +165,17 @@ No-secret binding/readiness evidence and Paperclip handoff.
 - [x] No workaround paths were introduced.
 - [x] No logic duplication was introduced.
 - [x] Definition of Done evidence is attached.
+
+## 2026-07-25 Completion-Evidence Backfill
+
+- Reopen reason:
+  historical typed `completionEvidence` backfill for
+  [LUC-342](/LUC/issues/LUC-342).
+- Repair scope:
+  bookkeeping only; reaffirm the completed 2026-07-11 proof packet without
+  re-running the readiness check.
+- Backfill basis:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`,
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`,
+  and this task packet already contain the same-issue proof used for closure.
+- No new proof artifacts were created by this repair.

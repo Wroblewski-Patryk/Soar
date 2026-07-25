@@ -2084,6 +2084,24 @@ proof still gated`.
   confidence is unchanged until selected follow-up proof issues run browser
   screenshots or protected read-only proof under approved bindings.
 
+## 2026-07-25 LUC-342 Completion-Evidence Backfill
+
+- Module row:
+  Protected release/account readiness / completion evidence bookkeeping.
+- Status:
+  `historical completionEvidence backfilled; original proof unchanged`.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`.
+- Current proof:
+  the authoritative same-issue LUC-342 proof remains the 2026-07-11 no-secret
+  readiness rerun with `38` matching protected input names and account-access
+  input gate `PASS`.
+- Confidence:
+  high that the issue reopen was bookkeeping-only and did not change runtime
+  or proof state.
+
 ## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
 
 - Module row:

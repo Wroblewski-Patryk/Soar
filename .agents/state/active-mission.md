@@ -17138,3 +17138,22 @@ SRG_001_RESOLVED / SALE_READINESS_STILL_NO_GO`.
   correct follow-up issue reference, validate docs/state/history-only scope,
   run bounded hygiene checks, create one reversible local commit, and leave
   `LUC-1840` as the sole residual follow-up.
+## 2026-07-25 LUC-1864 source-control closure for LUC-342 completion-evidence packet
+
+- Status: `VERIFIED / DOCS_STATE_HISTORY_ONLY / COMMIT_REQUIRED`.
+- Scope:
+  classify and close the local dirty packet left by the `LUC-342`
+  completion-evidence backfill.
+- Included:
+  `.agents/state/module-confidence-ledger.md`,
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`,
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`,
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`,
+  and the `LUC-1864` closure packet.
+- Excluded:
+  runtime reruns, protected smoke, deployment, restart, rollback,
+  secret-bearing paths, and product/runtime code changes.
+- Success gate:
+  validate the dirty packet as one coherent bookkeeping-only batch, run bounded
+  git hygiene checks, create one reversible local commit, and leave no residual
+  source-control ambiguity for `LUC-342`.

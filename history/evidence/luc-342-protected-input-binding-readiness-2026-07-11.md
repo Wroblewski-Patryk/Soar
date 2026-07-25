@@ -72,3 +72,13 @@ Execute the current operator unblock packet only after approved protected inputs
 - No secret values, repo `.env` writes, deployment, restart, rollback,
   production mutation, protected smoke, account mutation, exchange/payment/
   subscription mutation, order, position, or live-trading action occurred.
+
+## 2026-07-25 Completion-Evidence Backfill Note
+
+- Paperclip reopened [LUC-342](/LUC/issues/LUC-342) for historical typed
+  `completionEvidence` backfill only.
+- This repair relies on the pre-existing 2026-07-11 same-issue proof already
+  recorded in this file and the paired JSON/task packet.
+- No new proof artifact, runtime rerun, protected smoke, deployment, restart,
+  rollback, production mutation, account mutation, or secret readback was
+  created by the 2026-07-25 bookkeeping repair.

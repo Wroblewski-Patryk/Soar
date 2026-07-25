@@ -6306,6 +6306,23 @@ NO_RUNTIME_MUTATION`.
   `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
   `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
 
+## 2026-07-25 LUC-342 Completion-Evidence Backfill
+
+- [LUC-342](/LUC/issues/LUC-342) should remain `done` as
+  `DONE / INPUT_FAMILIES_PRESENT_BY_NAME / ACCOUNT_INPUT_GATE_PASS /
+PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  backfilled historical typed `completionEvidence` from the existing
+  2026-07-11 same-issue proof packet.
+- Boundary:
+  no new proof artifact, runtime rerun, protected smoke, deployment, restart,
+  rollback, production mutation, account mutation, or secret readback was
+  performed for this 2026-07-25 bookkeeping repair.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`.
+
 ## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
 
 - [LUC-264](/LUC/issues/LUC-264) should move to `done` as
