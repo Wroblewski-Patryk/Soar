@@ -1,3 +1,105 @@
+## 2026-07-25 LUC-1880 source-control closure for the workers-market-data escalation packet
+
+- Scope:
+  classify and close the local dirty state created by the July 25
+  `workers-market-data` runtime and owner-path escalation chain.
+- Dirty-tree baseline:
+  `12` paths total:
+  `3` state/context files,
+  `4` history evidence files,
+  `5` history task files,
+  `0` runtime/product-code paths,
+  `0` out-of-scope paths.
+- Closure decision:
+  the current dirt is one coherent docs/state/history-only packet for
+  `LUC-1868`, `LUC-1872`, `LUC-1877`, `LUC-1878`, and `LUC-1879`;
+  `git diff --check` passed and the bounded credential-signature scan found no
+  high-confidence matches, so one local reversible closure commit is valid.
+- Evidence:
+  `history/evidence/luc-1880-source-control-closure-luc-1868-luc-1872-luc-1877-luc-1878-luc-1879-2026-07-25.md`;
+  `history/tasks/luc-1880-source-control-close-luc-1868-luc-1872-luc-1877-luc-1878-luc-1879-2026-07-25-task.md`.
+- Residual:
+  `LUC-1880` changes local source-control state only. `workers-market-data`
+  remains blocked operationally behind `LUC-1879`.
+
+## 2026-07-25 LUC-1872 resumed owner-path retry still denied deploy permission
+
+- Scope:
+  consume the `issue_blockers_resolved` wake for `LUC-1872` and verify whether
+  the current bound owner path can now execute the exact
+  `workers-market-data` Coolify start action.
+- Result:
+  even with `COOLIFY_SOAR_TEAM_ID` now present in the runner env by name, the
+  fresh targeted retry
+  `POST /api/v1/applications/{workers-market-data}/start` still returned
+  `403 Forbidden` with body `Missing required permissions: deploy`; direct app
+  polling for about one minute kept `workers-market-data` at
+  `exited:unhealthy` with unchanged `last_online_at=2026-07-25 18:17:37`,
+  `restart_count=0`, and commit
+  `ca712e98b70e157b643db4f57726a02821a140bc`.
+- Verification:
+  public `https://soar.luckysparrow.ch`,
+  `https://api.soar.luckysparrow.ch/health`, and
+  `https://api.soar.luckysparrow.ch/ready` remained `200`.
+- Evidence:
+  `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`.
+- Residual:
+  `LUC-1879` remains the live blocker above DRE:
+  `BLOCKED / BOARD_OWNER_DECISION_REQUIRED / NO_DEPLOY_CAPABLE_OWNER_EVIDENCED`.
+
+## 2026-07-25 LUC-1879 COO owner-path verification for workers-market-data
+
+- Scope:
+  verify whether the COO follow-up lane created from `LUC-1878` already
+  includes a real deploy-capable operator identity for the exact
+  `workers-market-data` Coolify mutation boundary.
+- Revalidated facts:
+  `LUC-1872` still provides the last direct runtime proof and still ends at
+  `POST /api/v1/applications/{workers-market-data}/start -> 403 Forbidden`
+  with `Missing required permissions: deploy`; no new mutation evidence
+  supersedes that result.
+- Clarified ownership boundary:
+  the `LUC-1878` closeout packet restored a board-capable COO coordination
+  lane, but this heartbeat found no separate evidenced deploy-capable operator
+  identity inside that lane yet.
+- Current next step:
+  board/user must either confirm `00 AIA` as the exact board-capable
+  execution / operator-designation owner for `workers-market-data`, or name
+  another active deploy-capable owner; an attempted Paperclip
+  `request_confirmation` creation returned `500 Internal server error`, so the
+  control-plane issue is blocked on that owner decision rather than waiting in
+  review.
+- Evidence:
+  `history/evidence/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25.md`;
+  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`.
+
+## 2026-07-25 LUC-1877 CTO reroute for workers-market-data owner path
+
+- Scope:
+  resolve the post-`LUC-1872` routing ambiguity for the blocked
+  `workers-market-data` Coolify mutation path.
+- Revalidated fact:
+  DRE already proved on Saturday, July 25, 2026 that the exact targeted write
+  `POST /api/v1/applications/{workers-market-data}/start` returns
+  `403 Forbidden` with `Missing required permissions: deploy`, so another DRE
+  retry without a changed credential/path is not legal progress.
+- Fresh roster readback:
+  current Paperclip company agents include `09 DRE`, but no active agent named
+  `Ops Release Lead`.
+- CTO action:
+  created `LUC-1878` for owner-path restoration; that child then completed and
+  created the live operational lane [LUC-1879](/LUC/issues/LUC-1879) assigned
+  to `04 COO` for the exact board-capable `workers-market-data` mutation
+  boundary.
+- Evidence:
+  `history/evidence/luc-1877-cto-reroute-workers-market-data-owner-path-2026-07-25.md`;
+  `history/tasks/luc-1877-cto-reroute-workers-market-data-owner-path-2026-07-25-task.md`.
+- Residual:
+  CTO routing is complete. Runtime recovery remains downstream on `LUC-1879`,
+  while `LUC-1872` and `LUC-1868` remain blocked until that operational lane
+  returns recovery proof or an explicit denial.
+
 ## 2026-07-25 LUC-1875 source-control closure for LUC-1868-LUC-1872 packet
 
 - Scope:
@@ -34781,3 +34883,23 @@ QA_PROOF_FOLLOWUP_CREATED`.
   actually deploy-capable token to this lane or executes the exact targeted
   worker start/restart and returns refreshed reconciler plus acceptance-ledger
   proof.
+
+## 2026-07-25 LUC-1868 reroute completion still left DRE write path unchanged
+
+- Scope:
+  rerun the exact resource-scoped Coolify recovery actions after
+  `LUC-1877` completed and returned a fresh owner-path reroute above DRE.
+- Result:
+  fresh pre-action readback still showed `workers-market-data ->
+  exited:unhealthy`; both exact allowed DRE actions
+  `POST /api/v1/applications/{uuid}/start` and
+  `POST /api/v1/applications/{uuid}/restart` again returned `403 Forbidden`;
+  public Web/API health stayed green.
+- Evidence:
+  `history/evidence/luc-1868-soar-coolify-workers-market-data-recovery-2026-07-25.md`;
+  `history/tasks/luc-1868-soar-coolify-diagnose-and-recover-workers-market-data-exited-unhealthy-2026-07-25-task.md`.
+- Residual:
+  the effective DRE-bound credential still lacks deploy capability. The live
+  upstream blocker is now [LUC-1879](/LUC/issues/LUC-1879), which owns either
+  the exact owner-executed recovery or a truly deploy-capable designation
+  above DRE.

@@ -164,3 +164,32 @@ documented, and the acceptance blocker stays isolated to
 - The live blocker is now narrower:
   the exact credential bound to this DRE recovery lane still lacks effective
   permission for `POST /api/v1/applications/{workers-market-data}/start`.
+
+## Second blocker-resolution wake after LUC-1877
+
+- Wake context:
+  `issue_blockers_resolved` resumed `LUC-1868` after
+  [LUC-1877](/LUC/issues/LUC-1877) closed with a new downstream operational
+  owner path.
+- Fresh pre-action readback at `2026-07-25T20:59Z` still showed:
+  - `workers-market-data -> exited:unhealthy`
+  - `last_online_at=2026-07-25 18:17:37`
+  - `restart_count=0`
+  - `git_commit_sha=ca712e98b70e157b643db4f57726a02821a140bc`
+- Fresh retry of both exact allowed actions:
+  - `POST /api/v1/applications/{workers-market-data}/start -> 403 Forbidden`
+  - `POST /api/v1/applications/{workers-market-data}/restart -> 403 Forbidden`
+  - response body: none returned to this runner in either call
+- Public Soar remained healthy through the retry window:
+  - `GET https://soar.luckysparrow.ch -> 200`
+  - `GET https://api.soar.luckysparrow.ch/health -> 200`
+  - `GET https://api.soar.luckysparrow.ch/ready -> 200`
+
+### Updated blocker interpretation after LUC-1877
+
+- The `LUC-1877` routing completion did not change the effective credential in
+  this DRE lane.
+- The parent issue now has a concrete live upstream owner path:
+  [LUC-1879](/LUC/issues/LUC-1879)
+  `[Softwarehouse][Ops Owner Path] Execute or designate board-capable Coolify recovery for workers-market-data`,
+  which remains the active blocker above DRE.

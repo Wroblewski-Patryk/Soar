@@ -233,6 +233,9 @@ or proves the owner path still lacks the required mutation permission.
 - Implementation notes:
   the targeted `start` request returned `403` with message
   `Missing required permissions: deploy`; no second mutation was attempted.
+  After the later `issue_blockers_resolved` wake, one fresh retry against the
+  current bound owner path returned the same `403` and one-minute polling still
+  showed no `status`, `last_online_at`, `restart_count`, or `git_sha` change.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -240,7 +243,7 @@ or proves the owner path still lacks the required mutation permission.
   acceptance-ledger refresh, and direct app readback.
 - Result:
   public Soar stayed healthy; `workers-market-data` remained unhealthy; the
-  exact missing permission is now explicit.
+  exact missing permission is explicit and unchanged after the resumed retry.
 
 ### 6. Self-Review
 - Simpler option considered:
@@ -259,6 +262,18 @@ or proves the owner path still lacks the required mutation permission.
 - Context updated:
   `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`.
 - Learning journal updated: not applicable.
+
+## Resume Addendum
+- Resume trigger:
+  `issue_blockers_resolved`.
+- Delta handled:
+  rechecked the current owner-path state before retry, observed
+  `COOLIFY_SOAR_TEAM_ID` present by name, ran one fresh resource-scoped
+  `start` attempt, and confirmed the owner path still fails with
+  `403 Missing required permissions: deploy`.
+- Final interpretation:
+  the wake did not resolve the actual mutation blocker; `LUC-1879` remains the
+  active first-class blocker above DRE.
 
 ## Review Checklist
 - [x] Process self-audit completed before implementation.

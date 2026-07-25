@@ -1,3 +1,121 @@
+## 2026-07-25 LUC-1880 source-control closure for LUC-1868-LUC-1872-LUC-1877-LUC-1878-LUC-1879 packet
+
+- Status: `DONE / LOCAL_COMMIT_VALID / PUSH_NOT_NEEDED`.
+- Scope:
+  classify and close the remaining local dirty state after the blocked
+  `workers-market-data` runtime lane, DRE retry, CTO reroute, board-capable
+  owner-path restore, and COO owner-gap clarification.
+- Dirty-tree baseline:
+  `12` paths total:
+  `3` state/context files,
+  `4` history evidence files,
+  `5` history task files,
+  `0` runtime/product-code paths,
+  `0` out-of-scope paths.
+- Closure decision:
+  the dirty set is one coherent docs/state/evidence packet for `LUC-1868`,
+  `LUC-1872`, `LUC-1877`, `LUC-1878`, and `LUC-1879`;
+  `git diff --check` passes; bounded redaction review over the authored paths
+  found no high-confidence credential signatures; one local reversible closure
+  commit is valid.
+- Evidence:
+  `history/evidence/luc-1880-source-control-closure-luc-1868-luc-1872-luc-1877-luc-1878-luc-1879-2026-07-25.md`;
+  `history/tasks/luc-1880-source-control-close-luc-1868-luc-1872-luc-1877-luc-1878-luc-1879-2026-07-25-task.md`.
+- Residual:
+  no runtime recovery was performed in this closure lane;
+  `LUC-1879` remains the active operational blocker above DRE.
+
+## 2026-07-25 LUC-1872 resumed owner-path retry for workers-market-data
+
+- Status:
+  `BLOCKED / RETRY_CONFIRMED_SAME_PERMISSION_DENIAL / WAITING_LUC-1879`.
+- Scope:
+  - consumed the `issue_blockers_resolved` wake for
+    [LUC-1872](/LUC/issues/LUC-1872);
+  - revalidated the current owner-path runtime state for
+    `workers-market-data`;
+  - executed one fresh exact `start` attempt on the current bound path only.
+- Verification:
+  - direct preflight still showed `workers-market-data -> exited:unhealthy`,
+    `last_online_at=2026-07-25 18:17:37`, `restart_count=0`.
+  - even with `COOLIFY_SOAR_TEAM_ID` present in env by name, the fresh targeted
+    `POST /api/v1/applications/{workers-market-data}/start` still returned
+    `403 Forbidden` with `Missing required permissions: deploy`.
+  - direct polling for about one minute showed no state change.
+  - public reachability remained green:
+    `https://soar.luckysparrow.ch -> 200`,
+    `https://api.soar.luckysparrow.ch/health -> 200`,
+    `https://api.soar.luckysparrow.ch/ready -> 200`.
+- Evidence:
+  - `history/evidence/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25.md`
+  - `history/tasks/luc-1872-soar-dre-owner-path-workers-market-data-recovery-2026-07-25-task.md`
+- Residual:
+  - the wake did not resolve the actual Coolify mutation boundary;
+    [LUC-1879](/LUC/issues/LUC-1879) remains the active blocker above DRE.
+
+## 2026-07-25 LUC-1879 COO owner-path verification for workers-market-data
+
+- Status:
+  `BLOCKED / BOARD_OWNER_DECISION_REQUIRED / NO_DEPLOY_CAPABLE_OWNER_EVIDENCED`.
+- Scope:
+  verify whether the COO follow-up lane created by [LUC-1878](/LUC/issues/LUC-1878)
+  already names a real deploy-capable owner for the exact
+  `workers-market-data` Coolify mutation boundary.
+- Outcome:
+  `LUC-1872` still remains the last direct runtime proof and still ends at
+  `403 Missing required permissions: deploy`; `LUC-1878` proved only that the
+  board-capable operational lane moved to COO, not that a deploy-capable
+  operator identity was evidenced. An attempted Paperclip
+  `request_confirmation` creation returned `500 Internal server error`, so this
+  lane left an explicit blocker instead of claiming the owner gap is solved.
+- Blocker:
+  board/user must confirm whether `00 AIA` owns the exact board-capable
+  execution or equivalent operator-designation path for `workers-market-data`,
+  or name another active deploy-capable owner.
+- Evidence:
+  `history/evidence/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25.md`;
+  `history/tasks/luc-1879-execute-or-designate-board-capable-coolify-recovery-for-workers-market-data-2026-07-25-task.md`.
+
+## 2026-07-25 LUC-1878 board-capable deploy owner path restored for workers-market-data
+
+- Status:
+  `DONE / OWNER_PATH_RESTORED / COO_FOLLOW_UP_LIVE`.
+- Scope:
+  provide one real owner path above DRE for the exact `workers-market-data`
+  Coolify mutation boundary after the routed least-privilege retry still failed
+  with `403 Missing required permissions: deploy`.
+- Outcome:
+  live roster verification confirmed there is no active `Ops Release Lead`;
+  [LUC-1879](/LUC/issues/LUC-1879) was created and assigned to
+  `04 COO (Chief Operating Officer)` as the board-capable operational lane for
+  the exact resource-scoped recovery or equivalent deploy-capable owner
+  designation.
+- Control-plane boundary:
+  a direct `PATCH` to [LUC-1877](/LUC/issues/LUC-1877) was rejected with
+  `Issue is outside this actor's authorization boundary`, so the durable path
+  is the live child issue rather than a parent blocker mutation from this lane.
+- Evidence:
+  `history/tasks/luc-1878-provide-board-capable-deploy-owner-for-soar-workers-market-data-recovery-2026-07-25-task.md`.
+
+## 2026-07-25 LUC-1877 CTO reroute for workers-market-data owner path
+
+- Status:
+  `DONE / OPERATIONAL_OWNER_PATH_ROUTED / CTO_SCOPE_COMPLETE`.
+- Scope:
+  determine whether CTO could return a real deploy-capable owner path for the
+  blocked `workers-market-data` recovery after `LUC-1872`.
+- Outcome:
+  current DRE evidence was revalidated; fresh roster readback found no active
+  `Ops Release Lead` agent; CTO created `LUC-1878`, and its completion left
+  the live operational owner path as
+  [LUC-1879](/LUC/issues/LUC-1879) assigned to `04 COO`.
+- Decision:
+  do not send the work back to DRE unchanged. CTO routing is complete; the
+  remaining mutation responsibility is `LUC-1879`, not owner-path ambiguity.
+- Evidence:
+  `history/evidence/luc-1877-cto-reroute-workers-market-data-owner-path-2026-07-25.md`;
+  `history/tasks/luc-1877-cto-reroute-workers-market-data-owner-path-2026-07-25-task.md`.
+
 ## 2026-07-24 LUC-1814 diagnose and repair Soar web build-info provenance in Soar workspace
 
 - Status:

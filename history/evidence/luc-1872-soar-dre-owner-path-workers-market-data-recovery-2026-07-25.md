@@ -51,12 +51,42 @@ Mode: least-privilege owner-path write attempt plus bounded readback
   - reason:
     `Coolify resource inventory found unhealthy resources: workers-market-data:exited:unhealthy.`
 
+## Resume delta retry after owner-path wake
+
+- Resume reason:
+  `issue_blockers_resolved` for `LUC-1872`.
+- Fresh owner-path context before retry:
+  - `COOLIFY_SOAR_TEAM_ID` is now present in the runner env by name.
+  - direct app readback still showed:
+    - `workers-market-data -> exited:unhealthy`
+    - `last_online_at=2026-07-25 18:17:37`
+    - `restart_count=0`
+    - `git_commit_sha=ca712e98b70e157b643db4f57726a02821a140bc`
+  - related owner lane `LUC-1879` remained `BLOCKED`, not completed.
+- One fresh targeted retry was executed against the current bound path:
+  - `POST /api/v1/applications/{workers-market-data}/start`
+  - result: `403 Forbidden`
+  - response body:
+    `{"message":"Missing required permissions: deploy"}`
+- Post-retry polling for about one minute showed no runtime movement:
+  - `workers-market-data` stayed `exited:unhealthy`
+  - `last_online_at` stayed `2026-07-25 18:17:37`
+  - `restart_count` stayed `0`
+  - `git_commit_sha` stayed `ca712e98b70e157b643db4f57726a02821a140bc`
+- Public Soar still remained healthy after the resumed retry:
+  - `GET https://soar.luckysparrow.ch -> 200`
+  - `GET https://api.soar.luckysparrow.ch/health -> 200`
+  - `GET https://api.soar.luckysparrow.ch/ready -> 200`
+
 ## Blocker
 
 - First-class blocker:
   the routed least-privilege owner path still lacks the Coolify `deploy`
   permission required for the exact targeted `start` action on
   `workers-market-data`.
+- Current active blocker lane above DRE:
+  [LUC-1879](/LUC/issues/LUC-1879) remains
+  `BLOCKED / BOARD_OWNER_DECISION_REQUIRED / NO_DEPLOY_CAPABLE_OWNER_EVIDENCED`.
 - Named unblock owner:
   Coolify credential owner / Ops Release Lead.
 - Exact unblock action:
@@ -72,4 +102,6 @@ Mode: least-privilege owner-path write attempt plus bounded readback
 "some owner path may be needed" but specifically that the current routed owner
 path still cannot perform deploy-capable writes for `workers-market-data`.
 Production public health stayed green, no unrelated Soar resource was mutated,
-and the remaining blocker is external to DRE execution.
+and the remaining blocker is external to DRE execution. The resume wake did
+not materially change the mutation boundary: even after the fresh owner-path
+retry, the exact same `deploy` permission denial remains in force.

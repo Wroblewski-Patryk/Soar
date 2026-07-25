@@ -250,6 +250,10 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
   outcome, reran the exact same `start` action; Coolify still returned
   `403 Forbidden`, proving the owner-path unblock did not actually reach the
   live runtime credential.
+  After the next `issue_blockers_resolved` wake and `LUC-1877` reroute
+  completion, reran both exact allowed operations: `start` and `restart`.
+  Coolify still returned `403 Forbidden` for both, so the DRE-bound runtime
+  credential remained unchanged in practice.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -288,14 +292,18 @@ mutation attempt, post-attempt verification, and an explicit unblock owner.
   remained healthy; reconciler and acceptance ledger still isolate the blocker
   to `workers-market-data`. The later blocker-resolution wake reran the exact
   approved `start` path and received the same `403`, so the runtime permission
-  boundary remains unresolved in practice.
+  boundary remains unresolved in practice. The later `LUC-1877` reroute wake
+  also retried both exact allowed actions (`start` and `restart`) and both
+  still returned `403`, so the live blocker is now the upstream operational
+  owner lane `LUC-1879`, not missing diagnosis.
 - Residual risk:
   production split-worker topology remains degraded until an approved operator
   performs the targeted start/restart or grants the required deploy capability.
 - Unblock owner:
-  Coolify credential owner / Ops Release Lead.
+  active upstream owner lane `LUC-1879` / its assigned board-capable
+  operational owner.
 - Unblock action:
-  bind an actually deploy-capable Coolify credential to this exact DRE lane or
-  execute the same targeted `start`/`restart` action on behalf of the lane and
+  either execute the exact targeted `workers-market-data` `start`/`restart`
+  or designate/bind a truly deploy-capable credential path above DRE, then
   hand back the before/after readback plus refreshed reconciler and
   acceptance-ledger output.
