@@ -1,3 +1,90 @@
+## 2026-07-26 LUC-1887 repaired the `soar-api` source-commit flag but the exact Coolify build still passed `SOURCE_COMMIT=""`
+
+- Scope:
+  consume the board-authorized production config check on `soar-api`, repair the
+  exact `Include Source Commit in Build` flag if disabled, then perform one
+  serialized `instant_deploy` retry for current `main`
+  `adc82a154c9023256e454accfb4edda2d3f0a378`.
+- Result:
+  direct Coolify model readback proved
+  `application_settings.include_source_commit_in_build=false` for `soar-api`.
+  This heartbeat changed only that field to `true`, verified the readback, and
+  then executed exactly one `instant_deploy` which returned
+  `deployment_uuid=gkd7yst34j2ew415xjn2u1xy`. The deploy still ended terminal
+  `failed`, direct Coolify app readback still shows old
+  `git_commit_sha=9d1801d9b023211d4446629aac7bd58def70322d`, and public API
+  `/health` plus `/ready` still serve the same old SHA. Exact deployment logs
+  prove the build step still ran with `SOURCE_COMMIT=""` and failed in
+  `writeApiSourceCommit.mjs`, so the remaining blocker is not the flag value
+  alone.
+- Verification:
+  Coolify app-settings readback before/after write; one exact
+  `POST /api/v1/applications/{uuid}/start?force=false&instant_deploy=true`;
+  `GET /api/v1/deployments/gkd7yst34j2ew415xjn2u1xy` -> terminal `failed`;
+  direct app readback after deploy; `curl.exe -i https://api.soar.luckysparrow.ch/health`;
+  `curl.exe -i https://api.soar.luckysparrow.ch/ready`.
+- Evidence:
+  `history/evidence/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26.md`;
+  `history/tasks/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26-task.md`.
+- Residual:
+  release parent `LUC-1887` remains blocked on `LUC-1892`; the next owner must
+  fix why the Coolify remote Docker build still injects an empty
+  `SOURCE_COMMIT` even with `include_source_commit_in_build=true`.
+
+## 2026-07-26 LUC-1892 completed the remaining backend/source-build provenance repair
+
+- Scope:
+  keep the backend-owned provenance guard for short-first SHA ordering and add
+  the missing API Docker build-stage git-file fallback that DRE proved was
+  still absent after the Coolify app flag repair.
+- Result:
+  `apps/api/scripts/writeApiSourceCommit.mjs` still keeps the verified
+  hardening that walks `SOURCE_COMMIT`, `GITHUB_SHA`,
+  `COOLIFY_GIT_COMMIT_SHA`, and `COOLIFY_COMMIT_SHA` until it finds the first
+  valid 40-character SHA, and `apps/api/Dockerfile` now copies only
+  `.git/HEAD` plus `.git/refs` into the build stage so the script's
+  `git-files` fallback can actually work in the real Coolify remote Docker
+  context. The API deploy-proof docs were updated to match this contract.
+- Verification:
+  `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
+  `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
+  `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` PASS (`6/6`);
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts`
+  PASS (`4/4`).
+- Evidence:
+  `history/evidence/luc-1892-missing-full-commit-sha-coolify-remote-docker-provenance-fix-2026-07-26.md`;
+  `history/tasks/luc-1892-fix-missing-full-commit-sha-in-coolify-remote-docker-provenance-build-2026-07-26-task.md`.
+- Residual:
+  this runner still cannot complete the required Coolify verification because
+  the shell has no deploy bindings. The exact next owner action is one
+  `soar-api` redeploy on a commit containing the Dockerfile fallback copy plus
+  the writer hardening, followed by public and control-plane readback.
+
+## 2026-07-26 LUC-1891 resumed on pushed target `adc82a154` but exact `soar-api` deploy is blocked by missing Coolify bindings
+
+- Scope:
+  consume the board reopen comment that advanced the API release target from
+  `7742e5b73...` to pushed `main`
+  `adc82a154c9023256e454accfb4edda2d3f0a378`, then execute exactly one
+  `soar-api` `instant_deploy=true` if this runner still had the required
+  Coolify runtime bindings.
+- Result:
+  read-only verification confirmed both local `HEAD` and `origin/main` now
+  resolve to `adc82a154c9023256e454accfb4edda2d3f0a378`. Public API
+  `https://api.soar.luckysparrow.ch/health` and `/ready` at
+  `2026-07-26T01:59:41Z` still return `200` on old
+  `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d`. The resumed shell
+  has no `COOLIFY_*` bindings and no `COOLIFY_DEPLOY_API_TOKEN`, so the exact
+  authorized `instant_deploy` mutation could not be executed from this run and
+  no deploy request was sent.
+- Evidence:
+  `history/evidence/luc-1891-write-api-source-commit-path-anchoring-2026-07-26.md`;
+  `history/tasks/luc-1891-repair-write-api-source-commit-path-anchoring-2026-07-26-task.md`.
+- Residual:
+  `LUC-1891` remains blocked on a runner with the Coolify deploy bindings, or
+  on the release/Ops owner executing the exact same single-app `instant_deploy`
+  for `soar-api` against target `adc82a154...`.
+
 ## 2026-07-26 LUC-1891 repaired `writeApiSourceCommit` path anchoring for Docker-style execution
 
 - Scope:

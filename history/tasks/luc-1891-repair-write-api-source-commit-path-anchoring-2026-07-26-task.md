@@ -127,10 +127,19 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
 
 ## Validation Evidence
 - Tests:
-  - `node --check apps/api/scripts/writeApiSourceCommit.mjs` -> PASS
-  - `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS
-  - `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS (`5/5`)
-  - `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts` -> PASS (`4/4`)
+- `node --check apps/api/scripts/writeApiSourceCommit.mjs` -> PASS
+- `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS
+- `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS (`5/5`)
+- `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts` -> PASS (`4/4`)
+- `git rev-parse HEAD` -> `adc82a154c9023256e454accfb4edda2d3f0a378`
+- `git ls-remote origin refs/heads/main` ->
+  `adc82a154c9023256e454accfb4edda2d3f0a378`
+- public `https://api.soar.luckysparrow.ch/health` at
+  `2026-07-26T01:59:41Z` -> `200`,
+  `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d`
+- public `https://api.soar.luckysparrow.ch/ready` at
+  `2026-07-26T01:59:41Z` -> `200`,
+  `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d`
 - Manual checks:
   - reviewed the current script and confirmed it previously resolved
     `apiDir` from `process.cwd()`
@@ -138,6 +147,11 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
     `/app`, which mis-anchored both `.git` fallback and `.build-meta` output
   - confirmed the test harness now runs a copied script in an isolated fake
     repo so fixture assertions no longer leak to the real repo `.git`
+  - consumed the reopen comment that advanced the deploy target to
+    `adc82a154...` and requested one exact `soar-api` `instant_deploy=true`
+  - names-only environment scan in this resumed runner returned no
+    `COOLIFY_*` bindings, so the exact Coolify mutation could not be executed
+    from this shell and no deploy request was sent
 - Screenshots/logs:
   none
 - High-risk checks:
@@ -155,6 +169,8 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
 - Risk rows closed or changed:
   none
 - Reality status: verified
+  for the source repair; blocked for the resumed deploy mutation because the
+  required Coolify runtime bindings are absent in this runner
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed:
@@ -211,7 +227,9 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
   the board's direct finding about `/app` invocation is accurate and safe to
   codify as regression coverage
 - Blocking unknowns:
-  production redeploy proof remains external to this backend lane
+  the requested exact production redeploy cannot run from this resumed runner
+  until Coolify bindings are restored or the mutation is handed to a bound
+  release/Ops runner
 - Why it was safe to continue:
   only local source/test wiring was changed and verified
 
@@ -245,7 +263,9 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
 - Validation performed:
   node syntax checks, five script tests, and four release identity tests
 - Result:
-  all focused checks passed
+  all focused local checks passed; resumed read-only release checks confirm
+  `main` advanced to `adc82a154...` while public API still serves old
+  `9d1801d9...`
 
 ### 6. Self-Review
 - Simpler option considered:
@@ -265,7 +285,7 @@ Verified source changes plus durable evidence and a clean redeploy handoff.
 - Context updated:
   `.codex/context/PROJECT_STATE.md`,
   `.codex/context/TASK_BOARD.md`
-- Learning journal updated: yes
+- Learning journal updated: no
 
 ## Review Checklist (mandatory)
 - [x] Process self-audit completed before implementation.

@@ -70,6 +70,25 @@ test('accepts COOLIFY_GIT_COMMIT_SHA when SOURCE_COMMIT is absent', async () => 
   );
 });
 
+test('skips short SOURCE_COMMIT and accepts full COOLIFY_GIT_COMMIT_SHA fallback', async () => {
+  const { rootDir, apiDir } = await makeApiDir();
+  const fixtureScriptPath = await stageScriptFixture(rootDir);
+
+  await execFileAsync(process.execPath, [fixtureScriptPath], {
+    cwd: apiDir,
+    env: {
+      ...clearSourceCommitEnv(process.env),
+      SOURCE_COMMIT: 'adc82a154',
+      COOLIFY_GIT_COMMIT_SHA: 'FEDCBA9876543210FEDCBA9876543210FEDCBA98',
+    },
+  });
+
+  assert.equal(
+    await readGeneratedSourceCommit(apiDir),
+    'fedcba9876543210fedcba9876543210fedcba98'
+  );
+});
+
 test('falls back to .git HEAD and refs when explicit SOURCE_COMMIT is absent', async () => {
   const { rootDir, apiDir } = await makeApiDir();
   const fixtureScriptPath = await stageScriptFixture(rootDir);

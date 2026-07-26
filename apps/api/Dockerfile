@@ -1,6 +1,15 @@
 # syntax=docker/dockerfile:1.10
 
+ARG SOURCE_COMMIT
+ARG COOLIFY_GIT_COMMIT_SHA
+ARG COOLIFY_COMMIT_SHA
+ARG GITHUB_SHA
+
 FROM node:20-bookworm-slim AS base
+ARG SOURCE_COMMIT
+ARG COOLIFY_GIT_COMMIT_SHA
+ARG COOLIFY_COMMIT_SHA
+ARG GITHUB_SHA
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -18,10 +27,8 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY apps/api apps/api
 COPY libs/shared libs/shared
-ARG SOURCE_COMMIT
-ARG COOLIFY_GIT_COMMIT_SHA
-ARG COOLIFY_COMMIT_SHA
-ARG GITHUB_SHA
+COPY .git/HEAD .git/HEAD
+COPY .git/refs .git/refs
 RUN SOURCE_COMMIT="$SOURCE_COMMIT" \
     COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" \
     COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" \

@@ -2,6 +2,50 @@
 
 Date: 2026-07-26
 
+## 2026-07-26 Control-Plane Flag Repair And Retry
+
+Board follow-up authorized one exact production config repair on `soar-api`
+after bounded proof showed the deployment failure still logged an empty
+`SOURCE_COMMIT`.
+
+Scoped action performed:
+
+- prior Coolify `application_settings.include_source_commit_in_build=false`
+  for `soar-api`
+- exact scoped config repair: changed only that field to `true`
+- readback after write: `include_source_commit_in_build=true`
+- exact single serialized deploy after readback:
+  `POST /api/v1/applications/k126p7vqxs5cly2zc4y4g4rq/start?force=false&instant_deploy=true`
+- Coolify response: `200` with
+  `deployment_uuid=gkd7yst34j2ew415xjn2u1xy`
+
+Bounded outcome:
+
+| Check | Result |
+| --- | --- |
+| `GET /api/v1/deployments/gkd7yst34j2ew415xjn2u1xy` | terminal `failed` |
+| deployment target commit | `adc82a154c9023256e454accfb4edda2d3f0a378` |
+| direct Coolify `soar-api.git_commit_sha` after retry | still `9d1801d9b023211d4446629aac7bd58def70322d` |
+| public `https://api.soar.luckysparrow.ch/health` | `200`, old `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d` |
+| public `https://api.soar.luckysparrow.ch/ready` | `200`, old `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d` |
+
+Exact new failure proof from Coolify deployment logs:
+
+- stage: Docker build, step `[build 3/6]`
+- command shape:
+  `RUN SOURCE_COMMIT="" COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" GITHUB_SHA="$GITHUB_SHA" node apps/api/scripts/writeApiSourceCommit.mjs`
+- first actionable line:
+  `[writeApiSourceCommit] failed: missing full SOURCE_COMMIT and no valid .git/HEAD or .git/refs fallback was available`
+
+Interpretation:
+
+- the Coolify app flag was genuinely off and is now repaired to `true`
+- the exact production retry still passes an empty `SOURCE_COMMIT` into the
+  Docker build step and still fails closed in the same provenance writer
+- therefore the release parent remains blocked on backend/source-build follow-up
+  `LUC-1892`, now with stronger evidence that the remaining gap is not only the
+  application flag value
+
 ## Scope
 
 Bounded DRE release-proof heartbeat for [LUC-1887](/LUC/issues/LUC-1887).

@@ -12,17 +12,17 @@ const repoRoot = path.resolve(apiDir, '..', '..');
 const outputDir = path.join(apiDir, '.build-meta');
 const outputPath = path.join(outputDir, 'SOURCE_COMMIT');
 
-const readTrimmedEnv = (...keys) => {
-  for (const key of keys) {
-    const value = process.env[key]?.trim();
-    if (value) return value;
-  }
-  return null;
-};
-
 const normalizeGitSha = (candidate) => {
   if (!candidate || !FULL_GIT_SHA.test(candidate)) return null;
   return candidate.toLowerCase();
+};
+
+const readFirstValidEnvSha = (...keys) => {
+  for (const key of keys) {
+    const normalizedSha = normalizeGitSha(process.env[key]?.trim() ?? '');
+    if (normalizedSha) return normalizedSha;
+  }
+  return null;
 };
 
 const readGitShaFromRef = async (gitDir, refName) => {
@@ -56,8 +56,11 @@ const readGitShaFromRef = async (gitDir, refName) => {
 };
 
 const resolveSourceCommit = async () => {
-  const envSha = normalizeGitSha(
-    readTrimmedEnv('SOURCE_COMMIT', 'GITHUB_SHA', 'COOLIFY_GIT_COMMIT_SHA', 'COOLIFY_COMMIT_SHA')
+  const envSha = readFirstValidEnvSha(
+    'SOURCE_COMMIT',
+    'GITHUB_SHA',
+    'COOLIFY_GIT_COMMIT_SHA',
+    'COOLIFY_COMMIT_SHA'
   );
   if (envSha) {
     return {

@@ -7,7 +7,7 @@
 - Current Stage: release
 - Status: BLOCKED
 - Owner: Ops/Release
-- Depends on: [LUC-1889](/LUC/issues/LUC-1889) `soar-api` deploy queue/readback repair after completed source/build fix
+- Depends on: [LUC-1892](/LUC/issues/LUC-1892) `soar-api` Coolify provenance follow-up after source-commit flag repair still failed
 - Priority: P0
 - Module Confidence Rows: not applicable
 - Requirement Rows: not applicable
@@ -37,9 +37,9 @@
 - Release objective advanced:
   production release truth and blocker clarity for Soar VPS deployment.
 - Included slices:
-  public route smoke, release SHA readback, bounded Coolify control-plane diagnostics, one exact API-only deploy-token start attempt, one exact official `/api/v1/deploy` request for `soar-api`, one exact official `instant_deploy` start request for `soar-api`, post-`LUC-1888` one exact serialized redeploy request for repaired SHA `7742e5b73...`, durable evidence, project-memory sync, Paperclip blocker closeout.
+  public route smoke, release SHA readback, bounded Coolify control-plane diagnostics, one exact API-only deploy-token start attempt, one exact official `/api/v1/deploy` request for `soar-api`, one exact official `instant_deploy` start request for `soar-api`, post-`LUC-1888` one exact serialized redeploy request for repaired SHA `7742e5b73...`, one exact `soar-api` app-flag repair for `include_source_commit_in_build`, one exact serialized `instant_deploy` retry for target `adc82a154...`, durable evidence, project-memory sync, Paperclip blocker closeout.
 - Explicit exclusions:
-  no push, redeploy, restart, rollback, env edit, DB/Redis mutation, account mutation, or live-trading mutation.
+  no push, restart, rollback, DB/Redis mutation, account mutation, or live-trading mutation beyond the one board-authorized `soar-api` flag repair and bounded serialized deploy retry.
 - Checkpoint cadence:
   one bounded heartbeat with evidence-first updates.
 - Stop conditions:
@@ -71,6 +71,23 @@
 
 ## Context
 Paperclip wake assigned a critical DRE heartbeat for a pushed `main` SHA that reportedly had not fully reached production. The local repository is clean at the exact target SHA, so the task is release verification and recovery gating rather than source implementation.
+
+## 2026-07-26 Update
+
+- Board-authorized scoped production config repair confirmed
+  `application_settings.include_source_commit_in_build` on `soar-api` was
+  previously `false`.
+- This heartbeat changed only that field to `true`, verified readback, then
+  executed exactly one serialized `instant_deploy` for target
+  `adc82a154c9023256e454accfb4edda2d3f0a378`.
+- Coolify accepted the deploy and returned
+  `deployment_uuid=gkd7yst34j2ew415xjn2u1xy`, but the deployment still ended
+  terminal `failed`.
+- Exact build-step proof shows the same empty-arg condition remains:
+  `SOURCE_COMMIT=""` and the writer still fails closed at Docker build step
+  `[build 3/6]`.
+- Release ownership therefore stays `BLOCKED` on backend/source-build issue
+  [LUC-1892](/LUC/issues/LUC-1892), not on the now-repaired app flag itself.
 
 ## Goal
 Prove whether production fully runs SHA `9b4fa63a3` across the Soar public surfaces and Coolify production resources, or leave an exact blocker with durable evidence.

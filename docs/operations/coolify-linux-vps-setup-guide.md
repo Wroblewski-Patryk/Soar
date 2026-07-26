@@ -123,6 +123,12 @@ Optional migration toggle:
 - `API_AUTO_MIGRATE=true` (default behavior in API image)
 - set `API_AUTO_MIGRATE=false` only for emergency/maintenance windows
 
+Deploy-proof note:
+- In Coolify `Advanced` settings for the API application, enable `Include Source Commit in Build` when the image build must expose the deployed `SOURCE_COMMIT`.
+- When Docker build stages consume `SOURCE_COMMIT`, declare or consume the provenance `ARG` names in an ancestor stage and let descendant stages inherit them. Avoid a later bare redeclaration in the build stage, because Coolify can inject the full SHA upstream and a stage-local bare `ARG SOURCE_COMMIT` can clear that value before the provenance writer runs.
+- The API Dockerfile also copies only `.git/HEAD` and `.git/refs` into the build stage as a secondary fail-closed fallback for `apps/api/scripts/writeApiSourceCommit.mjs`.
+- Do not copy the full `.git` directory, and do not copy any `.git` paths into the runtime stage.
+
 Reference: `docs/operations/dev-stage-prod-environment-matrix.md`
 
 ## Step 4: Add Web Service (`apps/web`)

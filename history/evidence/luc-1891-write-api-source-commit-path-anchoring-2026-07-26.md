@@ -76,3 +76,43 @@ The next action is outside this role boundary:
 - the release parent should then rerun the exact `LUC-1887` production proof
   set and confirm whether `api /health` and `api /ready` move off old SHA
   `9d1801d9b023211d4446629aac7bd58def70322d`
+
+## Resume delta: pushed target advanced to `adc82a154...`, deploy mutation blocked by missing runtime bindings
+
+At `2026-07-26T01:58:09Z`, local-board reopened `LUC-1891` with a narrower
+serialized release instruction:
+
+- the complete provenance repair is already committed and pushed to
+  `origin/main`
+- the API release target now supersedes `7742e5b73...` with
+  `adc82a154c9023256e454accfb4edda2d3f0a378`
+- this heartbeat should perform exactly one `soar-api`
+  `instant_deploy=true`, poll terminal deployment state, then require public
+  `/health` and `/ready` to report the full target SHA
+
+Read-only verification from this resumed runner:
+
+- `git rev-parse HEAD` -> `adc82a154c9023256e454accfb4edda2d3f0a378`
+- `git ls-remote origin refs/heads/main` ->
+  `adc82a154c9023256e454accfb4edda2d3f0a378`
+- public `https://api.soar.luckysparrow.ch/health` at
+  `2026-07-26T01:59:41Z` -> `200`, still
+  `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d`
+- public `https://api.soar.luckysparrow.ch/ready` at
+  `2026-07-26T01:59:41Z` -> `200`, still
+  `release.gitSha=9d1801d9b023211d4446629aac7bd58def70322d`
+
+Blocking condition in this resumed shell:
+
+- names-only environment scan returned no `COOLIFY_*` bindings
+- `$env:COOLIFY_DEPLOY_API_TOKEN` is absent
+- without those bindings, this runner cannot execute the exact authorized
+  Coolify mutation safely, and no deploy request was sent
+
+Result:
+
+- the source target is confirmed at `adc82a154...`
+- production API is still stale on `9d1801d9...`
+- the required single `instant_deploy` is blocked on restoring the Coolify
+  runtime bindings in this runner or handing the exact mutation to a runner
+  that already has them
