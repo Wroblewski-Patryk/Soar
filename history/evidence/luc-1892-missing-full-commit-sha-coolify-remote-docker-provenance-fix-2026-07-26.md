@@ -29,8 +29,12 @@ However, the exact Coolify log captured for this issue showed `SOURCE_COMMIT=""`
 - The remaining backend/source-build gap was our later bare `ARG SOURCE_COMMIT` redeclaration inside the repository build stage, which cleared the injected value before `writeApiSourceCommit.mjs` ran.
 
 ## Root Fix Applied
-- Moved provenance `ARG` consumption to an ancestor stage in `apps/api/Dockerfile`.
-- Removed the later bare `ARG SOURCE_COMMIT`, `ARG COOLIFY_GIT_COMMIT_SHA`, `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` redeclarations from the `build` stage.
+- Kept the pre-`FROM` global provenance `ARG` declarations for local `--build-arg` compatibility.
+- Replaced the later bare provenance `ARG` declarations in the `build` stage with explicit value-preserving forms:
+  `ARG SOURCE_COMMIT=$SOURCE_COMMIT`,
+  `ARG COOLIFY_GIT_COMMIT_SHA=$COOLIFY_GIT_COMMIT_SHA`,
+  `ARG COOLIFY_COMMIT_SHA=$COOLIFY_COMMIT_SHA`,
+  `ARG GITHUB_SHA=$GITHUB_SHA`.
 - Kept remote builds independent of `.git` paths, which Coolify excludes from its source context; the writer remains fail-closed if no full provenance argument is supplied.
 - Added a focused Dockerfile-layout regression test so the build stage cannot silently reintroduce the later bare `ARG` redeclaration pattern.
 
@@ -55,5 +59,5 @@ However, the exact Coolify log captured for this issue showed `SOURCE_COMMIT=""`
 - Result: the backend hardening is implemented and locally verified, but the observed production blocker remains unproven until the Coolify application metadata is read and the config path is validated or corrected.
 
 ## Next Owner Path
-- Release/Coolify owner: redeploy `soar-api` once on a commit containing the ancestor-stage ARG layout fix plus the existing writer hardening, then return exact build/deploy proof.
+- Release/Coolify owner: redeploy `soar-api` once on a commit containing the value-preserving build-stage `ARG NAME=$NAME` fix plus the existing writer hardening, then return exact build/deploy proof.
 - Backend owner: keep the writer regression and the Dockerfile layout regression as guards, but do not treat the `.git` fallback as the root fix for this incident.

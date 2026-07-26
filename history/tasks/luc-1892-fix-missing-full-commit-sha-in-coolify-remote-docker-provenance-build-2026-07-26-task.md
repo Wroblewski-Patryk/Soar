@@ -33,7 +33,7 @@
 
 ## Mission Block
 - Mission objective: finish the backend/source-build repair now that `LUC-1893` proved the remaining production blocker still occurs after the Coolify app flag was repaired and the full SHA is already injected upstream.
-- Release objective advanced: preserve the injected Coolify `SOURCE_COMMIT` through stage inheritance instead of clearing it with a later build-stage bare `ARG` redeclaration.
+- Release objective advanced: preserve the injected Coolify `SOURCE_COMMIT` with explicit value-preserving `ARG NAME=$NAME` declarations instead of a later build-stage bare redeclaration.
 - Included slices: DRE contrary-proof review, API Dockerfile ARG-layout fix, focused regression test, docs/task/evidence update, focused validation.
 - Explicit exclusions: no worker/web logic changes, no DB/runtime mutation, no Coolify mutation from this runner.
 - Checkpoint cadence: one implementation checkpoint, one verification checkpoint.
@@ -58,8 +58,8 @@ Implement the remaining backend/source-build fix so the API Docker layout preser
 
 ## Success Signal
 - User or operator problem: Coolify remote Docker build still fails before API image build completes, and the exact DRE proof now shows the full SHA is injected upstream but cleared by our later Dockerfile layout.
-- Expected product or reliability outcome: the API build stage now inherits the injected provenance args from an ancestor stage instead of resetting them.
-- How success will be observed: focused provenance regression still passes and a Dockerfile-layout regression test proves the build stage no longer redeclares the same bare provenance args.
+- Expected product or reliability outcome: the API build stage now preserves the injected provenance args explicitly instead of resetting them.
+- How success will be observed: focused provenance regression still passes and a Dockerfile-layout regression test proves the build stage uses `ARG NAME=$NAME` instead of bare redeclarations.
 - Post-launch learning needed: no
 
 ## Deliverable For This Stage
@@ -75,7 +75,7 @@ Verified backend source/build patch, retained regression proof, added a Dockerfi
 ## Definition of Done
 - [x] `writeApiSourceCommit.mjs` checks all candidate SHA envs until it finds a full 40-character commit.
 - [x] Focused regression covers `short SOURCE_COMMIT + full COOLIFY_GIT_COMMIT_SHA`.
-- [x] API Docker provenance `ARG` names are consumed in an ancestor stage and not redeclared bare in the `build` stage.
+- [x] API Docker provenance `ARG` names are preserved in the `build` stage with `ARG NAME=$NAME` instead of bare redeclarations.
 - [x] Focused regression proves the Dockerfile layout no longer allows the later bare `ARG` redeclaration pattern.
 - [x] Task and evidence state that the earlier writer hardening and `.git` fallback alone were not the root fix for the observed Coolify failure.
 - [ ] Exact `soar-api` redeploy proof on the new backend commit is recorded.
@@ -120,7 +120,7 @@ Verified backend source/build patch, retained regression proof, added a Dockerfi
 - Env or secret changes: none
 - Health-check impact: no health contract change
 - Smoke steps updated: no
-- Rollback note: revert the API Dockerfile ancestor-stage ARG layout change and its focused regression test together if this provenance path must be backed out
+- Rollback note: revert the API Dockerfile value-preserving build-stage `ARG NAME=$NAME` change and its focused regression test together if this provenance path must be backed out
 - Observability or alerting impact: none
 - Staged rollout or feature flag: none
 
@@ -137,7 +137,7 @@ Verified backend source/build patch, retained regression proof, added a Dockerfi
 - Missing or template-like files: none
 - Sources scanned: AGENTS.md, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `apps/api/scripts/writeApiSourceCommit.*`, `apps/api/Dockerfile`, `docs/operations/coolify-linux-vps-setup-guide.md`
 - Rows created or corrected: task/evidence packet only
-- Assumptions recorded: Coolify can inject the full SHA before repository instructions run, so the Dockerfile must preserve inherited provenance args across stages instead of relying on a same-stage redeclaration.
+- Assumptions recorded: Coolify can inject the full SHA before repository instructions run, so the Dockerfile must preserve that value explicitly when the `build` stage redeclares the provenance args.
 - Blocking unknowns: commit/push/deploy rights from this runner
 - Why it was safe to continue: the backend-owned Dockerfile layout change is local, minimal, and directly implied by the exact DRE Dockerfile-transformation proof.
 
@@ -148,11 +148,11 @@ Verified backend source/build patch, retained regression proof, added a Dockerfi
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: `apps/api/Dockerfile`, `apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs`, `docs/operations/coolify-linux-vps-setup-guide.md`, `history/tasks/...`, `history/evidence/...`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`
-- Logic: consume provenance args in an ancestor stage and remove the later build-stage bare redeclaration so Coolify-injected values survive into `writeApiSourceCommit.mjs`
-- Edge cases: short `SOURCE_COMMIT`, empty `SOURCE_COMMIT`, absent envs, stage inheritance, plain local `--build-arg` usage, no `.git` paths in runtime image
+- Logic: preserve provenance args in the `build` stage with explicit `ARG NAME=$NAME` declarations so Coolify-injected values survive into `writeApiSourceCommit.mjs`
+- Edge cases: short `SOURCE_COMMIT`, empty `SOURCE_COMMIT`, absent envs, exact Coolify rewrite ordering, plain local `--build-arg` usage, no `.git` paths in runtime image
 
 ### 4. Execute Implementation
-- Implementation notes: moved provenance `ARG` consumption to the `base` stage, removed the build-stage bare redeclarations, and added a focused Dockerfile-layout regression test
+- Implementation notes: left the global `ARG` declarations in place, replaced the build-stage bare provenance `ARG` declarations with explicit `ARG NAME=$NAME` preservation, and added a focused Dockerfile-layout regression test
 
 ### 5. Verify and Test
 - Validation performed: ran the new Dockerfile-layout regression test, reused the targeted provenance tests, confirmed the remote Dockerfile has no `.git` copy dependency, and read back the API Dockerfile/doc changes
@@ -162,7 +162,7 @@ Verified backend source/build patch, retained regression proof, added a Dockerfi
 - Simpler option considered: keep the previous `.git` fallback theory and ask DRE to retry again
 - Technical debt introduced: no
 - Scalability assessment: the writer hardening still improves future env-ordering resilience, the `.git` fallback remains a safe secondary path, and the new layout regression test guards the exact Coolify transform failure mode that just occurred.
-- Refinements made: kept the Dockerfile scope narrow by removing only the problematic build-stage bare `ARG` redeclarations and leaving runtime-stage `.git` exclusion intact
+- Refinements made: kept the Dockerfile scope narrow by changing only the problematic build-stage provenance `ARG` lines to explicit value-preserving forms and leaving runtime-stage `.git` exclusion intact
 
 ### 7. Update Documentation and Knowledge
 - Docs updated: `history/tasks/...`, `history/evidence/...`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`

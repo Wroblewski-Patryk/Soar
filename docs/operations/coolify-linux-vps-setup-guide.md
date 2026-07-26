@@ -125,7 +125,7 @@ Optional migration toggle:
 
 Deploy-proof note:
 - In Coolify `Advanced` settings for the API application, enable `Include Source Commit in Build` when the image build must expose the deployed `SOURCE_COMMIT`.
-- When Docker build stages consume `SOURCE_COMMIT`, declare or consume the provenance `ARG` names in an ancestor stage and let descendant stages inherit them. Avoid a later bare redeclaration in the build stage, because Coolify can inject the full SHA upstream and a stage-local bare `ARG SOURCE_COMMIT` can clear that value before the provenance writer runs.
+- When the API `build` stage consumes `SOURCE_COMMIT`, preserve the injected value with `ARG SOURCE_COMMIT=$SOURCE_COMMIT` rather than a later bare `ARG SOURCE_COMMIT`. Apply the same pattern to sibling provenance args consumed by `writeApiSourceCommit.mjs`, while keeping the pre-`FROM` global `ARG` declarations for ordinary local `--build-arg` usage.
 - Do not make remote builds depend on `.git` paths: Coolify's source context excludes them. The provenance writer remains fail-closed when no full build argument is available.
 
 Reference: `docs/operations/dev-stage-prod-environment-matrix.md`

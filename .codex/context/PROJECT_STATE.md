@@ -43,11 +43,11 @@
   `COOLIFY_GIT_COMMIT_SHA`, and `COOLIFY_COMMIT_SHA` until it finds the first
   valid 40-character SHA. Exact contrary production proof then showed the real
   blocker was a later build-stage bare `ARG SOURCE_COMMIT` redeclaration, so
-  `apps/api/Dockerfile` now consumes the provenance args in the ancestor `base`
-  stage and removes the later `build`-stage redeclarations. A focused
-  Dockerfile-layout regression test now guards that exact rule, while the
-  writer's git-file fallback remains available outside excluded remote contexts, while the API
-  deploy-proof docs were updated to match this contract.
+  `apps/api/Dockerfile` now preserves the injected provenance args with
+  explicit `ARG NAME=$NAME` lines in the `build` stage. A focused
+  Dockerfile-layout regression test now guards that exact rule, while remote
+  builds remain independent of `.git` paths. The API deploy-proof docs were
+  updated to match this contract.
 - Verification:
   `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
   `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
@@ -60,8 +60,8 @@
 - Residual:
   this runner still cannot complete the required Coolify verification because
   the shell has no deploy bindings. The exact next owner action is one
-  `soar-api` redeploy on a commit containing the ARG-layout fix plus the writer
-  hardening, followed by public and control-plane readback.
+  `soar-api` redeploy on a commit containing the value-preserving ARG fix plus
+  the writer hardening, followed by public and control-plane readback.
 
 ## 2026-07-26 LUC-1891 resumed on pushed target `adc82a154` but exact `soar-api` deploy is blocked by missing Coolify bindings
 

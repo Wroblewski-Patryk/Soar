@@ -34,9 +34,9 @@
   later cleared it with a build-stage bare `ARG SOURCE_COMMIT`.
 - Outcome:
   `apps/api/scripts/writeApiSourceCommit.mjs` keeps the verified env-selection
-  hardening, while `apps/api/Dockerfile` now consumes provenance args in the
-  ancestor `base` stage and no longer redeclares them bare in the `build`
-  stage. A focused regression test in
+  hardening, while `apps/api/Dockerfile` now preserves the injected provenance
+  args in the `build` stage with `ARG NAME=$NAME` instead of bare
+  redeclarations. A focused regression test in
   `apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs` now guards that
   exact layout rule. The writer's git-file fallback remains secondary rather
   than the claimed root fix.
@@ -52,8 +52,8 @@
   `history/tasks/luc-1892-fix-missing-full-commit-sha-in-coolify-remote-docker-provenance-build-2026-07-26-task.md`.
 - Required next action:
   `LUC-1894` must isolate, commit, push, and redeploy `soar-api` once on a
-  commit containing this ARG-layout fix plus the earlier writer hardening, then
-  return exact build, deploy, `/health`, and `/ready` proof.
+  commit containing this value-preserving ARG fix plus the earlier writer
+  hardening, then return exact build, deploy, `/health`, and `/ready` proof.
 
 ## 2026-07-26 LUC-1891 resumed on target `adc82a154` but could not execute the exact `soar-api` deploy from this runner
 

@@ -12,24 +12,17 @@ const requiredArgs = [
   'GITHUB_SHA',
 ];
 
-test('consumes provenance build args in an ancestor stage and does not redeclare them in build stage', async () => {
+test('preserves injected provenance args in the build stage without bare redeclarations', async () => {
   const dockerfile = await readFile(dockerfilePath, 'utf8');
-  const baseStage = dockerfile.match(/FROM node:20-bookworm-slim AS base([\s\S]*?)FROM base AS deps/);
   const buildStage = dockerfile.match(/FROM deps AS build([\s\S]*?)FROM node:20-bookworm-slim AS runtime/);
 
-  assert.ok(baseStage, 'expected base stage block in apps/api/Dockerfile');
   assert.ok(buildStage, 'expected build stage block in apps/api/Dockerfile');
 
   for (const argName of requiredArgs) {
     assert.match(
-      baseStage[1],
-      new RegExp(`^ARG ${argName}$`, 'm'),
-      `expected ancestor stage to consume ${argName}`
-    );
-    assert.doesNotMatch(
       buildStage[1],
-      new RegExp(`^ARG ${argName}$`, 'm'),
-      `did not expect build stage to redeclare ${argName}`
+      new RegExp(`^ARG ${argName}=\\$${argName}$`, 'm'),
+      `expected build stage to preserve injected ${argName} with an explicit default`
     );
   }
 
