@@ -1,3 +1,110 @@
+## 2026-07-26 LUC-1891 repaired `writeApiSourceCommit` path anchoring for Docker-style execution
+
+- Scope:
+  repair the backend-owned path anchoring defect in
+  `apps/api/scripts/writeApiSourceCommit.mjs` after the repeated failed
+  `soar-api` deploy chain for target SHA
+  `7742e5b73d89fff0f037b264b96acc0a7f863a9f`.
+- Result:
+  the source-commit writer no longer derives `apiDir` from `process.cwd()`.
+  It now resolves from the script location via `import.meta.url`, which keeps
+  `.git` fallback and `.build-meta/SOURCE_COMMIT` output anchored to
+  `apps/api` even when Docker invokes the script from `/app`. The focused test
+  harness was also tightened to run the copied script inside an isolated fake
+  repo so the regression proves the exact caller-working-directory shape.
+- Verification:
+  `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
+  `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
+  `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` PASS (`5/5`);
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts`
+  PASS (`4/4`).
+- Evidence:
+  `history/evidence/luc-1891-write-api-source-commit-path-anchoring-2026-07-26.md`;
+  `history/tasks/luc-1891-repair-write-api-source-commit-path-anchoring-2026-07-26-task.md`.
+- Residual:
+  this backend lane did not perform the production retry. The next owner must
+  redeploy `soar-api` on a commit containing this repair and rerun the exact
+  `LUC-1887` proof set.
+
+## 2026-07-26 LUC-1887 board-authorized `instant_deploy` for repaired SHA still failed
+
+- Scope:
+  consume the local-board instruction to perform exactly one new
+  resource-scoped `instant_deploy` for `soar-api` on repaired
+  `main` SHA `7742e5b73d89fff0f037b264b96acc0a7f863a9f`.
+- Result:
+  `POST /api/v1/applications/{soar-api}/start?force=false&instant_deploy=true`
+  returned `200` with deployment UUID `j368okuwd1ufsu0irrzbd7h6`.
+  Bounded polling then showed the deployment move from `in_progress` to
+  terminal `failed` at `2026-07-26T01:52:30Z`. Direct `soar-api` app readback
+  still showed old `git_commit_sha=9d1801d9b023211d4446629aac7bd58def70322d`,
+  and public `api /health` plus `api /ready` also still reported that old SHA.
+- Classification:
+  this exact board-authorized retry proves production is still blocked after the
+  repaired-source instant deploy. The stale API SHA is no longer only a queue
+  or unreadable-deployment hypothesis.
+- Follow-up:
+  the live backend repair lane has moved beyond `LUC-1889` to
+  [LUC-1891](/LUC/issues/LUC-1891); the release parent should block on that
+  current child, not on the already completed queue/readback diagnosis.
+
+## 2026-07-26 LUC-1890 hardened the repeated `soar-api` deploy failure path for SHA 7742e5b73
+
+- Scope:
+  diagnose the backend-owned repeated `soar-api` deployment failure for target
+  SHA `7742e5b73d89fff0f037b264b96acc0a7f863a9f` after the earlier
+  provenance repair.
+- Result:
+  `apps/api/Dockerfile` still required `.git/HEAD` and `.git/refs` as Docker
+  build inputs before running `writeApiSourceCommit.mjs`, which turned the
+  supposed `.git` fallback into a hard remote-builder prerequisite. The API
+  build now forwards `SOURCE_COMMIT`, `COOLIFY_GIT_COMMIT_SHA`,
+  `COOLIFY_COMMIT_SHA`, and `GITHUB_SHA` directly into the provenance writer
+  and no longer hard-copies `.git` files into the build stage. The writer
+  remains fail-closed and the focused test suite now proves the
+  `COOLIFY_GIT_COMMIT_SHA` path explicitly.
+- Verification:
+  `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
+  `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
+  `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` PASS (`4/4`);
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts`
+  PASS (`4/4`).
+- Evidence:
+  `history/evidence/luc-1890-soar-api-repeated-deploy-failure-diagnosis-and-hardening-2026-07-26.md`;
+  `history/tasks/luc-1890-diagnose-repeated-soar-api-deploy-failure-2026-07-26-task.md`.
+- Residual:
+  this backend lane did not perform a production deploy. The next step remains
+  one fresh `soar-api` redeploy plus rerun of the exact `LUC-1887` production
+  proof packet.
+
+## 2026-07-26 LUC-1889 disproved the `soar-api` queue/readback blocker with one exact instant deploy
+
+- Scope:
+  verify whether the remaining `soar-api` release blocker after `LUC-1888`
+  was really an Ops/control-plane queue/readback defect.
+- Result:
+  one exact Coolify application-scoped mutation
+  `POST /api/v1/applications/{soar-api}/start?force=false&instant_deploy=true`
+  returned deployment UUID `kmpm887pdgo48b8l5j13q5cw`, and direct
+  `GET /api/v1/deployments/kmpm887pdgo48b8l5j13q5cw` stayed readable through
+  `in_progress` to terminal `failed` for commit
+  `7742e5b73d89fff0f037b264b96acc0a7f863a9f`. Public API `/health` and
+  `/ready` remained green on the old SHA `9d1801d9b...`, and direct app
+  readback never moved off that old SHA.
+- Classification:
+  the current blocker is not an unreadable Coolify queue/readback path. The
+  first actionable owner is back on the exact `soar-api` deployment/build or
+  runtime packaging lane.
+- Follow-up:
+  a direct board review after the failed deployment narrowed the remaining
+  defect to `apps/api/scripts/writeApiSourceCommit.mjs` path resolution under
+  Docker (`process.cwd()` vs script-anchored paths). The active backend
+  follow-up is `LUC-1890`, and the release parent `LUC-1887` now blocks on
+  that lane rather than on `LUC-1889`.
+- Evidence:
+  `history/evidence/luc-1889-soar-api-instant-deploy-readback-and-reclassification-2026-07-26.md`;
+  `history/tasks/luc-1889-repair-soar-api-deploy-queue-readback-blocker-2026-07-26-task.md`.
+
 ## 2026-07-26 LUC-1888 repaired the Soar API image provenance path behind the failed `soar-api` deploy
 
 - Scope:
@@ -35062,3 +35169,27 @@ QA_PROOF_FOLLOWUP_CREATED`.
 - Residual:
   no remaining action on `LUC-1883`; runtime recovery is already proven and the
   closure lane was limited to local source control.
+## 2026-07-26 LUC-1887 release retry after LUC-1888 fixed source/build
+
+- Status:
+  `BLOCKED / SOURCE_BUILD_FIXED / ACCEPTED_DEPLOYMENT_UUID_404 / API_STILL_OLD_SHA / WAITING_LUC-1889`.
+- Scope:
+  rerun production release proof after [LUC-1888](/LUC/issues/LUC-1888) fixed
+  the Soar-owned API image provenance/build defect and pushed repair commit
+  `7742e5b73d89fff0f037b264b96acc0a7f863a9f` to `origin/main`.
+- Outcome:
+  the repaired source is on `main`, but production still does not converge.
+  Public `web /api/build-info` remains on `9b4fa63a35fa7f62c14d66b55721939c9fdf4950`,
+  public `api /health` and `api /ready` still report old
+  `9d1801d9b023211d4446629aac7bd58def70322d`, and direct `soar-api` readback
+  still shows old `git_commit_sha=9d1801d9b...`. A fresh serialized
+  `POST /api/v1/deploy` accepted the repaired SHA for `soar-api` and returned
+  deployment UUID `wej1rmc0yl165yag14v41tno`, but exact bounded readback on
+  `GET /api/v1/deployments/wej1rmc0yl165yag14v41tno` returned
+  `404 {"message":"Deployment not found."}` while the app SHA never moved.
+- Classification:
+  source/build is repaired; the next actionable owner is
+  `ops/control-plane configuration or queue/readback path`.
+- Follow-up:
+  [LUC-1889](/LUC/issues/LUC-1889) is the exact ops repair lane for the
+  accepted-but-unreadable `soar-api` deployment request.

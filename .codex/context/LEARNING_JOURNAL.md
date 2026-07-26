@@ -2,6 +2,100 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-26 - Do not anchor build-helper filesystem paths to `process.cwd()` when the caller can be Docker or CI
+- Context:
+  `LUC-1891` after the repeated failed `soar-api` deployment chain on Sunday,
+  July 26, 2026.
+- Symptom:
+  `apps/api/scripts/writeApiSourceCommit.mjs` worked from some local call
+  sites, but when Docker invoked `node apps/api/scripts/writeApiSourceCommit.mjs`
+  from `/app` it resolved the wrong `.git` and output paths.
+- Root cause:
+  the helper derived `apiDir` from `process.cwd()` instead of its own stable
+  script location.
+- Guardrail:
+  any build helper that reads or writes repo-local files must anchor those
+  paths to `import.meta.url` or `__dirname`, then use caller `cwd` only when it
+  is an explicit input to the contract.
+- Preferred pattern:
+  script-relative path resolution plus isolated-fixture tests that execute the
+  copied helper from more than one working directory.
+- Avoid:
+  treating the invoking shell's current directory as equivalent to the helper's
+  owned repo surface.
+
+### 2026-07-26 - Record the newest exact deploy outcome, not just the first blocker shape
+- Context:
+  `LUC-1887` after a board-authorized `instant_deploy` retry for repaired
+  `soar-api` SHA `7742e5b73...` on Sunday, July 26, 2026.
+- Symptom:
+  an earlier release packet still emphasized the stale queue/readback blocker
+  shape, but the newer authorized retry produced a concrete deployment UUID
+  that reached terminal `failed`.
+- Root cause:
+  long release chains can drift if the parent packet is not updated to the
+  newest exact deploy outcome after each authorized retry.
+- Guardrail:
+  when a later authorized deploy path produces a narrower terminal result, make
+  that result the new canonical blocker for the release parent and move the
+  parent blocker link to the current live child lane.
+- Preferred pattern:
+  preserve the exact deployment UUID, terminal status, unchanged app SHA, and
+  current child owner in the parent release packet.
+- Avoid:
+  leaving the parent blocked on a completed child or on an older blocker shape
+  after a newer deploy attempt has already produced better evidence.
+
+### 2026-07-26 - Do not turn remote deploy provenance fallback into a hard `.git` Docker build prerequisite
+- Context:
+  `LUC-1890` backend follow-up after `LUC-1889` proved the repaired
+  `soar-api` deployment for SHA `7742e5b73...` was still failing on Sunday,
+  July 26, 2026.
+- Symptom:
+  the API provenance writer already supported explicit Coolify SHA inputs, but
+  `apps/api/Dockerfile` still ran `COPY .git/HEAD` and `COPY .git/refs` before
+  invoking the script.
+- Root cause:
+  the intended `.git` fallback became a hard Docker build requirement, so a
+  remote builder could fail before the script ever saw `SOURCE_COMMIT` or
+  `COOLIFY_GIT_COMMIT_SHA`.
+- Guardrail:
+  when release identity should prefer deploy-time SHA args, pass those args
+  directly into the build command and keep `.git` usage inside the script as an
+  optional fallback only.
+- Preferred pattern:
+  explicit build-arg forwarding in Dockerfile, fail-closed exact SHA
+  validation in the writer, and no mandatory `.git` `COPY` step in the remote
+  build path.
+- Avoid:
+  "fixing" missing deploy provenance by adding a `.git` fallback that still
+  requires `.git` to exist before the fallback code can run.
+
+### 2026-07-26 - Use single-app `instant_deploy=true` to collapse ambiguous Coolify queue symptoms into exact ownership
+- Context:
+  `LUC-1889` Ops follow-up after `LUC-1888` for the still-stale production
+  `soar-api` SHA on Sunday, July 26, 2026.
+- Symptom:
+  `POST /api/v1/deploy` accepted the repaired API commit and earlier bounded
+  follow-up had returned `404` for one deployment UUID, which made the blocker
+  look like queue/readback ownership.
+- Root cause:
+  the normal queued deploy path was an ambiguous proof surface; it did not
+  distinguish between a stale queue and an application deployment that would
+  still fail when run directly.
+- Guardrail:
+  when a single Soar application is still stale but the app itself can be
+  mutated safely, prefer one documented application-scoped
+  `start?force=false&instant_deploy=true` proof before escalating to broader
+  queue surgery or platform blame.
+- Preferred pattern:
+  capture the returned deployment UUID, read it directly with
+  `GET /api/v1/deployments/{uuid}`, and pair that with direct app SHA readback
+  plus public `/health` and `/ready`.
+- Avoid:
+  stopping at `Deployment already queued for this commit.` or a prior `404`
+  deployment readback and assuming the blocker is still control-plane owned.
+
 ### 2026-07-26 - Keep API image release provenance fail-closed, but do not depend only on explicit Coolify SHA build args
 - Context:
   `LUC-1888` backend diagnosis of the failed `soar-api` deployment for target
@@ -4171,3 +4265,25 @@ Test-Path $dst
 - Evidence:
   `history/tasks/luc-1838-known-state-evidence-architecture-baseline-2026-07-25-task.md`;
   [LUC-1840](/LUC/issues/LUC-1840).
+### 2026-07-26 - Treat accepted Coolify deploys with unreadable deployment UUIDs as a distinct control-plane blocker
+- Context:
+  post-`LUC-1888` release retry for `LUC-1887` on Sunday, July 26, 2026.
+- Symptom:
+  `POST /api/v1/deploy` for the repaired `soar-api` SHA returned HTTP `200`
+  and a concrete deployment UUID, but bounded `GET /api/v1/deployments/{uuid}`
+  readback returned `404 {"message":"Deployment not found."}` while the app SHA
+  and public API health stayed on the older image.
+- Root cause:
+  an accepted resource-scoped Coolify deploy request can still fail later in
+  the queue/readback/control-plane path without any new source/build defect.
+- Guardrail:
+  once the Soar-owned build fix is already on `origin/main`, do not keep
+  reclassifying the same stale API SHA as a source issue when the new exact
+  blocker is `accepted deploy -> unreadable deployment row -> no app SHA movement`.
+- Preferred pattern:
+  record the returned deployment UUID, capture the exact `GET
+  /api/v1/deployments/{uuid}` status/body, confirm old app SHA plus dependency
+  health, and route the next step to an exact ops/control-plane lane.
+- Avoid:
+  re-opening a completed source/build fix lane just because the repaired commit
+  still has not reached production.

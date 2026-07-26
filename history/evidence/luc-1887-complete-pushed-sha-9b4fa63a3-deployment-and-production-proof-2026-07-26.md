@@ -206,6 +206,62 @@ Follow-up lane created:
   same singleton workspace, validate, commit, push, and retry only the single
   `soar-api` deployment path
 
+That source/build lane completed later on Sunday, July 26, 2026 with repair
+commit `7742e5b73d89fff0f037b264b96acc0a7f863a9f` on `origin/main`.
+
+## Post-LUC-1888 Release Retry
+
+After [LUC-1888](/LUC/issues/LUC-1888) closed, the release target advanced to
+the current `main` SHA `7742e5b73d89fff0f037b264b96acc0a7f863a9f`.
+
+Fresh bounded proof:
+
+- local repo `HEAD=7742e5b73d89fff0f037b264b96acc0a7f863a9f`
+- local worktree: clean
+- public `web /api/build-info -> gitSha=9b4fa63a35fa7f62c14d66b55721939c9fdf4950`
+- public `api /health -> 200 old 9d1801d9b023211d4446629aac7bd58def70322d`
+- public `api /ready -> 200 ready old 9d1801d9b023211d4446629aac7bd58def70322d`
+- direct Coolify `soar-api` app readback still shows
+  `git_commit_sha=9d1801d9b023211d4446629aac7bd58def70322d`
+- direct bounded resource readback still keeps:
+  - `postgresql -> running:healthy`
+  - `redis -> running:healthy`
+
+Fresh serialized deploy mutation for the repaired SHA:
+
+- route: `POST /api/v1/deploy`
+- body: `{"uuid":"k126p7vqxs5cly2zc4y4g4rq","force":false}`
+- HTTP `200` response:
+  `{"deployments":[{"message":"Deployment already queued for this commit.","resource_uuid":"k126p7vqxs5cly2zc4y4g4rq","deployment_uuid":"wej1rmc0yl165yag14v41tno"}]}`
+
+Fresh exact control-plane blocker:
+
+- `GET /api/v1/deployments/wej1rmc0yl165yag14v41tno`
+  - HTTP `404`
+  - body: `{"message":"Deployment not found."}`
+- after about 80 seconds of bounded polling:
+  - direct `soar-api` app SHA stayed on `9d1801d9b...`
+  - public `api /health` stayed on `9d1801d9b...`
+  - public `api /ready` stayed `200`, but also on `9d1801d9b...`
+
+First actionable post-repair owner classification:
+
+- owner: `ops/control-plane configuration or queue/readback path`
+- rationale:
+  - the Soar-owned source/build defect is already repaired and pushed
+  - the exact `soar-api` deploy request for the repaired SHA is accepted
+  - the accepted deployment does not materialize into a readable deployment row
+    and does not advance the app SHA
+  - the old API process and core dependencies remain healthy
+
+Follow-up lane created:
+
+- [LUC-1889](/LUC/issues/LUC-1889) `Repair soar-api deploy queue/readback blocker for SHA 7742e5b73`
+- owner: `09 DRE (Deployment & Reliability Engineer)`
+- purpose: diagnose and repair why the accepted `soar-api` deployment for the
+  repaired SHA remains queued/unreadable and leaves the resource on the old
+  commit
+
 ## Release Truth
 
 Current verified state at `2026-07-26T01:12Z`:
@@ -227,16 +283,15 @@ Status:
 
 ## Required Unblock
 
-Named unblock owner: `LUC-1888` implementation owner (`09 CBE`).
+Named unblock owner: [LUC-1889](/LUC/issues/LUC-1889) (`09 DRE`).
 
 Required action:
 
-1. Complete [LUC-1888](/LUC/issues/LUC-1888) and return a Soar-owned fix for
-   the failed `soar-api` deployment/build path.
-2. Retry only the single `soar-api` deployment path after that fix lands.
-3. Re-read `soar-api` application/resource metadata until `git_commit_sha`
+1. Complete [LUC-1889](/LUC/issues/LUC-1889) and repair the exact control-plane
+   queue/readback blocker for the accepted post-fix `soar-api` deployment.
+2. Re-read `soar-api` application/resource metadata until `git_commit_sha`
    matches the target SHA.
-4. Rerun the exact public proof set:
+3. Rerun the exact public proof set:
    - `web /`
    - `web /api/build-info`
    - `api /health`
@@ -253,12 +308,15 @@ Required action:
 - All 8 production resources healthy/running.
 - Public web build-info at the target SHA and API `/health` + `/ready` healthy.
 
-The current heartbeat proved more than before: public API readiness recovered,
-the official Coolify deploy mutation for `soar-api` is accepted, and the
-resource-scoped read path works. But the release still cannot close because
-`soar-api` continues to serve the old SHA and the later target deployment now
-has an exact `source/build` follow-up lane in [LUC-1888](/LUC/issues/LUC-1888).
-has exact terminal status `failed`.
+The release still cannot close because [LUC-1888](/LUC/issues/LUC-1888) fixed
+the Soar-owned source/build defect and advanced `main`, but the fresh
+serialized `soar-api` deploy request for that repaired SHA is accepted without
+advancing the running API off old `9d1801d9b...`, and the returned deployment
+UUID currently reads back as `404 Deployment not found`.
+
+Updated status:
+
+`BLOCKED / SOURCE_BUILD_FIXED / ACCEPTED_DEPLOYMENT_UUID_404 / API_STILL_OLD_SHA / WAITING_LUC-1889`
 
 ## Boundary
 

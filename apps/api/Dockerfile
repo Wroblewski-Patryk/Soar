@@ -16,15 +16,17 @@ FROM base AS deps
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-COPY .git/HEAD .git/HEAD
-COPY .git/refs .git/refs
 COPY apps/api apps/api
 COPY libs/shared libs/shared
 ARG SOURCE_COMMIT
 ARG COOLIFY_GIT_COMMIT_SHA
 ARG COOLIFY_COMMIT_SHA
 ARG GITHUB_SHA
-RUN node apps/api/scripts/writeApiSourceCommit.mjs
+RUN SOURCE_COMMIT="$SOURCE_COMMIT" \
+    COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" \
+    COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" \
+    GITHUB_SHA="$GITHUB_SHA" \
+    node apps/api/scripts/writeApiSourceCommit.mjs
 RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
 RUN rm -f apps/api/core apps/api/core.*

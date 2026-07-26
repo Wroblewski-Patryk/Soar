@@ -7,7 +7,7 @@
 - Current Stage: release
 - Status: BLOCKED
 - Owner: Ops/Release
-- Depends on: [LUC-1888](/LUC/issues/LUC-1888) `soar-api` target deployment failure diagnosis and recovery
+- Depends on: [LUC-1889](/LUC/issues/LUC-1889) `soar-api` deploy queue/readback repair after completed source/build fix
 - Priority: P0
 - Module Confidence Rows: not applicable
 - Requirement Rows: not applicable
@@ -37,7 +37,7 @@
 - Release objective advanced:
   production release truth and blocker clarity for Soar VPS deployment.
 - Included slices:
-  public route smoke, release SHA readback, bounded Coolify control-plane diagnostics, one exact API-only deploy-token start attempt, one exact official `/api/v1/deploy` request for `soar-api`, one exact official `instant_deploy` start request for `soar-api`, durable evidence, project-memory sync, Paperclip blocker closeout.
+  public route smoke, release SHA readback, bounded Coolify control-plane diagnostics, one exact API-only deploy-token start attempt, one exact official `/api/v1/deploy` request for `soar-api`, one exact official `instant_deploy` start request for `soar-api`, post-`LUC-1888` one exact serialized redeploy request for repaired SHA `7742e5b73...`, durable evidence, project-memory sync, Paperclip blocker closeout.
 - Explicit exclusions:
   no push, redeploy, restart, rollback, env edit, DB/Redis mutation, account mutation, or live-trading mutation.
 - Checkpoint cadence:
@@ -45,9 +45,10 @@
 - Stop conditions:
   production proof complete or release path blocked by an exact source/build or external/control-plane condition.
 - Handoff expectation:
-  [LUC-1888](/LUC/issues/LUC-1888) implementation owner fixes the Soar-owned
-  API deployment failure and returns proof; then this release parent reruns the
-  same proof set after recovery.
+  [LUC-1888](/LUC/issues/LUC-1888) already fixed the Soar-owned source/build
+  defect. [LUC-1889](/LUC/issues/LUC-1889) now owns the exact control-plane
+  queue/readback blocker; this release parent reruns the same proof set after
+  that repair.
 
 ## Responsibility Lanes
 
@@ -55,7 +56,8 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | Coordinator | Active chat | AGENTS.md, Paperclip wake, deploy contract | Evidence/task packet, issue closeout | Integrated blocker diagnosis and child-lane handoff | Public smoke + Coolify readback | DONE |
 | Security/Ops | Active chat | `docs/operations/coolify-vps-deployment-contract.md` | Production release proof only | Root-cause owner classification | No-secret env-name check + API readback | DONE |
-| Backend follow-up | [LUC-1888](/LUC/issues/LUC-1888) / `09 CBE` | Parent blocker packet + Soar API source | API deploy/build fix in same workspace | Validation + commit + push + one-resource redeploy proof | TODO |
+| Backend follow-up | [LUC-1888](/LUC/issues/LUC-1888) / `09 CBE` | Parent blocker packet + Soar API source | API deploy/build fix in same workspace | Validation + commit + push + one-resource redeploy proof | DONE |
+| Ops follow-up | [LUC-1889](/LUC/issues/LUC-1889) / `09 DRE` | Parent blocker packet + Coolify control path | Exact queue/readback repair for accepted `soar-api` deploy | Readable deployment state + target SHA convergence | TODO |
 | Documentation/Memory | Active chat | `.codex/context/*` | Task/evidence/memory files | Durable repo truth | File diff review | DONE |
 
 ### Lane Checks
@@ -207,12 +209,41 @@ Release-stage proof packet showing whether the deployment is complete, plus the 
 
 ### 5. Verify and Test
 - Validation performed:
-  public `curl.exe` status/body probes, authenticated Coolify direct-resource `GET` attempts, one exact deploy-token `POST` for `soar-api`, one exact official `/api/v1/deploy` request, one exact official `instant_deploy` start request, and bounded polling/readback.
+  public `curl.exe` status/body probes, authenticated Coolify direct-resource
+  `GET` attempts, one exact deploy-token `POST` for `soar-api`, one exact
+  official `/api/v1/deploy` request, one exact official `instant_deploy`
+  start request, post-`LUC-1888` one exact official `/api/v1/deploy` retry for
+  repaired SHA `7742e5b73...`, and bounded polling/readback.
 - Result:
-  blocked; web is fresh, API is now ready but stale, and the later target
-  deployment for `soar-api` reaches exact terminal status `failed`, which is
-  now classified as `source/build-owned` and delegated to
-  [LUC-1888](/LUC/issues/LUC-1888).
+  blocked; [LUC-1888](/LUC/issues/LUC-1888) fixed the Soar-owned source/build
+  defect and advanced `main` to `7742e5b73d89fff0f037b264b96acc0a7f863a9f`, but
+  the fresh serialized `soar-api` deploy retry for that repaired SHA still
+  leaves production on old `9d1801d9b...` and returns exact readback blocker
+  `GET /api/v1/deployments/wej1rmc0yl165yag14v41tno -> 404 {"message":"Deployment not found."}`.
+
+## 2026-07-26 Post-LUC-1888 Addendum
+
+- Updated release target:
+  `7742e5b73d89fff0f037b264b96acc0a7f863a9f`
+- Fresh public proof:
+  `web /api/build-info -> gitSha=9b4fa63a35fa7f62c14d66b55721939c9fdf4950`;
+  `api /health -> 200 old 9d1801d9b...`;
+  `api /ready -> 200 old 9d1801d9b...`
+- Fresh direct resource proof:
+  `soar-api -> running:unknown git_commit_sha=9d1801d9b...`;
+  `postgresql -> running:healthy`;
+  `redis -> running:healthy`
+- Fresh exact mutation:
+  `POST /api/v1/deploy` for `soar-api` accepted repaired SHA and returned
+  `deployment_uuid=wej1rmc0yl165yag14v41tno` with message
+  `Deployment already queued for this commit.`
+- Fresh exact blocker:
+  `GET /api/v1/deployments/wej1rmc0yl165yag14v41tno -> 404 {"message":"Deployment not found."}`
+- New owner classification:
+  `ops/control-plane configuration or queue/readback path`
+- New follow-up:
+  [LUC-1889](/LUC/issues/LUC-1889) owns the exact ops repair lane for the
+  accepted-but-unreadable `soar-api` deployment request.
 
 ### 6. Self-Review
 - Simpler option considered:

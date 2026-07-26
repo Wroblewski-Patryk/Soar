@@ -2,10 +2,12 @@
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const FULL_GIT_SHA = /^[0-9a-f]{40}$/i;
 
-const apiDir = path.resolve(process.cwd());
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const apiDir = path.resolve(scriptDir, '..');
 const repoRoot = path.resolve(apiDir, '..', '..');
 const outputDir = path.join(apiDir, '.build-meta');
 const outputPath = path.join(outputDir, 'SOURCE_COMMIT');
