@@ -33,21 +33,9 @@ test('keeps provenance args inherited and never clears Coolify build-stage injec
     );
   }
 
-  const gitCopyIndex = dockerfile.indexOf('COPY .git .git');
-  const writerIndex = dockerfile.indexOf('node apps/api/scripts/writeApiSourceCommit.mjs');
-  const gitRemovalIndex = dockerfile.indexOf('RUN rm -rf .git');
-
-  assert.ok(gitCopyIndex >= 0, 'expected filtered git metadata to be available as a provenance fallback');
-  assert.ok(gitCopyIndex < writerIndex, 'git metadata must be copied before provenance is resolved');
-  assert.ok(gitRemovalIndex > writerIndex, 'git metadata must be removed after provenance is resolved');
-});
-
-test('Docker context exposes only the git metadata needed by the provenance fallback', async () => {
-  const dockerignore = await readFile(path.resolve('.dockerignore'), 'utf8');
-
-  assert.match(dockerignore, /^\.git\/\*$/m);
-  assert.match(dockerignore, /^!\.git\/HEAD$/m);
-  assert.match(dockerignore, /^!\.git\/refs$/m);
-  assert.match(dockerignore, /^!\.git\/refs\/\*\*$/m);
-  assert.match(dockerignore, /^!\.git\/packed-refs$/m);
+  assert.doesNotMatch(
+    dockerfile,
+    /^COPY \.git(?:\/|\s)/m,
+    'Coolify remote Docker contexts do not expose the checkout .git directory'
+  );
 });
