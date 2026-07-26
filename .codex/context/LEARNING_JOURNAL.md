@@ -2,6 +2,81 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-26 - Keep API image release provenance fail-closed, but do not depend only on explicit Coolify SHA build args
+- Context:
+  `LUC-1888` backend diagnosis of the failed `soar-api` deployment for target
+  SHA `9b4fa63a3` on Sunday, July 26, 2026.
+- Symptom:
+  the dedicated `soar-api` deployment failed while the old API runtime and core
+  dependencies stayed healthy, and repo inspection showed the API image build
+  aborted when no full `SOURCE_COMMIT`/Coolify SHA build arg was present.
+- Root cause:
+  the API Dockerfile enforced strict image-baked release identity, but unlike
+  the Web provenance path it had no bounded fallback to `.git/HEAD` and
+  `.git/refs`, so a missing build arg could fail the image even when the source
+  checkout was valid.
+- Guardrail:
+  for Soar release attestation, keep API images fail-closed on invalid or
+  missing SHAs, but resolve the SHA from explicit build args first and minimal
+  `.git` files second.
+- Preferred pattern:
+  generate one build-stage source-commit artifact, copy only that artifact into
+  runtime, and avoid shipping raw `.git` metadata in the final image.
+- Avoid:
+  requiring a single fragile Coolify build-arg path for API release identity or
+  weakening `/health` provenance to accept unknown runtime SHAs.
+
+### 2026-07-26 - Treat web/API SHA mismatch as a split release until Coolify readback confirms resource truth
+- Context:
+  production release-proof heartbeat for `LUC-1887` on Sunday, July 26, 2026.
+- Symptom:
+  `web /api/build-info` exposed the target `main` SHA `9b4fa63a3`, while
+  `api /health` still reported the older `9d1801d9b` image and `api /ready`
+  returned `503`; concurrent Coolify read-only endpoints returned `500` or
+  timed out.
+- Root cause:
+  public web provenance can advance ahead of API/resource rollout, and a
+  degraded Coolify control plane removes the authoritative resource-by-resource
+  proof path during the same release window.
+- Guardrail:
+  never close a Soar production release from web build-info alone; when web and
+  API SHAs differ, classify the state as `split release` and require either
+  healthy Coolify project/environment readback or an exact blocker packet.
+- Preferred pattern:
+  verify `web /api/build-info`, `api /health`, and `api /ready` together with
+  bounded Coolify `teams/current`, `projects/{project}/production`, and
+  `deployments` reads before deciding whether recovery is safe.
+- Avoid:
+  treating fresh web build-info as proof that API and worker resources also
+  deployed, or attempting blind production mutation while the Coolify control
+  plane is returning `500`/timeouts.
+
+### 2026-07-26 - Classify a failed single-resource Coolify deploy from bounded metadata before widening to platform outage
+- Context:
+  `LUC-1887` release recovery for `soar-api` on Sunday, July 26, 2026.
+- Symptom:
+  the official single-resource Coolify deploy path returned a concrete
+  deployment UUID, and later `GET /api/v1/deployments/{uuid}` reached terminal
+  `status=failed`, but the readily available app log endpoint only exposed the
+  still-running old process logs rather than target deployment stage logs.
+- Root cause:
+  deployment detail metadata and runtime app logs are different proof surfaces;
+  the former can prove exact failure ownership even when the latter does not
+  expose a useful stage/message for the new attempt.
+- Guardrail:
+  when a serialized single-resource deploy fails, first classify ownership from
+  bounded deployment metadata plus current dependency health before escalating
+  to a generic control-plane outage.
+- Preferred pattern:
+  combine `GET /api/v1/deployments/{deployment_uuid}` with current resource SHA,
+  public `/health` and `/ready`, and dependency readback; if the prior process
+  and core dependencies remain healthy while the target deployment alone fails,
+  route to a Soar-owned source/build lane.
+- Avoid:
+  treating current app runtime logs as if they were authoritative deployment
+  failure logs, or leaving the parent release issue blocked without a precise
+  child owner when the failure is already resource-specific.
+
 ### 2026-07-25 - Use `curl.exe` for public HTTPS smoke when PowerShell `Invoke-WebRequest` misreports null-reference failures
 - Context:
   production/public smoke from the Windows DRE runner during

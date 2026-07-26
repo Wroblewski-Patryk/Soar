@@ -16,24 +16,25 @@ FROM base AS deps
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
+COPY .git/HEAD .git/HEAD
+COPY .git/refs .git/refs
 COPY apps/api apps/api
 COPY libs/shared libs/shared
+ARG SOURCE_COMMIT
+ARG COOLIFY_GIT_COMMIT_SHA
+ARG COOLIFY_COMMIT_SHA
+ARG GITHUB_SHA
+RUN node apps/api/scripts/writeApiSourceCommit.mjs
 RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
 RUN rm -f apps/api/core apps/api/core.*
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
-ARG SOURCE_COMMIT
-ARG COOLIFY_GIT_COMMIT_SHA
-ARG COOLIFY_COMMIT_SHA
-ARG GITHUB_SHA
-RUN SOURCE_COMMIT_RESOLVED="${SOURCE_COMMIT:-${COOLIFY_GIT_COMMIT_SHA:-${COOLIFY_COMMIT_SHA:-$GITHUB_SHA}}}" \
-    && node -e "if (!/^[0-9a-f]{40}$/i.test(process.argv[1] || '')) process.exit(1)" "$SOURCE_COMMIT_RESOLVED" \
-    && printf '%s\n' "$SOURCE_COMMIT_RESOLVED" > /etc/soar-source-commit
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
+COPY --from=build /app/apps/api/.build-meta/SOURCE_COMMIT /etc/soar-source-commit
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
 COPY --from=build --chown=node:node /app/apps/api /app/apps/api

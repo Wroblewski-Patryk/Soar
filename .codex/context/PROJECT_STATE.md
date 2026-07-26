@@ -1,3 +1,70 @@
+## 2026-07-26 LUC-1888 repaired the Soar API image provenance path behind the failed `soar-api` deploy
+
+- Scope:
+  diagnose the Soar-owned source/build cause of the failed production
+  `soar-api` deployment for target SHA
+  `9b4fa63a35fa7f62c14d66b55721939c9fdf4950` and repair it in source control.
+- Result:
+  `apps/api/Dockerfile` no longer depends only on explicit
+  `SOURCE_COMMIT`/Coolify SHA build args. The build now resolves an exact
+  40-character commit from those env/build args first and falls back to
+  minimal `.git/HEAD` plus `.git/refs`, writes the result to
+  `apps/api/.build-meta/SOURCE_COMMIT`, and copies only that artifact into the
+  runtime image as `/etc/soar-source-commit`. This preserves the existing
+  fail-closed API release identity contract while removing the fragile
+  single-arg-only failure path that matches the `LUC-1887` deployment symptom.
+- Verification:
+  `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
+  `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
+  `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` PASS (`3/3`);
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts` PASS (`4/4`).
+- Evidence:
+  `history/evidence/luc-1888-soar-api-deploy-failure-root-cause-and-repair-2026-07-26.md`;
+  `history/tasks/luc-1888-diagnose-and-repair-soar-api-deploy-failure-2026-07-26-task.md`.
+- Residual:
+  no full local Docker build ran because Docker Desktop is unavailable on this
+  runner, and production still needs a redeploy plus the exact `LUC-1887`
+  public/Coolify proof rerun before the release blocker can close.
+
+## 2026-07-26 LUC-1887 pushed SHA 9b4fa63a3 release proof blocked by failed `soar-api` target deployment
+
+- Scope:
+  verify whether Soar production fully deployed pushed `main` SHA
+  `9b4fa63a35fa7f62c14d66b55721939c9fdf4950` and either close with proof or
+  leave an exact blocker.
+- Result:
+  public `https://soar.luckysparrow.ch/api/build-info` exposes
+  `9b4fa63a35fa7f62c14d66b55721939c9fdf4950`; public
+  `https://api.soar.luckysparrow.ch/ready` recovered from `503` to `200`; but
+  public `https://api.soar.luckysparrow.ch/health` still reports old
+  `9d1801d9b023211d4446629aac7bd58def70322d`. Direct Coolify resource readback
+  shows `soar-api` still on the old commit while `redis`/`postgresql` are
+  healthy. After the official queued deploy path and then the official
+  single-resource `instant_deploy` path, direct `GET
+  /api/v1/deployments/eudzwgqwczqj97jb5bjf3a85` now proves the target commit
+  deployment exists and finished with terminal `status=failed` at
+  `2026-07-26T01:20:24Z`. The release blocker is now an exact failed
+  `soar-api` target deployment, not only queue/control-plane ambiguity.
+- Classification:
+  first actionable owner is `source/build`, not a broad Coolify outage. The
+  old API process remains healthy enough to serve `/health` and `/ready`,
+  `redis` and `postgresql` remain healthy, and bounded control-plane readback
+  did not show a fresh permission or capacity denial on the exact failed
+  deployment.
+- Follow-up:
+  [LUC-1888](/LUC/issues/LUC-1888) is the linked implementation lane for the
+  Soar-owned API deploy/build fix in the same singleton workspace.
+- Verification:
+  `curl.exe` public probes returned `web / -> 200`,
+  `web /api/build-info -> 200 target SHA`,
+  `api /health -> 200 old SHA`,
+  `api /ready -> 200 old SHA`; Coolify direct readback shows `soar-api ->
+  running:unknown git_commit_sha=9d1801d9b...`; and direct deployment readback
+  now shows `GET /api/v1/deployments/eudzwgqwczqj97jb5bjf3a85 -> 200 status=failed commit=9b4fa63a...`.
+- Evidence:
+  `history/evidence/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26.md`;
+  `history/tasks/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26-task.md`.
+
 ## 2026-07-25 LUC-1882 workers-market-data recovered with deploy token
 
 - Scope:

@@ -1,3 +1,70 @@
+## 2026-07-26 LUC-1888 diagnose and repair failed `soar-api` deployment for SHA 9b4fa63a3
+
+- Status:
+  `IN_REVIEW / SOURCE_FIX_READY / API_IMAGE_PROVENANCE_FALLBACK_ADDED / REDEPLOY_PENDING`.
+- Scope:
+  identify the Soar-owned cause of the failed `soar-api` production deployment
+  and repair the backend image contract without weakening release identity.
+- Outcome:
+  repo diagnosis showed `apps/api/Dockerfile` previously failed the image build
+  when no full `SOURCE_COMMIT`/Coolify SHA build arg was present, unlike the
+  Web provenance path which already had a bounded `.git` fallback. The API
+  build now generates `.build-meta/SOURCE_COMMIT` from explicit build args
+  first and minimal `.git/HEAD` plus `.git/refs` second, then copies only that
+  artifact into the runtime image. This preserves image-baked API release
+  identity while removing the single build-arg-only failure mode that matches
+  the failed `soar-api` deployment symptom from `LUC-1887`.
+- Verification:
+  `node --check apps/api/scripts/writeApiSourceCommit.mjs`;
+  `node --check apps/api/scripts/writeApiSourceCommit.test.mjs`;
+  `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS (`3/3`);
+  `pnpm --filter api exec vitest run src/lib/releaseIdentity.test.ts src/router/release-identity-health.test.ts` -> PASS (`4/4`).
+- Evidence:
+  `history/evidence/luc-1888-soar-api-deploy-failure-root-cause-and-repair-2026-07-26.md`;
+  `history/tasks/luc-1888-diagnose-and-repair-soar-api-deploy-failure-2026-07-26-task.md`.
+- Residual:
+  production is still blocked until a commit containing this repair is pushed,
+  `soar-api` is redeployed, and the exact `LUC-1887` proof packet is rerun.
+
+## 2026-07-26 LUC-1887 release proof for pushed SHA 9b4fa63a3
+
+- Status:
+  `BLOCKED / SPLIT_RELEASE / API_READY_RECOVERED_BUT_STALE / SOAR_API_TARGET_DEPLOYMENT_FAILED / WAITING_LUC-1888`.
+- Scope:
+  close or block the Soar production release packet for pushed `main` SHA
+  `9b4fa63a35fa7f62c14d66b55721939c9fdf4950`.
+- Outcome:
+  `web /api/build-info` is on the target SHA and `api /ready` recovered to
+  `200`, but `api /health` still reports the older
+  `9d1801d9b023211d4446629aac7bd58def70322d` image. After the official queued
+  deploy path and then the official `instant_deploy` path for `soar-api`,
+  direct deployment readback now proves the target-commit deployment exists and
+  finished `failed`, while the app/resource SHA remained old. Bounded evidence
+  classifies the first actionable owner as `source/build`.
+- Required next action:
+  [LUC-1888](/LUC/issues/LUC-1888) must diagnose and repair the exact
+  `soar-api` target deployment failure, then this release parent reruns the
+  same public proof set before closure.
+- Evidence:
+  `history/evidence/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26.md`;
+  `history/tasks/luc-1887-complete-pushed-sha-9b4fa63a3-deployment-and-production-proof-2026-07-26-task.md`.
+
+## 2026-07-26 LUC-1888 Soar API deploy/build repair lane
+
+- Status:
+  `TODO / SOURCE_BUILD_OWNER / CHILD_OF_LUC-1887`.
+- Scope:
+  diagnose and fix the exact failed `soar-api` deployment for pushed `main` SHA
+  `9b4fa63a35fa7f62c14d66b55721939c9fdf4950`.
+- Known failure:
+  direct Coolify readback proves
+  `GET /api/v1/deployments/eudzwgqwczqj97jb5bjf3a85 -> 200 status=failed`,
+  while public API health still serves old
+  `9d1801d9b023211d4446629aac7bd58def70322d`.
+- Required output:
+  smallest source/build fix, relevant validation, coherent commit/push, and
+  one-resource `soar-api` redeploy proof back to the parent release issue.
+
 ## 2026-07-25 LUC-1882 deploy-token recovery for workers-market-data
 
 - Status:
