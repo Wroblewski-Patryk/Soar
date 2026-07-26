@@ -2,6 +2,7 @@
 !.git/HEAD
 !.git/refs
 !.git/refs/**
+!.git/packed-refs
 .github
 .vscode
 .claude
