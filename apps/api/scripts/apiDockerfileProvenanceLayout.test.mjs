@@ -32,4 +32,10 @@ test('consumes provenance build args in an ancestor stage and does not redeclare
       `did not expect build stage to redeclare ${argName}`
     );
   }
+
+  assert.doesNotMatch(
+    dockerfile,
+    /^COPY \.git(?:\/|\s)/m,
+    'remote Docker contexts must not require excluded .git files'
+  );
 });

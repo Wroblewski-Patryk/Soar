@@ -24,19 +24,22 @@
   `writeApiSourceCommit.mjs` with no full commit SHA even after the app flag is
   enabled.
 
-## 2026-07-26 LUC-1892 added the missing API Docker git-file fallback for Coolify provenance
+## 2026-07-26 LUC-1892 fixed the API Docker ARG layout for Coolify provenance
 
 - Status:
-  `IN_PROGRESS / BACKEND_SOURCE_BUILD_FIX_VERIFIED / REDEPLOY_PROOF_PENDING`.
+  `BLOCKED / BACKEND_ARG_LAYOUT_FIX_VERIFIED / COMMIT_AND_REDEPLOY_PENDING_IN_LUC-1894`.
 - Scope:
-  finish the backend/source-build repair after DRE proved the `soar-api`
-  Coolify flag was fixed but the remote Docker build still logged
-  `SOURCE_COMMIT=""`.
+  finish the backend/source-build repair after exact contrary production proof
+  showed Coolify injected the full SHA upstream but the repository Dockerfile
+  later cleared it with a build-stage bare `ARG SOURCE_COMMIT`.
 - Outcome:
   `apps/api/scripts/writeApiSourceCommit.mjs` keeps the verified env-selection
-  hardening, and `apps/api/Dockerfile` now also copies `.git/HEAD` plus
-  `.git/refs` into the build stage only. That makes the existing `git-files`
-  fallback reachable when Coolify still injects an empty `SOURCE_COMMIT`.
+  hardening, while `apps/api/Dockerfile` now consumes provenance args in the
+  ancestor `base` stage and no longer redeclares them bare in the `build`
+  stage. A focused regression test in
+  `apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs` now guards that
+  exact layout rule. The writer's git-file fallback remains secondary rather
+  than the claimed root fix.
 - Verification:
   `node --check apps/api/scripts/writeApiSourceCommit.mjs` -> PASS;
   `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS;
@@ -48,9 +51,9 @@
   `history/evidence/luc-1892-missing-full-commit-sha-coolify-remote-docker-provenance-fix-2026-07-26.md`;
   `history/tasks/luc-1892-fix-missing-full-commit-sha-in-coolify-remote-docker-provenance-build-2026-07-26-task.md`.
 - Required next action:
-  the release owner must redeploy `soar-api` once on a commit containing this
-  Dockerfile change plus the earlier writer hardening, then return exact build,
-  deploy, `/health`, and `/ready` proof.
+  `LUC-1894` must isolate, commit, push, and redeploy `soar-api` once on a
+  commit containing this ARG-layout fix plus the earlier writer hardening, then
+  return exact build, deploy, `/health`, and `/ready` proof.
 
 ## 2026-07-26 LUC-1891 resumed on target `adc82a154` but could not execute the exact `soar-api` deploy from this runner
 

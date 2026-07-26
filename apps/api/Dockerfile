@@ -27,8 +27,6 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY apps/api apps/api
 COPY libs/shared libs/shared
-COPY .git/HEAD .git/HEAD
-COPY .git/refs .git/refs
 RUN SOURCE_COMMIT="$SOURCE_COMMIT" \
     COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" \
     COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" \

@@ -22,26 +22,28 @@ However, the exact Coolify log captured for this issue showed `SOURCE_COMMIT=""`
 - Preserved existing fail-closed behavior when no full SHA exists in envs or `.git` fallback.
 - Added a focused regression test for `SOURCE_COMMIT=adc82a154` together with full `COOLIFY_GIT_COMMIT_SHA`.
 
-## Current Root-Fix Hypothesis
+## Current Root Cause
 - `docs/operations/coolify-linux-vps-setup-guide.md` already states that Coolify Docker builds needing `SOURCE_COMMIT` must enable `Include Source Commit in Build`.
-- `LUC-1893` proved the `soar-api` Coolify flag was previously disabled, then repaired to `true`, but the next exact redeploy still reached the same build step with `SOURCE_COMMIT=""`.
-- The remaining backend/source-build gap is that the API Docker build stage did not copy `.git/HEAD` and `.git/refs`, so the already-implemented git-file fallback in `apps/api/scripts/writeApiSourceCommit.mjs` could never succeed in the remote Docker context.
+- `LUC-1893` proved the `soar-api` Coolify flag was previously disabled, then repaired to `true`.
+- Exact contrary production proof from deployment `gkd7yst34j2ew415xjn2u1xy` then showed the injected Coolify Dockerfile already carried the full `ARG SOURCE_COMMIT=adc82a154c9023256e454accfb4edda2d3f0a378`.
+- The remaining backend/source-build gap was our later bare `ARG SOURCE_COMMIT` redeclaration inside the repository build stage, which cleared the injected value before `writeApiSourceCommit.mjs` ran.
 
 ## Root Fix Applied
-- Added `COPY .git/HEAD .git/HEAD` and `COPY .git/refs .git/refs` to `apps/api/Dockerfile` build stage only.
-- Kept runtime image clean: no `.git` paths are copied into the runtime stage.
-- Updated `docs/operations/coolify-linux-vps-setup-guide.md` so the API deploy-proof contract now explicitly matches the web contract for `SOURCE_COMMIT` fallback.
+- Moved provenance `ARG` consumption to an ancestor stage in `apps/api/Dockerfile`.
+- Removed the later bare `ARG SOURCE_COMMIT`, `ARG COOLIFY_GIT_COMMIT_SHA`, `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` redeclarations from the `build` stage.
+- Kept remote builds independent of `.git` paths, which Coolify excludes from its source context; the writer remains fail-closed if no full provenance argument is supplied.
+- Added a focused Dockerfile-layout regression test so the build stage cannot silently reintroduce the later bare `ARG` redeclaration pattern.
 
 ## Files Changed
 - `apps/api/Dockerfile`
+- `apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs`
 - `apps/api/scripts/writeApiSourceCommit.mjs`
 - `apps/api/scripts/writeApiSourceCommit.test.mjs`
 - `docs/operations/coolify-linux-vps-setup-guide.md`
 
 ## Verification
-- `node --check apps/api/scripts/writeApiSourceCommit.mjs` -> PASS
-- `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS
-- `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS (`6/6`)
+- `node --check apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs` -> PASS
+- `node --test apps/api/scripts/apiDockerfileProvenanceLayout.test.mjs` -> PASS (`1/1`)
 - `node --check apps/api/scripts/writeApiSourceCommit.mjs` -> PASS
 - `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS
 - `node --test apps/api/scripts/writeApiSourceCommit.test.mjs` -> PASS (`6/6`)
@@ -53,5 +55,5 @@ However, the exact Coolify log captured for this issue showed `SOURCE_COMMIT=""`
 - Result: the backend hardening is implemented and locally verified, but the observed production blocker remains unproven until the Coolify application metadata is read and the config path is validated or corrected.
 
 ## Next Owner Path
-- Release/Coolify owner: redeploy `soar-api` once on a commit containing the Dockerfile fallback copy plus the existing writer hardening, then return exact build/deploy proof.
-- Backend owner: keep the writer regression as a guard against `short SOURCE_COMMIT + full fallback SHA`; the Dockerfile now makes the `git-files` fallback reachable in the real remote Docker context.
+- Release/Coolify owner: redeploy `soar-api` once on a commit containing the ancestor-stage ARG layout fix plus the existing writer hardening, then return exact build/deploy proof.
+- Backend owner: keep the writer regression and the Dockerfile layout regression as guards, but do not treat the `.git` fallback as the root fix for this incident.

@@ -126,8 +126,7 @@ Optional migration toggle:
 Deploy-proof note:
 - In Coolify `Advanced` settings for the API application, enable `Include Source Commit in Build` when the image build must expose the deployed `SOURCE_COMMIT`.
 - When Docker build stages consume `SOURCE_COMMIT`, declare or consume the provenance `ARG` names in an ancestor stage and let descendant stages inherit them. Avoid a later bare redeclaration in the build stage, because Coolify can inject the full SHA upstream and a stage-local bare `ARG SOURCE_COMMIT` can clear that value before the provenance writer runs.
-- The API Dockerfile also copies only `.git/HEAD` and `.git/refs` into the build stage as a secondary fail-closed fallback for `apps/api/scripts/writeApiSourceCommit.mjs`.
-- Do not copy the full `.git` directory, and do not copy any `.git` paths into the runtime stage.
+- Do not make remote builds depend on `.git` paths: Coolify's source context excludes them. The provenance writer remains fail-closed when no full build argument is available.
 
 Reference: `docs/operations/dev-stage-prod-environment-matrix.md`
 
@@ -164,11 +163,10 @@ Deploy-proof note:
   `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` names in that stage before the
   Web build command; otherwise the deployment can import the right commit while
   `/api/build-info` falls back to `metadataSource=env-runtime`.
-- Because Coolify may not expose `SOURCE_COMMIT` to Docker builds unless the
-  UI-only `Include Source Commit in Build` setting is enabled, the Web
-  Dockerfile also copies only `.git/HEAD` and `.git/refs` into the build stage
-  as a release-provenance fallback. Do not copy the full `.git` directory, and
-  do not copy any `.git` paths into the runtime stage.
+- Coolify exposes `SOURCE_COMMIT` to Docker builds only when the UI-only
+  `Include Source Commit in Build` setting is enabled. Keep remote Dockerfiles
+  independent of `.git` paths because Coolify excludes them from the source
+  context.
 - Treat `/api/build-info` as authoritative source provenance only when
   `metadataSource` is `env`, `git`, or `git-files`. `unknown`,
   `env-runtime`, and any historical `github-branch*` value are diagnostic

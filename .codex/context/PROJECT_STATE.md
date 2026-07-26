@@ -31,20 +31,23 @@
   fix why the Coolify remote Docker build still injects an empty
   `SOURCE_COMMIT` even with `include_source_commit_in_build=true`.
 
-## 2026-07-26 LUC-1892 completed the remaining backend/source-build provenance repair
+## 2026-07-26 LUC-1892 completed the backend Docker ARG-layout provenance repair
 
 - Scope:
-  keep the backend-owned provenance guard for short-first SHA ordering and add
-  the missing API Docker build-stage git-file fallback that DRE proved was
-  still absent after the Coolify app flag repair.
+  keep the backend-owned provenance guard for short-first SHA ordering and fix
+  the API Docker ARG layout that DRE proved was clearing the already-injected
+  `SOURCE_COMMIT` after the Coolify app flag repair.
 - Result:
   `apps/api/scripts/writeApiSourceCommit.mjs` still keeps the verified
   hardening that walks `SOURCE_COMMIT`, `GITHUB_SHA`,
   `COOLIFY_GIT_COMMIT_SHA`, and `COOLIFY_COMMIT_SHA` until it finds the first
-  valid 40-character SHA, and `apps/api/Dockerfile` now copies only
-  `.git/HEAD` plus `.git/refs` into the build stage so the script's
-  `git-files` fallback can actually work in the real Coolify remote Docker
-  context. The API deploy-proof docs were updated to match this contract.
+  valid 40-character SHA. Exact contrary production proof then showed the real
+  blocker was a later build-stage bare `ARG SOURCE_COMMIT` redeclaration, so
+  `apps/api/Dockerfile` now consumes the provenance args in the ancestor `base`
+  stage and removes the later `build`-stage redeclarations. A focused
+  Dockerfile-layout regression test now guards that exact rule, while the
+  writer's git-file fallback remains available outside excluded remote contexts, while the API
+  deploy-proof docs were updated to match this contract.
 - Verification:
   `node --check apps/api/scripts/writeApiSourceCommit.mjs` PASS;
   `node --check apps/api/scripts/writeApiSourceCommit.test.mjs` PASS;
@@ -57,8 +60,8 @@
 - Residual:
   this runner still cannot complete the required Coolify verification because
   the shell has no deploy bindings. The exact next owner action is one
-  `soar-api` redeploy on a commit containing the Dockerfile fallback copy plus
-  the writer hardening, followed by public and control-plane readback.
+  `soar-api` redeploy on a commit containing the ARG-layout fix plus the writer
+  hardening, followed by public and control-plane readback.
 
 ## 2026-07-26 LUC-1891 resumed on pushed target `adc82a154` but exact `soar-api` deploy is blocked by missing Coolify bindings
 
