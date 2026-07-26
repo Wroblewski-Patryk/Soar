@@ -2,6 +2,24 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-26 - Docker `ARG NAME=$NAME` is not a safe preservation mechanism after generated literal injection
+
+- Context:
+  Coolify deployment `g13vizskboxarfwomcntvx24` for Soar API target
+  `14412cbb2d05bc8b52ee89a9ec983ef41453591e`.
+- Symptom:
+  Coolify's rewritten Dockerfile contained the exact literal SHA after every
+  `FROM` and its build command passed the matching build arg, but the writer
+  still ran with `SOURCE_COMMIT=""`.
+- Root cause:
+  a later repository `ARG SOURCE_COMMIT=$SOURCE_COMMIT` declaration in the
+  same build stage reset the generated literal instead of preserving it.
+- Guardrail:
+  when a deployment platform injects stage-scoped literal ARG declarations,
+  do not redeclare those names later in that stage. Put portable local-build
+  declarations in a global/ancestor stage and test that the consuming stage
+  contains no later declaration of those names.
+
 ### 2026-07-26 - Do not anchor build-helper filesystem paths to `process.cwd()` when the caller can be Docker or CI
 - Context:
   `LUC-1891` after the repeated failed `soar-api` deployment chain on Sunday,

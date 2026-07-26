@@ -1,3 +1,22 @@
+## 2026-07-26 LUC-1894 corrected the proven self-default Docker ARG reset
+
+- Status:
+  `IN_PROGRESS / EXACT_ROOT_CAUSE_PROVEN / CORRECTION_VERIFIED / PUSH_AND_SINGLE_REDEPLOY_PENDING`.
+- Outcome:
+  deployment `g13vizskboxarfwomcntvx24` proved Coolify injected target
+  `14412cbb2d05bc8b52ee89a9ec983ef41453591e`, but the later repository
+  `ARG NAME=$NAME` lines reset all provenance values before the writer ran.
+  The API Dockerfile now has no provenance redeclarations in `build`; global
+  and ancestor declarations retain local `--build-arg` support. Regression
+  coverage rejects either bare or self-default build-stage declarations.
+- Verification:
+  layout test `1/1`, writer tests `6/6`, focused API release identity `4/4`.
+- Evidence:
+  `history/evidence/luc-1894-soar-api-queue-clear-and-current-main-deploy-failure-2026-07-26.md`.
+- Required next action:
+  commit and push the correction, then run one serialized API deployment and
+  require exact target SHA convergence in control-plane and public probes.
+
 ## 2026-07-26 LUC-1887 proved the repaired `soar-api` flag was necessary but insufficient
 
 - Status:

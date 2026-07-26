@@ -12,17 +12,24 @@ const requiredArgs = [
   'GITHUB_SHA',
 ];
 
-test('preserves injected provenance args in the build stage without bare redeclarations', async () => {
+test('keeps provenance args inherited and never clears Coolify build-stage injection', async () => {
   const dockerfile = await readFile(dockerfilePath, 'utf8');
+  const globalAndBase = dockerfile.match(/^([\s\S]*?)FROM base AS deps/m);
   const buildStage = dockerfile.match(/FROM deps AS build([\s\S]*?)FROM node:20-bookworm-slim AS runtime/);
 
+  assert.ok(globalAndBase, 'expected global and base stage blocks in apps/api/Dockerfile');
   assert.ok(buildStage, 'expected build stage block in apps/api/Dockerfile');
 
   for (const argName of requiredArgs) {
     assert.match(
+      globalAndBase[1],
+      new RegExp(`^ARG ${argName}$`, 'm'),
+      `expected ${argName} to be declared for ordinary local --build-arg usage`
+    );
+    assert.doesNotMatch(
       buildStage[1],
-      new RegExp(`^ARG ${argName}=\\$${argName}$`, 'm'),
-      `expected build stage to preserve injected ${argName} with an explicit default`
+      new RegExp(`^ARG ${argName}(?:=|$)`, 'm'),
+      `build-stage ${argName} redeclaration would overwrite Coolify's injected literal`
     );
   }
 

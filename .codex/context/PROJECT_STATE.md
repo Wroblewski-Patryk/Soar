@@ -1,3 +1,27 @@
+## 2026-07-26 LUC-1894 classified and corrected the self-default Docker ARG reset
+
+- Scope:
+  classify exact failed deployment `g13vizskboxarfwomcntvx24` for target
+  `14412cbb2d05bc8b52ee89a9ec983ef41453591e` after the saturated Coolify queue
+  was cleared through official per-deployment cancellation calls.
+- Result:
+  the generated Coolify Dockerfile and build script proved that Coolify did
+  inject and pass the exact full SHA. The later repository declarations
+  `ARG NAME=$NAME` still reset those values, and BuildKit executed the writer
+  with empty provenance variables. `apps/api/Dockerfile` now keeps the global
+  and ancestor `base` declarations used by ordinary local `--build-arg` builds
+  but has no provenance redeclaration in the descendant `build` stage. The
+  focused layout regression test rejects both bare and self-default
+  build-stage declarations.
+- Verification:
+  Dockerfile layout Node test PASS (`1/1`); writer Node tests PASS (`6/6`);
+  API release-identity tests PASS (`4/4` across two focused Vitest files).
+- Evidence:
+  `history/evidence/luc-1894-soar-api-queue-clear-and-current-main-deploy-failure-2026-07-26.md`.
+- Residual:
+  commit and push this correction, run exactly one `soar-api` deploy for the
+  new target, then require Coolify, `/health`, and `/ready` to converge to it.
+
 ## 2026-07-26 LUC-1887 repaired the `soar-api` source-commit flag but the exact Coolify build still passed `SOURCE_COMMIT=""`
 
 - Scope:
