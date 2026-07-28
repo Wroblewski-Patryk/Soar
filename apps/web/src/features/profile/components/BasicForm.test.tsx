@@ -1,4 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { toast } from "sonner";
 
@@ -116,5 +118,91 @@ describe("BasicForm", () => {
 
     expect(layout).toHaveClass("flex-col", "md:flex-row");
     expect(fields).toHaveClass("w-full", "min-w-0");
+  });
+
+  it("exposes stable labels and keeps the email field disabled and out of tab order", async () => {
+    await renderForm();
+
+    expect(screen.getByRole("textbox", { name: "Name / Nickname" })).toHaveAttribute(
+      "name",
+      "name"
+    );
+    expect(screen.getByRole("textbox", { name: "Email" })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: "Email" })).toHaveAttribute("tabindex", "-1");
+    expect(screen.getByRole("combobox", { name: "Time zone" })).toHaveAttribute(
+      "aria-describedby",
+      "profile-time-zone-hint"
+    );
+  });
+
+  it("renders one accessible avatar fallback when the avatar is absent", async () => {
+    await renderForm();
+
+    expect(screen.getByRole("img", { name: "Avatar" })).toHaveTextContent("O");
+    expect(screen.queryByAltText("Avatar")).not.toBeInTheDocument();
+  });
+
+  it("renders one accessible avatar fallback when the avatar URL is malformed", async () => {
+    mockUseUser.mockReturnValue({
+      user: { ...profileUser, avatarUrl: "not a valid avatar URL" },
+      updateUser: updateUserMock,
+      fetchUser: vi.fn(),
+      loading: false,
+    });
+
+    await renderForm();
+
+    expect(screen.getByRole("img", { name: "Avatar" })).toHaveTextContent("O");
+    expect(screen.queryByAltText("Avatar")).not.toBeInTheDocument();
+  });
+
+  it("replaces a failed avatar resource with the accessible fallback without an error loop", async () => {
+    mockUseUser.mockReturnValue({
+      user: { ...profileUser, avatarUrl: "https://cdn.example.com/avatar.png" },
+      updateUser: updateUserMock,
+      fetchUser: vi.fn(),
+      loading: false,
+    });
+
+    await renderForm();
+
+    fireEvent.error(screen.getByAltText("Avatar"));
+
+    expect(screen.queryByAltText("Avatar")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("img", { name: "Avatar" })).toHaveLength(1);
+  });
+
+  it("hydrates without an exception when the server and browser detect different time zones", async () => {
+    const originalDateTimeFormat = Intl.DateTimeFormat;
+    let detectedTimeZone = "UTC";
+    vi.spyOn(Intl, "DateTimeFormat").mockImplementation(((...args: ConstructorParameters<typeof Intl.DateTimeFormat>) => {
+      const formatter = new originalDateTimeFormat(...args);
+      formatter.resolvedOptions = () => ({
+        ...originalDateTimeFormat().resolvedOptions(),
+        timeZone: detectedTimeZone,
+      });
+      return formatter;
+    }) as typeof Intl.DateTimeFormat);
+
+    window.localStorage.setItem("cryptosparrow-timezone", "auto");
+    const view = (
+      <I18nProvider>
+        <BasicForm />
+      </I18nProvider>
+    );
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(view);
+    detectedTimeZone = "Europe/Warsaw";
+
+    const recoverableErrors: unknown[] = [];
+    const root = hydrateRoot(container, view, {
+      onRecoverableError: (error) => recoverableErrors.push(error),
+    });
+
+    await act(async () => undefined);
+
+    await act(async () => root.unmount());
+    vi.mocked(Intl.DateTimeFormat).mockRestore();
+    expect(recoverableErrors).toEqual([]);
   });
 });
