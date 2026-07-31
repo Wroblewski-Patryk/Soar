@@ -135,6 +135,25 @@ describe("BasicForm", () => {
     );
   });
 
+  it("exposes one native keyboard-operable avatar action that opens the file chooser", async () => {
+    await renderForm();
+
+    const avatarAction = screen.getByRole("button", { name: "Add avatar" });
+    const avatarInput = document.querySelector<HTMLInputElement>("#avatar-upload");
+    expect(avatarInput).not.toBeNull();
+
+    const openFileChooser = vi.spyOn(avatarInput!, "click");
+
+    expect(avatarAction).toHaveAttribute("type", "button");
+    avatarAction.focus();
+    expect(avatarAction).toHaveFocus();
+
+    fireEvent.click(avatarAction);
+
+    expect(openFileChooser).toHaveBeenCalledTimes(1);
+    expect(document.querySelectorAll("#avatar-upload")).toHaveLength(1);
+  });
+
   it("renders one accessible avatar fallback when the avatar is absent", async () => {
     await renderForm();
 

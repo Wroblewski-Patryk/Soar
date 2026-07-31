@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -50,6 +50,7 @@ const normalizeAvatarSource = (value: string): string | null => {
 export default function ProfileForm() {
   const { timeZone, timeZonePreference, setTimeZonePreference, t } = useI18n();
   const { user, updateUser, loading } = useUser();
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -140,19 +141,22 @@ export default function ProfileForm() {
           )}
 
           <input
+            ref={avatarInputRef}
             id="avatar-upload"
             type="file"
             accept="image/*"
             className="hidden"
             onChange={handleAvatarChange}
           />
-          <label htmlFor="avatar-upload">
-            <span className="btn btn-outline btn-info w-full mt-2 cursor-pointer">
-              {avatarUrl
-                ? t("dashboard.profileBasic.changeAvatar")
-                : t("dashboard.profileBasic.addAvatar")}
-            </span>
-          </label>
+          <button
+            type="button"
+            className="btn btn-outline btn-info mt-2 w-full cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info"
+            onClick={() => avatarInputRef.current?.click()}
+          >
+            {avatarUrl
+              ? t("dashboard.profileBasic.changeAvatar")
+              : t("dashboard.profileBasic.addAvatar")}
+          </button>
         </div>
 
         <div className="w-full min-w-0 flex-grow">
