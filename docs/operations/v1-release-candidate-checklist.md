@@ -12,13 +12,9 @@
   - logs decision trace,
   - bots LIVE confirmations,
   - shell/accessibility smoke.
-- [x] API endpoint documentation parity gate is enforced in the RC pipeline:
-  - `pnpm run docs:parity:endpoints:api`.
-- [x] Web route/API matrix parity gate is enforced in the RC pipeline:
-  - `pnpm run docs:parity:route-api-matrix`.
 
-### Latest Verification (2026-07-04)
-Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
+### Latest Verification (2026-05-25)
+Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -122,16 +118,14 @@ Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-07-04)
-- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-07-04).
+## Outstanding External Gates (2026-05-25)
+- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-25).
 - Gate 1 is satisfied by
   `history/evidence/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
 - Gate 2 is satisfied by
-  `history/operations/v1-slo-observation-2026-07-04T21-45-56-640Z.md`
-  with raw artifact
-  `history/operations/_artifacts-slo-window-2026-07-04T21-45-56-640Z.json`;
-  the only `NO_DATA` objective is live order failure ratio because no live
-  order attempts occurred.
+  `history/evidence/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
+  `NO_DATA` objective is live order failure ratio because no live order
+  attempts occurred.
 - `LIVEIMPORT-03` is satisfied by
   `history/artifacts/liveimport-03-prod-readback-2026-05-23.json` after the
   runner used `--symbols auto` and read actual open runtime payloads for
@@ -175,9 +169,7 @@ Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
   - `pnpm run ops:rc:gates:summary`
 - Run local end-to-end helper pipeline:
   - `pnpm run ops:rc:gates:local-pipeline -- --base-url http://localhost:4001 --duration-minutes 5 --interval-seconds 15`
-  - Includes mandatory docs parity (`docs:parity:endpoints:api` and
-    `docs:parity:route-api-matrix`), status rebuild, checklist sync, and
-    evidence diagnostics by default.
+  - Includes status rebuild + checklist sync + evidence diagnostics by default.
   - Use `--skip-checklist-sync` / `--skip-evidence-check` to disable selected steps.
   - Use `--strict-evidence-check` to fail pipeline when evidence is incomplete.
   - Use `--require-production-gate2` to require Gate2=`PASS` (no `LOCAL_PASS` accepted).

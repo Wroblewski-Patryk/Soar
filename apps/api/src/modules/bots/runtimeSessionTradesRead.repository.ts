@@ -64,31 +64,19 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
     },
   });
 
-export const listRuntimeTradeCarryOverPositionIds = async (
-  where: Prisma.PositionWhereInput,
-  take?: number
-) =>
+export const listRuntimeTradeCarryOverPositionIds = async (where: Prisma.PositionWhereInput) =>
   (
     await prisma.position.findMany({
       where,
-      ...(take ? { take } : {}),
       select: {
         id: true,
       },
     })
   ).map((position) => position.id);
 
-export const listRuntimeTradeRows = async (params: {
-  where: Prisma.TradeWhereInput;
-  orderBy?: Prisma.TradeOrderByWithRelationInput[];
-  skip?: number;
-  take?: number;
-}) =>
+export const listRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
   prisma.trade.findMany({
-    where: params.where,
-    ...(params.orderBy ? { orderBy: params.orderBy } : {}),
-    ...(params.skip != null ? { skip: params.skip } : {}),
-    ...(params.take != null ? { take: params.take } : {}),
+    where,
     select: {
       id: true,
       symbol: true,
@@ -111,17 +99,6 @@ export const listRuntimeTradeRows = async (params: {
       strategyId: true,
       origin: true,
       managementMode: true,
-    },
-  });
-
-export const countRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
-  prisma.trade.count({ where });
-
-export const sumRuntimeTradeFees = async (where: Prisma.TradeWhereInput) =>
-  prisma.trade.aggregate({
-    where,
-    _sum: {
-      fee: true,
     },
   });
 
@@ -172,15 +149,11 @@ export const listRuntimeTradeAnchorPositionRows = async (
   });
 
 export const listRuntimeTradePositionTradeRows = async (
-  params: {
-    where: Prisma.TradeWhereInput;
-    take?: number;
-  }
+  where: Prisma.TradeWhereInput
 ) =>
   prisma.trade.findMany({
-    where: params.where,
+    where,
     orderBy: [{ executedAt: 'asc' }, { createdAt: 'asc' }],
-    ...(params.take != null ? { take: params.take } : {}),
     select: {
       id: true,
       positionId: true,

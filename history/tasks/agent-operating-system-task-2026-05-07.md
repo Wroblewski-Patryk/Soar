@@ -12,23 +12,6 @@
 - Iteration: AOS-01
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Agent operating system and documentation governance.
-- Architecture nodes:
-  - `docs/architecture/12_documentation-governance.md`
-  - `docs/architecture/architecture-source-of-truth.md`
-  - `docs/architecture/architecture-evidence-graph-system.md`
-  - `agent:agent-operating-system:55bf1c725a` (`.agents/core/operating-system.md`)
-  - `agent:execution-loop:d3a950191f` (`.agents/core/execution-loop.md`)
-  - `agent:anti-regression-system:c99df5ca5f` (`.agents/core/anti-regression.md`)
-  - `agent:quality-gates:884b22bbbc` (`.agents/core/quality-gates.md`)
-  - `agent:active-mission-packet:90910b7ce0` (`.agents/state/active-mission.md`)
-- Function chains: none; this is an agent workflow/documentation memory slice.
-- Affected files: `.agents/core/*`, `.agents/state/*`, `.agents/reports/README.md`, `.agents/tasks/README.md`, `.agents/checklists/README.md`, `docs/flows/README.md`, `docs/contracts/README.md`, `docs/testing/README.md`, `AGENTS.md`, `docs/README.md`, `docs/index.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `docs/planning/mvp-next-commits.md`, `docs/planning/mvp-execution-plan.md`.
-- Tests/proof: `pnpm run quality:guardrails`; `git diff --check` with line-ending warnings only.
-- Docs updated: listed in affected files; canonical architecture remains under `docs/architecture/`.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

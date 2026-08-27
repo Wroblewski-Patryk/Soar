@@ -14,15 +14,6 @@
 - Iteration: 34
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness and release evidence.
-- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS.
-- Function chains: docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md.
-- Affected files: history/releases/v1-final-preflight-010b4f8b-2026-05-09.md; history/artifacts/_artifacts-v1-final-preflight-010b4f8b-2026-05-09.json; docs/planning.
-- Tests/proof: production build-info, public smoke, and no-secret preflight recorded in this task.
-- Docs updated: source-of-truth files listed in this task Scope.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

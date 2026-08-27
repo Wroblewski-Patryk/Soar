@@ -11,14 +11,14 @@ import { themeBootstrapScript } from '../security/themeBootstrap';
 
 const titilliumWeb = Titillium_Web({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['300', '400', '600', '700'],
   display: 'swap',
   variable: '--font-heading',
 });
 
 const lato = Lato({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['300', '400', '700'],
   display: 'swap',
   variable: '--font-body',
 });

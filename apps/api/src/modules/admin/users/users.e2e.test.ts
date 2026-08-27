@@ -39,15 +39,6 @@ describe('Admin users API', () => {
     await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
   });
 
-  it('returns admin dashboard root payload for admin users', async () => {
-    const admin = await createAgent('ADMIN');
-
-    const response = await admin.agent.get('/admin');
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Panel admina, widoczny tylko dla admina!' });
-  });
-
   it('rejects unauthenticated access', async () => {
     const response = await request(app).get('/admin/users');
     expect(response.status).toBe(401);

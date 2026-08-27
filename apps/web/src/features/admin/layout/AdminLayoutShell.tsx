@@ -12,16 +12,16 @@ import { useI18n } from "@/i18n/I18nProvider";
 
 export default function AdminLayoutShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
-  const { user, loading, sessionExpired } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const year = new Date().getFullYear();
   const isAdmin = user?.role === "ADMIN";
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push(sessionExpired ? "/auth/login?session=expired" : "/auth/login");
+      router.push("/auth/login");
     }
-  }, [loading, router, sessionExpired, user]);
+  }, [loading, router, user]);
 
   if (loading) {
     return (

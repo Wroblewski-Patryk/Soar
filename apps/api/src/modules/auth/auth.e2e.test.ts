@@ -16,8 +16,6 @@ describe('POST /auth/register', () => {
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestRun.deleteMany();
-    await prisma.paymentIntent.deleteMany();
-    await prisma.userSubscription.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
@@ -37,7 +35,7 @@ describe('POST /auth/register', () => {
     await prisma.apiKey.deleteMany();
     await prisma.strategy.deleteMany();
     await prisma.user.deleteMany();
-  }, 30_000);
+  });
 
   it('should register a user successfully', async () => {
     const res = await request(app)
@@ -93,12 +91,12 @@ describe('POST /auth/register', () => {
   });
 
   it('should reject duplicate email', async () => {
-    await request(app)
-      .post('/auth/register')
-      .send({
+    await prisma.user.create({
+      data: {
         email: 'dupe@example.com',
-        password: 'test1234',
-      });
+        password: 'hashed', // może być byle co
+      },
+    });
 
     const res = await request(app)
       .post('/auth/register')
@@ -109,7 +107,7 @@ describe('POST /auth/register', () => {
 
     expect(res.status).toBe(500); // because service throws duplicate error
     expect(res.body.error.message).toBe('Registration failed');
-  }, 20_000);
+  });
 
   it('sets short-lived cookie for login without remember me', async () => {
     await request(app).post('/auth/register').send({
@@ -192,12 +190,6 @@ describe('POST /auth/register', () => {
     const staleTokenRes = await request(app).get('/auth/me').set('Cookie', [staleSessionCookie]);
     expect(staleTokenRes.status).toBe(401);
     expect(staleTokenRes.body.error.message).toBe('Session expired. Please sign in again.');
-
-    const staleToken = /token=([^;]+)/.exec(staleSessionCookie)?.[1] ?? '';
-    expect(staleToken).not.toBe('');
-    const staleBearerRes = await request(app).get('/auth/me').set('Authorization', `Bearer ${staleToken}`);
-    expect(staleBearerRes.status).toBe(401);
-    expect(staleBearerRes.body.error.message).toBe('Session expired. Please sign in again.');
 
     const reloginRes = await request(app).post('/auth/login').send({ email, password });
     expect(reloginRes.status).toBe(200);

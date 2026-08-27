@@ -2,7 +2,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -37,8 +36,7 @@ const printUsage = () => {
       '  PROD_FIXTURE_WEB_BASE_URL, PROD_FIXTURE_API_BASE_URL,',
       '  PROD_FIXTURE_EXPECTED_SHA, PROD_FIXTURE_AUTH_TOKEN,',
       '  PROD_FIXTURE_AUTH_EMAIL, PROD_FIXTURE_AUTH_PASSWORD,',
-      '  PROD_FIXTURE_OUTPUT_JSON, PROD_FIXTURE_OUTPUT_MD,',
-      '  SOAR_PROD_TEST_EMAIL, SOAR_PROD_TEST_PASSWORD',
+      '  PROD_FIXTURE_OUTPUT_JSON, PROD_FIXTURE_OUTPUT_MD',
     ].join('\n') + '\n'
   );
 };
@@ -60,16 +58,8 @@ const resolveOptions = () => {
     ),
     expectedSha,
     authToken: readArgValue('--auth-token') || process.env.PROD_FIXTURE_AUTH_TOKEN || '',
-    authEmail:
-      readArgValue('--auth-email') ||
-      process.env.PROD_FIXTURE_AUTH_EMAIL ||
-      process.env.SOAR_PROD_TEST_EMAIL ||
-      '',
-    authPassword:
-      readArgValue('--auth-password') ||
-      process.env.PROD_FIXTURE_AUTH_PASSWORD ||
-      process.env.SOAR_PROD_TEST_PASSWORD ||
-      '',
+    authEmail: readArgValue('--auth-email') || process.env.PROD_FIXTURE_AUTH_EMAIL || '',
+    authPassword: readArgValue('--auth-password') || process.env.PROD_FIXTURE_AUTH_PASSWORD || '',
     outputJson:
       readArgValue('--output-json') ||
       process.env.PROD_FIXTURE_OUTPUT_JSON ||
@@ -175,32 +165,6 @@ ${blockers}
   secrets, and response bodies are not written to this artifact.
 - Fixture IDs may be recorded only to prove cleanup.
 `;
-};
-
-const cleanupDelete = async ({
-  name,
-  route,
-  authToken,
-  apiBaseUrl,
-  cleanup,
-  requestJsonImpl = requestJson,
-}) => {
-  if (!authToken || !route) return;
-  try {
-    const result = await requestJsonImpl({
-      apiBaseUrl,
-      token: authToken,
-      method: 'DELETE',
-      route,
-    });
-    cleanup.push(
-      toStep(name, result.response.status === 204 || result.response.status === 200 ? 'PASS' : 'FAIL', {
-        httpStatus: result.response.status,
-      })
-    );
-  } catch (error) {
-    cleanup.push(toStep(name, 'FAIL', { notes: error instanceof Error ? error.message : String(error) }));
-  }
 };
 
 const main = async () => {
@@ -743,6 +707,25 @@ const main = async () => {
     fatalError = error instanceof Error ? error.message : String(error);
     blockers.push(fatalError);
   } finally {
+    const cleanupDelete = async (name, route) => {
+      if (!auth.token || !route) return;
+      try {
+        const result = await requestJson({
+          apiBaseUrl: options.apiBaseUrl,
+          token: auth.token,
+          method: 'DELETE',
+          route,
+        });
+        cleanup.push(
+          toStep(name, result.response.status === 204 || result.response.status === 200 ? 'PASS' : 'FAIL', {
+            httpStatus: result.response.status,
+          })
+        );
+      } catch (error) {
+        cleanup.push(toStep(name, 'FAIL', { notes: error instanceof Error ? error.message : String(error) }));
+      }
+    };
+
     if (created.limitOrderId && !limitOrderCanceled && auth.token) {
       try {
         const result = await requestJson({
@@ -769,48 +752,21 @@ const main = async () => {
       cleanup.push(toStep('manual paper limit order terminal cleanup', 'PASS', { notes: 'order left canceled as audit history' }));
     }
 
-    await cleanupDelete({
-      name: 'backtest run cleanup',
-      route: created.backtestRunId ? `/dashboard/backtests/runs/${created.backtestRunId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
-    await cleanupDelete({
-      name: 'bot cleanup',
-      route: created.botId ? `/dashboard/bots/${created.botId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
-    await cleanupDelete({
-      name: 'strategy cleanup',
-      route: created.strategyId ? `/dashboard/strategies/${created.strategyId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
-    await cleanupDelete({
-      name: 'market universe cleanup',
-      route: created.marketUniverseId ? `/dashboard/markets/universes/${created.marketUniverseId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
-    await cleanupDelete({
-      name: 'wallet cleanup',
-      route: created.walletId ? `/dashboard/wallets/${created.walletId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
-    await cleanupDelete({
-      name: 'profile api key cleanup',
-      route: created.apiKeyId ? `/dashboard/profile/apiKeys/${created.apiKeyId}` : '',
-      authToken: auth.token,
-      apiBaseUrl: options.apiBaseUrl,
-      cleanup,
-    });
+    await cleanupDelete(
+      'backtest run cleanup',
+      created.backtestRunId ? `/dashboard/backtests/runs/${created.backtestRunId}` : ''
+    );
+    await cleanupDelete('bot cleanup', created.botId ? `/dashboard/bots/${created.botId}` : '');
+    await cleanupDelete('strategy cleanup', created.strategyId ? `/dashboard/strategies/${created.strategyId}` : '');
+    await cleanupDelete(
+      'market universe cleanup',
+      created.marketUniverseId ? `/dashboard/markets/universes/${created.marketUniverseId}` : ''
+    );
+    await cleanupDelete('wallet cleanup', created.walletId ? `/dashboard/wallets/${created.walletId}` : '');
+    await cleanupDelete(
+      'profile api key cleanup',
+      created.apiKeyId ? `/dashboard/profile/apiKeys/${created.apiKeyId}` : ''
+    );
 
     if (originalProfile && auth.token) {
       try {
@@ -866,27 +822,10 @@ const main = async () => {
   if (status !== 'PASS') process.exit(1);
 };
 
-export {
-  assertStatus,
-  cleanupDelete,
-  main,
-  normalizeBaseUrl,
-  printUsage,
-  readArgValue,
-  readJson,
-  renderMarkdown,
-  requestJson,
-  resolveOptions,
-  sleep,
-  toStep,
-};
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((error) => {
-    console.error(
-      '[prod-fixture-action-proof] failed:',
-      error instanceof Error ? error.message : String(error)
-    );
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  console.error(
+    '[prod-fixture-action-proof] failed:',
+    error instanceof Error ? error.message : String(error)
+  );
+  process.exit(1);
+});

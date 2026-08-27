@@ -36,7 +36,6 @@ tags: [soar-map, service, backend, verified_local]
 
 - uses -> [[SOAR-SERVICE-EXCHANGE-PUBLIC-READ]] (verified_local)
 - uses <- [[SOAR-SERVICE-WALLETS]] (verified_local)
-- uses <- [[SOAR-API-MARKET-CATALOG]] (verified_local)
 - uses <- [[SOAR-SERVICE-MARKETS]] (verified_local)
 
 ## Evidence Rule

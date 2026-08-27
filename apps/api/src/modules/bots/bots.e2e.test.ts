@@ -2,7 +2,6 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
-import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import {
   buildDynamicStopSymbolStatsSeed,
@@ -1575,120 +1574,6 @@ describe('Bots module contract', () => {
     });
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.closedAt).not.toBeNull();
-  });
-
-  it('keeps runtime close authority fill-based when a pending DCA order is still open for the same position', async () => {
-    const ownerEmail = 'bot-runtime-close-dca-pending-owner@example.com';
-    const owner = await registerAndLogin(ownerEmail);
-    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
-    const ownerId = ownerUser.id;
-    const strategyId = await createStrategy(owner, 'Runtime Close DCA Pending Strategy');
-    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
-    const botRes = await owner.post('/dashboard/bots').send(
-      createPayload({
-        strategyId,
-        marketGroupId,
-      })
-    );
-    expect(botRes.status).toBe(201);
-    const botId = botRes.body.id as string;
-
-    const session = await prisma.botRuntimeSession.create({
-      data: {
-        userId: ownerId,
-        botId,
-        mode: 'PAPER',
-        status: 'RUNNING',
-        startedAt: new Date('2026-04-10T04:00:00.000Z'),
-        lastHeartbeatAt: new Date('2026-04-10T04:05:00.000Z'),
-      },
-      select: { id: true },
-    });
-
-    const position = await prisma.position.create({
-      data: {
-        userId: ownerId,
-        botId,
-        symbol: 'BTCUSDT',
-        side: 'LONG',
-        status: 'OPEN',
-        quantity: 0.1,
-        entryPrice: 42_000,
-        leverage: 5,
-        managementMode: 'BOT_MANAGED',
-        syncState: 'IN_SYNC',
-      },
-    });
-
-    const pendingDcaOrder = await prisma.order.create({
-      data: {
-        userId: ownerId,
-        botId,
-        positionId: position.id,
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-        type: 'MARKET',
-        status: 'OPEN',
-        quantity: 0.05,
-        price: 41_500,
-        origin: 'BOT',
-        managementMode: 'BOT_MANAGED',
-        syncState: 'IN_SYNC',
-      },
-      select: { id: true },
-    });
-    await prisma.runtimeExecutionDedupe.create({
-      data: {
-        dedupeKey: buildDcaExecutionDedupeKey({
-          userId: ownerId,
-          botId,
-          symbol: 'BTCUSDT',
-          positionId: position.id,
-          dcaLevelIndex: 0,
-          positionSide: 'LONG',
-        }),
-        dedupeVersion: 'v1',
-        commandType: 'DCA',
-        userId: ownerId,
-        botId,
-        symbol: 'BTCUSDT',
-        status: 'PENDING',
-        commandFingerprint: {
-          positionId: position.id,
-          dcaLevelIndex: 0,
-          positionSide: 'LONG',
-        },
-        orderId: pendingDcaOrder.id,
-        positionId: position.id,
-        ttlExpiresAt: new Date(Date.now() + 60_000),
-      },
-    });
-
-    seedRuntimeTicker('BTCUSDT', 42_200);
-
-    const closeRes = await owner
-      .post(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions/${position.id}/close`)
-      .send({ riskAck: true });
-
-    expect(closeRes.status).toBe(200);
-    expect(closeRes.body.status).toBe('submitted');
-    expect(closeRes.body.orderId).toEqual(expect.any(String));
-
-    const stillOpenPosition = await prisma.position.findUniqueOrThrow({
-      where: { id: position.id },
-      select: { status: true, closedAt: true },
-    });
-    expect(stillOpenPosition.status).toBe('OPEN');
-    expect(stillOpenPosition.closedAt).toBeNull();
-
-    const submittedDcaOrder = await prisma.order.findUniqueOrThrow({
-      where: { id: closeRes.body.orderId },
-      select: { status: true, positionId: true, side: true, type: true },
-    });
-    expect(submittedDcaOrder.status).toBe('OPEN');
-    expect(submittedDcaOrder.positionId).toBe(position.id);
-    expect(submittedDcaOrder.side).toBe('BUY');
-    expect(submittedDcaOrder.type).toBe('MARKET');
   });
 
   it('supports monitoring query filters for status/symbol/limit and enforces session time window', async () => {

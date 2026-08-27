@@ -12,15 +12,6 @@
 - Iteration: 2026-05-09
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Executable V1 release boundary and production source truth.
-- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
-- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md; docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
-- Affected files: .agents/state/next-steps.md; .codex/context/TASK_BOARD.md; .codex/context/PROJECT_STATE.md; docs/planning/mvp-next-commits.md.
-- Tests/proof: `3c5da343` public evidence and V1 boundary validation recorded in this task.
-- Docs updated: planning/status docs and active source-of-truth context files.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

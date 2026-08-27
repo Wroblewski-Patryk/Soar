@@ -1,14 +1,5 @@
 # Architecture Graph Strategies Backfill - 2026-05-24
 
-## Architecture Links
-
-- Primary feature/module: Strategy authoring and indicator catalog graph coverage.
-- Architecture nodes: SOAR-FEATURE-STRATEGIES; SOAR-PAGE-STRATEGIES-LIST; SOAR-API-STRATEGY-LIST; SOAR-DB-STRATEGY; SOAR-TEST-STRATEGIES-API.
-- Function chains: docs/architecture/chains/CHAIN-STRATEGIES.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Result Report.
-- Docs updated: architecture graph registries, Strategies chain output, generated graph exports, and source-of-truth state files.
-
 ## Context
 
 The operator requested a living Obsidian-first architecture evidence graph for
@@ -72,3 +63,4 @@ architecture evidence graph without changing application runtime behavior.
 - Residual risk: this is graph traceability proof only. It is not fresh
   authenticated browser proof, production strategy mutation proof, or full
   repository graph coverage.
+

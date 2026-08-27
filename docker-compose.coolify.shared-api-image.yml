@@ -37,19 +37,13 @@ x-api-env: &api-env
 
 x-api-image: &api-image ${API_STACK_IMAGE:-soar-api-stack:${SOURCE_COMMIT:?SOURCE_COMMIT is required}}
 
-x-api-core-ulimits: &api-core-ulimits
-  core: 0
-
 services:
   api:
     image: *api-image
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-      args:
-        SOURCE_COMMIT: ${SOURCE_COMMIT:?SOURCE_COMMIT is required}
     restart: unless-stopped
-    ulimits: *api-core-ulimits
     environment:
       <<: *api-env
       SERVICE_FQDN_API_3001: ${SERVICE_FQDN_API_3001:-https://api.soar.luckysparrow.ch}
@@ -62,8 +56,8 @@ services:
         ]
       interval: 15s
       timeout: 5s
-      retries: 20
-      start_period: 180s
+      retries: 12
+      start_period: 45s
 
   web:
     build:
@@ -98,10 +92,8 @@ services:
       start_period: 45s
 
   workers-market-data:
-    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
-    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -111,10 +103,8 @@ services:
     command: ["node", "dist/workers/marketData.worker.js"]
 
   workers-market-stream:
-    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
-    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -124,10 +114,8 @@ services:
     command: ["node", "dist/workers/marketStream.worker.js"]
 
   workers-backtest:
-    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
-    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -137,10 +125,8 @@ services:
     command: ["node", "dist/workers/backtest.worker.js"]
 
   workers-execution:
-    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
-    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started

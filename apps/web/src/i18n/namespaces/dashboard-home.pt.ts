@@ -294,7 +294,6 @@ export const dashboardHomePt = {
     "signalContextSourceLatestDecision": "Decisao mais recente",
     "signalContextSourceConfiguredFallback": "Snapshot da vela fechada",
     "signalContextSourceUnresolved": "Nao resolvido",
-    "runtimeStateLabel": "Estado do runtime",
     "marketStatePositionOpen": "Posicao aberta",
     "marketStateSignalActive": "Sinal aceite",
     "marketStateEvaluatedNoTrade": "Avaliado / sem entrada",
@@ -380,4 +379,3 @@ export const dashboardHomePt = {
     "updatedAt": "Updated at: {value}"
   }
 } as const;
-

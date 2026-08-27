@@ -13,15 +13,6 @@
 - Iteration: 50
 - Operation Mode: TESTER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness and runtime source-current proof.
-- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS; SOAR-FEATURE-EXCHANGE-ADAPTER.
-- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md; docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER.md.
-- Affected files: history/plans/deploy-freshness-9c125683-2026-05-10.md; docs/architecture/09_integrations-deployment-and-runtime-services.md; scripts/waitForWebBuildInfo.mjs; scripts/deploySmokeCheck.mjs; scripts/runV1FinalPreflight.mjs; release status files, active state docs, task board, and project state.
-- Tests/proof: build-info wait, public smoke, and release evidence recorded in this task.
-- Docs updated: operations/release evidence and active source-of-truth context files.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -37,7 +37,6 @@ tags: [soar-map, component, frontend, verified_local]
 - calls -> [[SOAR-SERVICE-WEB-MARKETS]] (verified_local)
 - composes -> [[SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT]] (verified_local)
 - uses -> [[SOAR-SERVICE-MARKET-UNIVERSE-HELPERS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-MARKETS]] (verified_local)
 - renders <- [[SOAR-PAGE-MARKET-CREATE]] (verified_local)
 - renders <- [[SOAR-PAGE-MARKET-EDIT]] (verified_local)
 

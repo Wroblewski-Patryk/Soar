@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-BOTS-API]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-BOTS]] (verified_local)
 - contains <- [[SOAR-PAGE-BOTS-LIST]] (verified_local)
 
 ## Evidence Rule

@@ -2,7 +2,6 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 
@@ -11,7 +10,7 @@ const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetP
 
 const readJson = async (filePath) => JSON.parse(await readFile(filePath, 'utf8'));
 
-const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
   const options = {
     today: new Date().toISOString().slice(0, 10),
     index: '',
@@ -21,6 +20,7 @@ const parseArgs = (args = process.argv.slice(2)) => {
     help: false,
   };
 
+  const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--help' || arg === '-h') {
@@ -331,8 +331,8 @@ ${renderFindings(ledger.findingLedger)}
 `;
 };
 
-const main = async (args = process.argv.slice(2)) => {
-  const options = parseArgs(args);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
     printHelp();
     return;
@@ -352,31 +352,7 @@ const main = async (args = process.argv.slice(2)) => {
   console.log(`Findings by bucket: ${JSON.stringify(ledger.summary.bucketCounts)}`);
 };
 
-export {
-  buildLedger,
-  buildModuleLedger,
-  categoryToBucket,
-  main,
-  parseArgs,
-  printHelp,
-  readJson,
-  relativePath,
-  renderFindings,
-  renderMarkdown,
-  sortFindings,
-  statusToBucket,
-  summarizeBy,
-  tableRows,
-  toPosixPath,
-};
-
-const isDirectRun = process.argv[1]
-  ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-  : false;
-
-if (isDirectRun) {
-  main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
-}
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

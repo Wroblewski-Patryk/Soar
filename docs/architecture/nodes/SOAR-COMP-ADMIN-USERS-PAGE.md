@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-ADMIN-USERS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-ADMIN]] (verified_local)
 - renders <- [[SOAR-PAGE-ADMIN-USERS]] (verified_local)
 
 ## Evidence Rule

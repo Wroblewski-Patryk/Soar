@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/market-stream`
 - Owner: backend/runtime-infra
-- Last updated: 2026-07-16
+- Last updated: 2026-05-08
 - Related planning task: `EXCHANGE2-05`
 
 ## 1. Purpose and Scope
@@ -38,11 +38,6 @@ Out of scope:
   - endpoint: `GET /dashboard/market-stream/events`
   - supports `symbols` filter and `interval` filter.
   - emits event IDs, heartbeat comments (`: ping`), and periodic `health` events.
-- Data source contract:
-  - the SSE route subscribes to the in-process market-stream fanout and
-    observes worker-published market events.
-  - no persisted DB model is expected for the route; subscription/fanout
-    relations are the canonical graph data source.
 - Guardrails:
   - hard symbol limit (`MARKET_STREAM_MAX_SYMBOLS = 20`).
 
@@ -63,11 +58,6 @@ Out of scope:
 ## 5. API and UI Integration
 - Direct endpoint:
   - `GET /dashboard/market-stream/events`
-- Router mounts:
-  - `USE /market-stream` delegates the authenticated dashboard mount in
-    `apps/api/src/router/dashboard.routes.ts` into `marketStreamRouter`, so the
-    SSE surface remains reachable only after the shared `requireAuth` boundary
-    succeeds.
 - UI integration:
   - dashboard home live widgets.
   - runtime views requiring near-real-time ticker/candle updates.
@@ -95,10 +85,6 @@ Out of scope:
 ```powershell
 pnpm --filter api test -- src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/exchangePollingStream.service.test.ts src/modules/market-stream/marketStream.routes.contract.test.ts src/modules/market-stream/marketStream.routes.e2e.test.ts
 ```
-- 2026-06-04 source proof:
-  - architecture graph relations `REL-APISUPPORT-014` and
-    `REL-MARKET-DATA-011` record fanout and worker-backed source semantics for
-    the route; no route-level DB relation is expected.
 
 ## 9. Open Issues and Follow-Ups
 - Gate.io worker source selection is regression-locked as explicit opt-in via

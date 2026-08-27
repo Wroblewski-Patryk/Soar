@@ -25,11 +25,3 @@ read it, and which values are projections or caches.
 
 When schema, persistence, cache, projection, import/export, or reset behavior
 changes, update this map.
-
-## Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2186](/LUC/issues/LUC-2186).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/api/src/prisma/client.ts` | `docs/architecture/data-ownership-map.md` | Prisma client singleton boundary for API persistence access; module-level write ownership remains governed by the data ownership map and module docs. | Architecture-awareness `documents` relation from this doc plus API typecheck/persistence tests when Prisma client behavior changes. |

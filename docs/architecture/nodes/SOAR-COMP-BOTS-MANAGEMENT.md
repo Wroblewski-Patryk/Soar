@@ -38,7 +38,6 @@ tags: [soar-map, component, frontend, verified_local]
 - renders -> [[SOAR-COMP-BOTS-ASSISTANT-TAB]] (verified_local)
 - composes -> [[SOAR-COMP-BOTS-MANAGEMENT-TABS]] (verified_local)
 - composes -> [[SOAR-COMP-BOTS-MONITORING-TAB]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-BOTS]] (verified_local)
 - contains <- [[SOAR-PAGE-BOT-RUNTIME]] (verified_local)
 - renders <- [[SOAR-PAGE-BOT-ASSISTANT]] (verified_local)
 

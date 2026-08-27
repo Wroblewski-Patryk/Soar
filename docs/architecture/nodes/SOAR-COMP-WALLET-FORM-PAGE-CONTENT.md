@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - contains -> [[SOAR-COMP-WALLET-CREATE-EDIT-FORM]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-WALLETS]] (verified_local)
 - contains <- [[SOAR-PAGE-WALLET-CREATE]] (verified_local)
 - contains <- [[SOAR-PAGE-WALLET-EDIT]] (verified_local)
 

@@ -30,8 +30,6 @@ const playbook = (overrides = {}) => ({
     'corepack pnpm run audit:rerun-playbook:check',
     'corepack pnpm run audit:remediation-plan:check',
     'corepack pnpm run docs:parity:check',
-    'corepack pnpm run docs:parity:endpoints:api',
-    'corepack pnpm run i18n:audit:route-reachable:web',
     'corepack pnpm run quality:guardrails',
     'git diff --check',
   ],
@@ -206,8 +204,6 @@ test('validateReusableAuditRerunPlaybook fails when required closure checks are 
     'audit:manifest:verify',
     'audit:rerun-playbook:check',
     'audit:remediation-plan:check',
-    'docs:parity:endpoints:api',
-    'i18n:audit:route-reachable:web',
     'quality:guardrails',
   ]);
 });

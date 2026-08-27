@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { DCA_ADVANCED_STRATEGY_CONFIG } from './bots.e2e.fixtures';
@@ -12,7 +12,7 @@ import {
 } from './bots.e2e.shared';
 
 describe('Bots runtime imported DCA visibility', () => {
-  beforeAll(resetBotsE2eState);
+  beforeEach(resetBotsE2eState);
 
   it('shows executed DCA count for imported managed runtime positions even when historical OPEN trade is absent', async () => {
     const ownerEmail = 'bot-runtime-imported-dca-owner@example.com';

@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import ts from "typescript";
 
 const ROOT_DIR = process.cwd();
@@ -37,13 +36,12 @@ const HARD_CODED_ATTRIBUTE_PATTERN =
 const HARD_CODED_TOAST_PATTERN =
   /toast\.(?:success|error|info|warning)\s*\(\s*(?:'[^']+'|"[^"]+"|`[^$`][^`]*`)/g;
 
-export const normalize = (value) => value.replace(/\\/g, "/");
-export const toRelative = (absolutePath, rootDir = ROOT_DIR) => normalize(path.relative(rootDir, absolutePath));
+const normalize = (value) => value.replace(/\\/g, "/");
+const toRelative = (absolutePath) => normalize(path.relative(ROOT_DIR, absolutePath));
 
-export const parseArgs = (args = process.argv.slice(2), options = {}) => {
-  const rootDir = options.rootDir ?? ROOT_DIR;
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   let outFile = OUT_DEFAULT;
-  let help = false;
 
   for (let index = 0; index < args.length; index += 1) {
     const current = args[index];
@@ -52,21 +50,21 @@ export const parseArgs = (args = process.argv.slice(2), options = {}) => {
       if (!next) {
         throw new Error("Missing value for --out.");
       }
-      outFile = path.resolve(rootDir, next);
+      outFile = path.resolve(ROOT_DIR, next);
       index += 1;
       continue;
     }
     if (current === "--help") {
-      help = true;
-      continue;
+      console.log("Usage: node scripts/auditRouteReachableI18n.mjs [--out <file>]");
+      process.exit(0);
     }
     throw new Error(`Unknown argument: ${current}`);
   }
 
-  return { outFile, help };
+  return { outFile };
 };
 
-export const listSourceFiles = (dirPath) => {
+const listSourceFiles = (dirPath) => {
   const stack = [dirPath];
   const files = [];
 
@@ -89,7 +87,7 @@ export const listSourceFiles = (dirPath) => {
   return files.sort((left, right) => left.localeCompare(right));
 };
 
-export const resolveScriptKind = (filePath) => {
+const resolveScriptKind = (filePath) => {
   const extension = path.extname(filePath);
   if (extension === ".tsx") return ts.ScriptKind.TSX;
   if (extension === ".jsx") return ts.ScriptKind.JSX;
@@ -97,7 +95,7 @@ export const resolveScriptKind = (filePath) => {
   return ts.ScriptKind.TS;
 };
 
-export const readImports = (filePath, sourceText) => {
+const readImports = (filePath, sourceText) => {
   const sourceFile = ts.createSourceFile(
     filePath,
     sourceText,
@@ -146,12 +144,12 @@ export const readImports = (filePath, sourceText) => {
   };
 };
 
-export const resolveAliasImport = (specifier, webSrcDir = WEB_SRC_DIR) => {
+const resolveAliasImport = (specifier) => {
   if (!specifier.startsWith("@/")) return null;
-  return path.join(webSrcDir, specifier.slice(2));
+  return path.join(WEB_SRC_DIR, specifier.slice(2));
 };
 
-export const resolveCandidateFile = (basePath) => {
+const resolveCandidateFile = (basePath) => {
   if (SOURCE_EXTENSIONS.includes(path.extname(basePath)) && fs.existsSync(basePath)) {
     return basePath;
   }
@@ -171,25 +169,23 @@ export const resolveCandidateFile = (basePath) => {
   return null;
 };
 
-export const resolveImport = (fromFile, specifier, options = {}) => {
-  const webSrcDir = options.webSrcDir ?? WEB_SRC_DIR;
+const resolveImport = (fromFile, specifier) => {
   if (specifier.startsWith(".")) {
     return resolveCandidateFile(path.resolve(path.dirname(fromFile), specifier));
   }
 
   if (specifier.startsWith("@/")) {
-    return resolveCandidateFile(resolveAliasImport(specifier, webSrcDir));
+    return resolveCandidateFile(resolveAliasImport(specifier));
   }
 
   return null;
 };
 
-export const collectAncestorLayouts = (pageFilePath, options = {}) => {
-  const appDir = options.appDir ?? APP_DIR;
+const collectAncestorLayouts = (pageFilePath) => {
   const result = [];
   let currentDir = path.dirname(pageFilePath);
 
-  while (currentDir.startsWith(appDir)) {
+  while (currentDir.startsWith(APP_DIR)) {
     for (const extension of SOURCE_EXTENSIONS) {
       const layoutPath = path.join(currentDir, `layout${extension}`);
       if (fs.existsSync(layoutPath)) {
@@ -197,14 +193,14 @@ export const collectAncestorLayouts = (pageFilePath, options = {}) => {
         break;
       }
     }
-    if (currentDir === appDir) break;
+    if (currentDir === APP_DIR) break;
     currentDir = path.dirname(currentDir);
   }
 
   return Array.from(new Set(result)).sort((left, right) => left.localeCompare(right));
 };
 
-export const safeRelativeLine = (fileSource, offset) => {
+const safeRelativeLine = (fileSource, offset) => {
   const lineStarts = [0];
   for (let index = 0; index < fileSource.length; index += 1) {
     if (fileSource[index] === "\n") {
@@ -218,7 +214,7 @@ export const safeRelativeLine = (fileSource, offset) => {
   return line + 1;
 };
 
-export const collectPatternMatches = (source, pattern) => {
+const collectPatternMatches = (source, pattern) => {
   const matches = [];
   let match = pattern.exec(source);
   while (match) {
@@ -233,7 +229,7 @@ export const collectPatternMatches = (source, pattern) => {
   return matches;
 };
 
-export const analyzeFileSource = (source) => {
+const analyzeFileSource = (source) => {
   const hasLocalCopy = LOCAL_COPY_PATTERNS.some((pattern) => pattern.test(source));
   const hasFallbackPl = FALLBACK_PL_PATTERN.test(source);
   const attributeMatches = collectPatternMatches(source, HARD_CODED_ATTRIBUTE_PATTERN);
@@ -253,28 +249,28 @@ export const analyzeFileSource = (source) => {
   };
 };
 
-export const isSharedFoundationFile = (filePath) => {
+const isSharedFoundationFile = (filePath) => {
   const normalized = normalize(filePath);
   return SHARED_FOUNDATION_PATTERNS.some((pattern) => pattern.test(normalized));
 };
 
-export const isAuditExcludedFile = (filePath) => {
+const isAuditExcludedFile = (filePath) => {
   const normalized = normalize(filePath);
   return AUDIT_EXCLUDED_PATTERNS.some((pattern) => pattern.test(normalized));
 };
 
-export const buildRouteReachability = (routePages, dependencyGraph, options = {}) => {
+const buildRouteReachability = (routePages, dependencyGraph) => {
   const result = new Map();
 
   for (const pageFile of routePages) {
-    const visited = new Set([pageFile, ...collectAncestorLayouts(pageFile, options)]);
+    const visited = new Set([pageFile, ...collectAncestorLayouts(pageFile)]);
     const queue = [...visited];
 
     while (queue.length > 0) {
       const current = queue.shift();
       const imports = dependencyGraph.get(current) ?? [];
       for (const target of imports) {
-      if (!target.startsWith(options.webSrcDir ?? WEB_SRC_DIR)) continue;
+        if (!target.startsWith(WEB_SRC_DIR)) continue;
         if (visited.has(target)) continue;
         visited.add(target);
         queue.push(target);
@@ -287,22 +283,13 @@ export const buildRouteReachability = (routePages, dependencyGraph, options = {}
   return result;
 };
 
-export const run = (args = process.argv.slice(2), options = {}) => {
-  const rootDir = options.rootDir ?? ROOT_DIR;
-  const webSrcDir = options.webSrcDir ?? WEB_SRC_DIR;
-  const appDir = options.appDir ?? APP_DIR;
-
-  if (!fs.existsSync(webSrcDir)) {
-    throw new Error(`Missing web source directory: ${webSrcDir}`);
+const run = () => {
+  if (!fs.existsSync(WEB_SRC_DIR)) {
+    throw new Error(`Missing web source directory: ${WEB_SRC_DIR}`);
   }
 
-  const { outFile, help } = parseArgs(args, { rootDir });
-  if (help) {
-    console.log("Usage: node scripts/auditRouteReachableI18n.mjs [--out <file>]");
-    return null;
-  }
-
-  const sourceFiles = listSourceFiles(webSrcDir);
+  const { outFile } = parseArgs();
+  const sourceFiles = listSourceFiles(WEB_SRC_DIR);
   const routePages = sourceFiles.filter((filePath) => ROUTE_FILE_PATTERN.test(filePath));
   const sourceByFile = new Map();
   const dependencyGraph = new Map();
@@ -321,8 +308,8 @@ export const run = (args = process.argv.slice(2), options = {}) => {
     }
 
     const resolvedImports = imports
-      .map((specifier) => resolveImport(filePath, specifier, { webSrcDir }))
-      .filter((value) => value && value.startsWith(webSrcDir));
+      .map((specifier) => resolveImport(filePath, specifier))
+      .filter((value) => value && value.startsWith(WEB_SRC_DIR));
     dependencyGraph.set(filePath, Array.from(new Set(resolvedImports)).sort((left, right) => left.localeCompare(right)));
   }
 
@@ -338,7 +325,7 @@ export const run = (args = process.argv.slice(2), options = {}) => {
     process.exit(1);
   }
 
-  const routeReachability = buildRouteReachability(routePages, dependencyGraph, { appDir, webSrcDir });
+  const routeReachability = buildRouteReachability(routePages, dependencyGraph);
   const reachableFiles = new Set();
   const routesByFile = new Map();
 
@@ -364,7 +351,7 @@ export const run = (args = process.argv.slice(2), options = {}) => {
       if (analysis.score === 0) return null;
 
       return {
-        filePath: toRelative(filePath, rootDir),
+        filePath: toRelative(filePath),
         isSharedFoundation: isSharedFoundationFile(filePath),
         hasLocalCopy: analysis.hasLocalCopy,
         hasFallbackPl: analysis.hasFallbackPl,
@@ -372,7 +359,7 @@ export const run = (args = process.argv.slice(2), options = {}) => {
         score: analysis.score,
         hardcodedSamples: analysis.hardcodedSamples,
         routeReachableBy: (routesByFile.get(filePath) ?? [])
-          .map((routePath) => toRelative(routePath, rootDir))
+          .map((routePath) => toRelative(routePath))
           .sort((left, right) => left.localeCompare(right)),
       };
     })
@@ -394,7 +381,7 @@ export const run = (args = process.argv.slice(2), options = {}) => {
       const sharedScore = sharedIssues.reduce((total, item) => total + item.score, 0);
 
       return {
-        routePage: toRelative(routePage, rootDir),
+        routePage: toRelative(routePage),
         reachableFilesCount: files.length,
         issueFilesCount: issues.length,
         moduleIssueFilesCount: moduleIssues.length,
@@ -420,7 +407,7 @@ export const run = (args = process.argv.slice(2), options = {}) => {
   const output = {
     version: "1.0.0",
     generatedAtUtc: new Date().toISOString(),
-    rootDir: toRelative(rootDir, rootDir) || ".",
+    rootDir: toRelative(ROOT_DIR) || ".",
     scope: {
       scannedSourceFiles: sourceFiles.length,
       routePages: routePages.length,
@@ -441,19 +428,16 @@ export const run = (args = process.argv.slice(2), options = {}) => {
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, `${JSON.stringify(output, null, 2)}\n`, "utf8");
 
-  console.log(`Route-reachable i18n audit written to ${toRelative(outFile, rootDir)}.`);
+  console.log(`Route-reachable i18n audit written to ${toRelative(outFile)}.`);
   console.log(
     `Summary: findings=${output.summary.filesWithFindings}, localCopy=${output.summary.filesWithLocalCopy}, fallbackPl=${output.summary.filesWithFallbackPl}, hardcoded=${output.summary.filesWithHardcodedUiCandidates}.`
   );
-  return output;
 };
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try {
-    run();
-  } catch (error) {
-    console.error("[i18n-audit] failed:");
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exit(1);
-  }
+try {
+  run();
+} catch (error) {
+  console.error("[i18n-audit] failed:");
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
 }

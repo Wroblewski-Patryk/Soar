@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url);
+const root = process.cwd();
+const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
+const docsRoot = path.join(root, docsRootName);
+const indicesDir = path.join(docsRoot, "architecture", "indices");
 
-export function parseCsv(text) {
+function parseCsv(text) {
   const rows = [];
   let row = [];
   let cell = "";
@@ -46,14 +48,10 @@ export function parseCsv(text) {
   return rows;
 }
 
-export function readCsv(name, deps = {}) {
-  const { root = process.cwd(), existsSyncImpl = fs.existsSync, readFileSyncImpl = fs.readFileSync } = deps;
-  const docsRootName = existsSyncImpl(path.join(root, "docs")) ? "docs" : "docs";
-  const docsRoot = path.join(root, docsRootName);
-  const indicesDir = path.join(docsRoot, "architecture", "indices");
+function readCsv(name) {
   const filePath = path.join(indicesDir, name);
-  if (!existsSyncImpl(filePath)) return [];
-  const rows = parseCsv(readFileSyncImpl(filePath, "utf8"));
+  if (!fs.existsSync(filePath)) return [];
+  const rows = parseCsv(fs.readFileSync(filePath, "utf8"));
   const headers = rows[0] ?? [];
   return rows.slice(1).map((row) => {
     const record = {};
@@ -64,45 +62,44 @@ export function readCsv(name, deps = {}) {
   });
 }
 
-export function argValue(name, argv = process.argv.slice(2)) {
-  const index = argv.indexOf(name);
-  return index >= 0 ? argv[index + 1] : "";
+function argValue(name) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] : "";
 }
 
-export function splitRefs(value) {
+function splitRefs(value) {
   return String(value || "")
     .split(/[;|]/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
-export function normalize(value) {
+function normalize(value) {
   return String(value || "").toLowerCase();
 }
 
-export function matches(row, query) {
+function matches(row, query) {
   const haystack = Object.values(row).join(" ").toLowerCase();
   return haystack.includes(query);
 }
 
-export function printList(label, value, consoleImpl = console) {
+function printList(label, value) {
   const refs = splitRefs(value);
-  consoleImpl.log(`- ${label}: ${refs.length > 0 ? refs.join(", ") : "none"}`);
+  console.log(`- ${label}: ${refs.length > 0 ? refs.join(", ") : "none"}`);
 }
 
-export function main(deps = {}) {
-  const { argv = process.argv.slice(2), consoleImpl = console, readCsvImpl = readCsv, root = process.cwd() } = deps;
-  const query = normalize(argValue("--query", argv) || argValue("--id", argv) || argv.join(" "));
+function main() {
+  const query = normalize(argValue("--query") || argValue("--id") || process.argv.slice(2).join(" "));
   if (!query || query === "--help" || query === "-h") {
-    consoleImpl.log("Usage: node scripts/triageJourneyEvidence.mjs --query <route|api|action|chain|file|error-fragment>");
+    console.log("Usage: node scripts/triageJourneyEvidence.mjs --query <route|api|action|chain|file|error-fragment>");
     process.exitCode = query ? 0 : 1;
-    return { status: query ? 0 : 1, help: true };
+    return;
   }
 
-  const actions = readCsvImpl("user-action-index.csv", { root });
-  const webJourneys = readCsvImpl("web-journey-index.csv", { root });
-  const chains = readCsvImpl("function-chain-evidence-index.csv", { root });
-  const apis = readCsvImpl("api-surface-evidence-index.csv", { root });
+  const actions = readCsv("user-action-index.csv");
+  const webJourneys = readCsv("web-journey-index.csv");
+  const chains = readCsv("function-chain-evidence-index.csv");
+  const apis = readCsv("api-surface-evidence-index.csv");
 
   const actionMatches = actions.filter((row) => matches(row, query));
   const webMatches = webJourneys.filter((row) => matches(row, query));
@@ -110,32 +107,32 @@ export function main(deps = {}) {
   const apiMatches = apis.filter((row) => matches(row, query));
   const firstAction = actionMatches[0];
 
-  consoleImpl.log(`# Journey Evidence Triage`);
-  consoleImpl.log("");
-  consoleImpl.log(`Query: ${query}`);
-  consoleImpl.log(`Matches: ${actionMatches.length} actions, ${webMatches.length} web journeys, ${chainMatches.length} chains, ${apiMatches.length} APIs`);
-  consoleImpl.log("");
+  console.log(`# Journey Evidence Triage`);
+  console.log("");
+  console.log(`Query: ${query}`);
+  console.log(`Matches: ${actionMatches.length} actions, ${webMatches.length} web journeys, ${chainMatches.length} chains, ${apiMatches.length} APIs`);
+  console.log("");
 
   if (firstAction) {
-    consoleImpl.log("## Primary Action");
-    consoleImpl.log("");
-    consoleImpl.log(`- ID: ${firstAction.id}`);
-    consoleImpl.log(`- Source node: ${firstAction.source_node_id}`);
-    consoleImpl.log(`- Route / entrypoint: ${firstAction.route_or_entrypoint}`);
-    consoleImpl.log(`- Kind: ${firstAction.action_kind}`);
-    consoleImpl.log(`- Safety boundary: ${firstAction.safety_boundary}`);
-    consoleImpl.log(`- Proof status: ${firstAction.proof_status}`);
-    consoleImpl.log(`- Gap severity: ${firstAction.gap_severity}`);
-    consoleImpl.log(`- Gaps: ${firstAction.gaps || "none"}`);
-    printList("API routes", firstAction.api_routes, consoleImpl);
-    printList("Function chains", firstAction.function_chains, consoleImpl);
-    printList("Backend functions", firstAction.backend_functions, consoleImpl);
-    printList("Data models", firstAction.data_models, consoleImpl);
-    printList("Tests", firstAction.tests, consoleImpl);
-    printList("Docs", firstAction.docs, consoleImpl);
-    consoleImpl.log(`- Evidence: ${firstAction.evidence || "none"}`);
-    consoleImpl.log(`- Next validation: ${firstAction.next_validation}`);
-    consoleImpl.log("");
+    console.log("## Primary Action");
+    console.log("");
+    console.log(`- ID: ${firstAction.id}`);
+    console.log(`- Source node: ${firstAction.source_node_id}`);
+    console.log(`- Route / entrypoint: ${firstAction.route_or_entrypoint}`);
+    console.log(`- Kind: ${firstAction.action_kind}`);
+    console.log(`- Safety boundary: ${firstAction.safety_boundary}`);
+    console.log(`- Proof status: ${firstAction.proof_status}`);
+    console.log(`- Gap severity: ${firstAction.gap_severity}`);
+    console.log(`- Gaps: ${firstAction.gaps || "none"}`);
+    printList("API routes", firstAction.api_routes);
+    printList("Function chains", firstAction.function_chains);
+    printList("Backend functions", firstAction.backend_functions);
+    printList("Data models", firstAction.data_models);
+    printList("Tests", firstAction.tests);
+    printList("Docs", firstAction.docs);
+    console.log(`- Evidence: ${firstAction.evidence || "none"}`);
+    console.log(`- Next validation: ${firstAction.next_validation}`);
+    console.log("");
   }
 
   const relatedApiIds = new Set(actionMatches.flatMap((row) => splitRefs(row.api_routes)));
@@ -144,30 +141,27 @@ export function main(deps = {}) {
   const relatedChains = chains.filter((row) => relatedChainIds.has(row.id));
 
   if (relatedChains.length > 0 || chainMatches.length > 0) {
-    consoleImpl.log("## Related Chains");
-    consoleImpl.log("");
+    console.log("## Related Chains");
+    console.log("");
     for (const chain of [...relatedChains, ...chainMatches].slice(0, 10)) {
-      consoleImpl.log(`- ${chain.id}: ${chain.status}, severity=${chain.gap_severity}, gaps=${chain.gaps || "none"}`);
+      console.log(`- ${chain.id}: ${chain.status}, severity=${chain.gap_severity}, gaps=${chain.gaps || "none"}`);
     }
-    consoleImpl.log("");
+    console.log("");
   }
 
   if (relatedApis.length > 0 || apiMatches.length > 0) {
-    consoleImpl.log("## Related APIs");
-    consoleImpl.log("");
+    console.log("## Related APIs");
+    console.log("");
     for (const api of [...relatedApis, ...apiMatches].slice(0, 10)) {
-      consoleImpl.log(`- ${api.id}: ${api.route}, status=${api.verification_status || api.status}, severity=${api.gap_severity}, gaps=${api.gaps || "none"}`);
+      console.log(`- ${api.id}: ${api.route}, status=${api.verification_status || api.status}, severity=${api.gap_severity}, gaps=${api.gaps || "none"}`);
     }
-    consoleImpl.log("");
+    console.log("");
   }
 
   if (!firstAction && actionMatches.length === 0 && webMatches.length === 0 && chainMatches.length === 0 && apiMatches.length === 0) {
-    consoleImpl.log("No matching indexed journey evidence found. Regenerate indexes, then check whether the route/API/action is missing from graph registry records.");
+    console.log("No matching indexed journey evidence found. Regenerate indexes, then check whether the route/API/action is missing from graph registry records.");
     process.exitCode = 2;
-    return { status: 2, query, actionMatches, webMatches, chainMatches, apiMatches };
   }
-
-  return { status: 0, query, actionMatches, webMatches, chainMatches, apiMatches, relatedChains, relatedApis };
 }
 
-if (isDirectRun()) main();
+main();

@@ -35,7 +35,6 @@ tags: [soar-map, service, backend, verified_local]
 ## Relations
 
 - routes_to <- [[SOAR-API-STRATEGY-INDICATORS]] (verified_local)
-- reads <- [[SOAR-API-STRATEGY-INDICATORS]] (verified_local)
 
 ## Evidence Rule
 

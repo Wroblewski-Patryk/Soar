@@ -12,15 +12,6 @@
 - Iteration: 2026-05-09-dashboard-runtime-current-render
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Dashboard runtime widget render surface.
-- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-COMP-HOME-LIVE-WIDGETS; SOAR-COMP-RUNTIME-DATA-SECTION; SOAR-TEST-DASHBOARD-RUNTIME.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
-- Affected files: apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx; apps/web/src/features/dashboard-home/components/home-live-widgets.
-- Tests/proof: widget aggregate render proof recorded in this task's verification/result sections.
-- Docs updated: docs/modules/web-dashboard-home.md; project state/task board entries listed in this task.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

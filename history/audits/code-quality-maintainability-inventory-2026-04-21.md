@@ -53,19 +53,6 @@ Current production modules above the staged decomposition threshold
 - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx` (`1545`)
 - `apps/web/src/features/backtest/components/BacktestRunDetails.tsx` (`1197`)
 
-2026-06-06 Backend Bot Runtime closure:
-
-- `apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts` now
-  has `663` lines after aggregate projector, runtime helper, and fallback
-  payload extraction.
-- `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts` now has
-  `965` lines after open-order/takeover helper extraction.
-
-These read-model files no longer require staged-decomposition monolith
-exceptions after [LUC-2367](/LUC/issues/LUC-2367). Keep future Bot Runtime
-aggregate changes in the helper modules when possible so the read service files
-stay below the production threshold.
-
 Historical opening hotspots now below threshold after `CQLT` decomposition:
 
 - `apps/api/src/modules/orders/orders.service.ts` (`690`)

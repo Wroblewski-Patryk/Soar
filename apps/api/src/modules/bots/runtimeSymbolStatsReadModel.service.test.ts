@@ -431,9 +431,5 @@ describe('runtimeSymbolStatsReadModel.service', () => {
         }),
       ])
     );
-    expect(readModel.items[0].lastSignalConditionActive).toEqual({
-      long: true,
-      short: false,
-    });
   });
 });

@@ -3,11 +3,11 @@
 import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 
 const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
 
-export const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     skipInfra: false,
     skipClient: false,
@@ -26,29 +26,27 @@ export const parseArgs = (args = process.argv.slice(2)) => {
   return options;
 };
 
-export const nowStamp = (now = new Date()) => now.toISOString().replace(/[:.]/g, '-');
+const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
-export const runStep = (command, args, label, options = {}) => {
-  const clock = options.clock ?? (() => new Date());
-  const nowMs = options.nowMs ?? (() => Date.now());
-  const startedAt = clock().toISOString();
-  const startedMs = nowMs();
-  const result = (options.spawnSync ?? spawnSync)(command, args, {
+const runStep = (command, args, label) => {
+  const startedAt = new Date().toISOString();
+  const startedMs = Date.now();
+  const result = spawnSync(command, args, {
     stdio: 'inherit',
-    shell: (options.platform ?? process.platform) === 'win32',
+    shell: process.platform === 'win32',
   });
-  const endedAt = clock().toISOString();
+  const endedAt = new Date().toISOString();
   return {
     label,
     command: `${command} ${args.join(' ')}`,
     startedAt,
     endedAt,
-    durationMs: nowMs() - startedMs,
+    durationMs: Date.now() - startedMs,
     exitCode: typeof result.status === 'number' ? result.status : 1,
   };
 };
 
-export const renderMarkdown = (report, jsonPath) => {
+const renderMarkdown = (report, jsonPath) => {
   const rows = report.steps
     .map(
       (step) =>
@@ -76,19 +74,11 @@ ${rows}
 `;
 };
 
-export const main = async (mainOptions = {}) => {
-  const options = parseArgs(mainOptions.argv ?? process.argv.slice(2));
-  const logger = mainOptions.console ?? console;
-  const processImpl = mainOptions.process ?? process;
-  const runStepImpl = mainOptions.runStep ?? runStep;
-  const mkdirImpl = mainOptions.mkdir ?? mkdir;
-  const writeFileImpl = mainOptions.writeFile ?? writeFile;
-  const operationsRoot = mainOptions.operationsDir ?? operationsDir;
-  const now = mainOptions.now ?? (() => new Date());
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
-    logger.log('Usage: node scripts/runCutoverDryRun.mjs [--skip-infra] [--skip-client]');
-    processImpl.exit?.(0);
-    return { help: true };
+    console.log('Usage: node scripts/runCutoverDryRun.mjs [--skip-infra] [--skip-client]');
+    process.exit(0);
   }
 
   const steps = [];
@@ -97,7 +87,7 @@ export const main = async (mainOptions = {}) => {
 
   try {
     if (!options.skipInfra) {
-      const infraUp = runStepImpl('pnpm', ['run', 'go-live:infra:up'], 'infra-up');
+      const infraUp = runStep('pnpm', ['run', 'go-live:infra:up'], 'infra-up');
       steps.push(infraUp);
       if (infraUp.exitCode !== 0) {
         hasFailure = true;
@@ -107,7 +97,7 @@ export const main = async (mainOptions = {}) => {
     }
 
     if (!hasFailure) {
-      const generate = runStepImpl('pnpm', ['--filter', 'api', 'exec', 'prisma', 'generate'], 'api-prisma-generate');
+      const generate = runStep('pnpm', ['--filter', 'api', 'exec', 'prisma', 'generate'], 'api-prisma-generate');
       steps.push(generate);
       if (generate.exitCode !== 0) {
         hasFailure = true;
@@ -115,7 +105,7 @@ export const main = async (mainOptions = {}) => {
     }
 
     if (!hasFailure) {
-      const migrate = runStepImpl('pnpm', ['--filter', 'api', 'exec', 'prisma', 'migrate', 'deploy'], 'api-migrate-deploy');
+      const migrate = runStep('pnpm', ['--filter', 'api', 'exec', 'prisma', 'migrate', 'deploy'], 'api-migrate-deploy');
       steps.push(migrate);
       if (migrate.exitCode !== 0) {
         hasFailure = true;
@@ -123,7 +113,7 @@ export const main = async (mainOptions = {}) => {
     }
 
     if (!hasFailure) {
-      const apiSuite = runStepImpl(
+      const apiSuite = runStep(
         'pnpm',
         [
           '--filter',
@@ -144,7 +134,7 @@ export const main = async (mainOptions = {}) => {
     }
 
     if (!hasFailure && !options.skipClient) {
-      const clientSuite = runStepImpl(
+      const clientSuite = runStep(
         'pnpm',
         [
           '--filter',
@@ -164,7 +154,7 @@ export const main = async (mainOptions = {}) => {
     }
   } finally {
     if (infraStarted && !options.skipInfra) {
-      const infraDown = runStepImpl('pnpm', ['run', 'go-live:infra:down'], 'infra-down');
+      const infraDown = runStep('pnpm', ['run', 'go-live:infra:down'], 'infra-down');
       steps.push(infraDown);
       if (infraDown.exitCode !== 0) {
         hasFailure = true;
@@ -172,10 +162,10 @@ export const main = async (mainOptions = {}) => {
     }
   }
 
-  const generatedAt = now().toISOString();
-  const stamp = nowStamp(now());
-  const jsonFile = path.join(operationsRoot, `_artifacts-cutover-dry-run-${stamp}.json`);
-  const mdFile = path.join(operationsRoot, `v1-local-cutover-dry-run-${stamp}.md`);
+  const generatedAt = new Date().toISOString();
+  const stamp = nowStamp();
+  const jsonFile = path.join(operationsDir, `_artifacts-cutover-dry-run-${stamp}.json`);
+  const mdFile = path.join(operationsDir, `v1-local-cutover-dry-run-${stamp}.md`);
   const report = {
     generatedAt,
     status: hasFailure ? 'FAILED' : 'PASS',
@@ -183,19 +173,16 @@ export const main = async (mainOptions = {}) => {
     steps,
   };
 
-  await mkdirImpl(operationsRoot, { recursive: true });
-  await writeFileImpl(jsonFile, JSON.stringify(report, null, 2));
-  await writeFileImpl(mdFile, renderMarkdown(report, path.relative(process.cwd(), jsonFile)));
+  await mkdir(operationsDir, { recursive: true });
+  await writeFile(jsonFile, JSON.stringify(report, null, 2));
+  await writeFile(mdFile, renderMarkdown(report, path.relative(process.cwd(), jsonFile)));
 
-  logger.log(`Cutover dry-run JSON: ${path.relative(process.cwd(), jsonFile)}`);
-  logger.log(`Cutover dry-run report: ${path.relative(process.cwd(), mdFile)}`);
-  processImpl.exit?.(hasFailure ? 1 : 0);
-  return report;
+  console.log(`Cutover dry-run JSON: ${path.relative(process.cwd(), jsonFile)}`);
+  console.log(`Cutover dry-run report: ${path.relative(process.cwd(), mdFile)}`);
+  process.exit(hasFailure ? 1 : 0);
 };
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((error) => {
-    console.error('[ops:cutover:dry-run] failed:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  console.error('[ops:cutover:dry-run] failed:', error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});

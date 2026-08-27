@@ -18,22 +18,6 @@
 - Mission ID: API-ENDPOINT-DOCS-GAP-CLOSURE-2026-05-19
 - Mission Status: VERIFIED
 
-## Architecture Links
-
-- Primary feature/module: API support route documentation parity.
-- Architecture nodes:
-  - `docs/architecture/nodes/SOAR-FEATURE-API-SUPPORT-ROUTES.md`
-  - `docs/architecture/nodes/SOAR-WORKFLOW-API-SUPPORT-ROUTES-CHAIN.md`
-  - `docs/architecture/nodes/SOAR-DOC-API-ROOT.md`
-  - `docs/architecture/nodes/SOAR-DOC-API-BOTS.md`
-  - `docs/architecture/nodes/SOAR-DOC-API-ORDERS.md`
-  - `docs/architecture/nodes/SOAR-DOC-API-POSITIONS.md`
-  - `docs/architecture/nodes/SOAR-DOC-API-WALLETS.md`
-- Function chains: `docs/architecture/chains/CHAIN-API-SUPPORT-ROUTES.md`.
-- Affected files: `docs/modules/api-root.md`, `docs/modules/api-bots.md`, `docs/modules/api-orders.md`, `docs/modules/api-positions.md`, `docs/modules/api-wallets.md`, `scripts/auditApiEndpointDocsParity.mjs`.
-- Tests/proof: `corepack pnpm run docs:parity:endpoints:api -- --date 2026-05-19` passed with `109` endpoints, `109` documented, `0` gaps.
-- Docs updated: endpoint route mention parity docs only; DTO/response semantic parity remained out of scope.
-
 ## Process Self-Audit
 - [x] The task selected a repairable audit finding from the active repair queue.
 - [x] No product behavior or runtime API behavior was changed.

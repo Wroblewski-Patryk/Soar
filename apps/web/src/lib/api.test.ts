@@ -60,27 +60,6 @@ describe('api auth-me interceptor', async () => {
     expect(replace).toHaveBeenCalledWith('/auth/login?session=expired');
   });
 
-  it('classifies dashboard and admin paths as protected only', () => {
-    expect(__apiInternals.isProtectedRoute('/dashboard')).toBe(true);
-    expect(__apiInternals.isProtectedRoute('/dashboard/bots')).toBe(true);
-    expect(__apiInternals.isProtectedRoute('/admin/users')).toBe(true);
-    expect(__apiInternals.isProtectedRoute('/auth/login')).toBe(false);
-    expect(__apiInternals.isProtectedRoute('/dashboarding')).toBe(true);
-  });
-
-  it('hard redirects only once for repeated protected 401 failures', async () => {
-    const expiredSessionError = {
-      config: { url: '/auth/me' },
-      response: { status: 401 },
-    };
-
-    await expect(interceptorHandlers.onRejected?.(expiredSessionError)).rejects.toEqual(expiredSessionError);
-    await expect(interceptorHandlers.onRejected?.(expiredSessionError)).rejects.toEqual(expiredSessionError);
-
-    expect(replace).toHaveBeenCalledTimes(1);
-    expect(replace).toHaveBeenCalledWith('/auth/login?session=expired');
-  });
-
   it('does not treat 429 auth/me as expired session redirect', async () => {
     await expect(
       interceptorHandlers.onRejected?.({

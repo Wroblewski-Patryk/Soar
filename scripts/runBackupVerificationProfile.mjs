@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { pathToFileURL } from 'node:url';
 
-export const PROFILE_CONFIG = {
+const PROFILE_CONFIG = {
   local: {
     envContainers: ['DB_CHECK_CONTAINER'],
     envUsers: ['DB_CHECK_USER'],
@@ -21,9 +20,9 @@ export const PROFILE_CONFIG = {
   },
 };
 
-export const firstNonEmptyEnv = (keys, env = process.env) => {
+const firstNonEmptyEnv = (keys) => {
   for (const key of keys) {
-    const value = env[key];
+    const value = process.env[key];
     if (typeof value === 'string' && value.trim().length > 0) {
       return value;
     }
@@ -31,7 +30,8 @@ export const firstNonEmptyEnv = (keys, env = process.env) => {
   return '';
 };
 
-export const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     profile: 'local',
     container: '',
@@ -54,8 +54,8 @@ export const parseArgs = (args = process.argv.slice(2)) => {
   return options;
 };
 
-export const printUsage = (logger = console) => {
-  logger.log(
+const printUsage = () => {
+  console.log(
     [
       'Usage: node scripts/runBackupVerificationProfile.mjs [--profile <local|stage|prod>] [--container <name>] [--db-user <user>] [--db-name <name>]',
       '',
@@ -69,22 +69,22 @@ export const printUsage = (logger = console) => {
   );
 };
 
-export const run = (command, args, options = {}) =>
-  (options.spawnSync ?? spawnSync)(command, args, {
+const run = (command, args) =>
+  spawnSync(command, args, {
     stdio: 'inherit',
-    shell: (options.platform ?? process.platform) === 'win32',
-    env: options.env ?? process.env,
+    shell: process.platform === 'win32',
+    env: process.env,
   });
 
-export const resolveOptions = (input, env = process.env) => {
+const resolveOptions = (input) => {
   const profileConfig = PROFILE_CONFIG[input.profile];
   if (!profileConfig) {
     throw new Error(`Unsupported profile: ${input.profile}. Expected one of: local, stage, prod.`);
   }
 
-  const container = input.container || firstNonEmptyEnv(profileConfig.envContainers, env) || '';
-  const dbUser = input.dbUser || firstNonEmptyEnv(profileConfig.envUsers, env) || 'postgres';
-  const dbName = input.dbName || firstNonEmptyEnv(profileConfig.envNames, env) || 'cryptosparrow';
+  const container = input.container || firstNonEmptyEnv(profileConfig.envContainers) || '';
+  const dbUser = input.dbUser || firstNonEmptyEnv(profileConfig.envUsers) || 'postgres';
+  const dbName = input.dbName || firstNonEmptyEnv(profileConfig.envNames) || 'cryptosparrow';
 
   if (input.profile !== 'local' && !container) {
     throw new Error(
@@ -100,47 +100,36 @@ export const resolveOptions = (input, env = process.env) => {
   };
 };
 
-export const main = (options = {}) => {
-  const logger = options.console ?? console;
-  const parsedOptions = parseArgs(options.argv ?? process.argv.slice(2));
+const main = () => {
+  const options = parseArgs();
   if (options.help) {
-    printUsage(logger);
-    options.process?.exit?.(0);
-    return;
+    printUsage();
+    process.exit(0);
   }
 
-  if (parsedOptions.help) {
-    printUsage(logger);
-    options.process?.exit?.(0);
-    return;
-  }
-
-  const resolved = resolveOptions(parsedOptions, options.env ?? process.env);
+  const resolved = resolveOptions(options);
 
   const scriptArgs = ['scripts/verifyLocalBackupRestore.mjs'];
   if (resolved.container) scriptArgs.push('--container', resolved.container);
   if (resolved.dbUser) scriptArgs.push('--db-user', resolved.dbUser);
   if (resolved.dbName) scriptArgs.push('--db-name', resolved.dbName);
 
-  logger.log(
+  console.log(
     `[ops:db:backup-verify] profile=${resolved.profile} container=${resolved.container || 'auto-detect'} db=${resolved.dbName} user=${resolved.dbUser}`
   );
-  const runCommand = options.run ?? run;
-  const result = runCommand('node', scriptArgs, { env: options.env });
+  const result = run('node', scriptArgs);
   if (result.status !== 0) {
     throw new Error(`[ops:db:backup-verify] profile=${resolved.profile} failed.`);
   }
-  logger.log(`[ops:db:backup-verify] profile=${resolved.profile} PASS`);
+  console.log(`[ops:db:backup-verify] profile=${resolved.profile} PASS`);
 };
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try {
-    main();
-  } catch (error) {
-    console.error(
-      '[ops:db:backup-verify] failed:',
-      error instanceof Error ? error.message : String(error)
-    );
-    process.exit(1);
-  }
+try {
+  main();
+} catch (error) {
+  console.error(
+    '[ops:db:backup-verify] failed:',
+    error instanceof Error ? error.message : String(error)
+  );
+  process.exit(1);
 }

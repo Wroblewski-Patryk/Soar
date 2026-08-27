@@ -37,7 +37,6 @@ tags: [soar-map, component, frontend, verified]
 - calls -> [[SOAR-API-AUTH-LOGIN]] (verified)
 - uses -> [[SOAR-HOOK-USE-LOGIN-FORM]] (verified_local)
 - uses -> [[SOAR-UI-PASSWORD-VISIBILITY-TOGGLE]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-AUTH]] (verified)
 - contains <- [[SOAR-PAGE-LOGIN]] (verified)
 
 ## Evidence Rule

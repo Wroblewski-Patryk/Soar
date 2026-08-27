@@ -12,15 +12,6 @@
 - Iteration: 2026-05-08
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness for exchange fail-closed batch.
-- Architecture nodes: SOAR-FEATURE-EXCHANGE-ADAPTER; SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME.
-- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md; docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER.md.
-- Affected files: history/plans/deploy-freshness-90cd07d6-2026-05-08.md; state and planning documents.
-- Tests/proof: Web build-info wait and public deploy smoke recorded in this task's Validation Evidence.
-- Docs updated: deploy freshness evidence and continuation state files.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -15,7 +15,6 @@ import { readRuntimeSignalLoopConfig } from '../config/runtimeExecution';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
 import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 import { workerHeartbeatClient, type WorkerHeartbeatName } from '../workers/workerHeartbeat';
-import { readReleaseIdentity } from '../lib/releaseIdentity';
 
 const router = Router();
 
@@ -31,7 +30,6 @@ router.get('/health', (_req, res) => {
   return res.status(200).json({
     status: 'ok',
     service: 'api',
-    release: readReleaseIdentity(),
     timestamp: new Date().toISOString(),
   });
 });
@@ -39,19 +37,16 @@ router.get('/health', (_req, res) => {
 router.get('/ready', async (_req, res) => {
   const readiness = evaluateCriticalSecretsReadiness();
   const dependencies = await evaluateRuntimeDependencyReadiness();
-  const release = readReleaseIdentity();
   if (!readiness.ready || !dependencies.ready) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'api',
-      release,
     });
   }
 
   return res.status(200).json({
     status: 'ready',
     service: 'api',
-    release,
   });
 });
 
@@ -72,12 +67,10 @@ router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
   const readiness = evaluateCriticalSecretsReadiness();
   const dependencies = await evaluateRuntimeDependencyReadiness();
   const runtimeSafety = buildRuntimeSafetyDiagnostics();
-  const release = readReleaseIdentity();
   if (!readiness.ready || !dependencies.ready) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'api',
-      release,
       missing: readiness.missing,
       issues: [...readiness.issues, ...dependencies.issues],
       runtimeSafety,
@@ -87,7 +80,6 @@ router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
   return res.status(200).json({
     status: 'ready',
     service: 'api',
-    release,
     missing: [],
     issues: [],
     runtimeSafety,
@@ -228,29 +220,6 @@ router.get('/workers/ready', ...requireOpsAccess, async (_req, res) => {
       heartbeats,
       staleWorkers: staleHeartbeats.map((heartbeat) => heartbeat.worker),
       details: 'Required split-worker heartbeats are missing or stale',
-    });
-  }
-
-  const apiReleaseSha = readReleaseIdentity().gitSha;
-  const releaseMismatches = heartbeats.filter(
-    (heartbeat) => apiReleaseSha === null || heartbeat.releaseSha !== apiReleaseSha
-  );
-  if (releaseMismatches.length > 0) {
-    return res.status(503).json({
-      status: 'not_ready',
-      service: 'workers',
-      mode: topology.mode,
-      environment: topology.environment,
-      ownership: topology.ownership,
-      topologyStatus: topology.topologyStatus,
-      degradedReasons: topology.degradedReasons,
-      requiredQueues: topology.requiredQueues,
-      requiredWorkerFamilies: topology.requiredWorkerFamilies,
-      missing: [],
-      expectedReleaseSha: apiReleaseSha,
-      heartbeats,
-      releaseMismatchWorkers: releaseMismatches.map((heartbeat) => heartbeat.worker),
-      details: 'Required split-worker release identities do not match the API image',
     });
   }
 

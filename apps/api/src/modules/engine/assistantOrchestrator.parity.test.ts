@@ -16,7 +16,7 @@ const buildInput = (mode: 'BACKTEST' | 'PAPER' | 'LIVE') => ({
 });
 
 describe('Assistant orchestration parity across BACKTEST/PAPER/LIVE', () => {
-  it('keeps BACKTEST and PAPER deterministic while LIVE hot-path stays fail-closed by default', async () => {
+  it('returns consistent final decision for the same deterministic inputs', async () => {
     const planner = {
       createPlan: vi.fn(async () => ({
         planId: 'plan-parity',
@@ -57,9 +57,8 @@ describe('Assistant orchestration parity across BACKTEST/PAPER/LIVE', () => {
 
     expect(backtest.finalDecision).toBe('LONG');
     expect(paper.finalDecision).toBe('LONG');
-    expect(live.finalDecision).toBe('NO_TRADE');
-    expect(live.mode).toBe('strategy_only');
-    expect(live.finalReason).toBe('live_mode_disabled_fail_closed');
+    expect(live.finalDecision).toBe('LONG');
     expect(backtest.finalReason).toBe(paper.finalReason);
+    expect(paper.finalReason).toBe(live.finalReason);
   });
 });

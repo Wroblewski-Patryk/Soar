@@ -1,21 +1,21 @@
 # V1 RC External Gates Status
 
-Generated at (UTC): 2026-07-04T21:46:16.925Z
-Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
+Generated at (UTC): 2026-05-25T00:00:00.000Z
+Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
 
-Source artifact: `history\operations\_artifacts-slo-window-2026-07-04T21-45-56-640Z.json`
+Source artifact: `history\operations\_artifacts-slo-window-2026-05-25T02-54-16-690Z.json`
 Observation window:
-- started: 2026-07-04T21:16:09.340Z
-- ended: 2026-07-04T21:45:56.638Z
+- started: 2026-05-25T02:24:44.897Z
+- ended: 2026-05-25T02:54:16.689Z
 
 ## Gate Status Snapshot
 - Gate 1 (Backup snapshot + restore validation): PASS
-- Gate 2 (Queue-lag baseline review): PASS
+- Gate 2 (Queue-lag baseline review): OPEN
 - Gate 3 (Incident contacts + escalation confirmation): PASS
 - Gate 4 (Formal RC sign-offs): PASS
 
 ## Backup/Restore Evidence
-- Latest local artifact: `history\operations\_artifacts-db-restore-check-2026-05-25T18-02-43-687Z.txt`
+- Latest local artifact: `history\operations\_artifacts-db-restore-check-2026-05-25T01-18-21-188Z.txt`
 - Latest local result: PASS
 - Runbook source: `docs\operations\v1-rc-external-gates-runbook.md`
 - Gate 1 runbook evidence complete: yes
@@ -33,8 +33,8 @@ Observation window:
 - source type: slo_observation
 - evidence environment: production
 - production evidence present: yes
-- /ready availability: 100.00%
-- /workers/ready availability: 100.00%
+- /ready availability: 66.67%
+- /workers/ready availability: 69.44%
 - API 5xx ratio: 0.00%
 - execution queue lag p95: 0
 - execution queue lag max: 0
@@ -45,9 +45,10 @@ Observation window:
 
 ## Suggested Checklist Updates
 - Runtime and Operations Gates:
-  - Production SLO metrics reviewed and within baseline -> PASS
+  - Production SLO metrics reviewed and within baseline -> OPEN
 - Exit Evidence Workpack:
-  - ops(slo): define SLO targets and collect production observation window evidence -> PASS
+  - ops(slo): define SLO targets and collect production observation window evidence -> OPEN
 
 ## Manual Follow-ups (Required)
-- None. `docs/operations/v1-release-candidate-checklist.md` was synced from this gate status.
+1. Complete Gate 2 queue-lag baseline review from fresh SLO artifacts and regenerate `v1-rc-external-gates-status.md`.
+2. Reflect current gate states in `docs/operations/v1-release-candidate-checklist.md` after updating evidence/sign-offs.

@@ -1,14 +1,5 @@
 # V1 Runtime Ticker And Backtest Venue UI - 2026-05-13
 
-## Architecture Links
-
-- Primary feature/module: Runtime ticker fallback and Backtest venue display.
-- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK.md`, `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL.md`, `docs/architecture/nodes/SOAR-COMP-BACKTEST-RUN-DETAILS.md`.
-- Function chains: `docs/architecture/chains/CHAIN-BACKTESTS.md`, `docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md`.
-- Affected files: `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`, `apps/api/src/modules/bots/runtimeMarketDataFallback.service.test.ts`, `apps/web/src/features/backtest/components/BacktestRunDetails.test.tsx`.
-- Tests/proof: focused API runtime fallback/PnL tests, Web Backtest details test, API/Web typechecks, and generic market-data scan.
-- Docs updated: `history/tasks/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`.
-
 ## Task Contract
 
 ### Context

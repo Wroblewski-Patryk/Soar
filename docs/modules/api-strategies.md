@@ -32,11 +32,6 @@ Out of scope:
 - Import/export contracts:
   - `StrategyExportPackage`
   - `STRATEGY_EXPORT_FORMAT_VERSION`
-- Indicator catalog endpoint:
-  - reads static strategy indicator registry metadata through
-    `indicators.service.ts` and `strategyIndicatorRegistry.ts`.
-  - has no database model by design; graph data/source semantics are recorded
-    through `SOAR-SERVICE-STRATEGY-INDICATORS`.
 - Safety invariant:
   - update/delete blocked when strategy is used by active bot (`STRATEGY_USED_BY_ACTIVE_BOT`).
   - delete blocked when strategy is referenced by owned backtest history
@@ -85,10 +80,6 @@ Out of scope:
 - 2026-05-14 snapshot-history proof:
   - `backtests.e2e.test.ts` verifies strategy deletion returns `409` while
     owned historical backtest runs reference the strategy.
-- 2026-06-04 indicator catalog source proof:
-  - `GET /dashboard/strategies/indicators` is intentionally static-registry
-    backed, not DB-backed; architecture graph relation
-    `REL-STRATEGIES-043` records the explicit source.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/strategies/strategies.e2e.test.ts src/modules/strategies/indicators/indicators.service.test.ts

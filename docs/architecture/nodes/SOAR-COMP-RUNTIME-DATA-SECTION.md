@@ -36,7 +36,6 @@ tags: [soar-map, component, frontend, partially_verified]
 
 - uses -> [[SOAR-COMP-RUNTIME-DATA-PRESENTERS]] (partially_verified)
 - uses -> [[SOAR-WEB-POSITIONS-SERVICE]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-DASHBOARD-HOME]] (partially_verified)
 - contains <- [[SOAR-COMP-HOME-LIVE-WIDGETS]] (partially_verified)
 
 ## Evidence Rule

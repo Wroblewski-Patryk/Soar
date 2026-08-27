@@ -8,7 +8,7 @@ module: api-bots
 feature: bot-runtime
 risk_level: critical
 completion_percent: 90
-last_verified_at: 2026-06-06
+last_verified_at: 2026-05-24
 verification_status: verified_local
 tags: [soar-map, service, backend, verified_local]
 ---
@@ -19,7 +19,7 @@ tags: [soar-map, service, backend, verified_local]
 | --- | --- |
 | Description | Runtime positions read model for selected bot session and aggregate surfaces. |
 | File path | apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts |
-| Related files | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts, apps/api/src/modules/bots/runtimePositionSerialization.service.ts, apps/api/src/modules/bots/runtimeSessionOpenOrdersReadModel.service.ts |
+| Related files | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts, apps/api/src/modules/bots/runtimePositionSerialization.service.ts |
 | Parent | [[SOAR-FEATURE-BOT-RUNTIME]] |
 | Children |  |
 | Depends on | [[SOAR-DB-POSITION]], [[SOAR-SERVICE-RUNTIME-AUTOMATION]], [[SOAR-SERVICE-LIVE-POSITION-RECONCILIATION]] |
@@ -30,7 +30,7 @@ tags: [soar-map, service, backend, verified_local]
 | Tests related | [[SOAR-TEST-BOT-RUNTIME-API]], [[SOAR-TEST-POSITIONS-RECONCILIATION]] |
 | Docs related | [[SOAR-DOC-API-BOTS]] |
 | Agent related |  |
-| Notes | Bridges runtime display to position truth; open-order read model dedupes exchange-synced and local runtime orders. |
+| Notes | Bridges runtime display to position truth. |
 
 ## Relations
 

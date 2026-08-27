@@ -22,24 +22,11 @@ vi.mock('sonner', () => ({
 }));
 
 function AuthProbe() {
-  const { loading, sessionExpired, user } = useAuth();
+  const { loading, user } = useAuth();
   return (
     <div>
       <span data-testid="loading">{String(loading)}</span>
-      <span data-testid="session-expired">{String(sessionExpired)}</span>
       <span data-testid="email">{user?.email ?? 'none'}</span>
-    </div>
-  );
-}
-
-function DefaultAuthProbe() {
-  const { loading, sessionExpired, user, refetchUser } = useAuth();
-  return (
-    <div>
-      <span data-testid="default-loading">{String(loading)}</span>
-      <span data-testid="default-session-expired">{String(sessionExpired)}</span>
-      <span data-testid="default-email">{user?.email ?? 'none'}</span>
-      <span data-testid="default-refetch">{String(typeof refetchUser)}</span>
     </div>
   );
 }
@@ -68,7 +55,6 @@ describe('AuthProvider', () => {
       expect(screen.getByTestId('loading')).toHaveTextContent('false');
     });
     expect(screen.getByTestId('email')).toHaveTextContent('john@example.com');
-    expect(screen.getByTestId('session-expired')).toHaveTextContent('false');
     expect(mockApiGet).toHaveBeenCalledTimes(1);
     expect(mockApiGet).toHaveBeenCalledWith('/auth/me');
 
@@ -125,27 +111,6 @@ describe('AuthProvider', () => {
     expect(window.location.search).toBe('');
   });
 
-  it('marks protected-route unauthorized bootstrap as an expired session', async () => {
-    window.history.pushState({}, '', '/dashboard');
-    mockApiGet.mockRejectedValueOnce({
-      response: { status: 401 },
-    });
-
-    render(
-      <AuthProvider>
-        <AuthProbe />
-      </AuthProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('loading')).toHaveTextContent('false');
-    });
-
-    expect(screen.getByTestId('email')).toHaveTextContent('none');
-    expect(screen.getByTestId('session-expired')).toHaveTextContent('true');
-    expect(toast.warning).not.toHaveBeenCalled();
-  });
-
   it('posts logout, clears auth state, and redirects to login', async () => {
     mockApiPost.mockResolvedValueOnce({ data: { message: 'Logged out' } });
     let redirectedHref = 'http://localhost:3000/';
@@ -195,14 +160,5 @@ describe('AuthProvider', () => {
       configurable: true,
       value: originalWindowLocation,
     });
-  });
-
-  it('returns the default auth contract outside the provider', () => {
-    render(<DefaultAuthProbe />);
-
-    expect(screen.getByTestId('default-loading')).toHaveTextContent('true');
-    expect(screen.getByTestId('default-session-expired')).toHaveTextContent('false');
-    expect(screen.getByTestId('default-email')).toHaveTextContent('none');
-    expect(screen.getByTestId('default-refetch')).toHaveTextContent('function');
   });
 });

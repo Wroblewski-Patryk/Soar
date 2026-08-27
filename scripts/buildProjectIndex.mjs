@@ -2,12 +2,10 @@
 
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 
 const ignoredDirectories = new Set([
-  '.tmp',
   '.git',
   '.next',
   '.turbo',
@@ -474,13 +472,7 @@ const collectTests = async () => {
 };
 
 const collectV1Matrix = async () => {
-  const matrixCandidates = [
-    path.join(repoRoot, 'docs', 'operations', 'v1-product-action-audit-matrix-2026-05-10.md'),
-    path.join(repoRoot, 'history', 'audits', 'v1-product-action-audit-matrix-2026-05-10.md'),
-  ];
-  const matrixPath =
-    (await Promise.all(matrixCandidates.map(async (candidate) => ((await fileExists(candidate)) ? candidate : ''))))
-      .find(Boolean) ?? matrixCandidates[0];
+  const matrixPath = path.join(repoRoot, 'docs', 'operations', 'v1-product-action-audit-matrix-2026-05-10.md');
   const text = await readTextIfExists(matrixPath);
   const rows = [];
   let insideModuleMatrix = false;
@@ -530,9 +522,7 @@ const collectV1Matrix = async () => {
 
 const collectUncheckedTasks = async () => {
   const sources = [
-    path.join(repoRoot, '.codex', 'context', 'TASK_BOARD.md'),
     path.join(repoRoot, 'docs', 'planning', 'mvp-next-commits.md'),
-    path.join(repoRoot, '.agents', 'state', 'next-steps.md'),
   ];
   const tasks = [];
 
@@ -693,9 +683,7 @@ const buildIndex = async (options) => {
       architectureSources,
       v1Matrix: v1Matrix.source,
       taskSources: [
-        '.codex/context/TASK_BOARD.md',
         'docs/planning/mvp-next-commits.md',
-        '.agents/state/next-steps.md',
       ],
     },
     packageScripts,
@@ -883,42 +871,7 @@ const main = async () => {
   console.log(`Tests indexed: ${index.tests.total}`);
 };
 
-export {
-  buildIndex,
-  buildV1WorkMap,
-  collectApiModuleSummaries,
-  collectArchitectureSources,
-  collectNextRoutes,
-  collectPackageScripts,
-  collectTests,
-  collectUncheckedTasks,
-  collectV1Matrix,
-  collectWebFeatureSummaries,
-  collectWorkerFiles,
-  containsAnyToken,
-  directoryExists,
-  fileExists,
-  listDirectories,
-  main,
-  nextRouteFromPage,
-  parseArgs,
-  printHelp,
-  readTextIfExists,
-  relativePath,
-  renderList,
-  renderMarkdown,
-  toPosixPath,
-  uniqueSorted,
-  walkFiles,
-};
-
-const isDirectRun = process.argv[1]
-  ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-  : false;
-
-if (isDirectRun) {
-  main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
-}
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

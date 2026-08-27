@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified_local]
 | --- | --- |
 | Description | Residual API infrastructure tests for health readiness metrics security headers utility crypto and worker health ownership heartbeat config. |
 | File path | apps/api/src/router/health-readiness.test.ts |
-| Related files | apps/api/src/lib/releaseIdentity.test.ts, apps/api/src/router/metrics.test.ts, apps/api/src/router/release-identity-health.test.ts, apps/api/src/router/security-headers.test.ts, apps/api/src/router/workers-health-readiness.test.ts, apps/api/src/router/workers-runtime-freshness.test.ts, apps/api/src/utils/apiError.test.ts, apps/api/src/utils/crypto.test.ts, apps/api/src/workers/marketStreamWorkerConfig.test.ts, apps/api/src/workers/workerHeartbeat.test.ts, apps/api/src/workers/workerOwnership.test.ts |
+| Related files | apps/api/src/router/metrics.test.ts, apps/api/src/router/security-headers.test.ts, apps/api/src/router/workers-health-readiness.test.ts, apps/api/src/router/workers-runtime-freshness.test.ts, apps/api/src/utils/apiError.test.ts, apps/api/src/utils/crypto.test.ts, apps/api/src/workers/marketStreamWorkerConfig.test.ts, apps/api/src/workers/workerHeartbeat.test.ts, apps/api/src/workers/workerOwnership.test.ts |
 | Parent | [[SOAR-FEATURE-API-PLATFORM-SAFETY]] |
 | Children |  |
 | Depends on | [[SOAR-ROUTER-API-ROOT]], [[SOAR-LIB-ERRORS]], [[SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS]] |

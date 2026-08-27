@@ -43,7 +43,6 @@ tags: [soar-map, feature, backend, verified]
 - verified_by -> [[SOAR-TEST-LIVE-ORDER-ADAPTER]] (verified_local)
 - governed_by -> [[SOAR-DOC-VENUE-CONTEXT]] (verified_local)
 - documented_by -> [[SOAR-DOC-EXCHANGE-OWNERSHIP]] (verified_local)
-- verified_by -> [[SOAR-TEST-EXCHANGE-CAPABILITY-CONTRACTS]] (verified_local)
 - has_ui -> [[SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW]] (verified_local)
 - documented_by -> [[SOAR-DOC-WEB-EXCHANGES]] (verified_local)
 - uses <- [[SOAR-SERVICE-ORDERS]] (verified_local)

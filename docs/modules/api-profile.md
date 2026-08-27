@@ -21,18 +21,6 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/profile/*` via `apps/api/src/router/dashboard.routes.ts`.
-- Dashboard overview reaches the authenticated basic profile surface through
-  `apps/api/src/router/dashboard.routes.ts#/profile/basic`, which delegates
-  profile read, profile update, and account-deletion routes to this module
-  after the shared dashboard auth gate succeeds.
-- Account access reaches the authenticated profile security surface through
-  `apps/api/src/router/dashboard.routes.ts#/profile/security`, which
-  delegates password-rotation and account-deletion routes to this module after
-  the shared dashboard auth gate succeeds.
-- Account access reaches the authenticated profile API-key surface through
-  `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys`, which delegates
-  the API-key lifecycle and connection-test routes to this module after the
-  shared dashboard auth gate succeeds.
 - Protected by global `requireAuth` on dashboard router.
 - Depends on:
   - `prisma` persistence.
@@ -107,28 +95,3 @@ pnpm --filter api test -- src/modules/profile/basic/basic.e2e.test.ts src/module
 ## 9. Open Issues and Follow-Ups
 - Replace remaining string-matched errors with typed error taxonomy.
 - Continue reducing duplicated validation logic between profile subdomains where feasible.
-
-## 10. Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `ProfileSecurityDomainError` | `docs/modules/api-profile.md` | Typed profile-security error taxonomy for password/account security fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
-| `apps/api/src/modules/profile/security/security.errors.ts` | `docs/modules/api-profile.md` | Profile-security error taxonomy file for password/account-deletion fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
-| `apps/api/src/router/dashboard.routes.ts#/profile/basic` | `docs/modules/api-profile.md` | Authenticated dashboard router mount that delegates the profile basic read, update, and account-deletion surface into this module without a dashboard-specific controller. | Direct doc relation plus profile basic e2e coverage when mount behavior changes. |
-| `apps/api/src/router/dashboard.routes.ts#/profile/security` | `docs/modules/api-profile.md` | Authenticated dashboard router mount that delegates profile password-rotation and account-deletion flows into this module without a dashboard-specific controller. | Direct doc relation plus profile security e2e coverage when mount behavior changes. |
-| `apps/api/src/modules/profile/apiKey/apiKey.controller.ts#testConnection` | `docs/modules/api-profile.md` | Profile API-key provided-credential connection-test controller surface. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the already-tested support row. | Profile API-key e2e and probe service tests when connection-test behavior changes. |
-| `apps/api/src/modules/profile/apiKey/apiKey.controller.ts#testStoredConnection` | `docs/modules/api-profile.md` | Profile API-key stored-credential connection-test controller surface. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the already-tested support row. | Profile API-key e2e and probe service tests when stored connection-test behavior changes. |
-| `apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts` | `docs/modules/api-profile.md` | Primary DB-backed profile API-key lifecycle proof packet. [LUC-6106](/LUC/issues/LUC-6106) added direct doc links for test helper rows that scanner classified under User configuration. | Rerun profile API-key e2e after local DB availability is restored. |
-| `apps/api/src/modules/profile/apiKey/apiKey.service.ts#writeApiKeyTestAudit` | `docs/modules/api-profile.md` | Audit-safe profile API-key connection-test log metadata writer. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the support row. | Profile API-key e2e/probe proof when audit metadata behavior changes. |
-| `apps/api/src/modules/profile/apiKey/apiKey.types.ts` | `docs/modules/api-profile.md` | Profile API-key request/response validation boundary. [LUC-6106](/LUC/issues/LUC-6106) added a direct doc link for the API-key type row. | Profile API-key e2e and DTO validation proof when API-key payload contracts change. |
-| `apps/api/src/router/dashboard.routes.ts#/profile/apiKeys` | `docs/modules/api-profile.md` | Authenticated dashboard router mount that delegates the profile API-key lifecycle and connection-test surface into this module without a dashboard-specific controller. | Direct doc relation plus profile API-key e2e coverage when mount behavior changes. |
-
-## 21. Architecture-Awareness Test-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2187](/LUC/issues/LUC-2187).
-
-| Source entity | Focused test | Classification |
-| --- | --- | --- |
-| `apps/api/src/utils/crypto.ts` | `apps/api/src/utils/crypto.test.ts` | Existing focused crypto utility coverage verifies AES-GCM versioned encryption/decryption, legacy CBC read compatibility, active-version key selection, and fail-closed legacy-only writes. `LUC-2187` added a direct scanner-readable test relation. |

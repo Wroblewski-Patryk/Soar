@@ -3,13 +3,13 @@
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 const docsRootName = existsSync(path.resolve(repoRoot, 'docs')) ? 'docs' : 'docs';
 const docsRoot = path.resolve(repoRoot, docsRootName);
 
-const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     json: false,
     output: '',
@@ -164,17 +164,11 @@ const parseCanonicalRoutes = (raw) => {
 
 const collectMissing = (source, targetSet) => source.filter((item) => !targetSet.has(item));
 
-const printHelp = () => {
-  console.log('Usage: node scripts/checkDocsParity.mjs [--json] [--output <file>]');
-};
-
-const main = async (args = process.argv.slice(2), { exitOnFailure = true } = {}) => {
-  const options = parseArgs(args);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
-    printHelp();
-    return {
-      status: 'HELP',
-    };
+    console.log('Usage: node scripts/checkDocsParity.mjs [--json] [--output <file>]');
+    process.exit(0);
   }
 
   const moduleIndexPath = path.resolve(docsRoot, 'modules', 'module-doc-status-index.md');
@@ -315,33 +309,11 @@ const main = async (args = process.argv.slice(2), { exitOnFailure = true } = {})
   }
 
   if (hasFailures) {
-    if (exitOnFailure) {
-      process.exit(1);
-    }
-  }
-
-  return result;
-};
-
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  main().catch((error) => {
-    console.error(`docs parity check failed: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
-  });
-}
-
-export {
-  collectMissing,
-  collectPageFiles,
-  directoryExists,
-  fileExists,
-  listDirectoryNames,
-  main,
-  normalizeRouteFromPage,
-  parseArgs,
-  parseCanonicalRoutes,
-  parseModuleRows,
-  printHelp,
-  resolveRepoPath,
-  toPosixPath,
+  }
 };
+
+main().catch((error) => {
+  console.error(`docs parity check failed: ${error instanceof Error ? error.message : String(error)}`);
+  process.exit(1);
+});

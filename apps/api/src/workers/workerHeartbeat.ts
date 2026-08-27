@@ -1,5 +1,4 @@
 import { createClient } from 'redis';
-import { readReleaseIdentity } from '../lib/releaseIdentity';
 
 type RedisClient = ReturnType<typeof createClient>;
 
@@ -10,7 +9,6 @@ export type WorkerHeartbeatStatus = {
   lastHeartbeatAt: string | null;
   ageMs: number | null;
   status: 'fresh' | 'missing' | 'stale';
-  releaseSha: string | null;
 };
 
 type WorkerHeartbeatClientOptions = {
@@ -40,10 +38,7 @@ export class WorkerHeartbeatClient {
 
   async record(worker: WorkerHeartbeatName, at = this.now()) {
     const client = await this.getRedisClient();
-    await client.set(heartbeatKey(worker), JSON.stringify({
-      at: at.toISOString(),
-      releaseSha: readReleaseIdentity().gitSha,
-    }), {
+    await client.set(heartbeatKey(worker), at.toISOString(), {
       EX: Math.max(1, Math.ceil(this.maxAgeMs / 1_000) * 3),
     });
   }
@@ -52,30 +47,18 @@ export class WorkerHeartbeatClient {
     const client = await this.getRedisClient();
     const raw = await client.get(heartbeatKey(worker));
     if (!raw) {
-      return { worker, lastHeartbeatAt: null, ageMs: null, status: 'missing', releaseSha: null };
+      return { worker, lastHeartbeatAt: null, ageMs: null, status: 'missing' };
     }
-    let heartbeatAt = raw;
-    let releaseSha: string | null = null;
-    try {
-      const parsed = JSON.parse(raw) as { at?: unknown; releaseSha?: unknown };
-      if (typeof parsed.at === 'string') heartbeatAt = parsed.at;
-      if (typeof parsed.releaseSha === 'string' && /^[0-9a-f]{40}$/i.test(parsed.releaseSha)) {
-        releaseSha = parsed.releaseSha.toLowerCase();
-      }
-    } catch {
-      // Legacy timestamp-only heartbeat; it remains readable during rolling replacement.
-    }
-    const parsedMs = Date.parse(heartbeatAt);
+    const parsedMs = Date.parse(raw);
     if (Number.isNaN(parsedMs)) {
-      return { worker, lastHeartbeatAt: heartbeatAt, ageMs: null, status: 'stale', releaseSha };
+      return { worker, lastHeartbeatAt: raw, ageMs: null, status: 'stale' };
     }
     const ageMs = Math.max(0, this.now().getTime() - parsedMs);
     return {
       worker,
-      lastHeartbeatAt: heartbeatAt,
+      lastHeartbeatAt: raw,
       ageMs,
       status: ageMs <= this.maxAgeMs ? 'fresh' : 'stale',
-      releaseSha,
     };
   }
 

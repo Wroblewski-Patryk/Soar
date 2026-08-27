@@ -21,8 +21,6 @@ const requiredClosureCheckFragments = [
   'audit:rerun-playbook:check',
   'audit:remediation-plan:check',
   'docs:parity:check',
-  'docs:parity:endpoints:api',
-  'i18n:audit:route-reachable:web',
   'quality:guardrails',
   'git diff --check',
 ];

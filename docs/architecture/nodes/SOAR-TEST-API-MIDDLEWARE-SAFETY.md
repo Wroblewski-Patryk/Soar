@@ -8,7 +8,7 @@ module: api-middleware
 feature: api-platform-safety
 risk_level: critical
 completion_percent: 90
-last_verified_at: 2026-06-03
+last_verified_at: 2026-05-24
 verification_status: verified_local
 tags: [soar-map, test, testing, verified_local]
 ---
@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified_local]
 | --- | --- |
 | Description | Rate limit request logger auth ops network and trusted origin middleware tests. |
 | File path | apps/api/src/middleware/rateLimit.test.ts |
-| Related files | apps/api/src/middleware/requestLogger.test.ts, apps/api/src/middleware/requireAuth.test.ts, apps/api/src/middleware/requireRole.test.ts, apps/api/src/middleware/requireOpsNetwork.test.ts, apps/api/src/middleware/requireTrustedOrigin.test.ts |
+| Related files | apps/api/src/middleware/requestLogger.test.ts, apps/api/src/middleware/requireAuth.test.ts, apps/api/src/middleware/requireOpsNetwork.test.ts, apps/api/src/middleware/requireTrustedOrigin.test.ts |
 | Parent | [[SOAR-FEATURE-API-PLATFORM-SAFETY]] |
 | Children |  |
 | Depends on | [[SOAR-MIDDLEWARE-RATE-LIMIT]], [[SOAR-MIDDLEWARE-REQUEST-LOGGER]], [[SOAR-MIDDLEWARE-REQUIRE-AUTH]], [[SOAR-MIDDLEWARE-OPS-NETWORK]], [[SOAR-MIDDLEWARE-TRUSTED-ORIGIN]] |

@@ -20,27 +20,16 @@ import {
 import { buildLifecycleActionByTradeId, toPositionMetaById } from './runtimeTradeLifecycle.service';
 import {
   getRuntimeTradeBotContext,
-  countRuntimeTradeRows,
   listRuntimeTradeAnchorPositionRows,
   listRuntimeTradeCarryOverPositionIds,
   listRuntimeTradeCloseEventRows,
   listRuntimeTradePositionMetaRows,
   listRuntimeTradePositionTradeRows,
   listRuntimeTradeRows,
-  sumRuntimeTradeFees,
 } from './runtimeSessionTradesRead.repository';
 
 type RuntimeTradeAnchorPositionRow = Awaited<ReturnType<typeof listRuntimeTradeAnchorPositionRows>>[number];
 type RuntimeTradeBotContext = NonNullable<Awaited<ReturnType<typeof getRuntimeTradeBotContext>>>;
-
-const runtimeTradeCarryOverPositionIdCap = Number.parseInt(
-  process.env.RUNTIME_TRADE_CARRY_OVER_POSITION_ID_CAP ?? '2000',
-  10
-);
-const runtimeTradeSupportRowCap = Number.parseInt(
-  process.env.RUNTIME_TRADE_SUPPORT_ROW_CAP ?? '2000',
-  10
-);
 
 const toOpenAnchorTradeSide = (side: 'LONG' | 'SHORT') => (side === 'LONG' ? 'BUY' : 'SELL');
 
@@ -84,32 +73,6 @@ const isPersistedImportedOpenAnchorTrade = (trade: {
   lifecycleAction: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN' | null;
   exchangeTradeId: string | null;
 }) => trade.origin === 'EXCHANGE_SYNC' && trade.lifecycleAction === 'OPEN' && trade.exchangeTradeId == null;
-
-const toPositiveIntOrUndefined = (value: number) =>
-  Number.isFinite(value) && value > 0 ? Math.floor(value) : undefined;
-
-const resolveRuntimeTradeDbOrder = (input: {
-  sortBy: 'executedAt' | 'symbol' | 'side' | 'lifecycleAction' | 'margin' | 'fee' | 'realizedPnl';
-  sortDir: 'asc' | 'desc';
-}): Prisma.TradeOrderByWithRelationInput[] | null => {
-  const idTieBreak: Prisma.TradeOrderByWithRelationInput = { id: input.sortDir };
-  switch (input.sortBy) {
-    case 'symbol':
-      return [{ symbol: input.sortDir }, { executedAt: 'desc' }, { createdAt: 'desc' }, idTieBreak];
-    case 'side':
-      return [{ side: input.sortDir }, { executedAt: 'desc' }, { createdAt: 'desc' }, idTieBreak];
-    case 'lifecycleAction':
-      return [{ lifecycleAction: input.sortDir }, { executedAt: 'desc' }, { createdAt: 'desc' }, idTieBreak];
-    case 'fee':
-      return [{ fee: input.sortDir }, { executedAt: 'desc' }, { createdAt: 'desc' }, idTieBreak];
-    case 'realizedPnl':
-      return [{ realizedPnl: input.sortDir }, { executedAt: 'desc' }, { createdAt: 'desc' }, idTieBreak];
-    case 'executedAt':
-      return [{ executedAt: input.sortDir }, { createdAt: input.sortDir }, idTieBreak];
-    case 'margin':
-      return null;
-  }
-};
 
 export const buildRuntimeTradeCarryOverWindowClause = (input: {
   rangeStart: Date;
@@ -302,7 +265,7 @@ export const listBotRuntimeSessionTrades = async (
       { OR: [botScopedPositionWhere, ...externalOwnedPositionWhere] },
       { OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }] },
     ],
-  }, toPositiveIntOrUndefined(runtimeTradeCarryOverPositionIdCap));
+  });
   const shouldIncludeCarryOverPositions = !query.from && !query.to;
   const positionTradeWindowClause = buildRuntimeTradeCarryOverWindowClause({
     rangeStart,
@@ -331,24 +294,7 @@ export const listBotRuntimeSessionTrades = async (
     ],
   };
 
-  const filteredWhere: Prisma.TradeWhereInput = {
-    ...where,
-    ...(normalizedAction ? { lifecycleAction: normalizedAction } : {}),
-  };
-  const dbOrderBy = resolveRuntimeTradeDbOrder({ sortBy, sortDir });
-  const totalPersistedRows = await countRuntimeTradeRows(filteredWhere);
-  const feesPaidAggregate = await sumRuntimeTradeFees(filteredWhere);
-  const totalPersistedFeesPaid = feesPaidAggregate._sum.fee ?? 0;
-  const totalPages = totalPersistedRows === 0 ? 0 : Math.ceil(totalPersistedRows / pageSize);
-  const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
-  const offset = (safePage - 1) * pageSize;
-  const persistedRowsTake = dbOrderBy
-    ? pageSize
-    : Math.max(pageSize, toPositiveIntOrUndefined(runtimeTradeSupportRowCap) ?? pageSize);
-  const rows = await listRuntimeTradeRows({
-    where: filteredWhere,
-    ...(dbOrderBy ? { orderBy: dbOrderBy, skip: offset, take: persistedRowsTake } : { take: persistedRowsTake }),
-  });
+  const rows = await listRuntimeTradeRows(where);
   const closeEventRows = await listRuntimeTradeCloseEventRows({
     userId,
     botId,
@@ -381,13 +327,10 @@ export const listBotRuntimeSessionTrades = async (
         userId,
       }),
       listRuntimeTradePositionTradeRows({
-        where: {
-          userId,
-          positionId: {
-            in: positionIds,
-          },
+        userId,
+        positionId: {
+          in: positionIds,
         },
-        take: toPositiveIntOrUndefined(runtimeTradeSupportRowCap),
       }),
       listRuntimeTradeAnchorPositionRows({
         id: { in: positionIds },
@@ -549,21 +492,22 @@ export const listBotRuntimeSessionTrades = async (
     }
   };
 
-  const sortedRows = dbOrderBy
-    ? historyRows
-    : [...historyRows].sort((left, right) => {
-        const first = primaryCompare(left, right);
-        if (first !== 0) return first;
-        const byExecuted = right.executedAt.getTime() - left.executedAt.getTime();
-        if (byExecuted !== 0) return byExecuted;
-        const byCreated = right.createdAt.getTime() - left.createdAt.getTime();
-        if (byCreated !== 0) return byCreated;
-        return right.id.localeCompare(left.id);
-      });
+  const sortedRows = [...historyRows].sort((left, right) => {
+    const first = primaryCompare(left, right);
+    if (first !== 0) return first;
+    const byExecuted = right.executedAt.getTime() - left.executedAt.getTime();
+    if (byExecuted !== 0) return byExecuted;
+    const byCreated = right.createdAt.getTime() - left.createdAt.getTime();
+    if (byCreated !== 0) return byCreated;
+    return right.id.localeCompare(left.id);
+  });
 
-  const total = totalPersistedRows;
-  const feesPaid = totalPersistedFeesPaid;
-  const pagedRows = dbOrderBy ? sortedRows : sortedRows.slice(offset, offset + pageSize);
+  const total = sortedRows.length;
+  const feesPaid = sortedRows.reduce((acc, trade) => acc + trade.fee, 0);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
+  const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
+  const offset = (safePage - 1) * pageSize;
+  const pagedRows = sortedRows.slice(offset, offset + pageSize);
 
   return {
     sessionId,

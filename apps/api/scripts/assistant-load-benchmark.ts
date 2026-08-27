@@ -23,14 +23,14 @@ const p95LimitMs = Number.parseFloat(process.env.ASSISTANT_LOAD_P95_MAX_MS ?? '1
 const p99LimitMs = Number.parseFloat(process.env.ASSISTANT_LOAD_P99_MAX_MS ?? '220');
 const timeoutRateLimit = Number.parseFloat(process.env.ASSISTANT_LOAD_TIMEOUT_RATE_MAX ?? '0.01');
 
-export const percentile = (values, p) => {
+const percentile = (values, p) => {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
   const index = Math.min(sorted.length - 1, Math.ceil((p / 100) * sorted.length) - 1);
   return sorted[index];
 };
 
-export const buildRunInputs = () => {
+const buildRunInputs = () => {
   const modes = ['BACKTEST', 'PAPER', 'LIVE'];
   const inputs = [];
   let modeIndex = 0;
@@ -91,7 +91,7 @@ const subagentGateway = {
 
 const traceWriter = { async write() {} };
 
-export const run = async () => {
+const run = async () => {
   const inputs = buildRunInputs();
   const durations = [];
   let timeoutStatuses = 0;
@@ -186,9 +186,7 @@ export const run = async () => {
   }
 };
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  run().catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
-}
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

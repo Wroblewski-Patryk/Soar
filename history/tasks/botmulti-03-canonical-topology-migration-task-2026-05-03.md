@@ -12,15 +12,6 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 3
 - Operation Mode: ARCHITECT
 
-## Architecture Links
-
-- Primary feature/module: Multi-strategy bot persistence topology.
-- Architecture nodes: SOAR-DB-BOT; SOAR-DB-STRATEGY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-FEATURE-MANUAL-ORDER.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES-CORE.md.
-- Affected files: apps/api/prisma/schema.prisma; apps/api/prisma/migrations; docs/architecture/03_domain-model.md; docs/architecture/04_runtime-contexts.md.
-- Tests/proof: Prisma validation, API typecheck, docs parity, and repository guardrails recorded in this task's Validation Evidence.
-- Docs updated: architecture domain/runtime docs, BOTMULTI planning packet, task board, and project state.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

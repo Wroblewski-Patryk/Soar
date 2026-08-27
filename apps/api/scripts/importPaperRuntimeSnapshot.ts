@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const prisma = new PrismaClient();
 
@@ -99,26 +98,16 @@ type SnapshotPayload = {
   };
 };
 
-export async function ensureUser(
-  email: string,
-  deps: {
-    prismaClient?: Pick<typeof prisma, 'user'>;
-    hash?: typeof bcrypt.hash;
-    env?: NodeJS.ProcessEnv;
-  } = {}
-) {
-  const prismaClient = deps.prismaClient ?? prisma;
-  const hash = deps.hash ?? bcrypt.hash;
-  const env = deps.env ?? process.env;
-  const existing = await prismaClient.user.findUnique({
+async function ensureUser(email: string) {
+  const existing = await prisma.user.findUnique({
     where: { email },
     select: { id: true },
   });
   if (existing) return existing.id;
 
-  const password = env.SNAPSHOT_USER_PASSWORD ?? 'Admin12#$';
-  const passwordHash = await hash(password, 10);
-  const created = await prismaClient.user.create({
+  const password = process.env.SNAPSHOT_USER_PASSWORD ?? 'Admin12#$';
+  const passwordHash = await bcrypt.hash(password, 10);
+  const created = await prisma.user.create({
     data: {
       email,
       password: passwordHash,
@@ -129,7 +118,7 @@ export async function ensureUser(
   return created.id;
 }
 
-export async function main() {
+async function main() {
   const inputPath =
     process.env.SNAPSHOT_INPUT ??
     path.resolve(process.cwd(), 'prisma', 'snapshots', 'paper-runtime-snapshot.json');
@@ -608,13 +597,11 @@ export async function main() {
   );
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main()
-    .catch((error) => {
-      console.error(error);
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

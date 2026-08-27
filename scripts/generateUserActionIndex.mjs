@@ -1,25 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 
-function resolvePaths(rootDir = process.cwd()) {
-  const docsRootName = fs.existsSync(path.join(rootDir, "docs")) ? "docs" : "docs";
-  const docsRoot = path.join(rootDir, docsRootName);
-  const architectureRoot = path.join(docsRoot, "architecture");
-
-  return {
-    root: rootDir,
-    docsRoot,
-    architectureRoot,
-    registryDir: path.join(architectureRoot, "registry"),
-    relationsDir: path.join(architectureRoot, "relations"),
-    chainsDir: path.join(architectureRoot, "chains"),
-    indicesDir: path.join(architectureRoot, "indices"),
-    graphsDir: path.join(docsRoot, "graphs"),
-    statusDir: path.join(docsRoot, "status"),
-    artifactsDir: path.join(rootDir, "history", "artifacts"),
-  };
-}
+const root = process.cwd();
+const today = "2026-05-25";
+const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
+const docsRoot = path.join(root, docsRootName);
+const architectureRoot = path.join(docsRoot, "architecture");
+const registryDir = path.join(architectureRoot, "registry");
+const relationsDir = path.join(architectureRoot, "relations");
+const chainsDir = path.join(architectureRoot, "chains");
+const indicesDir = path.join(architectureRoot, "indices");
+const graphsDir = path.join(docsRoot, "graphs");
+const statusDir = path.join(docsRoot, "status");
+const artifactsDir = path.join(root, "history", "artifacts");
+const failOnCriticalGaps = process.argv.includes("--fail-on-critical-gaps");
 
 function parseCsv(text) {
   const rows = [];
@@ -286,21 +280,7 @@ function rowForAction({ node, actionSource, pages, chains, nodesById, relations 
   };
 }
 
-function main({
-  rootDir = process.cwd(),
-  today = new Date().toISOString().slice(0, 10),
-  failOnCriticalGaps = process.argv.includes("--fail-on-critical-gaps"),
-} = {}) {
-  const {
-    registryDir,
-    relationsDir,
-    chainsDir,
-    indicesDir,
-    graphsDir,
-    statusDir,
-    artifactsDir,
-  } = resolvePaths(rootDir);
-
+function main() {
   fs.mkdirSync(indicesDir, { recursive: true });
   fs.mkdirSync(graphsDir, { recursive: true });
   fs.mkdirSync(statusDir, { recursive: true });
@@ -433,32 +413,6 @@ function main({
   if (failOnCriticalGaps && summary.counts.criticalGaps > 0) {
     process.exitCode = 1;
   }
-
-  return payload;
 }
 
-export {
-  actionIdFor,
-  csvEscape,
-  gapSeverity,
-  includesAny,
-  inferActionKind,
-  inferSafetyBoundary,
-  list,
-  main,
-  parseCsv,
-  proofStatus,
-  readCsv,
-  resolvePaths,
-  rowForAction,
-  routeHint,
-  splitRefs,
-  statusRank,
-  unique,
-  weakestStatus,
-  writeCsv,
-};
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main();
-}
+main();

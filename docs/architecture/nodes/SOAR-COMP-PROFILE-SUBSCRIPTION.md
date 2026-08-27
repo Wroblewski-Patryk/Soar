@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION]] (verified_local)
-- documented_by -> [[SOAR-DOC-API-SUBSCRIPTIONS]] (verified_local)
 
 ## Evidence Rule
 

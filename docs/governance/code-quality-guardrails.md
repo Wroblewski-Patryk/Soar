@@ -64,23 +64,6 @@ Classification of entries audited on 2026-04-22:
 
 ## Approved Temporary Exceptions
 
-### API Test File Size Allowlist
-
-Current temporary API test-size exceptions:
-
-- `apps/api/src/modules/bots/bots.e2e.test.ts` - existing runtime/bot e2e
-  contract hub; temporary budget `93000` bytes while follow-up decomposition is
-  queued.
-- `apps/api/src/modules/positions/livePositionReconciliation.service.test.ts`
-  - existing live reconciliation service contract hub; temporary budget
-  `93000` bytes while follow-up decomposition is queued.
-
-Same-turn extraction was out of scope for `LUC-1709` because this issue is a
-source-control guardrail restoration lane for `LUC-1707` docs/evidence, not a
-backend QA refactor of two large money/runtime test packs. The exception keeps
-the guardrail single-file and explicit; future scenarios should move into
-dedicated focused packs instead of growing these files.
-
 ### Local Copy / Hardcoded UI Allowlist
 
 Removed from the allowlist on 2026-04-21 after `CQLT-12..CQLT-14`:
@@ -124,12 +107,6 @@ temporarily allowlisted while queued decomposition tasks remain active:
 - `apps/api/src/modules/orders/orders.service.ts`
 - `apps/api/src/modules/bots/botsCommand.service.ts`
 - `apps/api/src/modules/backtests/backtests.service.ts`
-
-2026-06-06 Backend closure: [LUC-2367](/LUC/issues/LUC-2367) decomposed the
-Bot Runtime aggregate read-model files below the `1000`-line production
-threshold and removed them from the staged-decomposition exception set. The
-split preserved the bounded materialization, timeout, fallback, ownership, and
-aggregate projection contracts in helper modules.
 
 ## Forbidden Exceptions
 

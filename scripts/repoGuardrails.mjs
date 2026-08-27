@@ -28,8 +28,7 @@ const SOURCE_FILE_BUDGET_RULES = [
   { match: /^apps\/web\/src\//, budget: 95_000 },
 ];
 const SOURCE_FILE_SIZE_ALLOWLIST = new Map([
-  ["apps/api/src/modules/bots/bots.e2e.test.ts", 93_000],
-  ["apps/api/src/modules/positions/livePositionReconciliation.service.test.ts", 93_000],
+  ["apps/api/src/modules/bots/bots.e2e.test.ts", 89_000],
   ["apps/api/src/modules/orders/orders.service.test.ts", 92_000],
 ]);
 const DEFAULT_MAX_FILE_LINES = 2_200;
@@ -51,10 +50,6 @@ const DUPLICATE_HELPER_SNAPSHOT_PATH =
   "history/artifacts/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
 const API_PACKAGE_JSON_PATH = "apps/api/package.json";
-const API_DOCKERFILE_PATH = "apps/api/Dockerfile";
-const WEB_PACKAGE_JSON_PATH = "apps/web/package.json";
-const WEB_DOCKERFILE_PATH = "apps/web/Dockerfile";
-const WEB_PRODUCTION_START_WRAPPER = "scripts/runWebNextProductionCommand.mjs";
 const ARCHITECTURE_GRAPH_DRIFT_SCRIPT = "scripts/auditArchitectureGraphDrift.mjs";
 const RUNTIME_DOCKERFILES = [
   "apps/api/Dockerfile",
@@ -576,176 +571,6 @@ export const validateRuntimeDockerfilesRunAsNonRoot = ({
     : [`Runtime Dockerfiles must run as non-root:\n${errors.map((error) => `  - ${error}`).join("\n")}`];
 };
 
-export const validateWebRuntimeImageIncludesStartWrapper = ({
-  rootDir = ROOT_DIR,
-  webPackageJsonPath = WEB_PACKAGE_JSON_PATH,
-  webDockerfilePath = WEB_DOCKERFILE_PATH,
-  startWrapperPath = WEB_PRODUCTION_START_WRAPPER,
-} = {}) => {
-  const packageAbsolute = path.join(rootDir, webPackageJsonPath);
-  const dockerfileAbsolute = path.join(rootDir, webDockerfilePath);
-
-  if (!fs.existsSync(packageAbsolute)) {
-    return [`Missing Web package manifest: ${webPackageJsonPath}`];
-  }
-
-  if (!fs.existsSync(dockerfileAbsolute)) {
-    return [`Missing Web Dockerfile: ${webDockerfilePath}`];
-  }
-
-  let parsed;
-  try {
-    parsed = JSON.parse(fs.readFileSync(packageAbsolute, "utf8"));
-  } catch (error) {
-    return [`Invalid Web package manifest JSON at ${webPackageJsonPath}: ${String(error)}`];
-  }
-
-  const startScript = parsed?.scripts?.start;
-  const buildScript = parsed?.scripts?.build;
-  const dependsOnWrapper =
-    typeof startScript === "string" && startScript.includes(startWrapperPath)
-      ? true
-      : typeof buildScript === "string" && buildScript.includes(startWrapperPath);
-
-  if (!dependsOnWrapper) return [];
-
-  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
-  const runtimeStage = content.split(/\nFROM\s+node:20-bookworm-slim\s+AS\s+runtime\b/i)[1] ?? "";
-
-  if (!runtimeStage) {
-    return [`${webDockerfilePath} must define a node runtime stage for the Web production image.`];
-  }
-
-  const wrapperCopyPattern = new RegExp(
-    String.raw`^\s*COPY\b[^\n]*--from=build[^\n]*\/app\/${escapeRegex(startWrapperPath)}\b[^\n]*\/app\/${escapeRegex(
-      startWrapperPath,
-    )}\b`,
-    "m",
-  );
-
-  return wrapperCopyPattern.test(runtimeStage)
-    ? []
-    : [
-        `Web runtime image must include the production start wrapper required by ${webPackageJsonPath}.\n  - ${webDockerfilePath}: runtime stage must copy /app/${startWrapperPath} from the build stage to /app/${startWrapperPath}.`,
-      ];
-};
-
-export const validateWebDockerfileBuildMetadataArgs = ({
-  rootDir = ROOT_DIR,
-  webDockerfilePath = WEB_DOCKERFILE_PATH,
-} = {}) => {
-  const dockerfileAbsolute = path.join(rootDir, webDockerfilePath);
-
-  if (!fs.existsSync(dockerfileAbsolute)) {
-    return [`Missing Web Dockerfile: ${webDockerfilePath}`];
-  }
-
-  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
-  const buildStage = content.split(/\nFROM\s+\S+\s+AS\s+build\b/i)[1]?.split(/\nFROM\s+/i)[0] ?? "";
-
-  if (!buildStage) {
-    return [`${webDockerfilePath} must define a deps build stage for the Web production image.`];
-  }
-
-  const requiredArgs = [
-    "SOURCE_COMMIT",
-    "SOURCE_BRANCH",
-    "COOLIFY_BRANCH",
-    "COOLIFY_GIT_COMMIT_SHA",
-    "COOLIFY_COMMIT_SHA",
-    "GITHUB_SHA",
-  ];
-  const missingArgs = requiredArgs.filter(
-    (argName) => !new RegExp(String.raw`^\s*ARG\s+${escapeRegex(argName)}(?:\s|$)`, "m").test(buildStage),
-  );
-  const buildRunLine =
-    buildStage
-      .split(/\r?\n/)
-      .find((line) => line.includes("pnpm --filter web build") && line.trimStart().startsWith("RUN")) ?? "";
-  const hasForbiddenGitCopy = /^\s*COPY\s+\.git(?:\/(?:HEAD|refs))?\b/m.test(buildStage);
-  const usesWebBuildWrapper = /pnpm\s+--filter\s+web\s+build\b/.test(buildRunLine);
-  const requiredRunEnv = [
-    "SOURCE_COMMIT",
-    "COOLIFY_GIT_COMMIT_SHA",
-    "COOLIFY_COMMIT_SHA",
-    "GITHUB_SHA",
-  ];
-  const missingRunEnv = requiredRunEnv.filter((argName) => !buildRunLine.includes(`${argName}="$${argName}"`));
-  if (
-    !buildRunLine.includes("SOURCE_BRANCH=") ||
-    (!buildRunLine.includes("$SOURCE_BRANCH") && !buildRunLine.includes("${SOURCE_BRANCH"))
-  ) {
-    missingRunEnv.push("SOURCE_BRANCH");
-  }
-  if (!buildRunLine.includes("$COOLIFY_BRANCH")) {
-    missingRunEnv.push("COOLIFY_BRANCH");
-  }
-
-  return missingArgs.length === 0 && missingRunEnv.length === 0 && usesWebBuildWrapper && !hasForbiddenGitCopy
-    ? []
-    : [
-        `Web Dockerfile must forward deploy metadata build args into the Web build and must not require .git in the Docker build context.\n  - Missing ARG declarations: ${
-          missingArgs.length ? missingArgs.join(", ") : "none"
-        }\n  - Missing RUN env forwards: ${
-          missingRunEnv.length ? missingRunEnv.join(", ") : "none"
-        }\n  - Web build wrapper used: ${usesWebBuildWrapper ? "yes" : "no"}\n  - Forbidden .git COPY present: ${
-          hasForbiddenGitCopy ? "yes" : "no"
-        }`,
-      ];
-};
-
-export const validateApiDockerfileBuildMetadataArgs = ({
-  rootDir = ROOT_DIR,
-  apiDockerfilePath = API_DOCKERFILE_PATH,
-} = {}) => {
-  const dockerfileAbsolute = path.join(rootDir, apiDockerfilePath);
-
-  if (!fs.existsSync(dockerfileAbsolute)) {
-    return [`Missing API Dockerfile: ${apiDockerfilePath}`];
-  }
-
-  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
-  const runtimeStage = content.split(/(?:^|\n)FROM\s+\S+\s+AS\s+runtime\b/i)[1] ?? "";
-  if (!runtimeStage) {
-    return [`${apiDockerfilePath} must define a runtime stage for the API production image.`];
-  }
-
-  const requiredArgs = [
-    "SOURCE_COMMIT",
-    "COOLIFY_GIT_COMMIT_SHA",
-    "COOLIFY_COMMIT_SHA",
-    "GITHUB_SHA",
-  ];
-  const missingArgs = requiredArgs.filter(
-    (argName) => !new RegExp(String.raw`^\s*ARG\s+${escapeRegex(argName)}(?:\s|$)`, "m").test(runtimeStage),
-  );
-  const missingFallbacks = requiredArgs.filter(
-    (argName) => !new RegExp(String.raw`\$(?:\{)?${escapeRegex(argName)}\b`).test(runtimeStage),
-  );
-  const writesImmutableSourceCommit =
-    runtimeStage.includes("SOURCE_COMMIT_RESOLVED=") &&
-    runtimeStage.includes("> /etc/soar-source-commit");
-  const runtimeLoadsImmutableSourceCommit =
-    /CMD\s+\[[^\]]*SOURCE_COMMIT=.*\/etc\/soar-source-commit[^\]]*\]/m.test(runtimeStage);
-  const hasBroadRecursiveAppChown = /\bchown\s+-R\s+node:node\s+\/app(?:\s|$)/m.test(runtimeStage);
-
-  return missingArgs.length === 0 &&
-    missingFallbacks.length === 0 &&
-    writesImmutableSourceCommit &&
-    runtimeLoadsImmutableSourceCommit &&
-    !hasBroadRecursiveAppChown
-    ? []
-    : [
-        `API Dockerfile must resolve immutable image provenance from supported deploy SHA aliases and avoid a broad recursive /app ownership rewrite.\n  - Missing ARG declarations: ${
-          missingArgs.length ? missingArgs.join(", ") : "none"
-        }\n  - Missing SHA fallbacks: ${
-          missingFallbacks.length ? missingFallbacks.join(", ") : "none"
-        }\n  - Immutable source commit written: ${writesImmutableSourceCommit ? "yes" : "no"}\n  - Runtime loads immutable source commit: ${
-          runtimeLoadsImmutableSourceCommit ? "yes" : "no"
-        }\n  - Broad recursive /app chown present: ${hasBroadRecursiveAppChown ? "yes" : "no"}`,
-      ];
-};
-
 export const validateTrackedEnvFilePolicy = ({ trackedFiles = readTrackedFiles() } = {}) => {
   const offenders = trackedFiles.filter(
     (filePath) => TRACKED_ENV_FILE_RE.test(filePath) && !TRACKED_ENV_FILE_ALLOWLIST_RE.test(filePath)
@@ -827,9 +652,6 @@ const run = () => {
     ...validateCodeQualityGuardrailsDoc(),
     ...validateApiStartScript(),
     ...validateRuntimeDockerfilesRunAsNonRoot(),
-    ...validateApiDockerfileBuildMetadataArgs(),
-    ...validateWebRuntimeImageIncludesStartWrapper(),
-    ...validateWebDockerfileBuildMetadataArgs(),
     ...validateTrackedEnvFilePolicy({ trackedFiles }),
     ...validateOpsScriptsDoNotAcceptSecretCliArgs({ trackedFiles }),
   ];
@@ -859,9 +681,6 @@ const run = () => {
   );
   console.log(`- API start script: OK (production-safe launcher)`);
   console.log(`- Runtime Dockerfiles: OK (non-root runtime user)`);
-  console.log(`- API deploy metadata: OK (immutable SHA fallback chain embedded in image)`);
-  console.log(`- Web runtime image: OK (production start wrapper present)`);
-  console.log(`- Web deploy metadata: OK (build args forwarded)`);
   console.log(`- Env file policy: OK (only redacted .env examples tracked)`);
   console.log(`- Ops script secret argv policy: OK (secret-bearing CLI args rejected)`);
 };

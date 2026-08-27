@@ -5,8 +5,6 @@ export const BotModeSchema = z.enum(['PAPER', 'LIVE']);
 export const TradeMarketSchema = z.enum(EXCHANGE_MARKET_TYPES);
 export const BotMarketGroupStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED']);
 export const AssistantSafetyModeSchema = z.enum(['STRICT', 'BALANCED', 'EXPERIMENTAL']);
-export const AssistantModelProfileSchema = z.enum(['balanced']);
-export const AssistantRoleSchema = z.enum(['TREND', 'MOMENTUM', 'RISK', 'MICROSTRUCTURE', 'GENERAL']);
 
 export const BotStrategyLinkInputSchema = z.object({
   strategyId: z.string().trim().min(1),
@@ -144,25 +142,23 @@ export const ReorderMarketGroupStrategiesSchema = z.object({
 export const UpsertBotAssistantConfigSchema = z.object({
   mainAgentEnabled: z.boolean().default(false),
   mandate: z.string().trim().min(1).max(500).optional().nullable(),
-  modelProfile: AssistantModelProfileSchema.default('balanced'),
+  modelProfile: z.string().trim().min(1).max(64).default('balanced'),
   safetyMode: AssistantSafetyModeSchema.default('STRICT'),
   maxDecisionLatencyMs: z.number().int().min(200).max(30_000).default(2500),
 });
 
 export const UpsertBotSubagentConfigSchema = z.object({
-  role: AssistantRoleSchema,
+  role: z.string().trim().min(1).max(64),
   enabled: z.boolean().default(false),
-  modelProfile: AssistantModelProfileSchema.default('balanced'),
+  modelProfile: z.string().trim().min(1).max(64).default('balanced'),
   timeoutMs: z.number().int().min(100).max(15_000).default(1200),
   safetyMode: AssistantSafetyModeSchema.default('STRICT'),
 });
 
-export const AssistantDryRunModeSchema = z.enum(['BACKTEST', 'PAPER']);
-
 export const AssistantDryRunSchema = z.object({
   symbol: z.string().trim().min(1).max(40),
   intervalWindow: z.string().trim().min(1).max(20).default('5m'),
-  mode: AssistantDryRunModeSchema.default('PAPER'),
+  mode: z.enum(['BACKTEST', 'PAPER', 'LIVE']).default('PAPER'),
 });
 
 export const BotRuntimeSessionStatusSchema = z.enum([
@@ -235,9 +231,6 @@ export type UpdateMarketGroupStrategyDto = z.infer<typeof UpdateMarketGroupStrat
 export type ReorderMarketGroupStrategiesDto = z.infer<typeof ReorderMarketGroupStrategiesSchema>;
 export type UpsertBotAssistantConfigDto = z.infer<typeof UpsertBotAssistantConfigSchema>;
 export type UpsertBotSubagentConfigDto = z.infer<typeof UpsertBotSubagentConfigSchema>;
-export type AssistantModelProfile = z.infer<typeof AssistantModelProfileSchema>;
-export type AssistantRole = z.infer<typeof AssistantRoleSchema>;
-export type AssistantDryRunMode = z.infer<typeof AssistantDryRunModeSchema>;
 export type AssistantDryRunDto = z.infer<typeof AssistantDryRunSchema>;
 export type ListBotRuntimeSessionsQueryDto = z.infer<typeof ListBotRuntimeSessionsQuerySchema>;
 export type ListBotRuntimeSymbolStatsQueryDto = z.infer<typeof ListBotRuntimeSymbolStatsQuerySchema>;

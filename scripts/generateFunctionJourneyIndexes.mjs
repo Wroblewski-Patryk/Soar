@@ -1,25 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 
-function resolvePaths(rootDir = process.cwd()) {
-  const docsRootName = fs.existsSync(path.join(rootDir, "docs")) ? "docs" : "docs";
-  const docsRoot = path.join(rootDir, docsRootName);
-  const architectureRoot = path.join(docsRoot, "architecture");
-
-  return {
-    root: rootDir,
-    docsRoot,
-    architectureRoot,
-    registryDir: path.join(architectureRoot, "registry"),
-    relationsDir: path.join(architectureRoot, "relations"),
-    chainsDir: path.join(architectureRoot, "chains"),
-    indicesDir: path.join(architectureRoot, "indices"),
-    graphsDir: path.join(docsRoot, "graphs"),
-    statusDir: path.join(docsRoot, "status"),
-    artifactsDir: path.join(rootDir, "history", "artifacts"),
-  };
-}
+const root = process.cwd();
+const today = "2026-05-25";
+const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
+const docsRoot = path.join(root, docsRootName);
+const architectureRoot = path.join(docsRoot, "architecture");
+const registryDir = path.join(architectureRoot, "registry");
+const relationsDir = path.join(architectureRoot, "relations");
+const chainsDir = path.join(architectureRoot, "chains");
+const indicesDir = path.join(architectureRoot, "indices");
+const graphsDir = path.join(docsRoot, "graphs");
+const statusDir = path.join(docsRoot, "status");
+const artifactsDir = path.join(root, "history", "artifacts");
+const failOnCriticalGaps = process.argv.includes("--fail-on-critical-gaps");
 
 function parseCsv(text) {
   const rows = [];
@@ -141,30 +135,12 @@ function gapSeverity(gaps) {
   return "none";
 }
 
-function isApiDataSourceRelation(relation) {
-  return ["reads", "uses", "observes", "subscribes_to", "reads_writes", "scoped_by"].includes(relation.relation_type);
-}
-
 function isUserFacingChain(chain, nodes) {
   if (/ops|config|pipeline|release-audit-tooling|api-platform-safety/.test(chain.feature)) return false;
   return nodes.some((node) => ["page", "component", "hook", "ui_element"].includes(node.type));
 }
 
-function main(options = {}) {
-  const rootDir = options.rootDir ?? process.cwd();
-  const today = options.today ?? new Date().toISOString().slice(0, 10);
-  const argv = options.argv ?? process.argv.slice(2);
-  const failOnCriticalGaps = options.failOnCriticalGaps ?? argv.includes("--fail-on-critical-gaps");
-  const {
-    registryDir,
-    relationsDir,
-    chainsDir,
-    indicesDir,
-    graphsDir,
-    statusDir,
-    artifactsDir,
-  } = resolvePaths(rootDir);
-
+function main() {
   fs.mkdirSync(indicesDir, { recursive: true });
   fs.mkdirSync(graphsDir, { recursive: true });
   fs.mkdirSync(statusDir, { recursive: true });
@@ -241,7 +217,7 @@ function main(options = {}) {
       }
       if (testRefs.length === 0) gaps.push("no_tests");
       if (docRefs.length === 0) gaps.push("no_docs");
-      if (chainRefs.length === 0 && !/redirect|offline/i.test(page.description)) gaps.push("not_in_function_chain");
+      if (chainRefs.length === 0 && !/redirect/i.test(page.description)) gaps.push("not_in_function_chain");
       if (["partially_verified", "implemented_not_verified", "blocked", "broken", "missing"].includes(page.verification_status || page.status)) {
         gaps.push(`page_status:${page.verification_status || page.status}`);
       }
@@ -278,16 +254,13 @@ function main(options = {}) {
       ].filter(Boolean));
       const tests = splitRefs(api.tests_related);
       const docs = splitRefs(api.docs_related);
-      const dataRefs = Array.from(new Set([
-        ...splitRefs(api.database_related),
-        ...apiRelations.filter(isApiDataSourceRelation).map((relation) => relation.target_id),
-      ].filter(Boolean)));
+      const dataRefs = splitRefs(api.database_related);
       const chainRefs = chainRows.filter((chain) => splitRefs(chain.api_routes).includes(api.id)).map((chain) => chain.id);
       const gaps = [];
       if (consumers.size === 0 && !/router|support/i.test(api.feature)) gaps.push("no_consumer_relation");
       if (tests.length === 0) gaps.push("no_tests");
       if (docs.length === 0) gaps.push("no_docs");
-      if (dataRefs.length === 0 && !/icon|stream|upload/i.test(`${api.feature} ${api.id} ${api.name}`)) gaps.push("no_data_or_explicit_na");
+      if (dataRefs.length === 0 && !/icon|stream|upload/i.test(api.feature)) gaps.push("no_data_or_explicit_na");
       if (chainRefs.length === 0) gaps.push("not_in_function_chain");
       if (["partially_verified", "implemented_not_verified", "blocked", "broken", "missing"].includes(api.verification_status || api.status)) {
         gaps.push(`api_status:${api.verification_status || api.status}`);
@@ -456,27 +429,6 @@ function main(options = {}) {
   if (failOnCriticalGaps && summary.counts.criticalGaps > 0) {
     process.exitCode = 1;
   }
-
-  return payload;
 }
 
-export {
-  csvEscape,
-  gapSeverity,
-  isApiDataSourceRelation,
-  isUserFacingChain,
-  list,
-  main,
-  normalizeStatus,
-  parseCsv,
-  readCsv,
-  resolvePaths,
-  splitRefs,
-  statusRank,
-  weakestStatus,
-  writeCsv,
-};
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main();
-}
+main();

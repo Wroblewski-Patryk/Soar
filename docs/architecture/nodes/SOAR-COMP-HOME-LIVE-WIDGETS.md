@@ -44,7 +44,6 @@ tags: [soar-map, component, frontend, partially_verified]
 - composes -> [[SOAR-COMP-LIVE-MARKET-BAR]] (verified_local)
 - uses -> [[SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL]] (verified_local)
 - verified_by -> [[SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-DASHBOARD-HOME]] (partially_verified)
 - contains <- [[SOAR-PAGE-DASHBOARD]] (partially_verified)
 - extends <- [[SOAR-FEATURE-WEB-RUNTIME-SURFACES]] (verified_local)
 

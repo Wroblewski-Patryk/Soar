@@ -34,14 +34,6 @@ Minimum API secret-readiness keys for local runtime startup:
 `API_KEY_ENCRYPTION` is a compatibility alias only. Local API startup fails
 closed when `API_KEY_ENCRYPTION_KEYS` is missing.
 
-`pnpm run backend/dev` is allowed to generate a process-local
-`API_KEY_ENCRYPTION_KEYS` value when the configured local value is missing or a
-placeholder. The generated value is passed only to the API and worker child
-processes for that run and is not written to `apps/api/.env` or any repository
-file. Keep explicit local keyrings in `apps/api/.env` only when you need a
-stable local dev database across restarts, and never paste production key
-material into local files or evidence.
-
 ## A) Local DEV Startup (watch mode)
 
 Local worker-ownership note:

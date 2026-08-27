@@ -1,6 +1,6 @@
 # Function Journey Evidence Index
 
-Last generated: 2026-07-24
+Last generated: 2026-05-25
 
 This index connects user-visible entrypoints, graph function chains, API routes, tests, docs, evidence artifacts, and explicit gaps. It is generated from the architecture graph CSV source of truth and is meant to answer: what works, what is only locally proven, and what still lacks browser or production proof.
 
@@ -10,15 +10,15 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 - `docs/architecture/indices/web-journey-index.csv`
 - `docs/architecture/indices/api-surface-evidence-index.csv`
 - `docs/graphs/function-journey-index.json`
-- `history/artifacts/function-journey-index-2026-07-24.json`
+- `history/artifacts/function-journey-index-2026-05-25.json`
 
 ## Summary
 
 | Index | Rows |
 | --- | ---: |
 | Function chains | 27 |
-| Web journeys / pages | 38 |
-| API surfaces | 97 |
+| Web journeys / pages | 36 |
+| API surfaces | 96 |
 | Critical gaps | 0 |
 | High gaps | 28 |
 
@@ -51,24 +51,28 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | high | CHAIN-LOGS-AUDIT | logs-audit | verified_local | missing_proof:Fresh authenticated browser proof and production action-produced readback remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-SUBSCRIPTIONS-ADMIN | subscriptions-admin | verified_local | missing_proof:Fresh authenticated browser proof checkout provider callback proof and production admin mutation proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-AI-ASSISTANT-FOUNDATION | ai-assistant-foundation | verified_local | missing_proof:Hot-path runtime AI trading remains deferred and requires separate red-team proof; production_or_browser_proof_not_implied |
-| high | CHAIN-OPS-CONFIG-PIPELINE | ops-config-pipeline | verified_local | missing_proof:Production Coolify stack deployment and protected proof remain separate; production_or_browser_proof_not_implied |
+| high | CHAIN-OPS-CONFIG-PIPELINE | ops-config-pipeline | verified_local | missing_proof:Remote CI run status and protected production deployment proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-API-SUPPORT-ROUTES | api-support-routes | verified_local | missing_proof:Fresh authenticated browser proof for profile/upload UI consumers remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-RUNTIME-SUPPORT-SERVICES | runtime-support-services | verified_local | missing_proof:Fresh end-to-end runtime journey and protected LIVE proof remain separate; production_or_browser_proof_not_implied |
-| high | CHAIN-API-PLATFORM-SAFETY | api-platform-safety | verified_local | missing_proof:production_or_browser_proof_not_implied; production_or_browser_proof_not_implied |
+| high | CHAIN-API-PLATFORM-SAFETY | api-platform-safety | verified_local | missing_proof:Fresh adversarial security review remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-WEB-RUNTIME-SURFACES | web-runtime-surfaces | verified_local | missing_proof:Fresh authenticated browser runtime journey remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-AUTH-SESSION-DEEP | auth-session | verified_local | missing_proof:Fresh production auth browser proof remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-ENGINE-RUNTIME-CORE | engine-runtime-core | verified_local | missing_proof:Fresh end-to-end runtime journey and protected LIVE exchange mutation proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-MARKET-DATA-STREAM-ADAPTERS | market-data-stream-adapters | verified_local | missing_proof:Fresh live exchange stream proof remains separate; production_or_browser_proof_not_implied |
 | high | SOAR-PAGE-DASHBOARD | dashboard-runtime | partially_verified | page_status:partially_verified |
 | high | SOAR-API-BOT-RUNTIME-POSITIONS | dashboard-runtime | partially_verified | api_status:partially_verified |
-| medium | SOAR-PAGE-PRIVACY | public-legal | verified_local | not_in_function_chain |
-| medium | SOAR-PAGE-TERMS | public-legal | verified_local | not_in_function_chain |
+| medium | SOAR-PAGE-BOT-NEW-ALIAS | bot-setup | verified_local | not_in_function_chain |
+| medium | SOAR-PAGE-BOT-DETAIL-ALIAS | bot-setup | verified_local | not_in_function_chain |
+| medium | SOAR-PAGE-OFFLINE | web-residual-surfaces | verified_local | not_in_function_chain |
 | medium | SOAR-API-ORDER-LIST | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-GET | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CANCEL | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CLOSE | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-POSITION-MANAGEMENT-MODE | positions | verified_local | not_in_function_chain |
-| medium | SOAR-API-STRIPE-WEBHOOK | subscriptions-admin | verified_local | not_in_function_chain |
+| medium | SOAR-API-STRATEGY-INDICATORS | strategies | verified_local | no_data_or_explicit_na |
+| medium | SOAR-API-MARKET-CATALOG | markets | verified_local | no_data_or_explicit_na |
+| medium | SOAR-API-ICON-LOOKUP | api-support-routes | verified_local | no_data_or_explicit_na |
+| medium | SOAR-API-MARKET-STREAM-EVENTS | api-support-routes | verified_local | no_data_or_explicit_na |
 
 ## Use
 

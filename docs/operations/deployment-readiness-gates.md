@@ -47,19 +47,6 @@ Failure effect: prod rollback trigger if post-deploy.
 Required:
 - web root route returns HTTP `200`,
 - web can reach API baseline endpoint through configured `NEXT_PUBLIC_API_BASE_URL`.
-- `/api/build-info` exposes the selected candidate SHA from authoritative
-  build metadata (`metadataSource=env`, `git`, or `git-files`). Missing SHA,
-  `unknown`, runtime-only metadata, or GitHub branch-head fallback metadata
-  are inconclusive and fail closed for deploy provenance.
-- If production reports the expected SHA with `metadataSource=env-runtime`,
-  treat the app as public-smoke healthy but not release-provenance verified.
-  The next Web deploy approval must select a reconciled source commit and make
-  the build stage emit `.build-meta/BUILD_META.json` from `SOURCE_COMMIT`,
-  repository `git`, or repository `.git` files.
-- The repository fallback for Dockerfile builds is build-stage only: the build
-  context permits `.git/HEAD` and `.git/refs`, the Web Dockerfile copies those
-  paths before `pnpm --filter web build`, and the runtime image must not include
-  `.git` metadata.
 
 Failure effect: prod rollback trigger if post-deploy.
 
@@ -112,11 +99,3 @@ Gate evidence is mandatory for release sign-off and incident audit trail.
 Missing or inconclusive gate evidence is treated as `FAIL`.
 
 No gate may be skipped for production release sign-off.
-
-## Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2186](/LUC/issues/LUC-2186).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/web/src/app/api/build-info/route.ts` | `docs/operations/deployment-readiness-gates.md` | Web build-info route used to prove deployed candidate SHA and prevent stale release evidence. | Architecture-awareness `documents` relation from this doc plus build-info/deploy smoke proof when deployment metadata behavior changes. |

@@ -369,54 +369,6 @@ describe("useHomeLiveWidgetsController", () => {
     });
   });
 
-  it("loads aggregate data only for the selected dashboard bot and refreshes it on selection change", async () => {
-    const createMarketStreamEventSource = vi.fn(() => new FakeEventSource() as unknown as EventSource);
-    const bots = [createBot("bot-a"), createBot("bot-b"), createBot("bot-c")];
-    const sessionsByBot = new Map([
-      ["bot-a", [createSession("bot-a", "session-a")]],
-      ["bot-b", [createSession("bot-b", "session-b")]],
-      ["bot-c", [createSession("bot-c", "session-c")]],
-    ]);
-    const getBotRuntimeGraph = vi.fn().mockResolvedValue(null);
-    const getBotRuntimeMonitoringAggregate = vi.fn(async (botId: string) =>
-      createAggregate(botId, botId === "bot-a" ? "session-a" : botId === "bot-b" ? "session-b" : "session-c")
-    );
-    const listBotRuntimeSessions = vi.fn(async (botId: string) => sessionsByBot.get(botId) ?? []);
-    const listBots = vi.fn().mockResolvedValue(bots);
-    const t = (key: TranslationKey) => key;
-
-    const { result } = renderHook(() =>
-      useHomeLiveWidgetsController({
-        createMarketStreamEventSource,
-        getBotRuntimeGraph,
-        getBotRuntimeMonitoringAggregate,
-        listBotRuntimeSessions,
-        listBots,
-        t,
-      })
-    );
-
-    await waitFor(() => expect(result.current.snapshots).toHaveLength(3));
-    expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledTimes(1);
-    expect(getBotRuntimeMonitoringAggregate).toHaveBeenLastCalledWith("bot-a", {
-      sessionsLimit: 1,
-      perSessionLimit: 80,
-    });
-    expect(result.current.snapshots.find((snapshot) => snapshot.bot.id === "bot-b")?.trades).toBeNull();
-
-    act(() => {
-      result.current.setSelectedBotId("bot-b");
-    });
-
-    await waitFor(() => expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledTimes(2));
-    expect(getBotRuntimeMonitoringAggregate).toHaveBeenLastCalledWith("bot-b", {
-      sessionsLimit: 1,
-      perSessionLimit: 80,
-    });
-    await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-b"));
-    expect(result.current.selected?.trades).not.toBeNull();
-  });
-
   it("does not load protected runtime data until auth is confirmed", async () => {
     const createMarketStreamEventSource = vi.fn(() => new FakeEventSource() as unknown as EventSource);
     const getBotRuntimeGraph = vi.fn().mockResolvedValue(null);

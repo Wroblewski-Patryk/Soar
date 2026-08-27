@@ -1,17 +1,15 @@
 import { spawn, spawnSync } from 'node:child_process';
-import crypto from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 
 const rootDir = process.cwd();
 const apiDir = path.join(rootDir, 'apps', 'api');
 const apiEnvPath = path.join(rootDir, 'apps', 'api', '.env');
 
-const readEnvValue = (key, { envPath = apiEnvPath, readFile = readFileSync } = {}) => {
+const readEnvValue = (key) => {
   try {
-    const content = readFile(envPath, 'utf8');
+    const content = readFileSync(apiEnvPath, 'utf8');
     const line = content
       .split(/\r?\n/)
       .find((item) => item.trim().startsWith(`${key}=`));
@@ -24,72 +22,57 @@ const readEnvValue = (key, { envPath = apiEnvPath, readFile = readFileSync } = {
 };
 
 const run = (command, args, options = {}) => {
-  const {
-    cwd = rootDir,
-    platform = process.platform,
-    spawnSyncImpl = spawnSync,
-    exit = process.exit,
-    ...spawnOptions
-  } = options;
-  const result = spawnSyncImpl(command, args, {
+  const result = spawnSync(command, args, {
     stdio: 'inherit',
-    cwd,
-    shell: platform === 'win32',
-    ...spawnOptions,
+    cwd: rootDir,
+    shell: process.platform === 'win32',
+    ...options,
   });
   if (typeof result.status === 'number' && result.status !== 0) {
-    exit(result.status);
+    process.exit(result.status);
   }
 };
 
 const runPrisma = (args, options = {}) => {
-  const {
-    allowEngineLockFallback = false,
-    cwd = apiDir,
-    platform = process.platform,
-    spawnSyncImpl = spawnSync,
-    stdout = process.stdout,
-    stderr = process.stderr,
-    consoleImpl = console,
-    exit = process.exit,
-  } = options;
-  const result = spawnSyncImpl('pnpm', ['exec', 'prisma', ...args], {
-    cwd,
-    shell: platform === 'win32',
+    const { allowEngineLockFallback = false } = options;
+  const result = spawnSync('pnpm', ['exec', 'prisma', ...args], {
+    cwd: apiDir,
+    shell: process.platform === 'win32',
     encoding: 'utf8',
     stdio: 'pipe',
   });
 
-  if (result.stdout) stdout.write(result.stdout);
-  if (result.stderr) stderr.write(result.stderr);
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
 
   if ((result.status ?? 1) !== 0) {
     const combined = `${result.stdout ?? ''}\n${result.stderr ?? ''}`;
     if (combined.includes('Command "prisma" not found')) {
-      consoleImpl.error(
+      console.error(
         '[backend/dev] Prisma CLI not found in apps/api.\n' +
           'Run `pnpm install` in repository root and retry.'
       );
-      exit(result.status ?? 1);
-      return;
+      process.exit(result.status ?? 1);
     }
 
     if (combined.includes('EPERM') && combined.includes('query_engine-windows.dll.node')) {
       if (allowEngineLockFallback) {
-        consoleImpl.warn(
+        console.warn(
           '[backend/dev] Prisma engine file is locked on Windows.\n' +
             'Skipping hard regenerate and continuing with existing Prisma client.'
         );
         return;
       }
-      consoleImpl.error(
+      console.error(
         '[backend/dev] Prisma engine file is locked on Windows.\n' +
           'Close running Node/api processes and retry this command.'
       );
     }
-    exit(result.status ?? 1);
+    process.exit(result.status ?? 1);
   }
 };
+
+const withWorkersByDefault = process.env.BACKEND_DEV_START_WORKERS !== 'false';
 
 const checkTcpPort = (host, port, timeoutMs = 2000) =>
   new Promise((resolve) => {
@@ -125,260 +108,110 @@ const parseDatabaseUrl = (databaseUrl) => {
   }
 };
 
-const dockerAvailable = ({
-  cwd = rootDir,
-  platform = process.platform,
-  spawnSyncImpl = spawnSync,
-} = {}) => {
-  const check = spawnSyncImpl('docker', ['info'], {
+const dockerAvailable = () => {
+  const check = spawnSync('docker', ['info'], {
     stdio: 'ignore',
-    cwd,
-    shell: platform === 'win32',
+    cwd: rootDir,
+    shell: process.platform === 'win32',
   });
   return check.status === 0;
 };
 
-const redis = (redisUrl) => {
-  try {
-    const parsed = new URL(redisUrl);
-    return { host: parsed.hostname || 'localhost', port: Number(parsed.port || '6379') };
-  } catch {
-    return { host: 'localhost', port: 6379 };
-  }
-};
-
-const WEAK_SECRET_VALUES = [
-  'change-me',
-  'changeme',
-  'password',
-  'secret',
-  'replace-me',
-  'replace-with-secret',
-  'replace-with-generated-secret',
-  'change-me-32-byte-secret',
-  'replace-with-32-byte-secret',
-];
-
-const looksWeakSecret = (value, minimumLength) => {
-  const normalized = value.trim().toLowerCase();
-  if (normalized.length < minimumLength) return true;
-  if (WEAK_SECRET_VALUES.some((weak) => normalized.includes(weak))) return true;
-  if (/^(.)\1+$/.test(normalized)) return true;
-  return false;
-};
-
-const readConfiguredEnvValue = (key, { env = process.env, readEnvValueImpl = readEnvValue } = {}) =>
-  env[key] || readEnvValueImpl(key);
-
-const hasUsableVersionedKeyring = (value) => {
-  const entries = (value ?? '')
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-  if (entries.length === 0) return false;
-
-  return entries.every((entry) => {
-    const separatorIndex = entry.indexOf(':');
-    const version = separatorIndex > 0 ? entry.slice(0, separatorIndex).trim() : '';
-    const material = separatorIndex > 0 ? entry.slice(separatorIndex + 1).trim() : '';
-    return Boolean(version && material && !looksWeakSecret(material, 32));
-  });
-};
-
-const inferSingleKeyringVersion = (value) => {
-  const versions = new Set();
-
-  for (const entry of (value ?? '')
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)) {
-    const separatorIndex = entry.indexOf(':');
-    const version = separatorIndex > 0 ? entry.slice(0, separatorIndex).trim() : '';
-    const material = separatorIndex > 0 ? entry.slice(separatorIndex + 1).trim() : '';
-    if (!version || !material || looksWeakSecret(material, 32)) return null;
-    versions.add(version);
-    if (versions.size > 1) return null;
-  }
-
-  const [onlyVersion] = versions;
-  return onlyVersion ?? null;
-};
-
-const buildLocalReadinessEnv = ({
-  env = process.env,
-  readEnvValueImpl = readEnvValue,
-  randomBytes = crypto.randomBytes,
-  consoleImpl = console,
-} = {}) => {
-  const overlay = {};
-  const keyring = readConfiguredEnvValue('API_KEY_ENCRYPTION_KEYS', { env, readEnvValueImpl });
-  const configuredActiveVersion = readConfiguredEnvValue('API_KEY_ENCRYPTION_ACTIVE_VERSION', {
-    env,
-    readEnvValueImpl,
-  });
-  const inferredKeyringVersion = inferSingleKeyringVersion(keyring);
-  const activeVersion = configuredActiveVersion || inferredKeyringVersion || 'v1';
-
-  if (!hasUsableVersionedKeyring(keyring)) {
-    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = activeVersion;
-    overlay.API_KEY_ENCRYPTION_KEYS = `${activeVersion}:${randomBytes(32).toString('base64url')}`;
-    consoleImpl.log(
-      '[backend/dev] Injected local-only API key encryption keyring for this process.'
-    );
-  } else if (!configuredActiveVersion && inferredKeyringVersion) {
-    overlay.API_KEY_ENCRYPTION_ACTIVE_VERSION = inferredKeyringVersion;
-  }
-
-  return overlay;
-};
-
-const shutdown = (apiChild, workersChild = null) => {
-  if (workersChild && !workersChild.killed) workersChild.kill();
-  if (apiChild && !apiChild.killed) apiChild.kill();
-};
-
-const handleExit = (
-  name,
-  code,
-  {
-    consoleImpl = console,
-    shutdownImpl = () => {},
-    exit = process.exit,
-  } = {}
-) => {
-  const normalized = typeof code === 'number' ? code : 0;
-  if (normalized !== 0) {
-    consoleImpl.error(`[backend/dev] ${name} exited with code ${normalized}`);
-    shutdownImpl();
-    exit(normalized);
-  }
-  return normalized;
-};
-
-const main = async ({
-  env = process.env,
-  consoleImpl = console,
-  readEnvValueImpl = readEnvValue,
-  checkTcpPortImpl = checkTcpPort,
-  dockerAvailableImpl = dockerAvailable,
-  runImpl = run,
-  runPrismaImpl = runPrisma,
-  spawnImpl = spawn,
-  processImpl = process,
-  root = rootDir,
-} = {}) => {
-  consoleImpl.log('[backend/dev] Preparing local backend environment...');
+const main = async () => {
+  console.log('[backend/dev] Preparing local backend environment...');
 
   const databaseUrl =
-    env.DATABASE_URL ||
-    readEnvValueImpl('DATABASE_URL') ||
+    process.env.DATABASE_URL ||
+    readEnvValue('DATABASE_URL') ||
     'postgresql://postgres:password@localhost:5432/cryptosparrow?schema=public';
-  const redisUrl = env.REDIS_URL || readEnvValueImpl('REDIS_URL') || 'redis://localhost:6379';
-  const localReadinessEnv = buildLocalReadinessEnv({
-    env,
-    readEnvValueImpl,
-    consoleImpl,
-  });
-  const childEnv = { ...env, ...localReadinessEnv };
+  const redisUrl = process.env.REDIS_URL || readEnvValue('REDIS_URL') || 'redis://localhost:6379';
 
   const db = parseDatabaseUrl(databaseUrl);
-  const redisTarget = redis(redisUrl);
+  const redis = (() => {
+    try {
+      const parsed = new URL(redisUrl);
+      return { host: parsed.hostname || 'localhost', port: Number(parsed.port || '6379') };
+    } catch {
+      return { host: 'localhost', port: 6379 };
+    }
+  })();
 
-  let dbReady = await checkTcpPortImpl(db.host, db.port);
-  let redisReady = await checkTcpPortImpl(redisTarget.host, redisTarget.port);
+  let dbReady = await checkTcpPort(db.host, db.port);
+  let redisReady = await checkTcpPort(redis.host, redis.port);
 
   if (!dbReady || !redisReady) {
-    consoleImpl.log('[backend/dev] Database or Redis is not reachable. Trying Docker Compose...');
-    if (!dockerAvailableImpl()) {
-      consoleImpl.error(
+    console.log('[backend/dev] Database or Redis is not reachable. Trying Docker Compose...');
+    if (!dockerAvailable()) {
+      console.error(
         '[backend/dev] Docker is required to auto-start postgres/redis but Docker is unavailable.\n' +
           'Start Docker Desktop (or run Postgres/Redis manually), then retry.'
       );
-      processImpl.exit(1);
-      return null;
+      process.exit(1);
     }
-    runImpl('docker', ['compose', 'up', '-d', 'postgres', 'redis']);
-    dbReady = await checkTcpPortImpl(db.host, db.port, 5000);
-    redisReady = await checkTcpPortImpl(redisTarget.host, redisTarget.port, 5000);
+    run('docker', ['compose', 'up', '-d', 'postgres', 'redis']);
+    dbReady = await checkTcpPort(db.host, db.port, 5000);
+    redisReady = await checkTcpPort(redis.host, redis.port, 5000);
     if (!dbReady || !redisReady) {
-      consoleImpl.error('[backend/dev] Postgres/Redis still unavailable after docker compose up.');
-      processImpl.exit(1);
-      return null;
+      console.error('[backend/dev] Postgres/Redis still unavailable after docker compose up.');
+      process.exit(1);
     }
   }
 
-  consoleImpl.log('[backend/dev] Resetting database (prisma migrate reset --force)...');
-  runPrismaImpl(['migrate', 'reset', '--force']);
-  consoleImpl.log('[backend/dev] Running Prisma generate...');
-  runPrismaImpl(['generate'], { allowEngineLockFallback: true });
-  consoleImpl.log('[backend/dev] Running Prisma migrations...');
-  runPrismaImpl(['migrate', 'deploy']);
+  console.log('[backend/dev] Resetting database (prisma migrate reset --force)...');
+  runPrisma(['migrate', 'reset', '--force']);
+  console.log('[backend/dev] Running Prisma generate...');
+  runPrisma(['generate'], { allowEngineLockFallback: true });
+  console.log('[backend/dev] Running Prisma migrations...');
+  runPrisma(['migrate', 'deploy']);
 
-  consoleImpl.log('[backend/dev] Starting api in watch mode...');
-  const apiChild = spawnImpl('pnpm', ['--filter', 'api', 'dev'], {
+  console.log('[backend/dev] Starting api in watch mode...');
+  const apiChild = spawn('pnpm', ['--filter', 'api', 'dev'], {
     stdio: 'inherit',
-    cwd: root,
+    cwd: rootDir,
     shell: process.platform === 'win32',
-    env: childEnv,
   });
 
   let workersChild = null;
-  if (env.BACKEND_DEV_START_WORKERS !== 'false') {
-    consoleImpl.log('[backend/dev] Starting workers (execution + market-stream)...');
-    workersChild = spawnImpl('pnpm', ['run', 'workers/dev'], {
+  if (withWorkersByDefault) {
+    console.log('[backend/dev] Starting workers (execution + market-stream)...');
+    workersChild = spawn('pnpm', ['run', 'workers/dev'], {
       stdio: 'inherit',
-      cwd: root,
+      cwd: rootDir,
       shell: process.platform === 'win32',
-      env: childEnv,
     });
   } else {
-    consoleImpl.log('[backend/dev] Workers auto-start disabled (BACKEND_DEV_START_WORKERS=false).');
+    console.log('[backend/dev] Workers auto-start disabled (BACKEND_DEV_START_WORKERS=false).');
   }
 
-  const shutdownImpl = () => shutdown(apiChild, workersChild);
+  const shutdown = () => {
+    if (workersChild && !workersChild.killed) workersChild.kill();
+    if (!apiChild.killed) apiChild.kill();
+  };
 
-  processImpl.on('SIGINT', shutdownImpl);
-  processImpl.on('SIGTERM', shutdownImpl);
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+
+  const handleExit = (name, code) => {
+    const normalized = typeof code === 'number' ? code : 0;
+    if (normalized !== 0) {
+      console.error(`[backend/dev] ${name} exited with code ${normalized}`);
+      shutdown();
+      process.exit(normalized);
+    }
+  };
 
   apiChild.on('exit', (code) => {
-    handleExit('api', code, {
-      consoleImpl,
-      shutdownImpl,
-      exit: processImpl.exit,
-    });
-    if (!workersChild || workersChild.killed) processImpl.exit(code ?? 0);
+    handleExit('api', code);
+    if (!workersChild || workersChild.killed) process.exit(code ?? 0);
   });
 
   if (workersChild) {
     workersChild.on('exit', (code) => {
-      handleExit('workers', code, {
-        consoleImpl,
-        shutdownImpl,
-        exit: processImpl.exit,
-      });
-      if (apiChild.killed) processImpl.exit(code ?? 0);
+      handleExit('workers', code);
+      if (apiChild.killed) process.exit(code ?? 0);
     });
   }
-
-  return { apiChild, workersChild };
 };
 
-export {
-  checkTcpPort,
-  dockerAvailable,
-  buildLocalReadinessEnv,
-  handleExit,
-  hasUsableVersionedKeyring,
-  main,
-  parseDatabaseUrl,
-  readEnvValue,
-  redis,
-  run,
-  runPrisma,
-  shutdown,
-};
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void main();
-}
+void main();
 

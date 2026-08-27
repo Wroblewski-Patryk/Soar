@@ -1,6 +1,6 @@
 # Documentation Map
 
-Updated: 2026-05-25
+Updated: YYYY-MM-DD
 
 This is the main entrypoint for current project documentation.
 
@@ -12,7 +12,6 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 
 | Need | Go to |
 | --- | --- |
-| Obsidian vault dashboard, canvas maps, AI navigation, cleanup queue | `docs/obsidian/soar-vault-dashboard.md` |
 | Product intent, scope, roadmap, user value, limits | `docs/maps/product-map.md` |
 | Durable decisions and ADRs | `docs/decisions/README.md` |
 | System shape, contracts, modules, architecture truth | `docs/maps/architecture-map.md` |
@@ -33,13 +32,11 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | Runtime, worker, agent, or side-effect change | `docs/governance/agent-runtime-contract.md` or relevant architecture doc | pipelines, tests, operations runbooks | architecture, runtime playbook, evidence |
 | Release, deploy, rollback, or production proof | `docs/maps/release-ops-map.md` | operations runbooks, system health, release history | operations docs, system health, release evidence |
 | Need proof for a claim | `docs/maps/agent-work-map.md` | `history/evidence/`, `history/releases/`, `history/audits/` | task record and relevant state file |
-| Need current known-state / V1 readiness truth | `docs/status/known-state-readiness.md` | latest `history/audits/project-index-*`, `v1-static-issue-scan-*`, `v1-master-state-ledger-*`, and `history/releases/v1-completion-scorecard-*` | known-state status, queue classification, proof gaps |
 
 ## Current Source Of Truth
 
 | Path | Role | Primary entry |
 | --- | --- | --- |
-| `docs/analysis/` | Documentation quality systems: inventory, drift, reusable-audit definitions. | `docs/analysis/documentation-drift.md` |
 | `docs/product/` | Product scope, vision, glossary, roadmap inputs, and known limits. | `docs/product/overview.md` |
 | `docs/decisions/` | Accepted, rejected, proposed, and superseded decisions. | `docs/decisions/README.md` |
 | `docs/architecture/` | Canonical runtime, ownership, data, contract, graph, and safety truth. | `docs/maps/architecture-map.md` |
@@ -53,9 +50,6 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | `docs/security/` | Secure development, secrets, authorization, and sensitive-area policy. | `docs/security/security-baseline.md` |
 | `docs/ux/` | Design system, quality bars, evidence rules, and reusable pattern memory. | `docs/ux/design-system-contract.md` |
 | `docs/governance/` | Repository, agent, template, and delivery rules. | `docs/governance/template-usage.md` |
-| `docs/status/` | Generated and maintained implementation/proof status snapshots for route, journey, and ownership visibility. | `docs/status/view-map-browser-workflow-ownership.md` |
-| `docs/obsidian/` | Obsidian-first navigation layer for dashboarding, canvas maps, AI navigation, and Paperclip cleanup delegation. | `docs/obsidian/soar-vault-dashboard.md` |
-| `docs/status/known-state-readiness.md` | Current operational truth for whether Soar is known enough for safe autonomous development and V1 release routing. | `docs/status/known-state-readiness.md` |
 
 ## Historical Lookup
 

@@ -11,6 +11,9 @@ const webDir = path.resolve(process.cwd());
 const repoRoot = path.resolve(webDir, '..', '..');
 const outputDir = path.join(webDir, '.build-meta');
 const outputPath = path.join(outputDir, 'BUILD_META.json');
+const githubBranchApiUrl =
+  'https://api.github.com/repos/Wroblewski-Patryk/Soar/commits/main';
+
 const readTrimmedEnv = (...keys) => {
   for (const key of keys) {
     const value = process.env[key]?.trim();
@@ -70,6 +73,18 @@ const resolveGitSha = async () => {
     // Fall through to unknown metadata.
   }
 
+  try {
+    const gitSha = await readGitShaFromGithubBranch();
+    if (gitSha) {
+      return {
+        gitSha,
+        metadataSource: 'github-branch',
+      };
+    }
+  } catch {
+    // Fall through to unknown metadata.
+  }
+
   return {
     gitSha: null,
     metadataSource: 'unknown',
@@ -110,6 +125,42 @@ const readGitShaFromRef = async (gitDir, refName) => {
     }
   } catch {
     // Fall through to null.
+  }
+
+  return null;
+};
+
+const readGitShaFromGithubBranch = async () => {
+  if (typeof fetch !== 'function') return null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
+
+    try {
+      const response = await fetch(githubBranchApiUrl, {
+        headers: {
+          accept: 'application/vnd.github+json',
+          'user-agent': 'soar-web-build-metadata',
+        },
+        signal: controller.signal,
+      });
+
+      if (!response.ok) return null;
+
+      const payload = await response.json();
+      const gitSha =
+        typeof payload?.sha === 'string' && payload.sha.trim()
+          ? payload.sha.trim()
+          : null;
+      if (gitSha) return gitSha;
+    } catch {
+      // Retry transient network failures inside Coolify builds.
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
   }
 
   return null;

@@ -36,7 +36,6 @@ tags: [soar-map, component, frontend, verified_local]
 
 - calls -> [[SOAR-SERVICE-WEB-REPORTS]] (verified_local)
 - calls -> [[SOAR-SERVICE-WEB-BACKTESTS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-REPORTS]] (verified_local)
 - renders <- [[SOAR-PAGE-REPORTS]] (verified_local)
 - verifies <- [[SOAR-TEST-REPORTS-WEB]] (verified_local)
 

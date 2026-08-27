@@ -1,7 +1,0 @@
-
-> api@1.0.0 dev C:\Personal\Projekty\Aplikacje\Soar\apps\api
-> tsx watch src/index.ts
-
-[dotenv@17.2.1] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-{"level":"info","module":"api.server","event":"server_started","timestamp":"2026-07-14T18:51:24.078Z","serverPort":3001,"serverUrl":"http://localhost:3001","corsClientUrl":"http://localhost:3002","corsOriginsCount":1}
-{"level":"info","module":"http.request","event":"http_request","timestamp":"2026-07-14T18:53:23.546Z","method":"GET","path":"/auth/me","statusCode":401,"durationMs":209}

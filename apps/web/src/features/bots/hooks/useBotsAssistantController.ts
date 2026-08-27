@@ -10,13 +10,7 @@ import {
   upsertBotAssistantConfig,
   upsertBotSubagentConfig,
 } from "../services/bots.service";
-import {
-  AssistantDecisionTrace,
-  AssistantModelProfile,
-  AssistantRole,
-  Bot,
-  BotSubagentConfig,
-} from "../types/bot.type";
+import { AssistantDecisionTrace, Bot, BotSubagentConfig } from "../types/bot.type";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 
 const interpolateTemplate = (template: string, values: Record<string, string | number>) =>
@@ -40,7 +34,7 @@ export const useBotsAssistantController = ({
   const [assistantSaving, setAssistantSaving] = useState(false);
   const [assistantMainEnabled, setAssistantMainEnabled] = useState(false);
   const [assistantMandate, setAssistantMandate] = useState("");
-  const [assistantModelProfile, setAssistantModelProfile] = useState<AssistantModelProfile>("balanced");
+  const [assistantModelProfile, setAssistantModelProfile] = useState("balanced");
   const [assistantSafetyMode, setAssistantSafetyMode] = useState<"STRICT" | "BALANCED" | "EXPERIMENTAL">("STRICT");
   const [assistantLatencyMs, setAssistantLatencyMs] = useState(2500);
   const [assistantSubagents, setAssistantSubagents] = useState<BotSubagentConfig[]>([]);
@@ -59,9 +53,9 @@ export const useBotsAssistantController = ({
             userId: "",
             botId: assistantBotId,
             slotIndex,
-            role: "GENERAL" as AssistantRole,
+            role: "GENERAL",
             enabled: false,
-            modelProfile: "balanced" as AssistantModelProfile,
+            modelProfile: "balanced",
             timeoutMs: 1200,
             safetyMode: "STRICT" as const,
           }

@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-BACKTESTS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-BACKTESTS]] (verified_local)
 - renders <- [[SOAR-PAGE-BACKTESTS-LIST]] (verified_local)
 
 ## Evidence Rule

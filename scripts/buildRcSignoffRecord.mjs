@@ -3,10 +3,9 @@
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 
 const repoRoot = process.cwd();
-export const resolveDocsRoot = () => {
+const resolveDocsRoot = () => {
   const docsRoot = path.resolve(repoRoot, 'docs');
   const migratedDocsRoot = path.resolve(repoRoot, 'docs');
   if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
@@ -17,7 +16,8 @@ export const resolveDocsRoot = () => {
 
 const operationsDir = path.join(resolveDocsRoot(), 'operations');
 
-export const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     releaseTarget: 'v1.0.0',
     statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
@@ -54,13 +54,13 @@ export const parseArgs = (args = process.argv.slice(2)) => {
   return options;
 };
 
-export const resolveTimestamp = (today) => {
+const resolveTimestamp = (today) => {
   const normalized = String(today ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00:00:00.000Z`;
   return new Date().toISOString();
 };
 
-export const parseGateLine = (line) => {
+const parseGateLine = (line) => {
   const match = line.match(/^- Gate \d+ \(.+?\):\s+(.+)$/i);
   const rawValue = match?.[1]?.trim().toUpperCase() ?? '';
   if (!rawValue) return null;
@@ -71,7 +71,7 @@ export const parseGateLine = (line) => {
   return rawValue.split(/\s+/)[0] || null;
 };
 
-export const loadGateStatuses = async (statusPath) => {
+const loadGateStatuses = async (statusPath) => {
   const raw = await readFile(statusPath, 'utf8');
   const lines = raw.split(/\r?\n/);
   const statuses = lines.map(parseGateLine).filter(Boolean);
@@ -81,21 +81,21 @@ export const loadGateStatuses = async (statusPath) => {
   };
 };
 
-export const approvalLine = (role, name, timestamp) => {
+const approvalLine = (role, name, timestamp) => {
   if (!name) {
     return `- ${role} sign-off:\n  - Name:\n  - UTC timestamp:\n  - Notes:`;
   }
   return `- ${role} sign-off:\n  - Name: ${name}\n  - UTC timestamp: ${timestamp}\n  - Notes: approved via scripted record build`;
 };
 
-export const ownerBlock = (name, contact, timestamp) => {
+const ownerBlock = (name, contact, timestamp) => {
   if (!name) {
     return `- RC owner with rollback authority:\n  - Name:\n  - Contact:\n  - UTC assignment timestamp:`;
   }
   return `- RC owner with rollback authority:\n  - Name: ${name}\n  - Contact: ${contact || 'TBD'}\n  - UTC assignment timestamp: ${timestamp}`;
 };
 
-export const listMissingApproverFields = (options) => {
+const listMissingApproverFields = (options) => {
   const missing = [];
   if (!options.engineeringName) missing.push('Engineering name (--engineering-name)');
   if (!options.productName) missing.push('Product name (--product-name)');
@@ -104,13 +104,13 @@ export const listMissingApproverFields = (options) => {
   return missing;
 };
 
-export const listRecommendedSignoffFields = (options) => {
+const listRecommendedSignoffFields = (options) => {
   const missing = [];
   if (!options.ownerContact) missing.push('RC owner contact (--owner-contact)');
   return missing;
 };
 
-export const evaluateSignoff = (options, gates) => {
+const evaluateSignoff = (options, gates) => {
   const missingApproverFields = listMissingApproverFields(options);
   const prerequisiteGatesPass =
     gates.statuses.length >= 3 && gates.statuses.slice(0, 3).every((status) => status === 'PASS');
@@ -122,7 +122,7 @@ export const evaluateSignoff = (options, gates) => {
   };
 };
 
-export const render = (options, gates) => {
+const render = (options, gates) => {
   // Gate 4 is the formal sign-off itself, so approval depends on Gates 1-3
   // plus the required approver fields, not on a pre-existing Gate 4 PASS.
   const evaluation = evaluateSignoff(options, gates);
@@ -161,8 +161,8 @@ ${ownerBlock(options.ownerName, options.ownerContact, timestamp)}
 `;
 };
 
-export const main = async (args = process.argv.slice(2)) => {
-  const options = parseArgs(args);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
     console.log(
       'Usage: node scripts/buildRcSignoffRecord.mjs [--release-target <v>] [--status-path <file>] [--output <file>] [--engineering-name <name>] [--product-name <name>] [--operations-name <name>] [--owner-name <name>] [--owner-contact <contact>] [--today <yyyy-mm-dd>]'
@@ -187,12 +187,7 @@ export const main = async (args = process.argv.slice(2)) => {
   }
 };
 
-const isDirectRun =
-  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-
-if (isDirectRun) {
-  main().catch((error) => {
-    console.error('[ops:rc:signoff:build] failed:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  console.error('[ops:rc:signoff:build] failed:', error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});

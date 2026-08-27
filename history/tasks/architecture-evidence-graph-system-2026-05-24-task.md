@@ -18,15 +18,6 @@
 - Mission ID: `ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24`
 - Mission Status: PARTIALLY_VERIFIED
 
-## Architecture Links
-
-- Primary feature/module: Architecture evidence graph foundation.
-- Architecture nodes: SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH; SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM; SOAR-TEST-ARCHITECTURE-GRAPH; SOAR-DOC-TRACEABILITY.
-- Function chains: docs/architecture/chains/CHAIN-ARCHITECTURE-EVIDENCE-GRAPH.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; scripts/build-architecture-awareness-index.mjs; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run quality:guardrails`; `pnpm run docs:parity:check` recorded in this task's Validation Evidence.
-- Docs updated: architecture graph system docs, graph registries, generated graph exports, docs maps, and source-of-truth state files.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

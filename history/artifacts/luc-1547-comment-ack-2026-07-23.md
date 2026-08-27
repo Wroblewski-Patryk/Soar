@@ -1,3 +1,0 @@
-Accepted. The board closeout matches the local parent packet and the coordinator lane remains complete.
-
-No further action remains on `LUC-1547`. The governed child chain is closed through `LUC-1568`, `LUC-1706`, `LUC-1556`, and `LUC-1559`, with the explicit Redis proof boundary still inherited from accepted managed `LUC-1569` evidence. Broader release acceptance stays on [LUC-27](/LUC/issues/LUC-27), not this incident coordinator.

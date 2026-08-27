@@ -3,9 +3,9 @@ import {
   resolveOpsAuthLayerOptions,
 } from './buildOpsRequestHeaders.mjs';
 
-export const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
+const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
 
-export const readSetCookieHeaders = (headers) => {
+const readSetCookieHeaders = (headers) => {
   if (!headers) return [];
   if (typeof headers.getSetCookie === 'function') {
     const values = headers.getSetCookie();
@@ -16,7 +16,7 @@ export const readSetCookieHeaders = (headers) => {
   return typeof raw === 'string' && raw.length > 0 ? [raw] : [];
 };
 
-export const extractTokenFromSetCookie = (setCookieHeaders) => {
+const extractTokenFromSetCookie = (setCookieHeaders) => {
   for (const headerValue of setCookieHeaders) {
     const tokenMatch = /^token=([^;]+)/i.exec(String(headerValue ?? '').trim());
     if (tokenMatch?.[1]) {
@@ -26,7 +26,7 @@ export const extractTokenFromSetCookie = (setCookieHeaders) => {
   return '';
 };
 
-export const readErrorMessage = async (response) => {
+const readErrorMessage = async (response) => {
   try {
     const payload = await response.json();
     const nested = payload?.error?.message;

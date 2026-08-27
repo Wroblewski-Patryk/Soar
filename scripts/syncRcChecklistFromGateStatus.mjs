@@ -3,25 +3,21 @@
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url);
-
-export const resolveDocsRoot = (deps = {}) => {
-  const { cwd = process.cwd(), existsSyncImpl = existsSync } = deps;
-  const repoRoot = cwd;
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
   const docsRoot = path.resolve(repoRoot, 'docs');
   const migratedDocsRoot = path.resolve(repoRoot, 'docs');
-  if (existsSyncImpl(path.join(docsRoot, 'operations')) || !existsSyncImpl(migratedDocsRoot)) {
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
     return docsRoot;
   }
   return migratedDocsRoot;
 };
 
-export const parseArgs = (argv = process.argv.slice(2), deps = {}) => {
-  const { cwd = process.cwd(), docsRoot = resolveDocsRoot({ cwd }) } = deps;
-  const operationsDir = path.join(docsRoot, 'operations');
-  const args = argv;
+const operationsDir = path.join(resolveDocsRoot(), 'operations');
+
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
     signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
@@ -43,30 +39,30 @@ export const parseArgs = (argv = process.argv.slice(2), deps = {}) => {
     if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
   }
 
-  options.statusPath = path.resolve(cwd, options.statusPath);
-  options.signoffPath = path.resolve(cwd, options.signoffPath);
-  options.checklistPath = path.resolve(cwd, options.checklistPath);
+  options.statusPath = path.resolve(process.cwd(), options.statusPath);
+  options.signoffPath = path.resolve(process.cwd(), options.signoffPath);
+  options.checklistPath = path.resolve(process.cwd(), options.checklistPath);
   return options;
 };
 
-export const resolveDate = (today) => {
+const resolveDate = (today) => {
   const normalized = String(today ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return normalized;
   return new Date().toISOString().slice(0, 10);
 };
 
-export const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-export const getGateLabel = (rawStatus, gateNumber) => {
+const getGateLabel = (rawStatus, gateNumber) => {
   const regex = new RegExp(`- Gate ${gateNumber} \\(.+?\\):\\s*([^\\r\\n]+)`, 'i');
   const match = rawStatus.match(regex);
   return match?.[1]?.trim().toUpperCase() ?? 'OPEN';
 };
 
-export const refreshLatestVerificationDate = (rawChecklist, isoDate) =>
+const refreshLatestVerificationDate = (rawChecklist, isoDate) =>
   rawChecklist.replace(/### Latest Verification \(\d{4}-\d{2}-\d{2}\)/, `### Latest Verification (${isoDate})`);
 
-export const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, gate2, gate3, gate4) =>
+const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, gate2, gate3, gate4) =>
   rawChecklist
     .replace(/## Outstanding External Gates \(\d{4}-\d{2}-\d{2}\)/, `## Outstanding External Gates (${isoDate})`)
     .replace(
@@ -74,7 +70,7 @@ export const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, ga
       `- current snapshot is \`G1=${gate1}\`, \`G2=${gate2}\`, \`G3=${gate3}\`, \`G4=${gate4}\` (synced ${isoDate}).`
     );
 
-export const refreshExpectedSha = (rawChecklist, expectedSha) => {
+const refreshExpectedSha = (rawChecklist, expectedSha) => {
   const value = expectedSha || 'not provided';
   if (/^Expected SHA:\s*`?.+?`?\s*$/m.test(rawChecklist)) {
     return rawChecklist.replace(/^Expected SHA:\s*`?.+?`?\s*$/m, `Expected SHA: \`${value}\``);
@@ -85,13 +81,13 @@ export const refreshExpectedSha = (rawChecklist, expectedSha) => {
   );
 };
 
-export const extractValueAfterLabel = (raw, label) => {
+const extractValueAfterLabel = (raw, label) => {
   const regex = new RegExp(`^\\s*${escapeRegExp(label)}\\s*(.*)$`, 'im');
   const match = raw.match(regex);
   return match?.[1]?.trim() ?? '';
 };
 
-export const parseSignoff = (rawSignoff) => {
+const parseSignoff = (rawSignoff) => {
   const engineeringBlockMatch = rawSignoff.match(/- Engineering sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im);
   const productBlockMatch = rawSignoff.match(/- Product sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im);
   const operationsBlockMatch = rawSignoff.match(/- Operations sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im);
@@ -105,35 +101,25 @@ export const parseSignoff = (rawSignoff) => {
   };
 };
 
-export const setChecklistCheckbox = (rawChecklist, label, checked) => {
+const setChecklistCheckbox = (rawChecklist, label, checked) => {
   const regex = new RegExp(`^- \\[[ x]\\] ${escapeRegExp(label)}$`, 'm');
   const replacement = `- [${checked ? 'x' : ' '}] ${label}`;
   return rawChecklist.replace(regex, replacement);
 };
 
-export const main = async (deps = {}) => {
-  const {
-    argv = process.argv.slice(2),
-    consoleImpl = console,
-    exit = process.exit,
-    parseArgsFn = parseArgs,
-    readFileImpl = readFile,
-    writeFileImpl = writeFile,
-  } = deps;
-
-  const options = parseArgsFn(argv, deps);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
-    consoleImpl.log(
+    console.log(
       'Usage: node scripts/syncRcChecklistFromGateStatus.mjs [--status-path <file>] [--signoff-path <file>] [--checklist-path <file>] [--today <yyyy-mm-dd>]'
     );
-    exit(0);
-    return { status: 0, help: true };
+    process.exit(0);
   }
 
   const [rawStatus, rawSignoff, rawChecklist] = await Promise.all([
-    readFileImpl(options.statusPath, 'utf8'),
-    readFileImpl(options.signoffPath, 'utf8'),
-    readFileImpl(options.checklistPath, 'utf8'),
+    readFile(options.statusPath, 'utf8'),
+    readFile(options.signoffPath, 'utf8'),
+    readFile(options.checklistPath, 'utf8'),
   ]);
 
   const gate1 = getGateLabel(rawStatus, 1);
@@ -159,12 +145,11 @@ export const main = async (deps = {}) => {
   nextChecklist = setChecklistCheckbox(nextChecklist, 'Operations sign-off.', signoff.operationsSigned);
   nextChecklist = setChecklistCheckbox(nextChecklist, 'RC owner assigned with rollback authority.', signoff.ownerAssigned);
 
-  await writeFileImpl(options.checklistPath, nextChecklist);
-  consoleImpl.log(`RC checklist synced from gate status: ${path.relative(process.cwd(), options.checklistPath)}`);
-  return { status: 0, checklistPath: options.checklistPath, nextChecklist };
+  await writeFile(options.checklistPath, nextChecklist);
+  console.log(`RC checklist synced from gate status: ${path.relative(process.cwd(), options.checklistPath)}`);
 };
 
-if (isDirectRun()) main().catch((error) => {
+main().catch((error) => {
   console.error('[ops:rc:checklist:sync] failed:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 });

@@ -21,10 +21,7 @@ COPY scripts scripts
 ARG SOURCE_COMMIT
 ARG SOURCE_BRANCH
 ARG COOLIFY_BRANCH
-ARG COOLIFY_GIT_COMMIT_SHA
-ARG COOLIFY_COMMIT_SHA
-ARG GITHUB_SHA
-RUN SOURCE_COMMIT="$SOURCE_COMMIT" SOURCE_BRANCH="${SOURCE_BRANCH:-$COOLIFY_BRANCH}" COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" GITHUB_SHA="$GITHUB_SHA" pnpm --filter web build
+RUN SOURCE_COMMIT="$SOURCE_COMMIT" SOURCE_BRANCH="${SOURCE_BRANCH:-$COOLIFY_BRANCH}" pnpm --filter web build
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
@@ -34,7 +31,6 @@ WORKDIR /app
 
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
-COPY --from=build --chown=node:node /app/scripts/runWebNextProductionCommand.mjs /app/scripts/runWebNextProductionCommand.mjs
 COPY --from=build --chown=node:node /app/apps/web /app/apps/web
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
 

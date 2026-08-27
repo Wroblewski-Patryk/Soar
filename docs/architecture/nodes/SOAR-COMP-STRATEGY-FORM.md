@@ -39,7 +39,6 @@ tags: [soar-map, component, frontend, verified_local]
 - composes -> [[SOAR-COMP-STRATEGY-PRESET-PICKER]] (verified_local)
 - uses -> [[SOAR-SERVICE-STRATEGY-FORM-MAPPER]] (verified_local)
 - composes -> [[SOAR-COMP-SORTABLE-THRESHOLD-LIST-EDITOR]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-STRATEGIES]] (verified_local)
 - renders <- [[SOAR-PAGE-STRATEGY-CREATE]] (verified_local)
 - renders <- [[SOAR-PAGE-STRATEGY-EDIT]] (verified_local)
 

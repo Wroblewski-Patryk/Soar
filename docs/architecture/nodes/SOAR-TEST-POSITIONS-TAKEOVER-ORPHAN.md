@@ -8,7 +8,7 @@ module: api-positions
 feature: positions
 risk_level: critical
 completion_percent: 90
-last_verified_at: 2026-06-03
+last_verified_at: 2026-05-24
 verification_status: verified_local
 tags: [soar-map, test, testing, verified_local]
 ---
@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified_local]
 | --- | --- |
 | Description | Takeover status rebind and orphan repair e2e tests. |
 | File path | apps/api/src/modules/positions/positions.takeover-status.e2e.test.ts |
-| Related files | apps/api/src/modules/positions/positions.orphan-repair.e2e.test.ts, apps/api/src/modules/positions/positions.orphan-repair.contract.e2e.test.ts |
+| Related files | apps/api/src/modules/positions/positions.orphan-repair.e2e.test.ts |
 | Parent | [[SOAR-FEATURE-POSITIONS]] |
 | Children |  |
 | Depends on | [[SOAR-API-POSITION-TAKEOVER-STATUS]], [[SOAR-API-POSITION-TAKEOVER-REBIND]], [[SOAR-API-POSITION-ORPHAN-REPAIR]] |

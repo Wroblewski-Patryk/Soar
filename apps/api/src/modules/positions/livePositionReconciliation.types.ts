@@ -279,7 +279,7 @@ export type ReconcileDeps = {
   }) => Promise<LocalManagedLivePosition[]>;
   closeStaleLocalManagedPosition?: (positionId: string, closedAt: Date) => Promise<void>;
   processOwnedSyncedPositionAutomation?: (input: {
-    exchange: Exchange;
+    exchange: 'BINANCE';
     marketType: TradeMarket;
     symbol: string;
     markPrice: number;

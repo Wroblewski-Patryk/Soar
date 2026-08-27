@@ -6,8 +6,6 @@ import { sendError } from '../utils/apiError';
 
 const logger = createModuleLogger('rate-limit');
 
-const isApiTestRuntime = () => process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
-
 type RateLimitOptions = {
   windowMs: number;
   max: number;
@@ -65,10 +63,6 @@ const rateLimitKey = (
   keyScope: NonNullable<RateLimitOptions['keyScope']>
 ) => `${req.method}:${req.baseUrl}${req.path}:${resolveRateLimitSubject(req, keyScope)}`;
 
-const logRedisClientError = (error: unknown) => {
-  logger.error('redis_client_error', { error });
-};
-
 type RedisClient = ReturnType<typeof createClient>;
 let redisClientPromise: Promise<RedisClient | null> | null = null;
 let redisClientFailedAtMs: number | null = null;
@@ -78,7 +72,7 @@ const redisReconnectCooldownMs = Math.max(
 );
 
 const getRedisClient = async () => {
-  if (isApiTestRuntime()) {
+  if (process.env.NODE_ENV === 'test') {
     return null;
   }
 
@@ -96,7 +90,9 @@ const getRedisClient = async () => {
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
       const client = createClient({ url: redisUrl });
 
-      client.on('error', logRedisClientError);
+      client.on('error', (error) => {
+        console.error('Redis rate-limit client error:', error);
+      });
 
       await client.connect();
       return client;
@@ -122,7 +118,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (
-      isApiTestRuntime() &&
+      process.env.NODE_ENV === 'test' &&
       process.env.RATE_LIMIT_ENABLE_TEST_MODE !== 'true'
     ) {
       return next();
@@ -206,7 +202,6 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
 export const __rateLimitInternals = {
   resolveRateLimitSubject,
-  logRedisClientError,
   resetForTests: () => {
     redisClientPromise = null;
     redisClientFailedAtMs = null;

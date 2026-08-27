@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/admin`
 - Owner: backend/core
-- Last updated: 2026-07-14
+- Last updated: 2026-04-12
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -36,10 +36,6 @@ Out of scope:
   - Subscription plan updates rely on existing catalog row (`ensureSubscriptionCatalog` bootstrap).
 
 ## 4. Runtime Flows
-- Admin root probe flow:
-  1. Apply `requireAuth` and `requireRole('ADMIN')` at the router boundary.
-  2. Confirm the protected `/admin` mount is reachable for authenticated admin callers.
-  3. Return the static admin-only confirmation payload without exposing broader module data.
 - User management flow:
   1. List users with pagination/search/role filters.
   2. Optional role update with guardrails (self + last-admin protection).
@@ -52,19 +48,13 @@ Out of scope:
 ## 5. API and UI Integration
 - Mounted base path: `/admin`.
 - Routes:
-  - `GET /admin`
   - `GET /admin/users`
   - `PATCH /admin/users/:userId`
   - `GET /admin/subscriptions/plans`
   - `PUT /admin/subscriptions/plans/:code`
-- Router mounts:
-  - `USE /admin/users` delegates into `usersRouter` only after the shared
-    `requireAuth` + `requireRole('ADMIN')` boundary is enforced at
-    `apps/api/src/router/admin.routes.ts`.
 
 ## 6. Security and Risk Guardrails
 - Admin-only authorization enforced at router level.
-- `GET /admin` is intentionally a minimal reachability probe for authenticated admins and must not leak broader module internals.
 - Demotion guardrails prevent privilege lockout.
 - Plan/user mutations are constrained to explicit whitelisted fields.
 

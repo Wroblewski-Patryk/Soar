@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-LOGS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-LOGS]] (verified_local)
 - renders <- [[SOAR-PAGE-LOGS]] (verified_local)
 - verifies <- [[SOAR-TEST-LOGS-WEB]] (verified_local)
 

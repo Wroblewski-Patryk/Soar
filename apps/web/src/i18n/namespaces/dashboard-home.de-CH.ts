@@ -211,7 +211,7 @@ export const dashboardHomeDeCh = {
     "manualOrderExceedsFreeFunds": "Die Bestellkosten dürfen das kostenlose Guthaben des Wallets nicht überschreiten.",
     "editPositionButton": "Position bearbeiten",
     "editPositionTitle": "Position bearbeiten",
-    "editPositionDescription": "Passen Sie TP/SL und Notizen an. Die Aktion \"Speichern\" ist im API-Integrationsschritt aktiviert.",
+    "editPositionDescription": "Passen Sie TP/SL und Notizen an. Die Aktion „Speichern“ ist im API-Integrationsschritt aktiviert.",
     "editPositionSave": "Änderungen speichern",
     "editPositionSaveSuccess": "Positionseinstellungen aktualisiert.",
     "editPositionSaveError": "Positionseinstellungen konnten nicht gespeichert werden.",
@@ -294,7 +294,6 @@ export const dashboardHomeDeCh = {
     "signalContextSourceLatestDecision": "Neueste Entscheidung",
     "signalContextSourceConfiguredFallback": "Schnappschuss bei geschlossener Kerze",
     "signalContextSourceUnresolved": "Ungelöst",
-    "runtimeStateLabel": "Runtime-Status",
     "marketStatePositionOpen": "Position offen",
     "marketStateSignalActive": "Akzeptiertes Signal",
     "marketStateEvaluatedNoTrade": "Bewertet / kein Handel",
@@ -380,4 +379,3 @@ export const dashboardHomeDeCh = {
     "updatedAt": "Aktualisiert unter: {value}"
   }
 } as const;
-

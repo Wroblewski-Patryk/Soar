@@ -17,15 +17,6 @@
 - Mission ID: ARCH-EVIDENCE-GRAPH-2026-05-24
 - Mission Status: CHECKPOINTED
 
-## Architecture Links
-
-- Primary feature/module: Profile API keys credential lifecycle graph coverage.
-- Architecture nodes: SOAR-FEATURE-PROFILE-API-KEYS; SOAR-PAGE-PROFILE; SOAR-API-PROFILE-APIKEY-LIST; SOAR-DB-API-KEY; SOAR-TEST-PROFILE-API-KEYS-API.
-- Function chains: docs/architecture/chains/CHAIN-PROFILE-API-KEYS.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Validation Evidence.
-- Docs updated: architecture graph registries, Profile API Keys chain output, generated graph exports, and source-of-truth state files.
-
 ## Context
 Profile API Keys is the secret-handling bridge between profile UX, exchange credential probes, Wallets LIVE binding, and runtime exchange synchronization. It needed its own graph chain instead of being hidden inside Exchange Adapter or Wallets.
 

@@ -1,11 +1,6 @@
 import { prisma } from '../../prisma/client';
 import { orchestrateAssistantDecision } from '../engine/assistantOrchestrator.service';
-import {
-  AssistantDryRunDto,
-  AssistantDryRunModeSchema,
-  UpsertBotAssistantConfigDto,
-  UpsertBotSubagentConfigDto,
-} from './bots.types';
+import { AssistantDryRunDto, UpsertBotAssistantConfigDto, UpsertBotSubagentConfigDto } from './bots.types';
 import { getOwnedBot } from './botOwnership.service';
 import { botErrors } from './bots.errors';
 
@@ -119,14 +114,12 @@ export const deleteBotSubagentConfig = async (userId: string, botId: string, slo
 };
 
 export const runAssistantDryRun = async (userId: string, botId: string, input: AssistantDryRunDto) => {
-  const mode = AssistantDryRunModeSchema.parse(input.mode);
   const bot = await getOwnedBot(userId, botId);
   if (!bot) return null;
 
   const assistantConfig = await prisma.botAssistantConfig.findUnique({
     where: { botId },
     select: {
-      mainAgentEnabled: true,
       mandate: true,
       safetyMode: true,
     },
@@ -144,16 +137,14 @@ export const runAssistantDryRun = async (userId: string, botId: string, input: A
     botMarketGroupId: 'dry-run',
     symbol: input.symbol.toUpperCase(),
     intervalWindow: input.intervalWindow,
-    mode,
+    mode: input.mode,
     mandate: assistantConfig?.mandate ?? null,
     forbiddenActions: assistantConfig?.safetyMode === 'STRICT' ? ['SHORT'] : undefined,
-    subagents: assistantConfig?.mainAgentEnabled
-      ? subagents.map((slot) => ({
-          slotIndex: slot.slotIndex,
-          role: slot.role,
-          enabled: slot.enabled,
-          timeoutMs: slot.timeoutMs,
-        }))
-      : [],
+    subagents: subagents.map((slot) => ({
+      slotIndex: slot.slotIndex,
+      role: slot.role,
+      enabled: slot.enabled,
+      timeoutMs: slot.timeoutMs,
+    })),
   });
 };

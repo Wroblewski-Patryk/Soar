@@ -35,10 +35,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-STRATEGIES]] (verified_local)
-- documented_by <- [[SOAR-COMP-STRATEGIES-LIST]] (verified_local)
-- documented_by <- [[SOAR-COMP-STRATEGY-FORM]] (verified_local)
-- documented_by <- [[SOAR-COMP-STRATEGY-FORM-SECTIONS]] (verified_local)
-- documented_by <- [[SOAR-COMP-STRATEGY-PRESET-PICKER]] (verified_local)
 
 ## Evidence Rule
 

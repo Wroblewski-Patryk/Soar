@@ -35,9 +35,6 @@ tags: [soar-map, documentation, documentation, partially_verified]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-WEB-RUNTIME-SURFACES]] (verified_local)
-- documented_by <- [[SOAR-COMP-HOME-LIVE-WIDGETS]] (partially_verified)
-- documented_by <- [[SOAR-COMP-RUNTIME-DATA-SECTION]] (partially_verified)
-- documented_by <- [[SOAR-COMP-RUNTIME-DATA-PRESENTERS]] (partially_verified)
 
 ## Evidence Rule
 

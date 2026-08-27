@@ -12,15 +12,6 @@
 - Iteration: 2026-05-09
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production-current focus synchronization.
-- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
-- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
-- Affected files: .agents/state/current-focus.md; .codex/context/PROJECT_STATE.md; .codex/context/TASK_BOARD.md; docs/planning/mvp-next-commits.md; docs/architecture/09_integrations-deployment-and-runtime-services.md; history/plans/deploy-freshness-4ee1672e-2026-05-09.md; scripts/waitForWebBuildInfo.mjs; scripts/deploySmokeCheck.mjs.
-- Tests/proof: deploy freshness and public smoke evidence for `4ee1672e` recorded in this task.
-- Docs updated: current focus, system health, next steps, task board, and project state.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

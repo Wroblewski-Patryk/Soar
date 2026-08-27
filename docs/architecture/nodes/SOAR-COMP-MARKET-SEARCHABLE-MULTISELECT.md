@@ -34,7 +34,6 @@ tags: [soar-map, component, frontend, verified_local]
 
 ## Relations
 
-- documented_by -> [[SOAR-DOC-WEB-MARKETS]] (verified_local)
 - composes <- [[SOAR-COMP-MARKET-UNIVERSE-FORM]] (verified_local)
 
 ## Evidence Rule

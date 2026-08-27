@@ -92,11 +92,3 @@ pnpm --filter web test -- src/app/dashboard/profile/page.test.tsx src/features/p
 ## 9. Open Issues and Follow-Ups
 - Replace `window.confirm` in security delete flow with app-level modal guardrail.
 - Expand profile tests to cover timezone preference persistence end-to-end.
-
-## 10. Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/web/src/features/profile/types/user.type.ts` | `docs/modules/web-profile.md` | Profile user DTO/type contract consumed by profile account forms and service hooks. | Architecture-awareness `documents` relation from this doc plus profile component/service tests when behavior changes. |

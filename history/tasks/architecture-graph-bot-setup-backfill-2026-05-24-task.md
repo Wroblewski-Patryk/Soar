@@ -17,15 +17,6 @@
 - Mission ID: ARCH-EVIDENCE-GRAPH-2026-05-24
 - Mission Status: CHECKPOINTED
 
-## Architecture Links
-
-- Primary feature/module: Bot setup and canonical topology graph coverage.
-- Architecture nodes: SOAR-FEATURE-BOT-SETUP; SOAR-PAGE-BOTS-LIST; SOAR-API-BOT-CREATE; SOAR-API-BOT-UPDATE; SOAR-DB-BOT; SOAR-TEST-BOT-SETUP-API.
-- Function chains: docs/architecture/chains/CHAIN-BOT-SETUP.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Validation Evidence.
-- Docs updated: architecture graph registries, Bot Setup chain output, generated graph exports, and source-of-truth state files.
-
 ## Context
 Bot Runtime was already mapped, but bot creation/editing was still mixed into runtime. Bot setup is the upstream topology chain that binds Wallets, Profile API Keys, Strategies, and Market Universes before runtime execution can be trusted.
 

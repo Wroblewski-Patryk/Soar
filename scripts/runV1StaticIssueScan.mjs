@@ -2,12 +2,10 @@
 
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 
 const ignoredDirectories = new Set([
-  '.tmp',
   '.git',
   '.next',
   '.turbo',
@@ -126,33 +124,7 @@ const readTextIfExists = async (targetPath) => {
   return readFile(targetPath, 'utf8');
 };
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const readJsonWithRetry = async (targetPath, { attempts = 5, delayMs = 200 } = {}) => {
-  let lastError = null;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    const text = await readTextIfExists(targetPath);
-    if (text.trim().length > 0) {
-      try {
-        return JSON.parse(text);
-      } catch (error) {
-        lastError = error;
-      }
-    } else {
-      lastError = new Error(`JSON file is empty or missing: ${targetPath}`);
-    }
-
-    if (attempt < attempts) {
-      await sleep(delayMs);
-    }
-  }
-
-  throw new Error(
-    `Could not read complete JSON from ${targetPath} after ${attempts} attempts: ${lastError?.message ?? 'unknown error'}`,
-  );
-};
-
-const parseArgs = (argv = process.argv.slice(2)) => {
+const parseArgs = () => {
   const options = {
     today: new Date().toISOString().slice(0, 10),
     index: '',
@@ -161,7 +133,7 @@ const parseArgs = (argv = process.argv.slice(2)) => {
     help: false,
   };
 
-  const args = argv;
+  const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--help' || arg === '-h') {
@@ -196,8 +168,8 @@ const parseArgs = (argv = process.argv.slice(2)) => {
   return options;
 };
 
-const printHelp = ({ consoleImpl = console } = {}) => {
-  consoleImpl.log(`Usage: node scripts/runV1StaticIssueScan.mjs [options]
+const printHelp = () => {
+  console.log(`Usage: node scripts/runV1StaticIssueScan.mjs [options]
 
 Build a static V1 inconsistency scan from the local repository and project index.
 
@@ -501,9 +473,9 @@ const summarizeBy = (items, key) =>
     return accumulator;
   }, {});
 
-const buildScan = async (options, { nowIso = () => new Date().toISOString() } = {}) => {
+const buildScan = async (options) => {
   const indexPath = path.resolve(repoRoot, options.index);
-  const projectIndex = await readJsonWithRetry(indexPath);
+  const projectIndex = JSON.parse(await readTextIfExists(indexPath));
   const [sourceMarkers, surfaceFindings] = await Promise.all([
     scanSourceMarkers(),
     collectSurfaceFindings(projectIndex),
@@ -538,7 +510,7 @@ const buildScan = async (options, { nowIso = () => new Date().toISOString() } = 
   ];
 
   return {
-    generatedAt: nowIso(),
+    generatedAt: new Date().toISOString(),
     evidenceDate: options.today,
     projectIndex: relativePath(indexPath),
     summary: {
@@ -616,60 +588,27 @@ ${renderFindingsTable(p2Findings)}
 `;
 };
 
-const main = async ({
-  argv = process.argv.slice(2),
-  consoleImpl = console,
-  writeFileImpl = writeFile,
-  nowIso,
-} = {}) => {
-  const options = parseArgs(argv);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
-    printHelp({ consoleImpl });
-    return { help: true };
+    printHelp();
+    return;
   }
 
-  const scan = await buildScan(options, { nowIso });
+  const scan = await buildScan(options);
   const markdownPath = path.resolve(repoRoot, options.markdownOutput);
   const jsonPath = path.resolve(repoRoot, options.jsonOutput);
 
-  await writeFileImpl(markdownPath, renderMarkdown(scan), 'utf8');
-  await writeFileImpl(jsonPath, `${JSON.stringify(scan, null, 2)}\n`, 'utf8');
+  await writeFile(markdownPath, renderMarkdown(scan), 'utf8');
+  await writeFile(jsonPath, `${JSON.stringify(scan, null, 2)}\n`, 'utf8');
 
-  consoleImpl.log(`V1 static issue scan written to ${relativePath(markdownPath)}`);
-  consoleImpl.log(`V1 static issue scan JSON written to ${relativePath(jsonPath)}`);
-  consoleImpl.log(`Findings: ${scan.summary.totalFindings}`);
-  consoleImpl.log(`By severity: ${JSON.stringify(scan.summary.bySeverity)}`);
-  return { scan, markdownPath, jsonPath };
+  console.log(`V1 static issue scan written to ${relativePath(markdownPath)}`);
+  console.log(`V1 static issue scan JSON written to ${relativePath(jsonPath)}`);
+  console.log(`Findings: ${scan.summary.totalFindings}`);
+  console.log(`By severity: ${JSON.stringify(scan.summary.bySeverity)}`);
 };
 
-export {
-  buildScan,
-  classifySourceMatch,
-  collectQueueFindings,
-  collectSurfaceFindings,
-  collectV1Findings,
-  directoryExists,
-  fileExists,
-  isProductionSource,
-  listFilesInDirectory,
-  main,
-  parseArgs,
-  printHelp,
-  readJsonWithRetry,
-  readTextIfExists,
-  relativePath,
-  renderFindingsTable,
-  renderMarkdown,
-  scanSourceMarkers,
-  sleep,
-  summarizeBy,
-  toPosixPath,
-  walkFiles,
-};
-
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
-}
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

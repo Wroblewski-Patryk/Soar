@@ -12,15 +12,6 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 4
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Bot setup multi-strategy API write path.
-- Architecture nodes: SOAR-FEATURE-BOT-SETUP; SOAR-API-BOT-CREATE; SOAR-API-BOT-UPDATE; SOAR-DB-BOT.
-- Function chains: docs/architecture/chains/CHAIN-BOT-SETUP.md; docs/architecture/chains/CHAIN-STRATEGIES.md.
-- Affected files: apps/api/src/modules/bots/bots.types.ts; apps/api/src/modules/bots/botsCommand.service.ts; apps/api/src/modules/bots/bots.e2e.test.ts.
-- Tests/proof: focused bots e2e create/update multi-strategy tests listed in this task.
-- Docs updated: BOTMULTI planning/context docs.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

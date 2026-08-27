@@ -1,5 +1,5 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { BacktestsList } from "./BacktestsList";
 
@@ -21,13 +21,6 @@ vi.mock("../../strategies/api/strategies.api", () => ({
 }));
 
 describe("BacktestsList", () => {
-  afterEach(() => {
-    cleanup();
-    vi.clearAllMocks();
-    window.localStorage.clear();
-    window.history.pushState({}, "", "/");
-  });
-
   it("renders empty state when no runs are returned", async () => {
     listRunsMock.mockResolvedValue([]);
     listStrategiesMock.mockResolvedValue([]);

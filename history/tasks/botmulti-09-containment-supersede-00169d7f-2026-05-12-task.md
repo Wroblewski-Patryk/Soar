@@ -18,15 +18,6 @@
 - Mission ID: V1 production release readiness
 - Mission Status: BLOCKED
 
-## Architecture Links
-
-- Primary feature/module: Multi-strategy production containment and runtime safety.
-- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-FEATURE-MANUAL-ORDER; SOAR-API-BOT-RUNTIME-POSITIONS; SOAR-DB-RUNTIME-SESSION.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-RELEASE-OPS.md.
-- Affected files: production containment evidence, active state docs, runtime safety notes, and deployment status records named in this task.
-- Tests/proof: production containment verification and build-info evidence recorded in this task's Validation Evidence.
-- Docs updated: system health, task board, project state, and production containment notes.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

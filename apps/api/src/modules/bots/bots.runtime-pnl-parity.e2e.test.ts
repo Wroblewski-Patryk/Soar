@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import {
   createStrategy,
@@ -14,11 +14,10 @@ vi.mock('./runtimeMarketDataFallback.service', async (importOriginal) => ({
 }));
 
 describe('Bots runtime pnl parity contract', () => {
-  beforeAll(resetBotsE2eState);
-
-  beforeEach(() => {
+  beforeEach(async () => {
     fetchFallbackTickerPricesMock.mockReset();
     fetchFallbackTickerPricesMock.mockResolvedValue(new Map<string, number>());
+    await resetBotsE2eState();
   });
 
   it('returns canonical marginUsed and unrealizedPnlPercent for live runtime positions', async () => {

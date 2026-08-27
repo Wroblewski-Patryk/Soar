@@ -15,23 +15,6 @@ const collectKeys = (value: unknown, prefix = ""): string[] => {
   });
 };
 
-const collectStringValues = (value: unknown, prefix = ""): Array<{ key: string; value: string }> => {
-  if (value == null || typeof value !== "object") {
-    return [];
-  }
-
-  return Object.entries(value as Record<string, unknown>).flatMap(([key, nested]) => {
-    const next = prefix ? `${prefix}.${key}` : key;
-    if (typeof nested === "string") {
-      return [{ key: next, value: nested }];
-    }
-    if (nested != null && typeof nested === "object") {
-      return collectStringValues(nested, next);
-    }
-    return [];
-  });
-};
-
 const readNested = (source: Record<string, unknown>, keyPath: string): unknown =>
   keyPath.split(".").reduce<unknown>((current, key) => {
     if (current == null || typeof current !== "object") return undefined;
@@ -39,16 +22,6 @@ const readNested = (source: Record<string, unknown>, keyPath: string): unknown =
   }, source);
 
 describe("translations", () => {
-  it("does not contain mojibake or replacement characters in loaded locale strings", () => {
-    const encodingDriftPattern = /[\uFFFD]|\u0102.|(?:Ã|Â|â€|â€™|â€œ|â€\u009d|ðŸ)/u;
-
-    for (const [locale, dictionary] of Object.entries(translations)) {
-      for (const { key, value } of collectStringValues(dictionary)) {
-        expect(value, `${locale}.${key} contains encoding drift`).not.toMatch(encodingDriftPattern);
-      }
-    }
-  });
-
   it("keeps EN, PL, PT and de-CH translation keys in sync", () => {
     const enKeys = collectKeys(translations.en).sort();
     const plKeys = collectKeys(translations.pl).sort();

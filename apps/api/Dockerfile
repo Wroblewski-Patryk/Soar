@@ -1,15 +1,6 @@
 # syntax=docker/dockerfile:1.10
 
-ARG SOURCE_COMMIT
-ARG COOLIFY_GIT_COMMIT_SHA
-ARG COOLIFY_COMMIT_SHA
-ARG GITHUB_SHA
-
 FROM node:20-bookworm-slim AS base
-ARG SOURCE_COMMIT
-ARG COOLIFY_GIT_COMMIT_SHA
-ARG COOLIFY_COMMIT_SHA
-ARG GITHUB_SHA
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -27,29 +18,21 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY apps/api apps/api
 COPY libs/shared libs/shared
-RUN SOURCE_COMMIT="$SOURCE_COMMIT" \
-    COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" \
-    COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" \
-    GITHUB_SHA="$GITHUB_SHA" \
-    node apps/api/scripts/writeApiSourceCommit.mjs
 RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
-RUN rm -f apps/api/core apps/api/core.*
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-COPY --from=build /app/apps/api/.build-meta/SOURCE_COMMIT /etc/soar-source-commit
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
 COPY --from=build --chown=node:node /app/apps/api /app/apps/api
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
-RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars \
-    && chown -R node:node /app/apps/api/tmp /app/apps/api/public/avatars
+RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars && chown -R node:node /app
 
 EXPOSE 3001
 WORKDIR /app/apps/api
 USER node
-CMD ["sh", "-c", "export SOURCE_COMMIT=\"$(cat /etc/soar-source-commit)\"; exec node scripts/start-with-migrate.mjs"]
+CMD ["node", "scripts/start-with-migrate.mjs"]

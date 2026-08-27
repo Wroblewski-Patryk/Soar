@@ -1,14 +1,5 @@
 # ARCH-GRAPH-REPORTS-BACKFILL-2026-05-24
 
-## Architecture Links
-
-- Primary feature/module: Reports performance evidence graph coverage.
-- Architecture nodes: SOAR-FEATURE-REPORTS; SOAR-PAGE-REPORTS; SOAR-API-REPORTS-CROSS-MODE-PERFORMANCE; SOAR-DB-BACKTEST-REPORT; SOAR-TEST-REPORTS-API.
-- Function chains: docs/architecture/chains/CHAIN-REPORTS.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Result Report.
-- Docs updated: architecture graph registries, Reports chain output, generated graph exports, and source-of-truth state files.
-
 ## Context
 
 Stage: verification.

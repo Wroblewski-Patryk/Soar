@@ -1,56 +1,56 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 878,
-    "covered": 878,
+    "total": 806,
+    "covered": 806,
     "missing": 0
   },
   "categories": {
     "apiRoutes": {
-      "total": 23,
-      "covered": 23,
+      "total": 22,
+      "covered": 22,
       "missing": 0,
       "missingSamples": []
     },
     "apiServices": {
-      "total": 123,
-      "covered": 123,
+      "total": 119,
+      "covered": 119,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 242,
-      "covered": 242,
+      "total": 195,
+      "covered": 195,
       "missing": 0,
       "missingSamples": []
     },
     "webPages": {
-      "total": 39,
-      "covered": 39,
+      "total": 37,
+      "covered": 37,
       "missing": 0,
       "missingSamples": []
     },
     "webComponents": {
-      "total": 120,
-      "covered": 120,
+      "total": 117,
+      "covered": 117,
       "missing": 0,
       "missingSamples": []
     },
     "webHooksAndServices": {
-      "total": 41,
-      "covered": 41,
+      "total": 40,
+      "covered": 40,
       "missing": 0,
       "missingSamples": []
     },
     "webTests": {
-      "total": 161,
-      "covered": 161,
+      "total": 149,
+      "covered": 149,
       "missing": 0,
       "missingSamples": []
     },
     "moduleDocs": {
-      "total": 47,
-      "covered": 47,
+      "total": 45,
+      "covered": 45,
       "missing": 0,
       "missingSamples": []
     },

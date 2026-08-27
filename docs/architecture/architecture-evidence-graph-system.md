@@ -53,21 +53,8 @@ Generated Obsidian and export files:
 - `docs/architecture/chains/*.md`
 - `docs/graphs/architecture-graph.json`
 - `docs/graphs/architecture-graph.md`
-- `docs/graphs/architecture-awareness.json`
-- `docs/graphs/architecture-awareness.csv`
-- `docs/graphs/architecture-graph.mmd`
-- `docs/status/architecture-awareness-report.md`
 - `docs/status/architecture-map-status.md`
 - `docs/status/architecture-graph-drift.md`
-
-The generated task synchronization report separates raw linkage totals from
-actionable gaps. Historical task files under `history/tasks/` remain proof
-lineage and can appear in raw counts, but they are not active owner work unless
-they are promoted by a current issue. Curated graph coverage and aggregate
-route mounts are likewise classified as linkage noise before a child issue is
-created. Use the actionable counts in `docs/status/task-synchronization-report.md`
-for current repair routing, and use raw samples only for bounded historical
-backfill slices.
 
 Regenerate and validate the graph with:
 
@@ -280,9 +267,3 @@ Every new or changed function must update the graph in the same task:
 5. Update requirement/module confidence when behavior or proof changed.
 6. Record residual missing links as `missing`, `blocked`, or
    `implemented_not_verified`, never as implicit success.
-
-Every new completed task file must also carry enough traceability for the
-awareness sync to connect work back to architecture. Add an `Architecture
-Links` block naming the primary feature/module, architecture nodes, function
-chains, affected files, tests/proof, and docs updated. The current dated
-backfill priority note is `docs/status/task-entity-link-backfill-priority-2026-06-06.md`.

@@ -1,14 +1,5 @@
 # ARCH-GRAPH-LOGS-AUDIT-BACKFILL-2026-05-24
 
-## Architecture Links
-
-- Primary feature/module: Logs and audit trail graph coverage.
-- Architecture nodes: SOAR-FEATURE-LOGS-AUDIT; SOAR-PAGE-LOGS; SOAR-API-LOGS-LIST; SOAR-DB-LOG; SOAR-TEST-LOGS-AUDIT.
-- Function chains: docs/architecture/chains/CHAIN-LOGS-AUDIT.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Result Report.
-- Docs updated: architecture graph registries, Logs/Audit chain output, generated graph exports, and source-of-truth state files.
-
 ## Context
 
 Stage: verification.

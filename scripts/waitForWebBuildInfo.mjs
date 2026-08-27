@@ -75,7 +75,7 @@ const resolveOptions = () => {
   };
 };
 
-const allowedDeployMetadataSources = new Set(['env', 'git', 'git-files']);
+const allowedDeployMetadataSources = new Set(['env', 'git', 'git-files', 'github-branch']);
 
 const normalizeNonEmptyString = (value) =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;

@@ -27,10 +27,6 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/orders`.
-- Dashboard overview reaches the authenticated orders API surface through
-  `apps/api/src/router/dashboard.routes.ts#/orders`, which delegates the
-  runtime open-orders read path and the manual-order command/read endpoints to
-  this module without adding a separate dashboard-specific orders controller.
 - Depends on:
   - `prisma` order persistence.
   - exchange connector/adapter (`CcxtFuturesConnector`, `LiveOrderAdapter`).
@@ -276,22 +272,3 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 - This contract keeps asynchronous exchange fill confirmation aligned with the
   synchronous runtime close path and prevents dashboard PnL drift between the
   two legitimate close finalization flows.
-
-## 20. Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `OrderDomainError` | `docs/modules/api-orders.md` | Typed orders-domain error taxonomy for order command/read fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused order service/e2e tests when error semantics change. |
-| `apps/api/src/modules/orders/orders.errors.ts` | `docs/modules/api-orders.md` | File-level orders-domain error taxonomy and fail-closed mapping for order commands/read paths. | Direct doc relation plus focused order service/e2e tests when error semantics change. |
-| `apps/api/src/modules/orders/orders.positionScope.ts` | `docs/modules/api-orders.md` | Order command/read position-scope helper for selected-bot/manual order lifecycle boundaries. | Direct doc relation plus order-position e2e tests when scope behavior changes. |
-| `apps/api/src/modules/orders/positionFillMath.ts` | `docs/modules/api-orders.md` | Position fill math helper for order-fill lifecycle quantity/entry-price updates. | Direct doc relation plus order-position lifecycle tests when fill math changes. |
-
-## 21. Architecture-Awareness Test-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2187](/LUC/issues/LUC-2187).
-
-| Source entity | Focused test | Classification |
-| --- | --- | --- |
-| `apps/api/src/modules/orders/positionFillMath.ts` | `apps/api/src/modules/orders/positionFillMath.test.ts` | Focused order fill math coverage now verifies weighted entry-price updates, new-position fill math, invalid fill-price fail-closed behavior, and negative input normalization. The helper also remains covered by order-position lifecycle tests when service behavior changes. |

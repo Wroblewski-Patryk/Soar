@@ -19,8 +19,6 @@ import {
   DashboardManualOrderType,
   BotSubagentConfig,
   CreateBotInput,
-  AssistantModelProfile,
-  AssistantRole,
   TradeMarket,
   UpdateBotInput,
 } from "../types/bot.type";
@@ -199,7 +197,7 @@ export const upsertBotAssistantConfig = async (
   payload: {
     mainAgentEnabled: boolean;
     mandate?: string | null;
-    modelProfile: AssistantModelProfile;
+    modelProfile: string;
     safetyMode: "STRICT" | "BALANCED" | "EXPERIMENTAL";
     maxDecisionLatencyMs: number;
   }
@@ -212,9 +210,9 @@ export const upsertBotSubagentConfig = async (
   botId: string,
   slotIndex: number,
   payload: {
-    role: AssistantRole;
+    role: string;
     enabled: boolean;
-    modelProfile: AssistantModelProfile;
+    modelProfile: string;
     timeoutMs: number;
     safetyMode: "STRICT" | "BALANCED" | "EXPERIMENTAL";
   }
@@ -235,7 +233,7 @@ export const runBotAssistantDryRun = async (
   payload: {
     symbol: string;
     intervalWindow: string;
-    mode: "BACKTEST" | "PAPER";
+    mode: "BACKTEST" | "PAPER" | "LIVE";
   }
 ): Promise<AssistantDecisionTrace> => {
   const res = await api.post<AssistantDecisionTrace>(`/dashboard/bots/${botId}/assistant-config/dry-run`, payload);

@@ -35,10 +35,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-BACKTESTS]] (verified_local)
-- documented_by <- [[SOAR-COMP-BACKTESTS-LIST-VIEW]] (verified_local)
-- documented_by <- [[SOAR-COMP-BACKTEST-CREATE-FORM]] (verified_local)
-- documented_by <- [[SOAR-COMP-BACKTEST-RUN-DETAILS]] (verified_local)
-- documented_by <- [[SOAR-COMP-BACKTEST-DETAIL-PRESENTERS]] (verified_local)
 
 ## Evidence Rule
 

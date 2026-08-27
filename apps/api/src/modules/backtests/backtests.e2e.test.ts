@@ -7,8 +7,6 @@ import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
-process.env.NODE_ENV = 'test';
-
 vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../exchange/exchangePublicMarketData.service')>();
   const intervalMsFor = (interval: string) => {
@@ -66,11 +64,6 @@ vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) =
 
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
-const BACKTESTS_E2E_HOOK_TIMEOUT_MS = 30_000;
-const BACKTESTS_E2E_CRITICAL_TIMEOUT_MS = 45_000;
-const BACKTESTS_E2E_RESET_ATTEMPTS = 5;
-
-const sleep = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -176,47 +169,6 @@ const waitForBacktestReport = async (
   return agent.get(`/dashboard/backtests/runs/${runId}/report`);
 };
 
-const resetBacktestsE2eDatabase = async () => {
-  for (let attempt = 0; attempt < BACKTESTS_E2E_RESET_ATTEMPTS; attempt += 1) {
-    try {
-      await prisma.log.deleteMany();
-      await prisma.marketCandleCache.deleteMany();
-      await prisma.backtestReport.deleteMany();
-      await prisma.backtestTrade.deleteMany();
-      await prisma.backtestRun.deleteMany();
-      await prisma.orderFill.deleteMany();
-      await prisma.walletCashflowEvent.deleteMany();
-      await prisma.trade.deleteMany();
-      await prisma.order.deleteMany();
-      await prisma.position.deleteMany();
-      await prisma.signal.deleteMany();
-      await prisma.botStrategy.deleteMany();
-      await prisma.botSubagentConfig.deleteMany();
-      await prisma.botAssistantConfig.deleteMany();
-      await prisma.marketGroupStrategyLink.deleteMany();
-      await prisma.botMarketGroup.deleteMany();
-      await prisma.botRuntimeEvent.deleteMany();
-      await prisma.botRuntimeSymbolStat.deleteMany();
-      await prisma.botRuntimeSession.deleteMany();
-      await prisma.bot.deleteMany();
-      await prisma.walletBalanceSnapshot.deleteMany();
-      await prisma.wallet.deleteMany();
-      await prisma.symbolGroup.deleteMany();
-      await prisma.marketUniverse.deleteMany();
-      await prisma.runtimeExecutionDedupe.deleteMany();
-      await prisma.apiKey.deleteMany();
-      await prisma.paymentIntent.deleteMany();
-      await prisma.userSubscription.deleteMany();
-      await prisma.strategy.deleteMany();
-      await prisma.user.deleteMany();
-      return;
-    } catch (error) {
-      if (attempt === BACKTESTS_E2E_RESET_ATTEMPTS - 1) throw error;
-      await sleep(100 * (attempt + 1));
-    }
-  }
-};
-
 describe('Backtests runs contract', () => {
   beforeEach(async () => {
     process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
@@ -227,8 +179,39 @@ describe('Backtests runs contract', () => {
       'ALTER TABLE "Bot" ADD COLUMN IF NOT EXISTS "paperStartBalance" DOUBLE PRECISION NOT NULL DEFAULT 10000',
     );
 
-    await resetBacktestsE2eDatabase();
-  }, BACKTESTS_E2E_HOOK_TIMEOUT_MS);
+    await prisma.log.deleteMany();
+    await prisma.marketCandleCache.deleteMany();
+    // Backtest worker updates run/report asynchronously, so cleanup is retried to avoid FK races in tests.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      await prisma.backtestReport.deleteMany();
+      await prisma.backtestTrade.deleteMany();
+      try {
+        await prisma.backtestRun.deleteMany();
+        break;
+      } catch (error) {
+        if (attempt === 2) throw error;
+      }
+    }
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.user.deleteMany();
+  });
 
   afterEach(() => {
     if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
@@ -270,8 +253,6 @@ describe('Backtests runs contract', () => {
     expect(getRes.body.seedConfig.marketType).toBe('FUTURES');
     expect(getRes.body.seedConfig.baseCurrency).toBe('USDT');
     expect(getRes.body.seedConfig.marketUniverseId).toBeNull();
-
-    await waitForBacktestReport(agent, runId);
 
     await prisma.backtestTrade.createMany({
       data: [
@@ -342,7 +323,7 @@ describe('Backtests runs contract', () => {
     expect(reportRes.status).toBe(200);
     expect(reportRes.body.backtestRunId).toBe(runId);
     expect(reportRes.body.totalTrades).toBeGreaterThanOrEqual(2);
-  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
+  });
 
   it('persists explicit startAt/endAt range on create and rejects partial range payload', async () => {
     const ownerEmail = 'backtests-range-create@example.com';
@@ -851,7 +832,7 @@ describe('Backtests runs contract', () => {
     });
     expect(paperAllowedOnFreeSymbol.allowed).toBe(true);
     expect(liveAllowedOnFreeSymbol.allowed).toBe(true);
-  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
+  });
 
   it('keeps venue context consistent across backtest -> paper bot -> live order path', async () => {
     const email = 'backtests-venue-consistency@example.com';
@@ -1010,7 +991,7 @@ describe('Backtests runs contract', () => {
     expect(liveOrderRes.status).toBe(201);
     expect(liveOrderRes.body.botId).toBe(botId);
     expect(liveOrderRes.body.symbol).toBe(symbol);
-  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
+  });
 
   it('resolves backtest seed symbols from (volume-filtered catalog U whitelist) - blacklist', async () => {
     const ownerEmail = 'backtests-symbol-contract-union@example.com';
@@ -1268,7 +1249,7 @@ describe('Backtests runs contract', () => {
       .get(`/dashboard/backtests/runs/${runId}/timeline`)
       .query({ symbol: 'NOT_IN_RUN_SYMBOL' });
     expect(outOfScopeTimelineRes.status).toBe(404);
-  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
+  }, 15_000);
 
   it('reports FAILED parity diagnostics when symbol processing fails', async () => {
     const ownerEmail = 'backtests-failed-symbol@example.com';

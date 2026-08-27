@@ -32,9 +32,6 @@ Flows executed:
 - Logs:
 
 ## Context Updated
-- [ ] `.codex/context/TASK_BOARD.md`
-- [ ] `.codex/context/PROJECT_STATE.md`
-- [ ] `.codex/context/LEARNING_JOURNAL.md` when needed
 - [ ] `docs/` updated where relevant
 
 ## Rollback Plan

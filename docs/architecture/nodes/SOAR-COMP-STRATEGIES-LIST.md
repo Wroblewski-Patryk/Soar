@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-STRATEGIES]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-STRATEGIES]] (verified_local)
 - renders <- [[SOAR-PAGE-STRATEGIES-LIST]] (verified_local)
 
 ## Evidence Rule

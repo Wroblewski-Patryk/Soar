@@ -12,15 +12,6 @@
 - Iteration: 2026-05-09
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness for V1 evidence batch.
-- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE.
-- Function chains: docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md.
-- Affected files: history/releases; history/artifacts; V1 evidence state files listed in this task.
-- Tests/proof: production build-info and public smoke evidence recorded in this task.
-- Docs updated: source-of-truth files listed in this task Scope/Result Report.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

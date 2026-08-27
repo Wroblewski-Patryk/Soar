@@ -19,20 +19,6 @@
 - Mission ID: `REPO-SOT-FUNCTION-PARITY-2026-05-23`
 - Mission Status: CHECKPOINTED
 
-## Architecture Links
-
-- Primary feature/module: `SOAR-FEATURE-AI-ASSISTANT-FOUNDATION`.
-- Architecture nodes:
-  - `docs/architecture/nodes/SOAR-FEATURE-AI-ASSISTANT-FOUNDATION.md`
-  - `docs/architecture/nodes/SOAR-SERVICE-ASSISTANT-ORCHESTRATOR.md`
-  - `docs/architecture/nodes/SOAR-TEST-AI-PROTOCOL-HARNESS.md`
-  - `docs/architecture/nodes/SOAR-DOC-AI-TESTING-PROTOCOL.md`
-  - `docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME.md`
-- Function chains: `docs/architecture/chains/CHAIN-AI-ASSISTANT-FOUNDATION.md`.
-- Affected files: `apps/api/src/modules/engine/assistantOrchestrator.protocol.test.ts`, `history/artifacts/ai-assistant-foundation-protocol-scenarios-2026-05-23.json`, `history/reports/ai-assistant-foundation-protocol-harness-2026-05-23.md`, `.agents/state/module-confidence-ledger.md`, `.agents/state/risk-register.md`.
-- Tests/proof: API assistant protocol harness, assistant orchestrator service/parity tests, and Web assistant route tests listed under Validation Evidence.
-- Docs updated: assistant runtime/protocol state remains foundation-only; full hot-path runtime AI is explicitly future/gated.
-
 ## Context
 
 `SOAR-ASSISTANT-AI-001` was still marked `PARTIAL` because full runtime AI

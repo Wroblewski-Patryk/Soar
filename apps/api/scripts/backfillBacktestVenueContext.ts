@@ -1,5 +1,4 @@
 import { Exchange, TradeMarket } from '@prisma/client';
-import { fileURLToPath } from 'node:url';
 import { prisma } from '../src/prisma/client';
 
 type CliOptions = {
@@ -24,7 +23,7 @@ const EXCHANGE_SET = new Set<Exchange>([
   Exchange.COINBASE,
 ]);
 
-export const parseArgs = (): CliOptions => {
+const parseArgs = (): CliOptions => {
   const args = process.argv.slice(2);
   const options: CliOptions = {
     dryRun: false,
@@ -65,29 +64,29 @@ export const parseArgs = (): CliOptions => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
-export const normalizeExchange = (value: unknown): Exchange | null => {
+const normalizeExchange = (value: unknown): Exchange | null => {
   if (typeof value !== 'string') return null;
   const normalized = value.trim().toUpperCase() as Exchange;
   return EXCHANGE_SET.has(normalized) ? normalized : null;
 };
 
-export const normalizeMarketType = (value: unknown): TradeMarket | null => {
+const normalizeMarketType = (value: unknown): TradeMarket | null => {
   if (value === 'SPOT') return TradeMarket.SPOT;
   if (value === 'FUTURES') return TradeMarket.FUTURES;
   return null;
 };
 
-export const normalizeBaseCurrency = (value: unknown): string | null => {
+const normalizeBaseCurrency = (value: unknown): string | null => {
   if (typeof value !== 'string') return null;
   const normalized = value.trim().toUpperCase();
   if (normalized.length === 0) return null;
   return normalized;
 };
 
-export const inferBaseCurrencyFromSymbol = (symbol: string): string =>
+const inferBaseCurrencyFromSymbol = (symbol: string): string =>
   (symbol.match(/(USDT|USDC|BUSD|FDUSD|BTC|ETH|EUR|USD)$/)?.[1] ?? 'USDT').toUpperCase();
 
-export const run = async () => {
+const run = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
@@ -213,13 +212,11 @@ export const run = async () => {
   console.log(JSON.stringify(summary, null, 2));
 };
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  run()
-    .catch((error) => {
-      console.error('[backfillBacktestVenueContext] failed:', error instanceof Error ? error.message : String(error));
-      process.exitCode = 1;
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+run()
+  .catch((error) => {
+    console.error('[backfillBacktestVenueContext] failed:', error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

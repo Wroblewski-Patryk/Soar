@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/bots`
 - Owner: frontend/trading-runtime
-- Last updated: 2026-06-05
+- Last updated: 2026-05-21
 - Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## Canonical Architecture Linkage
@@ -19,7 +19,6 @@ Canonical bot topology and operator-surface rules live in:
 - Owns bot UI lifecycle and runtime operator surfaces:
   - list and delete bots
   - create/edit bot form
-  - bot detail alias route
   - runtime monitoring workspace
   - assistant configuration and dry-run timeline
 - Enforces wallet-first bot creation contract in UI (`walletId` required).
@@ -31,10 +30,8 @@ Out of scope:
 ## 2. Boundaries and Dependencies
 - Route entrypoints:
   - `/dashboard/bots`
-  - `/dashboard/bots/:id`
   - `/dashboard/bots/create` (`/dashboard/bots/new` legacy redirect)
   - `/dashboard/bots/:id/edit`
-  - `/dashboard/bots/:id/runtime`
   - `/dashboard/bots/:id/preview`
   - `/dashboard/bots/:id/assistant`
 - Depends on:
@@ -78,8 +75,6 @@ Out of scope:
   - `BotsManagement` with tabs (`bots`, `monitoring`, `assistant`)
 - Legacy helper routes:
   - `/dashboard/bots/runtime` and `/dashboard/bots/assistant` resolve to canonical bot-specific routes.
-- Bot-specific runtime redirect routes send `/dashboard/bots/:id/runtime`
-  to the canonical preview route.
 - Bot-specific preview and assistant route breadcrumbs use the i18n provider
   instead of static English namespace imports.
 
@@ -124,47 +119,20 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
-  - `app/dashboard/bots/new/page.test.tsx`
-  - `app/dashboard/bots/assistant/page.test.tsx`
-  - `app/dashboard/bots/create/page.test.tsx`
-  - `app/dashboard/bots/[id]/page.test.tsx`
-  - `app/dashboard/bots/[id]/runtime/page.test.tsx`
   - `app/dashboard/bots/[id]/preview/page.test.tsx`
   - `app/dashboard/bots/[id]/assistant/page.test.tsx`
   - `BotCreateEditForm.test.tsx`
   - `BotsListTable.test.tsx`
   - `BotsManagement.test.tsx`
   - `BotsManagement.portfolio-history.test.tsx`
-  - `runtimeOpenPositionDerivations.test.ts`
-  - `runtimeSignalLabelKeys.test.ts`
-  - `runtimeSurfaceTruth.test.ts`
   - `trailingStopDisplay.test.ts`
 - 2026-05-21 monitoring regression:
   - `BotsManagement.test.tsx` verifies the monitoring tab loads runtime
     sessions once on first aggregate-mode open.
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/app/dashboard/bots/[id]/runtime/page.test.tsx src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
+pnpm --filter web test -- src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
 ```
-
-## 8A. Architecture-Awareness Gap Triage
-
-`LUC-2123` classified the 2026-06-05 architecture-awareness top actionable
-missing doc-link samples for bot runtime utilities. The report rows below were
-not missing module documentation; they were missing direct file-to-doc
-relations in `docs/architecture/relations/documentation-links.csv`.
-
-| Runtime utility | Current evidence | Triage status | Next action |
-| --- | --- | --- | --- |
-| `runtimeOpenPositionDerivations.ts` | Covered by `runtimeOpenPositionDerivations.test.ts` and `SOAR-TEST-BOT-RUNTIME-WEB`; this module documents mark-price source, position sizing, and dashboard/bot route parity. | Doc-link normalized; test evidence present. | Keep in bot runtime validation when derivation semantics change. |
-| `runtimeSignalLabelKeys.ts` | Covered by `runtimeSignalLabelKeys.test.ts` and `SOAR-TEST-WEB-RESIDUAL-SURFACES`; route copy ownership remains in dashboard/bot namespaces. | Doc-link normalized; test evidence present. | Keep route namespace changes paired with i18n route-reachable proof. |
-| `runtimeSurfaceTruth.ts` | Covered by `runtimeSurfaceTruth.test.ts` and `SOAR-TEST-WEB-RESIDUAL-SURFACES`; module sections 6 and 7 define capability, provenance, and monitoring truth. | Doc-link normalized; test evidence present. | Add direct graph relation only if scanner requires per-helper test edges. |
-| `trailingStopDisplay.ts` | Covered by `trailingStopDisplay.test.ts`; dashboard and bot monitoring parity notes document TTP fallback/protection semantics. | Doc-link normalized; test evidence present. | No child issue unless TTP display semantics change. |
-| `types/bot.type.ts` | Covered through bot service/component consumers and this module's command/runtime read contract sections. | Doc-link normalized; type evidence is consumer-driven. | Keep bot DTO/type changes paired with Web typecheck and focused bot component/service tests. |
-
-This triage is documentation and evidence classification only. It does not
-claim fresh browser, protected production, deployment, exchange-side mutation,
-or live-trading proof.
 
 ## 9. Open Issues and Follow-Ups
 - Continue decomposition of large monitoring container into smaller domain units.

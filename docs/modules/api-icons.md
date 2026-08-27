@@ -32,10 +32,6 @@ Out of scope:
   - `symbol`, `baseAsset`, `iconUrl`
   - `source` (`coingecko | curated | placeholder`)
   - `placeholder`, `coinGeckoId`, `cacheHit`, `resolvedAt`
-- Data source contract:
-  - the route has no persisted DB model by design.
-  - icon metadata resolves through the in-memory cache, external CoinGecko
-    read, curated static catalog, and deterministic placeholder fallback.
 
 ## 4. Runtime Flows
 - Lookup flow:
@@ -74,9 +70,6 @@ Out of scope:
     `AVAX`, `LINK`, `BCH`, `XLM`, `ATOM`, `UNI`, `ETC`, `FIL`, `AAVE`,
     `ALGO`, `VET`, `ICP`, `MATIC`, `ZEC`, `SAND`, `MANA`) resolves to curated
     icons, not generic placeholders, when CoinGecko returns `503`.
-- 2026-06-04 source proof:
-  - architecture graph relation `REL-APISUPPORT-041` records the explicit
-    non-DB icon resolver data source for gap-index generation.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/icons/icons.e2e.test.ts

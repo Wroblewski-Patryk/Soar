@@ -22,7 +22,6 @@ const mocks = vi.hoisted(() => ({
   fetchFallbackTickerPrices: vi.fn(),
   createPublicExchangeConnector: vi.fn(),
   resolveExternalPositionOwnershipIndex: vi.fn(),
-  getPendingSubmittedDcaOrderIdForPosition: vi.fn(),
   assertSubscriptionAllowsLiveTrading: vi.fn(),
 }));
 
@@ -32,12 +31,6 @@ vi.mock('../../prisma/client', () => ({
 
 vi.mock('../engine/executionOrchestrator.service', () => ({
   orchestrateRuntimeSignal: mocks.orchestrateRuntimeSignal,
-}));
-
-vi.mock('../engine/runtimeExecutionDedupe.service', () => ({
-  runtimeExecutionDedupeService: {
-    getPendingSubmittedDcaOrderIdForPosition: mocks.getPendingSubmittedDcaOrderIdForPosition,
-  },
 }));
 
 vi.mock('./botOwnership.service', () => ({
@@ -98,7 +91,6 @@ describe('closeBotRuntimeSessionPosition', () => {
       fetchMarkPrice: vi.fn(async () => Number.NaN),
       disconnect: vi.fn(async () => undefined),
     });
-    mocks.getPendingSubmittedDcaOrderIdForPosition.mockResolvedValue(null);
     mocks.assertSubscriptionAllowsLiveTrading.mockResolvedValue(undefined);
   });
 
@@ -191,37 +183,6 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
   });
 
-  it('keeps manual close submitted while a submitted DCA is still pending fill', async () => {
-    mocks.prisma.position.findFirst.mockResolvedValue({
-      id: 'position-1',
-      botId: 'bot-1',
-      walletId: 'wallet-live-1',
-      strategyId: 'strategy-1',
-      symbol: 'BTCUSDT',
-      quantity: 0.5,
-      entryPrice: 50_000,
-      origin: 'BOT',
-      externalId: null,
-      continuityState: 'CONFIRMED',
-    });
-    mocks.getPendingSubmittedDcaOrderIdForPosition.mockResolvedValue('order-dca-pending-1');
-
-    const result = await closeBotRuntimeSessionPosition(
-      'user-1',
-      'bot-1',
-      'session-1',
-      'position-1',
-      { riskAck: true }
-    );
-
-    expect(mocks.getPendingSubmittedDcaOrderIdForPosition).toHaveBeenCalledWith('position-1');
-    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      status: 'submitted',
-      orderId: 'order-dca-pending-1',
-    });
-  });
-
   it('fails closed for directly owned positions outside the selected bot configured symbol scope', async () => {
     mocks.prisma.bot.findFirst.mockResolvedValue({
       mode: 'PAPER',
@@ -296,137 +257,6 @@ describe('closeBotRuntimeSessionPosition', () => {
         managementMode: 'BOT_MANAGED',
       },
       select: expect.any(Object),
-    });
-    expect(result).toEqual({
-      status: 'ignored',
-      reason: 'no_open_position',
-    });
-    expect(mocks.prisma.position.updateMany).not.toHaveBeenCalled();
-    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
-  });
-
-  it('returns already-closed status from the latest CLOSE trade order linkage when the open row is gone', async () => {
-    mocks.prisma.position.findFirst
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({
-        id: 'position-closed-1',
-        symbol: 'BTCUSDT',
-        side: 'LONG',
-      });
-    mocks.prisma.trade.findFirst.mockResolvedValue({
-      orderId: 'trade-close-order-1',
-    });
-
-    const result = await closeBotRuntimeSessionPosition(
-      'user-1',
-      'bot-1',
-      'session-1',
-      'position-closed-1',
-      { riskAck: true }
-    );
-
-    expect(mocks.prisma.trade.findFirst).toHaveBeenCalledWith({
-      where: {
-        userId: 'user-1',
-        botId: 'bot-1',
-        positionId: 'position-closed-1',
-        lifecycleAction: 'CLOSE',
-      },
-      orderBy: {
-        executedAt: 'desc',
-      },
-      select: {
-        orderId: true,
-      },
-    });
-    expect(mocks.prisma.order.findFirst).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      status: 'closed',
-      orderId: 'trade-close-order-1',
-      positionId: 'position-closed-1',
-    });
-    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
-  });
-
-  it('falls back to the latest opposite-side order when the closed trade has no canonical order id', async () => {
-    mocks.prisma.position.findFirst
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({
-        id: 'position-closed-1',
-        symbol: 'BTCUSDT',
-        side: 'LONG',
-      });
-    mocks.prisma.trade.findFirst.mockResolvedValue({
-      orderId: '',
-    });
-    mocks.prisma.order.findFirst.mockResolvedValue({
-      id: 'fallback-close-order-1',
-    });
-
-    const result = await closeBotRuntimeSessionPosition(
-      'user-1',
-      'bot-1',
-      'session-1',
-      'position-closed-1',
-      { riskAck: true }
-    );
-
-    expect(mocks.prisma.order.findFirst).toHaveBeenCalledWith({
-      where: {
-        userId: 'user-1',
-        botId: 'bot-1',
-        symbol: 'BTCUSDT',
-        side: 'SELL',
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-      },
-    });
-    expect(result).toEqual({
-      status: 'closed',
-      orderId: 'fallback-close-order-1',
-      positionId: 'position-closed-1',
-    });
-    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
-  });
-
-  it('fails closed for duplicate close retries when no canonical closed order evidence exists', async () => {
-    mocks.prisma.position.findFirst
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({
-        id: 'position-closed-1',
-        symbol: 'BTCUSDT',
-        side: 'SHORT',
-      });
-    mocks.prisma.trade.findFirst.mockResolvedValue({
-      orderId: null,
-    });
-    mocks.prisma.order.findFirst.mockResolvedValue(null);
-
-    const result = await closeBotRuntimeSessionPosition(
-      'user-1',
-      'bot-1',
-      'session-1',
-      'position-closed-1',
-      { riskAck: true }
-    );
-
-    expect(mocks.prisma.order.findFirst).toHaveBeenCalledWith({
-      where: {
-        userId: 'user-1',
-        botId: 'bot-1',
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-      },
     });
     expect(result).toEqual({
       status: 'ignored',
@@ -798,91 +628,6 @@ describe('closeBotRuntimeSessionPosition', () => {
     expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
       expect.objectContaining({
         strategyId: 'strategy-canonical-1',
-        symbol: 'DOGEUSDT',
-        direction: 'EXIT',
-      })
-    );
-    expect(result).toEqual({
-      status: 'closed',
-      orderId: 'order-1',
-      positionId: 'position-1',
-    });
-  });
-
-  it('fails closed on strategy backfill when multiple canonical strategy ids remain enabled', async () => {
-    mocks.prisma.bot.findFirst.mockResolvedValue({
-      mode: 'LIVE',
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      walletId: 'wallet-live-1',
-      wallet: {
-        apiKeyId: 'key-live-1',
-      },
-      botMarketGroups: [
-        {
-          strategyLinks: [{ strategyId: 'strategy-canonical-1' }, { strategyId: 'strategy-canonical-2' }],
-        },
-        {
-          strategyLinks: [{ strategyId: 'strategy-canonical-1' }],
-        },
-      ],
-    });
-    mocks.prisma.position.findFirst.mockResolvedValue({
-      id: 'position-1',
-      botId: null,
-      walletId: null,
-      strategyId: null,
-      symbol: 'DOGEUSDT',
-      quantity: 54,
-      entryPrice: 0.09791,
-      origin: 'EXCHANGE_SYNC',
-      externalId: 'key-live-1:DOGEUSDT:SHORT',
-      continuityState: 'CONFIRMED',
-    });
-    mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
-      new Map([
-        [
-          'key-live-1:DOGEUSDT',
-          {
-            status: 'OWNED',
-            botId: 'bot-1',
-            walletId: 'wallet-live-1',
-          },
-        ],
-      ])
-    );
-    mocks.prisma.position.updateMany.mockResolvedValue({ count: 1 });
-    mocks.orchestrateRuntimeSignal.mockResolvedValue({
-      status: 'closed',
-      orderId: 'order-1',
-      positionId: 'position-1',
-    });
-
-    const result = await closeBotRuntimeSessionPosition(
-      'user-1',
-      'bot-1',
-      'session-1',
-      'position-1',
-      { riskAck: true }
-    );
-
-    expect(mocks.prisma.position.updateMany).toHaveBeenCalledWith({
-      where: {
-        id: 'position-1',
-        userId: 'user-1',
-        status: 'OPEN',
-        syncState: 'IN_SYNC',
-        managementMode: 'BOT_MANAGED',
-      },
-      data: {
-        syncState: 'IN_SYNC',
-        botId: 'bot-1',
-        walletId: 'wallet-live-1',
-      },
-    });
-    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
-      expect.objectContaining({
-        strategyId: undefined,
         symbol: 'DOGEUSDT',
         direction: 'EXIT',
       })

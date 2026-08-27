@@ -123,11 +123,6 @@ Optional migration toggle:
 - `API_AUTO_MIGRATE=true` (default behavior in API image)
 - set `API_AUTO_MIGRATE=false` only for emergency/maintenance windows
 
-Deploy-proof note:
-- In Coolify `Advanced` settings for the API application, enable `Include Source Commit in Build` when the image build must expose the deployed `SOURCE_COMMIT`.
-- Keep the API provenance args declared globally and in the ancestor `base` stage for ordinary local `--build-arg` usage. Do not redeclare them in the `build` stage: Coolify injects exact literal `ARG` values after each `FROM`, and a later source declaration (including `ARG NAME=$NAME`) clears that injected value.
-- Do not make remote builds depend on `.git` paths: Coolify's source context excludes them. The provenance writer remains fail-closed when no full build argument is available.
-
 Reference: `docs/operations/dev-stage-prod-environment-matrix.md`
 
 ## Step 4: Add Web Service (`apps/web`)
@@ -154,23 +149,12 @@ Deploy-proof note:
 - In Coolify `Advanced` settings for the web application, enable `Include Source Commit in Build` when the build process must see `SOURCE_COMMIT`.
 - The current Soar web build metadata path reads sources in this order:
   `SOURCE_COMMIT` / `SOURCE_BRANCH` environment or build args, repository
-  `git`, repository `.git` files, then `unknown`. It must not derive deploy
-  provenance from the GitHub `main` branch head, because branch head proves the
-  repository state, not the source used by the built Web image.
-- Dockerfile stages that consume deploy identity build args must declare and
-  forward the matching `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`,
-  `ARG COOLIFY_BRANCH`, `ARG COOLIFY_GIT_COMMIT_SHA`,
-  `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` names in that stage before the
-  Web build command; otherwise the deployment can import the right commit while
-  `/api/build-info` falls back to `metadataSource=env-runtime`.
-- Coolify exposes `SOURCE_COMMIT` to Docker builds only when the UI-only
-  `Include Source Commit in Build` setting is enabled. Keep remote Dockerfiles
-  independent of `.git` paths because Coolify excludes them from the source
-  context.
-- Treat `/api/build-info` as authoritative source provenance only when
-  `metadataSource` is `env`, `git`, or `git-files`. `unknown`,
-  `env-runtime`, and any historical `github-branch*` value are diagnostic
-  signals, not release-gate provenance.
+  `git`, repository `.git` files, GitHub `main` branch readback, then
+  `unknown`.
+- Dockerfile stages that consume Coolify build args must declare the matching
+  `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` names in
+  that stage before the Web build command; otherwise the deployment can import
+  the right commit while `/api/build-info` still reports `gitSha: null`.
 
 ## Step 5: Add Workers Service
 
@@ -253,9 +237,6 @@ Why this exists:
 - the active stack manifest builds the API image once and runs all four workers
   from that image with command overrides, avoiding repeated API/worker image
   builds on the VPS.
-- worker services are gated behind the Compose `workers` profile so a parallel
-  stack can prove API/Web routing first without starting duplicate queue
-  consumers against production Redis.
 
 First migration scope:
 - include app processes only:
@@ -279,10 +260,8 @@ Required Coolify setup:
    - `SOURCE_COMMIT=<exact candidate SHA>`
    - `SOURCE_BRANCH=main`
    - `COOLIFY_BRANCH=main`
-   - for parallel smoke, temporary API/Web domains and no `COMPOSE_PROFILES`;
-   - for final cutover, `COMPOSE_PROFILES=workers`;
-   - for final cutover, `SERVICE_FQDN_API_3001=https://api.soar.luckysparrow.ch`
-   - for final cutover, `SERVICE_FQDN_WEB_3002=https://soar.luckysparrow.ch`
+   - `SERVICE_FQDN_API_3001=https://api.soar.luckysparrow.ch`
+   - `SERVICE_FQDN_WEB_3002=https://soar.luckysparrow.ch`
 5. Use the existing production `DATABASE_URL` and `REDIS_URL`.
 6. Confirm `API_KEY_ENCRYPTION_KEYS` and
    `API_KEY_ENCRYPTION_ACTIVE_VERSION` match current production. Do not rotate
@@ -294,33 +273,23 @@ Cutover order:
 1. Freeze normal deploy promotion.
 2. Record current stable SHA and current Coolify resource list.
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
-4. Deploy the new stack without `COMPOSE_PROFILES` and with temporary API/Web
-   domains so only `api` and `web` start.
-5. Confirm API health on the temporary API domain:
+4. Deploy the new stack without deleting old resources.
+5. Confirm API health:
    - stack `api` is healthy through the container liveness `/health` check;
-   - temporary API `/health` returns `200`;
-   - temporary API `/ready` returns `200`.
-6. Confirm Web health on the temporary Web domain:
+   - public `https://api.soar.luckysparrow.ch/health` returns `200`;
+   - public `https://api.soar.luckysparrow.ch/ready` returns `200`.
+6. Confirm Web health:
    - stack `web` is healthy;
-   - temporary Web `/` returns `200`;
-   - temporary Web `/api/build-info` reports the expected
+   - public `https://soar.luckysparrow.ch/` returns `200`;
+   - `https://soar.luckysparrow.ch/api/build-info` reports the expected
      `SOURCE_COMMIT`.
-7. If API/Web smoke passes, set `COMPOSE_PROFILES=workers`, switch the stack
-   domains to production, stop or detach the old worker Applications, then
-   redeploy the stack.
-8. Confirm worker state:
+7. Confirm worker state:
    - all four worker containers are running;
    - no crash-loop or restart storm is visible in stack logs;
    - worker readiness/runtime freshness proof passes.
-9. Confirm production API/Web health:
-   - public `https://api.soar.luckysparrow.ch/health` returns `200`;
-   - public `https://api.soar.luckysparrow.ch/ready` returns `200`;
-   - public `https://soar.luckysparrow.ch/` returns `200`;
-   - public `https://soar.luckysparrow.ch/api/build-info` reports the expected
-     `SOURCE_COMMIT`.
-10. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
+8. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
    candidate.
-11. Only after the stack is accepted, stop or detach domains from the old six
+9. Only after the stack is accepted, stop or detach domains from the old six
    Applications. Do not delete them until at least one stable monitoring window
    is captured.
 
@@ -339,11 +308,6 @@ pnpm run docker:coolify:config
 pnpm run docker:coolify:shared-api:config
 pnpm run ops:coolify-stack:env-check:example
 ```
-
-The rendered Coolify Compose config must keep Linux core dumps disabled for
-the API image runtime services. Verify `ulimits.core: 0` is present for `api`,
-`workers-market-data`, `workers-market-stream`, `workers-backtest`, and
-`workers-execution` before approving the stack manifest.
 
 For a real copied Coolify environment, run the env check without
 `--allow-placeholders` from the environment that has the stack variables. The

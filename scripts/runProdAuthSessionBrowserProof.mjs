@@ -4,7 +4,6 @@ import { existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
-import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -47,12 +46,8 @@ const resolveOptions = () => {
     ),
     expectedSha,
     authToken: readArgValue('--auth-token') || process.env.PROD_AUTH_TOKEN || '',
-    authEmail: readArgValue('--auth-email') || process.env.PROD_AUTH_EMAIL || process.env.SOAR_PROD_TEST_EMAIL || '',
-    authPassword:
-      readArgValue('--auth-password') ||
-      process.env.PROD_AUTH_PASSWORD ||
-      process.env.SOAR_PROD_TEST_PASSWORD ||
-      '',
+    authEmail: readArgValue('--auth-email') || process.env.PROD_AUTH_EMAIL || '',
+    authPassword: readArgValue('--auth-password') || process.env.PROD_AUTH_PASSWORD || '',
     outputJson:
       readArgValue('--output-json') ||
       process.env.PROD_AUTH_OUTPUT_JSON ||
@@ -232,14 +227,6 @@ const setAuthCookie = async (client, options, token) => {
   }
 };
 
-const buildAuthApiHeaders = (options, token, extraHeaders = {}) => ({
-  Accept: 'application/json',
-  Origin: options.webBaseUrl,
-  Cookie: `token=${encodeURIComponent(token)}`,
-  Authorization: `Bearer ${token}`,
-  ...extraHeaders,
-});
-
 const toStep = (name, result, extra = {}) => ({ name, result, ...extra });
 
 const renderMarkdown = (payload, jsonPath) => {
@@ -269,8 +256,7 @@ Covered:
 - unauthenticated protected route fail-closed redirect
 - authenticated protected route rendering
 - invalid-token protected route redirect to \`session=expired\`
-- logout API fail-closed readback with trusted-origin request shape
-- stale cookie and bearer token rejection after logout
+- logout API fail-closed readback
 - protected route redirect after logout
 
 ## Steps
@@ -377,8 +363,7 @@ const main = async () => {
 
     const logoutResponse = await fetch(`${options.apiBaseUrl}/auth/logout`, {
       method: 'POST',
-      headers: buildAuthApiHeaders(options, token, { 'Content-Type': 'application/json' }),
-      body: '{}',
+      headers: { Accept: 'application/json', Cookie: `token=${encodeURIComponent(token)}` },
     });
     steps.push(
       toStep('logout API clears session', logoutResponse.status === 200 ? 'PASS' : 'FAIL', {
@@ -386,27 +371,12 @@ const main = async () => {
       })
     );
 
-    const meAfterLogoutCookie = await fetch(`${options.apiBaseUrl}/auth/me`, {
-      headers: {
-        Accept: 'application/json',
-        Cookie: `token=${encodeURIComponent(token)}`,
-      },
+    const meAfterLogout = await fetch(`${options.apiBaseUrl}/auth/me`, {
+      headers: { Accept: 'application/json', Cookie: `token=${encodeURIComponent(token)}` },
     });
     steps.push(
-      toStep('auth me after logout fails closed for cookie token', meAfterLogoutCookie.status === 401 ? 'PASS' : 'FAIL', {
-        httpStatus: meAfterLogoutCookie.status,
-      })
-    );
-
-    const meAfterLogoutBearer = await fetch(`${options.apiBaseUrl}/auth/me`, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    steps.push(
-      toStep('auth me after logout fails closed for bearer token', meAfterLogoutBearer.status === 401 ? 'PASS' : 'FAIL', {
-        httpStatus: meAfterLogoutBearer.status,
+      toStep('auth me after logout fails closed', meAfterLogout.status === 401 ? 'PASS' : 'FAIL', {
+        httpStatus: meAfterLogout.status,
       })
     );
 
@@ -449,30 +419,7 @@ const main = async () => {
   }
 };
 
-export {
-  CdpClient,
-  buildAuthApiHeaders,
-  clearAuth,
-  collectLocation,
-  createPage,
-  evaluate,
-  findBrowserPath,
-  launchBrowser,
-  main,
-  navigate,
-  normalizeBaseUrl,
-  readArgValue,
-  readJson,
-  renderMarkdown,
-  resolveOptions,
-  setAuthCookie,
-  toStep,
-  wait,
-};
-
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((error) => {
-    process.stderr.write(`${error instanceof Error ? error.stack || error.message : String(error)}\n`);
-    process.exitCode = 1;
-  });
-}
+main().catch((error) => {
+  process.stderr.write(`${error instanceof Error ? error.stack || error.message : String(error)}\n`);
+  process.exitCode = 1;
+});

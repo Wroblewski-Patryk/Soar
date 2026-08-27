@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 
 import {
   buildOpsRequestHeaders,
@@ -9,14 +8,14 @@ import {
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
-export const readArgValue = (flag, rawArgs = process.argv.slice(2)) => {
-  const index = rawArgs.indexOf(flag);
+const readArgValue = (flag) => {
+  const index = process.argv.indexOf(flag);
   if (index === -1) return '';
-  return rawArgs[index + 1] ?? '';
+  return process.argv[index + 1] ?? '';
 };
 
-export const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
-export const hash = (value) => {
+const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
+const hash = (value) => {
   const normalized = String(value ?? '').trim();
   return normalized ? createHash('sha256').update(normalized).digest('hex').slice(0, 12) : null;
 };
@@ -51,9 +50,9 @@ const options = {
   timeoutMs: Number.parseInt(process.env.NON_GATEIO_READBACK_TIMEOUT_MS || '15000', 10),
 };
 
-export const fetchJson = async (url, { headers = {}, timeoutMs = options.timeoutMs } = {}) => {
+const fetchJson = async (url, { headers = {} } = {}) => {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const timer = setTimeout(() => controller.abort(), options.timeoutMs);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -81,10 +80,9 @@ export const fetchJson = async (url, { headers = {}, timeoutMs = options.timeout
   }
 };
 
-export const safeNumber = (value) =>
-  typeof value === 'number' && Number.isFinite(value) ? value : null;
+const safeNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
-export const summarizeBot = (bot) => ({
+const summarizeBot = (bot) => ({
   idHash: hash(bot?.id),
   name: bot?.name,
   mode: bot?.mode,
@@ -94,7 +92,7 @@ export const summarizeBot = (bot) => ({
   liveOptIn: Boolean(bot?.liveOptIn),
 });
 
-export const summarizeSession = (session) => ({
+const summarizeSession = (session) => ({
   idHash: hash(session?.id),
   status: session?.status ?? null,
   mode: session?.mode ?? null,
@@ -108,7 +106,7 @@ export const summarizeSession = (session) => ({
     : null,
 });
 
-export const summarizeAggregate = (aggregate) => ({
+const summarizeAggregate = (aggregate) => ({
   sessionDetail: summarizeSession(aggregate?.sessionDetail),
   symbolStats: {
     items: Array.isArray(aggregate?.symbolStats?.items) ? aggregate.symbolStats.items.length : null,
@@ -139,18 +137,15 @@ export const summarizeAggregate = (aggregate) => ({
   },
 });
 
-export const assertOptions = (candidateOptions = options) => {
-  if (!candidateOptions.baseUrl) throw new Error('Missing API base URL.');
-  if (!candidateOptions.webBaseUrl) throw new Error('Missing web base URL.');
-  if (
-    !candidateOptions.authToken &&
-    (!candidateOptions.authEmail || !candidateOptions.authPassword)
-  ) {
+const assertOptions = () => {
+  if (!options.baseUrl) throw new Error('Missing API base URL.');
+  if (!options.webBaseUrl) throw new Error('Missing web base URL.');
+  if (!options.authToken && (!options.authEmail || !options.authPassword)) {
     throw new Error('Missing auth token or login credentials for read-only production readback.');
   }
 };
 
-export const main = async () => {
+const main = async () => {
   assertOptions();
 
   const authLayer = resolveOpsAuthLayerOptions({});
@@ -350,9 +345,7 @@ export const main = async () => {
   process.stdout.write(`[ops:non-gateio-runtime-readback] md=${options.outputMd}\n`);
 };
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  main().catch((error) => {
-    process.stderr.write(`[ops:non-gateio-runtime-readback] failed: ${error?.message ?? error}\n`);
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  process.stderr.write(`[ops:non-gateio-runtime-readback] failed: ${error?.message ?? error}\n`);
+  process.exit(1);
+});

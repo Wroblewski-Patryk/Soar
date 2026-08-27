@@ -12,18 +12,16 @@ const liveMarkerSources = new Set<WalletCashflowSource>([
   WalletCashflowSource.TRANSFER_OUT,
 ]);
 
-const toIsoString = (value: unknown) => {
+const toIsoString = (value: Date | string | null | undefined) => {
   if (!value) return null;
   if (value instanceof Date) return value.toISOString();
-  if (typeof value !== 'string') return null;
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 };
 
-const toDate = (value: unknown) => {
+const toDate = (value: Date | string | null | undefined) => {
   if (!value) return null;
   if (value instanceof Date) return value;
-  if (typeof value !== 'string') return null;
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };

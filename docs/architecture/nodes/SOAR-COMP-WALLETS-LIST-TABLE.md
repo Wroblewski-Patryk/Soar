@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-WALLETS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-WALLETS]] (verified_local)
 - contains <- [[SOAR-PAGE-WALLETS-LIST]] (verified_local)
 
 ## Evidence Rule

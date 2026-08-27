@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const prisma = new PrismaClient();
 
@@ -114,9 +113,9 @@ type SnapshotPayload = {
   };
 };
 
-export const toIso = (value: Date) => value.toISOString();
+const toIso = (value: Date) => value.toISOString();
 
-export async function main() {
+async function main() {
   const email = process.env.SNAPSHOT_EMAIL ?? 'wroblewskipatryk@gmail.com';
   const outputPath =
     process.env.SNAPSHOT_OUTPUT ??
@@ -311,13 +310,12 @@ export async function main() {
   );
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main()
-    .catch((error) => {
-      console.error(error);
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+

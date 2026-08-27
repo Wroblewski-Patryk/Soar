@@ -34,7 +34,6 @@ tags: [soar-map, service, backend, verified_local]
 
 ## Relations
 
-- uses <- [[SOAR-API-ICON-LOOKUP]] (verified_local)
 - calls <- [[SOAR-CONTROLLER-ICONS]] (verified_local)
 
 ## Evidence Rule

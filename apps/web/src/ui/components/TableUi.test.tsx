@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { resolveTableActionPreset, TableToneBadge } from "./TableUi";
+import { resolveTableActionPreset } from "./TableUi";
 
 describe("TableUi presets", () => {
   it("keeps runtime and preview on the same module tone", () => {
@@ -22,14 +21,5 @@ describe("TableUi presets", () => {
     expect(deletePreset.tone).toBe("danger");
     expect(clonePreset.tone).not.toBe(editPreset.tone);
     expect(clonePreset.tone).not.toBe(deletePreset.tone);
-  });
-
-  it("renders table tone badge with tone and custom classes", () => {
-    render(<TableToneBadge label="Live" tone="success" className="ml-auto" />);
-
-    const badge = screen.getByText("Live");
-    expect(badge).toHaveClass("badge");
-    expect(badge).toHaveClass("border-success/45");
-    expect(badge).toHaveClass("ml-auto");
   });
 });

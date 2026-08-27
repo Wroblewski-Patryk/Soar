@@ -22,30 +22,14 @@ Quickly confirm that the deployed revision is operational for critical user flow
   release-readiness smoke item. Web/workers may depend only on API
   `service_started`, so this checklist is the acceptance gate for dependency
   readiness.
-- For the Coolify Service Stack topology, API and API-image worker containers
-  keep core dumps disabled (`ulimit -c` returns `0`) so crash artifacts cannot
-  grow the writable layer.
 - For the Coolify Service Stack topology, `ops:coolify-stack:env-check` has
   passed in the deploy environment or an equivalent no-secret variable-name and
   value-shape readiness check has been captured.
 
 ## Smoke Checklist
 
-### Scripted smoke diagnostics
-- Preferred public smoke command:
-  `pnpm run ops:deploy:smoke -- --base-url <api-url> --web-base-url <web-url> --expected-sha <sha> --no-workers`.
-- `SMOKE_TRANSIENT_RETRIES` defaults to `1` and retries only transient
-  fetch abort/timeout/fetch-failed errors. HTTP status failures, degraded
-  readiness, missing build-info SHA, and SHA mismatches remain fail-closed and
-  are not retried.
-- A PASS row containing `transient retry:` should be classified as recovered
-  runner/network instability. A FAIL row after exhausted transient retries
-  remains a smoke failure until direct endpoint probes prove otherwise.
-
 ### 1) API baseline
 - `GET /health` returns `200`.
-- `GET /health` reports `release.gitSha` equal to the exact 40-character
-  candidate SHA baked into the API image.
 - `GET /ready` returns `200`.
 - `GET /ready` implicitly verifies required runtime dependencies, including
   production Redis reachability.
@@ -55,12 +39,7 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - root page returns `200`.
 - canonical login page `/auth/login` loads without runtime error.
 - static assets load correctly (no broken chunks).
-- `/api/build-info` exposes the deployed candidate SHA with authoritative
-  source provenance: `metadataSource=env`, `metadataSource=git`, or
-  `metadataSource=git-files`. Runtime-only fallback metadata such as
-  `env-runtime` and branch-head fallbacks such as `github-branch` or
-  `github-branch-runtime` are diagnostics only and fail the deploy provenance
-  gate.
+- `/api/build-info` exposes the deployed candidate SHA.
 
 ### 3) Auth baseline
 - valid login works,
@@ -84,9 +63,6 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 6) Workers and queue baseline
 - workers health/readiness is green,
-- protected `/workers/ready` reports a fresh heartbeat for every required
-  worker and every `releaseSha` equals the API candidate SHA; missing or mixed
-  release identities fail readiness during a rolling replacement,
 - no crash-loop in worker logs,
 - market/signal updates visible in runtime within expected interval.
 - Coolify Redis resource is `running:healthy`; Redis restart-count growth or

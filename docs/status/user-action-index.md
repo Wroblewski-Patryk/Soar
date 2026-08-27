@@ -1,6 +1,6 @@
 # User Action Evidence Index
 
-Last generated: 2026-07-24
+Last generated: 2026-05-25
 
 This generated index maps user-visible web entrypoints and explicit UI controls to API routes, function chains, backend functions, data models, tests, docs, evidence, safety boundaries, and proof gaps.
 
@@ -8,17 +8,17 @@ This generated index maps user-visible web entrypoints and explicit UI controls 
 
 - `docs/architecture/indices/user-action-index.csv`
 - `docs/graphs/user-action-index.json`
-- `history/artifacts/user-action-index-2026-07-24.json`
+- `history/artifacts/user-action-index-2026-05-25.json`
 
 ## Summary
 
 | Metric | Count |
 | --- | ---: |
-| Actions | 41 |
-| Route visit/read actions | 38 |
+| Actions | 39 |
+| Route visit/read actions | 36 |
 | Explicit UI actions | 3 |
 | Critical gaps | 0 |
-| High gaps | 39 |
+| High gaps | 37 |
 | Medium gaps | 0 |
 
 ## Gap Semantics
@@ -55,7 +55,6 @@ This generated index maps user-visible web entrypoints and explicit UI controls 
 | high | SOAR-ACTION-VISIT-PAGE-MARKETS-LIST | /dashboard/markets/list | protected; destructive | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-OFFLINE | /offline | read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-POSITIONS-LEGACY | apps/web/src/middleware.ts | protected; read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
-| high | SOAR-ACTION-VISIT-PAGE-PRIVACY | /privacy | public; read_or_navigation | verified_local_only | not_in_function_chain; local_only_without_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-PROFILE | /dashboard/profile | protected; mutation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-PUBLIC-HOME | / | public; read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-REGISTER | /auth/register | public; read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof |
@@ -64,7 +63,6 @@ This generated index maps user-visible web entrypoints and explicit UI controls 
 | high | SOAR-ACTION-VISIT-PAGE-STRATEGY-CREATE | /dashboard/strategies/create | protected; mutation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-STRATEGY-EDIT | /dashboard/strategies/:id/edit | protected; mutation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-STRATEGY-ID-ROOT | /dashboard/strategies/:id | protected; read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
-| high | SOAR-ACTION-VISIT-PAGE-TERMS | /terms | public; read_or_navigation | verified_local_only | not_in_function_chain; local_only_without_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-WALLET-CREATE | /dashboard/wallets/create | protected; mutation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-WALLET-EDIT | /dashboard/wallets/:id/edit | protected; destructive | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |
 | high | SOAR-ACTION-VISIT-PAGE-WALLET-ID-ROOT | /dashboard/wallets/:id | protected; read_or_navigation | verified_local_only | local_only_without_fresh_browser_or_production_proof; protected_or_money_path_needs_fresh_browser_or_production_proof |

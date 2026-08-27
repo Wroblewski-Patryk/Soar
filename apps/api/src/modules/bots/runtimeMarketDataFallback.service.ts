@@ -512,7 +512,7 @@ export const fetchFallbackTickerPrices = async (params: {
   marketType: 'FUTURES' | 'SPOT';
   symbols: string[];
 }) => {
-  if (process.env.NODE_ENV === 'test' || process.env.VITEST === 'true') return new Map<string, number>();
+  if (process.env.NODE_ENV === 'test') return new Map<string, number>();
   const exchange = params.exchange ?? 'BINANCE';
   const normalizedSymbols = normalizeSymbols(params.symbols);
   if (normalizedSymbols.length === 0) return new Map<string, number>();

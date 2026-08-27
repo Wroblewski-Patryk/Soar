@@ -12,15 +12,6 @@
 - Iteration: post-V1 product follow-up
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Bot runtime monitoring and wallet capital history.
-- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-AGGREGATE; SOAR-DB-BOT; SOAR-DB-WALLET.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-WALLETS-CORE.md.
-- Affected files: apps/api/src/modules/bots; apps/web/src/features/bots; apps/api/prisma/schema.prisma.
-- Tests/proof: Bot portfolio history task validation recorded in this task's Result Report.
-- Docs updated: docs/modules/api-bots.md; docs/modules/web-bots.md; .agents/state/module-confidence-ledger.md.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -13,15 +13,6 @@
 - Iteration: 41
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness for Gate.io PAPER pricing.
-- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-FEATURE-EXCHANGE-ADAPTER.
-- Function chains: docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md.
-- Affected files: history/releases; history/artifacts; docs/planning.
-- Tests/proof: production build-info and public smoke evidence recorded in this task.
-- Docs updated: source-of-truth files listed in this task Scope/Result Report.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

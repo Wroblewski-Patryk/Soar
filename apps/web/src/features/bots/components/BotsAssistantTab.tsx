@@ -1,13 +1,7 @@
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
-import type {
-  AssistantDecisionTrace,
-  AssistantModelProfile,
-  AssistantRole,
-  Bot,
-  BotSubagentConfig,
-} from "../types/bot.type";
+import type { AssistantDecisionTrace, Bot, BotSubagentConfig } from "../types/bot.type";
 import type { TranslationKey } from "../../../i18n/translations";
 import { EmptyState } from "../../../ui/components/ViewState";
 import { SkeletonCardBlock, SkeletonFormBlock } from "../../../ui/components/loading";
@@ -23,7 +17,7 @@ type BotsAssistantTabProps = {
   assistantLoading: boolean;
   assistantMainEnabled: boolean;
   assistantMandate: string;
-  assistantModelProfile: AssistantModelProfile;
+  assistantModelProfile: string;
   assistantSafetyMode: "STRICT" | "BALANCED" | "EXPERIMENTAL";
   assistantSaving: boolean;
   assistantSlots: BotSubagentConfig[];
@@ -38,7 +32,7 @@ type BotsAssistantTabProps = {
   setAssistantLatencyMs: (value: number) => void;
   setAssistantMainEnabled: (value: boolean) => void;
   setAssistantMandate: (value: string) => void;
-  setAssistantModelProfile: (value: AssistantModelProfile) => void;
+  setAssistantModelProfile: (value: string) => void;
   setAssistantSafetyMode: (value: "STRICT" | "BALANCED" | "EXPERIMENTAL") => void;
   setAssistantSubagents: Dispatch<SetStateAction<BotSubagentConfig[]>>;
   interpolateTemplate: (template: string, values: Record<string, string | number>) => string;
@@ -136,13 +130,11 @@ export function BotsAssistantTab({
                 </label>
                 <label className="form-control">
                   <span className="label-text">{t("dashboard.bots.assistant.modelProfileLabel")}</span>
-                  <select
-                    className="select select-bordered"
+                  <input
+                    className="input input-bordered"
                     value={assistantModelProfile}
-                    onChange={(event) => setAssistantModelProfile(event.target.value as AssistantModelProfile)}
-                  >
-                    <option value="balanced">balanced</option>
-                  </select>
+                    onChange={(event) => setAssistantModelProfile(event.target.value)}
+                  />
                 </label>
                 <label className="form-control">
                   <span className="label-text">{t("dashboard.bots.assistant.safetyModeLabel")}</span>
@@ -210,45 +202,37 @@ export function BotsAssistantTab({
                       </label>
                       <label className="form-control">
                         <span className="label-text">{t("dashboard.bots.assistant.roleLabel")}</span>
-                        <select
-                          className="select select-bordered select-sm"
+                        <input
+                          className="input input-bordered input-sm"
                           value={slot.role}
                           onChange={(event) =>
                             setAssistantSubagents((prev) => {
                               const next = [...prev];
                               const idx = next.findIndex((item) => item.slotIndex === slot.slotIndex);
-                              const updated = { ...slot, role: event.target.value as AssistantRole };
+                              const updated = { ...slot, role: event.target.value };
                               if (idx >= 0) next[idx] = updated;
                               else next.push(updated);
                               return next;
                             })
                           }
-                        >
-                          <option value="TREND">TREND</option>
-                          <option value="MOMENTUM">MOMENTUM</option>
-                          <option value="RISK">RISK</option>
-                          <option value="MICROSTRUCTURE">MICROSTRUCTURE</option>
-                          <option value="GENERAL">GENERAL</option>
-                        </select>
+                        />
                       </label>
                       <label className="form-control">
                         <span className="label-text">{t("dashboard.bots.assistant.profileLabel")}</span>
-                        <select
-                          className="select select-bordered select-sm"
+                        <input
+                          className="input input-bordered input-sm"
                           value={slot.modelProfile}
                           onChange={(event) =>
                             setAssistantSubagents((prev) => {
                               const next = [...prev];
                               const idx = next.findIndex((item) => item.slotIndex === slot.slotIndex);
-                              const updated = { ...slot, modelProfile: event.target.value as AssistantModelProfile };
+                              const updated = { ...slot, modelProfile: event.target.value };
                               if (idx >= 0) next[idx] = updated;
                               else next.push(updated);
                               return next;
                             })
                           }
-                        >
-                          <option value="balanced">balanced</option>
-                        </select>
+                        />
                       </label>
                       <label className="form-control">
                         <span className="label-text">{t("dashboard.bots.assistant.timeoutLabel")}</span>

@@ -247,7 +247,7 @@ type MarkFailedInput = {
 };
 
 export class RuntimeExecutionDedupeService {
-  async getPendingSubmittedDcaOrderIdForPosition(positionId: string) {
+  async hasPendingSubmittedDcaForPosition(positionId: string) {
     const staleThreshold = new Date(Date.now() - pendingStaleMs);
     const pending = await prisma.runtimeExecutionDedupe.findMany({
       where: {
@@ -276,11 +276,7 @@ export class RuntimeExecutionDedupeService {
       },
       select: { id: true },
     });
-    return active?.id ?? null;
-  }
-
-  async hasPendingSubmittedDcaForPosition(positionId: string) {
-    return Boolean(await this.getPendingSubmittedDcaOrderIdForPosition(positionId));
+    return Boolean(active);
   }
 
   async acquire(input: AcquireInput): Promise<RuntimeExecutionDedupeAcquireResult> {

@@ -7,7 +7,6 @@ import BotsPage from "./bots/page";
 import WalletsListPage from "./wallets/list/page";
 import { I18nProvider } from "@/i18n/I18nProvider";
 
-const routerPushMock = vi.hoisted(() => vi.fn());
 const listWalletsMock = vi.hoisted(() => vi.fn());
 const homeLiveWidgetsPropsMock = vi.hoisted(() => vi.fn());
 const authState = vi.hoisted(() => ({
@@ -15,16 +14,10 @@ const authState = vi.hoisted(() => ({
     | { email: string; userId: string; role: string }
     | null,
   loading: false,
-  sessionExpired: false,
 }));
 
 vi.mock("../../context/AuthContext", () => ({
   useAuth: () => authState,
-}));
-
-vi.mock("next/navigation", () => ({
-  usePathname: () => window.location.pathname,
-  useRouter: () => ({ push: routerPushMock }),
 }));
 
 vi.mock("@/features/dashboard-home/components/HomeLiveWidgets", () => ({
@@ -74,10 +67,8 @@ describe("Dashboard core routes accessibility smoke", () => {
   afterEach(() => {
     listWalletsMock.mockReset();
     homeLiveWidgetsPropsMock.mockClear();
-    routerPushMock.mockClear();
     authState.user = { email: "qa@cryptosparrow.dev", userId: "user-1", role: "USER" };
     authState.loading = false;
-    authState.sessionExpired = false;
     window.localStorage.clear();
   });
 
@@ -101,16 +92,6 @@ describe("Dashboard core routes accessibility smoke", () => {
     expect(screen.getByRole("region", { name: "Runtime widgets" })).toBeInTheDocument();
     expect(homeLiveWidgetsPropsMock).toHaveBeenLastCalledWith({ authConfirmed: false });
     expect(screen.queryByText("Loading runtime workspace")).not.toBeInTheDocument();
-  });
-
-  it("preserves expired-session query when protected auth bootstrap fails closed", async () => {
-    authState.user = null;
-    authState.loading = false;
-    authState.sessionExpired = true;
-
-    await renderWithI18n(<DashboardPage />, "/dashboard");
-
-    expect(routerPushMock).toHaveBeenCalledWith("/auth/login?session=expired");
   });
 
   it("keeps bots route create action accessible with contextual description", async () => {

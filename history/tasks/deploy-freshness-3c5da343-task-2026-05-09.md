@@ -12,15 +12,6 @@
 - Iteration: 2026-05-09-dashboard-runtime-deploy
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness for dashboard runtime aggregate.
-- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-FEATURE-DASHBOARD-RUNTIME.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
-- Affected files: history/releases; history/artifacts; dashboard runtime task evidence.
-- Tests/proof: production build-info and public smoke evidence recorded in this task.
-- Docs updated: source-of-truth files listed in this task Scope/Result Report.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

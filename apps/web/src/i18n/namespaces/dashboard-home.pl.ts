@@ -294,7 +294,6 @@ export const dashboardHomePl = {
     "signalContextSourceLatestDecision": "Ostatnia decyzja",
     "signalContextSourceConfiguredFallback": "Snapshot zamknietej swiecy",
     "signalContextSourceUnresolved": "Nieustalone",
-    "runtimeStateLabel": "Stan runtime",
     "marketStatePositionOpen": "Pozycja otwarta",
     "marketStateSignalActive": "Sygnał zaakceptowany",
     "marketStateEvaluatedNoTrade": "Oceniono / brak wejścia",

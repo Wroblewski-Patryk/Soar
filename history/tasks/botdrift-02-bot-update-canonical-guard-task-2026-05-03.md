@@ -12,15 +12,6 @@
 - Iteration: 14
 - Operation Mode: BUILDER
 
-## Architecture Links
-
-- Primary feature/module: Bot update canonical guard.
-- Architecture nodes: SOAR-FEATURE-BOT-SETUP; SOAR-API-BOT-UPDATE; SOAR-DB-BOT; SOAR-FEATURE-DASHBOARD-RUNTIME.
-- Function chains: docs/architecture/chains/CHAIN-BOT-SETUP.md; docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
-- Affected files: apps/api/src/modules/bots; apps/web/src/features/bots.
-- Tests/proof: bot update guard validation recorded in this task's Result Report.
-- Docs updated: BOTDRIFT planning/context docs referenced by this task.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

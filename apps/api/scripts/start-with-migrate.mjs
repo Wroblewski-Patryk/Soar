@@ -1,75 +1,65 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 
-export const runMigrations = ({
-  env = process.env,
-  cwd = process.cwd(),
-  spawnSyncImpl = spawnSync,
-  existsSyncImpl = existsSync,
-  exit = process.exit,
-  log = console.log,
-  error = console.error,
-} = {}) => {
-  if (env.API_AUTO_MIGRATE === 'false') {
-    log('[api/start] API_AUTO_MIGRATE=false, skipping prisma migrate deploy');
+const shouldRunMigrations = process.env.API_AUTO_MIGRATE !== 'false';
+
+const runMigrations = () => {
+  if (!shouldRunMigrations) {
+    console.log('[api/start] API_AUTO_MIGRATE=false, skipping prisma migrate deploy');
     return;
   }
 
-  if (!env.DATABASE_URL) {
-    error('[api/start] DATABASE_URL is required when API_AUTO_MIGRATE is enabled');
-    exit(1);
-    return;
+  if (!process.env.DATABASE_URL) {
+    console.error('[api/start] DATABASE_URL is required when API_AUTO_MIGRATE is enabled');
+    process.exit(1);
   }
 
   const prismaCliCandidates = [
-    resolve(cwd, 'node_modules/prisma/build/index.js'),
-    resolve(cwd, '../../node_modules/prisma/build/index.js'),
+    resolve(process.cwd(), 'node_modules/prisma/build/index.js'),
+    resolve(process.cwd(), '../../node_modules/prisma/build/index.js'),
   ];
-  const prismaCliPath = prismaCliCandidates.find((candidate) => existsSyncImpl(candidate));
-  const schemaPath = resolve(cwd, 'prisma/schema.prisma');
+  const prismaCliPath = prismaCliCandidates.find((candidate) => existsSync(candidate));
+  const schemaPath = resolve(process.cwd(), 'prisma/schema.prisma');
 
   if (!prismaCliPath) {
-    error('[api/start] Prisma CLI not found in node_modules; cannot run migrations');
-    exit(1);
-    return;
+    console.error('[api/start] Prisma CLI not found in node_modules; cannot run migrations');
+    process.exit(1);
   }
 
-  log('[api/start] Running prisma migrate deploy...');
-  const migrate = spawnSyncImpl(
+  console.log('[api/start] Running prisma migrate deploy...');
+  const migrate = spawnSync(
     process.execPath,
     [prismaCliPath, 'migrate', 'deploy', '--schema', schemaPath],
     {
       stdio: 'inherit',
-      env,
+      env: process.env,
     }
   );
 
   if (migrate.status !== 0) {
-    error(`[api/start] prisma migrate deploy failed with code ${migrate.status ?? 1}`);
-    exit(migrate.status ?? 1);
-    return;
+    console.error(`[api/start] prisma migrate deploy failed with code ${migrate.status ?? 1}`);
+    process.exit(migrate.status ?? 1);
   }
 
-  log('[api/start] prisma migrate deploy finished successfully');
+  console.log('[api/start] prisma migrate deploy finished successfully');
 };
 
-export const forwardSignal = (api, signal) => {
-  if (!api.killed) {
-    api.kill(signal);
-  }
-};
-
-export const startApi = () => {
+const startApi = () => {
   console.log('[api/start] Starting API server...');
   const api = spawn(process.execPath, ['dist/index.js'], {
     stdio: 'inherit',
     env: process.env,
   });
 
-  process.on('SIGINT', () => forwardSignal(api, 'SIGINT'));
-  process.on('SIGTERM', () => forwardSignal(api, 'SIGTERM'));
+  const forwardSignal = (signal) => {
+    if (!api.killed) {
+      api.kill(signal);
+    }
+  };
+
+  process.on('SIGINT', () => forwardSignal('SIGINT'));
+  process.on('SIGTERM', () => forwardSignal('SIGTERM'));
 
   api.on('exit', (code, signal) => {
     if (signal) {
@@ -80,11 +70,5 @@ export const startApi = () => {
   });
 };
 
-export const main = () => {
-  runMigrations();
-  startApi();
-};
-
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  main();
-}
+runMigrations();
+startApi();

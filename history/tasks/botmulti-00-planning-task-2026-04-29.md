@@ -10,15 +10,6 @@
 - Depends on: user-approved staged direction from 2026-04-29 analysis
 - Priority: P1
 
-## Architecture Links
-
-- Primary feature/module: Post-V1 multi-strategy bot architecture planning.
-- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-FEATURE-MANUAL-ORDER; SOAR-DB-BOT; SOAR-DB-STRATEGY.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES-CORE.md.
-- Affected files: docs/planning; .codex/context/TASK_BOARD.md; .codex/context/PROJECT_STATE.md.
-- Tests/proof: `pnpm run quality:guardrails` recorded in this task's Validation Evidence.
-- Docs updated: docs/planning/mvp-next-commits.md; deferred BOTMULTI planning packet.
-
 ## Context
 The user approved a staged direction: `V1` must close first on the current
 singular bot architecture, and only afterward should Soar reintroduce

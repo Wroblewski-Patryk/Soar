@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 type CountRow = { count: number };
 type PgIndexRow = { indexname: string };
@@ -9,7 +8,7 @@ type PgColumnRow = { table_name: string; column_name: string };
 
 const prisma = new PrismaClient();
 
-export const toStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+const toStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
 const requiredWalletIdColumns = [
   { table: 'Bot', column: 'walletId' },
@@ -35,16 +34,13 @@ const requiredConstraints = [
   'Trade_walletId_fkey',
 ] as const;
 
-export const readCount = async (
-  sql: string,
-  prismaClient: Pick<typeof prisma, '$queryRawUnsafe'> = prisma
-) => {
-  const rows = await prismaClient.$queryRawUnsafe<CountRow[]>(sql);
+const readCount = async (sql: string) => {
+  const rows = await prisma.$queryRawUnsafe<CountRow[]>(sql);
   const value = rows[0]?.count;
   return Number.isFinite(value) ? value : 0;
 };
 
-export const main = async () => {
+const main = async () => {
   const startedAt = new Date().toISOString();
 
   const totalBots = await prisma.bot.count();
@@ -231,16 +227,14 @@ export const main = async () => {
   }
 };
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main()
-    .catch((error) => {
-      console.error(
-        '[verifyWalletDbFoundation] failed:',
-        error instanceof Error ? error.message : String(error)
-      );
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+main()
+  .catch((error) => {
+    console.error(
+      '[verifyWalletDbFoundation] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

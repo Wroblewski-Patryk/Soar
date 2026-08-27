@@ -383,7 +383,7 @@ export const getManualOrderContext = async (
   query: ManualOrderContextQuery,
   deps: ManualOrderContextDeps = defaultManualOrderContextDeps
 ) => {
-  if (isApiTestRuntime() && deps === defaultManualOrderContextDeps) {
+  if (process.env.NODE_ENV === 'test' && deps === defaultManualOrderContextDeps) {
     return getManualOrderContextService(userId, query, {
       createPublicConnector: () => ({
         getSymbolTradingRules: async () => ({
@@ -431,8 +431,6 @@ const defaultOpenOrderDeps: OpenOrderDeps = {
 const defaultCancelOrderDeps: CancelOrderDeps = {
   cancelLiveOrder: cancelLiveOrderThroughBoundary,
 };
-
-const isApiTestRuntime = () => process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -649,7 +647,7 @@ export const openOrder = async (
   let effectiveFeeRate: number | null = null;
   let fills: ExchangeOrderFill[] = [];
 
-  if (canonicalPayload.mode === 'LIVE' && (!isApiTestRuntime() || deps !== defaultOpenOrderDeps)) {
+  if (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
     if (!liveBot) {
       throw orderErrors.liveBotNotFound();
     }

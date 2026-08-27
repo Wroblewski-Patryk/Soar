@@ -1,8 +1,7 @@
 # Mobile Parity Contract (Bootstrap Phase)
 
 ## Current Phase
-`apps/mobile` exists as bootstrap scaffold only and is classified
-`out_of_scope_for_v1`.
+`apps/mobile` exists as bootstrap scaffold only.
 
 ## Explicit Non-Goals (Now)
 - No production mobile runtime.
@@ -26,8 +25,6 @@ Mobile must mirror web behavior from shared backend API contracts:
 - `apps/mobile/package.json` present.
 - minimal README and source folder placeholders.
 - no required CI build/test step yet.
-- V1 traceability seed exists in `docs/modules/mobile-module-index.md`,
-  `docs/modules/mobile-bootstrap.md`, and `docs/architecture/traceability-matrix.md`.
 
 ## Future Start Criteria
 When gates are met, mobile implementation starts with:
@@ -35,3 +32,4 @@ When gates are met, mobile implementation starts with:
 2. read-only operational modules (positions/orders/logs),
 3. bot controls and backtest results,
 4. optional advanced creation/edit flows.
+

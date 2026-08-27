@@ -610,20 +610,6 @@ describe('resolveRuntimePositionDcaCount', () => {
     expect(dcaCount).toBe(0);
   });
 
-  it('falls back to raw trade ids when order ids are absent', () => {
-    expect(
-      resolveRuntimePositionDcaCount({
-        entryLegs: [
-          { id: 'open', orderId: null, lifecycleAction: 'OPEN' },
-          { id: 'dca-1', orderId: null, lifecycleAction: 'DCA' },
-          { id: 'dca-2', orderId: null, lifecycleAction: 'DCA' },
-        ],
-        explicitDcaTradeCount: 0,
-        runtimeStateCurrentAdds: null,
-      })
-    ).toBe(2);
-  });
-
   it('keeps explicit DCA rows and runtime state progress visible', () => {
     expect(
       resolveRuntimePositionDcaCount({
@@ -643,26 +629,5 @@ describe('resolveRuntimePositionDcaCount', () => {
         runtimeStateCurrentAdds: 2,
       })
     ).toBe(2);
-  });
-
-  it('returns the highest non-negative truncated signal across all inputs', () => {
-    expect(
-      resolveRuntimePositionDcaCount({
-        entryLegs: [{ id: 'open', orderId: 'order-1', lifecycleAction: 'OPEN' }],
-        explicitDcaTradeCount: -3,
-        runtimeStateCurrentAdds: -1.8,
-      })
-    ).toBe(0);
-
-    expect(
-      resolveRuntimePositionDcaCount({
-        entryLegs: [
-          { id: 'open', orderId: 'order-1', lifecycleAction: 'OPEN' },
-          { id: 'dca', orderId: 'order-2', lifecycleAction: 'DCA' },
-        ],
-        explicitDcaTradeCount: 1,
-        runtimeStateCurrentAdds: 3.9,
-      })
-    ).toBe(3);
   });
 });

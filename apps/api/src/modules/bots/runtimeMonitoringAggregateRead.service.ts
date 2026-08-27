@@ -5,54 +5,6 @@ import { listBotRuntimeSessionPositions } from './runtimeSessionPositionsRead.se
 import { listBotRuntimeSessionSymbolStats } from './runtimeSessionSymbolStatsRead.service';
 import { listBotRuntimeSessionTrades } from './runtimeSessionTradesRead.service';
 import { resolveRuntimeMarketTruthState } from './runtimeMarketTruthState.service';
-import {
-  buildRuntimeAggregateCacheKey,
-  mapWithLimitedConcurrency,
-  selectSessionsForRuntimeAggregation,
-  withRuntimeAggregateTimeout,
-} from './runtimeMonitoringAggregateRuntime.service';
-import {
-  buildRuntimeAggregateCurrentOpenItems,
-  buildRuntimeAggregateCurrentOpenOrders,
-  buildRuntimeAggregateProjectedHistoryItems,
-  buildRuntimeAggregateProjectedTradeItems,
-  buildRuntimeAggregateTradesMeta,
-  compareRuntimeAggregateTimestampDescThenIdAsc,
-  readRuntimeAggregateFiniteNumber,
-  resolveRuntimeAggregateCurrentDynamicStopColumns,
-  selectLatestRunningProjectionRows,
-  selectRuntimeAggregateCurrentRows,
-  selectRuntimeAggregateLatestCapitalSummary,
-  sumRuntimeAggregateProjectedSymbolsTracked,
-  toRuntimeAggregateDate,
-  toRuntimeAggregateTimestamp,
-} from './runtimeMonitoringAggregateProjectors';
-import {
-  buildEmptyAggregatePayload,
-  buildEmptyAggregatePositionsPayload,
-  buildEmptyAggregateSymbolStatsPayload,
-  buildEmptyAggregateTradesPayload,
-  buildFallbackAggregatePositionsPayload,
-  resolveAggregateSessionWindowEnd,
-} from './runtimeMonitoringAggregateFallbacks.service';
-
-export {
-  mapWithLimitedConcurrency,
-  selectSessionsForRuntimeAggregation,
-} from './runtimeMonitoringAggregateRuntime.service';
-
-export {
-  buildRuntimeAggregateCurrentOpenItems,
-  buildRuntimeAggregateCurrentOpenOrders,
-  buildRuntimeAggregateProjectedHistoryItems,
-  buildRuntimeAggregateProjectedTradeItems,
-  buildRuntimeAggregateTradesMeta,
-  resolveRuntimeAggregateCurrentDynamicStopColumns,
-  selectLatestRunningProjectionRows,
-  selectRuntimeAggregateCurrentRows,
-  selectRuntimeAggregateLatestCapitalSummary,
-  sumRuntimeAggregateProjectedSymbolsTracked,
-} from './runtimeMonitoringAggregateProjectors';
 
 type RuntimeSessionListItem = Awaited<ReturnType<typeof listRuntimeSessionsWithSummary>>[number];
 type RuntimeSymbolStatsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionSymbolStats>>>;
@@ -83,14 +35,431 @@ const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
 );
 const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);
 const runtimeAggregateRunningSessionsCap = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '2',
+  process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
   10,
 );
 const runtimeAggregateCompletedSessionsCap = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '2',
+  process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '0',
   10,
 );
 const runtimeAggregateSessionConcurrency = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_SESSION_CONCURRENCY ?? '2', 10);
+
+const buildRuntimeAggregateCacheKey = (
+  userId: string,
+  botId: string,
+  query: GetBotRuntimeMonitoringAggregateQueryDto
+) =>
+  [
+    userId,
+    botId,
+    query.status ?? 'ALL',
+    query.symbol ?? '',
+    String(query.sessionsLimit),
+    String(query.perSessionLimit),
+  ].join('|');
+
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) return promise;
+  return Promise.race<T>([
+    promise,
+    new Promise<T>((_, reject) => {
+      const timer = setTimeout(() => {
+        clearTimeout(timer);
+        reject(new Error('runtime_aggregate_subquery_timeout'));
+      }, timeoutMs);
+    }),
+  ]);
+};
+
+export const mapWithLimitedConcurrency = async <T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>
+) => {
+  const limit = Number.isFinite(concurrency) && concurrency > 0 ? Math.floor(concurrency) : 1;
+  const results: R[] = new Array(items.length);
+  let nextIndex = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      results[currentIndex] = await mapper(items[currentIndex]);
+    }
+  });
+  await Promise.all(workers);
+  return results;
+};
+
+const selectSessionsForAggregation = (sessions: RuntimeSessionListItem[]) => {
+  if (sessions.length <= 1) return sessions;
+
+  const running = sessions
+    .filter((session) => session.status === 'RUNNING')
+    .sort((left, right) => toTimestamp(right.lastHeartbeatAt) - toTimestamp(left.lastHeartbeatAt));
+  const nonRunning = sessions
+    .filter((session) => session.status !== 'RUNNING')
+    .sort((left, right) =>
+      toTimestamp(resolveAggregateSessionWindowEnd(right)) - toTimestamp(resolveAggregateSessionWindowEnd(left))
+    );
+
+  const runningCap = Number.isFinite(runtimeAggregateRunningSessionsCap) && runtimeAggregateRunningSessionsCap > 0
+    ? runtimeAggregateRunningSessionsCap
+    : running.length;
+  const completedCap = Number.isFinite(runtimeAggregateCompletedSessionsCap) && runtimeAggregateCompletedSessionsCap > 0
+    ? runtimeAggregateCompletedSessionsCap
+    : nonRunning.length;
+  const selected = [...running.slice(0, runningCap), ...nonRunning.slice(0, completedCap)];
+  if (selected.length === 0) {
+    return sessions.slice(0, Math.min(sessions.length, 3));
+  }
+
+  const seen = new Set<string>();
+  return selected.filter((session) => {
+    if (seen.has(session.id)) return false;
+    seen.add(session.id);
+    return true;
+  });
+};
+
+const toDate = (value: Date | string | null | undefined): Date | null => {
+  if (value == null) return null;
+  if (value instanceof Date) return value;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const toTimestamp = (value: Date | string | null | undefined): number => toDate(value)?.getTime() ?? 0;
+
+const readFiniteNumber = (value: unknown): number | null => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+  return value;
+};
+
+const uniqueById = <T extends { id: string }>(items: T[]) => {
+  const map = new Map<string, T>();
+  for (const item of items) {
+    if (!map.has(item.id)) {
+      map.set(item.id, item);
+    }
+  }
+  return [...map.values()];
+};
+
+const compareTimestampDescThenIdAsc = (
+  leftTs: number,
+  rightTs: number,
+  leftId: string,
+  rightId: string
+) => {
+  const byTimestamp = rightTs - leftTs;
+  if (byTimestamp !== 0) return byTimestamp;
+  return leftId.localeCompare(rightId);
+};
+
+export const selectLatestRunningProjectionRows = <
+  T extends {
+    session: RuntimeSessionListItem;
+  },
+>(
+  rows: T[]
+) => {
+  const runningRows = rows.filter((row) => row.session.status === 'RUNNING');
+  if (runningRows.length === 0) return rows;
+  const nonRunningRows = rows.filter((row) => row.session.status !== 'RUNNING');
+  const latestRunningRow = [...runningRows].sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      Math.max(
+        toTimestamp(left.session.lastHeartbeatAt),
+        toTimestamp(left.session.finishedAt),
+        toTimestamp(left.session.startedAt)
+      ),
+      Math.max(
+        toTimestamp(right.session.lastHeartbeatAt),
+        toTimestamp(right.session.finishedAt),
+        toTimestamp(right.session.startedAt)
+      ),
+      left.session.id,
+      right.session.id
+    )
+  )[0];
+  return latestRunningRow ? [...nonRunningRows, latestRunningRow] : nonRunningRows;
+};
+
+export const selectRuntimeAggregateCurrentRows = <
+  T extends {
+    session: RuntimeSessionListItem;
+  },
+>(
+  rows: T[]
+) => {
+  const runningRows = rows.filter((row) => row.session.status === 'RUNNING');
+  return runningRows.length > 0 ? runningRows : rows;
+};
+
+export const sumRuntimeAggregateProjectedSymbolsTracked = <
+  T extends {
+    session: Pick<RuntimeSessionListItem, 'symbolsTracked'>;
+  },
+>(
+  rows: T[]
+) => rows.reduce((acc, row) => acc + row.session.symbolsTracked, 0);
+
+export const buildRuntimeAggregateProjectedTradeItems = <
+  T extends {
+    trades: {
+      items: Array<{
+        id: string;
+        executedAt: Date | string | null;
+      }>;
+    };
+  },
+>(
+  rows: T[]
+) =>
+  uniqueById(rows.flatMap((row) => row.trades.items)).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.executedAt),
+      toTimestamp(right.executedAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const buildRuntimeAggregateCurrentOpenItems = <
+  T extends {
+    openItems: Array<{
+      id: string;
+      openedAt: Date | string | null;
+      entryNotional: number;
+      leverage: number;
+    }>;
+  },
+>(
+  response: T | null
+) =>
+  uniqueById(response?.openItems ?? []).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.openedAt),
+      toTimestamp(right.openedAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const buildRuntimeAggregateCurrentOpenOrders = <
+  T extends {
+    openOrders: Array<{
+      id: string;
+      submittedAt?: Date | string | null;
+      createdAt: Date | string | null;
+    }>;
+  },
+>(
+  response: T | null
+) =>
+  uniqueById(response?.openOrders ?? []).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.submittedAt ?? left.createdAt),
+      toTimestamp(right.submittedAt ?? right.createdAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const buildRuntimeAggregateProjectedHistoryItems = <
+  T extends {
+    positions: {
+      historyItems: Array<{
+        id: string;
+        closedAt: Date | string | null;
+      }>;
+    };
+  },
+>(
+  rows: T[]
+) =>
+  uniqueById(rows.flatMap((row) => row.positions.historyItems)).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.closedAt),
+      toTimestamp(right.closedAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const resolveRuntimeAggregateCurrentDynamicStopColumns = <
+  T extends {
+    showDynamicStopColumns?: boolean;
+  },
+>(
+  response: T | null
+) => response?.showDynamicStopColumns === true;
+
+export const selectRuntimeAggregateLatestCapitalSummary = <
+  T extends {
+    positions: {
+      summary: {
+        referenceBalance?: unknown;
+        freeCash?: unknown;
+        accountBalance?: unknown;
+        baseCurrency?: unknown;
+        capitalSource?: unknown;
+        allocationMode?: unknown;
+        allocationValue?: unknown;
+        paperResetAt?: Date | string | null;
+      };
+    };
+  },
+>(
+  rows: T[]
+) =>
+  rows
+    .map((row) => row.positions.summary)
+    .find((summary) => {
+      const referenceBalance = readFiniteNumber(summary.referenceBalance);
+      const freeCash = readFiniteNumber(summary.freeCash);
+      const accountBalance = readFiniteNumber(summary.accountBalance);
+      return referenceBalance != null || freeCash != null || accountBalance != null;
+    });
+
+export const buildRuntimeAggregateTradesMeta = (params: {
+  totalTrades: number;
+  returnedItemsCount: number;
+  pageSize: number;
+}) => {
+  const pageSize = Math.max(1, params.pageSize);
+  const total = Math.max(0, params.totalTrades);
+  const returnedItemsCount = Math.max(0, params.returnedItemsCount);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
+  return {
+    page: 1,
+    pageSize,
+    total,
+    totalPages,
+    hasPrev: false,
+    hasNext: total > returnedItemsCount,
+  };
+};
+
+const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
+  session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
+
+const buildEmptyAggregatePayload = (params: {
+  botId: string;
+  mode: 'PAPER' | 'LIVE';
+  status: RuntimeSessionListItem['status'] | undefined;
+  perSessionLimit: number;
+}) => {
+  const now = new Date();
+  const status = params.status ?? 'COMPLETED';
+  const finishedAt = status === 'RUNNING' ? null : now;
+  const tradeMeta = buildRuntimeAggregateTradesMeta({
+    totalTrades: 0,
+    returnedItemsCount: 0,
+    pageSize: params.perSessionLimit,
+  });
+  return {
+    sessionDetail: {
+      id: 'AGGREGATE',
+      botId: params.botId,
+      mode: params.mode,
+      status,
+      startedAt: now,
+      finishedAt,
+      lastHeartbeatAt: null,
+      stopReason: null,
+      errorMessage: null,
+      metadata: {
+        aggregate: true,
+        sessionsCount: 0,
+      },
+      createdAt: now,
+      updatedAt: now,
+      durationMs: 0,
+      eventsCount: 0,
+      symbolsTracked: 0,
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+        openPositionCount: 0,
+        openPositionQty: 0,
+      },
+    },
+    symbolStats: {
+      sessionId: 'AGGREGATE',
+      items: [] as RuntimeSymbolStatsResponse['items'],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+        openPositionCount: 0,
+        openPositionQty: 0,
+      },
+    },
+    positions: {
+      sessionId: 'AGGREGATE',
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: now,
+        finishedAt: now,
+      },
+      summary: {
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        feesPaid: 0,
+        openPositionQty: 0,
+        referenceBalance: null,
+        freeCash: null,
+        accountBalance: null,
+        baseCurrency: null,
+        capitalSource: null,
+        allocationMode: null,
+        allocationValue: null,
+        paperResetAt: null,
+      },
+      openOrders: [] as RuntimePositionsResponse['openOrders'],
+      openItems: [] as RuntimePositionsResponse['openItems'],
+      historyItems: [] as RuntimePositionsResponse['historyItems'],
+    },
+    trades: {
+      sessionId: 'AGGREGATE',
+      total: 0,
+      feesPaid: 0,
+      meta: tradeMeta,
+      window: {
+        startedAt: now,
+        finishedAt: now,
+      },
+      items: [] as RuntimeTradesResponse['items'],
+    },
+  };
+};
 
 const getBotRuntimeMonitoringAggregateUncached = async (
   userId: string,
@@ -125,60 +494,52 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       perSessionLimit,
     });
   }
-  const scopedSessions = selectSessionsForRuntimeAggregation(sessions, {
-    runningCap: runtimeAggregateRunningSessionsCap,
-    completedCap: runtimeAggregateCompletedSessionsCap,
-  });
+  const scopedSessions = selectSessionsForAggregation(sessions);
 
   const payloadRows = await mapWithLimitedConcurrency(
     scopedSessions,
     runtimeAggregateSessionConcurrency,
     async (session) => {
-      const [symbolStats, positions, trades] = await Promise.all([
-        withRuntimeAggregateTimeout(
-          listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
-            symbol: query.symbol,
-            limit: perSessionLimit,
-            preferConfiguredStrategyContext: true,
-          }),
-          runtimeAggregateSubqueryTimeoutMs
-        )
-          .then((value) => value ?? buildEmptyAggregateSymbolStatsPayload({ session }))
-          .catch(() => buildEmptyAggregateSymbolStatsPayload({ session })),
-        withRuntimeAggregateTimeout(
-          listBotRuntimeSessionPositions(userId, botId, session.id, {
-            symbol: query.symbol,
-            limit: perSessionLimit,
-          }),
-          runtimeAggregateSubqueryTimeoutMs
-        )
-          .then((value) => value ?? buildEmptyAggregatePositionsPayload({ session }))
-          .catch(() =>
-            buildFallbackAggregatePositionsPayload({
-              botId,
-              userId,
-              session,
+      try {
+        const [symbolStats, positions, trades] = await Promise.all([
+          withTimeout(
+            listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
               symbol: query.symbol,
               limit: perSessionLimit,
-            }).catch(() => buildEmptyAggregatePositionsPayload({ session }))
+              preferConfiguredStrategyContext: true,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
           ),
-        withRuntimeAggregateTimeout(
-          listBotRuntimeSessionTrades(userId, botId, session.id, {
-            symbol: query.symbol,
-            limit: perSessionLimit,
-          }),
-          runtimeAggregateSubqueryTimeoutMs
-        )
-          .then((value) => value ?? buildEmptyAggregateTradesPayload({ session, perSessionLimit }))
-          .catch(() => buildEmptyAggregateTradesPayload({ session, perSessionLimit })),
-      ]);
+          withTimeout(
+            listBotRuntimeSessionPositions(userId, botId, session.id, {
+              symbol: query.symbol,
+              limit: perSessionLimit,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
+          ),
+          withTimeout(
+            listBotRuntimeSessionTrades(userId, botId, session.id, {
+              symbol: query.symbol,
+              limit: perSessionLimit,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
+          ),
+        ]);
 
-      return {
-        session,
-        symbolStats,
-        positions,
-        trades,
-      };
+        return {
+          session,
+          symbolStats,
+          positions,
+          trades,
+        };
+      } catch {
+        return {
+          session,
+          symbolStats: null,
+          positions: null,
+          trades: null,
+        };
+      }
     }
   );
 
@@ -256,17 +617,17 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       }
 
       const currentSignalTs = Math.max(
-        toRuntimeAggregateTimestamp(item.lastSignalDecisionAt),
-        toRuntimeAggregateTimestamp(item.lastSignalAt)
+        toTimestamp(item.lastSignalDecisionAt),
+        toTimestamp(item.lastSignalAt)
       );
       const existingSignalTs = Math.max(
-        toRuntimeAggregateTimestamp(existing.lastSignalDecisionAt),
-        toRuntimeAggregateTimestamp(existing.lastSignalAt)
+        toTimestamp(existing.lastSignalDecisionAt),
+        toTimestamp(existing.lastSignalAt)
       );
-      const currentTradeTs = toRuntimeAggregateTimestamp(item.lastTradeAt);
-      const existingTradeTs = toRuntimeAggregateTimestamp(existing.lastTradeAt);
-      const currentSnapshotTs = toRuntimeAggregateTimestamp(item.snapshotAt);
-      const existingSnapshotTs = toRuntimeAggregateTimestamp(existing.snapshotAt);
+      const currentTradeTs = toTimestamp(item.lastTradeAt);
+      const existingTradeTs = toTimestamp(existing.lastTradeAt);
+      const currentSnapshotTs = toTimestamp(item.snapshotAt);
+      const existingSnapshotTs = toTimestamp(existing.snapshotAt);
       const currentConfiguredFallbackReplacesSupersededSignal =
         item.lastSignalContextSource === 'configured_fallback' &&
         item.configuredStrategyId != null &&
@@ -355,7 +716,6 @@ const getBotRuntimeMonitoringAggregateUncached = async (
           shouldUseCurrentSignalContext
             ? item.lastSignalConditionLines
             : existing.lastSignalConditionLines,
-        lastSignalConditionActive: shouldUseCurrentSignalContext ? item.lastSignalConditionActive : existing.lastSignalConditionActive,
         lastSignalScoreSummary:
           shouldUseCurrentSignalContext
             ? item.lastSignalScoreSummary
@@ -433,16 +793,16 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     rows: T[]
   ) =>
     [...rows].sort((left, right) =>
-    compareRuntimeAggregateTimestampDescThenIdAsc(
+    compareTimestampDescThenIdAsc(
       Math.max(
-        toRuntimeAggregateTimestamp(left.session.lastHeartbeatAt),
-        toRuntimeAggregateTimestamp(left.session.finishedAt),
-        toRuntimeAggregateTimestamp(left.session.startedAt)
+        toTimestamp(left.session.lastHeartbeatAt),
+        toTimestamp(left.session.finishedAt),
+        toTimestamp(left.session.startedAt)
       ),
       Math.max(
-        toRuntimeAggregateTimestamp(right.session.lastHeartbeatAt),
-        toRuntimeAggregateTimestamp(right.session.finishedAt),
-        toRuntimeAggregateTimestamp(right.session.startedAt)
+        toTimestamp(right.session.lastHeartbeatAt),
+        toTimestamp(right.session.finishedAt),
+        toTimestamp(right.session.startedAt)
       ),
       left.session.id,
       right.session.id
@@ -468,8 +828,8 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     const leverage = Math.max(1, position.leverage || 1);
     return sum + position.entryNotional / leverage;
   }, 0);
-  const latestReferenceBalance = readRuntimeAggregateFiniteNumber(latestCapitalSummary?.referenceBalance);
-  const latestFreeCash = readRuntimeAggregateFiniteNumber(latestCapitalSummary?.freeCash);
+  const latestReferenceBalance = readFiniteNumber(latestCapitalSummary?.referenceBalance);
+  const latestFreeCash = readFiniteNumber(latestCapitalSummary?.freeCash);
   const referenceBalance = latestReferenceBalance != null ? Math.max(0, latestReferenceBalance) : null;
   const freeCash =
     latestFreeCash != null
@@ -484,7 +844,7 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     openPositionQty: latestOpenPositionQty,
     referenceBalance,
     freeCash,
-    accountBalance: readRuntimeAggregateFiniteNumber(latestCapitalSummary?.accountBalance),
+    accountBalance: readFiniteNumber(latestCapitalSummary?.accountBalance),
     baseCurrency:
       typeof latestCapitalSummary?.baseCurrency === 'string' && latestCapitalSummary.baseCurrency.length > 0
         ? latestCapitalSummary.baseCurrency
@@ -497,8 +857,8 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       latestCapitalSummary?.allocationMode === 'PERCENT' || latestCapitalSummary?.allocationMode === 'FIXED'
         ? latestCapitalSummary.allocationMode
         : null,
-    allocationValue: readRuntimeAggregateFiniteNumber(latestCapitalSummary?.allocationValue),
-    paperResetAt: toRuntimeAggregateDate(latestCapitalSummary?.paperResetAt),
+    allocationValue: readFiniteNumber(latestCapitalSummary?.allocationValue),
+    paperResetAt: toDate(latestCapitalSummary?.paperResetAt),
   };
 
   const totalOpenPositions = latestOpenPositionCount;

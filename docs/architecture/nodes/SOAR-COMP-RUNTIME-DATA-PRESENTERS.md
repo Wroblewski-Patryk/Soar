@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, partially_verified]
 ## Relations
 
 - uses -> [[SOAR-UTIL-RUNTIME-TRADE-META]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-DASHBOARD-HOME]] (partially_verified)
 - uses <- [[SOAR-COMP-RUNTIME-DATA-SECTION]] (partially_verified)
 
 ## Evidence Rule

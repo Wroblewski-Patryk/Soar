@@ -9,26 +9,25 @@
 - Related planning task: `DCP-07`
 
 ## 1. Purpose and Scope
-- Owns subscription catalog seed, entitlement resolution, checkout intent orchestration, and Stripe webhook reconciliation.
+- Owns subscription catalog seed, entitlement resolution, and checkout intent orchestration.
 - Provides plan limits/features contract used by bot creation and profile subscription surfaces.
 
 Out of scope:
 - Profile UI rendering and client-side plan presentation (web profile module).
-- Live Stripe portal/customer-management UI; webhook reconciliation only applies
-  to provider events sent to the backend webhook route.
+- Webhook-driven billing state transitions; V1 currently owns checkout intent
+  creation and admin/profile subscription state management, while external
+  provider webhook reconciliation remains a future billing lifecycle task.
 
 ## 2. Boundaries and Dependencies
 - Direct API exposure is via profile routes:
   - `/dashboard/profile/subscription`
   - `/dashboard/profile/subscription/checkout-intents`
-- Stripe provider webhook exposure:
-  - `/webhooks/stripe`
 - Internal services are consumed by:
   - bot create limit enforcement (`assertSubscriptionAllowsBotCreate`)
   - bot LIVE capability guard (`assertSubscriptionAllowsLiveTrading`)
   - profile subscription read flow
 - Depends on:
-  - Prisma models (`subscriptionPlan`, `userSubscription`, `paymentIntent`, `billingWebhookEvent`)
+  - Prisma models (`subscriptionPlan`, `userSubscription`, `paymentIntent`)
   - payment adapter registry (`MANUAL`, `STRIPE`)
 
 ## 3. Data and Contract Surface
@@ -42,14 +41,6 @@ Out of scope:
 - Checkout intent contract:
   - sanitized success/cancel URLs against allowlisted origins
   - persisted `paymentIntent` with idempotency key and provider metadata
-- Stripe webhook reconciliation contract:
-  - raw request body and Stripe signature verification before mutation
-  - provider event id persisted in `billingWebhookEvent` for replay protection
-  - paid checkout activation creates exactly one active `CHECKOUT` subscription
-    and links the stored `paymentIntent`
-  - checkout expiration marks the stored `paymentIntent` as `EXPIRED`
-  - subscription update/delete events reconcile existing Stripe-backed checkout
-    subscription state without mutating other users
 
 ## 4. Runtime Flows
 - Entitlement resolution flow:
@@ -69,22 +60,11 @@ Out of scope:
   1. Validate payable plan and sanitize redirect URLs.
   2. Resolve configured payment provider adapter.
   3. Create provider intent and persist internal payment intent record.
-- Stripe webhook flow:
-  1. Verify `stripe-signature` against `STRIPE_WEBHOOK_SECRET` using the raw
-     JSON request body.
-  2. Insert or resume a `billingWebhookEvent` row keyed by
-     `(provider, eventId)`.
-  3. Validate metadata user/plan, stored checkout session reference, and
-     existing subscription reference before mutating entitlements.
-  4. Reconcile payment intent and user subscription state in a transaction.
-  5. Mark the webhook event `PROCESSED`, `FAILED`, or `IGNORED` with safe
-     metadata only.
 
 ## 5. API and UI Integration
 - Representative routes:
   - `GET /dashboard/profile/subscription`
   - `POST /dashboard/profile/subscription/checkout-intents`
-  - `POST /webhooks/stripe`
 - Rate limit:
   - checkout intent creation limited to 5 requests per 60 seconds per user.
 
@@ -93,17 +73,10 @@ Out of scope:
 - Redirect URLs are origin-validated to prevent open redirects.
 - Entitlements include fail-safe fallback to FREE plan structure when parsing fails.
 - Unknown or unsupported payment provider config fails closed.
-- Stripe webhooks fail closed on missing/invalid signature, missing webhook
-  secret, unknown checkout session, invalid plan metadata, unknown user, or
-  cross-user metadata mismatch.
-- Webhook logs and event metadata do not store Stripe secrets, raw signatures,
-  bearer tokens, cookies, or full provider payloads.
 
 ## 7. Observability and Operations
 - Catalog seeding is idempotent (`upsert`) for stable boot/runtime behavior.
 - Payment provider abstraction allows operational switch between manual and Stripe adapters.
-- Webhook processing persists `billingWebhookEvent` rows for replay detection,
-  failure inspection, and safe operational retry visibility.
 
 ## 8. Test Coverage and Evidence
 - Focused subscription evidence now includes:
@@ -113,31 +86,12 @@ Out of scope:
   - upgraded plan re-allocation,
   - no hardcoded bot-cap fallback,
   - explicit LIVE feature-gate enforcement on create and mode switch.
-- Stripe webhook reconciliation coverage is implemented in
-  `apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts` for
-  paid checkout activation, event replay, same-session replay, invalid
-  signatures, unknown session, invalid plan metadata, checkout expiration,
-  cross-user mutation prevention, immediate cancellation reconciliation, and
-  period-end cancellation auto-renew reconciliation.
 - Suggested validation command:
 ```powershell
 pnpm --filter api exec vitest run src/modules/subscriptions/subscriptionEntitlements.service.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/profile/subscription/subscription.e2e.test.ts
 ```
 
-Webhook-focused validation:
-```powershell
-pnpm --filter api exec vitest run src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts
-```
-
 ## 9. Open Issues and Follow-Ups
 - Add dedicated e2e for checkout intent provider and URL sanitization contract.
-- Protected production Stripe webhook smoke requires fresh operator approval,
-  configured test credentials, and secret-safe evidence capture.
-
-## 10. Architecture-Awareness Doc-Link Classification
-
-Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
-
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/api/src/modules/subscriptions/payments/paymentGateway.types.ts` | `docs/modules/api-subscriptions.md` | Payment gateway abstraction contract for checkout intent provider integration. | Architecture-awareness `documents` relation from this doc plus checkout/payment-provider tests when behavior changes. |
+- Add webhook-driven subscription state transitions for the future production
+  billing lifecycle after the provider operating model is approved.

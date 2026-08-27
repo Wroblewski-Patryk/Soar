@@ -12,15 +12,6 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 6
 - Operation Mode: ARCHITECT
 
-## Architecture Links
-
-- Primary feature/module: Runtime risk lifecycle ownership for multi-strategy bots.
-- Architecture nodes: SOAR-FEATURE-ENGINE-RUNTIME-CORE; SOAR-FEATURE-MANUAL-ORDER; SOAR-SERVICE-RUNTIME-AUTOMATION; SOAR-DB-POSITION.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-MANUAL-ORDER.md.
-- Affected files: apps/api/src/modules/engine; apps/api/src/modules/orders; apps/api/src/modules/bots.
-- Tests/proof: runtime risk lifecycle verification recorded in this task.
-- Docs updated: BOTMULTI planning/context docs and runtime architecture notes.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

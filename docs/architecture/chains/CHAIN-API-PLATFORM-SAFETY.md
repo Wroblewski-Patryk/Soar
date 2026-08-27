@@ -4,7 +4,7 @@ type: function_chain
 status: verified_local
 feature: api-platform-safety
 risk_level: critical
-last_verified_at: 2026-06-05
+last_verified_at: 2026-05-24
 tags: [soar-map, function-chain, verified_local]
 ---
 
@@ -14,8 +14,8 @@ tags: [soar-map, function-chain, verified_local]
 - Trigger: [[SOAR-CONFIG-RUNTIME-EXECUTION]]
 - Tests: [[SOAR-TEST-API-PLATFORM-SAFETY]], [[SOAR-TEST-API-CONFIG-SAFETY]], [[SOAR-TEST-API-MIDDLEWARE-SAFETY]], [[SOAR-TEST-API-LIB-SAFETY]]
 - Docs: [[SOAR-DOC-API-ROOT]], [[SOAR-DOC-LOCAL-DEVELOPMENT]], [[SOAR-DOC-TESTING]]
-- Evidence: history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md;history/evidence/luc-2231-api-platform-safety-adversarial-review-2026-06-05.md
-- Missing links: production_or_browser_proof_not_implied
+- Evidence: history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md
+- Missing links: Fresh adversarial security review remains separate
 
 ## Execution Chain
 

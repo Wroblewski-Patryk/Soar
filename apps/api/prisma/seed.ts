@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { fileURLToPath } from 'node:url';
 import { ensureSubscriptionCatalog, OWNER_ACCOUNT_EMAIL, setActiveSubscriptionForUser } from '../src/modules/subscriptions/subscriptions.service';
 
 const prisma = new PrismaClient();
@@ -164,7 +163,7 @@ const BOT_SEED = [
   },
 ];
 
-export async function main() {
+async function main() {
   const password = await bcrypt.hash('Admin12#$', 10);
 
   await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
@@ -458,13 +457,11 @@ export async function main() {
   console.log('Seed: Admin user, market presets, strategies and bot presets created!');
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main()
-    .catch((error) => {
-      console.error(error);
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

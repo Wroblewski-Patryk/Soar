@@ -103,7 +103,6 @@ const assistantCircuitResetMs = Number.parseInt(
   process.env.ASSISTANT_CIRCUIT_RESET_MS ?? '60000',
   10
 );
-const assistantHotPathLiveEnabled = process.env.ASSISTANT_HOTPATH_LIVE_ENABLED === 'true';
 
 const defaultMainPlanner: AssistantMainPlannerGateway = {
   async createPlan(input) {
@@ -216,34 +215,13 @@ export const orchestrateAssistantDecision = async (
     nowMs: () => Date.now(),
   }
 ) => {
-  if (input.mode === 'LIVE' && !assistantHotPathLiveEnabled) {
-    const trace: AssistantOrchestrationTrace = {
-      requestId: sanitizeText(input.requestId, 120),
-      botId: sanitizeText(input.botId, 120),
-      botMarketGroupId: sanitizeText(input.botMarketGroupId, 120),
-      symbol: sanitizeText(input.symbol.toUpperCase(), 40),
-      mode: 'strategy_only',
-      statuses: [],
-      outputs: [],
-      finalDecision: 'NO_TRADE',
-      finalReason: 'live_mode_disabled_fail_closed',
-    };
-    await deps.traceWriter.write(trace);
-    return trace;
-  }
-
-  const safeRequestId = sanitizeText(input.requestId, 120);
-  const safeBotId = sanitizeText(input.botId, 120);
-  const safeBotMarketGroupId = sanitizeText(input.botMarketGroupId, 120);
-  const safeSymbol = sanitizeText(input.symbol.toUpperCase(), 40);
-
   const circuit = assistantCircuitByBot.get(input.botId) ?? { failures: 0, openedAt: null };
   if (circuit.openedAt && deps.nowMs() - circuit.openedAt < assistantCircuitResetMs) {
     const trace: AssistantOrchestrationTrace = {
-      requestId: safeRequestId,
-      botId: safeBotId,
-      botMarketGroupId: safeBotMarketGroupId,
-      symbol: safeSymbol,
+      requestId: input.requestId,
+      botId: input.botId,
+      botMarketGroupId: input.botMarketGroupId,
+      symbol: input.symbol,
       mode: 'strategy_only',
       statuses: [],
       outputs: [],
@@ -261,10 +239,10 @@ export const orchestrateAssistantDecision = async (
   const enabledSubagents = input.subagents.filter((slot) => slot.enabled);
   if (enabledSubagents.length === 0) {
     const trace: AssistantOrchestrationTrace = {
-      requestId: safeRequestId,
-      botId: safeBotId,
-      botMarketGroupId: safeBotMarketGroupId,
-      symbol: safeSymbol,
+      requestId: input.requestId,
+      botId: input.botId,
+      botMarketGroupId: input.botMarketGroupId,
+      symbol: input.symbol,
       mode: 'strategy_only',
       statuses: [],
       outputs: [],
@@ -286,14 +264,14 @@ export const orchestrateAssistantDecision = async (
       openedAt: nextFailures >= assistantCircuitFailureThreshold ? deps.nowMs() : null,
     });
     const trace: AssistantOrchestrationTrace = {
-      requestId: safeRequestId,
-      botId: safeBotId,
-      botMarketGroupId: safeBotMarketGroupId,
-      symbol: safeSymbol,
+      requestId: input.requestId,
+      botId: input.botId,
+      botMarketGroupId: input.botMarketGroupId,
+      symbol: input.symbol,
       mode: 'strategy_only',
       statuses: enabledSubagents.map((slot) => ({
         slotIndex: slot.slotIndex,
-        role: sanitizeText(slot.role, 64),
+        role: slot.role,
         status: 'skipped',
         latencyMs: 0,
         message: 'main_planner_failed',
@@ -315,7 +293,7 @@ export const orchestrateAssistantDecision = async (
       if (!step) {
         statuses.push({
           slotIndex: slot.slotIndex,
-          role: sanitizeText(slot.role, 64),
+          role: slot.role,
           status: 'skipped',
           latencyMs: 0,
           message: 'no_planned_step',
@@ -332,7 +310,7 @@ export const orchestrateAssistantDecision = async (
         const latencyMs = Math.max(0, deps.nowMs() - startedAt);
         const normalizedOutput: AssistantSubagentOutput = {
           slotIndex: slot.slotIndex,
-          role: sanitizeText(slot.role, 64),
+          role: slot.role,
           proposal: output.proposal,
           confidence: clampConfidence(output.confidence),
           rationale: sanitizeText(output.rationale),
@@ -340,7 +318,7 @@ export const orchestrateAssistantDecision = async (
         };
         statuses.push({
           slotIndex: slot.slotIndex,
-          role: sanitizeText(slot.role, 64),
+          role: slot.role,
           status: 'ok',
           latencyMs,
         });
@@ -353,7 +331,7 @@ export const orchestrateAssistantDecision = async (
         }
         statuses.push({
           slotIndex: slot.slotIndex,
-          role: sanitizeText(slot.role, 64),
+          role: slot.role,
           status: message === 'SUBAGENT_TIMEOUT' ? 'timeout' : 'error',
           latencyMs,
           message: sanitizeText(message, 120),
@@ -368,10 +346,10 @@ export const orchestrateAssistantDecision = async (
   const merged = applyDecisionPolicy(input, mergeAssistantOutputs(outputs));
   metricsStore.recordRuntimeMergeOutcome(merged.decision);
   const trace: AssistantOrchestrationTrace = {
-    requestId: safeRequestId,
-    botId: safeBotId,
-    botMarketGroupId: safeBotMarketGroupId,
-    symbol: safeSymbol,
+    requestId: input.requestId,
+    botId: input.botId,
+    botMarketGroupId: input.botMarketGroupId,
+    symbol: input.symbol,
     mode: 'assistant',
     statuses,
     outputs,

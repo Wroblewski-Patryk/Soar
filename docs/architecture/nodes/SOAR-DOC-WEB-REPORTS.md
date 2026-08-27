@@ -36,7 +36,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 
 - depends_on -> [[SOAR-DOC-API-REPORTS]] (verified_local)
 - documented_by <- [[SOAR-FEATURE-REPORTS]] (verified_local)
-- documented_by <- [[SOAR-COMP-PERFORMANCE-REPORTS-VIEW]] (verified_local)
 
 ## Evidence Rule
 

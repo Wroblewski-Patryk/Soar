@@ -35,7 +35,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] (verified_local)
-- documented_by <- [[SOAR-COMP-PROFILE-SUBSCRIPTION]] (verified_local)
 
 ## Evidence Rule
 

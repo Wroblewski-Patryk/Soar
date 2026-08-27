@@ -18,15 +18,6 @@
 - Mission ID: BOT-DELETE-ACTIVE-PAPER-2026-05-11
 - Mission Status: PARTIALLY_VERIFIED
 
-## Architecture Links
-
-- Primary feature/module: Bot setup deletion safety and PAPER runtime guard.
-- Architecture nodes: SOAR-FEATURE-BOT-SETUP; SOAR-API-BOT-DELETE; SOAR-DB-BOT; SOAR-FEATURE-DASHBOARD-RUNTIME.
-- Function chains: docs/architecture/chains/CHAIN-BOT-SETUP.md; docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
-- Affected files: apps/api/src/modules/bots; apps/web/src/features/bots.
-- Tests/proof: bot delete confirmation proof recorded in this task's verification/result sections.
-- Docs updated: task board, project state, and module-confidence rows named by this task.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

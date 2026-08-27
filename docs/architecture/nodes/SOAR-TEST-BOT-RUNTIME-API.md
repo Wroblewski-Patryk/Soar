@@ -8,7 +8,7 @@ module: api-bots
 feature: bot-runtime
 risk_level: critical
 completion_percent: 90
-last_verified_at: 2026-06-03
+last_verified_at: 2026-05-25
 verification_status: verified_local
 tags: [soar-map, test, testing, verified_local]
 ---
@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified_local]
 | --- | --- |
 | Description | Focused API bot runtime monitoring aggregate sessions positions trades takeover and scope tests. |
 | File path | apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts |
-| Related files | apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts, apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts, apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts, apps/api/src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts |
+| Related files | apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts, apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts, apps/api/src/modules/bots/runtimeSessionPositionCommand.service.test.ts, apps/api/src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts |
 | Parent | [[SOAR-FEATURE-BOT-RUNTIME]] |
 | Children |  |
 | Depends on | [[SOAR-API-BOT-RUNTIME-AGGREGATE]], [[SOAR-API-BOT-RUNTIME-POSITIONS]], [[SOAR-SERVICE-RUNTIME-POSITION-COMMAND]] |

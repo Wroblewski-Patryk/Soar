@@ -35,6 +35,8 @@ const AUTO_REFRESH_HIDDEN_INTERVAL_MS = 30_000;
 const LOAD_STALE_AFTER_MS = 20_000;
 const AGGREGATE_SELECTED_SESSIONS_LIMIT = 6;
 const AGGREGATE_SELECTED_PER_SESSION_LIMIT = 80;
+const AGGREGATE_SECONDARY_SESSIONS_LIMIT = 2;
+const AGGREGATE_SECONDARY_PER_SESSION_LIMIT = 30;
 const SELECTED_BOT_STORAGE_KEY = "dashboard.home.selectedBotId";
 const DASHBOARD_TRADE_HISTORY_SORT_STORAGE_KEY = "dashboard.home.tradeHistory.sort.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
@@ -319,19 +321,12 @@ export const useHomeLiveWidgetsController = ({
               const isPrimaryBot = currentSelectedBotId == null
                 ? bot.id === scope[0]?.id
                 : bot.id === currentSelectedBotId;
-              if (!isPrimaryBot) {
-                return {
-                  bot,
-                  session: primary,
-                  actionSessionId: primary.id,
-                  symbolStats: null,
-                  positions: null,
-                  trades: null,
-                  runtimeGraph,
-                };
-              }
-              const sessionsLimit = Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT);
-              const perSessionLimit = AGGREGATE_SELECTED_PER_SESSION_LIMIT;
+              const sessionsLimit = isPrimaryBot
+                ? Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT)
+                : Math.min(sessions.length, AGGREGATE_SECONDARY_SESSIONS_LIMIT);
+              const perSessionLimit = isPrimaryBot
+                ? AGGREGATE_SELECTED_PER_SESSION_LIMIT
+                : AGGREGATE_SECONDARY_PER_SESSION_LIMIT;
               const aggregate = await getBotRuntimeMonitoringAggregate(bot.id, {
                 sessionsLimit: Math.max(1, sessionsLimit),
                 perSessionLimit,
@@ -639,17 +634,6 @@ export const useHomeLiveWidgetsController = ({
     setTradeSortDir("asc");
   };
 
-  const selectBotId = useCallback(
-    (botId: string | null) => {
-      selectedBotIdRef.current = botId;
-      setSelectedBotId(botId);
-      if (enabled && botId) {
-        void load({ silent: true });
-      }
-    },
-    [enabled, load]
-  );
-
   useEffect(() => {
     setLocalStorageJsonItem(DASHBOARD_TRADE_HISTORY_SORT_STORAGE_KEY, {
       sortBy: tradeSortBy,
@@ -674,7 +658,7 @@ export const useHomeLiveWidgetsController = ({
     selectedTrades,
     selectedTradesLoading,
     setRuntimeDataTab,
-    setSelectedBotId: selectBotId,
+    setSelectedBotId,
     setTradePage,
     setTradePageSize,
     signalRailRef,

@@ -12,15 +12,6 @@
 - Iteration: 51
 - Operation Mode: ARCHITECT
 
-## Architecture Links
-
-- Primary feature/module: Exchange adapter boundary and profile API-key probe.
-- Architecture nodes: SOAR-FEATURE-EXCHANGE-ADAPTER; SOAR-SERVICE-EXCHANGE-REGISTRY; SOAR-DOC-EXCHANGE-OWNERSHIP.
-- Function chains: docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md.
-- Affected files: apps/api/src/modules/exchange/exchangeApiKeyProbeClient.service.ts; apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts; apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts.
-- Tests/proof: focused profile API-key probe tests listed in this task's Result Report.
-- Docs updated: production readiness report correction and source-of-truth state files listed in this task.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

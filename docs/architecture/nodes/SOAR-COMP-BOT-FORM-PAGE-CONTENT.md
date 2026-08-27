@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - contains -> [[SOAR-COMP-BOT-CREATE-EDIT-FORM]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-BOTS]] (verified_local)
 - contains <- [[SOAR-PAGE-BOT-CREATE]] (verified_local)
 - contains <- [[SOAR-PAGE-BOT-EDIT]] (verified_local)
 

@@ -27,8 +27,6 @@ import { recordLiveWalletBalanceSnapshot } from './walletLedger.service';
 import { recordInitialBalanceCashflowForSnapshot } from './walletCashflowClassifier.service';
 import { buildImportedExternalPositionMarketPrefix } from '../positions/livePositionReconciliation.helpers';
 
-const isApiTestRuntime = () => process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
-
 const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
   const mode = payload.mode;
   const normalized = {
@@ -500,14 +498,14 @@ const extractBalanceForCurrency = (payload: unknown, currency: string) => {
   };
 };
 
-export const fetchAuthenticatedBalancePreview = async (params: {
+const fetchAuthenticatedBalancePreview = async (params: {
   exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   apiKey: string;
   apiSecret: string;
   marketType: 'FUTURES' | 'SPOT';
   baseCurrency: string;
 }) => {
-  if (isApiTestRuntime()) {
+  if (process.env.NODE_ENV === 'test') {
     const account = Number.parseFloat(process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE ?? '1000');
     const free = Number.parseFloat(process.env.WALLET_PREVIEW_TEST_FREE_BALANCE ?? String(account));
     if (!Number.isFinite(account) || account <= 0) return null;

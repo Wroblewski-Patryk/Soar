@@ -35,8 +35,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-PROFILE-API-KEYS]] (verified_local)
-- documented_by <- [[SOAR-COMP-API-KEYS-LIST]] (verified_local)
-- documented_by <- [[SOAR-COMP-API-KEY-FORM]] (verified_local)
 
 ## Evidence Rule
 

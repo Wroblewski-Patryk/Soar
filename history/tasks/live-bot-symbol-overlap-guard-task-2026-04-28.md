@@ -8,15 +8,6 @@
 - Owner: Backend Builder
 - Priority: P0
 
-## Architecture Links
-
-- Primary feature/module: Bot Runtime live symbol ownership guard.
-- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-BOT-MARKET-GROUPS.md`, `docs/architecture/nodes/SOAR-DB-BOT-MARKET-GROUP.md`, `docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUP-CREATE.md`.
-- Function chains: `docs/architecture/chains/CHAIN-MARKETS.md`, `docs/pipelines/wallet-and-bot-configuration.md`.
-- Affected files: `apps/api/src/modules/bots`, `apps/api/src/modules/markets`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`.
-- Tests/proof: `pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts`.
-- Docs updated: `history/tasks/live-bot-symbol-overlap-guard-task-2026-04-28.md`.
-
 ## Context
 The repository already blocked exact duplicate active bots by the tuple
 `wallet + strategy + market group`, but it still allowed a more dangerous LIVE

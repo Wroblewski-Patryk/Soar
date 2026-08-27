@@ -8,7 +8,7 @@ module: web-bots
 feature: bot-setup
 risk_level: high
 completion_percent: 85
-last_verified_at: 2026-07-22
+last_verified_at: 2026-05-24
 verification_status: verified_local
 tags: [soar-map, page, frontend, verified_local]
 ---
@@ -30,7 +30,7 @@ tags: [soar-map, page, frontend, verified_local]
 | Tests related | [[SOAR-TEST-WEB-RESIDUAL-SURFACES]] |
 | Docs related | [[SOAR-DOC-WEB-BOTS]] |
 | Agent related |  |
-| Notes | Selected-bot compatibility surface. Exact alias proof refreshed by LUC-1659 on 2026-07-22. |
+| Notes | Selected-bot compatibility surface. |
 
 ## Relations
 

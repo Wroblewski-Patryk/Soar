@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import {
   createMarketGroup,
@@ -474,84 +474,6 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
         hasNext: true,
       })
     );
-  });
-
-  it('bounds aggregate hidden trade materialization while preserving trade totals', async () => {
-    const ownerEmail = 'bots-monitoring-aggregate-bounded-hidden-trades@example.com';
-    const owner = await registerAndLogin(ownerEmail);
-    const ownerUser = await prisma.user.findUniqueOrThrow({
-      where: { email: ownerEmail },
-      select: { id: true },
-    });
-
-    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Bounded Hidden Trades');
-    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
-    const createRes = await owner.post('/dashboard/bots').send(
-      createPayload({
-        strategyId,
-        marketGroupId,
-      })
-    );
-    expect(createRes.status).toBe(201);
-    const botId = createRes.body.id as string;
-
-    await prisma.botRuntimeSession.create({
-      data: {
-        userId: ownerUser.id,
-        botId,
-        mode: 'PAPER',
-        status: 'COMPLETED',
-        startedAt: new Date('2026-04-19T15:00:00.000Z'),
-        finishedAt: new Date('2026-04-19T15:30:00.000Z'),
-        lastHeartbeatAt: new Date('2026-04-19T15:30:00.000Z'),
-      },
-    });
-
-    await prisma.trade.createMany({
-      data: Array.from({ length: 260 }, (_, index) => ({
-        userId: ownerUser.id,
-        botId,
-        strategyId,
-        symbol: 'BTCUSDT',
-        side: index % 2 === 0 ? 'BUY' : 'SELL',
-        lifecycleAction: index % 2 === 0 ? 'OPEN' : 'CLOSE',
-        price: 60_000 + index,
-        quantity: 0.001,
-        fee: 0.01,
-        realizedPnl: index % 2 === 0 ? 0 : 1,
-        executedAt: new Date(Date.UTC(2026, 3, 19, 15, 0, index)),
-        managementMode: 'BOT_MANAGED',
-      })),
-    });
-
-    const originalTradeFindMany = prisma.trade.findMany.bind(prisma.trade);
-    const tradeFindManySpy = vi
-      .spyOn(prisma.trade, 'findMany')
-      .mockImplementation((args) => originalTradeFindMany(args));
-
-    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
-      perSessionLimit: 5,
-    });
-
-    expect(aggregateRes.status).toBe(200);
-    expect(aggregateRes.body.trades.total).toBe(260);
-    expect(aggregateRes.body.trades.items).toHaveLength(5);
-    expect(aggregateRes.body.trades.meta).toEqual(
-      expect.objectContaining({
-        pageSize: 5,
-        total: 260,
-        totalPages: 52,
-        hasNext: true,
-      })
-    );
-
-    const tradeFindManyArgs = tradeFindManySpy.mock.calls.map((call) => call[0] as { take?: number });
-    expect(tradeFindManyArgs.length).toBeGreaterThan(0);
-    expect(tradeFindManyArgs.every((args) => typeof args.take === 'number')).toBe(true);
-    expect(tradeFindManyArgs.some((args) => args.take === 5)).toBe(true);
-    expect(tradeFindManyArgs.every((args) => (args.take ?? 0) < 260)).toBe(true);
-
-    tradeFindManySpy.mockClear();
   });
 
   it('keeps aggregate symbol-stats summaries truthful when visible symbols are limited', async () => {

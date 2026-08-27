@@ -3,10 +3,9 @@
 import { existsSync } from 'node:fs';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 
 const repoRoot = process.cwd();
-export const resolveDocsRoot = () => {
+const resolveDocsRoot = () => {
   const docsRoot = path.resolve(repoRoot, 'docs');
   const migratedDocsRoot = path.resolve(repoRoot, 'docs');
   if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
@@ -18,7 +17,8 @@ export const resolveDocsRoot = () => {
 const operationsDir = path.join(resolveDocsRoot(), 'operations');
 const historyOperationsDir = path.resolve(process.cwd(), 'history', 'operations');
 
-export const parseArgs = (args = process.argv.slice(2)) => {
+const parseArgs = () => {
+  const args = process.argv.slice(2);
   const options = {
     input: '',
     output: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
@@ -47,50 +47,50 @@ export const parseArgs = (args = process.argv.slice(2)) => {
   return options;
 };
 
-export const resolveGeneratedAt = (today) => {
+const resolveGeneratedAt = (today) => {
   const normalized = String(today ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00:00:00.000Z`;
   return new Date().toISOString();
 };
 
-export const asNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+const asNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
-export const pct = (value) => (value == null ? 'n/a' : `${value.toFixed(2)}%`);
-export const normalizeEnvironment = (value) => {
+const pct = (value) => (value == null ? 'n/a' : `${value.toFixed(2)}%`);
+const normalizeEnvironment = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase();
   if (normalized === 'production' || normalized === 'stage' || normalized === 'local') return normalized;
   return 'unknown';
 };
 
-export const findLatestSloArtifact = async (inputDir = historyOperationsDir) => {
-  const entries = await readdir(inputDir);
+const findLatestSloArtifact = async () => {
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('_artifacts-slo-window-') && name.endsWith('.json'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(inputDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
-export const findLatestSloWindowReportArtifact = async (inputDir = historyOperationsDir) => {
-  const entries = await readdir(inputDir);
+const findLatestSloWindowReportArtifact = async () => {
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('v1-slo-window-report-') && name.endsWith('.json'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(inputDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
-export const findLatestDbRestoreArtifact = async (inputDir = historyOperationsDir) => {
-  const entries = await readdir(inputDir);
+const findLatestDbRestoreArtifact = async () => {
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('_artifacts-db-restore-check-') && name.endsWith('.txt'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(inputDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
-export const evaluateBackupRestoreGate = async (inputDir = historyOperationsDir) => {
-  const artifactPath = await findLatestDbRestoreArtifact(inputDir);
+const evaluateBackupRestoreGate = async () => {
+  const artifactPath = await findLatestDbRestoreArtifact();
   if (!artifactPath) {
     return {
       label: 'OPEN (manual evidence required)',
@@ -118,7 +118,7 @@ export const evaluateBackupRestoreGate = async (inputDir = historyOperationsDir)
   };
 };
 
-export const readRunbookRaw = async (runbookPathInput) => {
+const readRunbookRaw = async (runbookPathInput) => {
   const runbookPath = path.resolve(process.cwd(), runbookPathInput);
   try {
     return {
@@ -133,7 +133,7 @@ export const readRunbookRaw = async (runbookPathInput) => {
   }
 };
 
-export const extractEvidenceValues = (raw, heading) => {
+const extractEvidenceValues = (raw, heading) => {
   if (!raw) return [];
   const lines = raw.split(/\r?\n/);
   const sectionStart = lines.findIndex((line) => line.trim() === heading);
@@ -154,7 +154,7 @@ export const extractEvidenceValues = (raw, heading) => {
   return evidenceValues;
 };
 
-export const evaluateGate1FromRunbook = async (runbookPathInput) => {
+const evaluateGate1FromRunbook = async (runbookPathInput) => {
   const { runbookPath, raw } = await readRunbookRaw(runbookPathInput);
   const evidenceValues = extractEvidenceValues(raw, '## Gate 1: Backup Snapshot and Restore Validation');
   const evidenceComplete = evidenceValues.length > 0 && evidenceValues.every((value) => value.length > 0);
@@ -165,7 +165,7 @@ export const evaluateGate1FromRunbook = async (runbookPathInput) => {
   };
 };
 
-export const evaluateGate3FromRunbook = async (runbookPathInput) => {
+const evaluateGate3FromRunbook = async (runbookPathInput) => {
   const { runbookPath, raw } = await readRunbookRaw(runbookPathInput);
   const evidenceValues = extractEvidenceValues(raw, '## Gate 3: Incident Contacts and Escalation Confirmation');
   const evidenceComplete = evidenceValues.length > 0 && evidenceValues.every((value) => value.length > 0);
@@ -176,7 +176,7 @@ export const evaluateGate3FromRunbook = async (runbookPathInput) => {
   };
 };
 
-export const evaluateGate4FromSignoffRecord = async (signoffPathInput) => {
+const evaluateGate4FromSignoffRecord = async (signoffPathInput) => {
   const signoffPath = path.resolve(process.cwd(), signoffPathInput);
   let raw = '';
   try {
@@ -197,20 +197,20 @@ export const evaluateGate4FromSignoffRecord = async (signoffPathInput) => {
   };
 };
 
-export const statusLabel = (passed) => (passed ? 'PASS' : 'OPEN');
-export const gate2StatusLabel = (queueLagPass, productionEvidence, environmentLabel) => {
+const statusLabel = (passed) => (passed ? 'PASS' : 'OPEN');
+const gate2StatusLabel = (queueLagPass, productionEvidence, environmentLabel) => {
   if (!queueLagPass) return 'OPEN';
   if (productionEvidence) return 'PASS';
   const env = environmentLabel || 'unknown';
   return `LOCAL_PASS (${env} evidence; production pending)`;
 };
-export const renderManualFollowUps = (items) => {
+const renderManualFollowUps = (items) => {
   if (!Array.isArray(items) || items.length === 0) {
     return '1. No pending manual follow-ups. Keep `v1-release-candidate-checklist.md` synchronized with current gate snapshot.';
   }
   return items.map((item, index) => `${index + 1}. ${item}`).join('\n');
 };
-export const buildManualFollowUps = ({
+const buildManualFollowUps = ({
   gate1EvidenceComplete,
   gate2QueueLagPass,
   gate2ProductionEvidence,
@@ -251,7 +251,7 @@ export const buildManualFollowUps = ({
   return items;
 };
 
-export const buildGateRowsFromObservation = (summary, environment) => {
+const buildGateRowsFromObservation = (summary, environment) => {
   const objectives = Array.isArray(summary?.evaluation?.objectives)
     ? summary.evaluation.objectives
     : [];
@@ -316,9 +316,7 @@ export const buildGateRowsFromObservation = (summary, environment) => {
   };
 };
 
-export const objectivePass = (objectiveStatusById, id) => objectiveStatusById.get(id) === 'PASS';
-
-export const buildGateRowsFromWindowReport = (report) => {
+const buildGateRowsFromWindowReport = (report) => {
   const ready = asNumber(report?.aggregates?.probes?.readyAvgPct);
   const workersReady = asNumber(report?.aggregates?.probes?.workersReadyAvgPct);
   const errorRatio = asNumber(report?.aggregates?.api?.errorRatioAvgPct);
@@ -356,7 +354,7 @@ export const buildGateRowsFromWindowReport = (report) => {
   };
 };
 
-export const loadGate2Evaluation = async (inputPath) => {
+const loadGate2Evaluation = async (inputPath) => {
   const raw = await readFile(inputPath, 'utf8');
   const artifact = JSON.parse(raw);
   if (artifact?.summary) {
@@ -373,7 +371,7 @@ export const loadGate2Evaluation = async (inputPath) => {
   };
 };
 
-export const renderReport = ({
+const renderReport = ({
   artifactPath,
   artifact,
   evaluation,
@@ -465,7 +463,7 @@ ${renderManualFollowUps(manualFollowUps)}
   return output;
 };
 
-export const renderTemplateOnly = (
+const renderTemplateOnly = (
   backupGate,
   gate1Runbook,
   gate3Runbook,
@@ -525,8 +523,8 @@ ${renderManualFollowUps(manualFollowUps)}
 `;
 };
 
-export const main = async (args = process.argv.slice(2)) => {
-  const options = parseArgs(args);
+const main = async () => {
+  const options = parseArgs();
   if (options.help) {
     console.log('Usage: node scripts/buildRcExternalGateStatus.mjs [--input <artifact.json>] [--output <status.md>] [--template-only] [--today <yyyy-mm-dd>]');
     process.exit(0);
@@ -581,12 +579,7 @@ export const main = async (args = process.argv.slice(2)) => {
   console.log(`RC external gates status written to: ${path.relative(process.cwd(), outputPath)}`);
 };
 
-const isDirectRun =
-  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-
-if (isDirectRun) {
-  main().catch((error) => {
-    console.error('[ops:rc:gates:status] failed:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
-  });
-}
+main().catch((error) => {
+  console.error('[ops:rc:gates:status] failed:', error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});

@@ -1,14 +1,5 @@
 # Task: Architecture Graph API Support Routes Backfill
 
-## Architecture Links
-
-- Primary feature/module: API support route graph coverage.
-- Architecture nodes: SOAR-ROUTER-API-ROOT; SOAR-FEATURE-API-PLATFORM-SAFETY; SOAR-DOC-API-ROOT; SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM.
-- Function chains: docs/architecture/chains/CHAIN-API-SUPPORT-ROUTES.md.
-- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
-- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run architecture:graph:drift` recorded in this task's Result Report.
-- Docs updated: architecture graph registries, generated graph exports, and source-of-truth state files.
-
 ## Context
 
 Stage: verification
@@ -74,3 +65,4 @@ Residual risk:
   components/tests, hooks/services, and architecture/module docs.
 - This was a documentation/graph backfill only; no runtime API journey was
   executed in this slice.
+

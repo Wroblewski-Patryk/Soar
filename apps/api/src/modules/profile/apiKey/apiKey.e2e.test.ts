@@ -1,18 +1,11 @@
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { EXCHANGE_CAPABILITY_MATRIX, EXCHANGE_OPTIONS } from "@cryptosparrow/shared";
 import { app } from "../../../index";
 import { prisma } from "../../../prisma/client";
-import { apiKeySchema, apiKeyTestSchema } from "./apiKey.types";
 
 const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE"] as const;
-const originalNodeEnv = process.env.NODE_ENV;
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
-const API_KEY_E2E_HOOK_TIMEOUT_MS = 30_000;
-const API_KEY_E2E_RESET_ATTEMPTS = 5;
-
-const sleep = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -24,58 +17,13 @@ const registerAndLogin = async (email: string) => {
   return agent;
 };
 
-const resetApiKeyE2eDatabase = async () => {
-  for (let attempt = 0; attempt < API_KEY_E2E_RESET_ATTEMPTS; attempt += 1) {
-    try {
-      await prisma.orderFill.deleteMany();
-      await prisma.trade.deleteMany();
-      await prisma.order.deleteMany();
-      await prisma.position.deleteMany();
-      await prisma.signal.deleteMany();
-      await prisma.backtestReport.deleteMany();
-      await prisma.backtestTrade.deleteMany();
-      await prisma.backtestRun.deleteMany();
-      await prisma.log.deleteMany();
-      await prisma.botStrategy.deleteMany();
-      await prisma.botSubagentConfig.deleteMany();
-      await prisma.botAssistantConfig.deleteMany();
-      await prisma.marketGroupStrategyLink.deleteMany();
-      await prisma.botMarketGroup.deleteMany();
-      await prisma.botRuntimeSymbolStat.deleteMany();
-      await prisma.botRuntimeEvent.deleteMany();
-      await prisma.botRuntimeSession.deleteMany();
-      await prisma.runtimeExecutionDedupe.deleteMany();
-      await prisma.bot.deleteMany();
-      await prisma.walletCashflowEvent.deleteMany();
-      await prisma.walletBalanceSnapshot.deleteMany();
-      await prisma.wallet.deleteMany();
-      await prisma.symbolGroup.deleteMany();
-      await prisma.marketUniverse.deleteMany();
-      await prisma.apiKey.deleteMany();
-      await prisma.paymentIntent.deleteMany();
-      await prisma.userSubscription.deleteMany();
-      await prisma.strategy.deleteMany();
-      await prisma.user.deleteMany();
-      await prisma.subscriptionPlan.deleteMany();
-      return;
-    } catch (error) {
-      if (attempt === API_KEY_E2E_RESET_ATTEMPTS - 1) throw error;
-      await sleep(100 * (attempt + 1));
-    }
-  }
-};
-
 describe("API Keys security contract", () => {
   beforeAll(() => {
-    process.env.NODE_ENV = "test";
     process.env.API_KEY_ENCRYPTION_KEYS = "v1:test-api-key-e2e-keyring";
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = "v1";
   });
 
   afterAll(() => {
-    if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
-    else process.env.NODE_ENV = originalNodeEnv;
-
     if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
     else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
 
@@ -87,28 +35,29 @@ describe("API Keys security contract", () => {
   });
 
   beforeEach(async () => {
-    await resetApiKeyE2eDatabase();
-  }, API_KEY_E2E_HOOK_TIMEOUT_MS);
-
-  it("keeps API-key validation on the shared names-only exchange configuration", async () => {
-    const expectedNamesOnlyConfiguration = [
-      "BINANCE",
-      "BYBIT",
-      "OKX",
-      "KRAKEN",
-      "COINBASE",
-      "GATEIO",
-    ];
-
-    expect([...EXCHANGE_OPTIONS]).toEqual(expectedNamesOnlyConfiguration);
-    expect(apiKeySchema.shape.exchange.options).toEqual(expectedNamesOnlyConfiguration);
-    expect(apiKeyTestSchema.shape.exchange.options).toEqual(expectedNamesOnlyConfiguration);
-
-    expect(EXCHANGE_CAPABILITY_MATRIX.BINANCE.API_KEY_PROBE).toBe(true);
-    expect(EXCHANGE_CAPABILITY_MATRIX.GATEIO.API_KEY_PROBE).toBe(true);
-    for (const exchange of PLACEHOLDER_EXCHANGES) {
-      expect(EXCHANGE_CAPABILITY_MATRIX[exchange].API_KEY_PROBE).toBe(false);
-    }
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestRun.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
   });
 
   it("rejects unauthenticated access", async () => {
@@ -465,7 +414,7 @@ describe("API Keys security contract", () => {
         },
       });
     } finally {
-      delete process.env.API_KEY_TEST_FORCE_CODE;
+      process.env.API_KEY_TEST_FORCE_CODE = "";
     }
   });
 
@@ -490,7 +439,7 @@ describe("API Keys security contract", () => {
         },
       });
     } finally {
-      delete process.env.API_KEY_TEST_FORCE_CODE;
+      process.env.API_KEY_TEST_FORCE_CODE = "";
     }
   });
 

@@ -35,7 +35,6 @@ tags: [soar-map, api_route, backend, verified_local]
 ## Relations
 
 - routes_to -> [[SOAR-CONTROLLER-ICONS]] (verified_local)
-- uses -> [[SOAR-SERVICE-ICONS]] (verified_local)
 - verified_by -> [[SOAR-TEST-ICONS-API]] (verified_local)
 - documented_by -> [[SOAR-DOC-API-ICONS]] (verified_local)
 - mounts <- [[SOAR-ROUTER-DASHBOARD]] (verified_local)

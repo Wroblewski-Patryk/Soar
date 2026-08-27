@@ -35,7 +35,6 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - calls -> [[SOAR-SERVICE-WEB-MARKETS]] (verified_local)
-- documented_by -> [[SOAR-DOC-WEB-MARKETS]] (verified_local)
 - renders <- [[SOAR-PAGE-MARKETS-LIST]] (verified_local)
 
 ## Evidence Rule

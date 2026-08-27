@@ -4,10 +4,6 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
-let emailCounter = 0;
-
-const uniqueEmail = (prefix: string) =>
-  `${prefix}-${Date.now()}-${++emailCounter}@example.com`;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -33,9 +29,33 @@ describe('Wallets balance preview contract', () => {
     process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-wallet-preview-keyring';
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     delete process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE;
     delete process.env.WALLET_PREVIEW_TEST_FREE_BALANCE;
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.trade.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestRun.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.user.deleteMany();
   });
 
   afterAll(() => {
@@ -56,7 +76,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('returns exchange-driven wallet metadata with market-type specific base currencies', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-metadata-owner'));
+    const agent = await registerAndLogin('wallet-metadata-owner@example.com');
 
     const metadataRes = await agent.get('/dashboard/wallets/metadata').query({
       exchange: 'BINANCE',
@@ -75,10 +95,10 @@ describe('Wallets balance preview contract', () => {
       expect.arrayContaining(['USDT', 'EUR'])
     );
     expect(metadataRes.body.byMarketType.FUTURES.baseCurrencies).toContain('USDT');
-  }, 15_000);
+  });
 
   it('falls back to exchange capability defaults when market catalog is unavailable', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-metadata-placeholder'));
+    const agent = await registerAndLogin('wallet-metadata-placeholder@example.com');
 
     const metadataRes = await agent.get('/dashboard/wallets/metadata').query({
       exchange: 'OKX',
@@ -95,7 +115,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('persists Gate.io PAPER wallet when public paper pricing is supported', async () => {
-    const email = uniqueEmail('wallet-gateio-paper-create');
+    const email = 'wallet-gateio-paper-create@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -122,7 +142,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('persists Gate.io LIVE wallet when live execution is supported', async () => {
-    const email = uniqueEmail('wallet-gateio-live-create');
+    const email = 'wallet-gateio-live-create@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
     const apiKey = await prisma.apiKey.create({
@@ -160,7 +180,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('returns wallet balance preview for owned API key with allocation applied', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-preview-owner'));
+    const agent = await registerAndLogin('wallet-preview-owner@example.com');
 
     const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
       label: 'Preview key',
@@ -202,7 +222,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('caps LIVE preview reference balance at FIXED allocation even after higher exchange deposit', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-preview-fixed'));
+    const agent = await registerAndLogin('wallet-preview-fixed@example.com');
 
     const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
       label: 'Preview fixed key',
@@ -236,7 +256,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('uses full refreshed exchange balance in preview when no LIVE allocation is provided', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-preview-full'));
+    const agent = await registerAndLogin('wallet-preview-full@example.com');
 
     const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
       label: 'Preview full key',
@@ -265,7 +285,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('persists an initial LIVE wallet balance snapshot when a live wallet is created', async () => {
-    const email = uniqueEmail('wallet-live-initial-snapshot');
+    const email = 'wallet-live-initial-snapshot@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -373,7 +393,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('includes wallet-owned imported LIVE open positions in performance summary open PnL', async () => {
-    const email = uniqueEmail('wallet-performance-owned-import-open-pnl');
+    const email = 'wallet-performance-owned-import-open-pnl@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -503,7 +523,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('includes wallet-owned imported LIVE open PnL only on the latest equity timeline point', async () => {
-    const email = uniqueEmail('wallet-timeline-owned-import-open-pnl');
+    const email = 'wallet-timeline-owned-import-open-pnl@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -674,8 +694,8 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('returns 404 when selected API key does not belong to current user', async () => {
-    const owner = await registerAndLogin(uniqueEmail('wallet-preview-owner-2'));
-    const other = await registerAndLogin(uniqueEmail('wallet-preview-other'));
+    const owner = await registerAndLogin('wallet-preview-owner-2@example.com');
+    const other = await registerAndLogin('wallet-preview-other@example.com');
 
     const apiKeyRes = await owner.post('/dashboard/profile/apiKeys').send({
       label: 'Owner key',
@@ -699,7 +719,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('rejects invalid wallet analytics source filters at the API boundary', async () => {
-    const email = uniqueEmail('wallet-analytics-invalid-source');
+    const email = 'wallet-analytics-invalid-source@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -723,7 +743,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('rejects inverted wallet analytics date ranges at the API boundary', async () => {
-    const email = uniqueEmail('wallet-analytics-inverted-range');
+    const email = 'wallet-analytics-inverted-range@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -750,7 +770,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('fails closed for placeholder exchanges', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-preview-placeholder'));
+    const agent = await registerAndLogin('wallet-preview-placeholder@example.com');
 
     const previewRes = await agent.post('/dashboard/wallets/preview-balance').send({
       exchange: 'OKX',
@@ -769,7 +789,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('returns Gate.io balance preview for owned stored API key', async () => {
-    const email = uniqueEmail('wallet-preview-gateio-stored-key');
+    const email = 'wallet-preview-gateio-stored-key@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -826,7 +846,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('rejects paper reset for LIVE wallet', async () => {
-    const email = uniqueEmail('wallet-reset-live-owner');
+    const email = 'wallet-reset-live-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -849,7 +869,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('blocks paper reset while an active bot uses the wallet and allows reset after deactivation', async () => {
-    const email = uniqueEmail('wallet-reset-active-bot-owner');
+    const email = 'wallet-reset-active-bot-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -900,7 +920,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('rejects paper reset when open positions exist in wallet scope', async () => {
-    const email = uniqueEmail('wallet-reset-open-position-owner');
+    const email = 'wallet-reset-open-position-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -936,7 +956,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('rejects paper reset when active open orders exist in wallet scope', async () => {
-    const email = uniqueEmail('wallet-reset-open-order-owner');
+    const email = 'wallet-reset-open-order-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -972,7 +992,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('allows paper reset when only orphaned stale open orders exist in wallet scope', async () => {
-    const email = uniqueEmail('wallet-reset-orphan-open-order-owner');
+    const email = 'wallet-reset-orphan-open-order-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -1016,7 +1036,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('allows paper reset when only orphaned stale open positions exist in wallet scope', async () => {
-    const email = uniqueEmail('wallet-reset-orphan-open-position-owner');
+    const email = 'wallet-reset-orphan-open-position-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -1065,7 +1085,7 @@ describe('Wallets balance preview contract', () => {
   });
 
   it('sets paper reset checkpoint and keeps historical lifecycle rows', async () => {
-    const email = uniqueEmail('wallet-reset-history-owner');
+    const email = 'wallet-reset-history-owner@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 

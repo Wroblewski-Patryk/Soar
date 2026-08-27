@@ -51,7 +51,6 @@ import {
   createOpenPositionsColumns,
   createTradesColumns,
 } from "./home-live-widgets/runtimeDataTablePresenters";
-import { hasMatchedSignalCondition } from "./home-live-widgets/runtimeSignalConditionState";
 import {
   buildRuntimeSidebarManualOrderPresenter,
   buildRuntimeSidebarTextPresenter,
@@ -277,8 +276,8 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
   const signalHeaderStats = useMemo(
     () => ({
       marketsCount: signalSymbols.length,
-      conditionActiveSignalsCount: signalSymbols.reduce((count, item) => {
-        return hasMatchedSignalCondition(item) ? count + 1 : count;
+      actionableSignalsCount: signalSymbols.reduce((count, item) => {
+        return item.runtimeMarketState === "SIGNAL_ACTIVE" ? count + 1 : count;
       }, 0),
     }),
     [signalSymbols]
@@ -944,14 +943,13 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
                   "dashboard.home.runtime.signalContextSourceConfiguredFallback"
                 )}
                 signalContextSourceUnresolvedLabel={t("dashboard.home.runtime.signalContextSourceUnresolved")}
-                runtimeStateLabel={t("dashboard.home.runtime.runtimeStateLabel")}
                 marketStatePositionOpenLabel={t("dashboard.home.runtime.marketStatePositionOpen")}
                 marketStateSignalActiveLabel={t("dashboard.home.runtime.marketStateSignalActive")}
                 marketStateEvaluatedNoTradeLabel={t("dashboard.home.runtime.marketStateEvaluatedNoTrade")}
                 marketStateConfiguredOnlyLabel={t("dashboard.home.runtime.marketStateConfiguredOnly")}
                 marketStateUnresolvedLabel={t("dashboard.home.runtime.marketStateUnresolved")}
                 marketsCount={signalHeaderStats.marketsCount}
-                conditionActiveSignalsCount={signalHeaderStats.conditionActiveSignalsCount}
+                actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
                 formatSignalScore={(value) => formatNumber(value, { maximumFractionDigits: 2 })}
                 renderSymbolLabel={renderRuntimeSymbol}
               />

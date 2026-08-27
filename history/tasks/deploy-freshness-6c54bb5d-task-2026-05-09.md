@@ -14,15 +14,6 @@
 - Iteration: 27
 - Operation Mode: ARCHITECT
 
-## Architecture Links
-
-- Primary feature/module: Production deploy freshness and protected backlog sync.
-- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
-- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
-- Affected files: history/plans/deploy-freshness-6c54bb5d-2026-05-09.md; history/releases/v1-final-preflight-6c54bb5d-2026-05-09.md; history/artifacts/_artifacts-v1-final-preflight-6c54bb5d-2026-05-09.json; active state docs.
-- Tests/proof: production build-info wait, public smoke, no-secret final preflight, docs guardrails/parity, and diff checks recorded in this task.
-- Docs updated: deploy evidence, release evidence, current focus, system health, task board, and project state.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -35,7 +35,6 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-LOGS-AUDIT]] (verified_local)
-- documented_by <- [[SOAR-COMP-AUDIT-TRAIL-VIEW]] (verified_local)
 
 ## Evidence Rule
 

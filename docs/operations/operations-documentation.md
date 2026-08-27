@@ -17,7 +17,6 @@ and raw generated output lives in [Raw Artifacts](../../history/artifacts/raw-ar
 
 | File | Use when |
 | --- | --- |
-| [Production acceptance technical matrix](./production-acceptance-technical-matrix.md) | Deciding Soar production GO/NO-GO from technical gates and current evidence. |
 | [Post-deploy smoke checklist](./post-deploy-smoke-checklist.md) | Verifying a deployment. |
 | [Deployment rollback playbook](./deployment-rollback-playbook.md) | Deciding or executing rollback. |
 | [Service reliability and observability](./service-reliability-and-observability.md) | Reading reliability, SLO, and observability expectations. |
@@ -30,7 +29,6 @@ and raw generated output lives in [Raw Artifacts](../../history/artifacts/raw-ar
 
 | File | Use when |
 | --- | --- |
-| [Production acceptance technical matrix](./production-acceptance-technical-matrix.md) | Mapping release acceptance gates to owners, evidence, and current GO/NO-GO state. |
 | [Deployment readiness gates](./deployment-readiness-gates.md) | Checking deploy readiness before promotion. |
 | [Deployment rollback playbook](./deployment-rollback-playbook.md) | Rolling back or deciding not to roll back. |
 | [Deployment incident playbook](./deployment-incident-playbook.md) | Handling a deploy incident. |

@@ -12,15 +12,6 @@
 - Iteration: 9
 - Operation Mode: ARCHITECT
 
-## Architecture Links
-
-- Primary feature/module: Multi-strategy production deployment closure.
-- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS; SOAR-DB-RUNTIME-SESSION; SOAR-FEATURE-MANUAL-ORDER.
-- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-RELEASE-OPS.md.
-- Affected files: .github/workflows/promote-prod.yml; deployment evidence; release status files; task board; project state.
-- Tests/proof: production deploy freshness, public smoke, and release gate evidence recorded in this task's Validation Evidence.
-- Docs updated: release/operations evidence and active source-of-truth context files.
-
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.
