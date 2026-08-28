@@ -21,6 +21,7 @@ export const BOT_ERROR_CODES = {
   positionClosePriceUnavailable: 'POSITION_CLOSE_PRICE_UNAVAILABLE',
   botLiveApiKeyNotFound: 'BOT_LIVE_API_KEY_NOT_FOUND',
   botLiveApiKeyExchangeMismatch: 'BOT_LIVE_API_KEY_EXCHANGE_MISMATCH',
+  strategyDerivativesRequireFutures: 'STRATEGY_DERIVATIVES_REQUIRE_FUTURES',
 } as const;
 
 type BotErrorCode = (typeof BOT_ERROR_CODES)[keyof typeof BOT_ERROR_CODES];
@@ -69,4 +70,6 @@ export const botErrors = {
   botLiveApiKeyNotFound: () => new BotDomainError(BOT_ERROR_CODES.botLiveApiKeyNotFound, 404),
   botLiveApiKeyExchangeMismatch: () =>
     new BotDomainError(BOT_ERROR_CODES.botLiveApiKeyExchangeMismatch, 400),
+  strategyDerivativesRequireFutures: (details?: Record<string, unknown>) =>
+    new BotDomainError(BOT_ERROR_CODES.strategyDerivativesRequireFutures, 400, details),
 };

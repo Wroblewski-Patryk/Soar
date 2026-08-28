@@ -7,6 +7,11 @@ import {
 } from './backtestDataGateway';
 import type { BacktestStrategyLinkSnapshot } from './backtestPortfolioSimulation.service';
 import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
+import {
+  requiresAnyDerivativeInput,
+  resolveStrategyDerivativeRequirements,
+  type StrategyDerivativeRequirements,
+} from '../engine/strategyDataRequirements';
 
 type MarginMode = 'CROSSED' | 'ISOLATED' | 'NONE';
 
@@ -233,34 +238,31 @@ const parseSeedTimeMs = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
-const mentionsOrderBookIndicator = (value: unknown): boolean => {
-  if (typeof value === 'string') return value.toUpperCase().includes('ORDER_BOOK');
-  if (Array.isArray(value)) return value.some(mentionsOrderBookIndicator);
-  if (!value || typeof value !== 'object') return false;
-
-  return Object.entries(value as Record<string, unknown>).some(
-    ([key, nestedValue]) =>
-      key.toUpperCase().includes('ORDER_BOOK') || mentionsOrderBookIndicator(nestedValue),
-  );
-};
-
-const requiresHistoricalOrderBook = (strategyConfigs: Array<Record<string, unknown> | null>) =>
-  strategyConfigs.some(mentionsOrderBookIndicator);
-
-const assertHistoricalOrderBookSupported = (input: {
+const assertHistoricalDerivativeInputsAvailable = (input: {
   exchange: Exchange;
   marketType: BacktestMarketType;
   symbol: string;
+  fundingRatePoints: number;
+  openInterestPoints: number;
   orderBookPoints: number;
-  requiresOrderBook: boolean;
+  requirements: StrategyDerivativeRequirements;
 }) => {
-  if (!input.requiresOrderBook) return;
-  if (input.marketType !== 'FUTURES') return;
-  if (input.exchange === Exchange.BINANCE) return;
-  if (input.orderBookPoints > 0) return;
+  if (!requiresAnyDerivativeInput(input.requirements)) return;
+
+  if (input.marketType !== 'FUTURES') {
+    throw new Error(`DERIVATIVES_INDICATORS_REQUIRE_FUTURES:${input.exchange}:${input.symbol}`);
+  }
+
+  const missingInputs = [
+    input.requirements.fundingRate && input.fundingRatePoints === 0 ? 'FUNDING_RATE' : null,
+    input.requirements.openInterest && input.openInterestPoints === 0 ? 'OPEN_INTEREST' : null,
+    input.requirements.orderBook && input.orderBookPoints === 0 ? 'ORDER_BOOK' : null,
+  ].filter((value): value is string => Boolean(value));
+
+  if (missingInputs.length === 0) return;
 
   throw new Error(
-    `UNSUPPORTED_HISTORICAL_ORDER_BOOK_FOR_EXCHANGE:${input.exchange}:${input.symbol}`,
+    `HISTORICAL_DERIVATIVES_UNAVAILABLE:${input.exchange}:${input.symbol}:${missingInputs.join(',')}`,
   );
 };
 
@@ -371,7 +373,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       0,
       ...strategyConfigsForWarmup.map((config) => deps.resolveIndicatorWarmupCandles(config)),
     );
-    const strategyRequiresOrderBook = requiresHistoricalOrderBook(strategyConfigsForWarmup);
+    const strategyDerivativeRequirements = resolveStrategyDerivativeRequirements(strategyConfigsForWarmup);
     const strategyWalletRisk = deps.normalizeWalletRiskPercent(
       resolveStrategyWalletRiskFromSnapshot(strategySnapshot) ?? strategy?.walletRisk ?? 1,
       1
@@ -466,12 +468,14 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             fetchEndTimeMs,
             fetchStartTimeMs,
           );
-          assertHistoricalOrderBookSupported({
+          assertHistoricalDerivativeInputsAvailable({
             exchange,
             marketType,
             symbol,
+            fundingRatePoints: supplemental.fundingRates.length,
+            openInterestPoints: supplemental.openInterest.length,
             orderBookPoints: supplemental.orderBook.length,
-            requiresOrderBook: strategyRequiresOrderBook,
+            requirements: strategyDerivativeRequirements,
           });
           candlesBySymbol.set(symbol, candles);
           supplementalBySymbol.set(symbol, supplemental);

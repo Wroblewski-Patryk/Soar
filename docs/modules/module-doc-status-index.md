@@ -50,7 +50,6 @@ Status legend:
 | web | strategies | `apps/web/src/features/strategies` | `docs/modules/web-strategies.md` | Published | DCP-09 |
 | web | markets | `apps/web/src/features/markets` | `docs/modules/web-markets.md` | Published | DCP-09 |
 | web | exchanges | `apps/web/src/features/exchanges` | `docs/modules/web-exchanges.md` | Published | DCP-09 |
-| web | orders | `apps/web/src/features/orders` | `docs/modules/web-orders.md` | Published | DCP-09 |
 | web | positions | `apps/web/src/features/positions` | `docs/modules/web-positions.md` | Published | DCP-09 |
 | web | wallets | `apps/web/src/features/wallets` | `docs/modules/web-wallets.md` | Published | DCP-09 |
 | web | reports | `apps/web/src/features/reports` | `docs/modules/web-reports.md` | Published | DCP-09 |

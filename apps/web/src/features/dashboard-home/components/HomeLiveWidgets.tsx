@@ -73,7 +73,7 @@ import {
 
 const CARD = "rounded-box bg-base-100/80";
 const CARD_ASIDE = "rounded-box bg-base-100/85 h-fit xl:sticky xl:top-4";
-const RUNTIME_DATA_STALE_WARNING_AFTER_MS = 20_000;
+const RUNTIME_DATA_STALE_WARNING_AFTER_MS = 45_000;
 const DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.openPositions.sort.v1";
 const DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.openPositions.columns.v1";
 const DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY = "dashboard.home.openOrders.sort.v1";
@@ -438,7 +438,7 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
       });
       toast.success(editPositionSaveSuccessLabel);
       closePositionEdit();
-      await load({ silent: true });
+      await load({ silent: true, force: true });
     } catch (error) {
       toast.error(getAxiosMessage(error) ?? editPositionSaveErrorLabel);
     } finally {
@@ -509,7 +509,7 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
     closePositionNoSessionLabel,
     closePositionSuccessLabel,
     confirmRiskAction: () => confirmRuntimeRiskAction("dashboard.home.runtime.riskConfirmClosePositionDescription"),
-    onClosed: () => load({ silent: true }),
+    onClosed: () => load({ silent: true, force: true }),
     selectedBotMode: selected?.bot.mode,
     selectedBotId: selected?.bot.id,
     selectedSessionId: selected?.actionSessionId ?? selected?.session?.id,
@@ -532,7 +532,7 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
       try {
         await cancelDashboardOrder(orderId, { riskAck: true });
         toast.success(cancelOpenOrderSuccessLabel);
-        await load({ silent: true });
+        await load({ silent: true, force: true });
       } catch (error) {
         toast.error(getAxiosMessage(error) ?? cancelOpenOrderErrorLabel);
       } finally {

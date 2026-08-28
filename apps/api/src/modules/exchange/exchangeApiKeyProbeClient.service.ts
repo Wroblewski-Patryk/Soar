@@ -62,10 +62,17 @@ export const createExchangeApiKeyProbeClient: ExchangeApiKeyProbeClientFactory =
     throw new Error(`Unsupported CCXT exchange: ${exchangeId}`);
   }
 
+  const configuredTimeoutMs = Number.parseInt(process.env.EXCHANGE_API_KEY_PROBE_TIMEOUT_MS ?? '10000', 10);
+  const timeout =
+    Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
+      ? configuredTimeoutMs
+      : 10_000;
+
   return new ExchangeCtor({
     apiKey: input.apiKey,
     secret: input.apiSecret,
     enableRateLimit: true,
+    timeout,
     options: {
       defaultType: resolveApiKeyProbeCcxtDefaultType(exchange, marketType),
     },

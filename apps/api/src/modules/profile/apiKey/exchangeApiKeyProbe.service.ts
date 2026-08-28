@@ -186,20 +186,23 @@ export const probeExchangeApiKeyPermissions = async (
   };
   const failureCodes: ApiKeyProbeCode[] = [];
 
-  try {
-    await probeScope('spot', input, clientFactory);
-    permissions.spot = true;
-  } catch (error) {
-    const code = mapProbeError(error, 'spot');
-    failureCodes.push(code);
-  }
+  const results = await Promise.all(
+    (['spot', 'future'] as const).map(async (marketType) => {
+      try {
+        await probeScope(marketType, input, clientFactory);
+        return { marketType, ok: true as const };
+      } catch (error) {
+        return { marketType, ok: false as const, code: mapProbeError(error, marketType) };
+      }
+    }),
+  );
 
-  try {
-    await probeScope('future', input, clientFactory);
-    permissions.futures = true;
-  } catch (error) {
-    const code = mapProbeError(error, 'future');
-    failureCodes.push(code);
+  for (const result of results) {
+    if (result.ok) {
+      permissions[result.marketType === 'spot' ? 'spot' : 'futures'] = true;
+    } else {
+      failureCodes.push(result.code);
+    }
   }
 
   if (permissions.spot || permissions.futures) {

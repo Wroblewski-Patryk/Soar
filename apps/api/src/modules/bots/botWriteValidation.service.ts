@@ -1,5 +1,9 @@
 import { prisma } from '../../prisma/client';
 import { resolveMarketUniverseContractSymbolsFromCatalog } from '../markets/marketCatalogSymbolResolver.service';
+import {
+  requiresAnyDerivativeInput,
+  resolveStrategyDerivativeRequirements,
+} from '../engine/strategyDataRequirements';
 import { botErrors } from './bots.errors';
 
 type OwnedStrategy = {
@@ -84,6 +88,26 @@ export const deriveMaxOpenPositionsFromStrategy = (config: unknown) => {
   }
 
   return 1;
+};
+
+export const assertStrategiesCompatibleWithMarketType = (params: {
+  marketType: 'FUTURES' | 'SPOT';
+  strategies: Array<{ id: string; config: unknown }>;
+}) => {
+  if (params.marketType === 'FUTURES') return;
+
+  const incompatibleStrategyIds = params.strategies
+    .filter((strategy) =>
+      requiresAnyDerivativeInput(resolveStrategyDerivativeRequirements([strategy.config])),
+    )
+    .map((strategy) => strategy.id);
+
+  if (incompatibleStrategyIds.length > 0) {
+    throw botErrors.strategyDerivativesRequireFutures({
+      marketType: params.marketType,
+      strategyIds: incompatibleStrategyIds,
+    });
+  }
 };
 
 export const resolveCreateMarketGroupToSymbolGroup = async (

@@ -468,7 +468,9 @@ describe('createBacktestRunJob', () => {
     expect(fetchSupplementalCall[6]).toBe(Date.parse(startAt));
   });
 
-  it('fails closed for non-Binance futures ORDER_BOOK strategies without historical order-book input', async () => {
+  it.each(['GATEIO', 'BINANCE'] as const)(
+    'fails closed for %s futures ORDER_BOOK strategies without historical order-book input',
+    async (exchange) => {
     const safeUpdateRun = vi.fn(async () => true);
     const upsertBacktestReportForRun = vi.fn(async () => undefined);
     const simulateInterleavedPortfolio = vi.fn(
@@ -481,7 +483,7 @@ describe('createBacktestRunJob', () => {
 
     const runJob = createBacktestRunJob({
       findBacktestRunById: vi.fn(async () => ({
-        id: 'run-order-book-gateio',
+        id: `run-order-book-${exchange.toLowerCase()}`,
         userId: 'user-1',
         symbol: 'BTCUSDT',
         timeframe: '1m',
@@ -489,7 +491,7 @@ describe('createBacktestRunJob', () => {
         status: 'PENDING',
         seedConfig: {
           symbols: ['BTCUSDT'],
-          exchange: 'GATEIO',
+          exchange,
           marketType: 'FUTURES',
           leverage: 2,
           marginMode: 'CROSSED',
@@ -544,7 +546,7 @@ describe('createBacktestRunJob', () => {
       maxDrawdownFromPnlSeries: () => 0,
     });
 
-    await runJob('run-order-book-gateio');
+    await runJob(`run-order-book-${exchange.toLowerCase()}`);
 
     expect(simulateInterleavedPortfolio).not.toHaveBeenCalled();
     const finalUpdate = (safeUpdateRun as any).mock.calls.at(-1)?.[1] as any;
@@ -556,9 +558,10 @@ describe('createBacktestRunJob', () => {
       symbol: 'BTCUSDT',
       status: 'FAILED',
       orderBookPoints: 0,
-      error: 'UNSUPPORTED_HISTORICAL_ORDER_BOOK_FOR_EXCHANGE:GATEIO:BTCUSDT',
+      error: `HISTORICAL_DERIVATIVES_UNAVAILABLE:${exchange}:BTCUSDT:ORDER_BOOK`,
     });
-  });
+    },
+  );
 
   it('fails soft when report upsert loses its parent rows during async completion', async () => {
     const upsertBacktestReportForRun = vi.fn(async () => false);

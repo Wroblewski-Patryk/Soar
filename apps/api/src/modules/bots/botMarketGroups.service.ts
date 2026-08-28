@@ -6,7 +6,10 @@ import {
   UpdateBotMarketGroupDto,
   UpdateMarketGroupStrategyDto,
 } from './bots.types';
-import { getOwnedStrategy } from './botWriteValidation.service';
+import {
+  assertStrategiesCompatibleWithMarketType,
+  getOwnedStrategy,
+} from './botWriteValidation.service';
 import { getOwnedBot, validateSymbolGroupForBot } from './botOwnership.service';
 import { botErrors } from './bots.errors';
 
@@ -136,6 +139,14 @@ export const attachMarketGroupStrategy = async (
 
   const strategy = await getOwnedStrategy(userId, data.strategyId);
   if (!strategy) throw botErrors.botStrategyNotFound();
+  const bot = await getOwnedBot(userId, botId);
+  if (!bot) throw botErrors.botNotFound();
+  if (data.isEnabled) {
+    assertStrategiesCompatibleWithMarketType({
+      marketType: bot.marketType,
+      strategies: [strategy],
+    });
+  }
 
   try {
     return prisma.marketGroupStrategyLink.create({
@@ -176,10 +187,24 @@ export const updateMarketGroupStrategy = async (
       botId,
       botMarketGroupId: marketGroupId,
     },
-    select: { id: true },
+    select: {
+      id: true,
+      isEnabled: true,
+      strategy: { select: { id: true, config: true } },
+    },
   });
 
   if (!existing) return null;
+
+  const nextIsEnabled = data.isEnabled ?? existing.isEnabled;
+  if (nextIsEnabled) {
+    const bot = await getOwnedBot(userId, botId);
+    if (!bot) throw botErrors.botNotFound();
+    assertStrategiesCompatibleWithMarketType({
+      marketType: bot.marketType,
+      strategies: [existing.strategy],
+    });
+  }
 
   return prisma.marketGroupStrategyLink.update({
     where: { id: existing.id },

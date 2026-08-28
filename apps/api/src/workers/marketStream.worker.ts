@@ -25,6 +25,7 @@ bootstrapWorker({
 let worker: { start: () => void; stop: () => void } | null = null;
 let subscriptionFingerprint = '';
 let refreshTimer: NodeJS.Timeout | null = null;
+let refreshInFlight: Promise<void> | null = null;
 
 const logSubscriptionsRefreshFailure = (error: unknown) => {
   logger.error('market_stream.subscriptions_refresh_failed', {
@@ -77,6 +78,14 @@ const startOrReloadWorker = async () => {
   });
 };
 
+const requestWorkerRefresh = () => {
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = startOrReloadWorker().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
+};
+
 const shutdown = async () => {
   if (refreshTimer) {
     clearInterval(refreshTimer);
@@ -88,10 +97,10 @@ const shutdown = async () => {
 };
 
 refreshTimer = setInterval(() => {
-  void startOrReloadWorker().catch(logSubscriptionsRefreshFailure);
+  void requestWorkerRefresh().catch(logSubscriptionsRefreshFailure);
 }, refreshMs);
 
-void startOrReloadWorker().catch(logSubscriptionsRefreshFailure);
+void requestWorkerRefresh().catch(logSubscriptionsRefreshFailure);
 
 process.on('SIGINT', () => {
   void shutdown().finally(() => process.exit(0));

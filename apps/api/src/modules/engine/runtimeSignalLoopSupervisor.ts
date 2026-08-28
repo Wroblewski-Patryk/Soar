@@ -23,6 +23,7 @@ type RuntimeSignalLoopSupervisorDeps = {
 
 export class RuntimeSignalLoopSupervisor {
   private sessionWatchdogTimer: NodeJS.Timeout | null = null;
+  private watchdogInFlight = false;
   private autoRestartTimer: NodeJS.Timeout | null = null;
   private readonly autoRestartAttempts: number[] = [];
 
@@ -33,6 +34,8 @@ export class RuntimeSignalLoopSupervisor {
     if (!Number.isFinite(this.deps.watchdogIntervalMs) || this.deps.watchdogIntervalMs <= 0) return;
 
     this.sessionWatchdogTimer = setInterval(() => {
+      if (this.watchdogInFlight) return;
+      this.watchdogInFlight = true;
       void (async () => {
         const now = Date.now();
         let activeBotIds: string[] = [];
@@ -42,7 +45,9 @@ export class RuntimeSignalLoopSupervisor {
           this.deps.onWatchdogError(error);
         }
         await this.detectRuntimeStall(now, activeBotIds);
-      })();
+      })().finally(() => {
+        this.watchdogInFlight = false;
+      });
     }, this.deps.watchdogIntervalMs);
     this.sessionWatchdogTimer.unref?.();
   }

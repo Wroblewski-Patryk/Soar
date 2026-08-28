@@ -46,6 +46,7 @@ describe('LivePositionReconciliationLoop', () => {
     expect(reconcile).toHaveBeenCalledTimes(4);
     expect(loop.getStatus().running).toBe(false);
   });
+
 });
 
 describe('imported external position id helpers', () => {

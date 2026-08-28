@@ -97,6 +97,15 @@ strategy builder endpoint. No broader "planned" catalog is canonical for V1.
 - `ORDER_BOOK_SPREAD_BPS`
 - `ORDER_BOOK_DEPTH_RATIO`
 
+Order-book evaluator semantics are shared, but the current data adapters do not
+provide historical order-book snapshots. Consequently, the three
+`ORDER_BOOK_*` entries advertise `PAPER`/`LIVE` support only and a backtest that
+depends on them must fail closed with explicit missing-input diagnostics.
+
+All derivatives indicators require a `FUTURES` execution context. A SPOT bot
+must reject a linked derivatives strategy rather than silently producing
+`NO_TRADE` because derivatives input is unavailable.
+
 ### Registry Growth Rule
 - If a new indicator is added to the builder, it must be added to this
   canonical registry in the same change.

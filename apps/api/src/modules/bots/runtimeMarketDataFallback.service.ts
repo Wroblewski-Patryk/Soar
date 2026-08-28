@@ -75,6 +75,24 @@ const TICKER_PRICE_FALLBACK_TTL_MS = 5_000;
 const DERIVATIVES_HISTORY_TTL_MS = 60_000;
 const DERIVATIVES_SNAPSHOT_TTL_MS = 15_000;
 const tickerPriceFallbackCache = new Map<string, { fetchedAt: number; prices: Map<string, number> }>();
+const MARKET_FALLBACK_CACHE_MAX_ENTRIES = Number.parseInt(
+  process.env.RUNTIME_MARKET_FALLBACK_CACHE_MAX_ENTRIES ?? '250',
+  10,
+);
+
+const setBoundedCacheEntry = <K, V>(cache: Map<K, V>, key: K, value: V) => {
+  cache.delete(key);
+  cache.set(key, value);
+  const maxEntries =
+    Number.isFinite(MARKET_FALLBACK_CACHE_MAX_ENTRIES) && MARKET_FALLBACK_CACHE_MAX_ENTRIES > 0
+      ? Math.floor(MARKET_FALLBACK_CACHE_MAX_ENTRIES)
+      : 250;
+  while (cache.size > maxEntries) {
+    const oldestKey = cache.keys().next().value as K | undefined;
+    if (oldestKey === undefined) break;
+    cache.delete(oldestKey);
+  }
+};
 
 export const fetchFallbackKlines = async (params: {
   exchange?: Exchange;
@@ -181,7 +199,7 @@ export const fetchFallbackKlines = async (params: {
         } => value != null,
       );
     if (candles.length > 0) {
-      klineFallbackCache.set(cacheKey, { fetchedAt: now, candles });
+      setBoundedCacheEntry(klineFallbackCache, cacheKey, { fetchedAt: now, candles });
     }
     return candles;
   } catch {
@@ -214,7 +232,7 @@ export const fetchFallbackFundingRateHistory = async (params: {
         limit,
         endTime: params.endTimeMs,
       });
-      fundingHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+      setBoundedCacheEntry(fundingHistoryFallbackCache, cacheKey, { fetchedAt: now, points });
       return points;
     } catch {
       return [];
@@ -247,7 +265,7 @@ export const fetchFallbackFundingRateHistory = async (params: {
       })
       .filter((item): item is { timestamp: number; fundingRate: number } => item != null)
       .sort((left, right) => left.timestamp - right.timestamp);
-    fundingHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+    setBoundedCacheEntry(fundingHistoryFallbackCache, cacheKey, { fetchedAt: now, points });
     return points;
   } catch {
     return [];
@@ -274,7 +292,7 @@ export const fetchFallbackFundingRateSnapshot = async (symbol: string, exchange:
         endTime: now,
       });
       const point = history.at(-1) ?? null;
-      fundingSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      setBoundedCacheEntry(fundingSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
       return point;
     } catch {
       return null;
@@ -295,7 +313,7 @@ export const fetchFallbackFundingRateSnapshot = async (symbol: string, exchange:
       Number.isFinite(timestamp) && Number.isFinite(fundingRate)
         ? { timestamp, fundingRate }
         : null;
-    fundingSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+    setBoundedCacheEntry(fundingSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
     return point;
   } catch {
     return null;
@@ -336,7 +354,7 @@ export const fetchFallbackOpenInterestHistory = async (params: {
         limit,
         endTime: params.endTimeMs,
       });
-      openInterestHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+      setBoundedCacheEntry(openInterestHistoryFallbackCache, cacheKey, { fetchedAt: now, points });
       return points;
     } catch {
       return [];
@@ -370,7 +388,7 @@ export const fetchFallbackOpenInterestHistory = async (params: {
       })
       .filter((item): item is { timestamp: number; openInterest: number } => item != null)
       .sort((left, right) => left.timestamp - right.timestamp);
-    openInterestHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+    setBoundedCacheEntry(openInterestHistoryFallbackCache, cacheKey, { fetchedAt: now, points });
     return points;
   } catch {
     return [];
@@ -398,7 +416,7 @@ export const fetchFallbackOpenInterestSnapshot = async (symbol: string, exchange
         endTime: now,
       });
       const point = history.at(-1) ?? null;
-      openInterestSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      setBoundedCacheEntry(openInterestSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
       return point;
     } catch {
       return null;
@@ -419,7 +437,7 @@ export const fetchFallbackOpenInterestSnapshot = async (symbol: string, exchange
       Number.isFinite(timestamp) && Number.isFinite(openInterest)
         ? { timestamp, openInterest }
         : null;
-    openInterestSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+    setBoundedCacheEntry(openInterestSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
     return point;
   } catch {
     return null;
@@ -444,7 +462,7 @@ export const fetchFallbackOrderBookSnapshot = async (symbol: string, exchange: E
         symbol: normalizedSymbol,
         limit: 100,
       });
-      orderBookSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      setBoundedCacheEntry(orderBookSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
       return point;
     } catch {
       return null;
@@ -500,7 +518,7 @@ export const fetchFallbackOrderBookSnapshot = async (symbol: string, exchange: E
             depthRatio: bidDepth / askDepth,
           }
         : null;
-    orderBookSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+    setBoundedCacheEntry(orderBookSnapshotFallbackCache, cacheKey, { fetchedAt: now, point });
     return point;
   } catch {
     return null;
@@ -549,7 +567,7 @@ export const fetchFallbackTickerPrices = async (params: {
     }
 
     if (allPrices.size > 0) {
-      tickerPriceFallbackCache.set(cacheKey, {
+      setBoundedCacheEntry(tickerPriceFallbackCache, cacheKey, {
         fetchedAt: now,
         prices: allPrices,
       });

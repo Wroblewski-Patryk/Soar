@@ -6,6 +6,11 @@ This document defines intentional MVP limits so release decisions remain explici
 - Exchange support: Binance Spot + Binance Futures only.
 - Trading mode: paper + live available.
 - Strategy model: flat rule model only (no deep nested logic trees).
+- Historical order-book snapshots are not currently sourced by the backtest
+  data gateway. `ORDER_BOOK_*` rules are supported in PAPER/LIVE runtime only;
+  backtests now fail closed instead of returning misleading no-trade results.
+- Derivatives indicators (`FUNDING_RATE_*`, `OPEN_INTEREST_*`, `ORDER_BOOK_*`)
+  require a FUTURES market context. Bot writes reject these strategies for SPOT.
 - Auth recovery: no forgot-password flow in MVP.
 - Logs UX: dashboard logs supports core filtering (`source`, `actor`, `severity`) but no advanced query builder.
 - Rate limiting: Redis-backed counters enabled, but no distributed abuse analytics or adaptive throttling.

@@ -25,6 +25,12 @@ describe('indicators.service', () => {
     expect(names).toContain('ORDER_BOOK_IMBALANCE');
     expect(names).toContain('ORDER_BOOK_SPREAD_BPS');
     expect(names).toContain('ORDER_BOOK_DEPTH_RATIO');
+
+    const orderBookIndicators = indicators.filter((item) => item.name.startsWith('ORDER_BOOK_'));
+    expect(orderBookIndicators).toHaveLength(3);
+    for (const indicator of orderBookIndicators) {
+      expect(indicator.supportedModes).toEqual(['PAPER', 'LIVE']);
+    }
     expect(names).toContain('BULLISH_ENGULFING');
     expect(names).toContain('BEARISH_ENGULFING');
     expect(names).toContain('HAMMER');

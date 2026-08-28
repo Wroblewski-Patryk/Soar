@@ -2449,7 +2449,7 @@ describe("HomeLiveWidgets", () => {
     });
   });
 
-  it("switches runtime polling cadence to 30s when tab becomes hidden", async () => {
+  it("switches runtime polling cadence to 60s when tab becomes hidden", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const setIntervalSpy = vi.spyOn(window, "setInterval");
     let visibilityState: DocumentVisibilityState = "visible";
@@ -2559,7 +2559,7 @@ describe("HomeLiveWidgets", () => {
 
     await waitFor(() => {
       expect(listBotRuntimeSessionsMock).toHaveBeenCalled();
-      expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 10_000);
+      expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 30_000);
     });
 
     visibilityState = "hidden";
@@ -2568,7 +2568,7 @@ describe("HomeLiveWidgets", () => {
     });
 
     await waitFor(() => {
-      expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 30_000);
+      expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 60_000);
     });
 
     setIntervalSpy.mockRestore();
@@ -2702,7 +2702,7 @@ describe("HomeLiveWidgets", () => {
 
     shouldFailRefresh = true;
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(21_000);
+      await vi.advanceTimersByTimeAsync(46_000);
     });
 
     await waitFor(() => {
@@ -2711,7 +2711,7 @@ describe("HomeLiveWidgets", () => {
 
     shouldFailRefresh = false;
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(11_000);
+      await vi.advanceTimersByTimeAsync(30_000);
     });
 
     await waitFor(() => {

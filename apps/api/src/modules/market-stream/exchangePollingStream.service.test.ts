@@ -112,4 +112,47 @@ describe('ExchangePublicPollingMarketStreamWorker', () => {
       })
     );
   });
+
+  it('does not overlap slow polling iterations', async () => {
+    let release: (() => void) | undefined;
+    let invocation = 0;
+    const fetchTicker = vi.fn(async () => {
+      invocation += 1;
+      if (invocation === 1) {
+        await new Promise<void>((resolve) => {
+          release = resolve;
+        });
+      }
+      return {
+        symbol: 'BTCUSDT',
+        eventTime: 1,
+        lastPrice: 100,
+        markPrice: null,
+        priceChangePercent24h: 0,
+        raw: {},
+      };
+    });
+    const worker = new ExchangePublicPollingMarketStreamWorker(
+      {
+        exchange: 'GATEIO',
+        marketType: 'SPOT',
+        symbols: ['BTCUSDT'],
+        candleIntervals: [],
+      },
+      {
+        fetchTicker,
+        fetchCandles: vi.fn().mockResolvedValue([]),
+      },
+      createLogger(),
+    );
+
+    const first = worker.pollOnce();
+    await worker.pollOnce();
+    expect(fetchTicker).toHaveBeenCalledTimes(1);
+
+    release?.();
+    await first;
+    await worker.pollOnce();
+    expect(fetchTicker).toHaveBeenCalledTimes(2);
+  });
 });

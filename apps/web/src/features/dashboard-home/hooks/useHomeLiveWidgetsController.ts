@@ -30,13 +30,11 @@ import type {
 import { buildRuntimeTradeMeta } from "../components/home-live-widgets/runtimeTradeMeta";
 
 const MAX_DASHBOARD_BOTS = 8;
-const AUTO_REFRESH_VISIBLE_INTERVAL_MS = 10_000;
-const AUTO_REFRESH_HIDDEN_INTERVAL_MS = 30_000;
-const LOAD_STALE_AFTER_MS = 20_000;
-const AGGREGATE_SELECTED_SESSIONS_LIMIT = 6;
-const AGGREGATE_SELECTED_PER_SESSION_LIMIT = 80;
-const AGGREGATE_SECONDARY_SESSIONS_LIMIT = 2;
-const AGGREGATE_SECONDARY_PER_SESSION_LIMIT = 30;
+const AUTO_REFRESH_VISIBLE_INTERVAL_MS = 30_000;
+const AUTO_REFRESH_HIDDEN_INTERVAL_MS = 60_000;
+const SILENT_REFRESH_COOLDOWN_MS = 25_000;
+const AGGREGATE_SELECTED_SESSIONS_LIMIT = 3;
+const AGGREGATE_SELECTED_PER_SESSION_LIMIT = 50;
 const SELECTED_BOT_STORAGE_KEY = "dashboard.home.selectedBotId";
 const DASHBOARD_TRADE_HISTORY_SORT_STORAGE_KEY = "dashboard.home.tradeHistory.sort.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
@@ -249,23 +247,25 @@ export const useHomeLiveWidgetsController = ({
   const [runtimeStaleWatchNowMs, setRuntimeStaleWatchNowMs] = useState(() => Date.now());
   const hasLoadedTradesRef = useRef(false);
   const loadInFlightRef = useRef(false);
-  const loadStartedAtRef = useRef<number | null>(null);
+  const lastSuccessfulLoadAtRef = useRef(0);
   const selectedBotIdRef = useRef<string | null>(null);
+  const previousSelectedBotIdRef = useRef<string | null>(null);
   const runtimeStreamEligibleRef = useRef(false);
   const runtimeStreamConnectedRef = useRef(false);
   const lastSseTickerAtRef = useRef<number | null>(null);
   const lastSseDrivenRefreshAtRef = useRef(0);
   const signalRailRef = useRef<HTMLDivElement | null>(null);
 
-  const load = useCallback(async (opts?: { silent?: boolean }) => {
+  const load = useCallback(async (opts?: { silent?: boolean; force?: boolean }) => {
     if (!enabled) return;
     const silent = opts?.silent ?? false;
-    if (silent && loadInFlightRef.current) {
-      const startedAt = loadStartedAtRef.current ?? 0;
-      if (Date.now() - startedAt < LOAD_STALE_AFTER_MS) return;
-    }
+    if (loadInFlightRef.current) return;
+    if (
+      silent &&
+      !opts?.force &&
+      Date.now() - lastSuccessfulLoadAtRef.current < SILENT_REFRESH_COOLDOWN_MS
+    ) return;
     loadInFlightRef.current = true;
-    loadStartedAtRef.current = Date.now();
     if (!silent) {
       setLoading(true);
       setError(null);
@@ -297,12 +297,19 @@ export const useHomeLiveWidgetsController = ({
         return;
       }
       const scope = activeScope.slice(0, MAX_DASHBOARD_BOTS);
+      const requestedSelectedBotId = selectedBotIdRef.current;
+      const effectiveSelectedBotId =
+        requestedSelectedBotId && scope.some((bot) => bot.id === requestedSelectedBotId)
+          ? requestedSelectedBotId
+          : scope[0]?.id ?? null;
       const next = await Promise.all(
         scope.map(async (bot): Promise<RuntimeSnapshot> => {
           try {
             const [sessions, runtimeGraph] = await Promise.all([
-              listBotRuntimeSessions(bot.id, { limit: 20 }),
-              getBotRuntimeGraph(bot.id).catch(() => null),
+              listBotRuntimeSessions(bot.id, { limit: 6 }),
+              bot.id === effectiveSelectedBotId
+                ? getBotRuntimeGraph(bot.id).catch(() => null)
+                : Promise.resolve(null),
             ]);
             const primary = pickPrimarySession(sessions);
             if (!primary) {
@@ -316,20 +323,22 @@ export const useHomeLiveWidgetsController = ({
                 runtimeGraph,
               };
             }
+            if (bot.id !== effectiveSelectedBotId) {
+              return {
+                bot,
+                session: primary,
+                actionSessionId: primary.id,
+                symbolStats: null,
+                positions: null,
+                trades: null,
+                runtimeGraph,
+              };
+            }
             try {
-              const currentSelectedBotId = selectedBotIdRef.current;
-              const isPrimaryBot = currentSelectedBotId == null
-                ? bot.id === scope[0]?.id
-                : bot.id === currentSelectedBotId;
-              const sessionsLimit = isPrimaryBot
-                ? Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT)
-                : Math.min(sessions.length, AGGREGATE_SECONDARY_SESSIONS_LIMIT);
-              const perSessionLimit = isPrimaryBot
-                ? AGGREGATE_SELECTED_PER_SESSION_LIMIT
-                : AGGREGATE_SECONDARY_PER_SESSION_LIMIT;
+              const sessionsLimit = Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT);
               const aggregate = await getBotRuntimeMonitoringAggregate(bot.id, {
                 sessionsLimit: Math.max(1, sessionsLimit),
-                perSessionLimit,
+                perSessionLimit: AGGREGATE_SELECTED_PER_SESSION_LIMIT,
               });
               return {
                 bot,
@@ -406,6 +415,7 @@ export const useHomeLiveWidgetsController = ({
       const hasFreshSnapshot = next.some((item) => !item.loadError);
       if (hasFreshSnapshot) {
         setLastUpdatedAt(new Date().toISOString());
+        lastSuccessfulLoadAtRef.current = Date.now();
       }
       setRefreshToken((x) => x + 1);
     } catch (err) {
@@ -414,7 +424,6 @@ export const useHomeLiveWidgetsController = ({
       }
     } finally {
       loadInFlightRef.current = false;
-      loadStartedAtRef.current = null;
       if (!silent) setLoading(false);
     }
   }, [
@@ -441,7 +450,12 @@ export const useHomeLiveWidgetsController = ({
 
   useEffect(() => {
     selectedBotIdRef.current = selectedBotId;
-  }, [selectedBotId]);
+    const previousSelectedBotId = previousSelectedBotIdRef.current;
+    previousSelectedBotIdRef.current = selectedBotId;
+    if (previousSelectedBotId && selectedBotId && previousSelectedBotId !== selectedBotId) {
+      void load({ silent: true, force: true });
+    }
+  }, [load, selectedBotId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -461,12 +475,14 @@ export const useHomeLiveWidgetsController = ({
     if (typeof document === "undefined") return;
 
     let timer = window.setInterval(() => {
+      if (runtimeStreamConnectedRef.current) return;
       void load({ silent: true });
     }, resolveAutoRefreshIntervalMs());
 
     const handleVisibilityChange = () => {
       window.clearInterval(timer);
       timer = window.setInterval(() => {
+        if (runtimeStreamConnectedRef.current) return;
         void load({ silent: true });
       }, resolveAutoRefreshIntervalMs());
     };

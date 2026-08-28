@@ -128,7 +128,7 @@ describe("HomeLiveWidgets aggregate fail-closed", () => {
 
     expect(getBotRuntimeMonitoringAggregateMock).toHaveBeenCalledWith("bot-aggregate-error", {
       sessionsLimit: 1,
-      perSessionLimit: 80,
+      perSessionLimit: 50,
     });
     expect(listBotRuntimeSessionSymbolStatsMock).not.toHaveBeenCalled();
     expect(listBotRuntimeSessionPositionsMock).not.toHaveBeenCalled();

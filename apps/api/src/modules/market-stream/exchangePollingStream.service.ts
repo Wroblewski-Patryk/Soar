@@ -44,6 +44,7 @@ const defaultLogger: StreamLogger = {
 export class ExchangePublicPollingMarketStreamWorker {
   private timer: NodeJS.Timeout | null = null;
   private running = false;
+  private pollInFlight = false;
 
   constructor(
     private readonly config: ExchangePollingStreamConfig,
@@ -70,16 +71,22 @@ export class ExchangePublicPollingMarketStreamWorker {
 
   async pollOnce() {
     if (!this.running && this.timer) return;
+    if (this.pollInFlight) return;
+    this.pollInFlight = true;
 
-    const symbols = [...new Set(this.config.symbols.map(normalizeSymbol))].filter(Boolean);
-    const intervals = [...new Set(this.config.candleIntervals.map((interval) => interval.trim().toLowerCase()))]
-      .filter(Boolean);
+    try {
+      const symbols = [...new Set(this.config.symbols.map(normalizeSymbol))].filter(Boolean);
+      const intervals = [...new Set(this.config.candleIntervals.map((interval) => interval.trim().toLowerCase()))]
+        .filter(Boolean);
 
-    for (const symbol of symbols) {
-      await this.publishTicker(symbol);
-      for (const interval of intervals) {
-        await this.publishLatestCandle(symbol, interval);
+      for (const symbol of symbols) {
+        await this.publishTicker(symbol);
+        for (const interval of intervals) {
+          await this.publishLatestCandle(symbol, interval);
+        }
       }
+    } finally {
+      this.pollInFlight = false;
     }
   }
 

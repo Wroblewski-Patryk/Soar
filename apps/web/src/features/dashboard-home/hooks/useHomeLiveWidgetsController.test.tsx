@@ -284,6 +284,8 @@ describe("useHomeLiveWidgetsController", () => {
     );
 
     await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-a"));
+    expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledTimes(1);
+    expect(getBotRuntimeMonitoringAggregate).toHaveBeenLastCalledWith("bot-a", expect.any(Object));
     await waitFor(() => expect(createdSources.length).toBeGreaterThan(0));
 
     act(() => {
@@ -296,6 +298,9 @@ describe("useHomeLiveWidgetsController", () => {
     });
 
     await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-b"));
+    await waitFor(() =>
+      expect(getBotRuntimeMonitoringAggregate).toHaveBeenLastCalledWith("bot-b", expect.any(Object))
+    );
     await waitFor(() => expect(result.current.liveTickerPrices).toEqual({}));
   });
 
@@ -354,7 +359,7 @@ describe("useHomeLiveWidgetsController", () => {
       })
     );
 
-    await waitFor(() => expect(listBotRuntimeSessions).toHaveBeenCalledWith("bot-a", { limit: 20 }));
+    await waitFor(() => expect(listBotRuntimeSessions).toHaveBeenCalledWith("bot-a", { limit: 6 }));
     expect(getBotRuntimeGraph).toHaveBeenCalledWith("bot-a");
     expect(getBotRuntimeMonitoringAggregate).not.toHaveBeenCalled();
 
@@ -365,7 +370,7 @@ describe("useHomeLiveWidgetsController", () => {
     await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-a"));
     expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledWith("bot-a", {
       sessionsLimit: 1,
-      perSessionLimit: 80,
+      perSessionLimit: 50,
     });
   });
 

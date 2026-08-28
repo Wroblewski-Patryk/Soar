@@ -117,6 +117,14 @@ const handleBotCommandValidationError = (res: Response, error: unknown) => {
   if (mapped.code === BOT_ERROR_CODES.activeLiveBotSymbolOverlap) {
     return sendError(res, 409, buildActiveLiveSymbolOverlapMessage(mapped.details), mapped.details);
   }
+  if (mapped.code === BOT_ERROR_CODES.strategyDerivativesRequireFutures) {
+    return sendError(
+      res,
+      400,
+      'strategies using derivatives indicators require a FUTURES market group',
+      mapped.details
+    );
+  }
   if (mapped.code === BOT_ERROR_CODES.botNotFound) {
     return sendError(res, 404, 'Not found', mapped.details);
   }
@@ -149,6 +157,14 @@ const handleBotMarketGroupError = (res: Response, error: unknown) => {
   if (mapped.code === BOT_ERROR_CODES.activeBotMarketGroupDuplicate) {
     return sendError(res, 409, 'bot already has an active market group', mapped.details);
   }
+  if (mapped.code === BOT_ERROR_CODES.strategyDerivativesRequireFutures) {
+    return sendError(
+      res,
+      400,
+      'strategies using derivatives indicators require a FUTURES market group',
+      mapped.details
+    );
+  }
 
   return sendError(res, mapped.status, mapped.message, mapped.details);
 };
@@ -166,6 +182,14 @@ const handleMarketGroupStrategyError = (res: Response, error: unknown) => {
   }
   if (mapped.code === BOT_ERROR_CODES.marketGroupStrategyLinkNotFound) {
     return sendError(res, 400, 'all strategy link ids must belong to current bot market group', mapped.details);
+  }
+  if (mapped.code === BOT_ERROR_CODES.strategyDerivativesRequireFutures) {
+    return sendError(
+      res,
+      400,
+      'strategies using derivatives indicators require a FUTURES market group',
+      mapped.details
+    );
   }
 
   return sendError(res, mapped.status, mapped.message, mapped.details);

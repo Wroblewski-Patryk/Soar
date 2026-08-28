@@ -6,6 +6,7 @@ import { emptyReconciliationDiagnosticSummary } from './livePositionReconciliati
 
 export class LivePositionReconciliationLoop {
   private timer: NodeJS.Timeout | null = null;
+  private inFlight = false;
   private status: ReconciliationStatus = {
     running: false,
     iterations: 0,
@@ -43,6 +44,8 @@ export class LivePositionReconciliationLoop {
   }
 
   async runOnce() {
+    if (this.inFlight) return;
+    this.inFlight = true;
     const startedAt = Date.now();
     try {
       const result = await this.reconcileFn();
@@ -62,6 +65,8 @@ export class LivePositionReconciliationLoop {
       this.status.lastRunAt = new Date().toISOString();
       this.status.lastDurationMs = Date.now() - startedAt;
       this.status.lastError = error instanceof Error ? error.message : 'unknown_error';
+    } finally {
+      this.inFlight = false;
     }
   }
 }

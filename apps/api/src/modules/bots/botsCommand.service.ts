@@ -14,6 +14,7 @@ import {
 import {
   assertNoActiveLiveBotSymbolOverlap,
   assertNoDuplicateActiveBotByStrategyAndSymbolGroup,
+  assertStrategiesCompatibleWithMarketType,
   deriveMaxOpenPositionsFromStrategy,
   resolveCreateMarketGroupToSymbolGroup,
 } from './botWriteValidation.service';
@@ -197,6 +198,12 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
   if (wallet.mode === 'LIVE' && !derivedApiKeyId) {
     throw botErrors.walletLiveApiKeyRequired();
   }
+  assertStrategiesCompatibleWithMarketType({
+    marketType: derivedMarketType,
+    strategies: strategyLinkSet.enabledLinks
+      .map((link) => strategiesById.get(link.strategyId))
+      .filter((strategy): strategy is { id: string; config: unknown } => Boolean(strategy)),
+  });
 
   const nextState: BotConsentState = {
     mode: derivedMode,
@@ -466,6 +473,14 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
           ? [targetStrategyId]
           : []
         : existingCanonicalScope.enabledStrategyIds;
+
+    const targetStrategiesById = await getOwnedStrategiesById(userId, targetStrategyIds);
+    assertStrategiesCompatibleWithMarketType({
+      marketType: targetMarketType,
+      strategies: targetStrategyIds
+        .map((strategyId) => targetStrategiesById.get(strategyId))
+        .filter((strategy): strategy is { id: string; config: unknown } => Boolean(strategy)),
+    });
 
     if (targetStrategyIds.length > 0 && targetSymbolGroupId) {
       const targetWalletId = targetWallet?.id ?? existing.walletId ?? null;

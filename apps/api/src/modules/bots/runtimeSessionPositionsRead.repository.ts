@@ -102,6 +102,18 @@ export const listRuntimeManagedPositions = async (params: {
 export const countRuntimeManagedPositions = async (where: Prisma.PositionWhereInput) =>
   prisma.position.count({ where });
 
+export const summarizeRuntimeManagedPositions = async (where: Prisma.PositionWhereInput) =>
+  prisma.position.aggregate({
+    where,
+    _count: true,
+    _sum: {
+      marginUsed: true,
+      quantity: true,
+      realizedPnl: true,
+      unrealizedPnl: true,
+    },
+  });
+
 export const sumRuntimeManagedPositionRealizedPnl = async (where: Prisma.PositionWhereInput) =>
   prisma.position.aggregate({
     where,

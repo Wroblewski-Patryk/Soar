@@ -66,7 +66,7 @@ It does not replace `docs/architecture/` as the canonical source of runtime beha
 | Icons | [web-icons.md](./web-icons.md) |
 | Logs | [web-logs.md](./web-logs.md) |
 | Markets | [web-markets.md](./web-markets.md) |
-| Orders | [web-orders.md](./web-orders.md) |
+| Orders (legacy reference; current UI is consolidated under Dashboard/Bots) | [web-orders.md](./web-orders.md) |
 | Positions | [web-positions.md](./web-positions.md) |
 | Profile | [web-profile.md](./web-profile.md) |
 | Reports | [web-reports.md](./web-reports.md) |

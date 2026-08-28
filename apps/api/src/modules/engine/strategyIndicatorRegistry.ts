@@ -74,6 +74,7 @@ const comparatorAndRangeOperators: StrategyIndicatorOperator[] = [
   'OUT_OF_RANGE',
 ];
 const allModes: StrategyIndicatorMode[] = ['BACKTEST', 'PAPER', 'LIVE'];
+const runtimeModes: StrategyIndicatorMode[] = ['PAPER', 'LIVE'];
 
 export const strategyIndicatorRegistry: StrategyIndicatorRegistryEntry[] = [
   {
@@ -332,7 +333,7 @@ export const strategyIndicatorRegistry: StrategyIndicatorRegistryEntry[] = [
     params: [],
     outputs: ['value'],
     defaultPanel: 'hidden_filter',
-    supportedModes: allModes,
+    supportedModes: runtimeModes,
     operators: comparatorAndRangeOperators,
   },
   {
@@ -344,7 +345,7 @@ export const strategyIndicatorRegistry: StrategyIndicatorRegistryEntry[] = [
     params: [],
     outputs: ['value'],
     defaultPanel: 'hidden_filter',
-    supportedModes: allModes,
+    supportedModes: runtimeModes,
     operators: comparatorAndRangeOperators,
   },
   {
@@ -356,7 +357,7 @@ export const strategyIndicatorRegistry: StrategyIndicatorRegistryEntry[] = [
     params: [],
     outputs: ['value'],
     defaultPanel: 'hidden_filter',
-    supportedModes: allModes,
+    supportedModes: runtimeModes,
     operators: comparatorAndRangeOperators,
   },
   {

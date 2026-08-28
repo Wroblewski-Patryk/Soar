@@ -620,7 +620,7 @@ describe("HomeLiveWidgets runtime table rendered audit", () => {
     });
     expect(getBotRuntimeMonitoringAggregateMock).toHaveBeenCalledWith(
       betaBot.id,
-      expect.objectContaining({ perSessionLimit: 30 })
+      expect.objectContaining({ perSessionLimit: 50 })
     );
   }, 10_000);
 

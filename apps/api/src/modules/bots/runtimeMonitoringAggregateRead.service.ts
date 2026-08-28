@@ -5,6 +5,10 @@ import { listBotRuntimeSessionPositions } from './runtimeSessionPositionsRead.se
 import { listBotRuntimeSessionSymbolStats } from './runtimeSessionSymbolStatsRead.service';
 import { listBotRuntimeSessionTrades } from './runtimeSessionTradesRead.service';
 import { resolveRuntimeMarketTruthState } from './runtimeMarketTruthState.service';
+import {
+  pruneRuntimeMonitoringCache,
+  withRuntimeMonitoringTimeout,
+} from './runtimeMonitoringAggregateCache';
 
 type RuntimeSessionListItem = Awaited<ReturnType<typeof listRuntimeSessionsWithSummary>>[number];
 type RuntimeSymbolStatsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionSymbolStats>>>;
@@ -14,7 +18,7 @@ type RuntimeTradesResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntim
 type RuntimeAggregateCacheValue = Awaited<ReturnType<typeof getBotRuntimeMonitoringAggregateUncached>>;
 
 const runtimeAggregateCacheTtlMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_TTL_MS ?? '5000',
+  process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_TTL_MS ?? '30000',
   10,
 );
 const runtimeAggregateCacheEnabled =
@@ -33,7 +37,11 @@ const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
   10,
 );
-const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);
+const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '300000', 10);
+const runtimeAggregateCacheMaxEntries = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_MAX_ENTRIES ?? '100',
+  10,
+);
 const runtimeAggregateRunningSessionsCap = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
   10,
@@ -43,6 +51,8 @@ const runtimeAggregateCompletedSessionsCap = Number.parseInt(
   10,
 );
 const runtimeAggregateSessionConcurrency = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_SESSION_CONCURRENCY ?? '2', 10);
+const pruneRuntimeAggregateCache = (now: number) =>
+  pruneRuntimeMonitoringCache(runtimeAggregateCache, now, runtimeAggregateStaleTtlMs, runtimeAggregateCacheMaxEntries);
 
 const buildRuntimeAggregateCacheKey = (
   userId: string,
@@ -57,19 +67,6 @@ const buildRuntimeAggregateCacheKey = (
     String(query.sessionsLimit),
     String(query.perSessionLimit),
   ].join('|');
-
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
-  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) return promise;
-  return Promise.race<T>([
-    promise,
-    new Promise<T>((_, reject) => {
-      const timer = setTimeout(() => {
-        clearTimeout(timer);
-        reject(new Error('runtime_aggregate_subquery_timeout'));
-      }, timeoutMs);
-    }),
-  ]);
-};
 
 export const mapWithLimitedConcurrency = async <T, R>(
   items: T[],
@@ -502,22 +499,23 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     async (session) => {
       try {
         const [symbolStats, positions, trades] = await Promise.all([
-          withTimeout(
+            withRuntimeMonitoringTimeout(
             listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
               symbol: query.symbol,
               limit: perSessionLimit,
               preferConfiguredStrategyContext: true,
+              includeMarketSnapshots: false,
             }),
             runtimeAggregateSubqueryTimeoutMs
           ),
-          withTimeout(
+            withRuntimeMonitoringTimeout(
             listBotRuntimeSessionPositions(userId, botId, session.id, {
               symbol: query.symbol,
               limit: perSessionLimit,
             }),
             runtimeAggregateSubqueryTimeoutMs
           ),
-          withTimeout(
+            withRuntimeMonitoringTimeout(
             listBotRuntimeSessionTrades(userId, botId, session.id, {
               symbol: query.symbol,
               limit: perSessionLimit,
@@ -959,6 +957,7 @@ export const getBotRuntimeMonitoringAggregate = async (
 
   const key = buildRuntimeAggregateCacheKey(userId, botId, query);
   const now = Date.now();
+  pruneRuntimeAggregateCache(now);
   const cached = runtimeAggregateCache.get(key);
   if (cached && cached.expiresAt > now) {
     return cached.value;
@@ -977,10 +976,12 @@ export const getBotRuntimeMonitoringAggregate = async (
 
   const task = getBotRuntimeMonitoringAggregateUncached(userId, botId, query)
     .then((value) => {
+      runtimeAggregateCache.delete(key);
       runtimeAggregateCache.set(key, {
         expiresAt: Date.now() + runtimeAggregateCacheTtlMs,
         value,
       });
+      pruneRuntimeAggregateCache(Date.now());
       return value;
     })
     .catch((error) => {

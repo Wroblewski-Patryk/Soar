@@ -345,7 +345,10 @@ export const listBotRuntimeSessionSymbolStats = async (
   userId: string,
   botId: string,
   sessionId: string,
-  query: ListBotRuntimeSymbolStatsQueryDto & { preferConfiguredStrategyContext?: boolean }
+  query: ListBotRuntimeSymbolStatsQueryDto & {
+    preferConfiguredStrategyContext?: boolean;
+    includeMarketSnapshots?: boolean;
+  }
 ) => {
   const session = await getOwnedBotRuntimeSession(userId, botId, sessionId);
   if (!session) return null;
@@ -617,7 +620,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     string,
     { candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries }
   >();
-  if (strategySeriesKeys.size > 0) {
+  if (query.includeMarketSnapshots !== false && strategySeriesKeys.size > 0) {
     const snapshots = await Promise.all(
       [...strategySeriesKeys.entries()].map(async ([key, value]) => ({
         key,

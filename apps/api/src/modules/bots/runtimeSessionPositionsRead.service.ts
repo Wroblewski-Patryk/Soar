@@ -32,18 +32,14 @@ import {
 } from './runtimeExternalPositionOwner.service';
 import { buildImportedExternalPositionMarketPrefix, buildLegacyImportedExternalPositionSymbolPrefix } from '../positions/livePositionReconciliation.helpers';
 import {
-  countRuntimeManagedPositions,
   getRuntimePositionBotContext,
   listRuntimeManagedPositions,
   listRuntimeOpenOrders,
   listRuntimePositionLastPrices,
   listRuntimePositionStrategies,
   listRuntimePositionTradeRows,
-  sumRuntimeManagedPositionMarginUsed,
-  sumRuntimeManagedPositionQuantity,
-  sumRuntimeManagedPositionRealizedPnl,
+  summarizeRuntimeManagedPositions,
   sumRuntimeManagedPositionTradeFees,
-  sumRuntimeManagedPositionUnrealizedPnl,
 } from './runtimeSessionPositionsRead.repository';
 import {
   resolveCanonicalRuntimeVenueContext,
@@ -481,9 +477,7 @@ export const listBotRuntimeSessionPositions = async (
     ],
   };
   const [
-    openPositions, closedPositions, openPositionCount, closedPositionCount,
-    openPositionMarginUsed, openPositionQuantity, openPositionUnrealizedPnl,
-    closedPositionRealizedPnl,
+    openPositions, closedPositions, openPositionSummary, closedPositionSummary,
     positionTradeFees,
   ] = await Promise.all([
     listRuntimeManagedPositions({
@@ -494,18 +488,16 @@ export const listBotRuntimeSessionPositions = async (
       where: closedPositionWhere,
       limit: query.limit,
     }),
-    countRuntimeManagedPositions(openPositionWhere),
-    countRuntimeManagedPositions(closedPositionWhere),
-    sumRuntimeManagedPositionMarginUsed(openPositionWhere),
-    sumRuntimeManagedPositionQuantity(openPositionWhere),
-    sumRuntimeManagedPositionUnrealizedPnl(openPositionWhere),
-    sumRuntimeManagedPositionRealizedPnl(closedPositionWhere),
+    summarizeRuntimeManagedPositions(openPositionWhere),
+    summarizeRuntimeManagedPositions(closedPositionWhere),
     sumRuntimeManagedPositionTradeFees(feePositionWhere),
   ]);
-  const totalOpenPositionMarginUsed = openPositionMarginUsed._sum.marginUsed ?? 0;
-  const totalOpenPositionQty = openPositionQuantity._sum.quantity ?? 0;
-  const totalUnrealizedPnl = openPositionUnrealizedPnl._sum.unrealizedPnl ?? 0;
-  const totalRealizedPnl = closedPositionRealizedPnl._sum.realizedPnl ?? 0;
+  const openPositionCount = openPositionSummary._count;
+  const closedPositionCount = closedPositionSummary._count;
+  const totalOpenPositionMarginUsed = openPositionSummary._sum.marginUsed ?? 0;
+  const totalOpenPositionQty = openPositionSummary._sum.quantity ?? 0;
+  const totalUnrealizedPnl = openPositionSummary._sum.unrealizedPnl ?? 0;
+  const totalRealizedPnl = closedPositionSummary._sum.realizedPnl ?? 0;
   const totalPositionFeesPaid = positionTradeFees._sum.fee ?? 0;
   const positions = [...openPositions, ...closedPositions];
   if (positions.length === 0) {
