@@ -36,7 +36,7 @@ export default function manifest(): MetadataRoute.Manifest {
     screenshots: [
       {
         src: "/logo.png",
-        sizes: "512x512",
+        sizes: "1000x1000",
         type: "image/png",
         form_factor: "narrow",
         label: "Soar dashboard preview",
