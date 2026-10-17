@@ -72,6 +72,8 @@ export interface OrderFlowGateway {
     mode: RuntimeExecutionMode;
     riskAck: boolean;
     clientOrderId?: string | null;
+    runtimeSessionId?: string;
+    runtimeDedupeKey?: string | null;
   }): Promise<Order>;
   closeOrder(userId: string, orderId: string, input: { riskAck: boolean }): Promise<Order | null>;
   linkOrderToPosition(orderId: string, positionId: string): Promise<void>;
@@ -872,6 +874,8 @@ export const orchestrateRuntimeSignal = async (
     mode: input.mode,
     riskAck: true,
     ...(openDedupeKey ? { clientOrderId: buildRuntimeClientOrderId(openDedupeKey) } : {}),
+    ...(input.mode === 'LIVE' && runtimeTradeGateway === defaultRuntimeTradeGateway
+      ? { runtimeSessionId: openSessionId, runtimeDedupeKey: openDedupeKey } : {}),
   });
 
   const openEventAt = new Date();

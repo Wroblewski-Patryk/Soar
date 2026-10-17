@@ -1,7 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { openOrder } from './orders.service';
-import { createOrderForLiveIntent } from './orders.liveIntent.service';
+import { createOrderForLiveIntent, materializeLiveOrderInTransaction } from './orders.liveIntent.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
@@ -575,6 +575,153 @@ describe('durable LIVE order intent', () => {
     });
     expect(retried.reused).toBe(false);
     expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(1);
+  });
+
+  it('rolls back runtime OPEN Position, Trade, and telemetry when interrupted before Trade', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-runtime-open-atomic@example.com', password: 'hashed' },
+    });
+    const { bot, wallet, strategy } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Atomic runtime OPEN',
+      strategyName: 'Atomic runtime OPEN strategy', symbol: 'BTCUSDT',
+    });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+    } });
+    const clientOrderId = buildRuntimeClientOrderId(`atomic-open-${user.id}`);
+    const intent = await prisma.liveOrderIntent.create({ data: {
+      userId: user.id, clientOrderId, payloadHash: 'atomic-open-test',
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    const now = new Date();
+    const payload = { botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+      origin: 'BOT' as const, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: 1, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId, runtimeSessionId: session.id };
+    const data = { id: intent.id, userId: user.id, botId: bot.id,
+      walletId: wallet.id, strategyId: strategy.id, origin: 'BOT' as const,
+      symbol: 'BTCUSDT', side: 'BUY' as const, type: 'MARKET' as const,
+      status: 'FILLED' as const, quantity: 1, filledQuantity: 1,
+      fee: 0.1, feeSource: 'EXCHANGE_FILL' as const,
+      exchangeOrderId: 'atomic-runtime-open-venue-1', submittedAt: now, filledAt: now };
+    const input = { userId: user.id, exchangeOrderId: data.exchangeOrderId,
+      intentId: intent.id, clientOrderId, data };
+    const materialize = (crash: boolean) => async (tx: Parameters<NonNullable<Parameters<typeof createOrderForLiveIntent>[0]['materialize']>>[0],
+      order: Parameters<NonNullable<Parameters<typeof createOrderForLiveIntent>[0]['materialize']>>[1]) =>
+      materializeLiveOrderInTransaction({ tx, order, userId: user.id, payload,
+        fillPrice: 100, fillQuantity: 1, applyFillLifecycle: true, fills: [], now,
+        ...(crash ? { afterPositionWrite: async () => { throw new Error('crash after Position'); } } : {}) });
+    await expect(createOrderForLiveIntent({ ...input, materialize: materialize(true) }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+    expect(await prisma.order.count({ where: { id: intent.id } })).toBe(0);
+    expect(await prisma.position.count({ where: { userId: user.id } })).toBe(0);
+    expect(await prisma.trade.count({ where: { userId: user.id } })).toBe(0);
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id } })).toBe(0);
+    expect(await prisma.botRuntimeSymbolStat.count({ where: { sessionId: session.id } })).toBe(0);
+    const recovered = await createOrderForLiveIntent({ ...input, materialize: materialize(false) });
+    expect(recovered.reused).toBe(false);
+    expect(recovered.order.positionId).toBeTruthy();
+    expect(await prisma.position.count({ where: { userId: user.id } })).toBe(1);
+    expect(await prisma.trade.count({ where: { orderId: intent.id, lifecycleAction: 'OPEN' } })).toBe(1);
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id, eventType: 'POSITION_OPENED' } })).toBe(1);
+    expect((await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).openPositionCount).toBe(1);
+    expect((await createOrderForLiveIntent({ ...input, materialize: materialize(false) })).reused).toBe(true);
+  });
+
+  it('materializes runtime OPEN telemetry through the normal durable order path', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-runtime-open-path@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Runtime OPEN path',
+      strategyName: 'Runtime OPEN path strategy', symbol: 'BTCUSDT',
+    });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+    } });
+    const dedupe = await prisma.runtimeExecutionDedupe.create({ data: {
+      dedupeKey: `v1|OPEN|${user.id}|path`, dedupeVersion: 'v1',
+      commandType: 'OPEN', userId: user.id, botId: bot.id,
+      symbol: 'BTCUSDT', status: 'PENDING', commandFingerprint: {},
+      ttlExpiresAt: new Date(Date.now() + 86_400_000),
+    } });
+    const payload = { botId: bot.id, origin: 'BOT' as const,
+      symbol: 'BTCUSDT', side: 'BUY' as const, type: 'MARKET' as const,
+      quantity: 1, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: buildRuntimeClientOrderId(`runtime-open-${user.id}`),
+      runtimeSessionId: session.id, runtimeDedupeKey: dedupe.dedupeKey };
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'runtime-open-venue-path-1', status: 'FILLED',
+      exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+      fee: 0.1, feeSource: 'EXCHANGE_FILL', feePending: false,
+      feeCurrency: 'USDT', exchangeTradeId: 'runtime-open-fill-path-1',
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const order = await openOrder(user.id, payload, { executeLiveOrder });
+      expect(order.positionId).toBeTruthy();
+      expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
+      expect(await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
+        where: { id: dedupe.id },
+      })).toMatchObject({ status: 'SUCCEEDED', orderId: order.id, positionId: order.positionId });
+      expect(await prisma.botRuntimeEvent.count({ where: {
+        sessionId: session.id, eventType: 'POSITION_OPENED',
+      } })).toBe(1);
+      expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+        where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+      })).toMatchObject({ openPositionCount: 1, openPositionQty: 1, feesPaid: 0.1 });
+      const replay = await openOrder(user.id, payload, { executeLiveOrder });
+      expect(replay.id).toBe(order.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('recovers an older filled runtime intent without a stored session by lookup only', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-runtime-old-intent@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Old runtime intent',
+      strategyName: 'Old runtime intent strategy', symbol: 'BTCUSDT',
+    });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+    } });
+    const clientOrderId = buildRuntimeClientOrderId(`older-open-${user.id}`);
+    const payload = { botId: bot.id, origin: 'BOT' as const,
+      symbol: 'BTCUSDT', side: 'BUY' as const, type: 'MARKET' as const,
+      quantity: 1, mode: 'LIVE' as const, riskAck: true, clientOrderId };
+    const filled = { exchangeOrderId: 'older-runtime-open-venue-1', status: 'FILLED' as const,
+      exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+      fee: 0, feeSource: 'EXCHANGE_FILL' as const, feePending: false };
+    const executeLiveOrder = vi.fn().mockResolvedValue(filled);
+    const lookupLiveOrder = vi.fn().mockResolvedValue(filled);
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { clientOrderId } });
+      expect(await prisma.order.count({ where: { id: intent.id } })).toBe(0);
+      expect(await prisma.position.count({ where: { userId: user.id } })).toBe(0);
+      const recovered = await openOrder(user.id, { ...payload, runtimeSessionId: session.id },
+        { executeLiveOrder, lookupLiveOrder });
+      expect(recovered.positionId).toBeTruthy();
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.trade.count({ where: { orderId: intent.id, lifecycleAction: 'OPEN' } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: {
+        sessionId: session.id, eventType: 'POSITION_OPENED',
+      } })).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
   });
 
   it('derives a stable Gate.io client ID within the venue limit', async () => {

@@ -7,6 +7,7 @@ import type { OpenOrderDto } from './orders.types';
 import { orderErrors } from './orders.errors';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
+import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 
 export type LiveBotContext = {
   id: string;
@@ -21,6 +22,8 @@ export type LiveOrderPayload = Omit<OpenOrderDto, 'clientOrderId'> & {
   positionId?: string | null;
   origin?: 'USER' | 'BOT';
   clientOrderId?: string | null;
+  runtimeSessionId?: string;
+  runtimeDedupeKey?: string | null;
 };
 
 export type LiveExecutionResult = {
@@ -111,7 +114,13 @@ export const executeDurableLiveOrder = async (params: {
   const originalPayload = intent.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
     ? intent.payload as unknown as LiveOrderPayload
     : null;
-  const retryPayload = !createdIntent && originalPayload ? originalPayload : payload;
+  const retryPayload = !createdIntent && originalPayload ? {
+    ...originalPayload,
+    ...(originalPayload.origin === 'BOT' && payload.origin === 'BOT' ? {
+      runtimeSessionId: originalPayload.runtimeSessionId ?? payload.runtimeSessionId,
+      runtimeDedupeKey: originalPayload.runtimeDedupeKey ?? payload.runtimeDedupeKey,
+    } : {}),
+  } : payload;
   const runtimeVolatileOnly = originalPayload?.origin === 'BOT' && payload.origin === 'BOT' &&
     liveIntentPayloadHash(userId, bot, {
       ...payload, quantity: originalPayload.quantity, price: originalPayload.price,
@@ -241,8 +250,14 @@ export const materializeLiveOrderInTransaction = async (params: {
   applyFillLifecycle: boolean;
   fills: ExchangeOrderFill[];
   now: Date;
+  afterPositionWrite?: () => Promise<void>;
 }): Promise<Order> => {
   const { tx, order, userId, payload, fillPrice, fillQuantity, fills, now } = params;
+  if (order.status === 'FILLED' && order.botId && order.origin === 'BOT' &&
+      !payload.positionId && payload.clientOrderId?.startsWith('soar_') &&
+      !payload.runtimeSessionId) {
+    throw new Error('Runtime OPEN session missing from filled intent');
+  }
   const lifecycle = params.applyFillLifecycle
     ? await applyOrderFillLifecycleInTransaction(tx, {
         userId, orderId: order.id, mode: 'LIVE', fillPrice, fillQuantity, filledAt: now,
@@ -272,6 +287,66 @@ export const materializeLiveOrderInTransaction = async (params: {
         raw: (fill.raw ?? {}) as Prisma.InputJsonValue,
       })),
     });
+  }
+  if (materializedOrder.status === 'FILLED' && materializedOrder.positionId &&
+      materializedOrder.botId && materializedOrder.origin === 'BOT' &&
+      !payload.positionId && payload.runtimeSessionId &&
+      payload.clientOrderId?.startsWith('soar_')) {
+    await params.afterPositionWrite?.();
+    const executionPrice = materializedOrder.averageFillPrice ?? fillPrice;
+    const executionQuantity = materializedOrder.filledQuantity;
+    if (executionPrice == null || !Number.isFinite(executionPrice) || executionPrice <= 0 ||
+        !Number.isFinite(executionQuantity) || executionQuantity <= 0) {
+      throw new Error('Runtime OPEN fill has no valid execution price or quantity');
+    }
+    const position = await tx.position.findUniqueOrThrow({
+      where: { id: materializedOrder.positionId }, select: { quantity: true },
+    });
+    const session = await tx.botRuntimeSession.findFirst({
+      where: { id: payload.runtimeSessionId, userId,
+        botId: materializedOrder.botId, mode: 'LIVE' }, select: { id: true },
+    });
+    if (!session) throw new Error('Runtime OPEN session does not match bot and user');
+    const existingTrades = await tx.trade.findMany({
+      where: { userId, orderId: order.id, lifecycleAction: 'OPEN' }, select: { id: true },
+    });
+    if (existingTrades.length > 0) throw new Error('Runtime OPEN trade already materialized before order creation');
+    await tx.trade.create({ data: {
+      userId, botId: materializedOrder.botId, walletId: materializedOrder.walletId,
+      strategyId: materializedOrder.strategyId, orderId: order.id,
+      positionId: materializedOrder.positionId, symbol: materializedOrder.symbol,
+      side: materializedOrder.side, lifecycleAction: 'OPEN',
+      price: executionPrice, quantity: executionQuantity,
+      fee: materializedOrder.feeSource === 'EXCHANGE_FILL' && !materializedOrder.feePending
+        ? materializedOrder.fee : null,
+      feeSource: materializedOrder.feeSource,
+      feePending: materializedOrder.feePending || materializedOrder.fee == null ||
+        materializedOrder.feeSource !== 'EXCHANGE_FILL',
+      feeCurrency: materializedOrder.feeCurrency,
+      effectiveFeeRate: materializedOrder.effectiveFeeRate,
+      exchangeTradeId: materializedOrder.exchangeTradeId,
+      realizedPnl: 0, origin: materializedOrder.origin,
+      managementMode: materializedOrder.managementMode, executionMode: 'LIVE',
+    } });
+    await writeRuntimeTradeTelemetry({
+      tx, userId, botId: materializedOrder.botId,
+      sessionId: payload.runtimeSessionId, orderId: order.id,
+      positionId: materializedOrder.positionId, symbol: materializedOrder.symbol,
+      strategyId: materializedOrder.strategyId,
+      direction: materializedOrder.side === 'BUY' ? 'LONG' : 'SHORT',
+      eventType: 'POSITION_OPENED', eventAt: now, price: executionPrice,
+      positionQty: position.quantity,
+    });
+    if (payload.runtimeDedupeKey) {
+      const updated = await tx.runtimeExecutionDedupe.updateMany({
+        where: { dedupeKey: payload.runtimeDedupeKey, userId,
+          botId: materializedOrder.botId, commandType: 'OPEN' },
+        data: { status: 'SUCCEEDED', orderId: order.id,
+          positionId: materializedOrder.positionId, errorClass: null,
+          lastSeenAt: now },
+      });
+      if (updated.count !== 1) throw new Error('Runtime OPEN dedupe does not match bot and user');
+    }
   }
   return materializedOrder;
 };

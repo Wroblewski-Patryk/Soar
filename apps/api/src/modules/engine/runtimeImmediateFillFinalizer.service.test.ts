@@ -82,6 +82,7 @@ afterEach(async () => {
     await prisma.trade.deleteMany({ where: { userId } });
     await prisma.orderFill.deleteMany({ where: { userId } });
     await prisma.order.deleteMany({ where: { userId } });
+    await prisma.liveOrderIntent.deleteMany({ where: { userId } });
     await prisma.botRuntimeEvent.deleteMany({ where: { userId } });
     await prisma.botRuntimeSymbolStat.deleteMany({ where: { userId } });
     await prisma.botRuntimeSession.deleteMany({ where: { userId } });
@@ -398,6 +399,90 @@ describe('immediate filled runtime order finalization', () => {
     expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
       where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
     })).toMatchObject({ openPositionCount: 1, openPositionQty: 1, feesPaid: 0.1 });
+  });
+
+  it.each(['racing', 'event-first'] as const)(
+    'serializes concurrent runtime OPEN and Binance event finalization (%s)', async (raceOrder) => {
+    const fixture = await createFilledFixture('BUY');
+    const { bot, session, wallet } = await attachRuntimeSession(fixture);
+    const order = await prisma.order.update({ where: { id: fixture.order.id }, data: {
+      origin: 'BOT', status: 'FILLED', submittedAt: fixture.order.createdAt,
+      filledAt: fixture.position.openedAt, averageFillPrice: 100,
+      fee: 0.1, feeSource: 'EXCHANGE_FILL', feePending: false,
+    } });
+    const clientOrderId = `soar_${order.id.replaceAll('-', '').slice(0, 22)}`;
+    await prisma.liveOrderIntent.create({ data: {
+      id: order.id, userId: fixture.user.id, clientOrderId,
+      payloadHash: 'concurrent-open-test', exchange: 'BINANCE',
+      marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    const eventAt = new Date();
+    const event = {
+      eventType: 'ORDER_TRADE_UPDATE', marketType: 'FUTURES',
+      eventTime: eventAt.getTime(), transactionTime: eventAt.getTime(),
+      symbol: 'BTCUSDT', side: 'BUY', orderType: 'MARKET',
+      orderStatus: 'FILLED', executionType: 'TRADE',
+      exchangeOrderId: order.exchangeOrderId!, clientOrderId,
+      averagePrice: 100, cumulativeFilledQuantity: 1,
+      lastFilledQuantity: 1, lastFilledPrice: 100,
+      fee: 0.1, feeCurrency: 'USDT',
+      exchangeTradeId: `fill-${order.id}`, raw: {},
+    } as const;
+    const runtimeCall = () => persistRuntimeTrade({
+        userId: fixture.user.id, botId: bot.id, walletId: wallet.id,
+        orderId: order.id, positionId: fixture.position.id,
+        symbol: 'BTCUSDT', side: 'BUY', price: 100, quantity: 1,
+        fee: 0.1, feeSource: 'EXCHANGE_FILL', feePending: false,
+        realizedPnl: 0, lifecycleAction: 'OPEN', executionMode: 'LIVE',
+        runtimeSessionId: session.id, eventAt,
+      });
+    const competingClient = createCompetingClient();
+    if (raceOrder === 'event-first') {
+      let releaseEvent!: () => void;
+      let eventReached!: () => void;
+      const paused = new Promise<void>((resolve) => { eventReached = resolve; });
+      const resume = new Promise<void>((resolve) => { releaseEvent = resolve; });
+      const eventPromise = applyLiveExchangeOrderTradeUpdateEvent({
+        userId: fixture.user.id, event, client: competingClient,
+        afterOrderUpdate: async () => { eventReached(); await resume; },
+      });
+      await paused;
+      const runtimePromise = runtimeCall();
+      releaseEvent();
+      await Promise.all([runtimePromise, eventPromise]);
+    } else {
+      await Promise.all([runtimeCall(), applyLiveExchangeOrderTradeUpdateEvent({
+        userId: fixture.user.id, event, client: competingClient,
+      })]);
+    }
+    expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
+    expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'DCA' } })).toBe(0);
+    expect(await prisma.botRuntimeEvent.count({ where: {
+      botId: bot.id, eventType: 'POSITION_OPENED',
+      payload: { path: ['orderId'], equals: order.id },
+    } })).toBe(1);
+    expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).toMatchObject({ openPositionCount: 1, openPositionQty: 1, feesPaid: 0.1 });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } })).quantity).toBe(1);
+  });
+
+  it('fails closed on historical duplicate OPEN Trades before writing telemetry', async () => {
+    const fixture = await createFilledFixture('BUY');
+    const { bot, session } = await attachRuntimeSession(fixture);
+    await prisma.trade.createMany({ data: [1, 2].map(() => ({
+      userId: fixture.user.id, botId: bot.id, orderId: fixture.order.id,
+      positionId: fixture.position.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      lifecycleAction: 'OPEN' as const, price: 100, quantity: 1,
+      fee: 0.1, executionMode: 'LIVE' as const,
+    })) });
+    await expect(persistRuntimeTrade({
+      userId: fixture.user.id, botId: bot.id, orderId: fixture.order.id,
+      positionId: fixture.position.id, symbol: 'BTCUSDT', side: 'BUY',
+      price: 100, quantity: 1, fee: 0.1, realizedPnl: 0,
+      lifecycleAction: 'OPEN', executionMode: 'LIVE', runtimeSessionId: session.id,
+    })).rejects.toThrow('Ambiguous runtime OPEN trades for order');
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id } })).toBe(0);
   });
 
   it('commits LIVE DCA Position, Trade, event, and stats together across both crash boundaries', async () => {
