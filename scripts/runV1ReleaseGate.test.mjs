@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
@@ -8,7 +9,18 @@ import {
   buildExecutionPlanSummary,
   buildSteps,
   evaluateEvidenceReadiness,
+  verifyReleaseLocalCiEvidence,
 } from './runV1ReleaseGate.mjs';
+
+test('stage/prod local CI evidence is required even when local quality is skipped', (t) => {
+  const dir = mkdtempSync(path.join(os.tmpdir(), 'soar-release-local-ci-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  assert.throws(
+    () => verifyReleaseLocalCiEvidence({ environment: 'prod', expectedSha: 'a'.repeat(40), skipLocalQuality: true }, dir),
+    /ENOENT/
+  );
+  assert.equal(verifyReleaseLocalCiEvidence({ environment: 'local', expectedSha: '' }, dir), null);
+});
 
 const writeLiveImportReadbackArtifact = (operationsDir, date = '2026-04-22', overrides = {}) =>
   writeFile(
