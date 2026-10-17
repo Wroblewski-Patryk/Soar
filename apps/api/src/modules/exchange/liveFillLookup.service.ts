@@ -25,7 +25,8 @@ export type LiveFillLookupResult =
   | {
       kind: 'UNKNOWN'; candidate: LiveFillCandidate;
       reason: 'IDENTITY_MISSING' | 'IDENTITY_CHANGED' | 'ACCOUNT_UNAVAILABLE' |
-        'VENUE_UNSUPPORTED' | 'LOOKUP_FAILED' | 'HISTORY_AMBIGUOUS' | 'HISTORY_INCOMPLETE';
+        'VENUE_UNSUPPORTED' | 'LOOKUP_FAILED' | 'HISTORY_AMBIGUOUS' | 'HISTORY_INCOMPLETE' |
+        'LOCAL_FILLED_QUANTITY_INVALID';
     };
 
 const normalizedSymbol = (value: string) => value.split(':')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -107,6 +108,11 @@ export const lookupLiveFillCandidate = async (
   candidate: LiveFillCandidate,
   deps: { createConnector: typeof defaultConnector } = { createConnector: defaultConnector }
 ): Promise<LiveFillLookupResult> => {
+  if (candidate.localStatus === 'FILLED' &&
+      (candidate.localFilledQuantity == null || !Number.isFinite(candidate.localFilledQuantity) ||
+        candidate.localFilledQuantity <= 0)) {
+    return { kind: 'UNKNOWN', candidate, reason: 'LOCAL_FILLED_QUANTITY_INVALID' };
+  }
   let credentials: Awaited<ReturnType<typeof resolveCredentials>>;
   try { credentials = await resolveCredentials(candidate); }
   catch { return { kind: 'UNKNOWN', candidate, reason: 'ACCOUNT_UNAVAILABLE' }; }

@@ -8,6 +8,7 @@ const db = vi.hoisted(() => ({
   wallet: { findFirst: vi.fn() },
   apiKey: { findFirst: vi.fn() },
   order: { findMany: vi.fn(), findUnique: vi.fn() },
+  orderFill: { groupBy: vi.fn() },
 }));
 vi.mock('../../prisma/client', () => ({ prisma: db }));
 
@@ -21,6 +22,7 @@ const candidate = (exchange: Exchange, marketType: TradeMarket): LiveFillCandida
   symbol: 'BTCUSDT', clientOrderId: 'soar_abc', exchangeOrderId: null,
   createdAt, botId: 'bot-1', walletId: null, side: 'BUY', quantity: 1,
   localStatus: null, feePending: false,
+  localFilledQuantity: null,
 });
 const order = (id = '1234', clientId = 'soar_abc') => ({
   id, status: 'closed', symbol: 'BTC/USDT:USDT', side: 'buy', filled: 1,
@@ -37,6 +39,7 @@ const deps = (read: ReturnType<typeof connector>) => ({ createConnector: vi.fn()
 beforeEach(() => {
   vi.clearAllMocks();
   db.order.findUnique.mockResolvedValue(null);
+  db.orderFill.groupBy.mockResolvedValue([]);
   db.liveOrderIntent.findUnique.mockImplementation(async () => ({
     id: 'intent-1', userId: 'user-1', clientOrderId: 'soar_abc',
     exchange: current.exchange, marketType: current.marketType, symbol: 'BTCUSDT', createdAt,
@@ -139,6 +142,17 @@ describe('read-only LIVE fill lookup', () => {
     const read = connector();
     expect(await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'), deps(read))).toMatchObject({
       kind: 'UNKNOWN', reason: 'IDENTITY_CHANGED',
+    });
+    expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
+  });
+
+  it('keeps a local FILLED order with zero exchange-filled quantity UNKNOWN', async () => {
+    current.exchange = 'BINANCE'; current.marketType = 'SPOT';
+    const read = connector();
+    const anomalous = { ...candidate('BINANCE', 'SPOT'), localStatus: 'FILLED' as const,
+      localFilledQuantity: 0 };
+    expect(await lookupLiveFillCandidate(anomalous, deps(read))).toMatchObject({
+      kind: 'UNKNOWN', reason: 'LOCAL_FILLED_QUANTITY_INVALID',
     });
     expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
   });

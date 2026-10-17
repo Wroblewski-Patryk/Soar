@@ -167,6 +167,69 @@ describe('durable LIVE order intent', () => {
     });
   });
 
+  it('selects FILLED quantity gaps and zero anomalies with or without an intent', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'live-fill-quantity-gap@example.com', password: 'hashed' },
+    });
+    const { bot, wallet } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Live Fill Quantity Gap',
+      strategyName: 'Live Fill Quantity Gap Strategy', symbol: 'ETHUSDT',
+    });
+    const cases = [
+      { label: 'intent-under', withIntent: true, filled: 1, fills: [0.4], expected: true },
+      { label: 'legacy-under', withIntent: false, filled: 1, fills: [0.4], expected: true },
+      { label: 'intent-complete', withIntent: true, filled: 1, fills: [0.4, 0.6], expected: false },
+      { label: 'legacy-complete', withIntent: false, filled: 1, fills: [0.4, 0.6], expected: false },
+      { label: 'intent-zero', withIntent: true, filled: 0, fills: [], expected: true },
+      { label: 'legacy-zero', withIntent: false, filled: 0, fills: [], expected: true },
+      { label: 'tiny-under', withIntent: false, filled: 1e-8, fills: [9e-9], expected: true },
+      { label: 'roundoff-complete', withIntent: false, filled: 0.3,
+        fills: [0.1, 0.2], expected: false },
+    ];
+    const expectedIds: string[] = [];
+    const excludedIds: string[] = [];
+    for (const scenario of cases) {
+      const intent = scenario.withIntent ? await prisma.liveOrderIntent.create({ data: {
+        userId: user.id, clientOrderId: `soar_${scenario.label}`,
+        payloadHash: `hash-${scenario.label}`,
+        payload: { botId: bot.id, walletId: wallet.id, side: 'BUY', quantity: 1 },
+        exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'ETHUSDT',
+      } }) : null;
+      const order = await prisma.order.create({ data: {
+        ...(intent ? { id: intent.id } : {}),
+        userId: user.id, botId: bot.id, walletId: wallet.id,
+        symbol: 'ETHUSDT', side: 'BUY', type: 'LIMIT', status: 'FILLED',
+        quantity: Math.max(1, scenario.filled), filledQuantity: scenario.filled,
+        feePending: false, feeSource: 'EXCHANGE_FILL',
+        exchangeOrderId: `venue-${scenario.label}`,
+      } });
+      await prisma.trade.create({ data: {
+        userId: user.id, botId: bot.id, walletId: wallet.id, orderId: order.id,
+        executionMode: 'LIVE', symbol: 'ETHUSDT', side: 'BUY',
+        price: 100, quantity: Math.max(1, scenario.filled),
+        fee: 0, feeSource: 'EXCHANGE_FILL', feePending: false,
+      } });
+      for (const [index, quantity] of scenario.fills.entries()) {
+        await prisma.orderFill.create({ data: {
+          userId: user.id, botId: bot.id, orderId: order.id,
+          symbol: 'ETHUSDT', side: 'BUY', exchangeTradeId: `${scenario.label}-${index}`,
+          price: 100, quantity, notional: quantity * 100, feeCost: 0,
+          feeCurrency: 'USDT', executedAt: new Date(),
+        } });
+      }
+      (scenario.expected ? expectedIds : excludedIds).push(order.id);
+    }
+    const page = await findLiveFillCandidatePage();
+    const selectedIds = page.candidates.map((candidate) => candidate.orderId);
+    for (const id of expectedIds) expect(selectedIds).toContain(id);
+    for (const id of excludedIds) expect(selectedIds).not.toContain(id);
+    expect(page.candidates.filter((candidate) => expectedIds.includes(candidate.orderId)))
+      .toHaveLength(expectedIds.length);
+    for (const id of expectedIds.slice(0, 6)) {
+      expect(page.candidates.find((candidate) => candidate.orderId === id)?.localStatus).toBe('FILLED');
+    }
+  });
+
   it.each([
     { label: 'two real executions', requestedQuantity: 1, expectedFillCount: 2, expectedFee: 0.02 },
     { label: 'one duplicated snapshot', requestedQuantity: 0.5, expectedFillCount: 1, expectedFee: 0.01 },

@@ -16,6 +16,7 @@ export type LiveFillCandidate = {
   side: 'BUY' | 'SELL' | null;
   quantity: number | null;
   localStatus: Order['status'] | null;
+  localFilledQuantity: number | null;
   feePending: boolean;
 };
 
@@ -33,11 +34,19 @@ const readQuantity = (value: Prisma.JsonValue | undefined): number | null =>
 const needsFillRead = (
   order: Pick<Order, 'status' | 'filledQuantity' | 'feePending' | 'feeSource'>,
   fillCount: number,
-  tradeCount: number
+  tradeCount: number,
+  fillQuantity: number | null
 ) =>
   order.status === 'PENDING' || order.status === 'OPEN' || order.status === 'PARTIALLY_FILLED' ||
-  (order.filledQuantity > 0 &&
-    (order.feePending || order.feeSource !== 'EXCHANGE_FILL' || fillCount === 0 || tradeCount === 0));
+  (order.status === 'FILLED' && (!Number.isFinite(order.filledQuantity) || order.filledQuantity <= 0)) ||
+  (order.filledQuantity > 0 && (
+    order.feePending || order.feeSource !== 'EXCHANGE_FILL' || fillCount === 0 ||
+    tradeCount === 0 || fillQuantity == null || !Number.isFinite(fillQuantity) ||
+    // A fixed absolute epsilon can hide a whole fill on a small-quantity
+    // symbol. Scale floating-point roundoff by this order's actual quantity.
+    Math.abs(fillQuantity - order.filledQuantity) >
+      16 * Number.EPSILON * Math.max(Math.abs(fillQuantity), order.filledQuantity) * Math.max(1, fillCount)
+  ));
 
 // Both cursors are durable database IDs. A caller can resume after a restart
 // without retaining an in-memory queue; this function performs no venue I/O.
@@ -66,7 +75,7 @@ export const findLiveFillCandidatePage = async (input: {
             { trades: { some: { executionMode: 'LIVE' } } },
           ] },
           { OR: [
-            { status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] } },
+            { status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED', 'FILLED'] } },
             { filledQuantity: { gt: 0 }, feePending: true },
             { filledQuantity: { gt: 0 }, feeSource: { not: 'EXCHANGE_FILL' } },
             { filledQuantity: { gt: 0 }, fills: { none: {} } },
@@ -86,13 +95,22 @@ export const findLiveFillCandidatePage = async (input: {
   const orderIntents = await prisma.liveOrderIntent.findMany({
     where: { id: { in: orders.map((order) => order.id) } },
   });
+  const fillTotals = await prisma.orderFill.groupBy({
+    by: ['orderId'],
+    where: { orderId: { in: [...new Set([
+      ...associatedOrders.map((order) => order.id), ...orders.map((order) => order.id),
+    ])] } },
+    _sum: { quantity: true },
+  });
+  const fillQuantityByOrder = new Map(fillTotals.map((row) => [row.orderId, row._sum.quantity]));
   const associatedById = new Map(associatedOrders.map((order) => [order.id, order]));
   const intentById = new Map(intents.map((intent) => [intent.id, intent]));
   const orderIntentById = new Map(orderIntents.map((intent) => [intent.id, intent]));
   const candidates: LiveFillCandidate[] = [];
   for (const intent of intents) {
     const order = associatedById.get(intent.id);
-    if (order && !needsFillRead(order, order._count.fills, order._count.trades)) continue;
+    if (order && !needsFillRead(order, order._count.fills, order._count.trades,
+      fillQuantityByOrder.get(order.id) ?? null)) continue;
     const payload = readPayload(intent.payload);
     candidates.push({
       intentId: intent.id, orderId: intent.id, userId: intent.userId,
@@ -102,12 +120,14 @@ export const findLiveFillCandidatePage = async (input: {
       walletId: readId(payload?.walletId) ?? order?.walletId ?? null,
       side: readSide(payload?.side) ?? order?.side ?? null,
       quantity: readQuantity(payload?.quantity) ?? order?.quantity ?? null,
-      localStatus: order?.status ?? null, feePending: order?.feePending ?? false,
+      localStatus: order?.status ?? null, localFilledQuantity: order?.filledQuantity ?? null,
+      feePending: order?.feePending ?? false,
     });
   }
   for (const order of orders) {
     if (intentById.has(order.id)) continue;
-    if (!needsFillRead(order, order._count.fills, order._count.trades)) continue;
+    if (!needsFillRead(order, order._count.fills, order._count.trades,
+      fillQuantityByOrder.get(order.id) ?? null)) continue;
     const intent = orderIntentById.get(order.id);
     const payload = readPayload(intent?.payload ?? null);
     // Legacy local orders lack a durable venue/account link. They are visible
@@ -122,7 +142,8 @@ export const findLiveFillCandidatePage = async (input: {
       walletId: readId(payload?.walletId) ?? order.walletId,
       side: readSide(payload?.side) ?? order.side,
       quantity: readQuantity(payload?.quantity) ?? order.quantity,
-      localStatus: order.status, feePending: order.feePending,
+      localStatus: order.status, localFilledQuantity: order.filledQuantity,
+      feePending: order.feePending,
     });
   }
   return {
