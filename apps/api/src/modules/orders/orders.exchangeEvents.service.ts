@@ -1,4 +1,4 @@
-import { OrderStatus, Prisma, PrismaClient } from '@prisma/client';
+import { Exchange, OrderStatus, Prisma, PrismaClient } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import {
@@ -400,14 +400,20 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
   });
 };
 
-export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
+type LiveExchangeOrderTradeUpdateInput = {
   userId: string;
   event: NormalizedBinanceOrderTradeUpdateEvent;
+  sourceExchange?: Exchange;
+  snapshotRecovery?: boolean;
   client?: PrismaClient;
   afterOrderUpdate?: () => Promise<void>;
   afterCoreCommit?: () => Promise<void>;
-}) => {
-  const processed = await (input.client ?? prisma).$transaction(async (tx) => {
+};
+
+export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
+  tx: Prisma.TransactionClient,
+  input: LiveExchangeOrderTradeUpdateInput
+) => {
   await lockExchangeOrderIdentity(tx, input.userId, input.event.exchangeOrderId);
   const existingOrder = await tx.order.findFirst({
     where: {
@@ -419,14 +425,14 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         {
           wallet: {
             mode: 'LIVE',
-            exchange: 'BINANCE',
+            exchange: input.sourceExchange ?? 'BINANCE',
             marketType: input.event.marketType,
           },
         },
         {
           bot: {
             mode: 'LIVE',
-            exchange: 'BINANCE',
+            exchange: input.sourceExchange ?? 'BINANCE',
             marketType: input.event.marketType,
           },
         },
@@ -486,7 +492,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   if (
     !existingRecordableEventFill && !isPositiveFiniteNumber(recordableLastFillQuantity) &&
     existingOrder.status === 'FILLED' &&
-    existingOrder.exchangeTradeId === input.event.exchangeTradeId &&
+    (existingOrder.exchangeTradeId === input.event.exchangeTradeId || input.snapshotRecovery === true) &&
     isPositiveFiniteNumber(lastFillQuantity)
   ) {
     const priorFills = await tx.orderFill.aggregate({
@@ -691,7 +697,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     (fillProgress.shouldApplyFilledLifecycle ||
       (existingOrder.status === 'FILLED' && nextStatus === 'FILLED' &&
         input.event.exchangeTradeId != null &&
-        existingOrder.exchangeTradeId === input.event.exchangeTradeId)) &&
+        (existingOrder.exchangeTradeId === input.event.exchangeTradeId || input.snapshotRecovery === true))) &&
     isPositiveFiniteNumber(averageFillPrice) &&
     isPositiveFiniteNumber(cumulativeFilledQuantity)
   ) {
@@ -862,7 +868,13 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     orderStatus: updatedOrder.status,
     dcaSync,
   };
-  }, { timeout: 30_000, maxWait: 10_000 });
+};
+
+export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchangeOrderTradeUpdateInput) => {
+  const processed = await (input.client ?? prisma).$transaction(
+    (tx) => applyLiveExchangeOrderTradeUpdateInTransaction(tx, input),
+    { timeout: 30_000, maxWait: 10_000 }
+  );
 
   await input.afterCoreCommit?.();
   if (processed.status === 'applied' && processed.orderStatus === 'FILLED') {

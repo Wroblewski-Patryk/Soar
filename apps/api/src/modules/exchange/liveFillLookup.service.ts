@@ -1,4 +1,4 @@
-import { Exchange, TradeMarket } from '@prisma/client';
+import { Exchange, Prisma, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import type { LiveFillCandidate } from '../orders/orders.liveFillCandidates.service';
 import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
@@ -14,6 +14,8 @@ type ReadConnector = {
     symbol: string; since: number; until: number; page: number; limit: number;
     marketType: 'SPOT' | 'FUTURES';
   }): Promise<CcxtFuturesOrderResult[]>;
+  fetchTradesForOrder?(input: { symbol: string; orderId: string;
+    since?: number; limit?: number }): Promise<NonNullable<CcxtFuturesOrderResult['fills']>>;
   disconnect(): Promise<void>;
 };
 
@@ -44,22 +46,26 @@ const matches = (candidate: LiveFillCandidate, order: CcxtFuturesOrderResult, re
   (!requireClientId || (candidate.clientOrderId != null && rawClientId(order) === candidate.clientOrderId)) &&
   (!rawClientId(order) || !candidate.clientOrderId || rawClientId(order) === candidate.clientOrderId);
 
-const resolveCredentials = async (candidate: LiveFillCandidate): Promise<
+export const resolveLiveFillCredentials = async (
+  candidate: LiveFillCandidate,
+  db: Pick<Prisma.TransactionClient, 'liveOrderIntent' | 'order' | 'bot' | 'wallet' | 'apiKey'> = prisma
+): Promise<
   | { kind: 'OK'; apiKeyId: string; exchange: Exchange; marketType: TradeMarket; apiKey: string; apiSecret: string }
   | { kind: 'UNKNOWN'; reason: Extract<LiveFillLookupResult, {kind: 'UNKNOWN'}>['reason'] }
 > => {
   if (!candidate.intentId || !candidate.exchange || !candidate.marketType || !candidate.clientOrderId) {
     return { kind: 'UNKNOWN', reason: 'IDENTITY_MISSING' };
   }
-  const intent = await prisma.liveOrderIntent.findUnique({ where: { id: candidate.intentId } });
+  const intent = await db.liveOrderIntent.findUnique({ where: { id: candidate.intentId } });
   if (!intent || intent.userId !== candidate.userId || intent.clientOrderId !== candidate.clientOrderId ||
       intent.exchange !== candidate.exchange || intent.marketType !== candidate.marketType ||
       intent.symbol !== candidate.symbol || intent.createdAt.getTime() !== candidate.createdAt.getTime()) {
     return { kind: 'UNKNOWN', reason: 'IDENTITY_CHANGED' };
   }
-  const localOrder = await prisma.order.findUnique({ where: { id: candidate.orderId },
+  const localOrder = await db.order.findUnique({ where: { id: candidate.orderId },
     select: { userId: true, exchangeOrderId: true, symbol: true } });
-  if ((localOrder?.exchangeOrderId ?? null) !== candidate.exchangeOrderId ||
+  if ((candidate.exchangeOrderId != null &&
+        (localOrder?.exchangeOrderId ?? null) !== candidate.exchangeOrderId) ||
       (localOrder && (localOrder.userId !== candidate.userId ||
         normalizedSymbol(localOrder.symbol) !== normalizedSymbol(candidate.symbol)))) {
     return { kind: 'UNKNOWN', reason: 'IDENTITY_CHANGED' };
@@ -73,7 +79,7 @@ const resolveCredentials = async (candidate: LiveFillCandidate): Promise<
   }
   let apiKeyId: string | null = null;
   if (candidate.botId) {
-    const bot = await prisma.bot.findFirst({ where: { id: candidate.botId, userId: candidate.userId },
+    const bot = await db.bot.findFirst({ where: { id: candidate.botId, userId: candidate.userId },
       select: { apiKeyId: true, walletId: true, exchange: true, marketType: true, updatedAt: true } });
     if (!bot || bot.updatedAt > intent.createdAt || bot.exchange !== intent.exchange ||
         bot.marketType !== intent.marketType || bot.walletId !== candidate.walletId) {
@@ -82,7 +88,7 @@ const resolveCredentials = async (candidate: LiveFillCandidate): Promise<
     apiKeyId = bot.apiKeyId;
   }
   if (!apiKeyId && candidate.walletId) {
-    const wallet = await prisma.wallet.findFirst({ where: { id: candidate.walletId, userId: candidate.userId },
+    const wallet = await db.wallet.findFirst({ where: { id: candidate.walletId, userId: candidate.userId },
       select: { apiKeyId: true, exchange: true, marketType: true, mode: true, updatedAt: true } });
     if (!wallet || wallet.updatedAt > intent.createdAt || wallet.exchange !== intent.exchange ||
         wallet.marketType !== intent.marketType || wallet.mode !== 'LIVE') {
@@ -91,7 +97,7 @@ const resolveCredentials = async (candidate: LiveFillCandidate): Promise<
     apiKeyId = wallet.apiKeyId;
   }
   if (!apiKeyId) return { kind: 'UNKNOWN', reason: 'IDENTITY_MISSING' };
-  const key = await prisma.apiKey.findFirst({ where: { id: apiKeyId, userId: candidate.userId },
+  const key = await db.apiKey.findFirst({ where: { id: apiKeyId, userId: candidate.userId },
     select: { id: true, exchange: true, apiKey: true, apiSecret: true, updatedAt: true } });
   if (!key || key.exchange !== intent.exchange || key.updatedAt > intent.createdAt) {
     return { kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' };
@@ -113,8 +119,8 @@ export const lookupLiveFillCandidate = async (
         candidate.localFilledQuantity <= 0)) {
     return { kind: 'UNKNOWN', candidate, reason: 'LOCAL_FILLED_QUANTITY_INVALID' };
   }
-  let credentials: Awaited<ReturnType<typeof resolveCredentials>>;
-  try { credentials = await resolveCredentials(candidate); }
+  let credentials: Awaited<ReturnType<typeof resolveLiveFillCredentials>>;
+  try { credentials = await resolveLiveFillCredentials(candidate); }
   catch { return { kind: 'UNKNOWN', candidate, reason: 'ACCOUNT_UNAVAILABLE' }; }
   if (credentials.kind === 'UNKNOWN') return { kind: 'UNKNOWN', candidate, reason: credentials.reason };
   if (!(['BINANCE', 'GATEIO'] as Exchange[]).includes(credentials.exchange)) {
@@ -124,11 +130,36 @@ export const lookupLiveFillCandidate = async (
   try { connector = deps.createConnector(credentials); }
   catch { return { kind: 'UNKNOWN', candidate, reason: 'VENUE_UNSUPPORTED' }; }
   try {
+    const withCompleteFills = async (order: CcxtFuturesOrderResult) => {
+      const inline = order.fills ?? [];
+      const inlineQuantity = inline.reduce((sum, fill) => sum + fill.quantity, 0);
+      if (!order.filled || Math.abs(inlineQuantity - order.filled) <=
+          16 * Number.EPSILON * Math.max(inlineQuantity, order.filled) * Math.max(1, inline.length) ||
+          !connector.fetchTradesForOrder) return order;
+      try {
+        const trades = await connector.fetchTradesForOrder({ symbol: candidate.symbol,
+          orderId: order.id, since: Math.max(0, candidate.createdAt.getTime() - 60_000), limit: 1000 });
+        const tradeQuantity = trades.reduce((sum, fill) => sum + fill.quantity, 0);
+        if (Math.abs(tradeQuantity - order.filled) <=
+            16 * Number.EPSILON * Math.max(tradeQuantity, order.filled) * Math.max(1, trades.length)) {
+          const inlineById = new Map(inline.filter((fill) => fill.exchangeTradeId)
+            .map((fill) => [fill.exchangeTradeId, fill]));
+          return { ...order, fills: trades.map((fill) => {
+            const prior = inlineById.get(fill.exchangeTradeId);
+            return prior?.feeCost != null && fill.feeCost == null &&
+              prior.quantity === fill.quantity && prior.price === fill.price
+              ? { ...fill, feeCost: prior.feeCost, feeCurrency: prior.feeCurrency } : fill;
+          }) };
+        }
+      } catch { /* The finalizer will reject incomplete fill evidence. */ }
+      return order;
+    };
     if (candidate.exchangeOrderId) {
       const snapshot = await connector.fetchOrderWithFills({ symbol: candidate.symbol, orderId: candidate.exchangeOrderId });
       if (matches(candidate, snapshot.order, false)) {
         return { kind: 'FOUND', candidate, apiKeyId: credentials.apiKeyId,
-          order: { ...snapshot.order, fills: snapshot.fills }, lookupSource: 'ORDER_ID' };
+          order: await withCompleteFills({ ...snapshot.order, fills: snapshot.fills }),
+          lookupSource: 'ORDER_ID' };
       }
       return { kind: 'UNKNOWN', candidate, reason: 'IDENTITY_CHANGED' };
     }
@@ -138,7 +169,7 @@ export const lookupLiveFillCandidate = async (
       });
       if (matches(candidate, order, true)) {
         return { kind: 'FOUND', candidate, apiKeyId: credentials.apiKeyId,
-          order, lookupSource: 'CLIENT_ID' };
+          order: await withCompleteFills(order), lookupSource: 'CLIENT_ID' };
       }
       return { kind: 'UNKNOWN', candidate, reason: 'IDENTITY_CHANGED' };
     } catch {
@@ -163,11 +194,19 @@ export const lookupLiveFillCandidate = async (
       if (found.size > 1) return { kind: 'UNKNOWN', candidate, reason: 'HISTORY_AMBIGUOUS' };
       if (orders.length < limit) {
         const order = [...found.values()][0];
-        return order
-          ? { kind: 'FOUND', candidate, apiKeyId: credentials.apiKeyId,
-              order, lookupSource: credentials.marketType === 'SPOT'
-                ? 'GATE_SPOT_HISTORY' : 'GATE_FUTURES_HISTORY' }
-          : { kind: 'UNKNOWN', candidate, reason: 'LOOKUP_FAILED' };
+        if (!order) return { kind: 'UNKNOWN', candidate, reason: 'LOOKUP_FAILED' };
+        let snapshot = order;
+        try {
+          const numeric = await connector.fetchOrderWithFills({ symbol: candidate.symbol, orderId: order.id });
+          if (numeric.order.id !== order.id || !matches(candidate, numeric.order, false)) {
+            return { kind: 'UNKNOWN', candidate, reason: 'IDENTITY_CHANGED' };
+          }
+          snapshot = { ...numeric.order, fills: numeric.fills };
+        } catch { /* History still supplies a verified numeric identity. */ }
+        return { kind: 'FOUND', candidate, apiKeyId: credentials.apiKeyId,
+          order: await withCompleteFills(snapshot),
+          lookupSource: credentials.marketType === 'SPOT'
+            ? 'GATE_SPOT_HISTORY' : 'GATE_FUTURES_HISTORY' };
       }
     }
     return { kind: 'UNKNOWN', candidate, reason: 'HISTORY_INCOMPLETE' };

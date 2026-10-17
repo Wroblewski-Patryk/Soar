@@ -104,10 +104,28 @@ describe('read-only LIVE fill lookup', () => {
     const read = connector();
     read.fetchOrderByClientOrderId.mockRejectedValue(new Error('response lost'));
     read.fetchClosedOrdersPage.mockResolvedValueOnce([order('9911')]);
+    read.fetchOrderWithFills.mockResolvedValueOnce({ order: order('9911'), fills: [] });
     const result = await lookupLiveFillCandidate(candidate('GATEIO', 'FUTURES'), deps(read));
     expect(result).toMatchObject({ kind: 'FOUND', lookupSource: 'GATE_FUTURES_HISTORY' });
     expect(read.fetchClosedOrdersPage).toHaveBeenCalledWith(expect.objectContaining({
       page: 1, limit: 100, marketType: 'FUTURES',
+    }));
+  });
+
+  it('reads order-scoped trades when a verified snapshot lacks fills', async () => {
+    current.exchange = 'GATEIO'; current.marketType = 'SPOT';
+    const read = { ...connector(), fetchTradesForOrder: vi.fn().mockResolvedValue([
+      { exchangeTradeId: 'fill-1', exchangeOrderId: '1234', symbol: 'BTCUSDT',
+        side: 'buy', price: 100, quantity: 1, notional: 100, feeCost: 0,
+        feeCurrency: 'USDT', feeRate: null, executedAt: null,
+        source: 'fetchMyTrades', raw: {} },
+    ]) };
+    read.fetchOrderByClientOrderId.mockResolvedValueOnce({ ...order('1234'), filled: 1, fills: [] });
+    const result = await lookupLiveFillCandidate(candidate('GATEIO', 'SPOT'), deps(read));
+    expect(result.kind).toBe('FOUND');
+    if (result.kind === 'FOUND') expect(result.order.fills).toHaveLength(1);
+    expect(read.fetchTradesForOrder).toHaveBeenCalledWith(expect.objectContaining({
+      orderId: '1234', limit: 1000,
     }));
   });
 
