@@ -2,6 +2,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { openOrder } from './orders.service';
 import { createOrderForLiveIntent, materializeLiveOrderInTransaction } from './orders.liveIntent.service';
+import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
@@ -137,6 +138,33 @@ describe('durable LIVE order intent', () => {
   beforeEach(async () => {
     await cleanupDb();
     await allowLive();
+  });
+
+  it('reselects unresolved intent and partial LIVE order from the database after a fresh read', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'live-fill-candidate@example.com', password: 'hashed' },
+    });
+    const { bot, wallet } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Live Fill Candidate',
+      strategyName: 'Live Fill Candidate Strategy', symbol: 'ETHUSDT',
+    });
+    const intent = await prisma.liveOrderIntent.create({ data: {
+      userId: user.id, clientOrderId: 'soar_candidate_test', payloadHash: 'candidate-hash',
+      payload: { botId: bot.id, walletId: wallet.id, side: 'BUY', quantity: 1 },
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'ETHUSDT',
+    } });
+    const partial = await prisma.order.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id,
+      symbol: 'ETHUSDT', side: 'BUY', type: 'LIMIT', status: 'PARTIALLY_FILLED',
+      quantity: 2, filledQuantity: 1, feePending: true, exchangeOrderId: 'candidate-partial',
+    } });
+    const first = await findLiveFillCandidatePage();
+    const afterRestart = await findLiveFillCandidatePage();
+    expect(first.candidates.map((row) => row.orderId).sort()).toEqual([intent.id, partial.id].sort());
+    expect(afterRestart.candidates).toEqual(first.candidates);
+    expect(first.candidates.find((row) => row.orderId === partial.id)).toMatchObject({
+      localStatus: 'PARTIALLY_FILLED', exchangeOrderId: 'candidate-partial',
+    });
   });
 
   it.each([

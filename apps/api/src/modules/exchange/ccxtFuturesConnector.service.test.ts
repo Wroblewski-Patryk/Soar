@@ -75,6 +75,26 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
 });
 
 describe('CcxtFuturesConnector scaffold', () => {
+  it.each([
+    ['spot', 'SPOT'], ['swap', 'FUTURES'],
+  ] as const)('passes a bounded Gate %s closed-order page to CCXT', async (marketType, contractType) => {
+    const client = createMockClient();
+    client.fetchClosedOrders = vi.fn().mockResolvedValue([{ id: '1234', status: 'closed',
+      symbol: 'BTC/USDT', info: { text: 't-soar_abc' } }]);
+    const connector = new CcxtFuturesConnector({ exchangeId: 'gateio', marketType },
+      vi.fn().mockResolvedValue(client));
+    const orders = await connector.fetchClosedOrdersPage({ symbol: 'BTCUSDT',
+      since: 1_700_000_000_000, until: 1_700_000_060_000, page: 2, limit: 100,
+      marketType: contractType });
+    expect(orders[0].id).toBe('1234');
+    expect(client.fetchClosedOrders).toHaveBeenCalledWith('BTCUSDT',
+      undefined, 100,
+      contractType === 'SPOT'
+        ? { from: 1_700_000_000, until: 1_700_000_060_000, page: 2 }
+        : { historical: true, from: 1_700_000_000,
+            until: 1_700_000_060_000, offset: 100 });
+  });
+
   it('keeps missing trade fees unknown while preserving explicit zero commission', async () => {
     const client = createMockClient();
     client.createOrder = vi.fn().mockResolvedValue({

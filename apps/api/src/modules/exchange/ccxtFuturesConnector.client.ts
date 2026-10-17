@@ -111,6 +111,12 @@ export interface CcxtExchangeLikeClient {
     symbol?: string,
     params?: Record<string, unknown>
   ) => Promise<CcxtOrderLike>;
+  fetchClosedOrders?: (
+    symbol?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtOrderLike[]>;
   fetchMyTrades?: (
     symbol?: string,
     since?: number,

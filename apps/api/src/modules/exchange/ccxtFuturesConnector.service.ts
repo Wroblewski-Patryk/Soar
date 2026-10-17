@@ -424,6 +424,34 @@ export class CcxtFuturesConnector {
     return this.normalizeOrderResult(order, fills);
   }
 
+  // Gate's finished Spot orders cannot be fetched by their custom text ID.
+  // Keep the venue pagination visible to the caller so a capped scan cannot
+  // accidentally be reported as an exhaustive, unique match.
+  async fetchClosedOrdersPage(input: {
+    symbol: string;
+    since: number;
+    until: number;
+    page: number;
+    limit: number;
+    marketType: 'SPOT' | 'FUTURES';
+  }): Promise<CcxtFuturesOrderResult[]> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchClosedOrders !== 'function') {
+      throw new Error('fetchClosedOrders is not supported by this CCXT connector');
+    }
+    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const params = input.marketType === 'FUTURES'
+      ? { historical: true, from: Math.floor(input.since / 1000),
+          until: input.until, offset: (input.page - 1) * input.limit }
+      : { from: Math.floor(input.since / 1000), until: input.until, page: input.page };
+    // Pass the range through venue params: CCXT's generic `since` post-filter
+    // uses creation time, while Gate's finished-order range uses end time.
+    const orders = await client.fetchClosedOrders(exchangeSymbol, undefined, input.limit, params);
+    return orders.map((order) => this.normalizeOrderResult(
+      order, this.normalizeOrderFills(order, input.symbol, 'fetchOrder')
+    ));
+  }
+
   async fetchTradesForOrder(input: CcxtFetchTradesForOrderInput): Promise<CcxtFuturesOrderFill[]> {
     const request = CcxtFetchTradesForOrderInputSchema.parse(input);
     const client = await this.getOrCreateClient();
