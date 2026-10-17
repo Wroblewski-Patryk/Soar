@@ -63,7 +63,7 @@ describe('MarketUniverseForm', () => {
   });
 
   it('loads saved volume filter value in edit mode and uses it in preview', async () => {
-    fetchCatalogMock.mockResolvedValue({
+    const catalog = {
       source: 'BINANCE_PUBLIC',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
@@ -88,7 +88,11 @@ describe('MarketUniverseForm', () => {
           lastPrice: 3600,
         },
       ],
-    });
+    };
+    let completeCatalogRequest: () => void = () => { throw new Error('Catalog request was not started'); };
+    fetchCatalogMock.mockImplementation(() => new Promise((resolve) => {
+      completeCatalogRequest = () => resolve(catalog);
+    }));
 
     renderWithI18n({
       mode: 'edit',
@@ -111,8 +115,12 @@ describe('MarketUniverseForm', () => {
 
     const slider = screen.getByRole('slider');
     expect(slider).toHaveValue('500');
+    expect(slider).toHaveAttribute('max', '500');
 
+    await act(async () => { completeCatalogRequest(); });
     await waitFor(() => {
+      expect(slider).toHaveAttribute('max', '1000');
+      expect(slider).toHaveValue('500');
       expect(screen.getByText('Liczba rynkow: 1')).toBeInTheDocument();
     });
   });

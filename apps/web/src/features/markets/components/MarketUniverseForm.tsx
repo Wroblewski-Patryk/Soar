@@ -418,6 +418,7 @@ export default function MarketUniverseForm({
     });
   };
 
+  const sliderMaxQuoteVolume = Math.max(maxQuoteVolume, minQuoteVolume);
   const sliderStep = Math.max(1, Math.floor(maxQuoteVolume / 200));
   const hasNameError = showValidation && Boolean(fieldErrors.name);
   const showPreviewEmptyNotice =
@@ -497,7 +498,7 @@ export default function MarketUniverseForm({
                   <input
                     type='range'
                     min={0}
-                    max={maxQuoteVolume}
+                    max={sliderMaxQuoteVolume}
                     step={sliderStep}
                     className='range range-primary range-sm'
                     value={minQuoteVolume}
