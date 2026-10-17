@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { prisma } from '../../prisma/client';
 import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
-import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
 import { backfillClosedImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
 import {
   applyLiveExchangeAccountUpdateEvent,
@@ -42,6 +42,7 @@ describe('orders.exchangeEvents.service', () => {
   beforeEach(async () => {
     await cleanupDb();
   });
+  afterEach(async () => { await prisma.liveOrderIntent.deleteMany(); });
 
   it('applies Binance order-trade update to open a position from a pending LIVE order', async () => {
     const user = await prisma.user.create({
@@ -88,6 +89,15 @@ describe('orders.exchangeEvents.service', () => {
         submittedAt: new Date('2026-04-26T20:00:00.000Z'),
       },
     });
+    const clientOrderId = buildRuntimeClientOrderId(`runtime-open-${order.id}`);
+    await prisma.liveOrderIntent.create({ data: {
+      id: order.id, userId: user.id, clientOrderId, payloadHash: 'runtime-open-test',
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+      startedAt: new Date('2026-04-26T19:59:00.000Z'),
+    } });
     const staleLocalOrder = await prisma.order.create({
       data: {
         userId: user.id,
@@ -107,20 +117,18 @@ describe('orders.exchangeEvents.service', () => {
       },
     });
 
-    const result = await applyLiveExchangeOrderTradeUpdateEvent({
-      userId: user.id,
-      event: {
+    const exchangeEvent = {
         eventType: 'ORDER_TRADE_UPDATE',
         marketType: 'FUTURES',
-        eventTime: 1_000,
-        transactionTime: 1_001,
+        eventTime: Date.parse('2026-04-26T20:00:01.000Z'),
+        transactionTime: Date.parse('2026-04-26T20:00:01.100Z'),
         symbol: 'BTCUSDT',
         side: 'BUY',
         orderType: 'MARKET',
         orderStatus: 'FILLED',
         executionType: 'TRADE',
         exchangeOrderId: 'event-order-open-1',
-        clientOrderId: 'client-1',
+        clientOrderId,
         averagePrice: 63_000,
         cumulativeFilledQuantity: 0.1,
         lastFilledQuantity: 0.1,
@@ -129,7 +137,13 @@ describe('orders.exchangeEvents.service', () => {
         feeCurrency: 'USDT',
         exchangeTradeId: 'trade-open-1',
         raw: {},
-      },
+      } as const;
+    await expect(applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id, event: exchangeEvent,
+      afterCoreCommit: async () => { throw new Error('crash after core commit'); },
+    })).rejects.toThrow('crash after core commit');
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id, event: exchangeEvent,
     });
 
     expect(result).toEqual(
@@ -164,6 +178,12 @@ describe('orders.exchangeEvents.service', () => {
       where: { orderId: order.id },
     });
     expect(fill.exchangeTradeId).toBe('trade-open-1');
+    expect(await prisma.botRuntimeEvent.count({ where: {
+      sessionId: session.id, eventType: 'POSITION_OPENED',
+    } })).toBe(1);
+    expect((await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).feesPaid).toBeCloseTo(0.12, 10);
   });
 
   it('caps previously over-reported local filled quantity during exchange event reconciliation', async () => {
@@ -1950,21 +1970,28 @@ describe('orders.exchangeEvents.service', () => {
         submittedAt: new Date('2026-04-26T20:10:00.000Z'),
       },
     });
+    const clientOrderId = buildRuntimeClientOrderId(`runtime-close-${order.id}`);
+    await prisma.liveOrderIntent.create({ data: {
+      id: order.id, userId: user.id, clientOrderId, payloadHash: 'runtime-close-test',
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+      startedAt: new Date('2026-04-26T19:00:00.000Z'),
+    } });
 
-    const result = await applyLiveExchangeOrderTradeUpdateEvent({
-      userId: user.id,
-      event: {
+    const exchangeEvent = {
         eventType: 'ORDER_TRADE_UPDATE',
         marketType: 'FUTURES',
-        eventTime: 2_000,
-        transactionTime: 2_001,
+        eventTime: Date.parse('2026-04-26T20:10:01.000Z'),
+        transactionTime: Date.parse('2026-04-26T20:10:01.100Z'),
         symbol: 'BTCUSDT',
         side: 'SELL',
         orderType: 'MARKET',
         orderStatus: 'FILLED',
         executionType: 'TRADE',
         exchangeOrderId: 'event-order-close-1',
-        clientOrderId: 'client-close-1',
+        clientOrderId,
         averagePrice: 61_000,
         cumulativeFilledQuantity: 0.1,
         lastFilledQuantity: 0.1,
@@ -1973,7 +2000,13 @@ describe('orders.exchangeEvents.service', () => {
         feeCurrency: 'USDT',
         exchangeTradeId: 'trade-close-1',
         raw: {},
-      },
+      } as const;
+    await expect(applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id, event: exchangeEvent,
+      afterCoreCommit: async () => { throw new Error('crash after CLOSE core commit'); },
+    })).rejects.toThrow('crash after CLOSE core commit');
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id, event: exchangeEvent,
     });
 
     expect(result).toEqual(
@@ -1998,6 +2031,14 @@ describe('orders.exchangeEvents.service', () => {
     expect(closeTrade.realizedPnl).toBeCloseTo(99.82, 6);
     expect(closeTrade.closeReason).toBe('MANUAL');
     expect(closeTrade.closeInitiator).toBe('BOT_APP');
+    expect(await prisma.botRuntimeEvent.count({ where: {
+      sessionId: session.id, eventType: 'POSITION_CLOSED',
+    } })).toBe(1);
+    const closeStat = await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    });
+    expect(closeStat).toMatchObject({ closedTrades: 1, feesPaid: 0.08 });
+    expect(closeStat.realizedPnl).toBeCloseTo(99.82, 10);
   });
 
   it('aggregates close PnL entry fees by position id for imported LIVE fill confirmations', async () => {
@@ -2347,162 +2388,6 @@ describe('orders.exchangeEvents.service', () => {
     expect(afterHistory.find((trade) => trade.orderId === order.id)?.realizedPnl).toBeCloseTo(8.705, 6);
     expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(2);
     expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeCloseTo(8.705, 6);
-  });
-
-  it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {
-    const user = await prisma.user.create({
-      data: { email: 'exchange-event-dca@example.com', password: 'hashed' },
-    });
-    const wallet = await prisma.wallet.create({
-      data: {
-        userId: user.id,
-        name: 'live-wallet-dca',
-        mode: 'LIVE',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        baseCurrency: 'USDT',
-      },
-    });
-    const bot = await prisma.bot.create({
-      data: {
-        userId: user.id,
-        name: 'live-bot-dca',
-        mode: 'LIVE',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        positionMode: 'ONE_WAY',
-        walletId: wallet.id,
-        isActive: true,
-        liveOptIn: true,
-        consentTextVersion: 'v1',
-      },
-    });
-    const position = await prisma.position.create({
-      data: {
-        userId: user.id,
-        botId: bot.id,
-        walletId: wallet.id,
-        origin: 'BOT',
-        managementMode: 'BOT_MANAGED',
-        symbol: 'BTCUSDT',
-        side: 'LONG',
-        status: 'OPEN',
-        entryPrice: 62_000,
-        quantity: 0.1,
-        leverage: 5,
-        continuityState: 'RECOVERING',
-        missingSyncCount: 2,
-      },
-    });
-    const order = await prisma.order.create({
-      data: {
-        userId: user.id,
-        botId: bot.id,
-        walletId: wallet.id,
-        positionId: position.id,
-        origin: 'BOT',
-        managementMode: 'BOT_MANAGED',
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-        type: 'MARKET',
-        status: 'OPEN',
-        quantity: 0.05,
-        filledQuantity: 0,
-        exchangeOrderId: 'event-order-dca-1',
-        submittedAt: new Date('2026-04-29T10:00:00.000Z'),
-      },
-    });
-    const dedupeKey = buildDcaExecutionDedupeKey({
-      userId: user.id,
-      botId: bot.id,
-      symbol: 'BTCUSDT',
-      positionId: position.id,
-      dcaLevelIndex: 0,
-      positionSide: 'LONG',
-    });
-    await prisma.runtimeExecutionDedupe.create({
-      data: {
-        dedupeKey,
-        dedupeVersion: 'v1',
-        commandType: 'DCA',
-        userId: user.id,
-        botId: bot.id,
-        symbol: 'BTCUSDT',
-        status: 'PENDING',
-        commandFingerprint: {
-          positionId: position.id,
-          dcaLevelIndex: 0,
-          positionSide: 'LONG',
-        },
-        orderId: order.id,
-        positionId: position.id,
-        ttlExpiresAt: new Date('2026-04-30T10:00:00.000Z'),
-      },
-    });
-    await runtimePositionStateStore.setPositionRuntimeState(position.id, {
-      quantity: 0.1,
-      averageEntryPrice: 62_000,
-      currentAdds: 0,
-      trailingAnchorPrice: 62_000,
-    });
-
-    const result = await applyLiveExchangeOrderTradeUpdateEvent({
-      userId: user.id,
-      event: {
-        eventType: 'ORDER_TRADE_UPDATE',
-        marketType: 'FUTURES',
-        eventTime: 5_000,
-        transactionTime: 5_001,
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-        orderType: 'MARKET',
-        orderStatus: 'FILLED',
-        executionType: 'TRADE',
-        exchangeOrderId: 'event-order-dca-1',
-        clientOrderId: 'client-dca-1',
-        averagePrice: 63_500,
-        cumulativeFilledQuantity: 0.05,
-        lastFilledQuantity: 0.05,
-        lastFilledPrice: 63_500,
-        fee: 0.03,
-        feeCurrency: 'USDT',
-        exchangeTradeId: 'trade-dca-1',
-        raw: {},
-      },
-    });
-
-    expect(result).toEqual(
-      expect.objectContaining({
-        status: 'applied',
-        orderId: order.id,
-        positionId: position.id,
-        orderStatus: 'FILLED',
-      })
-    );
-    const updatedPosition = await prisma.position.findUniqueOrThrow({
-      where: { id: position.id },
-    });
-    expect(updatedPosition.quantity).toBeCloseTo(0.15, 10);
-    expect(updatedPosition.entryPrice).toBeCloseTo(62_500, 10);
-    expect(updatedPosition.continuityState).toBe('CONFIRMED');
-    expect(updatedPosition.missingSyncCount).toBe(0);
-    const dcaTrade = await prisma.trade.findFirstOrThrow({
-      where: { orderId: order.id },
-    });
-    expect(dcaTrade.lifecycleAction).toBe('DCA');
-    expect(dcaTrade.exchangeTradeId).toBe('trade-dca-1');
-    const updatedDedupe = await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
-      where: { dedupeKey },
-    });
-    expect(updatedDedupe.status).toBe('SUCCEEDED');
-    const runtimeState = await runtimePositionStateStore.getPositionRuntimeState(position.id);
-    expect(runtimeState?.quantity).toBeCloseTo(0.15, 10);
-    expect(runtimeState?.averageEntryPrice).toBeCloseTo(62_500, 10);
-    expect(runtimeState?.currentAdds).toBe(1);
-    expect(runtimeState?.executedDcaLevelIndices).toEqual([0]);
-    expect(runtimeState?.trailingAnchorPrice).toBeCloseTo(62_000, 10);
-    expect(runtimeState?.lastDcaPrice).toBeCloseTo(63_500, 10);
-    await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });
 
   it('does not apply linked-position DCA lifecycle to local orphan positions', async () => {

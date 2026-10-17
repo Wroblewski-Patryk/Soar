@@ -187,6 +187,7 @@ export const executeRuntimeDca = async (input: {
   addedQuantity: number;
   currentQuantity: number;
   currentEntryPrice: number;
+  eventAt?: Date;
 }) => {
   const dcaQuantity = Math.max(0, input.addedQuantity);
   if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
@@ -236,6 +237,10 @@ export const executeRuntimeDca = async (input: {
 
   const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
   const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
+  const runtimeSessionId = input.mode === 'LIVE' && input.botId
+    ? await runtimeTelemetryService.ensureRuntimeSession({
+        userId: input.userId, botId: input.botId, mode: 'LIVE',
+      }) : undefined;
   let openedOrderId: string | null = null;
   try {
     const opened = await openOrderLifecycle(input.userId, {
@@ -273,9 +278,11 @@ export const executeRuntimeDca = async (input: {
       strategyId: input.strategyId, positionId: input.positionId,
       order: opened, dedupeKey, fillPrice: executedPrice,
       fillQuantity: executedQuantity, feePaid, mode: input.mode,
+      runtimeSessionId, eventAt: input.eventAt,
     });
     return {
       feePaid: finalized.feePaid, feePending, orderId: opened.id, executed: true,
+      telemetryRecorded: finalized.telemetryRecorded,
       nextQuantity: finalized.nextQuantity, nextEntryPrice: finalized.nextEntryPrice,
     };
   } catch (error) {
@@ -829,6 +836,7 @@ export class RuntimePositionAutomationService {
           addedQuantity: dcaAddedQuantity,
           currentQuantity: previousState.quantity,
           currentEntryPrice: previousState.averageEntryPrice,
+          eventAt: new Date(event.eventTime),
         });
         if (dcaResult.executed) {
           const canonicalState =
@@ -851,7 +859,7 @@ export class RuntimePositionAutomationService {
           effectiveState = previousStateSnapshot;
           dcaPendingExchangeFill = true;
         }
-        if (position.botId && dcaResult.executed && !dcaResult.replayed) {
+        if (position.botId && dcaResult.executed && !dcaResult.replayed && !dcaResult.telemetryRecorded) {
           const eventAt = new Date(event.eventTime);
           await this.deps.recordRuntimeEvent?.({
             userId: position.userId,

@@ -1112,6 +1112,7 @@ describe('Bots module contract', () => {
           leverage: 1,
           openedAt: new Date('2026-03-31T00:00:30.000Z'),
           closedAt: new Date('2026-03-31T00:04:30.000Z'),
+          realizedPnl: 0,
           managementMode: 'BOT_MANAGED',
         },
       ],

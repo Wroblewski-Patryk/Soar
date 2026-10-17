@@ -20,6 +20,7 @@ import { runtimePositionStateStore } from '../engine/runtimePositionState.store'
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
 import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
+import { writeRuntimeTelemetryFromExchangeFill } from './orders.runtimeTelemetryFromFill';
 import {
   isExchangeCloseFillComplete,
   resolveExchangeFeePendingDecision,
@@ -852,6 +853,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
 
   await settleRuntimeOrderFee({ tx, userId: input.userId, orderId: updatedOrder.id });
   await refreshClosedPositionPnlAfterEntryFee({ tx, userId: input.userId, orderId: updatedOrder.id });
+  await writeRuntimeTelemetryFromExchangeFill({ tx, userId: input.userId,
+    orderId: updatedOrder.id, eventAt });
   return {
     status: 'applied' as const,
     orderId: updatedOrder.id,

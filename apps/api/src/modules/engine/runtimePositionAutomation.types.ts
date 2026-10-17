@@ -103,11 +103,13 @@ export type RuntimePositionAutomationDeps = {
     addedQuantity: number;
     currentQuantity: number;
     currentEntryPrice: number;
+    eventAt?: Date;
   }) => Promise<{
     feePaid: number;
     feePending?: boolean;
     orderId?: string;
     replayed?: boolean;
+    telemetryRecorded?: boolean;
     executed: boolean;
     nextQuantity?: number;
     nextEntryPrice?: number;

@@ -5,6 +5,7 @@ import { computePositionAddUpdate } from '../orders/positionFillMath';
 import { isCloseQuantityComplete } from './executionOrchestrator.helpers';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
 import { resolveKnownEntryFeesInTransaction } from '../orders/orders.exchangeEventFinalization.service';
+import { writeRuntimeTradeTelemetry } from './runtimeTradeTelemetry.transaction';
 
 export const recordUnknownRuntimeOrderOutcome = async (input: {
   userId: string;
@@ -67,6 +68,9 @@ export const finalizeRuntimeDcaFill = async (input: {
   fillQuantity: number;
   feePaid: number | null;
   mode: 'PAPER' | 'LIVE';
+  runtimeSessionId?: string;
+  eventAt?: Date;
+  afterTelemetryEventWrite?: () => Promise<void>;
   afterPositionWrite?: () => Promise<void>;
 }) => prisma.$transaction(async (tx) => {
   const order = await requireFilledOrder(tx, {
@@ -78,7 +82,17 @@ export const finalizeRuntimeDcaFill = async (input: {
   });
   if (existingTrade) {
     await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-    return { applied: false, feePaid: 0, nextQuantity: position.quantity, nextEntryPrice: position.entryPrice };
+    if (input.mode === 'LIVE' && input.botId && input.runtimeSessionId) {
+      await writeRuntimeTradeTelemetry({ tx, userId: input.userId, botId: input.botId,
+        sessionId: input.runtimeSessionId, orderId: order.id, positionId: position.id,
+        symbol: order.symbol, strategyId: input.strategyId,
+        direction: position.side, eventType: 'DCA_EXECUTED',
+        eventAt: input.eventAt ?? existingTrade.executedAt, price: existingTrade.price,
+        positionQty: position.quantity });
+    }
+    return { applied: false, feePaid: 0, nextQuantity: position.quantity,
+      nextEntryPrice: position.entryPrice,
+      ...(input.mode === 'LIVE' && input.botId && input.runtimeSessionId ? { telemetryRecorded: true as const } : {}) };
   }
   if (position.userId !== input.userId || position.status !== 'OPEN' || position.syncState !== 'IN_SYNC') {
     throw new Error('Runtime DCA position is not open and synced');
@@ -120,7 +134,16 @@ export const finalizeRuntimeDcaFill = async (input: {
     },
   });
   await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-  return { applied: true, feePaid: input.feePaid ?? 0, nextQuantity, nextEntryPrice };
+  if (input.mode === 'LIVE' && input.botId && input.runtimeSessionId) {
+    await writeRuntimeTradeTelemetry({ tx, userId: input.userId, botId: input.botId,
+      sessionId: input.runtimeSessionId, orderId: order.id, positionId: position.id,
+      symbol: order.symbol, strategyId: input.strategyId,
+      direction: position.side, eventType: 'DCA_EXECUTED',
+      eventAt: input.eventAt ?? new Date(), price: input.fillPrice, positionQty: nextQuantity,
+      afterEventWrite: input.afterTelemetryEventWrite });
+  }
+  return { applied: true, feePaid: input.feePaid ?? 0, nextQuantity, nextEntryPrice,
+    ...(input.mode === 'LIVE' && input.botId && input.runtimeSessionId ? { telemetryRecorded: true as const } : {}) };
 });
 
 export const finalizeLiveCloseFill = async (input: {
@@ -137,6 +160,8 @@ export const finalizeLiveCloseFill = async (input: {
   closedAt: Date;
   closeReason: PositionCloseReason;
   closeInitiator: PositionCloseInitiator;
+  runtimeSessionId?: string;
+  afterTelemetryEventWrite?: () => Promise<void>;
   afterPositionWrite?: () => Promise<void>;
 }) => prisma.$transaction(async (tx) => {
   const order = await requireFilledOrder(tx, {
@@ -149,7 +174,17 @@ export const finalizeLiveCloseFill = async (input: {
   if (existingTrade) {
     if (position.status !== 'CLOSED') throw new Error('Close trade exists while position is open');
     await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-    return { applied: false, realizedPnl: existingTrade.realizedPnl };
+    if (input.botId && input.runtimeSessionId) {
+      await writeRuntimeTradeTelemetry({ tx, userId: input.userId, botId: input.botId,
+        sessionId: input.runtimeSessionId, orderId: order.id, positionId: position.id,
+        symbol: order.symbol, strategyId: input.strategyId, direction: 'EXIT',
+        eventType: 'POSITION_CLOSED', eventAt: input.closedAt,
+        price: existingTrade.price, positionQty: 0,
+        realizedPnl: existingTrade.realizedPnl, exitFee: existingTrade.fee,
+        reason: input.closeReason });
+    }
+    return { applied: false, realizedPnl: existingTrade.realizedPnl,
+      ...(input.botId && input.runtimeSessionId ? { telemetryRecorded: true as const } : {}) };
   }
   if (position.userId !== input.userId || position.status !== 'OPEN' || position.syncState !== 'IN_SYNC' ||
       !isCloseQuantityComplete(input.fillQuantity, position.quantity)) {
@@ -189,5 +224,15 @@ export const finalizeLiveCloseFill = async (input: {
     },
   });
   await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-  return { applied: true, realizedPnl };
+  if (input.botId && input.runtimeSessionId) {
+    await writeRuntimeTradeTelemetry({ tx, userId: input.userId, botId: input.botId,
+      sessionId: input.runtimeSessionId, orderId: order.id, positionId: position.id,
+      symbol: order.symbol, strategyId: input.strategyId, direction: 'EXIT',
+      eventType: 'POSITION_CLOSED', eventAt: input.closedAt,
+      price: input.fillPrice, positionQty: 0, realizedPnl,
+      exitFee: order.fee, reason: input.closeReason,
+      afterEventWrite: input.afterTelemetryEventWrite });
+  }
+  return { applied: true, realizedPnl,
+    ...(input.botId && input.runtimeSessionId ? { telemetryRecorded: true as const } : {}) };
 });

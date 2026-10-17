@@ -11,6 +11,7 @@ import {
   reconcileExternalPositionsFromExchange,
 } from '../positions/livePositionReconciliation.service';
 import { applyLiveExchangeOrderTradeUpdateEvent } from '../orders/orders.exchangeEvents.service';
+import { persistRuntimeTrade } from './runtimeTradePersistence.service';
 
 const createdUserIds: string[] = [];
 const competingClients: PrismaClient[] = [];
@@ -50,6 +51,28 @@ const createFilledFixture = async (side: 'BUY' | 'SELL') => {
       ttlExpiresAt: new Date(Date.now() + 86_400_000) },
   });
   return { user, position, order, dedupe };
+};
+
+const attachRuntimeSession = async (fixture: Awaited<ReturnType<typeof createFilledFixture>>) => {
+  const wallet = await prisma.wallet.create({ data: {
+    userId: fixture.user.id, name: `telemetry-${fixture.order.id}`, mode: 'LIVE',
+    exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+  } });
+  const bot = await prisma.bot.create({ data: {
+    userId: fixture.user.id, name: `telemetry-${fixture.order.id}`, mode: 'LIVE', walletId: wallet.id,
+  } });
+  const session = await prisma.botRuntimeSession.create({ data: {
+    userId: fixture.user.id, botId: bot.id, mode: 'LIVE',
+    startedAt: new Date(fixture.order.createdAt.getTime() - 1_000),
+  } });
+  await prisma.position.update({ where: { id: fixture.position.id },
+    data: { botId: bot.id, walletId: wallet.id } });
+  await prisma.order.update({ where: { id: fixture.order.id },
+    data: { botId: bot.id, walletId: wallet.id,
+      feeSource: 'EXCHANGE_FILL', feePending: false } });
+  await prisma.runtimeExecutionDedupe.update({ where: { id: fixture.dedupe.id },
+    data: { botId: bot.id } });
+  return { bot, session, wallet };
 };
 
 afterEach(async () => {
@@ -345,5 +368,101 @@ describe('immediate filled runtime order finalization', () => {
       dedupeKey: dedupe.dedupeKey, errorClass: 'telemetry_error_after_commit',
     });
     expect((await prisma.runtimeExecutionDedupe.findUniqueOrThrow({ where: { id: dedupe.id } })).status).toBe('SUCCEEDED');
+  });
+
+  it('commits LIVE OPEN Trade, event, and stats together across both crash boundaries', async () => {
+    const fixture = await createFilledFixture('BUY');
+    const { bot, session } = await attachRuntimeSession(fixture);
+    const input = { userId: fixture.user.id, botId: bot.id,
+      orderId: fixture.order.id, positionId: fixture.position.id,
+      symbol: 'BTCUSDT', side: 'BUY' as const, price: 100, quantity: 1,
+      fee: 0.1, feeSource: 'EXCHANGE_FILL' as const, feePending: false,
+      realizedPnl: 0, lifecycleAction: 'OPEN' as const, executionMode: 'LIVE' as const,
+      runtimeSessionId: session.id };
+    await expect(persistRuntimeTrade({ ...input,
+      afterTelemetryEventWrite: async () => { throw new Error('crash before stats'); },
+    })).rejects.toThrow('crash before stats');
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id } })).toBe(0);
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id } })).toBe(0);
+    expect(await prisma.botRuntimeSymbolStat.count({ where: { sessionId: session.id } })).toBe(0);
+    await expect((async () => {
+      await persistRuntimeTrade(input);
+      throw new Error('crash after commit');
+    })()).rejects.toThrow('crash after commit');
+    await persistRuntimeTrade(input);
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id, lifecycleAction: 'OPEN' } })).toBe(1);
+    const events = await prisma.botRuntimeEvent.findMany({ where: { sessionId: session.id } });
+    expect(events).toHaveLength(1);
+    expect(events[0].payload).toMatchObject({ telemetryCommitted: true,
+      financialFeePending: false, feeSettlement: 0.1 });
+    expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).toMatchObject({ openPositionCount: 1, openPositionQty: 1, feesPaid: 0.1 });
+  });
+
+  it('commits LIVE DCA Position, Trade, event, and stats together across both crash boundaries', async () => {
+    const fixture = await createFilledFixture('BUY');
+    const { bot, session } = await attachRuntimeSession(fixture);
+    const input = { userId: fixture.user.id, botId: bot.id,
+      positionId: fixture.position.id, order: fixture.order,
+      dedupeKey: fixture.dedupe.dedupeKey, fillPrice: 90, fillQuantity: 1,
+      feePaid: 0.1, mode: 'LIVE' as const, runtimeSessionId: session.id };
+    await expect(finalizeRuntimeDcaFill({ ...input,
+      afterTelemetryEventWrite: async () => { throw new Error('crash before stats'); },
+    })).rejects.toThrow('crash before stats');
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } })).quantity).toBe(1);
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id } })).toBe(0);
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id } })).toBe(0);
+    expect(await prisma.botRuntimeSymbolStat.count({ where: { sessionId: session.id } })).toBe(0);
+    await expect((async () => {
+      await finalizeRuntimeDcaFill(input);
+      throw new Error('crash after commit');
+    })()).rejects.toThrow('crash after commit');
+    await finalizeRuntimeDcaFill(input);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } })).quantity).toBe(2);
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id, lifecycleAction: 'DCA' } })).toBe(1);
+    const events = await prisma.botRuntimeEvent.findMany({ where: { sessionId: session.id } });
+    expect(events).toHaveLength(1);
+    expect(events[0].payload).toMatchObject({ telemetryCommitted: true,
+      financialFeePending: false, feeSettlement: 0.1 });
+    expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).toMatchObject({ dcaCount: 1, openPositionQty: 2, feesPaid: 0.1 });
+  });
+
+  it('commits LIVE CLOSE Position, Trade, event, and stats together across both crash boundaries', async () => {
+    const fixture = await createFilledFixture('SELL');
+    const { bot, session } = await attachRuntimeSession(fixture);
+    await prisma.trade.create({ data: {
+      userId: fixture.user.id, botId: bot.id, positionId: fixture.position.id,
+      symbol: 'BTCUSDT', side: 'BUY', lifecycleAction: 'OPEN',
+      price: 100, quantity: 1, fee: 0.5, feePending: false, executionMode: 'LIVE',
+    } });
+    const input = { userId: fixture.user.id, botId: bot.id,
+      positionId: fixture.position.id, order: fixture.order,
+      dedupeKey: fixture.dedupe.dedupeKey, fillPrice: 110, fillQuantity: 1,
+      exitFee: 1, closedAt: new Date(), closeReason: 'SIGNAL_EXIT' as const,
+      closeInitiator: 'BOT_APP' as const, runtimeSessionId: session.id };
+    await expect(finalizeLiveCloseFill({ ...input,
+      afterTelemetryEventWrite: async () => { throw new Error('crash before stats'); },
+    })).rejects.toThrow('crash before stats');
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } })).status).toBe('OPEN');
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id } })).toBe(0);
+    expect(await prisma.botRuntimeEvent.count({ where: { sessionId: session.id } })).toBe(0);
+    expect(await prisma.botRuntimeSymbolStat.count({ where: { sessionId: session.id } })).toBe(0);
+    await expect((async () => {
+      await finalizeLiveCloseFill(input);
+      throw new Error('crash after commit');
+    })()).rejects.toThrow('crash after commit');
+    await finalizeLiveCloseFill(input);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } })).status).toBe('CLOSED');
+    expect(await prisma.trade.count({ where: { orderId: fixture.order.id, lifecycleAction: 'CLOSE' } })).toBe(1);
+    const events = await prisma.botRuntimeEvent.findMany({ where: { sessionId: session.id } });
+    expect(events).toHaveLength(1);
+    expect(events[0].payload).toMatchObject({ telemetryCommitted: true,
+      financialPnlPending: false, financialSettlement: { realizedPnl: 8.5, feesPaid: 1 } });
+    expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    })).toMatchObject({ closedTrades: 1, realizedPnl: 8.5, feesPaid: 1 });
   });
 });
