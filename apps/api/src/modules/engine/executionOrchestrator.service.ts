@@ -5,25 +5,16 @@ import { closeOrder as closeOrderLifecycle, openOrder as openOrderLifecycle } fr
 import { decideExecutionAction } from './sharedExecutionCore';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { invalidatePreTradeOpenPositionCountCache } from './preTrade.service';
-import {
-  buildCloseExecutionDedupeKey,
-  buildOpenExecutionDedupeKey,
-  runtimeExecutionDedupeService,
-} from './runtimeExecutionDedupe.service';
+import { buildCloseExecutionDedupeKey, buildOpenExecutionDedupeKey, runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
+import { finalizeLiveCloseFill, recordUnknownRuntimeOrderOutcome } from './runtimeImmediateFillFinalizer.service';
 import { PositionCloseAttribution, resolveRuntimeCloseAttribution } from '../positions/positionCloseAttribution';
 import {
   getExternalPositionOwnership,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 import { buildImportedExternalPositionMarketPrefix, buildLegacyImportedExternalPositionSymbolPrefix } from '../positions/livePositionReconciliation.helpers';
-import {
-  computeTradeFee,
-  isCloseQuantityComplete,
-  resolveOrderExecutionPrice,
-  resolveOrderExecutionQuantity,
-  resolveRuntimeTakerFeeRate,
-} from './executionOrchestrator.helpers';
+import { computeTradeFee, isCloseQuantityComplete, resolveOrderExecutionPrice, resolveOrderExecutionQuantity, resolveRuntimeTakerFeeRate } from './executionOrchestrator.helpers';
 
 export type RuntimeSignalDirection = 'LONG' | 'SHORT' | 'EXIT';
 export type RuntimeExecutionMode = 'PAPER' | 'LIVE';
@@ -249,6 +240,7 @@ export interface RuntimeExecutionEventGateway {
 }
 
 export interface RuntimeTradeGateway {
+  finalizeLiveClose?: typeof finalizeLiveCloseFill;
   sumEntryFees(input: {
     userId: string;
     positionId: string;
@@ -462,6 +454,7 @@ const defaultRuntimeEventGateway: RuntimeExecutionEventGateway = {
 };
 
 const defaultRuntimeTradeGateway: RuntimeTradeGateway = {
+  finalizeLiveClose: finalizeLiveCloseFill,
   sumEntryFees: async (input) => {
     const aggregate = await prisma.trade.aggregate({
       where: {
@@ -627,6 +620,7 @@ export const orchestrateRuntimeSignal = async (
       return { status: 'ignored', reason: 'dedupe_reused' };
     }
 
+    let openedCloseOrderId: string | null = null;
     try {
     const closeAttribution = resolveRuntimeCloseAttribution(input.reason);
     const closeEventAt = new Date();
@@ -646,6 +640,7 @@ export const orchestrateRuntimeSignal = async (
       riskAck: true,
       clientOrderId: buildRuntimeClientOrderId(closeDedupeKey),
     });
+    openedCloseOrderId = closeOrder.id;
     await orderGateway.annotateCloseAttribution?.(closeOrder.id, closeAttribution);
     if (closeOrder.status === 'OPEN' || closeOrder.status === 'PARTIALLY_FILLED') {
       await runtimeEventGateway.writeEvent({
@@ -705,48 +700,43 @@ export const orchestrateRuntimeSignal = async (
     }
     const estimatedExitFee = computeTradeFee(closeExecutionPrice, closeExecutionQuantity, feeRate);
     const exitFee = input.mode === 'LIVE' ? (closeOrder.fee ?? estimatedExitFee) : estimatedExitFee;
-    const entryLegSide = openPosition.side === 'LONG' ? 'BUY' : 'SELL';
-    const entryFees = await runtimeTradeGateway.sumEntryFees({
-      userId: input.userId,
-      positionId: openPosition.id,
-      entrySide: entryLegSide,
-    });
-    const grossPnl =
-      openPosition.side === 'LONG'
+    let realizedPnl: number;
+    if (input.mode === 'LIVE' && runtimeTradeGateway.finalizeLiveClose) {
+      const finalized = await runtimeTradeGateway.finalizeLiveClose({
+        userId: input.userId, botId: input.botId, walletId: openPosition.walletId ?? input.walletId,
+        strategyId: input.strategyId, positionId: openPosition.id, order: closeOrder,
+        dedupeKey: closeDedupeKey, fillPrice: closeExecutionPrice,
+        fillQuantity: closeExecutionQuantity, exitFee, closedAt: closeEventAt,
+        closeReason: closeAttribution.closeReason, closeInitiator: closeAttribution.closeInitiator,
+      });
+      realizedPnl = finalized.realizedPnl;
+    } else {
+      const entryLegSide = openPosition.side === 'LONG' ? 'BUY' : 'SELL';
+      const entryFees = await runtimeTradeGateway.sumEntryFees({
+        userId: input.userId, positionId: openPosition.id, entrySide: entryLegSide,
+      });
+      const grossPnl = openPosition.side === 'LONG'
         ? (closeExecutionPrice - openPosition.entryPrice) * closeExecutionQuantity
         : (openPosition.entryPrice - closeExecutionPrice) * closeExecutionQuantity;
-    const realizedPnl = grossPnl - entryFees - exitFee;
-
-    await positionGateway.closePosition(openPosition.id, input.userId, {
-      closedAt: closeEventAt,
-      realizedPnl,
-      closeReason: closeAttribution.closeReason,
-      closeInitiator: closeAttribution.closeInitiator,
-    });
-    await runtimeTradeGateway.createTrade({
-      userId: input.userId,
-      botId: input.botId,
-      walletId: openPosition.walletId ?? input.walletId,
-      strategyId: input.strategyId,
-      orderId: closeOrder.id,
-      positionId: openPosition.id,
-      symbol: input.symbol,
-      side: decision.orderSide,
-      price: closeExecutionPrice,
-      quantity: closeExecutionQuantity,
-      fee: exitFee,
-      feeSource: closeOrder.feeSource,
-      feePending: closeOrder.feePending,
-      feeCurrency: closeOrder.feeCurrency,
-      effectiveFeeRate: closeOrder.effectiveFeeRate,
-      exchangeTradeId: closeOrder.exchangeTradeId,
-      realizedPnl,
-      closeReason: closeAttribution.closeReason,
-      closeInitiator: closeAttribution.closeInitiator,
-      lifecycleAction: 'CLOSE',
-      managementMode: openPosition.managementMode as 'BOT_MANAGED' | 'MANUAL_MANAGED',
-      executionMode: input.mode,
-    });
+      realizedPnl = grossPnl - entryFees - exitFee;
+      await positionGateway.closePosition(openPosition.id, input.userId, {
+        closedAt: closeEventAt, realizedPnl,
+        closeReason: closeAttribution.closeReason, closeInitiator: closeAttribution.closeInitiator,
+      });
+      await runtimeTradeGateway.createTrade({
+        userId: input.userId, botId: input.botId,
+        walletId: openPosition.walletId ?? input.walletId, strategyId: input.strategyId,
+        orderId: closeOrder.id, positionId: openPosition.id,
+        symbol: input.symbol, side: decision.orderSide,
+        price: closeExecutionPrice, quantity: closeExecutionQuantity,
+        fee: exitFee, feeSource: closeOrder.feeSource, feePending: closeOrder.feePending,
+        feeCurrency: closeOrder.feeCurrency, effectiveFeeRate: closeOrder.effectiveFeeRate,
+        exchangeTradeId: closeOrder.exchangeTradeId, realizedPnl,
+        closeReason: closeAttribution.closeReason, closeInitiator: closeAttribution.closeInitiator,
+        lifecycleAction: 'CLOSE', executionMode: input.mode,
+        managementMode: openPosition.managementMode as 'BOT_MANAGED' | 'MANUAL_MANAGED',
+      });
+    }
     if (input.botId) {
       await runtimeTelemetryService.upsertRuntimeSymbolStat({
         userId: input.userId,
@@ -797,10 +787,20 @@ export const orchestrateRuntimeSignal = async (
       positionId: openPosition.id,
     };
     } catch (error) {
+      const unknownAfterSubmission = input.mode === 'LIVE' && (
+        openedCloseOrderId !== null || (error as { code?: string } | null)?.code === 'LIVE_EXECUTION_UNKNOWN'
+      );
       await dedupeGateway.markFailed({
         dedupeKey: closeDedupeKey,
-        errorClass: resolveErrorClass(error),
+        errorClass: unknownAfterSubmission ? 'live_execution_unknown' : resolveErrorClass(error),
       });
+      if (unknownAfterSubmission) {
+        await recordUnknownRuntimeOrderOutcome({
+          userId: input.userId, botId: input.botId, positionId: openPosition.id,
+          symbol: input.symbol, dedupeKey: closeDedupeKey,
+          orderId: openedCloseOrderId, commandType: 'CLOSE',
+        });
+      }
       throw error;
     }
   }

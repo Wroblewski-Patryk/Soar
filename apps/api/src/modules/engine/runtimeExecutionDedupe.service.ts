@@ -93,6 +93,15 @@ const toPrismaJson = (value: Record<string, unknown>): Prisma.InputJsonValue =>
 
 const isUniqueViolation = (error: unknown) => (error as { code?: string })?.code === 'P2002';
 
+const requiresMaterializedTrade = (commandType: RuntimeExecutionCommandType) =>
+  commandType === 'DCA' || commandType === 'CLOSE';
+
+const hasMaterializedTrade = async (orderId: string, commandType: RuntimeExecutionCommandType) =>
+  Boolean(await prisma.trade.findFirst({
+    where: { orderId, lifecycleAction: commandType === 'DCA' ? 'DCA' : 'CLOSE' },
+    select: { id: true },
+  }));
+
 const resolveRetentionMs = (commandType: RuntimeExecutionCommandType) =>
   commandType === 'OPEN' ? openRetentionMs : defaultRetentionMs;
 
@@ -314,6 +323,15 @@ export class RuntimeExecutionDedupeService {
     }
 
     if (existing.status === 'SUCCEEDED') {
+      if (requiresMaterializedTrade(input.commandType) && existing.orderId &&
+          !(await hasMaterializedTrade(existing.orderId, input.commandType))) {
+        await prisma.runtimeExecutionDedupe.update({
+          where: { dedupeKey: input.dedupeKey },
+          data: { status: 'PENDING', lastSeenAt: now, errorClass: 'live_execution_unknown' },
+        });
+        recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
+        return { outcome: 'execute', dedupeKey: input.dedupeKey };
+      }
       await prisma.runtimeExecutionDedupe.update({
         where: { dedupeKey: input.dedupeKey },
         data: {
@@ -345,6 +363,11 @@ export class RuntimeExecutionDedupeService {
         if (linkedOrder) {
           const resolvedPositionId = linkedOrder.positionId ?? existing.positionId;
           if (linkedOrder.syncState === 'IN_SYNC' && linkedOrder.status === 'FILLED') {
+            if (requiresMaterializedTrade(input.commandType) &&
+                !(await hasMaterializedTrade(linkedOrder.id, input.commandType))) {
+              recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
+              return { outcome: 'execute', dedupeKey: input.dedupeKey };
+            }
             await prisma.runtimeExecutionDedupe.update({
               where: { dedupeKey: input.dedupeKey },
               data: {
@@ -576,6 +599,11 @@ export class RuntimeExecutionDedupeService {
     });
     if (!existing) return null;
 
+    if (requiresMaterializedTrade(existing.commandType) &&
+        !(await hasMaterializedTrade(input.orderId, existing.commandType))) {
+      return null;
+    }
+
     await prisma.runtimeExecutionDedupe.update({
       where: { dedupeKey: existing.dedupeKey },
       data: {
@@ -600,8 +628,8 @@ export class RuntimeExecutionDedupeService {
 
   async markFailed(input: MarkFailedInput) {
     const now = input.now ?? new Date();
-    await prisma.runtimeExecutionDedupe.update({
-      where: { dedupeKey: input.dedupeKey },
+    await prisma.runtimeExecutionDedupe.updateMany({
+      where: { dedupeKey: input.dedupeKey, status: { not: 'SUCCEEDED' } },
       data: {
         status: 'FAILED',
         lastSeenAt: now,

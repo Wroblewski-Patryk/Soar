@@ -100,7 +100,7 @@ describe('orders.exchangeEvents.service', () => {
         status: 'OPEN',
         quantity: 0.1,
         filledQuantity: 0,
-        exchangeOrderId: 'event-order-open-1',
+        exchangeOrderId: 'event-order-stale-1',
         submittedAt: new Date('2026-04-26T20:01:00.000Z'),
       },
     });

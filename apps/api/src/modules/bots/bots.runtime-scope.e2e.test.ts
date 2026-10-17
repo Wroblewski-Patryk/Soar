@@ -138,7 +138,7 @@ describe('Bots runtime scope remediation contract', () => {
     expect(positionsRes.body.historyItems[0].symbol).toBe('BTCUSDT');
   });
 
-  it('keeps distinct runtime open orders visible after duplicate exchange-order dedupe', async () => {
+  it('keeps distinct runtime open orders visible under unique exchange-order identity', async () => {
     const email = 'bot-runtime-open-orders-dedupe-limit@example.com';
     const agent = await registerAndLogin(email);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
@@ -161,22 +161,6 @@ describe('Bots runtime scope remediation contract', () => {
 
     await prisma.order.createMany({
       data: [
-        {
-          userId: ownerUser.id,
-          botId,
-          strategyId,
-          origin: 'BOT',
-          managementMode: 'BOT_MANAGED',
-          exchangeOrderId: 'shared-open-order',
-          symbol: 'BTCUSDT',
-          side: 'BUY',
-          type: 'LIMIT',
-          status: 'OPEN',
-          quantity: 0.01,
-          price: 67000,
-          submittedAt: new Date('2026-04-12T00:01:00.000Z'),
-          createdAt: new Date('2026-04-12T00:03:00.000Z'),
-        },
         {
           userId: ownerUser.id,
           botId,
@@ -222,12 +206,7 @@ describe('Bots runtime scope remediation contract', () => {
     expect(positionsRes.body.openOrders.map((order: { exchangeOrderId: string }) => order.exchangeOrderId)).toEqual([
       'shared-open-order',
     ]);
-    expect(
-      positionsRes.body.openOrders.find(
-        (order: { exchangeOrderId: string; origin: string }) =>
-          order.exchangeOrderId === 'shared-open-order'
-      )?.origin
-    ).toBe('EXCHANGE_SYNC');
+    expect(positionsRes.body.openOrders[0].origin).toBe('EXCHANGE_SYNC');
   });
 
   it('excludes botless LIVE exchange-synced open orders without wallet proof', async () => {

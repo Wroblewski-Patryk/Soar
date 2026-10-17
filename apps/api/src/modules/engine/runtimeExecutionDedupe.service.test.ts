@@ -471,6 +471,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       positionId: 'position-1',
       commandFingerprint: { dcaLevelIndex: 0 },
     } as never);
+    vi.spyOn(prisma.trade, 'findFirst').mockResolvedValue({ id: 'trade-materialized-1' } as never);
     const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);
 
     const result = await service.markSucceededByOrderId({
@@ -515,6 +516,24 @@ describe('runtimeExecutionDedupe retryability gate', () => {
 
     expect(result).toBeNull();
     expect(findDedupeSpy).not.toHaveBeenCalled();
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not complete DCA from a filled Order before its Trade is durable', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
+      status: 'FILLED', syncState: 'IN_SYNC',
+    } as never);
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findFirst').mockResolvedValue({
+      dedupeKey: 'dca-without-trade', commandType: 'DCA', positionId: 'position-1',
+      commandFingerprint: { dcaLevelIndex: 0 },
+    } as never);
+    vi.spyOn(prisma.trade, 'findFirst').mockResolvedValue(null);
+    const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update');
+
+    expect(await service.markSucceededByOrderId({
+      orderId: 'filled-order-without-trade', commandType: 'DCA', positionId: 'position-1',
+    })).toBeNull();
     expect(updateSpy).not.toHaveBeenCalled();
   });
 });

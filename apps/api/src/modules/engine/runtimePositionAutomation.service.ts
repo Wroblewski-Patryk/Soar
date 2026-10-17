@@ -13,7 +13,7 @@ import {
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
-import { computePositionAddUpdate } from '../orders/positionFillMath';
+import { finalizeRuntimeDcaFill, recordUnknownRuntimeOrderOutcome } from './runtimeImmediateFillFinalizer.service';
 import {
   recordRuntimeAutomationSkipTelemetry,
   RuntimeAutomationSkipReason,
@@ -213,6 +213,12 @@ export const executeRuntimeDca = async (input: {
     if (dedupe.reuseStatus !== 'completed') {
       return { feePaid: 0, executed: false };
     }
+    if (!dedupe.orderId || !await prisma.trade.findFirst({
+      where: { orderId: dedupe.orderId, positionId: input.positionId, lifecycleAction: 'DCA' },
+      select: { id: true },
+    })) {
+      return { feePaid: 0, executed: false };
+    }
     const canonicalState = await loadCanonicalPositionExecutionState(input.positionId);
     return {
       feePaid: 0,
@@ -227,12 +233,14 @@ export const executeRuntimeDca = async (input: {
 
   const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
   const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
+  let openedOrderId: string | null = null;
   try {
     const opened = await openOrderLifecycle(input.userId, {
       botId: input.botId ?? undefined,
       walletId: input.walletId ?? undefined,
       strategyId: input.strategyId ?? undefined,
       positionId: input.positionId,
+      origin: 'BOT',
       symbol: input.symbol,
       side: orderSide,
       type: 'MARKET',
@@ -242,6 +250,7 @@ export const executeRuntimeDca = async (input: {
       riskAck: true,
       clientOrderId: buildRuntimeClientOrderId(dedupeKey),
     });
+    openedOrderId = opened.id;
 
     if (opened.status !== 'FILLED') {
       await runtimeExecutionDedupeService.markSubmitted({
@@ -254,92 +263,33 @@ export const executeRuntimeDca = async (input: {
 
     const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
     const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
-    const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
-      currentQuantity: input.currentQuantity,
-      currentEntryPrice: input.currentEntryPrice,
-      addedQuantity: executedQuantity,
-      fillPrice: executedPrice,
-    });
     const feePaid = input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee;
-
-    await prisma.$transaction(async (tx) => {
-      await tx.position.update({
-        where: { id: input.positionId },
-        data: {
-          quantity: nextQuantity,
-          entryPrice: nextEntryPrice,
-        },
-      });
-
-      await tx.order.update({
-        where: { id: opened.id },
-        data: { positionId: input.positionId },
-      });
-
-      await tx.trade.create({
-        data: {
-          userId: input.userId,
-          botId: input.botId ?? undefined,
-          walletId: input.walletId ?? undefined,
-          strategyId: input.strategyId ?? undefined,
-          orderId: opened.id,
-          positionId: input.positionId,
-          symbol: input.symbol,
-          side: orderSide,
-          lifecycleAction: 'DCA',
-          price: executedPrice,
-          quantity: executedQuantity,
-          fee: feePaid,
-          feeSource: opened.feeSource,
-          feePending: opened.feePending,
-          feeCurrency: opened.feeCurrency,
-          effectiveFeeRate: opened.effectiveFeeRate,
-          exchangeTradeId: opened.exchangeTradeId,
-          realizedPnl: 0,
-          origin: 'BOT',
-          managementMode: 'BOT_MANAGED',
-          executionMode: input.mode,
-        },
-      });
-
-      await tx.log.create({
-        data: {
-          userId: input.userId,
-          botId: input.botId ?? undefined,
-          strategyId: input.strategyId ?? undefined,
-          action: 'runtime.dca',
-          level: 'INFO',
-          source: 'engine.runtimePositionAutomation',
-          message: `Runtime DCA executed for ${input.symbol}`,
-          category: 'runtime',
-          entityType: 'position',
-          entityId: input.positionId,
-          actor: 'runtime',
-          metadata: {
-            symbol: input.symbol,
-            side: input.positionSide,
-            mode: input.mode,
-            orderId: opened.id,
-            addedQuantity: executedQuantity,
-            fillPrice: executedPrice,
-            fee: feePaid,
-            nextQuantity,
-            nextEntryPrice,
-          } as Prisma.InputJsonValue,
-        },
-      });
+    const finalized = await finalizeRuntimeDcaFill({
+      userId: input.userId, botId: input.botId, walletId: input.walletId,
+      strategyId: input.strategyId, positionId: input.positionId,
+      order: opened, dedupeKey, fillPrice: executedPrice,
+      fillQuantity: executedQuantity, feePaid, mode: input.mode,
     });
-    await runtimeExecutionDedupeService.markSucceeded({
-      dedupeKey,
-      orderId: opened.id,
-      positionId: input.positionId,
-    });
-    return { feePaid, executed: true, nextQuantity, nextEntryPrice };
+    return {
+      feePaid: finalized.feePaid, executed: true,
+      nextQuantity: finalized.nextQuantity, nextEntryPrice: finalized.nextEntryPrice,
+    };
   } catch (error) {
+    const unknownAfterSubmission = input.mode === 'LIVE' && (
+      (error as { code?: string } | null)?.code === 'LIVE_EXECUTION_UNKNOWN' || openedOrderId !== null
+    );
     await runtimeExecutionDedupeService.markFailed({
       dedupeKey,
-      errorClass: error instanceof Error && error.name ? error.name : 'runtime_dca_error',
+      errorClass: unknownAfterSubmission
+        ? 'live_execution_unknown'
+        : error instanceof Error && error.name ? error.name : 'runtime_dca_error',
     });
+    if (unknownAfterSubmission) {
+      await recordUnknownRuntimeOrderOutcome({
+        userId: input.userId, botId: input.botId, positionId: input.positionId,
+        symbol: input.symbol, dedupeKey, orderId: openedOrderId, commandType: 'DCA',
+      });
+    }
     throw error;
   }
 };

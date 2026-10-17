@@ -1159,25 +1159,13 @@ describe('Orders and positions read contract', () => {
     ).toBe(true);
     expect(submittedRuntimeRes.body.openItems).toHaveLength(0);
 
-    await prisma.order.create({
+    await prisma.order.update({
+      where: { id: submittedOrder.id },
       data: {
-        userId: ownerId,
         botId: null,
-        walletId: liveWallet.id,
         strategyId: null,
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-        type: 'MARKET',
-        status: 'OPEN',
-        quantity: 0.03,
-        filledQuantity: 0,
-        price: null,
         origin: 'EXCHANGE_SYNC',
-        managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
-        exchangeOrderId: 'manual-live-market-1',
-        submittedAt: new Date('2026-04-24T22:00:18.000Z'),
-        createdAt: new Date('2026-04-24T22:00:18.000Z'),
       },
     });
 

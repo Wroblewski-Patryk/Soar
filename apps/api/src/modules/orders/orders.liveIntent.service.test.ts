@@ -5,6 +5,9 @@ import { createOrderForLiveIntent } from './orders.liveIntent.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
+import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
+import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
+import { finalizeRuntimeDcaFill } from '../engine/runtimeImmediateFillFinalizer.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -204,6 +207,67 @@ describe('durable LIVE order intent', () => {
       expect(recovered.quantity).toBe(0.02);
       expect(recovered.price).toBe(3_000);
       expect(lookupLiveOrder.mock.calls[1]?.[0].payload).toMatchObject({ quantity: 0.02, price: 3_000 });
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('recovers a DCA accepted before timeout with original parameters and one local add', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-dca-timeout@example.com', password: 'hashed' },
+    });
+    const { bot, wallet, strategy } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'DCA timeout bot', strategyName: 'DCA timeout strategy', symbol: 'ETHUSDT',
+    });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+      symbol: 'ETHUSDT', side: 'LONG', status: 'OPEN', entryPrice: 3_000, quantity: 1,
+    } });
+    const dedupeKey = buildDcaExecutionDedupeKey({
+      userId: user.id, botId: bot.id, symbol: 'ETHUSDT',
+      positionId: position.id, dcaLevelIndex: 0, positionSide: 'LONG',
+    });
+    const clientOrderId = buildRuntimeClientOrderId(dedupeKey);
+    await prisma.runtimeExecutionDedupe.create({ data: {
+      dedupeKey, dedupeVersion: 'v1', commandType: 'DCA', userId: user.id,
+      botId: bot.id, symbol: 'ETHUSDT', commandFingerprint: { positionId: position.id },
+      ttlExpiresAt: new Date(Date.now() + 86_400_000),
+    } });
+    const payload = {
+      botId: bot.id, walletId: wallet.id, strategyId: strategy.id, positionId: position.id,
+      origin: 'BOT' as const, symbol: 'ETHUSDT', side: 'BUY' as const, type: 'MARKET' as const,
+      quantity: 0.2, price: 2_900, mode: 'LIVE' as const, riskAck: true, clientOrderId,
+    };
+    const executeLiveOrder = vi.fn().mockRejectedValue(new Error('timeout after acceptance'));
+    const lookupLiveOrder = vi.fn()
+      .mockRejectedValueOnce(new Error('lookup temporarily unavailable'))
+      .mockResolvedValueOnce({ exchangeOrderId: 'exchange-dca-timeout-1', status: 'FILLED',
+        exchangeFilledQuantity: 0.2, exchangeAverageFillPrice: 2_900 });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      await runtimeExecutionDedupeService.markFailed({ dedupeKey, errorClass: 'live_execution_unknown' });
+      expect(await runtimeExecutionDedupeService.acquire({
+        dedupeKey, commandType: 'DCA', userId: user.id, botId: bot.id,
+        symbol: 'ETHUSDT', commandFingerprint: { positionId: position.id },
+      })).toMatchObject({ outcome: 'execute' });
+
+      const order = await openOrder(user.id, { ...payload, quantity: 0.4, price: 2_800 },
+        { executeLiveOrder, lookupLiveOrder });
+      expect(order).toMatchObject({ status: 'FILLED', quantity: 0.2, price: 2_900,
+        positionId: position.id, origin: 'BOT' });
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).quantity).toBe(1);
+      await finalizeRuntimeDcaFill({
+        userId: user.id, botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+        positionId: position.id, order, dedupeKey, fillPrice: 2_900,
+        fillQuantity: 0.2, feePaid: 0.1, mode: 'LIVE',
+      });
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).quantity).toBe(1.2);
+      expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'DCA' } })).toBe(1);
       expect(executeLiveOrder).toHaveBeenCalledTimes(1);
       expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
     } finally {
