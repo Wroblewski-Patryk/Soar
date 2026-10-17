@@ -9,6 +9,7 @@ import {
   resolveLiveExecutionApiKey,
 } from './orders.service';
 import { ORDER_ERROR_CODES, orderErrors } from './orders.errors';
+import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 
@@ -1855,6 +1856,81 @@ describe('openOrder live execution contract', () => {
       expect(fills[0]?.feeCost).toBe(2.5);
       expect(fills[0]?.feeCurrency).toBe('USDT');
       expect(fills[0]?.feeRate).toBeCloseTo(0.001, 10);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('recovers two LIVE fills without exchange IDs or timestamps after an unknown outcome', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-missing-fill-identity@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Live Bot Missing Fill Identity',
+      strategyName: 'Live Missing Fill Identity Strategy',
+      symbol: 'ETHUSDT',
+    });
+    const fills = [
+      {
+        exchangeTradeId: null, exchangeOrderId: 'binance-order-missing-fill-identity',
+        symbol: 'ETHUSDT', side: 'buy', price: 3200, quantity: 0.4,
+        notional: 1280, feeCost: 0.04, feeCurrency: 'USDT', feeRate: null,
+        executedAt: null, source: 'fetchOrder' as const, raw: {},
+      },
+      {
+        exchangeTradeId: null, exchangeOrderId: 'binance-order-missing-fill-identity',
+        symbol: 'ETHUSDT', side: 'buy', price: 3210, quantity: 0.6,
+        notional: 1926, feeCost: 0.06, feeCurrency: 'USDT', feeRate: null,
+        executedAt: null, source: 'fetchOrder' as const, raw: {},
+      },
+    ];
+    const expectedIds = resolveLiveFillTradeIds(fills, 'ETHUSDT', 'BUY');
+    expect(new Set(expectedIds).size).toBe(2);
+    expect(resolveLiveFillTradeIds([
+      { ...fills[1], feeCost: 0.16 },
+      { ...fills[0], feeCost: 0.14 },
+    ], 'ETHUSDT', 'BUY').sort()).toEqual([...expectedIds].sort());
+    expect(new Set(resolveLiveFillTradeIds([
+      fills[0], { ...fills[0], feeCost: 0.14 },
+    ], 'ETHUSDT', 'BUY')).size).toBe(2);
+
+    const executeLiveOrder = vi.fn().mockRejectedValue(new Error('response lost'));
+    const lookupLiveOrder = vi.fn()
+      .mockRejectedValueOnce(new Error('lookup unavailable'))
+      .mockResolvedValue({
+        exchangeOrderId: 'binance-order-missing-fill-identity',
+        status: 'FILLED' as const,
+        fills,
+        fee: 0.1,
+        feeSource: 'EXCHANGE_FILL' as const,
+        feePending: false,
+        feeCurrency: 'USDT',
+      });
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: 1, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: 'soar_missing_fill_identity',
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const order = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+      const persistedFills = await prisma.orderFill.findMany({ where: { orderId: order.id } });
+      expect(persistedFills).toHaveLength(2);
+      expect(persistedFills.map((fill) => fill.exchangeTradeId).sort()).toEqual([...expectedIds].sort());
+      expect(persistedFills.map((fill) => fill.quantity).sort()).toEqual([0.4, 0.6]);
+      expect(await prisma.position.count({ where: { id: order.positionId ?? '' } })).toBe(1);
+
+      const retriedOrder = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(retriedOrder.id).toBe(order.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(2);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

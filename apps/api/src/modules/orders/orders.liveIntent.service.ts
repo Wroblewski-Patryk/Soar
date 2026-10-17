@@ -212,6 +212,25 @@ export const createOrderForLiveIntent = async (params: {
   }
 };
 
+export const resolveLiveFillTradeIds = (
+  fills: ExchangeOrderFill[],
+  symbol: string,
+  side: LiveOrderPayload['side']
+): string[] => {
+  const fallbackOccurrences = new Map<string, number>();
+  return fills.map((fill) => {
+    if (fill.exchangeTradeId?.trim()) return fill.exchangeTradeId;
+    // Fees, timestamps and adapter row order may change during a lookup retry.
+    // Identical economic fills use an occurrence number so each row persists.
+    const fingerprint = createHash('sha256').update(JSON.stringify([
+      symbol.toUpperCase(), side, fill.price, fill.quantity,
+    ])).digest('hex');
+    const occurrence = (fallbackOccurrences.get(fingerprint) ?? 0) + 1;
+    fallbackOccurrences.set(fingerprint, occurrence);
+    return `soar-fill-${fingerprint}-${occurrence}`;
+  });
+};
+
 export const materializeLiveOrderInTransaction = async (params: {
   tx: Prisma.TransactionClient;
   order: Order;
@@ -221,10 +240,9 @@ export const materializeLiveOrderInTransaction = async (params: {
   fillQuantity: number | null;
   applyFillLifecycle: boolean;
   fills: ExchangeOrderFill[];
-  exchangeOrderId: string | null;
   now: Date;
 }): Promise<Order> => {
-  const { tx, order, userId, payload, fillPrice, fillQuantity, fills, exchangeOrderId, now } = params;
+  const { tx, order, userId, payload, fillPrice, fillQuantity, fills, now } = params;
   const lifecycle = params.applyFillLifecycle
     ? await applyOrderFillLifecycleInTransaction(tx, {
         userId, orderId: order.id, mode: 'LIVE', fillPrice, fillQuantity, filledAt: now,
@@ -232,8 +250,9 @@ export const materializeLiveOrderInTransaction = async (params: {
     : null;
   const materializedOrder = lifecycle?.order ?? order;
   if (fills.length > 0) {
+    const exchangeTradeIds = resolveLiveFillTradeIds(fills, payload.symbol, payload.side);
     await tx.orderFill.createMany({
-      data: fills.map((fill) => ({
+      data: fills.map((fill, index) => ({
         userId,
         botId: payload.botId ?? null,
         strategyId: payload.strategyId ?? null,
@@ -242,7 +261,7 @@ export const materializeLiveOrderInTransaction = async (params: {
         positionId: materializedOrder.positionId ?? null,
         symbol: fill.symbol,
         side: payload.side,
-        exchangeTradeId: fill.exchangeTradeId ?? `${exchangeOrderId ?? order.id}-${fill.executedAt?.toISOString() ?? 'na'}`,
+        exchangeTradeId: exchangeTradeIds[index],
         price: fill.price,
         quantity: fill.quantity,
         notional: fill.notional,

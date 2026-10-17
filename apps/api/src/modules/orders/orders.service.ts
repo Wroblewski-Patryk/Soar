@@ -772,7 +772,7 @@ export const openOrder = async (
       fillPrice: fillPriceFromExchange,
       fillQuantity: orderPersistenceDecision.lifecycleFillQuantity,
       applyFillLifecycle: orderPersistenceDecision.shouldApplyImmediateFillLifecycle,
-      fills, exchangeOrderId, now,
+      fills, now,
     }) : undefined,
   });
   if (persisted.reused) return persisted.order;
