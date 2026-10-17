@@ -311,6 +311,14 @@ with `--skip-local-quality`. The release gate's other approvals and deployed
 runtime evidence remain separate. The local CI runner never deploys.
 
 Evidence and per-step logs are saved under `%LOCALAPPDATA%\Soar\local-ci\runs`.
+The required steps include the manifest, staging-cleanup, and release-gate
+self-tests. Each manifest records Docker and staging cleanup separately. A
+staging deletion error makes the run FAIL; the runner then attempts to move
+the remainder to `%LOCALAPPDATA%\Soar\local-ci\quarantine` so it does not stay
+in the repository. The manifest retains both the original check failure and
+any later cleanup error. An interrupt handled by the runner follows the same
+cleanup path; an operating-system hard kill cannot guarantee cleanup.
+The schema 2 verifier rejects older manifests that lack staging cleanup proof.
 The manifest reports CI parity PASS/FAIL and explicitly marks application
 coverage PARTIAL: worker image builds, running-worker smoke, real exchange
 access, and production user flows are not covered by this runner. A local PASS

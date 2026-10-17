@@ -24,6 +24,7 @@ mkdirSync(path.join(evidenceDir, 'steps'), { recursive: true });
 const steps = [
   ['repo.guardrails', 'pnpm', ['run', 'quality:guardrails']],
   ['repo.docs-parity', 'pnpm', ['run', 'docs:parity:check']],
+  ['repo.local-ci-tests', 'pnpm', ['run', 'ci:local:self-test']],
   ['web.lint', 'pnpm', ['--filter', 'web', 'run', 'lint']],
   ['web.typecheck', 'pnpm', ['--filter', 'web', 'run', 'typecheck']],
   ['web.vitest', 'pnpm', ['--filter', 'web', 'exec', 'vitest', 'run']],

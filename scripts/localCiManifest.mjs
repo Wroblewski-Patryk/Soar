@@ -10,6 +10,7 @@ export const REQUIRED_LOCAL_CI_STEPS = [
   'infrastructure.ready',
   'repo.guardrails',
   'repo.docs-parity',
+  'repo.local-ci-tests',
   'web.lint',
   'web.typecheck',
   'web.vitest',
@@ -22,6 +23,7 @@ export const REQUIRED_LOCAL_CI_STEPS = [
   'api.vitest',
   'source.tracked-clean',
   'infrastructure.cleanup',
+  'staging.cleanup',
 ];
 
 export const sha256 = (data) => createHash('sha256').update(data).digest('hex');
@@ -37,6 +39,22 @@ export const assertFullSha = (value) => {
     throw new Error('A full 40-character lowercase commit SHA is required');
   }
   return value;
+};
+
+export const assessLocalCiResult = ({ steps, failures, cleanup }) => {
+  const problems = [...failures];
+  if (!Array.isArray(steps) || steps.length !== REQUIRED_LOCAL_CI_STEPS.length ||
+      steps.some((step, index) => step?.id !== REQUIRED_LOCAL_CI_STEPS[index] || step.exitCode !== 0)) {
+    problems.push('Required local CI steps are incomplete or failed');
+  }
+  if (cleanup?.docker?.status !== 'PASS' || cleanup.docker.attempted !== true) {
+    problems.push('Scoped Docker cleanup did not pass');
+  }
+  if (cleanup?.staging?.status !== 'PASS' || cleanup.staging.attempted !== true || cleanup.staging.existsAfter !== false ||
+      !Array.isArray(cleanup.staging.rootEntriesAfter) || cleanup.staging.rootEntriesAfter.length !== 0) {
+    problems.push('Staging cleanup did not pass');
+  }
+  return { status: problems.length === 0 ? 'PASS' : 'FAIL', failures: problems };
 };
 
 const assertInside = (root, candidate) => {
@@ -57,10 +75,19 @@ export const verifyLocalCiManifest = ({
   const manifestFile = realpathSync(manifestPath);
   const runDir = path.dirname(manifestFile);
   const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
-  if (manifest.schemaVersion !== 1) throw new Error('Unsupported local CI manifest schema');
+  if (manifest.schemaVersion !== 2) throw new Error('Unsupported local CI manifest schema');
   if (manifest.candidateSha !== expectedSha) throw new Error('Local CI SHA does not match release SHA');
   if (requireReleaseMode && manifest.mode !== 'release') throw new Error('A fresh release-mode run is required');
   if (manifest.status !== 'PASS') throw new Error('Local CI manifest is not PASS');
+  if (!Array.isArray(manifest.failures) || manifest.failures.length !== 0) {
+    throw new Error('Local CI manifest contains failure reasons');
+  }
+  if (manifest.cleanup?.docker?.status !== 'PASS' || manifest.cleanup.docker.attempted !== true ||
+      manifest.cleanup?.staging?.status !== 'PASS' || manifest.cleanup.staging.attempted !== true ||
+      manifest.cleanup.staging.existsAfter !== false || manifest.cleanup.staging.quarantinedAt !== null ||
+      !Array.isArray(manifest.cleanup.staging.rootEntriesAfter) || manifest.cleanup.staging.rootEntriesAfter.length !== 0) {
+    throw new Error('Local CI cleanup evidence is incomplete');
+  }
   if (manifest.coverage?.ciParity !== 'PASS') throw new Error('CI parity is incomplete');
   if (!/^[a-f0-9]{64}$/.test(manifest.lockfileSha256 ?? '')) {
     throw new Error('Missing lockfile digest');

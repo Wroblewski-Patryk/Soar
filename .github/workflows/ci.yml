@@ -35,6 +35,9 @@ jobs:
       - name: Check documentation parity
         run: pnpm run docs:parity:check
 
+      - name: Test local CI evidence and release gate
+        run: pnpm run ci:local:self-test
+
   web-checks:
     name: Web checks
     runs-on: ubuntu-latest
