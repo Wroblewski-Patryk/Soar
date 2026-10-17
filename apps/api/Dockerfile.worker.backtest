@@ -23,6 +23,9 @@ RUN pnpm --filter api build
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
+ENV WORKER_MODE=split
+ENV WORKER_BACKTEST_OWNERSHIP=worker
+ENV WORKER_BACKTEST_QUEUE=backtest
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 

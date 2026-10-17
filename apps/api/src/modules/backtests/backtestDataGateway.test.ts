@@ -7,6 +7,7 @@ import {
 import {
   fetchKlines,
   fetchSupplementalSeries,
+  getBacktestDataGatewayCacheSizesForTests,
   hasContinuousCandleIntervals,
   resetBacktestDataGatewayCacheForTests,
   setDbCandleDelegateForTests,
@@ -47,6 +48,20 @@ describe('backtestDataGateway', () => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     resetBacktestDataGatewayCacheForTests();
+  });
+
+  it('bounds retained candle and supplemental windows when many ranges are requested', async () => {
+    const endTime = 1_710_000_000_000;
+    for (let index = 0; index < 40; index += 1) {
+      const symbol = `TEST${index}USDT`;
+      await fetchKlines('GATEIO', symbol, '1m', 'FUTURES', 1, endTime, endTime);
+      await fetchSupplementalSeries('GATEIO', symbol, '1m', 'FUTURES', 1, endTime, endTime);
+    }
+
+    expect(getBacktestDataGatewayCacheSizesForTests()).toEqual({
+      candles: 32,
+      supplemental: 32,
+    });
   });
 
   it('detects interval gaps in DB cache candle windows', () => {

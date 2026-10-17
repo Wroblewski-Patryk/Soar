@@ -84,6 +84,8 @@ export const dashboardBacktestsDeCh = {
     "statusCompleted": "Vollendet",
     "statusRunning": "Läuft",
     "statusPending": "Ausstehend",
+    "statusDelayed": "Verzoegert",
+    "pendingDelayedDescription": "Dieser Lauf wartet seit mehr als 30 Minuten ohne Aktualisierung. Pruefen Sie den Status erneut; falls er weiter aussteht, melden Sie das Problem einem Administrator.",
     "statusFailed": "Fehlgeschlagen",
     "statusCanceled": "Abgesagt",
     "runPreview": "Vorschau des Backtest-Laufs",

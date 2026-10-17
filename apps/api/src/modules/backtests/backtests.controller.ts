@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sendError } from '../../utils/apiError';
 import { sendValidationError } from '../../utils/formatZodError';
 import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities';
+import { ZodError } from 'zod';
 import {
   CreateBacktestRunSchema,
   GetBacktestTimelineQuerySchema,
@@ -50,7 +51,11 @@ export const createBacktestRun = async (req: Request, res: Response) => {
     if (error instanceof backtestsService.BacktestRunValidationError) {
       return sendError(res, 400, error.message);
     }
-    return sendValidationError(res, error);
+    if (error instanceof backtestsService.BacktestQueueUnavailableError) {
+      return sendError(res, 503, error.message);
+    }
+    if (error instanceof ZodError) return sendValidationError(res, error);
+    return sendError(res, 500, 'Backtest creation failed');
   }
 };
 

@@ -18,6 +18,33 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+const clearPersistedReconciliationFixtures = async () => {
+  await prisma.trade.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.position.deleteMany();
+  await prisma.signal.deleteMany();
+  await prisma.runtimeExecutionDedupe.deleteMany();
+  await prisma.botRuntimeSymbolStat.deleteMany();
+  await prisma.botRuntimeEvent.deleteMany();
+  await prisma.botRuntimeSession.deleteMany();
+  await prisma.log.deleteMany();
+  await prisma.botStrategy.deleteMany();
+  await prisma.botSubagentConfig.deleteMany();
+  await prisma.botAssistantConfig.deleteMany();
+  await prisma.marketGroupStrategyLink.deleteMany();
+  await prisma.botMarketGroup.deleteMany();
+  await prisma.bot.deleteMany();
+  await prisma.symbolGroup.deleteMany();
+  await prisma.marketUniverse.deleteMany();
+  await prisma.wallet.deleteMany();
+  await prisma.apiKey.deleteMany();
+  await prisma.backtestReport.deleteMany();
+  await prisma.backtestTrade.deleteMany();
+  await prisma.backtestRun.deleteMany();
+  await prisma.strategy.deleteMany();
+  await prisma.user.deleteMany();
+};
+
 describe('LivePositionReconciliationLoop', () => {
   it('updates heartbeat status on run', async () => {
     const loop = new LivePositionReconciliationLoop(
@@ -2132,27 +2159,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
 
 describe('livePositionReconciliationDefaultDeps', () => {
   it('lists stale synced positions only for the reconciled market type', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-position-stale-market-scope@example.com', password: 'test-password' },
@@ -2219,27 +2226,7 @@ describe('livePositionReconciliationDefaultDeps', () => {
   });
 
   it('does not update unrelated botless exchange-synced open orders when exchange ids collide', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-order-upsert-owner-scope@example.com', password: 'test-password' },
@@ -2364,27 +2351,7 @@ describe('livePositionReconciliationDefaultDeps', () => {
   });
 
   it('moves stale synced open orders out of active open status', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-order-stale-status@example.com', password: 'test-password' },
@@ -2426,27 +2393,7 @@ describe('livePositionReconciliationDefaultDeps', () => {
 
 describe('resolveCanonicalBotContinuityContext', () => {
   it('resolves strategy from canonical bot market-group links before stale direct bot projection', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: {

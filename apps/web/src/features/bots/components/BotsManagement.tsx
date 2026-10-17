@@ -31,6 +31,7 @@ import { renderDcaLadderCell } from "../../shared/dcaLadderCell";
 import { useBotsListController } from "../hooks/useBotsListController";
 import { useBotsAssistantController } from "../hooks/useBotsAssistantController";
 import { useBotsMonitoringController } from "../hooks/useBotsMonitoringController";
+import { useCloseRuntimePositionAction } from "@/features/dashboard-home/hooks/useCloseRuntimePositionAction";
 import { toTimestamp } from "@/lib/time";
 import {
   FIELD_WRAPPER_CLASS,
@@ -212,6 +213,24 @@ export default function BotsManagement({
     () => bots.find((bot) => bot.id === monitorBotId) ?? null,
     [bots, monitorBotId]
   );
+  const { isClosingPosition, handleCloseRuntimePosition } = useCloseRuntimePositionAction({
+    closePositionErrorLabel: t("dashboard.bots.monitoring.closePositionError"),
+    closePositionIgnoredLabel: t("dashboard.bots.monitoring.closePositionIgnored"),
+    closePositionNoSessionLabel: t("dashboard.bots.monitoring.closePositionNoSession"),
+    closePositionSuccessLabel: t("dashboard.bots.monitoring.closePositionSuccess"),
+    confirmRiskAction: () =>
+      confirm({
+        title: t("dashboard.bots.monitoring.closePositionConfirmTitle"),
+        description: t("dashboard.bots.monitoring.closePositionConfirmDescription"),
+        confirmLabel: t("dashboard.bots.confirms.confirmLabel"),
+        cancelLabel: t("dashboard.bots.confirms.cancelLabel"),
+        confirmVariant: "error",
+      }),
+    onClosed: () => refreshMonitoring(),
+    selectedBotMode: selectedMonitorBot?.mode,
+    selectedBotId: selectedMonitorBot?.id,
+    selectedSessionId: monitorViewMode === "session" ? monitorPositions?.sessionId : null,
+  });
   const monitorRuntimeCapabilityAvailable = useMemo(() => {
     if (!selectedMonitorBot) return true;
     const venue = resolveBotVenueContext(selectedMonitorBot);
@@ -271,6 +290,13 @@ export default function BotsManagement({
     monitorSessionDetail?.summary.realizedPnl,
     selectedMonitorBot,
   ]);
+  const handleMonitorClosePosition = useCallback(
+    async (positionId: string) => {
+      const position = monitorOpenPositionRows.find((row) => row.id === positionId);
+      if (position) await handleCloseRuntimePosition(position);
+    },
+    [handleCloseRuntimePosition, monitorOpenPositionRows]
+  );
 
   const monitorShowDynamicStopColumns = useMemo(
     () => {
@@ -818,6 +844,8 @@ export default function BotsManagement({
           monitorWinRate={monitorWinRate}
           monitorShowOpenOrders={monitorShowOpenOrders}
           monitorOpenPositionRows={monitorOpenPositionRows}
+          isClosingPosition={isClosingPosition}
+          onClosePosition={handleMonitorClosePosition}
           monitorShowDynamicStopColumns={monitorShowDynamicStopColumns}
           monitorOperationalTrades={monitorOperationalTrades}
           monitorTrades={monitorTrades}

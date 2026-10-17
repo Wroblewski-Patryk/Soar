@@ -40,10 +40,22 @@ describe('Profile basic contract', () => {
     await prisma.user.deleteMany();
   });
 
-  it('deletes current user only on DELETE /dashboard/profile/basic', async () => {
+  it('requires password confirmation before DELETE /dashboard/profile/basic', async () => {
     const agent = await registerAndLogin('profile-delete@example.com');
-    const deleteRes = await agent.delete('/dashboard/profile/basic');
+    const noPasswordRes = await agent.delete('/dashboard/profile/basic');
+    expect(noPasswordRes.status).toBe(400);
+    const wrongPasswordRes = await agent.delete('/dashboard/profile/basic').send({
+      password: 'wrong1234',
+    });
+    expect(wrongPasswordRes.status).toBe(400);
+    const profileRes = await agent.get('/dashboard/profile/basic');
+    expect(profileRes.status).toBe(200);
+    const deleteRes = await agent.delete('/dashboard/profile/basic').send({
+      password: 'test1234',
+    });
     expect(deleteRes.status).toBe(204);
+    const afterDeleteRes = await agent.get('/dashboard/profile/basic');
+    expect(afterDeleteRes.status).toBe(401);
   });
 
   it('returns 404 for legacy DELETE /dashboard/profile/basic/:id route', async () => {
@@ -67,6 +79,21 @@ describe('Profile basic contract', () => {
     const getRes = await agent.get('/dashboard/profile/basic');
     expect(getRes.status).toBe(200);
     expect(getRes.body.uiPreferences?.timeZonePreference).toBe('Europe/Warsaw');
+  });
+
+  it('saves the profile form for an account with no name or avatar', async () => {
+    const agent = await registerAndLogin('profile-empty-fields@example.com');
+
+    const updateRes = await agent.patch('/dashboard/profile/basic').send({
+      name: '',
+      avatarUrl: '',
+      uiPreferences: { timeZonePreference: 'Europe/Berlin' },
+    });
+
+    expect(updateRes.status, JSON.stringify(updateRes.body)).toBe(200);
+    expect(updateRes.body.name).toBe('');
+    expect(updateRes.body.avatarUrl).toBe('');
+    expect(updateRes.body.uiPreferences?.timeZonePreference).toBe('Europe/Berlin');
   });
 
   it('rejects invalid uiPreferences.timeZonePreference in profile basic update', async () => {

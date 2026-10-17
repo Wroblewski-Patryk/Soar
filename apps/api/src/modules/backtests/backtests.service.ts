@@ -53,6 +53,7 @@ import {
   deleteBacktestTradesForRun,
   deleteOwnedBacktestRunCascade,
   findBacktestRunById,
+  listPendingBacktestRunIds,
   findOwnedBacktestReport,
   findOwnedBacktestRun,
   findOwnedBacktestRunId,
@@ -61,7 +62,6 @@ import {
   findOwnedStrategySignalConfig,
   listOwnedBacktestRuns,
   listOwnedBacktestTrades,
-  upsertBacktestReportForRun,
 } from './backtests.repository';
 import {
   computeAdaptiveMaxCandles,
@@ -77,7 +77,9 @@ import {
 } from './backtestRange.service';
 import {
   buildRunLifecyclePayload,
+  initializePendingBacktestReport,
   isTerminalBacktestStatus,
+  markBacktestEnqueueFailed,
   safeUpsertBacktestReportForRun,
   safeUpdateRun,
 } from './backtestReportLifecycle.service';
@@ -89,6 +91,13 @@ export {
   resolveReplaySymbolsForTimeline,
   resolveTimelineEndTimeMs,
 } from './backtestRange.service';
+
+export class BacktestQueueUnavailableError extends Error {
+  constructor(cause: unknown) {
+    super('Backtest queue unavailable', { cause });
+    this.name = 'BacktestQueueUnavailableError';
+  }
+}
 
 type MarginMode = 'CROSSED' | 'ISOLATED';
 type ReplayContext = 'isolated' | 'portfolio';
@@ -438,6 +447,7 @@ const backtestWorkerOwnership = resolveWorkerOwnershipConfig().backtest;
 export const backtestRunQueue = new BacktestRunQueue(runBacktestAsync, {
   backend: backtestWorkerOwnership === 'worker' ? 'redis' : 'inline',
   queueName: process.env.WORKER_BACKTEST_QUEUE ?? 'backtest',
+  recoverPendingRunIds: listPendingBacktestRunIds,
 });
 
 export const listRuns = async (userId: string, query: ListBacktestRunsQuery) => {
@@ -532,46 +542,14 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     notes: data.notes,
     status: 'PENDING',
   });
-  const pendingLifecycle = buildRunLifecyclePayload({
-    status: 'PENDING',
-    reportReady: false,
-    generatedAt: null,
-  });
-  await upsertBacktestReportForRun({
-    backtestRunId: created.id,
-    create: {
-      userId,
-      backtestRunId: created.id,
-      totalTrades: 0,
-      winningTrades: 0,
-      losingTrades: 0,
-      winRate: null,
-      netPnl: null,
-      grossProfit: null,
-      grossLoss: null,
-      maxDrawdown: null,
-      sharpe: null,
-      metrics: {
-        runLifecycle: pendingLifecycle,
-      },
-    },
-    update: {
-      totalTrades: 0,
-      winningTrades: 0,
-      losingTrades: 0,
-      winRate: null,
-      netPnl: null,
-      grossProfit: null,
-      grossLoss: null,
-      maxDrawdown: null,
-      sharpe: null,
-      metrics: {
-        runLifecycle: pendingLifecycle,
-      },
-    },
-  });
+  await initializePendingBacktestReport(userId, created.id);
 
-  await backtestRunQueue.enqueue(created.id);
+  try {
+    await backtestRunQueue.enqueue(created.id);
+  } catch (error) {
+    await markBacktestEnqueueFailed(userId, created.id);
+    throw new BacktestQueueUnavailableError(error);
+  }
 
   return created;
 };
@@ -636,7 +614,11 @@ export const getRunReport = async (userId: string, runId: string) => {
         reportReady,
         generatedAt: reportReady ? report.updatedAt.toISOString() : null,
         degraded,
-        reason: degraded ? 'report_missing_after_terminal_run' : undefined,
+        reason: degraded
+          ? typeof reportLifecycle?.reason === 'string'
+            ? reportLifecycle.reason
+            : 'report_missing_after_terminal_run'
+          : undefined,
       }),
     },
   };

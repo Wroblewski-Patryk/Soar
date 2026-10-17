@@ -55,9 +55,9 @@ export default function RegisterForm() {
           <div className='text-error text-sm mt-1'>{resolveFieldError(errors.password.message)}</div>
         )}
 
-        <label htmlFor='terms' className='label'>
-          <input id='terms' type='checkbox' className='checkbox mt-4 mr-1' disabled={isFormDisabled} {...register('terms')} />
-          <span className='pt-4'>
+        <label htmlFor='terms' className='label flex items-start gap-2 whitespace-normal'>
+          <input id='terms' type='checkbox' className='checkbox mt-4 shrink-0' disabled={isFormDisabled} {...register('terms')} />
+          <span className='min-w-0 break-words pt-4'>
             {t('auth.forms.register.agreePrefix')}{' '}
             <Link href='/terms' className='link link-hover'>
               {t('auth.forms.register.terms')}

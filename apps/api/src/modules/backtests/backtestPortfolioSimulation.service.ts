@@ -3,6 +3,7 @@ import { decideExecutionAction } from '../engine/sharedExecutionCore';
 import { evaluatePositionManagement } from '../engine/positionManagement.service';
 import { PositionManagementInput } from '../engine/positionManagement.types';
 import {
+  buildStrategySignalPriceSeries,
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
   type StrategySignalDerivativesSeries,
@@ -189,10 +190,12 @@ export const simulateInterleavedPortfolio = (input: {
 
   const indicatorCacheBySymbol = new Map<string, Map<string, Array<number | null>>>();
   const derivativesSeriesBySymbol = new Map<string, StrategySignalDerivativesSeries>();
+  const priceSeriesBySymbol = new Map<string, ReturnType<typeof buildStrategySignalPriceSeries>>();
   for (const symbol of input.symbols) {
     const candles = input.candlesBySymbol.get(symbol) ?? [];
     const supplemental = input.supplementalBySymbol?.get(symbol);
     derivativesSeriesBySymbol.set(symbol, buildDerivativesSeriesForCandles(candles, supplemental));
+    if (strategyModeEnabled) priceSeriesBySymbol.set(symbol, buildStrategySignalPriceSeries(candles));
   }
   const tradeSequenceBySymbol = new Map<string, number>(input.symbols.map((symbol) => [symbol, 0]));
   const resolveStartIndex = (symbol: string) => {
@@ -282,6 +285,7 @@ export const simulateInterleavedPortfolio = (input: {
               if (!strategy.rules) return null;
               const direction = evaluateStrategySignalAtIndex(strategy.rules, candles, index, indicatorCache, {
                 derivatives: derivativesSeries,
+                priceSeries: priceSeriesBySymbol.get(symbol),
               });
               if (!direction) return null;
               return {

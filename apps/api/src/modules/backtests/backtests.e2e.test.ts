@@ -6,6 +6,7 @@ import { analyzePreTrade } from '../engine/preTrade.service';
 import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+import { backtestRunQueue } from './backtests.service';
 
 vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../exchange/exchangePublicMarketData.service')>();
@@ -228,6 +229,32 @@ describe('Backtests runs contract', () => {
     const res = await request(app).get('/dashboard/backtests/runs');
     expect(res.status).toBe(401);
     expect(res.body.error.message).toBe('Missing token');
+  });
+
+  it('marks a run failed when its queue job cannot be enqueued', async () => {
+    const agent = await registerAndLogin('backtests-queue-failure@example.com');
+    const enqueue = vi.spyOn(backtestRunQueue, 'enqueue').mockRejectedValueOnce(new Error('queue unavailable'));
+    try {
+      const createRes = await agent.post('/dashboard/backtests/runs').send(createPayload());
+      expect(createRes.status).toBe(503);
+
+      const run = await prisma.backtestRun.findFirstOrThrow({
+        where: { name: 'BTC trend run' },
+      });
+      expect(run.status).toBe('FAILED');
+      expect(run.finishedAt).not.toBeNull();
+
+      const reportRes = await agent.get(`/dashboard/backtests/runs/${run.id}/report`);
+      expect(reportRes.status).toBe(200);
+      expect(reportRes.body.metrics.runLifecycle).toMatchObject({
+        state: 'FAILED',
+        reportReady: false,
+        degraded: true,
+        reason: 'queue_enqueue_failed',
+      });
+    } finally {
+      enqueue.mockRestore();
+    }
   });
 
   it('supports create/list/get for owner', async () => {

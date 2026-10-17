@@ -1,8 +1,9 @@
 import { bootstrapWorker } from './workerBootstrap';
 import { getQueueTuning } from '../queue/queueTuning';
-import { resolveWorkerOwnershipConfig } from './workerOwnership';
+import { assertDeployedWorkerOwnership, resolveWorkerOwnershipConfig } from './workerOwnership';
 import { backtestRunQueue } from '../modules/backtests/backtests.service';
 
+assertDeployedWorkerOwnership('backtest');
 const ownership = resolveWorkerOwnershipConfig();
 
 bootstrapWorker(

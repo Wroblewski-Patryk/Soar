@@ -63,6 +63,15 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 6) Workers and queue baseline
 - workers health/readiness is green,
+- in each worker container, verify `WORKER_MODE=split`, the matching ownership
+  (`WORKER_BACKTEST_OWNERSHIP=worker` and
+  `WORKER_MARKET_DATA_OWNERSHIP=worker`), and the applicable queue name;
+  compare them with the API container. A heartbeat alone does not prove queue
+  consumption. Missing variables fail this gate.
+- enqueue one controlled PAPER backtest and verify its id leaves Redis pending,
+  reaches a terminal database status, and produces a report. Investigate
+  orphaned `PENDING` rows and queue ids without database rows separately;
+  do not replay historical jobs blindly.
 - no crash-loop in worker logs,
 - market/signal updates visible in runtime within expected interval.
 - Coolify Redis resource is `running:healthy`; Redis restart-count growth or

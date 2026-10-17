@@ -177,6 +177,16 @@ Each worker service config:
   - `workers-execution` -> `apps/api/Dockerfile.worker.execution`
 - Exposed port: none
 
+On the 8 GiB production VPS, configure Coolify **Resource Limits** for each
+separate application before redeploying: API memory `2g` and memory+swap `3g`,
+web `1g` and memory+swap `1536m`, each worker `768m` and memory+swap `1g`.
+Save and restart/redeploy the applications, then verify the recreated containers
+with `docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' <container>`.
+These values are initial host-protection limits after the 2026-10-17 global OOM;
+adjust only against measured peak usage and keep capacity for Coolify,
+PostgreSQL, Redis, other applications, and builds. A direct `docker update` on
+the current container does not persist through Coolify container replacement.
+
 Shared worker env:
 - `NODE_ENV=production`
 - `DATABASE_URL=<coolify-postgres-url>`

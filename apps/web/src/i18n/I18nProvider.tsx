@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES, TranslationKey, translations } from "./translations";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/storage";
@@ -94,22 +94,36 @@ const reportMissingTranslation = (
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [locale, setLocaleState] = useState<Locale>(() => readStoredLocale());
-  const [timeZonePreference, setTimeZonePreferenceState] = useState<string>(() =>
-    readStoredTimeZonePreference()
+  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+  const [timeZonePreference, setTimeZonePreferenceState] = useState<string>(AUTO_TIMEZONE);
+  const [hydrated, setHydrated] = useState(false);
+  const localeChangedBeforeHydration = useRef(false);
+  const timeZoneChangedBeforeHydration = useRef(false);
+  const [routePath, setRoutePath] = useState<string>(() => pathname || "/");
+  const timeZone = useMemo(
+    () => (hydrated ? resolveTimeZone(timeZonePreference) : "UTC"),
+    [hydrated, timeZonePreference]
   );
-  const [routePath, setRoutePath] = useState<string>(() => pathname || detectRoutePath());
-  const timeZone = useMemo(() => resolveTimeZone(timeZonePreference), [timeZonePreference]);
   const currentRoutePath = pathname || routePath;
 
   useEffect(() => {
-    setLocalStorageItem(LOCALE_STORAGE_KEY, locale);
-    document.documentElement.lang = locale;
-  }, [locale]);
+    if (!localeChangedBeforeHydration.current) setLocaleState(readStoredLocale());
+    if (!timeZoneChangedBeforeHydration.current) {
+      setTimeZonePreferenceState(readStoredTimeZonePreference());
+    }
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
+    setLocalStorageItem(LOCALE_STORAGE_KEY, locale);
+    document.documentElement.lang = locale;
+  }, [hydrated, locale]);
+
+  useEffect(() => {
+    if (!hydrated) return;
     setLocalStorageItem(TIMEZONE_STORAGE_KEY, timeZonePreference);
-  }, [timeZonePreference]);
+  }, [hydrated, timeZonePreference]);
 
   useEffect(() => {
     const nextRoutePath = pathname || detectRoutePath();
@@ -120,12 +134,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    let active = true;
 
     const syncRoutePath = () => {
-      const nextRoutePath = detectRoutePath();
-      setRoutePath((currentRoutePath) =>
-        currentRoutePath === nextRoutePath ? currentRoutePath : nextRoutePath
-      );
+      queueMicrotask(() => {
+        if (!active) return;
+        const nextRoutePath = detectRoutePath();
+        setRoutePath((currentRoutePath) =>
+          currentRoutePath === nextRoutePath ? currentRoutePath : nextRoutePath
+        );
+      });
     };
 
     const originalPushState = window.history.pushState.bind(window.history);
@@ -145,6 +163,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener(ROUTE_CHANGE_EVENT, syncRoutePath);
 
     return () => {
+      active = false;
       window.history.pushState = originalPushState as History["pushState"];
       window.history.replaceState = originalReplaceState as History["replaceState"];
       window.removeEventListener("popstate", syncRoutePath);
@@ -153,10 +172,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setLocale = useCallback((next: Locale) => {
+    localeChangedBeforeHydration.current = true;
     setLocaleState(next);
   }, []);
 
   const setTimeZonePreference = useCallback((next: string) => {
+    timeZoneChangedBeforeHydration.current = true;
     setTimeZonePreferenceState(normalizeTimeZonePreference(next));
   }, []);
 

@@ -4,7 +4,9 @@ import { livePositionReconciliationLoop } from '../modules/positions/livePositio
 import { runtimeSignalLoop } from '../modules/engine/runtimeSignalLoop.service';
 import { runtimeScanLoop } from '../modules/engine/runtimeScanLoop.service';
 import { metricsStore } from '../observability/metrics';
+import { assertDeployedWorkerOwnership } from './workerOwnership';
 
+assertDeployedWorkerOwnership('execution');
 const runtimeSignalLoopBootstrapIntervalMs = Math.max(
   5_000,
   Number.parseInt(process.env.RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS ?? '15000', 10)

@@ -31,6 +31,38 @@ const countCloseLikeEvents = (eventCounts: Record<string, number>) =>
   (eventCounts.LIQUIDATION ?? 0);
 
 describe('backtest parity remediation contracts', () => {
+  it('reads historical close prices linearly while replaying a strategy', () => {
+    const symbol = 'BTCUSDT';
+    let closeReads = 0;
+    const candles = makeCandles(Array.from({ length: 250 }, (_, index) => 100 + index * 0.01))
+      .map((candle) => ({
+        ...candle,
+        get close() {
+          closeReads += 1;
+          return candle.close;
+        },
+      }));
+
+    simulateInterleavedPortfolio({
+      symbols: [symbol],
+      candlesBySymbol: new Map([[symbol, candles]]),
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 10_000, params: { period: 1 } }],
+          indicatorsShort: [],
+        },
+      },
+      walletRiskPercent: 1,
+      initialBalance: 1_000,
+    });
+
+    expect(closeReads).toBeLessThan(candles.length * 40);
+  });
+
   it('keeps target symbol deterministic in isolated timeline context even for 50-symbol runs', () => {
     const targetSymbol = 'ZZZUSDT';
     const companionSymbols = Array.from({ length: 49 }, (_, index) =>

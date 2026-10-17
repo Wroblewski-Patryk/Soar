@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildStrategySignalPriceSeries,
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
 } from './strategySignalEvaluator';
@@ -7,6 +8,66 @@ import {
 const candles = [100, 101, 102].map((close) => ({ close }));
 
 describe('strategySignalEvaluator', () => {
+  it('reuses precomputed price series across a replay without rereading all candles', () => {
+    const rules = parseStrategySignalRules({
+      open: {
+        direction: 'long',
+        indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+        indicatorsShort: [],
+      },
+    });
+    expect(rules).not.toBeNull();
+    if (!rules) return;
+
+    let closeReads = 0;
+    const replayCandles = Array.from({ length: 50 }, (_, index) => ({
+      open: 100 + index,
+      high: 101 + index,
+      low: 99 + index,
+      get close() {
+        closeReads += 1;
+        return 100 + index;
+      },
+    }));
+    const priceSeries = buildStrategySignalPriceSeries(replayCandles);
+    expect(closeReads).toBe(replayCandles.length);
+
+    const cache = new Map<string, Array<number | null>>();
+    const directions = replayCandles.slice(1).map((_, offset) =>
+      evaluateStrategySignalAtIndex(rules, replayCandles, offset + 1, cache, { priceSeries }),
+    );
+    expect(directions.at(-1)).toBe('LONG');
+    expect(closeReads).toBe(replayCandles.length);
+  });
+
+  it('keeps replay signals equal with and without precomputed price series', () => {
+    const rules = parseStrategySignalRules({
+      open: {
+        direction: 'both',
+        indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 2 } }],
+        indicatorsShort: [{ name: 'MOMENTUM', condition: '<', value: 0, params: { period: 2 } }],
+      },
+    });
+    expect(rules).not.toBeNull();
+    if (!rules) return;
+
+    const replayCandles = [100, 103, 101, 104, 98, 99, 105].map((close) => ({
+      open: close - 0.5,
+      high: close + 1,
+      low: close - 1,
+      close,
+    }));
+    const priceSeries = buildStrategySignalPriceSeries(replayCandles);
+    const baseline = replayCandles.map((_, index) =>
+      evaluateStrategySignalAtIndex(rules, replayCandles, index, new Map()),
+    );
+    const cachedSeries = new Map<string, Array<number | null>>();
+    const optimized = replayCandles.map((_, index) =>
+      evaluateStrategySignalAtIndex(rules, replayCandles, index, cachedSeries, { priceSeries }),
+    );
+    expect(optimized).toEqual(baseline);
+  });
+
   it('defaults to HOLD when no strategy rule is matched', () => {
     const rules = parseStrategySignalRules({
       open: {

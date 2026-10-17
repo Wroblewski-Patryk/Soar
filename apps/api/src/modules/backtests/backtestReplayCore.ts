@@ -3,6 +3,7 @@ import { decideExecutionAction } from '../engine/sharedExecutionCore';
 import { evaluatePositionManagement } from '../engine/positionManagement.service';
 import { PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
 import {
+  buildStrategySignalPriceSeries,
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
   type StrategySignalDerivativesSeries,
@@ -488,6 +489,7 @@ export const simulateTradesForSymbolReplay = (input: {
   const strategyModeEnabled = Boolean(input.strategyConfig && typeof input.strategyConfig === 'object');
   const riskConfig = parseStrategyRiskConfig(input.strategyConfig);
   const indicatorSeriesCache = new Map<string, Array<number | null>>();
+  const strategyPriceSeries = strategyModeEnabled ? buildStrategySignalPriceSeries(candles) : undefined;
   const fillModel = createHistoricalBacktestFillModel(input.fillModelConfig);
   const positionSizingMode = input.positionSizing?.mode ?? 'fixed';
   const fixedQuantity = Math.max(0.000001, Number(input.positionSizing?.fixedQuantity ?? 1));
@@ -557,6 +559,7 @@ export const simulateTradesForSymbolReplay = (input: {
       ? strategyRules
         ? evaluateStrategySignalAtIndex(strategyRules, candles, index, indicatorSeriesCache, {
             derivatives: input.derivativesSeries,
+            priceSeries: strategyPriceSeries,
           })
         : null
       : toSignalDirection(current, previous, config);

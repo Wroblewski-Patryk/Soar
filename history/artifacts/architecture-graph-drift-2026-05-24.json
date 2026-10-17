@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 811,
-    "covered": 811,
+    "total": 814,
+    "covered": 814,
     "missing": 0
   },
   "categories": {
@@ -19,8 +19,8 @@
       "missingSamples": []
     },
     "apiTests": {
-      "total": 200,
-      "covered": 200,
+      "total": 201,
+      "covered": 201,
       "missing": 0,
       "missingSamples": []
     },
@@ -31,8 +31,8 @@
       "missingSamples": []
     },
     "webComponents": {
-      "total": 117,
-      "covered": 117,
+      "total": 118,
+      "covered": 118,
       "missing": 0,
       "missingSamples": []
     },
@@ -43,8 +43,8 @@
       "missingSamples": []
     },
     "webTests": {
-      "total": 149,
-      "covered": 149,
+      "total": 150,
+      "covered": 150,
       "missing": 0,
       "missingSamples": []
     },

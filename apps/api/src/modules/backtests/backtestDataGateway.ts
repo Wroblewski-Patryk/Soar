@@ -60,6 +60,7 @@ type DbCandleDelegate = {
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 const CANDLE_CACHE_TTL_MS = 20 * 60 * 1000;
+const MAX_CACHED_WINDOWS = 32;
 const useDbCandleCache = (process.env.BACKTEST_USE_DB_CANDLE_CACHE ?? 'true').toLowerCase() !== 'false';
 
 const candleCache = new Map<
@@ -141,6 +142,27 @@ export const resetBacktestDataGatewayCacheForTests = () => {
   supplementalCache.clear();
   dbCandleDelegateOverride = null;
 };
+
+export const getBacktestDataGatewayCacheSizesForTests = () => ({
+  candles: candleCache.size,
+  supplemental: supplementalCache.size,
+});
+
+const setBoundedCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
+  cache.delete(key);
+  cache.set(key, value);
+  while (cache.size > MAX_CACHED_WINDOWS) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey === undefined) break;
+    cache.delete(oldestKey);
+  }
+};
+
+const setCandleCacheEntry = (key: string, candles: BacktestKlineCandle[]) =>
+  setBoundedCacheEntry(candleCache, key, { cachedAt: Date.now(), candles });
+
+const setSupplementalCacheEntry = (key: string, data: BacktestSupplementalSeries) =>
+  setBoundedCacheEntry(supplementalCache, key, { cachedAt: Date.now(), data });
 
 const cacheKeyForCandles = (
   exchange: Exchange,
@@ -238,7 +260,7 @@ export const fetchKlines = async (
     ? Math.floor(startTimeMs as number)
     : endTime - sourceWindowMs;
   if (startTimeByRange >= endTime) {
-    candleCache.set(key, { cachedAt: Date.now(), candles: [] });
+    setCandleCacheEntry(key, []);
     return [];
   }
   const dbDelegate = useDbCandleCache ? getDbCandleDelegate() : undefined;
@@ -266,7 +288,7 @@ export const fetchKlines = async (
           .sort((a, b) => a.openTime - b.openTime)
           .slice(-maxCandles);
         if (hasContinuousCandleIntervals(dbCandles, normalizedTimeframe)) {
-          candleCache.set(key, { cachedAt: Date.now(), candles: dbCandles });
+          setCandleCacheEntry(key, dbCandles);
           return dbCandles;
         }
       }
@@ -329,7 +351,7 @@ export const fetchKlines = async (
     }
   }
 
-  candleCache.set(key, { cachedAt: Date.now(), candles: result });
+  setCandleCacheEntry(key, result);
   return result;
 };
 
@@ -360,7 +382,7 @@ export const fetchSupplementalSeries = async (
     : endTime - sourceWindowMs;
   if (startTime >= endTime) {
     const empty = { fundingRates: [], openInterest: [], orderBook: [] };
-    supplementalCache.set(key, { cachedAt: Date.now(), data: empty });
+    setSupplementalCacheEntry(key, empty);
     return empty;
   }
   const limit = clamp(maxCandles, 50, 1000);
@@ -397,11 +419,11 @@ export const fetchSupplementalSeries = async (
         })),
         orderBook: [],
       };
-      supplementalCache.set(key, { cachedAt: Date.now(), data: result });
+      setSupplementalCacheEntry(key, result);
       return result;
     } catch {
       const empty = { fundingRates: [], openInterest: [], orderBook: [] };
-      supplementalCache.set(key, { cachedAt: Date.now(), data: empty });
+      setSupplementalCacheEntry(key, empty);
       return empty;
     }
   }
@@ -437,7 +459,7 @@ export const fetchSupplementalSeries = async (
     ]);
   } catch {
     const empty = { fundingRates: [], openInterest: [], orderBook: [] };
-    supplementalCache.set(key, { cachedAt: Date.now(), data: empty });
+    setSupplementalCacheEntry(key, empty);
     return empty;
   }
 
@@ -474,6 +496,6 @@ export const fetchSupplementalSeries = async (
     openInterest,
     orderBook: [],
   };
-  supplementalCache.set(key, { cachedAt: Date.now(), data: result });
+  setSupplementalCacheEntry(key, result);
   return result;
 };

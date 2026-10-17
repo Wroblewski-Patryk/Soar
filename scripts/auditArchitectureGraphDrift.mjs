@@ -20,7 +20,7 @@ function toRepoPath(filePath) {
 function walk(dir, predicate, results = []) {
   if (!fs.existsSync(dir)) return results;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name === "node_modules" || entry.name === ".next" || entry.name === "dist" || entry.name === "coverage") {
+    if (entry.name === "node_modules" || entry.name === ".next" || entry.name === ".next-dev" || entry.name === "dist" || entry.name === "coverage") {
       continue;
     }
     const fullPath = path.join(dir, entry.name);

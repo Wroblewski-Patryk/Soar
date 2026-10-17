@@ -11,6 +11,8 @@ export type BacktestRunDetailsCopy = {
   statusCompleted: string;
   statusRunning: string;
   statusPending: string;
+  statusDelayed: string;
+  pendingDelayedDescription: string;
   statusFailed: string;
   statusCanceled: string;
   runPreview: string;
@@ -127,6 +129,8 @@ const DETAIL_KEYS = {
   statusCompleted: 'dashboard.backtests.details.statusCompleted',
   statusRunning: 'dashboard.backtests.details.statusRunning',
   statusPending: 'dashboard.backtests.details.statusPending',
+  statusDelayed: 'dashboard.backtests.details.statusDelayed',
+  pendingDelayedDescription: 'dashboard.backtests.details.pendingDelayedDescription',
   statusFailed: 'dashboard.backtests.details.statusFailed',
   statusCanceled: 'dashboard.backtests.details.statusCanceled',
   runPreview: 'dashboard.backtests.details.runPreview',

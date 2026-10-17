@@ -205,4 +205,30 @@ describe("AdminUsersPage", () => {
 
     expect(await screen.findByText("Could not load users.")).toBeInTheDocument();
   });
+
+  it("reaches and updates a user on the second page, then resets pagination when filtering", async () => {
+    const secondPageUser = { ...baseUser, id: "user-101", email: "last@example.com" };
+    getAdminUsersMock.mockImplementation(async ({ page, search }: { page: number; search?: string }) => ({
+      users: search ? [secondPageUser] : page === 2 ? [secondPageUser] : [baseUser],
+      meta: { page, pageSize: 100, total: search ? 1 : 101, totalPages: search ? 1 : 2 },
+    }));
+    getAdminSubscriptionPlansMock.mockResolvedValue([freePlan, advancedPlan]);
+    updateAdminUserMock.mockResolvedValue({ ...secondPageUser, role: "ADMIN" });
+
+    renderWithI18n();
+    expect(await screen.findByText("user@example.com")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(await screen.findByText("last@example.com")).toBeInTheDocument();
+    expect(screen.queryByText("user@example.com")).not.toBeInTheDocument();
+    expect(getAdminUsersMock).toHaveBeenCalledWith(expect.objectContaining({ page: 2, pageSize: 100 }));
+
+    fireEvent.click(screen.getByLabelText("Toggle role for last@example.com"));
+    fireEvent.click(screen.getByText(/^Confirm$/));
+    await waitFor(() => expect(updateAdminUserMock).toHaveBeenCalledWith("user-101", { role: "ADMIN" }));
+
+    fireEvent.change(screen.getByPlaceholderText("for example user@example.com"), { target: { value: "last" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+    await waitFor(() => expect(getAdminUsersMock).toHaveBeenCalledWith(expect.objectContaining({ page: 1, search: "last" })));
+    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+  });
 });

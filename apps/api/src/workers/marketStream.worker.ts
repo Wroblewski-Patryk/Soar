@@ -9,7 +9,9 @@ import {
   type StreamSubscriptions,
 } from './marketStreamSubscriptions.service';
 import { resolveMarketStreamWorkerConfig } from './marketStreamWorkerConfig';
+import { assertDeployedWorkerOwnership } from './workerOwnership';
 
+assertDeployedWorkerOwnership('marketStream');
 const logger = createModuleLogger('market-stream.bootstrap');
 
 const { exchange, marketType, envSymbols, envIntervals, refreshMs, pollMs } =

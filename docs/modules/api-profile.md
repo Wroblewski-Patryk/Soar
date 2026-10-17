@@ -32,6 +32,9 @@ Out of scope:
 ## 3. Data and Contract Surface
 - Basic profile:
   - `GET/PATCH/DELETE /dashboard/profile/basic`.
+  - Account deletion on the basic route uses the same password confirmation,
+    user rate limit, and session-cookie clearing as
+    `DELETE /dashboard/profile/security/account`.
   - merges `uiPreferences` safely with table column visibility normalization.
 - Security:
   - `PATCH /dashboard/profile/security/password`

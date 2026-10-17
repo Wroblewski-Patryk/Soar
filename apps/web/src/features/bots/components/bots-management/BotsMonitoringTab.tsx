@@ -14,13 +14,9 @@ import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection
 import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import { BotsMonitoringProtectionCell } from "./BotsMonitoringProtectionCell";
 import { BotsMonitoringRuntimeStateCell } from "./BotsMonitoringRuntimeStateCell";
-import {
-  runtimeOpenOrderStatusLabelSuffix,
-  runtimeOrderSourceLabelSuffix,
-} from "../../../shared/runtimeMonitoringFormatters";
+import { BotsMonitoringOpenOrdersSection, type MonitorOpenOrder } from "./BotsMonitoringOpenOrdersSection";
 import {
   Bot,
-  BotRuntimeOpenOrderItem,
   BotPortfolioHistoryResponse,
   BotRuntimePositionItem,
   BotRuntimeSessionDetail,
@@ -129,21 +125,7 @@ type BotsMonitoringTabProps = {
   monitorPositions: {
     openCount: number;
     openOrdersCount?: number;
-    openOrders?: Array<{
-      id: string;
-      origin?: BotRuntimeOpenOrderItem["origin"];
-      exchangeOrderId?: string | null;
-      symbol: string;
-      side: string;
-      type: string;
-      status: string;
-      quantity: number;
-      filledQuantity: number;
-      price?: number | null;
-      stopPrice?: number | null;
-      submittedAt?: string | null;
-      createdAt?: string | null;
-    }>;
+    openOrders?: MonitorOpenOrder[];
     historyItems: Array<{
       id: string;
       symbol: string;
@@ -181,6 +163,8 @@ type BotsMonitoringTabProps = {
   monitorWinRate: number;
   monitorShowOpenOrders: boolean;
   monitorOpenPositionRows: MonitorOpenPositionRow[];
+  isClosingPosition: (positionId: string) => boolean;
+  onClosePosition: (positionId: string) => Promise<void>;
   monitorShowDynamicStopColumns: boolean;
   monitorOperationalTrades: MonitorOperationalTradeRow[];
   monitorTrades: { total: number } | null;
@@ -302,6 +286,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     monitorWinRate,
     monitorShowOpenOrders,
     monitorOpenPositionRows,
+    isClosingPosition,
+    onClosePosition,
     monitorShowDynamicStopColumns,
     monitorOperationalTrades,
     monitorTrades,
@@ -324,13 +310,6 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     toTradeLifecycleLabelKey,
     formatTradeFeeMeta,
   } = props;
-  const resolveOpenOrderSourceLabel = (origin?: string | null) =>
-    t(`dashboard.bots.monitoring.${runtimeOrderSourceLabelSuffix(origin)}` as TranslationKey);
-  const resolveOpenOrderStatusLabel = (status?: string | null) => {
-    const labelSuffix = runtimeOpenOrderStatusLabelSuffix(status);
-    return labelSuffix ? t(`dashboard.bots.monitoring.${labelSuffix}` as TranslationKey) : (status ?? "-");
-  };
-
   return (
     <div className="space-y-4 rounded-box border border-base-300/60 bg-base-200/60 p-4">
           <h2 className="text-lg font-semibold">{t("dashboard.bots.monitoring.title")}</h2>
@@ -629,6 +608,11 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                         <p className="text-xs opacity-65">
                           {t("dashboard.bots.monitoring.sections.nowOpenPositionsDescription")}
                         </p>
+                        {monitorViewMode === "aggregate" && monitorOpenPositionRows.length > 0 ? (
+                          <p className="mt-1 text-xs opacity-70">
+                            {t("dashboard.bots.monitoring.closeFromSessionHint")}
+                          </p>
+                        ) : null}
                         <p className="mt-1 text-xs opacity-60">
                           {t("dashboard.bots.monitoring.notionalLabel")}: {formatCurrency(monitorOpenMarginSummary.totalNotional)} | {t("dashboard.bots.monitoring.marginLabel")}:{" "}
                           {formatCurrency(monitorOpenMarginSummary.totalMarginUsed)} | {t("dashboard.bots.monitoring.openPnlLabel")}{" "}
@@ -675,6 +659,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <th>{t("dashboard.bots.monitoring.table.dca")}</th>
                             {monitorShowDynamicStopColumns ? <th>{t("dashboard.bots.monitoring.table.slTtp")}</th> : null}
                             {monitorShowDynamicStopColumns ? <th>{t("dashboard.bots.monitoring.table.slTsl")}</th> : null}
+                            {monitorViewMode === "session" ? <th>{t("dashboard.bots.monitoring.table.action")}</th> : null}
                           </tr>
                         </thead>
                         <tbody>
@@ -742,12 +727,29 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                                     : `${formatNumber(position.tslProtectedPercent, 2)}%`}
                                 </td>
                               ) : null}
+                              {monitorViewMode === "session" ? (
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="btn btn-error btn-xs"
+                                    disabled={position.actionable === false || isClosingPosition(position.id)}
+                                    title={position.actionable === false
+                                      ? t("dashboard.bots.monitoring.closePositionUnavailable")
+                                      : undefined}
+                                    onClick={() => void onClosePosition(position.id)}
+                                  >
+                                    {isClosingPosition(position.id)
+                                      ? t("dashboard.bots.monitoring.closePositionPending")
+                                      : t("dashboard.bots.monitoring.closePositionButton")}
+                                  </button>
+                                </td>
+                              ) : null}
                             </tr>
                           ))}
                           {monitorOpenPositionRows.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={monitorShowDynamicStopColumns ? 17 : 15}
+                                colSpan={15 + (monitorShowDynamicStopColumns ? 2 : 0) + (monitorViewMode === "session" ? 1 : 0)}
                                 className="text-center text-xs opacity-70"
                               >
                                 {t("dashboard.bots.monitoring.emptyOpenPositions")}
@@ -760,60 +762,14 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                   </div>
 
                   {monitorShowOpenOrders ? (
-                    <div className="rounded-lg border border-base-300 bg-base-100 p-3">
-                      <div className="mb-2 flex items-center justify-between">
-                        <h3 className="text-sm font-semibold">{t("dashboard.bots.monitoring.sections.nowOpenOrdersTitle")}</h3>
-                        <span className="text-xs opacity-60">
-                          {interpolateTemplate(t("dashboard.bots.monitoring.activeCount"), {
-                            count: (monitorPositions?.openOrders ?? []).length,
-                            total: monitorPositions?.openOrdersCount ?? monitorPositions?.openOrders?.length ?? 0,
-                          })}
-                        </span>
-                      </div>
-                      <div className="overflow-x-auto">
-                        <table className="table table-xs table-zebra">
-                          <thead>
-                            <tr>
-                              <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.origin")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.exchangeOrderId")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.side")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.type")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.status")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.qty")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.filled")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.price")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.stop")}</th>
-                              <th>{t("dashboard.bots.monitoring.table.submitted")}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {(monitorPositions?.openOrders ?? []).map((order) => (
-                              <tr key={order.id}>
-                                <td className="font-medium">{order.symbol}</td>
-                                <td>{resolveOpenOrderSourceLabel(order.origin)}</td>
-                                <td>{order.exchangeOrderId ?? "-"}</td>
-                                <td>{order.side}</td>
-                                <td>{order.type}</td>
-                                <td>{resolveOpenOrderStatusLabel(order.status)}</td>
-                                <td>{formatNumber(order.quantity, 6)}</td>
-                                <td>{formatNumber(order.filledQuantity, 6)}</td>
-                                <td>{order.price != null ? formatNumber(order.price, 4) : "-"}</td>
-                                <td>{order.stopPrice != null ? formatNumber(order.stopPrice, 4) : "-"}</td>
-                                <td>{formatDateTime(order.submittedAt ?? order.createdAt)}</td>
-                              </tr>
-                            ))}
-                            {(monitorPositions?.openOrders?.length ?? 0) === 0 ? (
-                              <tr>
-                                <td colSpan={11} className="text-center text-xs opacity-70">
-                                  {t("dashboard.bots.monitoring.emptyOpenOrders")}
-                                </td>
-                              </tr>
-                            ) : null}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+                    <BotsMonitoringOpenOrdersSection
+                      t={t}
+                      orders={monitorPositions?.openOrders ?? []}
+                      totalCount={monitorPositions?.openOrdersCount ?? monitorPositions?.openOrders?.length ?? 0}
+                      formatNumber={formatNumber}
+                      formatDateTime={formatDateTime}
+                      interpolateTemplate={interpolateTemplate}
+                    />
                   ) : null}
 
                   <div id="monitor-history" className="scroll-mt-24 rounded-lg border border-base-300 bg-base-100 p-3">

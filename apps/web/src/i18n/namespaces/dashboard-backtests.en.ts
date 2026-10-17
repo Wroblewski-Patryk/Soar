@@ -85,6 +85,8 @@ export const dashboardBacktestsEn = {
     statusCompleted: "Completed",
     statusRunning: "Running",
     statusPending: "Pending",
+    statusDelayed: "Delayed",
+    pendingDelayedDescription: "This run has waited over 30 minutes without an update. Check its status again; if it remains pending, report the issue to an administrator.",
     statusFailed: "Failed",
     statusCanceled: "Canceled",
     runPreview: "Backtest run preview",

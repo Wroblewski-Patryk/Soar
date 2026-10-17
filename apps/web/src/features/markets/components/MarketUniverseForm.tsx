@@ -160,18 +160,18 @@ export default function MarketUniverseForm({
   }, [initial]);
 
   const loadCatalog = useCallback(
-    async (params?: {
-      requestedExchange?: ExchangeOption;
+    async (params: {
+      requestedExchange: ExchangeOption;
       requestedBaseCurrency?: string;
-      requestedMarketType?: ExchangeMarketType;
+      requestedMarketType: ExchangeMarketType;
     }) => {
       setCatalogLoading(true);
       setCatalogError(null);
       try {
         const catalog = await fetchMarketCatalog({
-          exchange: params?.requestedExchange ?? exchange,
+          exchange: params.requestedExchange,
           baseCurrency: params?.requestedBaseCurrency,
-          marketType: params?.requestedMarketType ?? marketType,
+          marketType: params.requestedMarketType,
         });
 
         const normalizedBaseCurrency = normalizeFormBaseCurrency(catalog.baseCurrency);
@@ -200,14 +200,14 @@ export default function MarketUniverseForm({
         setCatalogLoading(false);
       }
     },
-    [exchange, labels.loadCatalogError, marketType]
+    [labels.loadCatalogError]
   );
 
   useEffect(() => {
     void loadCatalog({
       requestedExchange: initial?.exchange ?? 'BINANCE',
       requestedBaseCurrency: normalizeFormSymbol(initial?.baseCurrency) || undefined,
-      requestedMarketType: initial?.marketType,
+      requestedMarketType: initial?.marketType ?? 'FUTURES',
     });
   }, [initial?.baseCurrency, initial?.exchange, initial?.marketType, loadCatalog]);
 

@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { resolveBootstrapAdminPassword } from '../prisma/seedAdminPassword';
 
 const prisma = new PrismaClient();
 
@@ -105,7 +106,7 @@ async function ensureUser(email: string) {
   });
   if (existing) return existing.id;
 
-  const password = process.env.SNAPSHOT_USER_PASSWORD ?? 'Admin12#$';
+  const password = resolveBootstrapAdminPassword('SNAPSHOT_USER_PASSWORD');
   const passwordHash = await bcrypt.hash(password, 10);
   const created = await prisma.user.create({
     data: {

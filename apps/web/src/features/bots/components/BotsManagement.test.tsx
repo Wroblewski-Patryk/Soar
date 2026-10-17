@@ -18,6 +18,7 @@ const getRuntimeSessionMock = vi.hoisted(() => vi.fn());
 const listRuntimeSymbolStatsMock = vi.hoisted(() => vi.fn());
 const listRuntimePositionsMock = vi.hoisted(() => vi.fn());
 const listRuntimeTradesMock = vi.hoisted(() => vi.fn());
+const closeRuntimePositionMock = vi.hoisted(() => vi.fn());
 const loadBotMonitoringAggregateMock = vi.hoisted(() => vi.fn());
 const getBotPortfolioHistoryMock = vi.hoisted(() => vi.fn());
 const listStrategiesMock = vi.hoisted(() => vi.fn());
@@ -51,6 +52,7 @@ vi.mock("../services/bots.service", () => ({
   listBotRuntimeSessionSymbolStats: listRuntimeSymbolStatsMock,
   listBotRuntimeSessionPositions: listRuntimePositionsMock,
   listBotRuntimeSessionTrades: listRuntimeTradesMock,
+  closeBotRuntimeSessionPosition: closeRuntimePositionMock,
   getBotPortfolioHistory: getBotPortfolioHistoryMock,
 }));
 
@@ -87,6 +89,7 @@ afterEach(() => {
   listRuntimeSymbolStatsMock.mockReset();
   listRuntimePositionsMock.mockReset();
   listRuntimeTradesMock.mockReset();
+  closeRuntimePositionMock.mockReset();
   loadBotMonitoringAggregateMock.mockReset();
   getBotPortfolioHistoryMock.mockReset();
   listWalletsMock.mockClear();
@@ -473,8 +476,7 @@ describe("BotsManagement", () => {
     listMarketUniversesMock.mockResolvedValue([
       { id: "g-delete-paper", name: "Delete Paper Group", marketType: "FUTURES", baseCurrency: "USDT", whitelist: [], blacklist: [] },
     ]);
-    listMock
-      .mockResolvedValueOnce([
+    listMock.mockResolvedValue([
         {
           id: "b-paper",
           name: "Paper Bot",
@@ -486,8 +488,7 @@ describe("BotsManagement", () => {
           liveOptIn: false,
           maxOpenPositions: 1,
         },
-      ])
-      .mockResolvedValueOnce([]);
+      ]);
     deleteMock.mockResolvedValue(undefined);
     await renderWithI18n();
 
@@ -495,6 +496,7 @@ describe("BotsManagement", () => {
       expect(screen.getByDisplayValue("Paper Bot")).toBeInTheDocument();
     });
 
+    listMock.mockResolvedValue([]);
     fireEvent.click(screen.getByRole("button", { name: "Usun" }));
 
     await waitFor(() => {
@@ -964,6 +966,140 @@ describe("BotsManagement", () => {
       expect(screen.getByText("Historia - log operacyjny trade'ow")).toBeInTheDocument();
       expect(screen.getByTestId("monitor-trade-order-trade-close-1")).toHaveTextContent("-");
       expect(screen.getByTestId("monitor-trade-position-trade-close-1")).toHaveTextContent("-");
+    });
+  });
+
+  it("closes a PAPER position from a canceled inactive bot session", async () => {
+    listStrategiesMock.mockResolvedValue([]);
+    listMarketUniversesMock.mockResolvedValue([]);
+    listMock.mockResolvedValue([{
+      id: "b-stopped",
+      name: "Stopped Paper Bot",
+      mode: "PAPER",
+      exchange: "BINANCE",
+      marketType: "FUTURES",
+      isActive: false,
+      liveOptIn: false,
+      maxOpenPositions: 1,
+    }]);
+    const session = {
+      id: "session-stopped",
+      botId: "b-stopped",
+      mode: "PAPER",
+      status: "CANCELED",
+      startedAt: "2026-10-17T12:00:00.000Z",
+      finishedAt: "2026-10-17T12:30:00.000Z",
+      lastHeartbeatAt: "2026-10-17T12:29:00.000Z",
+      stopReason: "BOT_DEACTIVATED",
+      errorMessage: null,
+      metadata: null,
+      createdAt: "2026-10-17T12:00:00.000Z",
+      updatedAt: "2026-10-17T12:30:00.000Z",
+      durationMs: 1_800_000,
+      eventsCount: 1,
+      symbolsTracked: 1,
+      summary: {
+        totalSignals: 1,
+        longEntries: 1,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+        openPositionCount: 1,
+        openPositionQty: 1,
+      },
+    };
+    const symbolStats = {
+      sessionId: session.id,
+      items: [],
+      summary: { ...session.summary, unrealizedPnl: 0, totalPnl: 0 },
+    };
+    const positions = {
+      sessionId: session.id,
+      total: 1,
+      openCount: 1,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: { startedAt: session.startedAt, finishedAt: session.finishedAt },
+      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0, openPositionQty: 1 },
+      openOrders: [],
+      openItems: [{
+        id: "position-stopped",
+        symbol: "DOTUSDT",
+        side: "LONG",
+        status: "OPEN",
+        origin: "BOT_RUNTIME",
+        managementMode: "BOT_MANAGED",
+        syncState: "IN_SYNC",
+        continuityState: "CONFIRMED",
+        actionable: true,
+        quantity: 1,
+        leverage: 1,
+        entryPrice: 1.25,
+        entryNotional: 1.25,
+        exitPrice: null,
+        stopLoss: null,
+        takeProfit: null,
+        openedAt: session.startedAt,
+        closedAt: null,
+        holdMs: 1_800_000,
+        dcaCount: 0,
+        feesPaid: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        markPrice: 1.25,
+        firstTradeAt: session.startedAt,
+        lastTradeAt: session.startedAt,
+        tradesCount: 1,
+      }],
+      historyItems: [],
+    };
+    const trades = {
+      sessionId: session.id,
+      total: 0,
+      meta: { page: 1, pageSize: 200, total: 0, totalPages: 0, hasPrev: false, hasNext: false },
+      window: positions.window,
+      items: [],
+    };
+    listRuntimeSessionsMock.mockResolvedValue([session]);
+    getRuntimeSessionMock.mockResolvedValue(session);
+    listRuntimeSymbolStatsMock.mockResolvedValue(symbolStats);
+    listRuntimePositionsMock.mockResolvedValue(positions);
+    listRuntimeTradesMock.mockResolvedValue(trades);
+    loadBotMonitoringAggregateMock.mockResolvedValue({
+      sessionDetail: { ...session, id: "AGGREGATE" },
+      symbolStats,
+      positions: { ...positions, sessionId: "AGGREGATE" },
+      trades: { ...trades, sessionId: "AGGREGATE" },
+    });
+    getBotPortfolioHistoryMock.mockResolvedValue(null);
+    closeRuntimePositionMock.mockResolvedValue({
+      status: "closed",
+      orderId: "close-order-stopped",
+      positionId: "position-stopped",
+    });
+
+    await renderWithI18n();
+    fireEvent.click(screen.getByRole("tab", { name: /Operacje runtime|Monitoring|Runtime operations/i }));
+    expect(await screen.findByText(/Aby zamknac otwarta pozycje/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Widok"), { target: { value: "session" } });
+
+    const closeButton = await screen.findByRole("button", { name: "Zamknij pozycje" });
+    fireEvent.click(closeButton);
+    await waitFor(() => {
+      expect(closeRuntimePositionMock).toHaveBeenCalledWith(
+        "b-stopped",
+        "session-stopped",
+        "position-stopped",
+        { riskAck: true }
+      );
     });
   });
 

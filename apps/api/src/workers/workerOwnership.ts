@@ -73,6 +73,24 @@ export const resolveWorkerOwnershipConfig = (
   };
 };
 
+export const assertDeployedWorkerOwnership = (
+  family: WorkerFamily,
+  input: ResolveWorkerTopologyInput = {}
+) => {
+  const env = input.env ?? process.env;
+  if (resolveWorkerEnvironment(input.nodeEnv ?? env.NODE_ENV) !== 'deployed') return;
+
+  const mode = resolveWorkerMode(env.WORKER_MODE);
+  const owner = resolveWorkerOwnershipConfig({ env })[family];
+  const queueVariable = QUEUE_ENV_BY_FAMILY[family];
+  if (mode !== 'split' || owner !== 'worker' || (queueVariable && !env[queueVariable]?.trim())) {
+    throw new Error(
+      `Worker ${WORKER_FAMILY_LABELS[family]} cannot start without split ownership` +
+        (queueVariable ? ` and ${queueVariable}` : '')
+    );
+  }
+};
+
 const resolveDegradedReasons = (input: {
   mode: WorkerMode;
   environment: WorkerEnvironment;

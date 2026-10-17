@@ -12,6 +12,7 @@ import { requireTrustedOrigin } from './middleware/requireTrustedOrigin';
 import { assertCriticalSecretsReadiness } from './config/criticalSecretsReadiness';
 import { createTrustProxyMatcher } from './config/proxyTrust';
 import { createModuleLogger } from './lib/logger';
+import { startProcessMemoryTelemetry } from './observability/processMemoryTelemetry';
 
 const logger = createModuleLogger('api.server');
 
@@ -74,6 +75,7 @@ if (process.env.NODE_ENV !== 'test') {
       corsClientUrl: clientUrl,
       corsOriginsCount: corsOrigins.length,
     });
+    startProcessMemoryTelemetry();
   });
 }
 

@@ -49,3 +49,43 @@ export const safeUpsertBacktestReportForRun = async (input: {
     throw error;
   }
 };
+
+export const initializePendingBacktestReport = async (userId: string, runId: string) => {
+  const runLifecycle = buildRunLifecyclePayload({
+    status: 'PENDING',
+    reportReady: false,
+    generatedAt: null,
+  });
+  const emptyMetrics = {
+    totalTrades: 0,
+    winningTrades: 0,
+    losingTrades: 0,
+    winRate: null,
+    netPnl: null,
+    grossProfit: null,
+    grossLoss: null,
+    maxDrawdown: null,
+    sharpe: null,
+    metrics: { runLifecycle },
+  };
+  await upsertBacktestReportForRun({
+    backtestRunId: runId,
+    create: { userId, backtestRunId: runId, ...emptyMetrics },
+    update: emptyMetrics,
+  });
+};
+
+export const markBacktestEnqueueFailed = async (userId: string, runId: string) => {
+  const runLifecycle = buildRunLifecyclePayload({
+    status: 'FAILED',
+    reportReady: false,
+    degraded: true,
+    reason: 'queue_enqueue_failed',
+  });
+  await safeUpdateRun(runId, { status: 'FAILED', finishedAt: new Date() });
+  await safeUpsertBacktestReportForRun({
+    backtestRunId: runId,
+    create: { userId, backtestRunId: runId, metrics: { runLifecycle } },
+    update: { metrics: { runLifecycle } },
+  });
+};

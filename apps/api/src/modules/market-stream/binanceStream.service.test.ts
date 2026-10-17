@@ -203,13 +203,15 @@ describe('BinanceMarketStreamWorker', () => {
     expect(payload.params).toEqual(['btcusdt@ticker', 'btcusdt@kline_1m']);
   });
 
-  it('logs normalized ticker event from socket message', () => {
+  it('forwards normalized ticker events without logging every market update', () => {
     const socket = createMockSocket();
     const logger = createLogger();
+    const onEvent = vi.fn();
     const worker = new BinanceMarketStreamWorker(
       {
         symbols: ['BTCUSDT'],
         candleIntervals: ['1m'],
+        onEvent,
       },
       vi.fn().mockReturnValue(socket),
       logger
@@ -226,11 +228,14 @@ describe('BinanceMarketStreamWorker', () => {
       }),
     });
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(onEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: 'market_stream.ticker',
+        type: 'ticker',
         symbol: 'BTCUSDT',
       })
+    );
+    expect(logger.info).not.toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'market_stream.ticker' })
     );
   });
 });

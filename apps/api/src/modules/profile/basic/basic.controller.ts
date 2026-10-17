@@ -3,6 +3,7 @@ import * as userService from './basic.service';
 import { sendError } from '../../../utils/apiError';
 import { sendValidationError } from '../../../utils/formatZodError';
 import { updateUserSchema } from './basic.types';
+import { deleteAccount } from '../security/security.controller';
 
 type ProfileRequest = Request & { user?: { id: string } };
 
@@ -24,8 +25,4 @@ export const updateProfile = async (req: ProfileRequest, res: Response) => {
   }
 };
 
-export const deleteUser = async (req: ProfileRequest, res: Response) => {
-  if (!req.user?.id) return sendError(res, 401, 'Unauthorized');
-  await userService.deleteUser(req.user.id);
-  return res.status(204).end();
-};
+export const deleteUser = deleteAccount;

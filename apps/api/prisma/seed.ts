@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { resolveSeedAdminPassword } from './seedAdminPassword';
 import { ensureSubscriptionCatalog, OWNER_ACCOUNT_EMAIL, setActiveSubscriptionForUser } from '../src/modules/subscriptions/subscriptions.service';
 
 const prisma = new PrismaClient();
@@ -164,7 +165,7 @@ const BOT_SEED = [
 ];
 
 async function main() {
-  const password = await bcrypt.hash('Admin12#$', 10);
+  const password = await bcrypt.hash(resolveSeedAdminPassword(), 10);
 
   await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
 

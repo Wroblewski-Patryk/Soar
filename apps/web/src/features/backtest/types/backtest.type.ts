@@ -15,6 +15,7 @@ export type BacktestRun = {
   finishedAt: string | null;
   notes: string | null;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type BacktestTrade = {

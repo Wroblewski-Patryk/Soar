@@ -1,7 +1,8 @@
 import { bootstrapWorker } from './workerBootstrap';
 import { getQueueTuning } from '../queue/queueTuning';
-import { resolveWorkerOwnershipConfig } from './workerOwnership';
+import { assertDeployedWorkerOwnership, resolveWorkerOwnershipConfig } from './workerOwnership';
 
+assertDeployedWorkerOwnership('marketData');
 const ownership = resolveWorkerOwnershipConfig();
 
 bootstrapWorker(

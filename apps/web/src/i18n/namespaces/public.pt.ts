@@ -30,6 +30,7 @@ export const publicPt = {
   offline: {
     title: "Modo offline",
     description: "O Soar esta temporariamente offline. Verifique a ligacao e tente novamente.",
+    retry: "Tentar novamente",
   },
   sharedUi: {
     loadingTitle: "A carregar dados",

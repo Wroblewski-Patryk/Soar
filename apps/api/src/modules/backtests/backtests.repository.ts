@@ -12,6 +12,15 @@ export const updateBacktestRunById = (runId: string, data: Prisma.BacktestRunUpd
 export const findBacktestRunById = (runId: string) =>
   prisma.backtestRun.findUnique({ where: { id: runId } });
 
+export const listPendingBacktestRunIds = async () => {
+  const runs = await prisma.backtestRun.findMany({
+    where: { status: 'PENDING' },
+    select: { id: true },
+    orderBy: { createdAt: 'asc' },
+  });
+  return runs.map((run) => run.id);
+};
+
 export const findOwnedStrategyForBacktest = (userId: string, strategyId: string) =>
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },

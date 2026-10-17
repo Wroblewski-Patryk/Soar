@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  assertDeployedWorkerOwnership,
   resolveWorkerEnvironment,
   resolveWorkerMode,
   resolveWorkerTopologySnapshot,
@@ -103,5 +104,34 @@ describe('workerOwnership', () => {
     ]);
     expect(snapshot.requiredQueues).toEqual(['WORKER_EXECUTION_QUEUE']);
     expect(snapshot.requiredWorkerFamilies).toEqual(['execution', 'market-stream']);
+  });
+
+  it('rejects production worker processes that only emit heartbeats without owning work', () => {
+    for (const family of ['backtest', 'execution', 'marketData', 'marketStream'] as const) {
+      expect(() => assertDeployedWorkerOwnership(family, {
+        env: { NODE_ENV: 'production' },
+      })).toThrow(/cannot start without split ownership/);
+    }
+  });
+
+  it('requires matching queues for deployed workers and accepts the split contract', () => {
+    const env = {
+      NODE_ENV: 'production',
+      WORKER_MODE: 'split',
+      WORKER_BACKTEST_OWNERSHIP: 'worker',
+      WORKER_MARKET_DATA_OWNERSHIP: 'worker',
+      WORKER_BACKTEST_QUEUE: 'backtest',
+      WORKER_EXECUTION_QUEUE: 'execution',
+      WORKER_MARKET_DATA_QUEUE: 'market-data',
+    };
+    for (const family of ['backtest', 'execution', 'marketData', 'marketStream'] as const) {
+      expect(() => assertDeployedWorkerOwnership(family, { env })).not.toThrow();
+    }
+    expect(() => assertDeployedWorkerOwnership('backtest', {
+      env: { ...env, WORKER_BACKTEST_QUEUE: '' },
+    })).toThrow(/WORKER_BACKTEST_QUEUE/);
+    expect(() => assertDeployedWorkerOwnership('backtest', {
+      env: { NODE_ENV: 'test' },
+    })).not.toThrow();
   });
 });
