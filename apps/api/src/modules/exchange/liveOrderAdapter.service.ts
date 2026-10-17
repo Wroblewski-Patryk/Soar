@@ -93,6 +93,7 @@ export class LiveOrderAdapter {
     const feeReconciliation = await reconcileLiveOrderFee(this.connector, {
       symbol: parsed.order.symbol,
       exchangeOrderId: orderResult.id || null,
+      exchangeFilledQuantity: orderResult.filled,
       inlineFills: orderResult.fills ?? [],
     });
     metricsStore.recordRuntimeReconciliationDelay(

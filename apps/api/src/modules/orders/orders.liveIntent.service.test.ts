@@ -8,6 +8,9 @@ import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEnt
 import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
 import { finalizeRuntimeDcaFill } from '../engine/runtimeImmediateFillFinalizer.service';
+import { LiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
+import { CcxtFuturesConnector, type CcxtExchangeLikeClient } from '../exchange/ccxtFuturesConnector.service';
+import { reconcileLiveOrderFee } from '../exchange/liveFeeReconciliation.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -133,6 +136,140 @@ describe('durable LIVE order intent', () => {
   beforeEach(async () => {
     await cleanupDb();
     await allowLive();
+  });
+
+  it.each([
+    { label: 'two real executions', requestedQuantity: 1, expectedFillCount: 2, expectedFee: 0.02 },
+    { label: 'one duplicated snapshot', requestedQuantity: 0.5, expectedFillCount: 1, expectedFee: 0.01 },
+  ])('materializes $label through the adapter and replays without new fills', async ({
+    requestedQuantity, expectedFillCount, expectedFee,
+  }) => {
+    const user = await prisma.user.create({
+      data: { email: `orders-live-identical-${requestedQuantity}@example.com`, password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: `Live Identical ${requestedQuantity}`,
+      strategyName: `Live Identical Strategy ${requestedQuantity}`, symbol: 'ETHUSDT',
+    });
+    const fill = {
+      order: `identical-${requestedQuantity}`, symbol: 'ETHUSDT',
+      side: 'buy', price: 100, amount: 0.5, cost: 50,
+      fee: { cost: 0.01, currency: 'USDT', rate: 0.0002 },
+    };
+    const placeOrder = vi.fn().mockResolvedValue({
+      id: `identical-${requestedQuantity}`, status: 'closed', filled: requestedQuantity,
+      average: 100, trades: [fill, { ...fill }],
+    });
+    const client = {
+      loadMarkets: vi.fn().mockResolvedValue({}), createOrder: placeOrder,
+    } as unknown as CcxtExchangeLikeClient;
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm', marketType: 'future' },
+      vi.fn().mockResolvedValue(client)
+    );
+    const adapter = new LiveOrderAdapter(connector);
+    const executeLiveOrder = vi.fn(async () => {
+      const result = await adapter.placeLiveOrderWithFees({ order: {
+        symbol: 'ETHUSDT', side: 'buy', type: 'market', amount: requestedQuantity,
+        clientOrderId: `soar_identical_${requestedQuantity}`,
+      } });
+      return { ...result, status: 'FILLED' as const };
+    });
+    const lookupLiveOrder = vi.fn();
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: requestedQuantity, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: `soar_identical_${requestedQuantity}`,
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const order = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+      expect(order.fee).toBeCloseTo(expectedFee, 10);
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(expectedFillCount);
+      const retried = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(retried.id).toBe(order.id);
+      expect(placeOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(expectedFillCount);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('keeps the intent UNKNOWN when identical unidentified fills cannot explain the venue quantity', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-ambiguous-fills@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Live Ambiguous Fills',
+      strategyName: 'Live Ambiguous Fill Strategy', symbol: 'ETHUSDT',
+    });
+    const rawFill = {
+      order: 'ambiguous-fill-order', symbol: 'ETHUSDT',
+      side: 'buy', price: 100, amount: 0.5, cost: 50,
+      fee: { cost: 0.01, currency: 'USDT', rate: 0.0002 },
+    };
+    const placeOrder = vi.fn().mockResolvedValue({
+      id: 'ambiguous-fill-order', status: 'closed', filled: 0.75,
+      average: 100, trades: [rawFill, { ...rawFill }],
+    });
+    const client = {
+      loadMarkets: vi.fn().mockResolvedValue({}), createOrder: placeOrder,
+    } as unknown as CcxtExchangeLikeClient;
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm', marketType: 'future' },
+      vi.fn().mockResolvedValue(client)
+    );
+    const adapter = new LiveOrderAdapter(connector);
+    const fill = {
+      exchangeTradeId: null, exchangeOrderId: 'ambiguous-fill-order',
+      symbol: 'ETHUSDT', side: 'buy', price: 100, quantity: 0.5,
+      notional: 50, feeCost: 0.01, feeCurrency: 'USDT', feeRate: 0.0002,
+      executedAt: null, source: 'createOrder' as const, raw: rawFill,
+    };
+    const executeLiveOrder = vi.fn(async () => {
+      const result = await adapter.placeLiveOrderWithFees({ order: {
+        symbol: 'ETHUSDT', side: 'buy', type: 'market', amount: 1,
+        clientOrderId: 'soar_ambiguous_fill_order',
+      } });
+      return { ...result, status: 'FILLED' as const };
+    });
+    const lookupLiveOrder = vi.fn(async () => {
+      await reconcileLiveOrderFee(connector, {
+        symbol: 'ETHUSDT', exchangeOrderId: 'ambiguous-fill-order',
+        exchangeFilledQuantity: 0.75, inlineFills: [fill, { ...fill }],
+      });
+      throw new Error('unreachable');
+    });
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: 1, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: 'soar_ambiguous_fill_order',
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const inconsistentLookup = vi.fn().mockResolvedValue({
+        exchangeOrderId: 'ambiguous-fill-order', status: 'FILLED' as const,
+        exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100, fills: [fill],
+      });
+      await expect(openOrder(user.id, payload, {
+        executeLiveOrder, lookupLiveOrder: inconsistentLookup,
+      })).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      expect(placeOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(1);
+      expect(inconsistentLookup).toHaveBeenCalledTimes(1);
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+      expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
+      expect(await prisma.orderFill.count({ where: { userId: user.id } })).toBe(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
   });
 
   it('persists the intent before submission and recovers a timeout without resubmitting', async () => {

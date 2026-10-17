@@ -696,6 +696,21 @@ export const openOrder = async (
           return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
         }, 0)
       : exchangeFilledQuantityFromSnapshot;
+  if (liveIntentId && status === 'FILLED') {
+    const quantityMatchesRequest = (quantity: number) =>
+      Math.abs(quantity - canonicalPayload.quantity) <=
+      1e-9 * Math.max(1, Math.abs(quantity), Math.abs(canonicalPayload.quantity));
+    if (
+      (filledQuantityFromExchange != null && !quantityMatchesRequest(filledQuantityFromExchange)) ||
+      (exchangeFilledQuantityFromSnapshot != null &&
+        !quantityMatchesRequest(exchangeFilledQuantityFromSnapshot))
+    ) {
+      throw orderErrors.liveExecutionUnknown({
+        orderId: liveIntentId,
+        clientOrderId: canonicalPayload.clientOrderId ?? '',
+      });
+    }
+  }
   const resolvedPaperFillPrice =
     canonicalPayload.mode === 'PAPER' && status === 'FILLED'
       ? await resolvePaperImmediateFillPrice({

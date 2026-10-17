@@ -218,9 +218,9 @@ describe('LiveOrderAdapter', () => {
     expect(result.exchangeOrderId).toBe('order-fee-2');
     expect(result.fee).toBeCloseTo(0.0101, 10);
     expect(result.feeSource).toBe('EXCHANGE_FILL');
-    expect(result.feePending).toBe(false);
+    expect(result.feePending).toBe(true);
     expect(result.feeCurrency).toBe('USDT');
-    expect(result.effectiveFeeRate).toBeCloseTo(0.0005, 10);
+    expect(result.effectiveFeeRate).toBeNull();
     expect(fetchOrderWithFills).toHaveBeenCalledTimes(1);
     expect(fetchTradesForOrder).toHaveBeenCalledTimes(1);
   });

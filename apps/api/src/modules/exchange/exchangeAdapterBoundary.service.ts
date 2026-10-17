@@ -544,6 +544,7 @@ export const lookupLiveOrderThroughBoundary = async (
     const fee = await reconcileLiveOrderFee(connector as unknown as CcxtFuturesConnector, {
       symbol: params.order.symbol,
       exchangeOrderId: order.id,
+      exchangeFilledQuantity: order.filled,
       inlineFills: order.fills ?? [],
     });
     return {
