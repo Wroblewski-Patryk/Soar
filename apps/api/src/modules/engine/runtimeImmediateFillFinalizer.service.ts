@@ -4,6 +4,7 @@ import { lockExchangeOrderIdentity } from '../orders/orders.exchangeIdentityLock
 import { computePositionAddUpdate } from '../orders/positionFillMath';
 import { isCloseQuantityComplete } from './executionOrchestrator.helpers';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
+import { resolveKnownEntryFeesInTransaction } from '../orders/orders.exchangeEventFinalization.service';
 
 export const recordUnknownRuntimeOrderOutcome = async (input: {
   userId: string;
@@ -148,21 +149,23 @@ export const finalizeLiveCloseFill = async (input: {
   if (existingTrade) {
     if (position.status !== 'CLOSED') throw new Error('Close trade exists while position is open');
     await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-    return { applied: false, realizedPnl: existingTrade.realizedPnl ?? 0 };
+    return { applied: false, realizedPnl: existingTrade.realizedPnl };
   }
   if (position.userId !== input.userId || position.status !== 'OPEN' || position.syncState !== 'IN_SYNC' ||
       !isCloseQuantityComplete(input.fillQuantity, position.quantity)) {
     throw new Error('Runtime CLOSE position is not safely closable');
   }
   const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
-  const entryFees = await tx.trade.aggregate({
-    where: { userId: input.userId, positionId: position.id, side: entrySide },
-    _sum: { fee: true },
+  const entryFees = await resolveKnownEntryFeesInTransaction(tx, {
+    userId: input.userId, positionId: position.id, entrySide,
+    imported: position.origin === 'EXCHANGE_SYNC',
   });
   const grossPnl = position.side === 'LONG'
     ? (input.fillPrice - position.entryPrice) * input.fillQuantity
     : (position.entryPrice - input.fillPrice) * input.fillQuantity;
-  const realizedPnl = grossPnl - (entryFees._sum.fee ?? 0) - input.exitFee;
+  const realizedPnl = entryFees != null && !order.feePending &&
+    Number.isFinite(input.exitFee) && order.fee != null
+    ? grossPnl - entryFees - input.exitFee : null;
   await tx.position.update({
     where: { id: position.id },
     data: {
@@ -177,7 +180,8 @@ export const finalizeLiveCloseFill = async (input: {
       walletId: input.walletId ?? undefined, strategyId: input.strategyId ?? undefined,
       orderId: order.id, positionId: position.id, symbol: order.symbol, side: order.side,
       lifecycleAction: 'CLOSE', price: input.fillPrice, quantity: input.fillQuantity,
-      fee: input.exitFee, feeSource: order.feeSource, feePending: order.feePending,
+      fee: order.fee, feeSource: order.feeSource,
+      feePending: order.feePending || entryFees == null,
       feeCurrency: order.feeCurrency, effectiveFeeRate: order.effectiveFeeRate,
       exchangeTradeId: order.exchangeTradeId, realizedPnl,
       closeReason: input.closeReason, closeInitiator: input.closeInitiator,

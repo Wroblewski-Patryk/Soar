@@ -30,7 +30,9 @@ import {
   hydrateImportedPositionHistory,
 } from './importedPositionHistoryHydrator.service';
 import {
+  backfillClosedImportedPositionsPendingHistory,
   hydrateReconciledImportedPositionHistory,
+  listClosedImportedPositionsPendingHistoryForApiKey,
   resolveImportedClosedHistoryClosedAt,
 } from './livePositionReconciliation.history';
 import { CanonicalBotContinuityContext, LocalManagedLivePosition, ReconciliationPositionDiagnostic, ReconciliationResult, ReconcileDeps, ReconcileFn } from './livePositionReconciliation.types';
@@ -207,6 +209,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         managementMode: true,
       },
     }),
+  listClosedSyncedPositionsPendingHistoryForApiKey:
+    listClosedImportedPositionsPendingHistoryForApiKey,
   markMissingSyncedPosition: async (positionId, input) => {
     await prisma.position.update({
       where: { id: positionId },
@@ -821,6 +825,8 @@ export const reconcileExternalPositionsFromExchange = async (
             : deps.now();
         await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
       }
+
+      await backfillClosedImportedPositionsPendingHistory({ deps, apiKey });
 
       const openOrderPositionKeysByOwner = new Map<string, Set<string>>();
       let openOrderSnapshotAvailable = false;

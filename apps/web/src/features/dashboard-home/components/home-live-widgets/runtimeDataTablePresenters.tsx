@@ -789,7 +789,7 @@ export const createTradesColumns = ({
     accessor: (row) => row.fee,
     render: (row) => (
       <div className="flex flex-col leading-tight">
-        <span>{formatRuntimeAmount(row.fee)}</span>
+        <span>{row.fee == null ? "-" : formatRuntimeAmount(row.fee)}</span>
         <span className="text-[10px] uppercase tracking-wide opacity-60">
           {formatRuntimeTradeFeeMeta(row)}
         </span>
@@ -802,8 +802,8 @@ export const createTradesColumns = ({
     sortable: true,
     accessor: (row) => row.realizedPnl,
     render: (row) => (
-      <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
-        {formatRuntimeAmount(row.realizedPnl)}
+      <span className={row.realizedPnl == null ? "" : row.realizedPnl >= 0 ? "text-success" : "text-error"}>
+        {row.realizedPnl == null ? "-" : formatRuntimeAmount(row.realizedPnl)}
       </span>
     ),
   },

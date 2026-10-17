@@ -394,11 +394,11 @@ export const listBotRuntimeSessionTrades = async (
         side: trade.side,
         price: trade.price,
         quantity: trade.quantity,
-        fee: trade.fee ?? 0,
+        fee: trade.fee,
         feeSource: trade.feeSource,
         feePending: trade.feePending,
         feeCurrency: trade.feeCurrency ?? null,
-        realizedPnl: trade.realizedPnl ?? 0,
+        realizedPnl: trade.realizedPnl,
         executedAt: trade.executedAt,
         createdAt: trade.createdAt,
         orderId: trade.orderId,
@@ -443,9 +443,9 @@ export const listBotRuntimeSessionTrades = async (
         side: toOpenAnchorTradeSide(position.side),
         price: position.entryPrice,
         quantity: position.quantity,
-        fee: 0,
+        fee: position.origin === 'EXCHANGE_SYNC' ? null : 0,
         feeSource: 'ESTIMATED' as const,
-        feePending: false,
+        feePending: position.origin === 'EXCHANGE_SYNC',
         feeCurrency: null,
         realizedPnl: 0,
         executedAt: position.openedAt,
@@ -471,7 +471,8 @@ export const listBotRuntimeSessionTrades = async (
     right: (typeof historyRows)[number]
   ) => {
     const dir = sortDir === 'asc' ? 1 : -1;
-    const compareNumbers = (a: number, b: number) => (a === b ? 0 : a > b ? 1 : -1) * dir;
+    const compareNumbers = (a: number | null, b: number | null) =>
+      a == null ? (b == null ? 0 : 1) : b == null ? -1 : (a === b ? 0 : a > b ? 1 : -1) * dir;
     const compareStrings = (a: string, b: string) => a.localeCompare(b) * dir;
     switch (sortBy) {
       case 'symbol':
@@ -503,7 +504,7 @@ export const listBotRuntimeSessionTrades = async (
   });
 
   const total = sortedRows.length;
-  const feesPaid = sortedRows.reduce((acc, trade) => acc + trade.fee, 0);
+  const feesPaid = sortedRows.reduce((acc, trade) => acc + (trade.fee ?? 0), 0);
   const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
   const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
   const offset = (safePage - 1) * pageSize;

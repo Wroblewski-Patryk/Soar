@@ -57,6 +57,7 @@ const computeCloseRealizedPnl = async (input: {
   closePrice: number;
   closeQuantity: number;
   exitFee: number;
+  exitFeePending: boolean;
   imported: boolean;
 }) => {
   const entryLegSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
@@ -64,7 +65,7 @@ const computeCloseRealizedPnl = async (input: {
     userId: input.userId, positionId: input.positionId,
     entrySide: entryLegSide, imported: input.imported,
   });
-  if (entryFees == null) return null;
+  if (entryFees == null || input.exitFeePending) return null;
   const grossPnl =
     input.positionSide === 'LONG'
       ? (input.closePrice - input.entryPrice) * input.closeQuantity
@@ -78,6 +79,11 @@ const refreshCloseRealizedPnlForOrder = async (input: {
   orderId: string;
   exitFee: number;
 }) => {
+  const closeOrder = await input.tx.order.findFirst({
+    where: { id: input.orderId, userId: input.userId },
+    select: { feePending: true },
+  });
+  if (!closeOrder) return;
   if (!Number.isFinite(input.exitFee)) return;
 
   const closeTrades = await input.tx.trade.findMany({
@@ -92,6 +98,7 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       positionId: true,
       price: true,
       quantity: true,
+      fee: true, feeSource: true, feePending: true,
     },
   });
 
@@ -118,6 +125,8 @@ const refreshCloseRealizedPnlForOrder = async (input: {
     });
     if (!position) continue;
 
+    const hasCanonicalImportedCloseFee = position.origin === 'EXCHANGE_SYNC' &&
+      closeTrade.feeSource === 'EXCHANGE_FILL' && !closeTrade.feePending && closeTrade.fee != null && Number.isFinite(closeTrade.fee);
     const realizedPnl = await computeCloseRealizedPnl({
       tx: input.tx,
       userId: input.userId,
@@ -126,13 +135,15 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       entryPrice: position.entryPrice,
       closePrice: closeTrade.price,
       closeQuantity: closeTrade.quantity,
-      exitFee: input.exitFee,
+      exitFee: hasCanonicalImportedCloseFee ? closeTrade.fee! : input.exitFee,
+      exitFeePending: hasCanonicalImportedCloseFee ? false : closeOrder.feePending,
       imported: position.origin === 'EXCHANGE_SYNC',
     });
 
     await input.tx.trade.update({
       where: { id: closeTrade.id },
-      data: { realizedPnl },
+      data: { realizedPnl,
+        feePending: (!hasCanonicalImportedCloseFee && closeOrder.feePending) || realizedPnl == null },
     });
     await input.tx.position.update({
       where: { id: position.id },

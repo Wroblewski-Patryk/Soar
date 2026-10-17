@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { backfillClosedImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
 import {
   applyLiveExchangeAccountUpdateEvent,
   applyLiveExchangeOrderTradeUpdateEvent,
@@ -2082,7 +2083,7 @@ describe('orders.exchangeEvents.service', () => {
     expect(closeTrade.realizedPnl).toBeCloseTo(8.42, 6);
   });
 
-  it('refreshes close PnL after a missing partial close fee is backfilled', async () => {
+  it('keeps imported close PnL unknown until a missing partial exit fee is backfilled', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-close-fee-backfill@example.com', password: 'hashed' },
     });
@@ -2115,7 +2116,7 @@ describe('orders.exchangeEvents.service', () => {
         userId: user.id,
         botId: bot.id,
         walletId: wallet.id,
-        origin: 'BOT',
+        origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         symbol: 'ETHUSDT',
         side: 'LONG',
@@ -2141,7 +2142,7 @@ describe('orders.exchangeEvents.service', () => {
         feeSource: 'EXCHANGE_FILL',
         feePending: false,
         feeCurrency: 'USDT',
-        origin: 'BOT',
+        origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
       },
     });
@@ -2220,7 +2221,8 @@ describe('orders.exchangeEvents.service', () => {
     expect(pendingCloseTrade.lifecycleAction).toBe('CLOSE');
     expect(pendingCloseTrade.fee).toBeCloseTo(0.2, 10);
     expect(pendingCloseTrade.feePending).toBe(true);
-    expect(pendingCloseTrade.realizedPnl).toBeCloseTo(8.8, 6);
+    expect(pendingCloseTrade.realizedPnl).toBeNull();
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeNull();
 
     await applyLiveExchangeOrderTradeUpdateEvent({
       userId: user.id,
@@ -2263,6 +2265,39 @@ describe('orders.exchangeEvents.service', () => {
     });
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.realizedPnl).toBeCloseTo(8.7, 6);
+
+    const canonicalHistory = [
+      { exchangeTradeId: 'history-open-fee-backfill', exchangeOrderId: 'history-open-order',
+        symbol: 'ETHUSDT', side: 'BUY', price: 100, quantity: 1, notional: 100,
+        feeCost: 1, feeCurrency: 'USDT', feeRate: 0.01,
+        executedAt: '2026-05-06T10:00:00.000Z' },
+      { exchangeTradeId: 'trade-close-fee-backfill-1',
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        symbol: 'ETHUSDT', side: 'SELL', price: 110, quantity: 0.5, notional: 55,
+        feeCost: 0.1, feeCurrency: 'USDT', feeRate: 0.1 / 55,
+        executedAt: '2026-05-06T10:11:00.000Z' },
+      { exchangeTradeId: 'trade-close-fee-backfill-2',
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        symbol: 'ETHUSDT', side: 'SELL', price: 110, quantity: 0.5, notional: 55,
+        feeCost: 0.2, feeCurrency: 'USDT', feeRate: 0.2 / 55,
+        executedAt: '2026-05-06T10:12:00.000Z' },
+    ];
+    const backfillInput = {
+      userId: user.id, positionId: position.id, botId: bot.id,
+      walletId: wallet.id, strategyId: null, symbol: 'ETHUSDT',
+      positionSide: 'LONG' as const, managementMode: 'BOT_MANAGED' as const,
+      trades: canonicalHistory,
+    };
+    await backfillClosedImportedPositionHistory(backfillInput);
+    await backfillClosedImportedPositionHistory(backfillInput);
+    const afterHistory = await prisma.trade.findMany({ where: { positionId: position.id } });
+    expect(afterHistory).toHaveLength(2);
+    expect(afterHistory.find((trade) => trade.orderId === order.id)).toMatchObject({
+      quantity: 1, feePending: false, realizedPnl: 8.7,
+    });
+    expect(afterHistory.find((trade) => trade.orderId === order.id)?.fee).toBeCloseTo(0.3, 10);
+    expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(2);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeCloseTo(8.7, 6);
   });
 
   it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {

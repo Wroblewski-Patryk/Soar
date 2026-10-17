@@ -250,12 +250,15 @@ export default function BotsManagement({
     const items = [...(monitorTrades?.items ?? [])].sort(
       (a, b) => toTimestamp(a.executedAt) - toTimestamp(b.executedAt)
     );
-    let cumulativePnl = 0;
+    let cumulativePnl: number | null = 0;
     return items.map((trade, index) => {
-      cumulativePnl += trade.realizedPnl;
+      cumulativePnl = cumulativePnl == null || trade.realizedPnl == null
+        ? null : cumulativePnl + trade.realizedPnl;
       const capitalBase = trade.margin > 0 ? trade.margin : trade.notional;
-      const pnlPct = capitalBase > 0 ? (trade.realizedPnl / capitalBase) * 100 : 0;
-      const feePct = capitalBase > 0 ? (trade.fee / capitalBase) * 100 : 0;
+      const pnlPct = trade.realizedPnl == null ? null
+        : capitalBase > 0 ? (trade.realizedPnl / capitalBase) * 100 : 0;
+      const feePct = trade.fee == null ? null
+        : capitalBase > 0 ? (trade.fee / capitalBase) * 100 : 0;
       return {
         ...trade,
         rowNo: index + 1,

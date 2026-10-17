@@ -228,35 +228,79 @@ const persistImportedLifecycleTrades = async (input: {
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   derivedTrades: DerivedLifecycleTrade[];
 }) => {
-  const existingTradesByExchangeId = new Map(
-    (
-      await prisma.trade.findMany({
-        where: {
-          positionId: input.positionId,
-          origin: 'EXCHANGE_SYNC',
-          exchangeTradeId: { not: null },
-        },
-        select: {
-          id: true,
-          exchangeTradeId: true,
-        },
-      })
-    )
-      .filter((trade): trade is { id: string; exchangeTradeId: string } =>
-        typeof trade.exchangeTradeId === 'string')
-      .map((trade) => [trade.exchangeTradeId, trade.id] as const)
-  );
+  const existingTrades = await prisma.trade.findMany({
+    where: { positionId: input.positionId },
+    select: {
+      id: true, exchangeTradeId: true, lifecycleAction: true,
+      side: true, price: true, quantity: true,
+      order: { select: { exchangeOrderId: true } },
+    },
+  });
+  const existingTradesByExchangeId = new Map(existingTrades
+    .filter((trade): trade is typeof trade & { exchangeTradeId: string } =>
+      typeof trade.exchangeTradeId === 'string')
+    .map((trade) => [trade.exchangeTradeId, trade.id] as const));
+  const claimedTradeIds = new Set<string>();
+  const closeFillsByOrder = new Map<string, DerivedLifecycleTrade[]>();
+  for (const trade of input.derivedTrades) {
+    if (trade.lifecycleAction !== 'CLOSE' || !trade.exchangeOrderId) continue;
+    const fills = closeFillsByOrder.get(trade.exchangeOrderId) ?? [];
+    fills.push(trade);
+    closeFillsByOrder.set(trade.exchangeOrderId, fills);
+  }
+  const aggregateCloseByOrder = new Map<string, typeof existingTrades[number]>();
+  for (const [exchangeOrderId, fills] of closeFillsByOrder) {
+    if (fills.length < 2) continue;
+    const quantity = fills.reduce((sum, fill) => sum + fill.quantity, 0);
+    const price = fills.reduce((sum, fill) => sum + fill.price * fill.quantity, 0) / quantity;
+    const candidates = existingTrades.filter((existing) =>
+      existing.lifecycleAction === 'CLOSE' && existing.side === fills[0].side &&
+      existing.order?.exchangeOrderId === exchangeOrderId &&
+      nearlyEqual(existing.quantity, quantity) && nearlyEqual(existing.price, price));
+    if (candidates.length === 1) aggregateCloseByOrder.set(exchangeOrderId, candidates[0]);
+  }
+  const updatedAggregateCloseIds = new Set<string>();
   const closeAttribution = resolveExternalSyncMissingCloseAttribution();
   let createdCount = 0;
 
   for (const trade of input.derivedTrades) {
-    const existingTradeId = existingTradesByExchangeId.get(trade.exchangeTradeId);
+    const aggregateClose = trade.lifecycleAction === 'CLOSE' && trade.exchangeOrderId
+      ? aggregateCloseByOrder.get(trade.exchangeOrderId) : null;
+    if (aggregateClose) {
+      if (!updatedAggregateCloseIds.has(aggregateClose.id)) {
+        const fills = closeFillsByOrder.get(trade.exchangeOrderId!)!;
+        const feeTotal = fills.reduce((sum, fill) => sum + fill.feeCost, 0);
+        const notionalTotal = fills.reduce((sum, fill) => sum + fill.price * fill.quantity, 0);
+        const sameFeeCurrency = fills.every((fill) => fill.feeCurrency === fills[0].feeCurrency);
+        await prisma.trade.update({ where: { id: aggregateClose.id }, data: {
+          fee: feeTotal,
+          feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
+          feeCurrency: sameFeeCurrency ? fills[0].feeCurrency : null,
+          effectiveFeeRate: sameFeeCurrency && notionalTotal > 0 ? feeTotal / notionalTotal : null,
+          realizedPnl: fills.reduce((sum, fill) => sum + fill.realizedPnl, 0),
+        } });
+        updatedAggregateCloseIds.add(aggregateClose.id);
+      }
+      continue;
+    }
+    const exactTradeId = existingTradesByExchangeId.get(trade.exchangeTradeId);
+    const fallbackMatches = exactTradeId ? [] : existingTrades.filter((existing) =>
+      !claimedTradeIds.has(existing.id) &&
+      (existing.exchangeTradeId == null || existing.exchangeTradeId.startsWith('soar-fill-')) &&
+      existing.order?.exchangeOrderId === trade.exchangeOrderId && trade.exchangeOrderId != null &&
+      existing.lifecycleAction === trade.lifecycleAction && existing.side === trade.side &&
+      nearlyEqual(existing.price, trade.price) && nearlyEqual(existing.quantity, trade.quantity));
+    const existingTradeId = exactTradeId ??
+      (fallbackMatches.length === 1 ? fallbackMatches[0].id : null);
     if (existingTradeId) {
       await prisma.trade.update({ where: { id: existingTradeId }, data: {
+        ...(exactTradeId ? {} : { exchangeTradeId: trade.exchangeTradeId }),
         fee: trade.feeCost, feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
         feeCurrency: trade.feeCurrency, effectiveFeeRate: trade.feeRate,
         realizedPnl: trade.realizedPnl,
       } });
+      claimedTradeIds.add(existingTradeId);
+      existingTradesByExchangeId.set(trade.exchangeTradeId, existingTradeId);
       continue;
     }
     const created = await prisma.trade.create({
@@ -291,6 +335,60 @@ const persistImportedLifecycleTrades = async (input: {
     });
     existingTradesByExchangeId.set(trade.exchangeTradeId, created.id);
     createdCount += 1;
+  }
+
+  const canonicalFillsByOrder = new Map<string, DerivedLifecycleTrade[]>();
+  for (const trade of input.derivedTrades) {
+    if (!trade.exchangeOrderId) continue;
+    const fills = canonicalFillsByOrder.get(trade.exchangeOrderId) ?? [];
+    fills.push(trade);
+    canonicalFillsByOrder.set(trade.exchangeOrderId, fills);
+  }
+  for (const [exchangeOrderId, canonicalFills] of canonicalFillsByOrder) {
+    const order = await prisma.order.findFirst({
+      where: { userId: input.userId, positionId: input.positionId, exchangeOrderId },
+      select: { id: true, filledQuantity: true },
+    });
+    if (!order) continue;
+    const orderFills = await prisma.orderFill.findMany({
+      where: { orderId: order.id },
+      select: { id: true, exchangeTradeId: true, side: true, price: true, quantity: true },
+    });
+    if (orderFills.length !== canonicalFills.length ||
+        !nearlyEqual(order.filledQuantity, canonicalFills.reduce((sum, fill) => sum + fill.quantity, 0))) {
+      continue;
+    }
+    const matchedFills = new Map<string, typeof orderFills[number]>();
+    const usedFillIds = new Set<string>();
+    for (const fill of canonicalFills) {
+      const exact = orderFills.find((recorded) => recorded.exchangeTradeId === fill.exchangeTradeId);
+      const candidates = exact ? [exact] : orderFills.filter((recorded) =>
+        !usedFillIds.has(recorded.id) && recorded.exchangeTradeId.startsWith('soar-fill-') &&
+        recorded.side === fill.side && nearlyEqual(recorded.price, fill.price) &&
+        nearlyEqual(recorded.quantity, fill.quantity));
+      if (candidates.length !== 1 || usedFillIds.has(candidates[0].id) ||
+          candidates[0].side !== fill.side || !nearlyEqual(candidates[0].price, fill.price) ||
+          !nearlyEqual(candidates[0].quantity, fill.quantity)) break;
+      matchedFills.set(fill.exchangeTradeId, candidates[0]);
+      usedFillIds.add(candidates[0].id);
+    }
+    if (matchedFills.size !== canonicalFills.length) continue;
+    for (const fill of canonicalFills) {
+      const recorded = matchedFills.get(fill.exchangeTradeId)!;
+      await prisma.orderFill.update({
+        where: { id: recorded.id },
+        data: {
+          exchangeTradeId: fill.exchangeTradeId,
+          feeCost: fill.feeCost, feeCurrency: fill.feeCurrency, feeRate: fill.feeRate,
+        },
+      });
+    }
+    await prisma.order.update({
+      where: { id: order.id }, data: {
+        fee: canonicalFills.reduce((sum, fill) => sum + fill.feeCost, 0),
+        feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
+      },
+    });
   }
 
   const firstOpenTradeAt =

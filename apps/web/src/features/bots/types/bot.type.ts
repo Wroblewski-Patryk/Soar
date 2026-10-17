@@ -367,11 +367,11 @@ export type BotRuntimeTrade = {
     | null;
   price: number;
   quantity: number;
-  fee: number;
+  fee: number | null;
   feeSource: FeeSource;
   feePending: boolean;
   feeCurrency: string | null;
-  realizedPnl: number;
+  realizedPnl: number | null;
   executedAt: string;
   orderId: string | null;
   positionId: string | null;

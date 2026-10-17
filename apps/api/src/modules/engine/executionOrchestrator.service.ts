@@ -700,7 +700,7 @@ export const orchestrateRuntimeSignal = async (
     }
     const estimatedExitFee = computeTradeFee(closeExecutionPrice, closeExecutionQuantity, feeRate);
     const exitFee = input.mode === 'LIVE' ? (closeOrder.fee ?? estimatedExitFee) : estimatedExitFee;
-    let realizedPnl: number;
+    let realizedPnl: number | null;
     if (input.mode === 'LIVE' && runtimeTradeGateway.finalizeLiveClose) {
       const finalized = await runtimeTradeGateway.finalizeLiveClose({
         userId: input.userId, botId: input.botId, walletId: openPosition.walletId ?? input.walletId,
@@ -737,7 +737,7 @@ export const orchestrateRuntimeSignal = async (
         managementMode: openPosition.managementMode as 'BOT_MANAGED' | 'MANUAL_MANAGED',
       });
     }
-    if (input.botId) {
+    if (input.botId && realizedPnl != null) {
       await runtimeTelemetryService.upsertRuntimeSymbolStat({
         userId: input.userId,
         botId: input.botId,

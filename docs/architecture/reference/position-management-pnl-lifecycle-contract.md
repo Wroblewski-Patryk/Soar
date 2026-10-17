@@ -255,10 +255,18 @@ Imported manual exchange positions are adoption-point positions:
 
 An imported OPEN anchor without canonical fill history carries `fee=null` and
 `feePending=true`. A later CLOSE can record the exchange closure, but its net
-realized PnL remains unknown while an entry fee or the numeric exit fee is
-missing. An explicit exchange fee of zero is known. Canonical history replaces
-the synthetic OPEN anchor, updates an existing exchange-synced CLOSE trade by
-exchange trade ID, and recomputes net PnL once without duplicating the anchor.
+realized PnL remains unknown while an entry or exit fee is missing or pending.
+An explicit exchange fee of zero is known. This applies to both exchange-event
+and immediate runtime CLOSE finalization, including later fee-event refreshes.
+Closed imported positions with pending Trade fees remain eligible for history
+backfill. Canonical history replaces the synthetic OPEN anchor, matches an
+existing exchange-synced or bot-created CLOSE by exchange trade ID or an
+unambiguous synthetic fill identity. A runtime CLOSE representing several
+exchange fills remains one aggregate Trade with their combined fee and PnL.
+When every OrderFill matches canonical history, backfill also settles Order and
+OrderFill fees so later event replay preserves the settled result.
+Runtime trade read models preserve nullable fee and PnL values; monitoring
+tables show an unknown amount as unavailable rather than a settled zero.
 
 ## Runtime Loop Shape
 

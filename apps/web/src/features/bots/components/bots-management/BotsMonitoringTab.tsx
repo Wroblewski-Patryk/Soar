@@ -81,11 +81,11 @@ type MonitorOperationalTradeRow = {
   quantity: number;
   price: number;
   margin: number;
-  fee: number;
-  feePct: number;
-  realizedPnl: number;
-  pnlPct: number;
-  cumulativePnl: number;
+  fee: number | null;
+  feePct: number | null;
+  realizedPnl: number | null;
+  pnlPct: number | null;
+  cumulativePnl: number | null;
   origin: BotRuntimeTrade["origin"];
   orderId: string | null;
   positionId: string | null;
@@ -900,19 +900,19 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>{formatCurrency(trade.margin)}</td>
                               <td>
                                 <div className="flex flex-col leading-tight">
-                                  <span>{formatCurrency(trade.fee)}</span>
+                                  <span>{trade.fee == null ? "-" : formatCurrency(trade.fee)}</span>
                                   <span className="text-[10px] opacity-60">{formatTradeFeeMeta(trade)}</span>
                                 </div>
                               </td>
-                              <td>{formatNumber(trade.feePct, 2)}%</td>
-                              <td className={trade.realizedPnl >= 0 ? "text-success" : "text-error"}>
-                                {formatCurrency(trade.realizedPnl)}
+                              <td>{trade.feePct == null ? "-" : `${formatNumber(trade.feePct, 2)}%`}</td>
+                              <td className={trade.realizedPnl == null ? "" : trade.realizedPnl >= 0 ? "text-success" : "text-error"}>
+                                {trade.realizedPnl == null ? "-" : formatCurrency(trade.realizedPnl)}
                               </td>
-                              <td className={trade.pnlPct >= 0 ? "text-success" : "text-error"}>
-                                {formatNumber(trade.pnlPct, 2)}%
+                              <td className={trade.pnlPct == null ? "" : trade.pnlPct >= 0 ? "text-success" : "text-error"}>
+                                {trade.pnlPct == null ? "-" : `${formatNumber(trade.pnlPct, 2)}%`}
                               </td>
-                              <td className={trade.cumulativePnl >= 0 ? "text-success" : "text-error"}>
-                                {formatCurrency(trade.cumulativePnl)}
+                              <td className={trade.cumulativePnl == null ? "" : trade.cumulativePnl >= 0 ? "text-success" : "text-error"}>
+                                {trade.cumulativePnl == null ? "-" : formatCurrency(trade.cumulativePnl)}
                               </td>
                               <td>
                                 <span className="badge badge-outline badge-xs">{trade.origin}</span>

@@ -103,7 +103,7 @@ export const finalizeExchangeCloseFillInTransaction = async (
   const grossPnl = position.side === 'LONG'
     ? (input.fillPrice - position.entryPrice) * input.fillQuantity
     : (position.entryPrice - input.fillPrice) * input.fillQuantity;
-  const realizedPnl = entryFees != null && order.fee != null
+  const realizedPnl = entryFees != null && order.fee != null && !order.feePending
     ? grossPnl - entryFees - order.fee : null;
   await tx.position.update({
     where: { id: position.id }, data: {

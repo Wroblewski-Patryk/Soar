@@ -217,6 +217,11 @@ export type ReconcileDeps = {
     apiKeyId: string;
     marketType?: TradeMarket | null;
   }) => Promise<StaleSyncedPositionRecord[]>;
+  listClosedSyncedPositionsPendingHistoryForApiKey?: (input: {
+    userId: string;
+    apiKeyId: string;
+    marketType?: TradeMarket | null;
+  }) => Promise<StaleSyncedPositionRecord[]>;
   markMissingSyncedPosition: (
     positionId: string,
     input: {

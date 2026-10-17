@@ -4,6 +4,12 @@ import { prisma } from '../../prisma/client';
 import { finalizeLiveCloseFill, finalizeRuntimeDcaFill } from './runtimeImmediateFillFinalizer.service';
 import { finalizeExchangeCloseFill, finalizeExchangeDcaFill } from '../orders/orders.exchangeEventFinalization.service';
 import { runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
+import { hydrateImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
+import {
+  livePositionReconciliationDefaultDeps,
+  reconcileExternalPositionsFromExchange,
+} from '../positions/livePositionReconciliation.service';
+import { applyLiveExchangeOrderTradeUpdateEvent } from '../orders/orders.exchangeEvents.service';
 
 const createdUserIds: string[] = [];
 const competingClients: PrismaClient[] = [];
@@ -59,6 +65,125 @@ afterEach(async () => {
 });
 
 describe('immediate filled runtime order finalization', () => {
+  it('settles an imported runtime close with explicit zero entry and exit fees', async () => {
+    const { user, position, order, dedupe } = await createFilledFixture('SELL');
+    await prisma.position.update({
+      where: { id: position.id }, data: { origin: 'EXCHANGE_SYNC' },
+    });
+    await hydrateImportedPositionHistory({
+      userId: user.id, positionId: position.id, botId: null, walletId: null,
+      strategyId: null, symbol: 'BTCUSDT', positionSide: 'LONG',
+      positionQuantity: 1, managementMode: 'BOT_MANAGED',
+      trades: [{ exchangeTradeId: 'zero-open', exchangeOrderId: 'zero-order',
+        symbol: 'BTCUSDT', side: 'BUY', price: 100, quantity: 1, notional: 100,
+        feeCost: 0, feeCurrency: 'USDT', feeRate: 0,
+        executedAt: '2026-04-29T10:00:00.000Z' }],
+    });
+    await prisma.order.update({
+      where: { id: order.id }, data: {
+        fee: 0, feeSource: 'EXCHANGE_FILL', feePending: false,
+      },
+    });
+    expect(await finalizeLiveCloseFill({
+      userId: user.id, positionId: position.id, order,
+      dedupeKey: dedupe.dedupeKey, fillPrice: 110,
+      fillQuantity: 1, exitFee: 0, closedAt: new Date(),
+      closeReason: 'SIGNAL_EXIT', closeInitiator: 'BOT_APP',
+    })).toEqual({ applied: true, realizedPnl: 10 });
+  });
+
+  it('backfills a closed imported BOT position without duplicating its runtime close on replay', async () => {
+    const { user, position, order, dedupe } = await createFilledFixture('SELL');
+    const apiKeyId = 'imported-runtime-key';
+    await prisma.position.update({
+      where: { id: position.id }, data: {
+        origin: 'EXCHANGE_SYNC', managementMode: 'BOT_MANAGED',
+        externalId: `${apiKeyId}:FUTURES:BTCUSDT:LONG`,
+      },
+    });
+    await prisma.order.update({
+      where: { id: order.id }, data: {
+        origin: 'BOT', exchangeTradeId: null,
+        fee: 0.2, feeSource: 'EXCHANGE_FILL', feePending: true,
+      },
+    });
+    await prisma.orderFill.updateMany({
+      where: { orderId: order.id },
+      data: { exchangeTradeId: 'soar-fill-runtime-close', feeCost: null },
+    });
+    const openedAt = new Date('2026-04-29T10:00:00.000Z');
+    const closedAt = new Date('2026-04-29T11:00:00.000Z');
+    const importedInput = {
+      userId: user.id, positionId: position.id, botId: null, walletId: null,
+      strategyId: null, symbol: 'BTCUSDT', positionSide: 'LONG' as const,
+      positionQuantity: 1, managementMode: 'BOT_MANAGED' as const,
+    };
+    await hydrateImportedPositionHistory({ ...importedInput, trades: [{
+      exchangeTradeId: 'venue-open', exchangeOrderId: 'venue-open-order',
+      symbol: 'BTCUSDT', side: 'BUY', price: 100, quantity: 1, notional: 100,
+      feeCost: null, feeCurrency: 'USDT', feeRate: null,
+      executedAt: openedAt.toISOString(),
+    }] });
+    const runtimeInput = {
+      userId: user.id, positionId: position.id, order, dedupeKey: dedupe.dedupeKey,
+      fillPrice: 110, fillQuantity: 1, exitFee: 0.2, closedAt,
+      closeReason: 'SIGNAL_EXIT' as const, closeInitiator: 'BOT_APP' as const,
+    };
+    expect(await finalizeLiveCloseFill(runtimeInput)).toEqual({ applied: true, realizedPnl: null });
+    expect(await finalizeLiveCloseFill(runtimeInput)).toEqual({ applied: false, realizedPnl: null });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeNull();
+    expect((await prisma.trade.findFirstOrThrow({ where: { orderId: order.id } })).feePending).toBe(true);
+
+    const canonicalHistory = [
+      { exchangeTradeId: 'venue-open', exchangeOrderId: 'venue-open-order',
+        symbol: 'BTCUSDT', side: 'BUY', price: 100, quantity: 1, notional: 100,
+        feeCost: 2, feeCurrency: 'USDT', feeRate: 0.02,
+        executedAt: openedAt.toISOString() },
+      { exchangeTradeId: 'venue-close', exchangeOrderId: order.exchangeOrderId,
+        symbol: 'BTCUSDT', side: 'SELL', price: 110, quantity: 1, notional: 110,
+        feeCost: 1, feeCurrency: 'USDT', feeRate: 1 / 110,
+        executedAt: closedAt.toISOString() },
+    ];
+    const reconcile = () => reconcileExternalPositionsFromExchange({
+      ...livePositionReconciliationDefaultDeps,
+      listSyncedApiKeys: async () => [{
+        id: apiKeyId, userId: user.id, exchange: 'BINANCE', marketType: 'FUTURES',
+      }],
+      resolveOwnershipIndexForUser: async () => new Map(),
+      fetchPositionsForApiKey: async () => ({ positions: [] }),
+      fetchOpenOrdersForApiKey: async () => [],
+      fetchTradeHistoryForApiKeySymbol: async () => canonicalHistory,
+      listOpenSyncedPositionsForApiKey: async () => [],
+      now: () => closedAt,
+    });
+    await reconcile();
+    await reconcile();
+    const trades = await prisma.trade.findMany({
+      where: { positionId: position.id }, orderBy: { executedAt: 'asc' },
+    });
+    expect(trades).toHaveLength(2);
+    expect(trades.map((trade) => trade.exchangeTradeId)).toEqual(['venue-open', 'venue-close']);
+    expect(trades.find((trade) => trade.orderId === order.id)).toMatchObject({
+      origin: 'BOT', fee: 1, feePending: false, realizedPnl: 7,
+    });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBe(7);
+    expect((await prisma.order.findUniqueOrThrow({ where: { id: order.id } })).feePending).toBe(false);
+    expect((await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } })).feeCost).toBe(1);
+
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: {
+      eventType: 'ORDER_TRADE_UPDATE', marketType: 'FUTURES',
+      eventTime: closedAt.getTime(), transactionTime: closedAt.getTime(),
+      symbol: 'BTCUSDT', side: 'SELL', orderType: 'MARKET',
+      orderStatus: 'FILLED', executionType: 'TRADE',
+      exchangeOrderId: order.exchangeOrderId!, clientOrderId: 'runtime-close-replay',
+      averagePrice: 110, cumulativeFilledQuantity: 1,
+      lastFilledQuantity: 1, lastFilledPrice: 110,
+      fee: null, feeCurrency: 'USDT', exchangeTradeId: 'venue-close', raw: {},
+    } });
+    expect(await prisma.trade.count({ where: { positionId: position.id } })).toBe(2);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBe(7);
+  });
+
   it('recovers DCA after a crash between position write and Trade, without repeating the add', async () => {
     const { user, position, order, dedupe } = await createFilledFixture('BUY');
     const input = { userId: user.id, positionId: position.id, order, dedupeKey: dedupe.dedupeKey,
