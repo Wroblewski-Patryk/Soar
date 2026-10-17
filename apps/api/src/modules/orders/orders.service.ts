@@ -124,6 +124,7 @@ type OpenOrderDeps = {
     bot: LiveBotContext;
     payload: OpenOrderInput;
   }) => Promise<LiveExecutionResult>;
+  manualOrderContextDeps?: ManualOrderContextDeps;
 };
 
 type CancelOrderDeps = {
@@ -438,6 +439,7 @@ const isPositiveFiniteNumber = (value: unknown): value is number =>
 const resolvePaperImmediateFillPrice = async (params: {
   userId: string;
   payload: OpenOrderInput;
+  manualOrderContextDeps: ManualOrderContextDeps;
 }) => {
   if (params.payload.mode !== 'PAPER' || params.payload.type !== 'MARKET') {
     return isPositiveFiniteNumber(params.payload.price) ? params.payload.price : null;
@@ -457,7 +459,7 @@ const resolvePaperImmediateFillPrice = async (params: {
       side: params.payload.side,
       quantity: params.payload.quantity,
     },
-    defaultManualOrderContextDeps
+    params.manualOrderContextDeps
   );
 
   return isPositiveFiniteNumber(manualContext?.priceReference.markPrice)
@@ -680,6 +682,7 @@ export const openOrder = async (
       ? await resolvePaperImmediateFillPrice({
           userId,
           payload: canonicalPayload,
+          manualOrderContextDeps: deps.manualOrderContextDeps ?? defaultManualOrderContextDeps,
         })
       : null;
   const fillPriceFromExchange =
