@@ -80,6 +80,15 @@ If failed release included schema migration:
 2. If schema rollback is required, execute only with approved rollback script and backup checkpoint.
 3. Never run destructive schema rollback ad hoc in active incident without explicit approval.
 
+For the LIVE order intent migration, a previous API or worker build that can
+submit an order without reading `LiveOrderIntent` is not a safe rollback target
+while unresolved intents exist. Disable LIVE submission first, inventory
+unresolved intents and exchange order history, and select a schema-compatible
+build that preserves lookup-only recovery. Resume LIVE only after the operator
+has reconciled unknown outcomes; do not drop the intent table as part of a
+routine application rollback. See
+[LIVE order intent contract](../architecture/reference/live-order-intent-contract.md).
+
 ## Communication Template
 Minimum incident update includes:
 - environment (`stage`/`prod`),

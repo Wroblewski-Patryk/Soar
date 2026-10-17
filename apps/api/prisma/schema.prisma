@@ -927,6 +927,7 @@ model Order {
   @@index([strategyId])
   @@index([positionId])
   @@index([exchangeOrderId])
+  @@unique([userId, exchangeOrderId])
   @@index([exchangeTradeId])
   @@index([feeSource, feePending])
   @@index([symbol])
@@ -940,6 +941,7 @@ model LiveOrderIntent {
   userId        String
   clientOrderId String   @unique
   payloadHash   String
+  payload       Json?
   exchange      Exchange
   marketType    TradeMarket
   symbol        String

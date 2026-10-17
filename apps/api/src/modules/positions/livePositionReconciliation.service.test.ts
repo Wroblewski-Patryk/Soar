@@ -2332,22 +2332,21 @@ describe('livePositionReconciliationDefaultDeps', () => {
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
       select: { id: true, botId: true, walletId: true, symbol: true, quantity: true },
     });
-    expect(orders).toHaveLength(2);
-    expect(orders.find((order) => order.id === collidingOrder.id)).toEqual({
+    expect(orders).toHaveLength(1);
+    expect(orders[0]).toEqual({
       id: collidingOrder.id,
       botId: null,
       walletId: null,
       symbol: 'ETHUSDT',
       quantity: 0.2,
     });
-    expect(orders.find((order) => order.id !== collidingOrder.id)).toEqual(
-      expect.objectContaining({
-        botId: bot.id,
-        walletId: wallet.id,
-        symbol: 'BTCUSDT',
-        quantity: 0.01,
-      })
-    );
+    await expect(prisma.order.create({
+      data: {
+        userId: user.id, botId: bot.id, walletId: wallet.id,
+        exchangeOrderId: 'shared-exchange-order', symbol: 'BTCUSDT',
+        side: 'BUY', type: 'LIMIT', status: 'OPEN', quantity: 0.01,
+      },
+    })).rejects.toMatchObject({ code: 'P2002' });
   });
 
   it('moves stale synced open orders out of active open status', async () => {

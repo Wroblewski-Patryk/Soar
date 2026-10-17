@@ -27,7 +27,7 @@ type ApplyOrderFillLifecycleInput = {
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
-const resolveOrderPositionLeverage = async (params: {
+const resolveOrderPositionLeverage = async (tx: Prisma.TransactionClient, params: {
   userId: string;
   strategyId: string | null;
   fallbackLeverage?: number | null;
@@ -37,7 +37,7 @@ const resolveOrderPositionLeverage = async (params: {
   }
   if (!params.strategyId) return 1;
 
-  const strategy = await prisma.strategy.findFirst({
+  const strategy = await tx.strategy.findFirst({
     where: {
       id: params.strategyId,
       userId: params.userId,
@@ -260,8 +260,10 @@ const applyFillToReusableOpenPosition = async (
   };
 };
 
-export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInput) => {
-  return prisma.$transaction(async (tx) => {
+export const applyOrderFillLifecycleInTransaction = async (
+  tx: Prisma.TransactionClient,
+  params: ApplyOrderFillLifecycleInput
+) => {
     const existingOrder = await tx.order.findFirst({
       where: {
         id: params.orderId,
@@ -362,7 +364,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       });
     }
 
-    const leverage = await resolveOrderPositionLeverage({
+    const leverage = await resolveOrderPositionLeverage(tx, {
       userId: params.userId,
       strategyId: updatedOrder.strategyId,
       fallbackLeverage: params.leverage,
@@ -416,5 +418,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       order: orderWithPosition,
       positionId: createdPosition.id,
     };
-  });
 };
+
+export const applyOrderFillLifecycle = (params: ApplyOrderFillLifecycleInput) =>
+  prisma.$transaction((tx) => applyOrderFillLifecycleInTransaction(tx, params));

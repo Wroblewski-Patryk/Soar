@@ -1,6 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { openOrder } from './orders.service';
+import { createOrderForLiveIntent } from './orders.liveIntent.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
@@ -180,7 +181,7 @@ describe('durable LIVE order intent', () => {
     });
     const payload = {
       botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
-      quantity: 0.02, price: 3_000, mode: 'LIVE' as const, riskAck: true,
+      quantity: 0.02, price: 3_000, mode: 'LIVE' as const, riskAck: true, origin: 'BOT' as const,
       clientOrderId: 'soar_unknown_retry_1',
     };
     const executeLiveOrder = vi.fn().mockRejectedValue(new Error('timeout'));
@@ -197,9 +198,12 @@ describe('durable LIVE order intent', () => {
       });
       expect(intent).not.toBeNull();
       expect(await prisma.order.count({ where: { id: intent!.id } })).toBe(0);
-      const recovered = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      const recovered = await openOrder(user.id, { ...payload, quantity: 0.03, price: 3_100 }, { executeLiveOrder, lookupLiveOrder });
       expect(recovered.id).toBe(intent!.id);
       expect(recovered.exchangeOrderId).toBe('exchange-later-1');
+      expect(recovered.quantity).toBe(0.02);
+      expect(recovered.price).toBe(3_000);
+      expect(lookupLiveOrder.mock.calls[1]?.[0].payload).toMatchObject({ quantity: 0.02, price: 3_000 });
       expect(executeLiveOrder).toHaveBeenCalledTimes(1);
       expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
     } finally {
@@ -244,6 +248,45 @@ describe('durable LIVE order intent', () => {
       releaseSubmission();
       process.env.NODE_ENV = previousNodeEnv;
     }
+  });
+
+  it('rolls back the local order if materialization fails before commit', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-atomic-materialization@example.com', password: 'hashed' },
+    });
+    const intent = await prisma.liveOrderIntent.create({
+      data: {
+        userId: user.id, clientOrderId: 'soar_atomic_materialization_1', payloadHash: 'test',
+        exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+      },
+    });
+    const input = {
+      userId: user.id, exchangeOrderId: 'atomic-exchange-order-1', intentId: intent.id,
+      clientOrderId: intent.clientOrderId,
+      data: {
+        id: intent.id, userId: user.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+        type: 'MARKET' as const, status: 'FILLED' as const, quantity: 1,
+        exchangeOrderId: 'atomic-exchange-order-1',
+      },
+    };
+    await expect(createOrderForLiveIntent({
+      ...input, materialize: async () => { throw new Error('fill write failed'); },
+    })).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+    expect(await prisma.order.count({ where: { id: intent.id } })).toBe(0);
+    const retried = await createOrderForLiveIntent({
+      ...input, materialize: async (tx, order) => {
+        await tx.orderFill.create({
+          data: {
+            userId: user.id, orderId: order.id, symbol: 'BTCUSDT', side: 'BUY',
+            exchangeTradeId: 'atomic-fill-1', price: 100, quantity: 1, notional: 100,
+            executedAt: new Date(),
+          },
+        });
+        return order;
+      },
+    });
+    expect(retried.reused).toBe(false);
+    expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(1);
   });
 
   it('derives a stable Gate.io client ID within the venue limit', async () => {

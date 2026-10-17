@@ -246,12 +246,12 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         where: {
           userId: input.userId,
           exchangeOrderId: input.exchangeOrderId,
-          OR: [{ botId: input.botId }, { botId: null, walletId: input.walletId }],
         },
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-        select: { id: true, origin: true },
+        select: { id: true, origin: true, botId: true, walletId: true },
       });
-      if (existing && existing.origin !== 'EXCHANGE_SYNC') return;
+      if (existing && (existing.origin !== 'EXCHANGE_SYNC' ||
+        existing.botId !== input.botId || existing.walletId !== input.walletId)) return;
       const data = {
         botId: input.botId,
         walletId: input.walletId,

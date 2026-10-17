@@ -19,6 +19,7 @@ import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import {
   createOrderForLiveIntent,
   executeDurableLiveOrder,
+  materializeLiveOrderInTransaction,
   type LiveBotContext,
   type LiveExecutionResult,
   type LiveOrderPayload,
@@ -632,7 +633,7 @@ export const openOrder = async (
   payload: OpenOrderInput,
   deps: OpenOrderDeps = defaultOpenOrderDeps
 ) => {
-  const { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
+  let { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
   await assertNoImplicitReverseOpenConflict({
     userId,
     payload: canonicalPayload,
@@ -669,6 +670,7 @@ export const openOrder = async (
       lookup: deps.lookupLiveOrder ?? lookupLiveOrderOnExchange,
     });
     if (durable.existingOrder) return durable.existingOrder;
+    canonicalPayload = durable.payload;
     liveIntentId = durable.intentId;
     const liveResult = durable.liveResult;
     exchangeOrderId = liveResult.exchangeOrderId;
@@ -765,12 +767,19 @@ export const openOrder = async (
     intentId: liveIntentId,
     clientOrderId: canonicalPayload.clientOrderId,
     data: orderData,
+    materialize: liveIntentId ? (tx, order) => materializeLiveOrderInTransaction({
+      tx, order, userId, payload: canonicalPayload,
+      fillPrice: fillPriceFromExchange,
+      fillQuantity: orderPersistenceDecision.lifecycleFillQuantity,
+      applyFillLifecycle: orderPersistenceDecision.shouldApplyImmediateFillLifecycle,
+      fills, exchangeOrderId, now,
+    }) : undefined,
   });
   if (persisted.reused) return persisted.order;
   const order = persisted.order;
 
   const lifecycleResult =
-    orderPersistenceDecision.shouldApplyImmediateFillLifecycle
+    canonicalPayload.mode === 'PAPER' && orderPersistenceDecision.shouldApplyImmediateFillLifecycle
       ? await applyOrderFillLifecycle({
           userId,
           orderId: order.id,
@@ -781,31 +790,6 @@ export const openOrder = async (
         })
       : null;
   const orderAfterLifecycle = lifecycleResult?.order ?? order;
-
-  if (canonicalPayload.mode === 'LIVE' && fills.length > 0) {
-    await prisma.orderFill.createMany({
-      data: fills.map((fill) => ({
-        userId,
-        botId: canonicalPayload.botId ?? null,
-        strategyId: canonicalPayload.strategyId ?? null,
-        orderId: order.id,
-        tradeId: null,
-        positionId: orderAfterLifecycle.positionId ?? null,
-        symbol: fill.symbol,
-        side: canonicalPayload.side,
-        exchangeTradeId:
-          fill.exchangeTradeId ?? `${exchangeOrderId ?? order.id}-${fill.executedAt?.toISOString() ?? 'na'}`,
-        price: fill.price,
-        quantity: fill.quantity,
-        notional: fill.notional,
-        feeCost: typeof fill.feeCost === 'number' ? fill.feeCost : null,
-        feeCurrency: fill.feeCurrency,
-        feeRate: fill.feeRate,
-        executedAt: fill.executedAt ?? now,
-        raw: (fill.raw ?? {}) as Prisma.InputJsonValue,
-      })),
-    });
-  }
 
   await writeOrderAudit({
     userId,
