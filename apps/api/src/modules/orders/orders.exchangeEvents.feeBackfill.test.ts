@@ -11,6 +11,7 @@ const cleanupDb = async () => {
   await prisma.orderFill.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.liveOrderIntent.deleteMany();
   await prisma.position.deleteMany();
   await prisma.signal.deleteMany();
   await prisma.botRuntimeSymbolStat.deleteMany();
