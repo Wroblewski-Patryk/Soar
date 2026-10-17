@@ -298,7 +298,7 @@ export const applyOrderFillLifecycleInTransaction = async (
         filledQuantity: targetQuantity,
         filledAt,
         averageFillPrice: fillPrice,
-        feePending: false,
+        feePending: params.mode === 'LIVE' ? existingOrder.feePending : false,
       },
     });
 

@@ -858,13 +858,16 @@ export class CcxtFuturesConnector {
   }
 
   private extractFee(trade: CcxtTradeLike): {
-    feeCost: number;
+    feeCost: number | null;
     feeCurrency: string | null;
     feeRate: number | null;
   } {
     const fees = Array.isArray(trade.fees) ? trade.fees : [];
     if (fees.length > 0) {
-      const total = fees.reduce((sum, fee) => sum + (this.readNumber(fee.cost) ?? 0), 0);
+      const costs = fees.map((fee) => this.readNumber(fee.cost));
+      const total = costs.every((cost): cost is number => cost !== null)
+        ? costs.reduce((sum, cost) => sum + cost, 0)
+        : null;
       const currency = this.readString(fees[0]?.currency) ?? null;
       const rate = this.readNumber(fees[0]?.rate) ?? null;
       return { feeCost: total, feeCurrency: currency, feeRate: rate };
@@ -874,7 +877,7 @@ export class CcxtFuturesConnector {
       this.readNumber(trade.fee?.cost) ??
       this.readNumber(trade.info?.commission) ??
       this.readNumber(trade.info?.fee) ??
-      0;
+      null;
     const feeCurrency =
       this.readString(trade.fee?.currency) ??
       this.readString(trade.info?.commissionAsset) ??

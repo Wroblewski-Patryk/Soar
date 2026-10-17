@@ -58,6 +58,9 @@ export const deriveImportedLifecycleTrades = (input: {
   positionQuantity: number;
   trades: ExchangeTradeHistoryItem[];
 }) => {
+  if (input.trades.some((trade) =>
+    typeof trade.feeCost !== 'number' || !Number.isFinite(trade.feeCost)
+  )) return null;
   const targetSignedQuantity =
     input.positionSide === 'LONG' ? input.positionQuantity : -input.positionQuantity;
   if (!Number.isFinite(targetSignedQuantity) || Math.abs(targetSignedQuantity) < EPSILON) {
@@ -97,7 +100,7 @@ export const deriveImportedLifecycleTrades = (input: {
         side,
         price: trade.price,
         quantity: trade.quantity,
-        feeCost: Number.isFinite(trade.feeCost) ? trade.feeCost : 0,
+        feeCost: trade.feeCost!,
         feeCurrency: trade.feeCurrency,
         feeRate: trade.feeRate,
         executedAt,

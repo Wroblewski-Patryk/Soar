@@ -47,7 +47,7 @@ export type ExchangeTradeHistoryItem = {
   price: number;
   quantity: number;
   notional: number;
-  feeCost: number;
+  feeCost: number | null;
   feeCurrency: string | null;
   feeRate: number | null;
   executedAt: string | null;

@@ -66,7 +66,7 @@ export type CcxtFuturesOrderFill = {
   price: number;
   quantity: number;
   notional: number;
-  feeCost: number;
+  feeCost: number | null;
   feeCurrency: string | null;
   feeRate: number | null;
   executedAt: Date | null;

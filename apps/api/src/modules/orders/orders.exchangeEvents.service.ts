@@ -512,18 +512,36 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         ? null : eventFee * (recoveredQuantity / lastFillQuantity);
     }
   }
+  const unresolvedSyntheticFillCandidates =
+    !existingRecordableEventFill && !isPositiveFiniteNumber(recordableLastFillQuantity) &&
+    existingOrder.status === 'FILLED' && input.event.exchangeTradeId &&
+    isPositiveFiniteNumber(lastFillQuantity) && isPositiveFiniteNumber(lastFillPrice) &&
+    eventFee != null
+      ? await tx.orderFill.findMany({
+          where: {
+            orderId: existingOrder.id,
+            exchangeTradeId: { startsWith: 'soar-fill-' },
+          },
+          select: { id: true, feeCost: true, price: true, quantity: true },
+        })
+      : [];
+  const matchingSyntheticFills = unresolvedSyntheticFillCandidates.filter((fill) =>
+    Math.abs(fill.price - (lastFillPrice ?? 0)) <= 1e-9 * Math.max(1, fill.price) &&
+    Math.abs(fill.quantity - (lastFillQuantity ?? 0)) <= 1e-9 * Math.max(1, fill.quantity)
+  );
+  const feeBackfillFill = existingRecordableEventFill ??
+    (matchingSyntheticFills.length === 1 && matchingSyntheticFills[0].feeCost == null
+      ? matchingSyntheticFills[0] : null);
   const hasRecordableEventFee =
     typeof recordableEventFee === 'number' && Number.isFinite(recordableEventFee);
   const existingRecordableEventFillHasFee =
-    typeof existingRecordableEventFill?.feeCost === 'number' &&
-    Number.isFinite(existingRecordableEventFill.feeCost);
+    typeof feeBackfillFill?.feeCost === 'number' &&
+    Number.isFinite(feeBackfillFill.feeCost);
   const unresolvedExistingFillFee = await tx.orderFill.findFirst({
     where: {
       orderId: existingOrder.id,
       feeCost: null,
-      ...(input.event.exchangeTradeId
-        ? { NOT: { exchangeTradeId: input.event.exchangeTradeId } }
-        : {}),
+      ...(feeBackfillFill ? { id: { not: feeBackfillFill.id } } : {}),
     },
     select: { id: true },
   });
@@ -540,7 +558,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   const feeRefreshDecision = resolveExchangeFeeRefreshDecision({
     shouldRefreshTerminalFillDetails: fillProgress.shouldRefreshTerminalFillDetails,
     hasRecordableEventFee,
-    hasExistingRecordableEventFill: existingRecordableEventFill != null,
+    hasExistingRecordableEventFill: feeBackfillFill != null,
     existingRecordableEventFillHasFee,
   });
   const hasSettledExchangeFee =
@@ -618,11 +636,11 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   }
 
   if (
-    existingRecordableEventFill &&
+    feeBackfillFill &&
     feeRefreshDecision.shouldBackfillExistingFillFee
   ) {
     await tx.orderFill.update({
-      where: { id: existingRecordableEventFill.id },
+      where: { id: feeBackfillFill.id },
       data: {
         feeCost: recordableEventFee,
         feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,

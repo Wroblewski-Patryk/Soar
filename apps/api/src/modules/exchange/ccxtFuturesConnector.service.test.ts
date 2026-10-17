@@ -75,6 +75,28 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
 });
 
 describe('CcxtFuturesConnector scaffold', () => {
+  it('keeps missing trade fees unknown while preserving explicit zero commission', async () => {
+    const client = createMockClient();
+    client.createOrder = vi.fn().mockResolvedValue({
+      id: 'fee-normalization-order', status: 'closed', filled: 0.75,
+      trades: [
+        { id: 'missing', order: 'fee-normalization-order', price: 100, amount: 0.25 },
+        { id: 'incomplete', order: 'fee-normalization-order', price: 100, amount: 0.25,
+          fees: [{ currency: 'USDT' }] },
+        { id: 'zero', order: 'fee-normalization-order', price: 100, amount: 0.25,
+          info: { commission: '0' } },
+      ],
+    });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm', marketType: 'future' },
+      vi.fn().mockResolvedValue(client)
+    );
+    const result = await connector.placeOrder({
+      symbol: 'BTCUSDT', side: 'buy', type: 'market', amount: 0.75,
+    });
+    expect(result.fills?.map((fill) => fill.feeCost)).toEqual([null, null, 0]);
+  });
+
   it.each([
     ['binanceusdm', 'future', 'soar_order_1'],
     ['binance', 'spot', 'soar_order_1'],

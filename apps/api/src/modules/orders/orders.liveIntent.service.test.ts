@@ -11,6 +11,7 @@ import { finalizeRuntimeDcaFill } from '../engine/runtimeImmediateFillFinalizer.
 import { LiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesConnector, type CcxtExchangeLikeClient } from '../exchange/ccxtFuturesConnector.service';
 import { reconcileLiveOrderFee } from '../exchange/liveFeeReconciliation.service';
+import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -194,6 +195,92 @@ describe('durable LIVE order intent', () => {
       expect(placeOrder).toHaveBeenCalledTimes(1);
       expect(lookupLiveOrder).not.toHaveBeenCalled();
       expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(expectedFillCount);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it.each([
+    { label: 'missing fee', explicitZero: false, expectedFee: null, expectedPending: true },
+    { label: 'explicit zero fee', explicitZero: true, expectedFee: 0, expectedPending: false },
+  ])('preserves $label through raw CCXT, adapter, Order, and replay', async ({
+    explicitZero, expectedFee, expectedPending,
+  }) => {
+    const user = await prisma.user.create({
+      data: { email: `orders-live-fee-${explicitZero}@example.com`, password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: `Live Fee ${explicitZero}`,
+      strategyName: `Live Fee Strategy ${explicitZero}`, symbol: 'ETHUSDT',
+    });
+    const rawFill = {
+      order: `fee-${explicitZero}`, symbol: 'ETHUSDT', side: 'buy',
+      price: 100, amount: 1, cost: 100,
+      ...(explicitZero ? { fee: { cost: 0, currency: 'USDT', rate: 0 } } : {}),
+    };
+    const placeOrder = vi.fn().mockResolvedValue({
+      id: `fee-${explicitZero}`, status: 'closed', filled: 1, average: 100,
+      trades: [rawFill],
+    });
+    const client = {
+      loadMarkets: vi.fn().mockResolvedValue({}), createOrder: placeOrder,
+    } as unknown as CcxtExchangeLikeClient;
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm', marketType: 'future' },
+      vi.fn().mockResolvedValue(client)
+    );
+    const adapter = new LiveOrderAdapter(connector);
+    const executeLiveOrder = vi.fn(async () => {
+      const result = await adapter.placeLiveOrderWithFees({ order: {
+        symbol: 'ETHUSDT', side: 'buy', type: 'market', amount: 1,
+        clientOrderId: `soar_fee_${explicitZero}`,
+      } });
+      return { ...result, status: 'FILLED' as const };
+    });
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: 1, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: `soar_fee_${explicitZero}`,
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const order = await openOrder(user.id, payload, { executeLiveOrder });
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+      expect(order.fee).toBe(expectedFee);
+      expect(order.feePending).toBe(expectedPending);
+      expect(order.feeSource).toBe(explicitZero ? 'EXCHANGE_FILL' : 'ESTIMATED');
+      const fill = await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } });
+      expect(fill.feeCost).toBe(expectedFee);
+      expect(fill.exchangeTradeId).toMatch(/^soar-fill-/);
+      const replayed = await openOrder(user.id, payload, { executeLiveOrder });
+      expect(replayed.id).toBe(order.id);
+      expect(placeOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
+      if (!explicitZero) {
+        const feeEvent = {
+          eventType: 'ORDER_TRADE_UPDATE' as const, marketType: 'FUTURES' as const,
+          eventTime: 4_000, transactionTime: 4_001,
+          symbol: 'ETHUSDT', side: 'BUY' as const, orderType: 'MARKET',
+          orderStatus: 'FILLED', executionType: 'TRADE',
+          exchangeOrderId: 'fee-false', clientOrderId: payload.clientOrderId,
+          averagePrice: 100, cumulativeFilledQuantity: 1,
+          lastFilledQuantity: 1, lastFilledPrice: 100,
+          fee: 0.01, feeCurrency: 'USDT', exchangeTradeId: 'late-fee-trade', raw: {},
+        };
+        await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: feeEvent });
+        await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: feeEvent });
+        const backfilledOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+        const backfilledFill = await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } });
+        expect(backfilledOrder.fee).toBeCloseTo(0.01, 10);
+        expect(backfilledOrder.feePending).toBe(false);
+        expect(backfilledOrder.feeSource).toBe('EXCHANGE_FILL');
+        expect(backfilledFill.id).toBe(fill.id);
+        expect(backfilledFill.exchangeTradeId).toBe(fill.exchangeTradeId);
+        expect(backfilledFill.feeCost).toBeCloseTo(0.01, 10);
+        expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
+      }
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

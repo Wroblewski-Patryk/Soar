@@ -8,6 +8,18 @@ import {
 } from './importedPositionHistoryHydrator.service';
 
 describe('deriveImportedLifecycleTrades', () => {
+  it('does not derive financial history from a fill with an unknown fee', () => {
+    expect(deriveImportedLifecycleTrades({
+      positionSide: 'LONG', positionQuantity: 1,
+      trades: [{
+        exchangeTradeId: 'unknown-fee', exchangeOrderId: 'order-1',
+        symbol: 'DOGEUSDT', side: 'BUY', price: 0.1, quantity: 1,
+        notional: 0.1, feeCost: null, feeCurrency: null, feeRate: null,
+        executedAt: '2026-04-29T10:00:00.000Z',
+      }],
+    })).toBeNull();
+  });
+
   it('reconstructs an open lifecycle with dca and partial reduction from canonical fills', () => {
     const derived = deriveImportedLifecycleTrades({
       positionSide: 'LONG',
