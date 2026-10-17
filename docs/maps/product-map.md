@@ -2,7 +2,7 @@
 type: docs_map
 status: canonical
 area: product
-last_verified: 2026-05-23
+last_verified: 2026-10-17
 graph_role: map
 ---
 
@@ -10,10 +10,11 @@ graph_role: map
 
 ## Primary Path
 
-1. [Product overview](../product/overview.md)
-2. [Product specification](../product/product.md)
-3. [MVP scope](../product/mvp_scope.md)
-4. [Roadmap](../product/roadmap.md)
+1. [Current version product contract](../product/current-version-contract.md)
+2. [Product overview](../product/overview.md)
+3. [Earlier product specification](../product/product.md)
+4. [Historical MVP scope reference](../product/mvp_scope.md)
+5. [Roadmap pointer](../product/roadmap.md)
 
 ## Nearby Context
 
@@ -22,7 +23,7 @@ Use these paths when the primary path is not enough:
 | Path | Use |
 | --- | --- |
 | `docs/product/autonomous-agent-vision.md` | Long-horizon product direction. |
-| `docs/product/known-limits.md` | Current limitations and non-goals. |
+| `docs/product/known-limits.md` | Dated implementation limits; check current scope in the contract first. |
 | `docs/product/glossary.md` | Domain vocabulary. |
 | `docs/planning/planning-documentation.md` | Active planning entrypoint. |
 | `history/plans/plan-history.md` | Old plans and closure notes. |

@@ -1,5 +1,13 @@
 # Roadmap
 
+Status: dated planning snapshot. The
+[Current Version Product Contract](../product/current-version-contract.md)
+supersedes this file for current scope and acceptance. In particular, the
+administrator panel and Binance/Gate.io PAPER/LIVE are current requirements;
+payments, a built-in AI assistant, and a separate native mobile app are not
+part of the current delivery. The completed and after-MVP lists below retain
+planning history and are not release verification.
+
 ## North-Star Evolution
 Reference: `docs/product/autonomous-agent-vision.md`
 

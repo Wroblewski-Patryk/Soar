@@ -56,8 +56,9 @@ or architecture truth:
   - `maps/product-map.md`
   - `maps/release-ops-map.md`
 - Product:
+  - `product/current-version-contract.md` (current scope and acceptance boundary)
   - `product/overview.md`
-  - `product/product.md`
+  - `product/product.md` (earlier specification and proposals)
   - `product/mvp_scope.md`
   - `product/problem-statement.md`
   - `product/user-model.md`

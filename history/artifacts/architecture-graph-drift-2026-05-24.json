@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 818,
-    "covered": 818,
+    "total": 820,
+    "covered": 820,
     "missing": 0
   },
   "categories": {
@@ -55,8 +55,8 @@
       "missingSamples": []
     },
     "architectureDocs": {
-      "total": 71,
-      "covered": 71,
+      "total": 73,
+      "covered": 73,
       "missing": 0,
       "missingSamples": []
     },

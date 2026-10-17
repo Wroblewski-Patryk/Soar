@@ -8,7 +8,7 @@ graph_role: primary_hub
 
 # Soar Documentation Map
 
-Updated: 2026-05-23
+Updated: 2026-10-17
 
 This is the main entrypoint for current Soar documentation. Use it to choose
 the right map, then move into the specific folder. Historical task files, old
@@ -32,7 +32,7 @@ Use these routes when you are not only browsing, but trying to do work.
 | Situation | Start With | Then Check | Close By Updating |
 | --- | --- | --- | --- |
 | New coordinator chat or continuation nudge | [Agent Work Map](./maps/agent-work-map.md) | `.agents/state/active-mission.md`, `.codex/context/TASK_BOARD.md`, `.agents/state/next-steps.md` | active mission, task board, project state |
-| Product or scope question | [Product Map](./maps/product-map.md) | `docs/planning/open-decisions.md`, delivery map, known limits | product docs or open decisions |
+| Product or scope question | [Current version product contract](./product/current-version-contract.md) | [Product Map](./maps/product-map.md), architecture contracts, fresh acceptance evidence | product contract or open decisions |
 | Architecture or ownership change | [Architecture Map](./maps/architecture-map.md) | numbered architecture set, reference contracts, module registry | architecture, module docs, traceability |
 | Feature-chain or impact analysis | [Architecture Evidence Graph System](./architecture/architecture-evidence-graph-system.md) | `docs/architecture/registry/*.csv`, `docs/architecture/relations/dependencies.csv`, `docs/architecture/chains/chains.csv` | CSV graph registries, generated nodes, status export |
 | Runtime, trading, money, or safety change | [Runtime Map](./maps/runtime-map.md) | lifecycle/parity/safety contracts, module confidence ledger | architecture references, runtime modules, evidence |
@@ -47,7 +47,7 @@ Obsidian graph forms local clusters instead of one global superhub.
 
 | Path | Role | Primary entry |
 | --- | --- | --- |
-| `docs/product/` | Product scope, vision, glossary, and known limits. | [Product docs](./product/product-documentation.md) |
+| `docs/product/` | Current product behavior and scope, plus clearly marked historical vision and limits. | [Current version contract](./product/current-version-contract.md) |
 | `docs/architecture/` | Canonical runtime, ownership, data, parity, and safety truth. | [Architecture docs](./architecture/architecture-documentation.md) |
 | `docs/modules/` | Implementation-facing module ownership, dependencies, routes, and tests. | [Module docs](./modules/module-documentation.md) |
 | `docs/pipelines/` | End-to-end system flows across UI, API, services, data, workers, and tests. | [Pipeline docs](./pipelines/pipeline-registry.md) |

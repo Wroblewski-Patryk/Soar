@@ -1,5 +1,12 @@
 # AI Integration
 
+This document describes a future direction and repository foundations. A
+built-in AI assistant is outside the current delivery. The required external
+MCP access surface in the
+[Current Version Product Contract](./current-version-contract.md) is not an
+assistant runtime and does not gain autonomous trading authority from this
+vision.
+
 ## Current State
 - AI support is currently partial and workflow-oriented (strategy assistance + planned runtime intelligence expansion).
 - Core runtime architecture already includes foundations required by AI layers (signals, risk checks, execution orchestration, event/audit traces).

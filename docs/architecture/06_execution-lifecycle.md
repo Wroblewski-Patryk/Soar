@@ -65,7 +65,15 @@ when canonical ownership and strategy context are restored or preserved
 deterministically.
 
 ## Close Authority
-Direct strategy `EXIT` may exist as analytical context, but close behavior follows the lifecycle manager contract.
+The current product requires an open position to remain open when entry
+conditions stop matching. Closing requires a separate exit signal or an
+applicable risk/lifecycle rule. A missing entry signal cannot be promoted to
+`EXIT`. The handling of explicit strategy exit signals must be reconciled with
+the current trace-only implementation before claiming this behavior verified.
+
+Implementation note: direct strategy `EXIT` has been trace-only. That behavior
+does not by itself fulfill the required separate-exit close path. Any close
+still goes through the lifecycle manager.
 
 Canonical close authority is lifecycle-based:
 - `TP`

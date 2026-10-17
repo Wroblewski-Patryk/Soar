@@ -1,0 +1,73 @@
+---
+type: product_contract
+status: canonical
+area: product
+last_updated: 2026-10-17
+---
+
+# Current Version Product Contract
+
+This document owns the **required behavior and scope** of the current Soar
+delivery. It records the owner's product decisions of 2026-10-17. It does not
+certify that the code, deployment, or every user journey meets them.
+
+Use the numbered architecture documents and their reference contracts for
+implementation rules. Use fresh, environment-specific acceptance evidence to
+claim that a requirement works. Older MVP/V1 plans and the dated sections of
+[product.md](./product.md) are historical context where they disagree here.
+
+## Required Product Behavior
+
+| Area | Current requirement |
+| --- | --- |
+| Surfaces | A user-facing web application, a human administrator panel, an API, and an external MCP client surface are in scope. MCP is an access surface, not a built-in AI assistant. |
+| Trading | PAPER and LIVE operation on Binance and Gate.io are in scope. Support must be stated for the exact `(exchange, marketType, operation)` pair; one supported operation does not imply support for every market type or operation. |
+| Bot market scope | A bot has exactly one active market group at a time. Stored or historical groups do not authorize concurrent active groups. |
+| Languages | English and Polish are the supported current-version languages. Other locale code or experiments do not establish a supported language. |
+| Backtest recovery | After a worker failure, an unfinished backtest resumes automatically. Recovery must not create a second run, duplicate execution, trades, or report for the same run. If safe recovery cannot be established, show an explicit failure or degraded state rather than apparent progress. |
+| Entry and position lifecycle | Loss of an entry signal means no new entry. An already open position remains open until a **separate exit signal** or an applicable risk/lifecycle rule closes it. Absence of an entry signal is never itself `EXIT`. This rule applies consistently to BACKTEST, PAPER, and LIVE. |
+| Plans and roles | Account registration alone grants no plan entitlement. A human administrator assigns a user's plan and changes account roles manually in the Soar administrator panel. Plan-gated access fails closed until assignment. Users do not buy or change plans through in-app checkout. External clients cannot assign plans or change roles. |
+| External domain actions | An external client may perform user-domain actions, including LIVE, only under a previously granted, limited, revocable authorization. A separate confirmation is not required for every LIVE transaction within that authorization. Every action remains subject to Soar's user ownership, entitlement, exchange, risk, consent, and audit controls. Missing, expired, exceeded, or revoked authorization fails closed. |
+| Account and secrets boundary | External clients cannot change account data, roles, or plans; change passwords; add exchange API keys; or receive secrets for manual entry. Password changes and exchange-key entry remain manual user actions in Soar. A backend endpoint used by the administrator panel is not thereby an external-client capability. |
+
+The exact authorization limits and exchange-operation matrix are architecture
+contracts to be specified and verified before accepting the external MCP/LIVE
+surface. This product decision does not grant unrestricted autonomous trading.
+
+## Outside the Current Delivery
+
+- A built-in AI assistant or autonomous assistant runtime.
+- A separate native mobile application. Responsive web behavior remains in scope.
+- Payments, self-service checkout, and payment-driven plan changes in Soar.
+
+Existing code, routes, database fields, or dated plans for these areas may be
+retained for compatibility or future work. Their presence is not a current
+product promise or acceptance result.
+
+## Verification Boundary as of 2026-10-17
+
+The current version has **not** received whole-product acceptance. The ongoing
+application audit distinguishes source code, automated tests, local browser
+flows, authenticated production flows, and exchange-side behavior. Its private
+operational report is not part of the public repository.
+
+| Requirement | Current evidence boundary / next proof |
+| --- | --- |
+| Web, administrator panel, and API | Selected code tests and local/browser flows exist. Complete user and administrator journeys, permissions, and deployed behavior still require acceptance evidence. |
+| MCP and delegated LIVE authorization | Required product surface and authority rule; no accepted MCP capability or grant/revocation proof is recorded here. Do not infer it from ordinary API routes. |
+| Manual plan assignment | Current code may assign `FREE` automatically to newly registered users. That behavior conflicts with the administrator-only product rule and needs implementation and journey verification before acceptance. |
+| Binance and Gate.io PAPER/LIVE | Exchange contracts and selected local flows exist. Verify each market type and operation against the [exchange capability matrix](../architecture/reference/exchange-access-ownership-matrix.md), then prove relevant deployed and exchange-side journeys. |
+| Backtest recovery | Current branch contains recovery work, but overlapping workers may duplicate processing. Automatic, single-result recovery is not accepted until that race and deployed behavior are proved. |
+| Entry-signal loss and position HOLD | Default evaluator behavior holds, but legacy no-match settings can still emit `EXIT`. Tests, traces, and explicit-exit lifecycle behavior need correction and parity proof. |
+| EN/PL and one active market group | Existing contracts and local tests are useful implementation evidence; full current-version journey proof remains part of acceptance. |
+
+Only fresh evidence for the applicable environment may change an acceptance
+status. An index row marked `verified_local` or an old release packet is not
+current production proof.
+
+## Maintenance
+
+Change this contract when the owner changes product behavior. In the same
+change, reconcile the matching architecture, module, security, UX, operations,
+planning, and graph records. Do not use a roadmap item or historical audit as
+the sole source of an accepted behavior.

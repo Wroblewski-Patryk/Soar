@@ -27,6 +27,13 @@ The canonical plan catalog is:
 Legacy plan wording such as `simple` is non-canonical and must not be used as the architecture truth.
 
 ## Entitlement Responsibilities
+Account registration alone does not grant a plan or plan-gated trading access
+in the current delivery. A human administrator assigns plans and changes
+roles manually in the Soar panel. Until assignment, plan-gated commands fail
+closed. Existing automatic `FREE` behavior is an implementation gap, not an
+exception to this product rule. External MCP clients cannot assign plans or
+change roles.
+
 Entitlements gate:
 - bot counts
 - live trading capability

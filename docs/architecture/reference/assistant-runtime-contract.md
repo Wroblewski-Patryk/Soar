@@ -1,5 +1,11 @@
 # Assistant Runtime Contract (MVP Foundation)
 
+Product scope note (2026-10-17): a built-in assistant is outside the
+[current delivery](../../product/current-version-contract.md). This file
+describes repository foundation and possible future work, not an accepted
+product capability. External MCP clients follow a separate authorization
+contract and gain no authority from assistant configuration or dry runs.
+
 Status: canonical foundation contract; current implementation is bot-scoped
 configuration, deterministic orchestrator coverage, and dry-run diagnostics.
 Hot-path BACKTEST/PAPER/LIVE assistant orchestration is later/gated scope until

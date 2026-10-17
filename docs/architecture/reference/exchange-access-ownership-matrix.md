@@ -3,6 +3,11 @@
 Status: Active  
 Updated: 2026-05-21
 
+This matrix records implementation capability by exact exchange operation.
+The [Current Version Product Contract](../../product/current-version-contract.md)
+requires PAPER and LIVE scope on Binance and Gate.io, but neither a supported
+cell nor this dated matrix is proof of deployed or exchange-side acceptance.
+
 ## Purpose
 
 Freeze one canonical ownership model for exchange access so API modules do not

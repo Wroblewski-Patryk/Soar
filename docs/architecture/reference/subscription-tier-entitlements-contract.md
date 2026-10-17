@@ -1,24 +1,33 @@
 # Subscription Tier and Entitlements Contract
 
-Status: accepted (2026-04-07)
+Status: current-version target updated 2026-10-17. The 2026-04-07 default
+assignment and checkout rules are historical implementation behavior and must
+not be reported as accepted current product behavior.
 
 ## Purpose
 - Freeze one canonical subscription catalog for V1 rollout (`FREE`, `ADVANCED`, `PROFESSIONAL`).
-- Lock deterministic default assignment rules for new users and owner bootstrap mapping.
+- Define administrator-only access assignment for the current version.
 - Lock machine-readable entitlement payload schema used by API, UI, admin editing, and runtime guards.
 
 ## Canonical Tier Catalog
 - Plan code enum (stable): `FREE | ADVANCED | PROFESSIONAL`.
 - Legacy label `simple` is deprecated and treated as migration alias for `ADVANCED` only during transition.
 - Canonical display order: `FREE` (1), `ADVANCED` (2), `PROFESSIONAL` (3).
-- Catalog visibility rule: all plans are visible in My Account; active plan is highlighted.
+- Catalog visibility rule: all plans are visible in My Account; an assigned
+  active plan is highlighted. With no assignment, none is highlighted.
 
-## Default Assignment Rules
-1. Every newly registered user is assigned `FREE` immediately after account creation.
-2. Owner bootstrap mapping is required: `wroblewskipatryk@gmail.com` must be assigned `PROFESSIONAL`.
-3. V1 invariant: one active subscription per user at a time.
-4. Assignment source enum (stable): `DEFAULT | ADMIN_OVERRIDE | CHECKOUT`.
-5. Bootstrap/seed flows must be idempotent (re-run safe, no duplicate active assignments).
+## Current-Version Assignment Rules
+1. Registration alone does not assign a plan or grant plan-gated access.
+2. A human administrator assigns plans and changes account roles manually in
+   the Soar administrator panel. No self-service checkout or external MCP/API
+   client may perform those actions.
+3. Until assignment, plan-gated actions fail closed. One active subscription
+   per user remains the invariant after assignment.
+4. Existing `DEFAULT | ADMIN_OVERRIDE | CHECKOUT` source values and automatic
+   `FREE` assignment are implementation/legacy data contracts, not permission
+   to expose automatic or payment-driven assignment as the current product.
+   Registration, entitlement resolution, bootstrap, and seed flows must be
+   reconciled with rules 1-3 before this contract is accepted as implemented.
 
 ## Entitlement Payload Schema (V1)
 Every `SubscriptionPlan` stores one JSON payload in `entitlements` with this envelope:
@@ -72,14 +81,20 @@ Schema rules:
   - `features.liveTrading = true`
 
 Notes:
-- Seed values are defaults only; admin can edit limits/prices without deploy.
+- Seed catalog values are templates, not automatic user assignments. The
+  administrator may edit plan limits. Stored price fields do not authorize
+  in-app payment or checkout in the current delivery.
 - Enforcement uses stored entitlement payload, not hardcoded tier constants in runtime paths.
 
 ## Profile/API Read Contract
 Profile subscription response (for My Account) must expose:
 - `catalog`: list of plans with `code`, `displayName`, `priceMonthly`, `currency`, `sortOrder`, `isActive`, `entitlements`.
-- `activeSubscription`: current assignment with `planCode`, `status`, `startsAt`, `endsAt`, `autoRenew`, `source`.
-- `activePlanCode`: denormalized helper for simple UI highlighting.
+- `activeSubscription`: current assignment with `planCode`, `status`, `startsAt`, `endsAt`, `autoRenew`, `source`, or `null` before assignment.
+- `activePlanCode`: denormalized helper for simple UI highlighting, or `null` before assignment.
+
+These persisted/read fields may remain for compatibility. Their presence does
+not make checkout an allowed user journey. A backend route used by the human
+administrator panel is not an external-client plan or role tool.
 
 ## Non-goals (This Contract)
 - No gateway-specific checkout flow details.

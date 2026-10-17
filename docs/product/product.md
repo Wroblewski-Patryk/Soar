@@ -1,5 +1,11 @@
 # Product Vision (Technical Spec)
 
+> **Scope authority (2026-10-17):** The [Current Version Product Contract](./current-version-contract.md)
+> owns today's required behavior and acceptance boundary. Dated MVP/V1
+> implementation lists, future designs, checkout policies, and launch proposals
+> below are historical context where they disagree with that contract. Code or
+> an old plan does not prove that a user journey is accepted in production.
+
 ## Mission
 Build a safe, transparent, and configurable platform for automated crypto trading.
 
@@ -39,7 +45,7 @@ Primary target is advanced users who already understand trading concepts and can
 - `PROFESSIONAL` enabled options: full global interval catalog.
 - Baseline values can be tuned from post-MVP admin controls based on observed production load.
 
-## Current Scope (Implemented)
+## Implementation Snapshot (historical; not current acceptance)
 - User authentication and profile basics.
 - Strategy CRUD and indicator metadata.
 - Markets/Bots/Orders/Positions/Backtests/Logs dashboard pages and API modules.
@@ -54,17 +60,17 @@ Primary target is advanced users who already understand trading concepts and can
 - Backtest report visuals with equity overlays in summary and modal views.
 - API structure with validation, ownership checks, and rate limiting.
 
-## Current Limitations (As of 2026-03-21)
+## Historical Limitations (as of 2026-03-21)
 - No full user-facing manual trade panel in dashboard for rich order ticket workflows (current write actions are API-first).
 - Production launch evidence for full 24/7 SLO/incident/load gates remains tracked in V1 release tasks (post-MVP launch validation).
-- Assistant configuration and dry-run surfaces exist in the repository, but
-  they are not part of the current V1 launch-closure gate.
-- Admin and billing workflows may have implementation scaffolding, but they
-  remain post-MVP / V1.1 scope for launch classification.
+- Assistant configuration and dry-run surfaces existed in the repository;
+  a built-in assistant is outside the current delivery.
+- The administrator panel is required in the current delivery. Payments and
+  self-service checkout are outside it, even if code scaffolding remains.
 - Strategy JSON import/export remains post-MVP scope even though core strategy
   CRUD is in current V1.
 
-## MVP Scope (Target for First Release)
+## Historical MVP Scope (target for first release)
 - Strategy builder capable of expressing advanced strategies (indicators, logical conditions, risk rules).
 - Strategy presets (trend, mean reversion, breakout).
 - Multi-timeframe strategies.
@@ -85,6 +91,8 @@ Primary target is advanced users who already understand trading concepts and can
 - `Bot` is the explicit runtime unit (lifecycle, wallet-owned execution context, runtime topology).
 - A bot can run multiple strategies.
 - A bot can be attached to multiple market groups through `BotMarketGroup`.
+- Exactly one market group may be active for a bot at a time in the current
+  delivery; stored or historical links do not authorize concurrent trading.
 - Each market group can host multiple strategy bindings through `MarketGroupStrategyLink`.
 - `MarketGroupStrategyLink` is the explicit strategy attachment unit inside runtime topology.
 - No per-bot strategy cap is enforced in V1.
@@ -98,11 +106,14 @@ Primary target is advanced users who already understand trading concepts and can
 - Each assistant has independent mandate, risk profile, and activation scope.
 - Assistant scope can target selected bots, bot market-groups, or strategy-link bindings.
 
-## Frontend and Admin Surfaces (Post-MVP / V1.1 Planned)
-- Scope note: `admin` and `billing` surfaces below are planning-only and are not part of current V1 implementation closure.
+## Historical Frontend and Billing Proposals (post-MVP / V1.1)
+- Scope note: the administrator panel is required now for manual plan and role
+  changes. Billing and checkout proposals below are outside the current
+  delivery and do not define current user behavior.
 - `public`: informational pages, onboarding, auth entry.
 - `client/dashboard`: full user product experience after login.
-- `admin`: owner-only business control panel (pricing, plan limits, mode entitlements, critical settings).
+- `admin`: human administrator control panel; current plan and role changes
+  occur manually here, not through an external client.
 - Entitlement UX rule: all key capabilities are visible for all plans; unavailable ones are shown as locked with clear upgrade context.
 - Bot creation is also entitlement-gated: when mode pool limit is reached, new bot creation (including draft/non-active bot) is blocked.
 - At bot cap, `Create bot` remains visible but disabled, with tooltip/helper copy and one-plan `Upgrade to ...` CTA.
@@ -125,6 +136,11 @@ Primary target is advanced users who already understand trading concepts and can
 - Cooldown is configurable from admin controls based on average generation time and platform load.
 
 ## Plan Change Policy (Post-MVP / V1.1 Planned)
+The following payment and grant scenarios are historical proposals, not the
+current product contract. Today a human administrator assigns plans manually
+in the Soar panel; Soar has no in-app payment flow. See
+[Current Version Product Contract](./current-version-contract.md).
+
 - Upgrade to a higher plan is immediate after charging only the difference between plans for the current billing period.
 - After successful upgrade payment, entitlement changes become effective immediately in the active user session (no re-login required).
 - If upgrade payment fails, the current plan and entitlements remain unchanged.
@@ -205,7 +221,11 @@ Primary target is advanced users who already understand trading concepts and can
 - API exposes predefined presets for builder selection.
 - DB-backed preset storage is deferred until post-MVP sharing/versioning needs.
 
-## Planned Scope (After MVP)
+## Historical Planned Scope (After MVP)
+This list predates the current version. Gate.io is now in the required
+PAPER/LIVE scope; a built-in AI assistant and native mobile application remain
+outside the current delivery. See the current contract for the exact boundary.
+
 - Additional exchange support beyond Binance using adapter-based integrations.
 - Strategy export/import as JSON with versioned format.
 - Hedge mode (long and short on same symbol).
