@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified]
 | --- | --- |
 | Description | Exchange event fill fee and account update tests. |
 | File path | apps/api/src/modules/orders/orders.exchangeEvents.service.test.ts |
-| Related files | apps/api/src/modules/orders/orders.exchangeEvents.feeBackfill.test.ts, apps/api/src/modules/orders/orders.exchangeEvents.accountUpdate.service.test.ts |
+| Related files | apps/api/src/modules/orders/orders.exchangeEvents.recovery.test.ts, apps/api/src/modules/orders/orders.exchangeEvents.feeBackfill.test.ts, apps/api/src/modules/orders/orders.exchangeEvents.accountUpdate.service.test.ts |
 | Parent | [[SOAR-FEATURE-MANUAL-ORDER]] |
 | Children |  |
 | Depends on | [[SOAR-SERVICE-ORDER-EXCHANGE-EVENTS]] |

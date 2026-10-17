@@ -1,4 +1,4 @@
-import { PositionCloseInitiator, PositionCloseReason, PrismaClient } from '@prisma/client';
+import { PositionCloseInitiator, PositionCloseReason, Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { computePositionAddUpdate } from './positionFillMath';
@@ -15,8 +15,9 @@ type ExchangeFillFinalizationInput = {
   client?: PrismaClient;
 };
 
-export const finalizeExchangeDcaFill = (input: ExchangeFillFinalizationInput) =>
-  (input.client ?? prisma).$transaction(async (tx) => {
+export const finalizeExchangeDcaFillInTransaction = async (
+  tx: Prisma.TransactionClient, input: ExchangeFillFinalizationInput
+) => {
     await lockExchangeOrderIdentity(tx, input.userId, input.orderId);
     const order = await tx.order.findFirstOrThrow({
       where: { id: input.orderId, userId: input.userId, positionId: input.positionId },
@@ -51,12 +52,19 @@ export const finalizeExchangeDcaFill = (input: ExchangeFillFinalizationInput) =>
       managementMode: order.managementMode, origin: order.origin, executionMode: 'LIVE',
     } });
     return { nextQuantity, nextEntryPrice };
-  });
+};
 
-export const finalizeExchangeCloseFill = (input: ExchangeFillFinalizationInput & {
+export const finalizeExchangeDcaFill = (input: ExchangeFillFinalizationInput) =>
+  (input.client ?? prisma).$transaction((tx) => finalizeExchangeDcaFillInTransaction(tx, input));
+
+type ExchangeCloseFillFinalizationInput = ExchangeFillFinalizationInput & {
   closeReason: PositionCloseReason;
   closeInitiator: PositionCloseInitiator;
-}) => (input.client ?? prisma).$transaction(async (tx) => {
+};
+
+export const finalizeExchangeCloseFillInTransaction = async (
+  tx: Prisma.TransactionClient, input: ExchangeCloseFillFinalizationInput
+) => {
   await lockExchangeOrderIdentity(tx, input.userId, input.orderId);
   const order = await tx.order.findFirstOrThrow({
     where: { id: input.orderId, userId: input.userId, positionId: input.positionId },
@@ -97,4 +105,7 @@ export const finalizeExchangeCloseFill = (input: ExchangeFillFinalizationInput &
     closeReason: input.closeReason, closeInitiator: input.closeInitiator,
     managementMode: order.managementMode, origin: order.origin, executionMode: 'LIVE',
   } });
-});
+};
+
+export const finalizeExchangeCloseFill = (input: ExchangeCloseFillFinalizationInput) =>
+  (input.client ?? prisma).$transaction((tx) => finalizeExchangeCloseFillInTransaction(tx, input));

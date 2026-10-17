@@ -1040,6 +1040,7 @@ model OrderFill {
   position Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@unique([orderId, exchangeTradeId])
   @@index([botId])
   @@index([strategyId])
   @@index([orderId])
