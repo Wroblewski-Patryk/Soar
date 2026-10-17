@@ -1,9 +1,10 @@
-import { FeeSource, PositionSide, PositionStatus, TradeLifecycleAction } from '@prisma/client';
+import { FeeSource, PositionSide, PositionStatus, Prisma, TradeLifecycleAction } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { resolveExternalSyncMissingCloseAttribution } from './positionCloseAttribution';
 import { ExchangeTradeHistoryItem } from './positions.exchangeSnapshot.types';
 import { normalizeSymbol } from './livePositionReconciliation.helpers';
+import { settleImportedRuntimeCloseFinancials } from './importedPositionRuntimeFinancialSettlement';
 
 const EPSILON = 1e-8;
 const DEFAULT_TRADE_HISTORY_LOOKBACK_DAYS = 30;
@@ -219,6 +220,7 @@ export const deriveImportedLifecycleTrades = (input: {
 };
 
 const persistImportedLifecycleTrades = async (input: {
+  client?: Prisma.TransactionClient;
   userId: string;
   positionId: string;
   botId: string | null;
@@ -228,7 +230,8 @@ const persistImportedLifecycleTrades = async (input: {
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   derivedTrades: DerivedLifecycleTrade[];
 }) => {
-  const existingTrades = await prisma.trade.findMany({
+  const client = input.client ?? prisma;
+  const existingTrades = await client.trade.findMany({
     where: { positionId: input.positionId },
     select: {
       id: true, exchangeTradeId: true, lifecycleAction: true,
@@ -252,11 +255,10 @@ const persistImportedLifecycleTrades = async (input: {
   for (const [exchangeOrderId, fills] of closeFillsByOrder) {
     if (fills.length < 2) continue;
     const quantity = fills.reduce((sum, fill) => sum + fill.quantity, 0);
-    const price = fills.reduce((sum, fill) => sum + fill.price * fill.quantity, 0) / quantity;
     const candidates = existingTrades.filter((existing) =>
       existing.lifecycleAction === 'CLOSE' && existing.side === fills[0].side &&
       existing.order?.exchangeOrderId === exchangeOrderId &&
-      nearlyEqual(existing.quantity, quantity) && nearlyEqual(existing.price, price));
+      nearlyEqual(existing.quantity, quantity));
     if (candidates.length === 1) aggregateCloseByOrder.set(exchangeOrderId, candidates[0]);
   }
   const updatedAggregateCloseIds = new Set<string>();
@@ -272,7 +274,7 @@ const persistImportedLifecycleTrades = async (input: {
         const feeTotal = fills.reduce((sum, fill) => sum + fill.feeCost, 0);
         const notionalTotal = fills.reduce((sum, fill) => sum + fill.price * fill.quantity, 0);
         const sameFeeCurrency = fills.every((fill) => fill.feeCurrency === fills[0].feeCurrency);
-        await prisma.trade.update({ where: { id: aggregateClose.id }, data: {
+        await client.trade.update({ where: { id: aggregateClose.id }, data: {
           fee: feeTotal,
           feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
           feeCurrency: sameFeeCurrency ? fills[0].feeCurrency : null,
@@ -293,7 +295,7 @@ const persistImportedLifecycleTrades = async (input: {
     const existingTradeId = exactTradeId ??
       (fallbackMatches.length === 1 ? fallbackMatches[0].id : null);
     if (existingTradeId) {
-      await prisma.trade.update({ where: { id: existingTradeId }, data: {
+      await client.trade.update({ where: { id: existingTradeId }, data: {
         ...(exactTradeId ? {} : { exchangeTradeId: trade.exchangeTradeId }),
         fee: trade.feeCost, feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
         feeCurrency: trade.feeCurrency, effectiveFeeRate: trade.feeRate,
@@ -303,7 +305,7 @@ const persistImportedLifecycleTrades = async (input: {
       existingTradesByExchangeId.set(trade.exchangeTradeId, existingTradeId);
       continue;
     }
-    const created = await prisma.trade.create({
+    const created = await client.trade.create({
       data: {
         userId: input.userId,
         botId: input.botId,
@@ -345,12 +347,12 @@ const persistImportedLifecycleTrades = async (input: {
     canonicalFillsByOrder.set(trade.exchangeOrderId, fills);
   }
   for (const [exchangeOrderId, canonicalFills] of canonicalFillsByOrder) {
-    const order = await prisma.order.findFirst({
+    const order = await client.order.findFirst({
       where: { userId: input.userId, positionId: input.positionId, exchangeOrderId },
       select: { id: true, filledQuantity: true },
     });
     if (!order) continue;
-    const orderFills = await prisma.orderFill.findMany({
+    const orderFills = await client.orderFill.findMany({
       where: { orderId: order.id },
       select: { id: true, exchangeTradeId: true, side: true, price: true, quantity: true },
     });
@@ -375,7 +377,7 @@ const persistImportedLifecycleTrades = async (input: {
     if (matchedFills.size !== canonicalFills.length) continue;
     for (const fill of canonicalFills) {
       const recorded = matchedFills.get(fill.exchangeTradeId)!;
-      await prisma.orderFill.update({
+      await client.orderFill.update({
         where: { id: recorded.id },
         data: {
           exchangeTradeId: fill.exchangeTradeId,
@@ -383,7 +385,7 @@ const persistImportedLifecycleTrades = async (input: {
         },
       });
     }
-    await prisma.order.update({
+    await client.order.update({
       where: { id: order.id }, data: {
         fee: canonicalFills.reduce((sum, fill) => sum + fill.feeCost, 0),
         feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
@@ -411,8 +413,9 @@ const persistImportedLifecycleTrades = async (input: {
   };
 };
 
-const listExistingImportedTradeRows = async (positionId: string) =>
-  prisma.trade.findMany({
+const listExistingImportedTradeRows = async (
+  positionId: string, client: Prisma.TransactionClient | typeof prisma = prisma
+) => client.trade.findMany({
     where: {
       positionId,
       origin: 'EXCHANGE_SYNC',
@@ -424,9 +427,11 @@ const listExistingImportedTradeRows = async (positionId: string) =>
     },
   });
 
-const deleteImportedTradeRows = async (tradeIds: string[]) => {
+const deleteImportedTradeRows = async (
+  tradeIds: string[], client: Prisma.TransactionClient | typeof prisma = prisma
+) => {
   if (tradeIds.length === 0) return;
-  await prisma.trade.deleteMany({
+  await client.trade.deleteMany({
     where: {
       id: { in: tradeIds },
     },
@@ -593,64 +598,109 @@ export const backfillClosedImportedPositionHistory = async (input: {
     };
   }
 
-  const position = await prisma.position.findUnique({
-    where: { id: input.positionId },
-    select: {
-      openedAt: true,
-      closedAt: true,
-      status: true,
-      realizedPnl: true,
-    },
-  });
-  if (!position) {
-    return {
-      hydrated: false,
-      openedAt: null as Date | null,
-      closedAt: null as Date | null,
-    };
-  }
-
-  const existingTradeRows = await listExistingImportedTradeRows(input.positionId);
-  await deleteImportedTradeRows(
-    existingTradeRows.filter(isSyntheticImportedOpenAnchorTrade).map((trade) => trade.id)
-  );
-
-  const { createdCount, firstOpenTradeAt, lastCloseTradeAt, realizedPnl } =
-    await persistImportedLifecycleTrades({
-      userId: input.userId,
-      positionId: input.positionId,
-      botId: input.botId,
-      walletId: input.walletId,
-      strategyId: input.strategyId,
-      symbol: input.symbol,
-      managementMode: input.managementMode,
-      derivedTrades,
-    });
-
-  const nextOpenedAt =
-    firstOpenTradeAt && firstOpenTradeAt.getTime() !== position.openedAt.getTime()
-      ? firstOpenTradeAt
-      : null;
-  const nextClosedAt =
-    lastCloseTradeAt &&
-    (!position.closedAt || lastCloseTradeAt.getTime() !== position.closedAt.getTime())
-      ? lastCloseTradeAt
-      : null;
-  if (nextOpenedAt || nextClosedAt || position.status !== PositionStatus.CLOSED ||
-      position.realizedPnl !== realizedPnl) {
-    await prisma.position.update({
+  return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw(Prisma.sql`SELECT "id" FROM "Position" WHERE "id" = ${input.positionId} FOR UPDATE`);
+    const position = await tx.position.findUnique({
       where: { id: input.positionId },
-      data: {
-        ...(nextOpenedAt ? { openedAt: nextOpenedAt } : {}),
-        ...(nextClosedAt ? { closedAt: nextClosedAt } : {}),
-        ...(Number.isFinite(realizedPnl) ? { realizedPnl } : {}),
+      select: {
+        openedAt: true,
+        closedAt: true,
+        status: true,
+        realizedPnl: true,
       },
     });
-  }
+    if (!position) {
+      return {
+        hydrated: false,
+        openedAt: null as Date | null,
+        closedAt: null as Date | null,
+      };
+    }
 
-  return {
-    hydrated: createdCount > 0 || nextOpenedAt != null || nextClosedAt != null,
-    openedAt: firstOpenTradeAt,
-    closedAt: lastCloseTradeAt,
-  };
+    const closeFillsByOrder = new Map<string, DerivedLifecycleTrade[]>();
+    for (const trade of derivedTrades) {
+      if (trade.lifecycleAction !== 'CLOSE' || !trade.exchangeOrderId) continue;
+      const fills = closeFillsByOrder.get(trade.exchangeOrderId) ?? [];
+      fills.push(trade);
+      closeFillsByOrder.set(trade.exchangeOrderId, fills);
+    }
+    for (const [exchangeOrderId, fills] of closeFillsByOrder) {
+      if (fills.length < 2) continue;
+      const linkedCloses = await tx.trade.findMany({
+        where: { positionId: input.positionId, lifecycleAction: 'CLOSE',
+          order: { exchangeOrderId } },
+        select: { side: true, quantity: true, exchangeTradeId: true },
+      });
+      if (linkedCloses.length === 0) continue;
+      const aggregateMatches = linkedCloses.length === 1 &&
+        linkedCloses[0].side === fills[0].side &&
+        nearlyEqual(linkedCloses[0].quantity, fills.reduce((sum, fill) => sum + fill.quantity, 0));
+      const matchedFillIds = new Set<string>();
+      const individualMatches = linkedCloses.length === fills.length &&
+        linkedCloses.every((close) => {
+          const fill = fills.find((candidate) =>
+            !matchedFillIds.has(candidate.exchangeTradeId) &&
+            candidate.exchangeTradeId === close.exchangeTradeId && close.side === candidate.side &&
+            nearlyEqual(close.quantity, candidate.quantity));
+          if (!fill) return false;
+          matchedFillIds.add(fill.exchangeTradeId);
+          return true;
+        });
+      if (!aggregateMatches && !individualMatches) {
+        return { hydrated: false, openedAt: null, closedAt: null };
+      }
+    }
+
+    const existingTradeRows = await listExistingImportedTradeRows(input.positionId, tx);
+    await deleteImportedTradeRows(
+      existingTradeRows.filter(isSyntheticImportedOpenAnchorTrade).map((trade) => trade.id), tx
+    );
+
+    const { createdCount, firstOpenTradeAt, lastCloseTradeAt, realizedPnl } =
+      await persistImportedLifecycleTrades({
+        client: tx,
+        userId: input.userId,
+        positionId: input.positionId,
+        botId: input.botId,
+        walletId: input.walletId,
+        strategyId: input.strategyId,
+        symbol: input.symbol,
+        managementMode: input.managementMode,
+        derivedTrades,
+      });
+
+    const nextOpenedAt =
+      firstOpenTradeAt && firstOpenTradeAt.getTime() !== position.openedAt.getTime()
+        ? firstOpenTradeAt
+        : null;
+    const nextClosedAt =
+      lastCloseTradeAt &&
+      (!position.closedAt || lastCloseTradeAt.getTime() !== position.closedAt.getTime())
+        ? lastCloseTradeAt
+        : null;
+    if (nextOpenedAt || nextClosedAt || position.status !== PositionStatus.CLOSED ||
+        position.realizedPnl !== realizedPnl) {
+      await tx.position.update({
+        where: { id: input.positionId },
+        data: {
+          ...(nextOpenedAt ? { openedAt: nextOpenedAt } : {}),
+          ...(nextClosedAt ? { closedAt: nextClosedAt } : {}),
+          ...(Number.isFinite(realizedPnl) ? { realizedPnl } : {}),
+        },
+      });
+    }
+
+    await settleImportedRuntimeCloseFinancials({
+      tx, userId: input.userId, positionId: input.positionId,
+      symbol: normalizeSymbol(input.symbol), realizedPnl,
+      exitFees: derivedTrades.filter((trade) => trade.lifecycleAction === 'CLOSE')
+        .reduce((sum, trade) => sum + trade.feeCost, 0),
+    });
+
+    return {
+      hydrated: createdCount > 0 || nextOpenedAt != null || nextClosedAt != null,
+      openedAt: firstOpenTradeAt,
+      closedAt: lastCloseTradeAt,
+    };
+  }, { timeout: 30_000 });
 };

@@ -77,6 +77,28 @@ describe('runtimeSymbolStatsReadModel.service', () => {
     ]),
   };
 
+  it('does not publish partial financial sums while a close or fee is unresolved', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      aggregateSummary: {
+        ...baseParams.aggregateSummary,
+        closedTrades: 2, winningTrades: 1, realizedPnl: 12, grossProfit: 12, feesPaid: 1,
+      },
+      pendingPnlSymbols: new Set(['BTCUSDT']),
+      pendingFeeSymbols: new Set(['BTCUSDT']),
+      latestSignalBySymbol: new Map(),
+      configuredStrategyBySymbol: new Map(),
+      strategiesById: new Map(),
+    });
+    expect(readModel.items[0]).toMatchObject({
+      realizedPnl: null, feesPaid: null, winningTrades: null, grossProfit: null,
+    });
+    expect(readModel.summary).toMatchObject({
+      closedTrades: 2, realizedPnl: null, totalPnl: null,
+      winningTrades: null, grossProfit: null, feesPaid: null,
+    });
+  });
+
   it('keeps configured fallback strategy separate from accepted runtime signal truth', () => {
     const readModel = composeRuntimeSymbolStatsReadModel({
       ...baseParams,

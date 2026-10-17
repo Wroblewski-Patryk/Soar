@@ -1174,9 +1174,39 @@ describe('orders.exchangeEvents.service', () => {
       },
     });
 
-    const result = await applyLiveExchangeOrderTradeUpdateEvent({
-      userId: user.id,
-      event: {
+    const session = await prisma.botRuntimeSession.create({
+      data: { userId: user.id, botId: bot.id, mode: 'LIVE' },
+    });
+    const runtimeEvent = await prisma.botRuntimeEvent.create({
+      data: { userId: user.id, botId: bot.id, sessionId: session.id,
+        eventType: 'POSITION_OPENED', symbol: 'ETHUSDT',
+        payload: { orderId: order.id, financialFeePending: true } },
+    });
+    await prisma.botRuntimeSymbolStat.create({
+      data: { userId: user.id, botId: bot.id, sessionId: session.id,
+        symbol: 'ETHUSDT', feesPaid: 0 },
+    });
+    const closeOrder = await prisma.order.create({
+      data: { userId: user.id, botId: bot.id, walletId: wallet.id, positionId: position.id,
+        origin: 'BOT', managementMode: 'BOT_MANAGED', symbol: 'ETHUSDT', side: 'SELL',
+        type: 'MARKET', status: 'FILLED', quantity: 1, filledQuantity: 1,
+        averageFillPrice: 3_100, fee: 0.02, feeSource: 'EXCHANGE_FILL', feePending: false,
+        exchangeOrderId: 'late-entry-close-order' },
+    });
+    const closeTrade = await prisma.trade.create({
+      data: { userId: user.id, botId: bot.id, walletId: wallet.id, orderId: closeOrder.id,
+        positionId: position.id, symbol: 'ETHUSDT', side: 'SELL', lifecycleAction: 'CLOSE',
+        price: 3_100, quantity: 1, fee: 0.02, feeSource: 'EXCHANGE_FILL', feePending: true,
+        realizedPnl: null, origin: 'BOT', managementMode: 'BOT_MANAGED' },
+    });
+    await prisma.position.update({ where: { id: position.id }, data: { status: 'CLOSED', realizedPnl: null } });
+    const closeEvent = await prisma.botRuntimeEvent.create({
+      data: { userId: user.id, botId: bot.id, sessionId: session.id,
+        eventType: 'POSITION_CLOSED', symbol: 'ETHUSDT',
+        payload: { positionId: position.id, financialPnlPending: true } },
+    });
+
+    const exchangeEvent = {
         eventType: 'ORDER_TRADE_UPDATE',
         marketType: 'FUTURES',
         eventTime: 1_600,
@@ -1196,8 +1226,8 @@ describe('orders.exchangeEvents.service', () => {
         feeCurrency: 'USDT',
         exchangeTradeId: 'trade-fill-fee-backfill-1',
         raw: {},
-      },
-    });
+    } as const;
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: exchangeEvent });
 
     expect(result).toEqual(
       expect.objectContaining({
@@ -1226,6 +1256,24 @@ describe('orders.exchangeEvents.service', () => {
     expect(trades[0]?.fee).toBeCloseTo(0.04, 10);
     expect(trades[0]?.feeSource).toBe('EXCHANGE_FILL');
     expect(trades[0]?.feePending).toBe(false);
+    expect((await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'ETHUSDT' } },
+    })).feesPaid).toBeCloseTo(0.06, 10);
+    expect((await prisma.botRuntimeEvent.findUniqueOrThrow({ where: { id: runtimeEvent.id } })).payload)
+      .toMatchObject({ financialFeePending: false, feeSettlement: 0.04 });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl)
+      .toBeCloseTo(99.94, 10);
+    expect((await prisma.trade.findUniqueOrThrow({ where: { id: closeTrade.id } })).feePending).toBe(false);
+    expect((await prisma.botRuntimeEvent.findUniqueOrThrow({ where: { id: closeEvent.id } })).payload)
+      .toMatchObject({ financialPnlPending: false,
+        financialSettlement: { realizedPnl: 99.94, feesPaid: 0.02 } });
+    expect((await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'ETHUSDT' } },
+    })).realizedPnl).toBeCloseTo(99.94, 10);
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: exchangeEvent });
+    expect((await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'ETHUSDT' } },
+    })).feesPaid).toBeCloseTo(0.06, 10);
   });
 
   it('keeps stale terminal fee events from changing fees for unknown exchange fills', async () => {
@@ -2273,12 +2321,12 @@ describe('orders.exchangeEvents.service', () => {
         executedAt: '2026-05-06T10:00:00.000Z' },
       { exchangeTradeId: 'trade-close-fee-backfill-1',
         exchangeOrderId: 'event-order-close-fee-backfill',
-        symbol: 'ETHUSDT', side: 'SELL', price: 110, quantity: 0.5, notional: 55,
+        symbol: 'ETHUSDT', side: 'SELL', price: 109.01, quantity: 0.5, notional: 54.505,
         feeCost: 0.1, feeCurrency: 'USDT', feeRate: 0.1 / 55,
         executedAt: '2026-05-06T10:11:00.000Z' },
       { exchangeTradeId: 'trade-close-fee-backfill-2',
         exchangeOrderId: 'event-order-close-fee-backfill',
-        symbol: 'ETHUSDT', side: 'SELL', price: 110, quantity: 0.5, notional: 55,
+        symbol: 'ETHUSDT', side: 'SELL', price: 111, quantity: 0.5, notional: 55.5,
         feeCost: 0.2, feeCurrency: 'USDT', feeRate: 0.2 / 55,
         executedAt: '2026-05-06T10:12:00.000Z' },
     ];
@@ -2293,11 +2341,12 @@ describe('orders.exchangeEvents.service', () => {
     const afterHistory = await prisma.trade.findMany({ where: { positionId: position.id } });
     expect(afterHistory).toHaveLength(2);
     expect(afterHistory.find((trade) => trade.orderId === order.id)).toMatchObject({
-      quantity: 1, feePending: false, realizedPnl: 8.7,
+      quantity: 1, feePending: false,
     });
     expect(afterHistory.find((trade) => trade.orderId === order.id)?.fee).toBeCloseTo(0.3, 10);
+    expect(afterHistory.find((trade) => trade.orderId === order.id)?.realizedPnl).toBeCloseTo(8.705, 6);
     expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(2);
-    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeCloseTo(8.7, 6);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeCloseTo(8.705, 6);
   });
 
   it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {

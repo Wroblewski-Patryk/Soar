@@ -190,7 +190,7 @@ export type BotRuntimeSessionListItem = {
     totalSignals: number;
     dcaCount: number;
     closedTrades: number;
-    realizedPnl: number;
+    realizedPnl: number | null;
   };
 };
 
@@ -217,12 +217,12 @@ export type BotRuntimeSessionDetail = {
     exits: number;
     dcaCount: number;
     closedTrades: number;
-    winningTrades: number;
-    losingTrades: number;
-    realizedPnl: number;
-    grossProfit: number;
-    grossLoss: number;
-    feesPaid: number;
+    winningTrades: number | null;
+    losingTrades: number | null;
+    realizedPnl: number | null;
+    grossProfit: number | null;
+    grossLoss: number | null;
+    feesPaid: number | null;
     openPositionCount?: number;
     openPositionQty?: number;
   };
@@ -240,12 +240,12 @@ export type BotRuntimeSymbolStat = {
   exits: number;
   dcaCount: number;
   closedTrades: number;
-  winningTrades: number;
-  losingTrades: number;
-  realizedPnl: number;
-  grossProfit: number;
-  grossLoss: number;
-  feesPaid: number;
+  winningTrades: number | null;
+  losingTrades: number | null;
+  realizedPnl: number | null;
+  grossProfit: number | null;
+  grossLoss: number | null;
+  feesPaid: number | null;
   openPositionCount: number;
   openPositionQty: number;
   unrealizedPnl?: number;
@@ -302,14 +302,14 @@ export type BotRuntimeSymbolStatsResponse = {
     exits: number;
     dcaCount: number;
     closedTrades: number;
-    winningTrades: number;
-    losingTrades: number;
-    realizedPnl: number;
+    winningTrades: number | null;
+    losingTrades: number | null;
+    realizedPnl: number | null;
     unrealizedPnl?: number;
-    totalPnl?: number;
-    grossProfit: number;
-    grossLoss: number;
-    feesPaid: number;
+    totalPnl?: number | null;
+    grossProfit: number | null;
+    grossLoss: number | null;
+    feesPaid: number | null;
     openPositionCount?: number;
     openPositionQty?: number;
   };
@@ -385,6 +385,7 @@ export type BotRuntimeTrade = {
 export type BotRuntimeTradesResponse = {
   sessionId: string;
   total: number;
+  feesPaid?: number | null;
   meta: {
     page: number;
     pageSize: number;
@@ -459,8 +460,8 @@ export type BotRuntimePositionItem = {
     armPercent: number;
     trailPercent: number;
   }>;
-  feesPaid: number;
-  realizedPnl: number;
+  feesPaid: number | null;
+  realizedPnl: number | null;
   unrealizedPnl: number | null;
   unrealizedPnlPercent?: number | null;
   markPrice: number | null;
@@ -508,9 +509,9 @@ export type BotRuntimePositionsResponse = {
     finishedAt: string;
   };
   summary: {
-    realizedPnl: number;
+    realizedPnl: number | null;
     unrealizedPnl: number;
-    feesPaid: number;
+    feesPaid: number | null;
     openPositionQty?: number;
     referenceBalance?: number | null;
     freeCash?: number | null;
@@ -554,9 +555,9 @@ export type BotPortfolioHistoryResponse = {
   summary: {
     startBalance: number | null;
     currentBalance: number | null;
-    realizedPnl: number;
+    realizedPnl: number | null;
     unrealizedPnl: number;
-    totalPnl: number;
+    totalPnl: number | null;
     capitalSource?: RuntimeCapitalSource | null;
     paperResetAt: string | null;
     openPositionCount: number;
@@ -565,7 +566,7 @@ export type BotPortfolioHistoryResponse = {
   points: Array<{
     timestamp: string;
     balance: number | null;
-    realizedPnl: number;
+    realizedPnl: number | null;
     type: "START" | "CLOSE" | "CURRENT";
     label: string;
     symbol: string | null;

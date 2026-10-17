@@ -146,6 +146,23 @@ const tradeResponse = (sessionId: string, id: string) => ({
 });
 
 describe("useRuntimeSelectionViewModel", () => {
+  it("keeps pending close PnL unknown in dashboard totals and paper capital", () => {
+    const pending = {
+      ...snapshot,
+      session: { ...snapshot.session!, summary: { ...snapshot.session!.summary, realizedPnl: null } },
+      positions: { ...snapshot.positions!, summary: { ...snapshot.positions!.summary, realizedPnl: null } },
+    } as RuntimeSnapshot;
+    const { result } = renderHook(() => useRuntimeSelectionViewModel({
+      snapshots: [pending], selected: pending, selectedTrades: null, liveTickerPrices: {},
+    }));
+    expect(result.current.summary.realized).toBeNull();
+    expect(result.current.summary.paperDelta).toBeNull();
+    expect(result.current.summary.paperEquity).toBeNull();
+    expect(result.current.selectedData?.realized).toBeNull();
+    expect(result.current.selectedData?.net).toBeNull();
+    expect(result.current.selectedData?.equity).toBeNull();
+  });
+
   it("uses selected stream PnL consistently for dashboard summary and selected table", () => {
     const { result } = renderHook(() =>
       useRuntimeSelectionViewModel({

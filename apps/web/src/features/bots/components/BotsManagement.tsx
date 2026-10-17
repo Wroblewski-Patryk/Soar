@@ -242,7 +242,8 @@ export default function BotsManagement({
   const monitorWinRate = useMemo(() => {
     const closedTrades = monitorSessionDetail?.summary.closedTrades ?? 0;
     if (closedTrades <= 0) return 0;
-    const wins = monitorSessionDetail?.summary.winningTrades ?? 0;
+    const wins = monitorSessionDetail?.summary.winningTrades;
+    if (wins == null) return null;
     return (wins / closedTrades) * 100;
   }, [monitorSessionDetail]);
 
@@ -270,13 +271,15 @@ export default function BotsManagement({
     });
   }, [monitorTrades?.items]);
 
+  const monitorKnownRealizedPnl = monitorPositions
+    ? monitorPositions.summary.realizedPnl
+    : monitorSessionDetail?.summary.realizedPnl ?? null;
   const monitorOpenPositionRows = useMemo(() => {
     const runtimePortfolio = resolveRuntimePortfolio({
       bot: selectedMonitorBot,
       summary: monitorPositions?.summary ?? null,
-      net:
-        (monitorSessionDetail?.summary.realizedPnl ?? 0) +
-        (monitorPositions?.summary?.unrealizedPnl ?? 0),
+      net: monitorKnownRealizedPnl == null ? null
+        : monitorKnownRealizedPnl + (monitorPositions?.summary?.unrealizedPnl ?? 0),
       usedMargin: 0,
     });
     const initBalance = runtimePortfolio ?? resolvePaperConfigBaseline(selectedMonitorBot);
@@ -290,7 +293,7 @@ export default function BotsManagement({
     monitorLiveTickerPrices,
     monitorPositions,
     monitorSymbolStats,
-    monitorSessionDetail?.summary.realizedPnl,
+    monitorKnownRealizedPnl,
     selectedMonitorBot,
   ]);
   const handleMonitorClosePosition = useCallback(
@@ -318,7 +321,7 @@ export default function BotsManagement({
       resolveRuntimePortfolio({
         bot: selectedMonitorBot,
         summary: monitorPositions?.summary ?? null,
-        net: (monitorSessionDetail?.summary.realizedPnl ?? 0) + totalOpenPnl,
+        net: monitorKnownRealizedPnl == null ? null : monitorKnownRealizedPnl + totalOpenPnl,
         usedMargin: totalMarginUsed,
       }) ?? resolvePaperConfigBaseline(selectedMonitorBot);
     const marginInitPct = initBalance && initBalance > 0 ? (totalMarginUsed / initBalance) * 100 : null;
@@ -329,7 +332,7 @@ export default function BotsManagement({
       totalOpenPnl,
       marginInitPct,
     };
-  }, [monitorOpenPositionRows, monitorPositions?.summary, monitorSessionDetail?.summary.realizedPnl, selectedMonitorBot]);
+  }, [monitorOpenPositionRows, monitorPositions?.summary, monitorKnownRealizedPnl, selectedMonitorBot]);
 
   const monitorShowOpenOrders = useMemo(() => {
     const mode = monitorSessionDetail?.mode ?? selectedMonitorBot?.mode ?? null;
@@ -359,9 +362,8 @@ export default function BotsManagement({
     const portfolio = resolveRuntimePortfolio({
       bot: selectedMonitorBot,
       summary: monitorPositions?.summary ?? null,
-      net:
-        (monitorSessionDetail?.summary.realizedPnl ?? 0) +
-        monitorOpenMarginSummary.totalOpenPnl,
+      net: monitorKnownRealizedPnl == null ? null
+        : monitorKnownRealizedPnl + monitorOpenMarginSummary.totalOpenPnl,
       usedMargin: monitorOpenMarginSummary.totalMarginUsed,
     });
     const free = resolveRuntimeFreeFunds({
@@ -382,7 +384,7 @@ export default function BotsManagement({
     monitorOpenMarginSummary.totalMarginUsed,
     monitorOpenMarginSummary.totalOpenPnl,
     monitorPositions?.summary,
-    monitorSessionDetail?.summary.realizedPnl,
+    monitorKnownRealizedPnl,
     selectedMonitorBot,
   ]);
 

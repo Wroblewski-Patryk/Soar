@@ -32,12 +32,12 @@ type MonitoringFutureSignalsSectionProps = {
     exits: number;
     dcaCount: number;
     closedTrades: number;
-    winningTrades: number;
-    losingTrades: number;
+    winningTrades: number | null;
+    losingTrades: number | null;
     openPositionQty: number;
-    realizedPnl: number;
+    realizedPnl: number | null;
     unrealizedPnl?: number | null;
-    feesPaid: number;
+    feesPaid: number | null;
     lastTradeAt?: string | null;
     lastSignalContextSource?:
       | "latest_signal"
@@ -213,16 +213,16 @@ export function MonitoringFutureSignalsSection(props: MonitoringFutureSignalsSec
                   <td>{item.dcaCount}</td>
                   <td>{item.closedTrades}</td>
                   <td>
-                    {item.winningTrades}/{item.losingTrades}
+                    {item.winningTrades == null || item.losingTrades == null ? "-" : `${item.winningTrades}/${item.losingTrades}`}
                   </td>
                   <td>{formatNumber(item.openPositionQty, 6)}</td>
-                  <td className={item.realizedPnl >= 0 ? "text-success" : "text-error"}>
-                    {formatCurrency(item.realizedPnl)}
+                  <td className={item.realizedPnl == null ? "" : item.realizedPnl >= 0 ? "text-success" : "text-error"}>
+                    {item.realizedPnl == null ? "-" : formatCurrency(item.realizedPnl)}
                   </td>
                   <td className={(item.unrealizedPnl ?? 0) >= 0 ? "text-success" : "text-error"}>
                     {formatCurrency(item.unrealizedPnl ?? 0)}
                   </td>
-                  <td>{formatCurrency(item.feesPaid)}</td>
+                  <td>{item.feesPaid == null ? "-" : formatCurrency(item.feesPaid)}</td>
                   <td>{formatDateTime(item.lastTradeAt)}</td>
                 </tr>
               );

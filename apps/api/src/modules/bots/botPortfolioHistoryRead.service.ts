@@ -58,17 +58,16 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
       : bot.mode === 'LIVE' && latestWalletSnapshot
         ? latestWalletSnapshot.allocatedBalance
         : aggregateReferenceBalance;
-  const realizedPnl =
-    typeof aggregate?.positions.summary.realizedPnl === 'number' &&
-    Number.isFinite(aggregate.positions.summary.realizedPnl)
+  const realizedPnl = aggregate?.positions.summary.realizedPnl == null
+    ? null
+    : Number.isFinite(aggregate.positions.summary.realizedPnl)
       ? aggregate.positions.summary.realizedPnl
-      : 0;
+      : null;
   const unrealizedPnl =
     typeof aggregate?.positions.summary.unrealizedPnl === 'number' &&
     Number.isFinite(aggregate.positions.summary.unrealizedPnl)
       ? aggregate.positions.summary.unrealizedPnl
       : 0;
-  const startBalance = referenceBalance != null ? Math.max(0, referenceBalance - realizedPnl) : null;
   const configuredSymbolGroup =
     bot.botMarketGroups.find((link) => link.isEnabled && link.lifecycleStatus === 'ACTIVE')?.symbolGroup ??
     bot.symbolGroup ??
@@ -116,6 +115,9 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
     if (leftTs !== rightTs) return leftTs - rightTs;
     return left.id.localeCompare(right.id);
   });
+  const hasPendingClosePnl = realizedPnl == null || sortedHistoryItems.some((item) => item.realizedPnl == null);
+  const startBalance = referenceBalance != null && !hasPendingClosePnl
+    ? Math.max(0, referenceBalance - realizedPnl) : null;
   const pendingFeeTrade = await prisma.trade.findFirst({
     where: {
       userId,
@@ -140,7 +142,7 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
     select: { id: true },
   });
 
-  let cumulativeRealizedPnl = 0;
+  let cumulativeRealizedPnl: number | null = 0;
   const points =
     startBalance == null
       ? []
@@ -154,10 +156,11 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
             symbol: null,
           },
           ...sortedHistoryItems.map((item) => {
-            cumulativeRealizedPnl += item.realizedPnl ?? 0;
+            cumulativeRealizedPnl = cumulativeRealizedPnl == null || item.realizedPnl == null
+              ? null : cumulativeRealizedPnl + item.realizedPnl;
             return {
               timestamp: toIsoString(item.closedAt) ?? finishedAt.toISOString(),
-              balance: Math.max(0, startBalance + cumulativeRealizedPnl),
+              balance: cumulativeRealizedPnl == null ? null : Math.max(0, startBalance + cumulativeRealizedPnl),
               realizedPnl: cumulativeRealizedPnl,
               type: 'CLOSE' as const,
               label: item.closeReason ?? 'CLOSE',
@@ -226,6 +229,10 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
       completeness = 'PARTIAL';
       completenessReasons.push('FEE_RECONCILIATION_PENDING');
     }
+    if (hasPendingClosePnl) {
+      completeness = 'PARTIAL';
+      completenessReasons.push('PNL_RECONCILIATION_PENDING');
+    }
   }
 
   return {
@@ -244,7 +251,7 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
       currentBalance: referenceBalance,
       realizedPnl,
       unrealizedPnl,
-      totalPnl: realizedPnl + unrealizedPnl,
+      totalPnl: realizedPnl == null ? null : realizedPnl + unrealizedPnl,
       capitalSource:
         aggregate?.positions.summary.capitalSource ??
         (bot.mode === 'LIVE' && latestWalletSnapshot ? 'LIVE_EXCHANGE_BALANCE' : null),

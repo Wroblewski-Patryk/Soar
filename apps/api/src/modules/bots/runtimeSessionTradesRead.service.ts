@@ -394,11 +394,11 @@ export const listBotRuntimeSessionTrades = async (
         side: trade.side,
         price: trade.price,
         quantity: trade.quantity,
-        fee: trade.fee,
+        fee: trade.feePending ? null : trade.fee,
         feeSource: trade.feeSource,
         feePending: trade.feePending,
         feeCurrency: trade.feeCurrency ?? null,
-        realizedPnl: trade.realizedPnl,
+        realizedPnl: inferredLifecycleAction === 'CLOSE' && trade.feePending ? null : trade.realizedPnl,
         executedAt: trade.executedAt,
         createdAt: trade.createdAt,
         orderId: trade.orderId,
@@ -504,7 +504,8 @@ export const listBotRuntimeSessionTrades = async (
   });
 
   const total = sortedRows.length;
-  const feesPaid = sortedRows.reduce((acc, trade) => acc + (trade.fee ?? 0), 0);
+  const feesPaid = sortedRows.some((trade) => trade.fee == null || trade.feePending)
+    ? null : sortedRows.reduce((acc, trade) => acc + trade.fee!, 0);
   const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
   const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
   const offset = (safePage - 1) * pageSize;

@@ -137,6 +137,23 @@ describe('buildOpenPositionLookupWhere', () => {
 });
 
 describe('orchestrateRuntimeSignal', () => {
+  it('records a filled LIVE OPEN fee as unknown until canonical fee truth arrives', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    await orchestrateRuntimeSignal({
+      userId: 'u1', symbol: 'BTCUSDT', direction: 'LONG', quantity: 0.1,
+      markPrice: 43_000, mode: 'LIVE',
+    }, orderGateway, positionGateway, eventGateway, tradeGateway);
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(expect.objectContaining({
+      fee: null, feePending: true,
+    }));
+    expect(eventGateway.writeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      status: 'opened', financialFeePending: true,
+    }));
+  });
+
   it('opens order and position for LONG signal', async () => {
     const orderGateway = createOrderGateway();
     const positionGateway = createPositionGateway();

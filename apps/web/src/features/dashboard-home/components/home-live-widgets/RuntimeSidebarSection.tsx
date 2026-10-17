@@ -137,7 +137,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const selectedWalletMode = selectedWallet?.mode ?? props.selected?.bot.mode ?? null;
   const walletName = selectedWallet?.name ?? "-";
   const selectedUsedMargin = Math.max(0, props.selectedData?.usedMargin ?? 0);
-  const selectedNet = props.selectedData?.net ?? 0;
+  const selectedNet = props.selectedData?.net ?? null;
   const paperStartBalance = resolvePaperConfigBaseline(props.selected?.bot);
   const isAggregateRuntime = props.selected?.positions?.sessionId === "AGGREGATE";
   const liveFixedAllocation =
@@ -161,10 +161,10 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const walletTotal =
     selectedWalletMode === "LIVE"
       ? runtimeWalletTotal
-      : runtimeWalletTotal ?? (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
+      : runtimeWalletTotal ?? (walletBaseline != null && selectedNet != null ? Math.max(0, walletBaseline + selectedNet) : null);
   const walletDeltaBaseline = (() => {
     if (walletBaseline != null && walletBaseline > 0) return walletBaseline;
-    if (selectedWalletMode !== "LIVE" || walletTotal == null) return null;
+    if (selectedWalletMode !== "LIVE" || walletTotal == null || selectedNet == null) return null;
     const derivedBaseline = walletTotal - selectedNet;
     return Number.isFinite(derivedBaseline) && derivedBaseline > 0 ? derivedBaseline : null;
   })();
@@ -534,8 +534,8 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
               ) : null}
               <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-delta-row">
                 <span className="opacity-65">{props.text.deltaFromStart}</span>
-                <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
-                  {walletDeltaBaseline != null
+                <span className={`font-semibold ${selectedNet == null ? "" : selectedNet >= 0 ? "text-success" : "text-error"}`}>
+                  {walletDeltaBaseline != null && selectedNet != null
                     ? `${props.formatPercent((selectedNet / walletDeltaBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
                     : "-"}
                 </span>

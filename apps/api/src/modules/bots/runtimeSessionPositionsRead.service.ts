@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { prisma } from '../../prisma/client';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { resolveRuntimeCapitalSnapshot } from '../engine/runtimeCapitalContext.service';
@@ -476,9 +477,10 @@ export const listBotRuntimeSessionPositions = async (
       { status: 'CLOSED', closedAt: closedPositionWindow, ...runtimeClosedPositionSyncWhere },
     ],
   };
+  const unknownTradeFeeWhere: Prisma.PositionWhereInput = { trades: { some: { OR: [{ fee: null }, { feePending: true }] } } };
   const [
     openPositions, closedPositions, openPositionSummary, closedPositionSummary,
-    positionTradeFees,
+    positionTradeFees, unresolvedClosePnlCount, unresolvedPositionFeeCount,
   ] = await Promise.all([
     listRuntimeManagedPositions({
       where: openPositionWhere,
@@ -491,14 +493,17 @@ export const listBotRuntimeSessionPositions = async (
     summarizeRuntimeManagedPositions(openPositionWhere),
     summarizeRuntimeManagedPositions(closedPositionWhere),
     sumRuntimeManagedPositionTradeFees(feePositionWhere),
+    prisma.position.count({ where: { AND: [closedPositionWhere, { OR: [{ realizedPnl: null }, unknownTradeFeeWhere] }] } }),
+    prisma.position.count({ where: { AND: [feePositionWhere, { OR: [unknownTradeFeeWhere,
+      { origin: 'EXCHANGE_SYNC', trades: { none: {} } }] }] } }),
   ]);
   const openPositionCount = openPositionSummary._count;
   const closedPositionCount = closedPositionSummary._count;
   const totalOpenPositionMarginUsed = openPositionSummary._sum.marginUsed ?? 0;
   const totalOpenPositionQty = openPositionSummary._sum.quantity ?? 0;
   const totalUnrealizedPnl = openPositionSummary._sum.unrealizedPnl ?? 0;
-  const totalRealizedPnl = closedPositionSummary._sum.realizedPnl ?? 0;
-  const totalPositionFeesPaid = positionTradeFees._sum.fee ?? 0;
+  const totalRealizedPnl = unresolvedClosePnlCount > 0 ? null : closedPositionSummary._sum.realizedPnl ?? 0;
+  const totalPositionFeesPaid = unresolvedPositionFeeCount > 0 ? null : positionTradeFees._sum.fee ?? 0;
   const positions = [...openPositions, ...closedPositions];
   if (positions.length === 0) {
     const openOrders = await listRuntimeOpenOrders({
@@ -757,8 +762,10 @@ export const listBotRuntimeSessionPositions = async (
     const entryLegs = positionTrades.filter((trade) => trade.side === entrySide);
     const exitLegs = positionTrades.filter((trade) => trade.side !== entrySide);
 
-    const feesPaid = positionTrades.reduce((acc, trade) => acc + (trade.fee ?? 0), 0);
-    const tradeRealizedPnl = positionTrades.reduce((acc, trade) => acc + (trade.realizedPnl ?? 0), 0);
+    const feesPaid = (position.origin === 'EXCHANGE_SYNC' && positionTrades.length === 0) || positionTrades.some((trade) => trade.fee == null || trade.feePending)
+      ? null : positionTrades.reduce((acc, trade) => acc + trade.fee!, 0);
+    const tradeRealizedPnl = positionTrades.some((trade) => (trade.lifecycleAction === 'CLOSE' && trade.realizedPnl == null) || trade.fee == null || trade.feePending)
+      ? null : positionTrades.reduce((acc, trade) => acc + (trade.realizedPnl ?? 0), 0);
     const entryTrade = entryLegs[0] ?? positionTrades[0] ?? null;
     const exitTrade = exitLegs.at(-1) ?? (position.status === 'CLOSED' ? positionTrades.at(-1) ?? null : null);
     const effectiveStrategyId = position.strategyId ?? singleBotStrategyContextId;
@@ -932,7 +939,8 @@ export const listBotRuntimeSessionPositions = async (
       trailingStopLevels,
       trailingTakeProfitLevels,
       feesPaid,
-      realizedPnl: position.realizedPnl ?? tradeRealizedPnl ?? 0,
+      realizedPnl: position.status === 'CLOSED' && (feesPaid == null || (position.realizedPnl == null && position.origin === 'EXCHANGE_SYNC'))
+        ? null : position.realizedPnl ?? tradeRealizedPnl,
       unrealizedPnl: liveUnrealizedPnl ?? position.unrealizedPnl ?? null,
       unrealizedPnlPercent:
         unrealizedPnlPercentFraction != null ? unrealizedPnlPercentFraction * 100 : null,

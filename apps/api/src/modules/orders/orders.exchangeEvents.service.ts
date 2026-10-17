@@ -13,11 +13,13 @@ import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service
 import {
   finalizeExchangeCloseFillInTransaction,
   finalizeExchangeDcaFillInTransaction,
-  resolveKnownEntryFeesInTransaction,
 } from './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
+import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
+import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
 import {
   isExchangeCloseFillComplete,
   resolveExchangeFeePendingDecision,
@@ -48,31 +50,6 @@ const isClosingOrderForPosition = (input: {
   (input.positionSide === 'LONG' && input.orderSide === 'SELL') ||
   (input.positionSide === 'SHORT' && input.orderSide === 'BUY');
 
-const computeCloseRealizedPnl = async (input: {
-  tx: Prisma.TransactionClient;
-  userId: string;
-  positionId: string;
-  positionSide: 'LONG' | 'SHORT';
-  entryPrice: number;
-  closePrice: number;
-  closeQuantity: number;
-  exitFee: number;
-  exitFeePending: boolean;
-  imported: boolean;
-}) => {
-  const entryLegSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const entryFees = await resolveKnownEntryFeesInTransaction(input.tx, {
-    userId: input.userId, positionId: input.positionId,
-    entrySide: entryLegSide, imported: input.imported,
-  });
-  if (entryFees == null || input.exitFeePending) return null;
-  const grossPnl =
-    input.positionSide === 'LONG'
-      ? (input.closePrice - input.entryPrice) * input.closeQuantity
-      : (input.entryPrice - input.closePrice) * input.closeQuantity;
-  return grossPnl - entryFees - input.exitFee;
-};
-
 const refreshCloseRealizedPnlForOrder = async (input: {
   tx: Prisma.TransactionClient;
   userId: string;
@@ -94,10 +71,8 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       positionId: { not: null },
     },
     select: {
-      id: true,
-      positionId: true,
-      price: true,
-      quantity: true,
+      id: true, positionId: true, symbol: true,
+      price: true, quantity: true,
       fee: true, feeSource: true, feePending: true,
     },
   });
@@ -113,14 +88,10 @@ const refreshCloseRealizedPnlForOrder = async (input: {
 
     const position = await input.tx.position.findFirst({
       where: {
-        id: closeTrade.positionId,
-        userId: input.userId,
+        id: closeTrade.positionId, userId: input.userId,
       },
       select: {
-        id: true,
-        side: true,
-        entryPrice: true,
-        origin: true,
+        id: true, side: true, entryPrice: true, origin: true,
       },
     });
     if (!position) continue;
@@ -149,6 +120,13 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       where: { id: position.id },
       data: { realizedPnl },
     });
+    if (realizedPnl != null && !closeOrder.feePending && closeTrade.fee != null && !closeTrade.feePending &&
+      closeTrades.filter((trade) => trade.positionId === position.id).length === 1) {
+      await settleImportedRuntimeCloseFinancials({
+        tx: input.tx, userId: input.userId, positionId: position.id,
+        symbol: closeTrade.symbol, realizedPnl, exitFees: closeTrade.fee,
+      });
+    }
   }
 };
 
@@ -171,8 +149,7 @@ const ensureOrderFillRecord = async (input: {
 }) => {
   const existing = await input.tx.orderFill.findFirst({
     where: {
-      orderId: input.orderId,
-      exchangeTradeId: input.exchangeTradeId,
+      orderId: input.orderId, exchangeTradeId: input.exchangeTradeId,
     },
     select: { id: true },
   });
@@ -180,10 +157,8 @@ const ensureOrderFillRecord = async (input: {
 
   await input.tx.orderFill.create({
     data: {
-      userId: input.userId,
-      botId: input.botId,
-      strategyId: input.strategyId,
-      orderId: input.orderId,
+      userId: input.userId, botId: input.botId,
+      strategyId: input.strategyId, orderId: input.orderId,
       tradeId: null,
       positionId: input.positionId,
       symbol: input.symbol,
@@ -875,6 +850,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     }
   }
 
+  await settleRuntimeOrderFee({ tx, userId: input.userId, orderId: updatedOrder.id });
+  await refreshClosedPositionPnlAfterEntryFee({ tx, userId: input.userId, orderId: updatedOrder.id });
   return {
     status: 'applied' as const,
     orderId: updatedOrder.id,

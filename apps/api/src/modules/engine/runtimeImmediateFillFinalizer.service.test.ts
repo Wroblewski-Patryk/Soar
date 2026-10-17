@@ -4,7 +4,8 @@ import { prisma } from '../../prisma/client';
 import { finalizeLiveCloseFill, finalizeRuntimeDcaFill } from './runtimeImmediateFillFinalizer.service';
 import { finalizeExchangeCloseFill, finalizeExchangeDcaFill } from '../orders/orders.exchangeEventFinalization.service';
 import { runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
-import { hydrateImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
+import { backfillClosedImportedPositionHistory, hydrateImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
+import { reconcileRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
 import {
   livePositionReconciliationDefaultDeps,
   reconcileExternalPositionsFromExchange,
@@ -58,13 +59,30 @@ afterEach(async () => {
     await prisma.trade.deleteMany({ where: { userId } });
     await prisma.orderFill.deleteMany({ where: { userId } });
     await prisma.order.deleteMany({ where: { userId } });
+    await prisma.botRuntimeEvent.deleteMany({ where: { userId } });
+    await prisma.botRuntimeSymbolStat.deleteMany({ where: { userId } });
+    await prisma.botRuntimeSession.deleteMany({ where: { userId } });
     await prisma.runtimeExecutionDedupe.deleteMany({ where: { userId } });
     await prisma.position.deleteMany({ where: { userId } });
+    await prisma.bot.deleteMany({ where: { userId } });
+    await prisma.wallet.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { id: userId } });
   }
 });
 
 describe('immediate filled runtime order finalization', () => {
+  it('persists a LIVE DCA fee as pending when the exchange has not confirmed it', async () => {
+    const { user, position, order, dedupe } = await createFilledFixture('BUY');
+    await prisma.order.update({ where: { id: order.id },
+      data: { fee: null, feePending: true, feeSource: 'ESTIMATED' } });
+    await finalizeRuntimeDcaFill({
+      userId: user.id, positionId: position.id, order, dedupeKey: dedupe.dedupeKey,
+      fillPrice: 90, fillQuantity: 1, feePaid: null, mode: 'LIVE',
+    });
+    expect(await prisma.trade.findFirstOrThrow({ where: { orderId: order.id } }))
+      .toMatchObject({ lifecycleAction: 'DCA', fee: null, feePending: true });
+  });
+
   it('settles an imported runtime close with explicit zero entry and exit fees', async () => {
     const { user, position, order, dedupe } = await createFilledFixture('SELL');
     await prisma.position.update({
@@ -94,10 +112,23 @@ describe('immediate filled runtime order finalization', () => {
 
   it('backfills a closed imported BOT position without duplicating its runtime close on replay', async () => {
     const { user, position, order, dedupe } = await createFilledFixture('SELL');
+    const wallet = await prisma.wallet.create({ data: {
+      userId: user.id, name: 'Imported runtime wallet', mode: 'LIVE',
+      exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+    } });
+    const bot = await prisma.bot.create({ data: {
+      userId: user.id, name: 'Imported runtime bot', mode: 'LIVE',
+      walletId: wallet.id,
+    } });
+    const session = await prisma.botRuntimeSession.create({ data: {
+      userId: user.id, botId: bot.id, mode: 'LIVE',
+      startedAt: new Date('2026-04-29T09:00:00.000Z'),
+    } });
     const apiKeyId = 'imported-runtime-key';
     await prisma.position.update({
       where: { id: position.id }, data: {
         origin: 'EXCHANGE_SYNC', managementMode: 'BOT_MANAGED',
+        botId: bot.id, walletId: wallet.id,
         externalId: `${apiKeyId}:FUTURES:BTCUSDT:LONG`,
       },
     });
@@ -125,7 +156,8 @@ describe('immediate filled runtime order finalization', () => {
       executedAt: openedAt.toISOString(),
     }] });
     const runtimeInput = {
-      userId: user.id, positionId: position.id, order, dedupeKey: dedupe.dedupeKey,
+      userId: user.id, botId: bot.id, walletId: wallet.id,
+      positionId: position.id, order, dedupeKey: dedupe.dedupeKey,
       fillPrice: 110, fillQuantity: 1, exitFee: 0.2, closedAt,
       closeReason: 'SIGNAL_EXIT' as const, closeInitiator: 'BOT_APP' as const,
     };
@@ -133,6 +165,18 @@ describe('immediate filled runtime order finalization', () => {
     expect(await finalizeLiveCloseFill(runtimeInput)).toEqual({ applied: false, realizedPnl: null });
     expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeNull();
     expect((await prisma.trade.findFirstOrThrow({ where: { orderId: order.id } })).feePending).toBe(true);
+
+    const pendingPayload = { positionId: position.id, orderId: order.id,
+      financialPnlPending: true };
+    await prisma.botRuntimeEvent.create({ data: {
+      userId: user.id, botId: bot.id, sessionId: session.id,
+      eventType: 'POSITION_CLOSED', symbol: 'BTCUSDT',
+      eventAt: closedAt, payload: pendingPayload,
+    } });
+    await prisma.botRuntimeSymbolStat.create({ data: {
+      userId: user.id, botId: bot.id, sessionId: session.id,
+      symbol: 'BTCUSDT', closedTrades: 1,
+    } });
 
     const canonicalHistory = [
       { exchangeTradeId: 'venue-open', exchangeOrderId: 'venue-open-order',
@@ -156,6 +200,21 @@ describe('immediate filled runtime order finalization', () => {
       listOpenSyncedPositionsForApiKey: async () => [],
       now: () => closedAt,
     });
+    const duplicateEvent = await prisma.botRuntimeEvent.create({ data: {
+      userId: user.id, botId: bot.id, sessionId: session.id,
+      eventType: 'POSITION_CLOSED', symbol: 'BTCUSDT',
+      eventAt: closedAt, payload: pendingPayload,
+    } });
+    await expect(backfillClosedImportedPositionHistory({
+      userId: user.id, positionId: position.id, botId: bot.id,
+      walletId: wallet.id, strategyId: null, symbol: 'BTCUSDT',
+      positionSide: 'LONG', managementMode: 'BOT_MANAGED', trades: canonicalHistory,
+    })).rejects.toThrow('Ambiguous imported runtime close settlement event');
+    expect(await prisma.trade.count({ where: { positionId: position.id } })).toBe(2);
+    expect((await prisma.trade.findFirstOrThrow({ where: { positionId: position.id,
+      lifecycleAction: 'OPEN' } })).feePending).toBe(true);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeNull();
+    await prisma.botRuntimeEvent.delete({ where: { id: duplicateEvent.id } });
     await reconcile();
     await reconcile();
     const trades = await prisma.trade.findMany({
@@ -169,6 +228,29 @@ describe('immediate filled runtime order finalization', () => {
     expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBe(7);
     expect((await prisma.order.findUniqueOrThrow({ where: { id: order.id } })).feePending).toBe(false);
     expect((await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } })).feeCost).toBe(1);
+    const stat = await prisma.botRuntimeSymbolStat.findUniqueOrThrow({
+      where: { sessionId_symbol: { sessionId: session.id, symbol: 'BTCUSDT' } },
+    });
+    expect(stat).toMatchObject({ closedTrades: 1, winningTrades: 1,
+      losingTrades: 0, realizedPnl: 7, grossProfit: 7, grossLoss: 0, feesPaid: 1 });
+    const settlementEvent = await prisma.botRuntimeEvent.findFirstOrThrow({
+      where: { userId: user.id, eventType: 'POSITION_CLOSED' },
+    });
+    expect(settlementEvent.payload).toMatchObject({
+      financialPnlPending: false, financialSettlement: { realizedPnl: 7, feesPaid: 1 },
+    });
+
+    // The canonical fill may be committed before the runtime event is recorded.
+    await prisma.botRuntimeSymbolStat.update({ where: { id: stat.id }, data: {
+      winningTrades: 0, realizedPnl: 0, grossProfit: 0, feesPaid: 0,
+    } });
+    await prisma.botRuntimeEvent.update({ where: { id: settlementEvent.id },
+      data: { payload: pendingPayload } });
+    await reconcileRuntimeCloseFinancials({ userId: user.id, positionId: position.id });
+    await reconcileRuntimeCloseFinancials({ userId: user.id, positionId: position.id });
+    expect(await prisma.botRuntimeSymbolStat.findUniqueOrThrow({ where: { id: stat.id } }))
+      .toMatchObject({ closedTrades: 1, winningTrades: 1, realizedPnl: 7,
+        grossProfit: 7, feesPaid: 1 });
 
     await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: {
       eventType: 'ORDER_TRADE_UPDATE', marketType: 'FUTURES',

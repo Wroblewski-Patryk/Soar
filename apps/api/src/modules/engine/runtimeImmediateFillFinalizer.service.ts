@@ -65,7 +65,7 @@ export const finalizeRuntimeDcaFill = async (input: {
   dedupeKey: string;
   fillPrice: number;
   fillQuantity: number;
-  feePaid: number;
+  feePaid: number | null;
   mode: 'PAPER' | 'LIVE';
   afterPositionWrite?: () => Promise<void>;
 }) => prisma.$transaction(async (tx) => {
@@ -120,7 +120,7 @@ export const finalizeRuntimeDcaFill = async (input: {
     },
   });
   await markDedupeSucceeded(tx, { dedupeKey: input.dedupeKey, orderId: order.id, positionId: position.id });
-  return { applied: true, feePaid: input.feePaid, nextQuantity, nextEntryPrice };
+  return { applied: true, feePaid: input.feePaid ?? 0, nextQuantity, nextEntryPrice };
 });
 
 export const finalizeLiveCloseFill = async (input: {

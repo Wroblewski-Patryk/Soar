@@ -56,7 +56,7 @@ type MonitorOpenPositionRow = {
   entryNotional: number;
   marginUsed: number;
   marginInitPct: number | null;
-  feesPaid: number;
+  feesPaid: number | null;
   openPnl: number;
   pnlNotionalPct: number;
   pnlMarginPct: number;
@@ -141,8 +141,8 @@ type BotsMonitoringTabProps = {
       dcaCount: number;
       dcaExecutedLevels?: number[] | null;
       dcaPlannedLevels?: number[] | null;
-      feesPaid: number;
-      realizedPnl: number;
+      feesPaid: number | null;
+      realizedPnl: number | null;
     }>;
     closedCount?: number;
   } | null;
@@ -160,7 +160,7 @@ type BotsMonitoringTabProps = {
     capitalSource: RuntimeCapitalSource | null;
     paperResetAt: string | null;
   };
-  monitorWinRate: number;
+  monitorWinRate: number | null;
   monitorShowOpenOrders: boolean;
   monitorOpenPositionRows: MonitorOpenPositionRow[];
   isClosingPosition: (positionId: string) => boolean;
@@ -190,12 +190,12 @@ type BotsMonitoringTabProps = {
     exits: number;
     dcaCount: number;
     closedTrades: number;
-    winningTrades: number;
-    losingTrades: number;
+    winningTrades: number | null;
+    losingTrades: number | null;
     openPositionQty: number;
-    realizedPnl: number;
+    realizedPnl: number | null;
     unrealizedPnl?: number | null;
-    feesPaid: number;
+    feesPaid: number | null;
     lastTradeAt?: string | null;
     lastSignalContextSource?:
       | "latest_signal"
@@ -498,16 +498,16 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           </p>
                           <p>
                             <span className="opacity-60">{t("dashboard.bots.monitoring.winRateLabel")}</span>{" "}
-                            <span className="font-semibold">{formatNumber(monitorWinRate, 2)}%</span>
+                            <span className="font-semibold">{monitorWinRate == null ? "-" : `${formatNumber(monitorWinRate, 2)}%`}</span>
                           </p>
                           <p>
                             <span className="opacity-60">{t("dashboard.bots.monitoring.realizedPnlLabel")}</span>{" "}
                             <span
                               className={`font-semibold ${
-                                monitorSessionDetail.summary.realizedPnl >= 0 ? "text-success" : "text-error"
+                                monitorSessionDetail.summary.realizedPnl == null ? "" : monitorSessionDetail.summary.realizedPnl >= 0 ? "text-success" : "text-error"
                               }`}
                             >
-                              {formatCurrency(monitorSessionDetail.summary.realizedPnl)}
+                              {monitorSessionDetail.summary.realizedPnl == null ? "-" : formatCurrency(monitorSessionDetail.summary.realizedPnl)}
                             </span>
                           </p>
                         </div>
@@ -538,7 +538,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           </p>
                           <p>
                             <span className="opacity-60">{t("dashboard.bots.monitoring.feesLabel")}</span>{" "}
-                            <span className="font-semibold">{formatCurrency(monitorSessionDetail.summary.feesPaid)}</span>
+                            <span className="font-semibold">{monitorSessionDetail.summary.feesPaid == null ? "-" : formatCurrency(monitorSessionDetail.summary.feesPaid)}</span>
                           </p>
                         </div>
                       </div>
@@ -692,7 +692,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                                   ? `${formatNumber(position.marginInitPct, 2)}%`
                                   : "-"}
                               </td>
-                              <td>{formatCurrency(position.feesPaid)}</td>
+                              <td>{position.feesPaid == null ? "-" : formatCurrency(position.feesPaid)}</td>
                               <td className={position.openPnl >= 0 ? "text-success" : "text-error"}>
                                 {formatCurrency(position.openPnl)}
                               </td>
@@ -827,9 +827,9 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                                   dcaPlannedLevels: position.dcaPlannedLevels,
                                 })}
                               </td>
-                              <td>{formatCurrency(position.feesPaid)}</td>
-                              <td className={position.realizedPnl >= 0 ? "text-success" : "text-error"}>
-                                {formatCurrency(position.realizedPnl)}
+                              <td>{position.feesPaid == null ? "-" : formatCurrency(position.feesPaid)}</td>
+                              <td className={position.realizedPnl == null ? "" : position.realizedPnl >= 0 ? "text-success" : "text-error"}>
+                                {position.realizedPnl == null ? "-" : formatCurrency(position.realizedPnl)}
                               </td>
                             </tr>
                           ))}

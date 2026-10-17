@@ -14,6 +14,7 @@ import {
 } from './runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
 import { finalizeRuntimeDcaFill, recordUnknownRuntimeOrderOutcome } from './runtimeImmediateFillFinalizer.service';
+import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import {
   recordRuntimeAutomationSkipTelemetry,
   RuntimeAutomationSkipReason,
@@ -222,6 +223,8 @@ export const executeRuntimeDca = async (input: {
     const canonicalState = await loadCanonicalPositionExecutionState(input.positionId);
     return {
       feePaid: 0,
+      orderId: dedupe.orderId,
+      replayed: true,
       executed: canonicalState != null,
       nextQuantity: canonicalState?.quantity,
       nextEntryPrice: canonicalState?.averageEntryPrice,
@@ -263,7 +266,8 @@ export const executeRuntimeDca = async (input: {
 
     const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
     const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
-    const feePaid = input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee;
+    const feePending = input.mode === 'LIVE' && (opened.feePending || opened.fee == null || opened.feeSource !== 'EXCHANGE_FILL');
+    const feePaid = input.mode === 'LIVE' ? (feePending ? null : opened.fee) : estimatedFee;
     const finalized = await finalizeRuntimeDcaFill({
       userId: input.userId, botId: input.botId, walletId: input.walletId,
       strategyId: input.strategyId, positionId: input.positionId,
@@ -271,7 +275,7 @@ export const executeRuntimeDca = async (input: {
       fillQuantity: executedQuantity, feePaid, mode: input.mode,
     });
     return {
-      feePaid: finalized.feePaid, executed: true,
+      feePaid: finalized.feePaid, feePending, orderId: opened.id, executed: true,
       nextQuantity: finalized.nextQuantity, nextEntryPrice: finalized.nextEntryPrice,
     };
   } catch (error) {
@@ -847,7 +851,7 @@ export class RuntimePositionAutomationService {
           effectiveState = previousStateSnapshot;
           dcaPendingExchangeFill = true;
         }
-        if (position.botId && dcaResult.executed) {
+        if (position.botId && dcaResult.executed && !dcaResult.replayed) {
           const eventAt = new Date(event.eventTime);
           await this.deps.recordRuntimeEvent?.({
             userId: position.userId,
@@ -861,6 +865,9 @@ export class RuntimePositionAutomationService {
             message: 'Runtime DCA executed',
             payload: {
               addedQuantity: dcaAddedQuantity,
+              orderId: dcaResult.orderId ?? null,
+              positionId: position.id,
+              financialFeePending: mode === 'LIVE',
               nextQuantity: effectiveState.quantity,
               nextEntryPrice: effectiveState.averageEntryPrice,
             },
@@ -873,12 +880,17 @@ export class RuntimePositionAutomationService {
             symbol: position.symbol,
             increments: {
               dcaCount: 1,
-              feesPaid: dcaResult.feePaid,
+              ...(mode === 'LIVE' ? {} : { feesPaid: dcaResult.feePaid }),
             },
             lastPrice: effectiveLifecyclePrice,
             lastTradeAt: eventAt,
             openPositionQty: effectiveState.quantity,
           });
+          if (mode === 'LIVE' && dcaResult.orderId) {
+            await prisma.$transaction((tx) => settleRuntimeOrderFee({
+              tx, userId: position.userId, orderId: dcaResult.orderId!,
+            }));
+          }
         }
       }
     }

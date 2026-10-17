@@ -79,7 +79,7 @@ export const deriveStrategyMaxOpenPositions = (strategy: StrategyDto | null | un
 export const resolveRuntimePortfolio = (params: {
   bot: Bot | null | undefined;
   summary: RuntimeCapitalSummary;
-  net: number;
+  net: number | null;
   usedMargin: number;
 }): number | null => {
   const referenceBalance = resolveRuntimeReferenceBalance(params.summary);
@@ -92,6 +92,7 @@ export const resolveRuntimePortfolio = (params: {
 
   const paperBaseline = resolvePaperConfigBaseline(params.bot);
   if (params.bot?.mode === "PAPER" && paperBaseline != null) {
+    if (params.net == null) return null;
     return Math.max(0, paperBaseline + params.net);
   }
 

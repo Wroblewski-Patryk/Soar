@@ -105,6 +105,9 @@ export type RuntimePositionAutomationDeps = {
     currentEntryPrice: number;
   }) => Promise<{
     feePaid: number;
+    feePending?: boolean;
+    orderId?: string;
+    replayed?: boolean;
     executed: boolean;
     nextQuantity?: number;
     nextEntryPrice?: number;
