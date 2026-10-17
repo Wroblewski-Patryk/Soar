@@ -736,20 +736,26 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         },
       });
     } catch (error) {
+      // Discard trades from a partially processed attempt before publishing a
+      // diagnostic report. The claimed worker also clears its trade buffer.
+      await deps.deleteBacktestTradesForRun(run.userId, run.id);
+      const unreadyReportTotals = {
+        totalTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        winRate: null,
+        netPnl: null,
+        grossProfit: null,
+        grossLoss: null,
+        maxDrawdown: null,
+        sharpe: null,
+      };
       await deps.upsertBacktestReportForRun({
         backtestRunId: run.id,
         create: {
           userId: run.userId,
           backtestRunId: run.id,
-          totalTrades: progress.totalTrades,
-          winningTrades: 0,
-          losingTrades: 0,
-          winRate: null,
-          netPnl: progress.netPnl,
-          grossProfit: progress.grossProfit,
-          grossLoss: progress.grossLoss,
-          maxDrawdown: progress.maxDrawdown,
-          sharpe: null,
+          ...unreadyReportTotals,
           metrics: {
             runLifecycle: {
               state: 'FAILED',
@@ -762,6 +768,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           },
         },
         update: {
+          ...unreadyReportTotals,
           metrics: {
             runLifecycle: {
               state: 'FAILED',
@@ -774,16 +781,23 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           },
         },
       });
+      const failedProgress = {
+        ...progress,
+        totalTrades: 0,
+        netPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        maxDrawdown: 0,
+        liquidations: 0,
+        lastUpdate: 'failed',
+        updatedAt: new Date().toISOString(),
+      };
       await deps.safeUpdateRun(run.id, {
         status: 'FAILED',
         finishedAt: new Date(),
         seedConfig: {
           ...seed,
-          liveProgress: {
-            ...progress,
-            lastUpdate: 'failed',
-            updatedAt: new Date().toISOString(),
-          },
+          liveProgress: failedProgress,
           error: error instanceof Error ? error.message : 'Unknown error',
         },
       });

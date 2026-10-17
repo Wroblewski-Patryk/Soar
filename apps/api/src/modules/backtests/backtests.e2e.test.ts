@@ -231,6 +231,35 @@ describe('Backtests runs contract', () => {
     expect(res.body.error.message).toBe('Missing token');
   });
 
+  it('keeps execution lease fields out of owner run details and hides another user run', async () => {
+    const ownerEmail = 'backtests-lease-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const other = await registerAndLogin('backtests-lease-other@example.com');
+    const userId = await getUserIdByEmail(ownerEmail);
+    const run = await prisma.backtestRun.create({
+      data: {
+        userId,
+        name: 'Leased run',
+        symbol: 'BTCUSDT',
+        timeframe: '1h',
+        status: 'RUNNING',
+        executionToken: 'private-claim-token',
+        executionLeaseExpiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+
+    const ownerGet = await owner.get(`/dashboard/backtests/runs/${run.id}`);
+    expect(ownerGet.status).toBe(200);
+    expect(ownerGet.body).toMatchObject({ id: run.id, status: 'RUNNING' });
+    expect(ownerGet.body).not.toHaveProperty('executionToken');
+    expect(ownerGet.body).not.toHaveProperty('executionLeaseExpiresAt');
+
+    const otherGet = await other.get(`/dashboard/backtests/runs/${run.id}`);
+    expect(otherGet.status).toBe(404);
+    expect(otherGet.body).not.toHaveProperty('executionToken');
+    expect(otherGet.body).not.toHaveProperty('executionLeaseExpiresAt');
+  });
+
   it('leaves an enqueue-uncertain run recoverable without overwriting its report', async () => {
     const agent = await registerAndLogin('backtests-queue-failure@example.com');
     const enqueue = vi.spyOn(backtestRunQueue, 'enqueue').mockRejectedValueOnce(new Error('queue unavailable'));
@@ -265,6 +294,8 @@ describe('Backtests runs contract', () => {
     expect(createRes.status).toBe(201);
     expect(createRes.body.id).toBeDefined();
     expect(createRes.body.status).toBe('PENDING');
+    expect(createRes.body).not.toHaveProperty('executionToken');
+    expect(createRes.body).not.toHaveProperty('executionLeaseExpiresAt');
     const runId = createRes.body.id as string;
     const userId = await getUserIdByEmail(ownerEmail);
 

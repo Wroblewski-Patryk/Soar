@@ -12,6 +12,22 @@ export const updateBacktestRunById = (runId: string, data: Prisma.BacktestRunUpd
 export const findBacktestRunById = (runId: string) =>
   prisma.backtestRun.findUnique({ where: { id: runId } });
 
+const publicBacktestRunSelect = {
+  id: true,
+  userId: true,
+  strategyId: true,
+  name: true,
+  symbol: true,
+  timeframe: true,
+  startedAt: true,
+  finishedAt: true,
+  status: true,
+  seedConfig: true,
+  notes: true,
+  createdAt: true,
+  updatedAt: true,
+} satisfies Prisma.BacktestRunSelect;
+
 export const findOwnedStrategyForBacktest = (userId: string, strategyId: string) =>
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
@@ -146,6 +162,7 @@ export const listOwnedBacktestRuns = async (
 export const findOwnedBacktestRun = (userId: string, runId: string) =>
   prisma.backtestRun.findFirst({
     where: { id: runId, userId },
+    select: publicBacktestRunSelect,
   });
 
 export const findOwnedBacktestRunId = (userId: string, runId: string) =>
@@ -190,7 +207,7 @@ export const createBacktestRun = (
   data: Prisma.BacktestRunUncheckedCreateInput,
   pendingReportMetrics: Prisma.InputJsonValue,
 ) => prisma.$transaction(async (tx) => {
-  const run = await tx.backtestRun.create({ data });
+  const run = await tx.backtestRun.create({ data, select: publicBacktestRunSelect });
   await tx.backtestReport.create({
     data: {
       userId: data.userId,

@@ -101,6 +101,8 @@ Out of scope:
 
 ## 6. Security and Risk Guardrails
 - Dashboard auth + ownership checks across run/trade/report/timeline surfaces.
+- Run detail and create responses explicitly select public fields; execution
+  tokens and lease expiry remain internal to the worker repository.
 - Timeline/report are run-scoped to user-owned runs only.
 - Safe update wrappers protect against missing-run race conditions.
 
@@ -109,6 +111,9 @@ Out of scope:
   execution authority. Progress updates require an unexpired matching token.
   Terminal status, report, and replacement trades commit in one transaction
   under that token. The token is cleared at completion.
+- A run that fails before report assembly commits no trades. Its diagnostic
+  report has `reportReady: false`, zero trade counts, and null financial
+  aggregates; terminal `liveProgress` also clears partial result totals.
 - The Redis worker reconciles missing `PENDING` and expired `RUNNING` jobs on
   startup and every 30 seconds. It leaves an active `RUNNING` lease alone and
   removes terminal or missing IDs left in `processing` after an interrupted
