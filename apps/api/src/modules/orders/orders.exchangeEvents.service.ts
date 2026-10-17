@@ -10,7 +10,11 @@ import {
   resolveExchangeConfirmedCloseAttribution,
 } from '../positions/positionCloseAttribution';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
-import { finalizeExchangeCloseFillInTransaction, finalizeExchangeDcaFillInTransaction } from './orders.exchangeEventFinalization.service';
+import {
+  finalizeExchangeCloseFillInTransaction,
+  finalizeExchangeDcaFillInTransaction,
+  resolveKnownEntryFeesInTransaction,
+} from './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
@@ -53,19 +57,14 @@ const computeCloseRealizedPnl = async (input: {
   closePrice: number;
   closeQuantity: number;
   exitFee: number;
+  imported: boolean;
 }) => {
   const entryLegSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const entryFeeAggregate = await input.tx.trade.aggregate({
-    where: {
-      userId: input.userId,
-      positionId: input.positionId,
-      side: entryLegSide,
-    },
-    _sum: {
-      fee: true,
-    },
+  const entryFees = await resolveKnownEntryFeesInTransaction(input.tx, {
+    userId: input.userId, positionId: input.positionId,
+    entrySide: entryLegSide, imported: input.imported,
   });
-  const entryFees = entryFeeAggregate._sum.fee ?? 0;
+  if (entryFees == null) return null;
   const grossPnl =
     input.positionSide === 'LONG'
       ? (input.closePrice - input.entryPrice) * input.closeQuantity
@@ -114,6 +113,7 @@ const refreshCloseRealizedPnlForOrder = async (input: {
         id: true,
         side: true,
         entryPrice: true,
+        origin: true,
       },
     });
     if (!position) continue;
@@ -127,6 +127,7 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       closePrice: closeTrade.price,
       closeQuantity: closeTrade.quantity,
       exitFee: input.exitFee,
+      imported: position.origin === 'EXCHANGE_SYNC',
     });
 
     await input.tx.trade.update({

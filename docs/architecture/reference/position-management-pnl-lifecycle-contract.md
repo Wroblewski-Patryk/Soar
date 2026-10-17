@@ -253,6 +253,13 @@ Imported manual exchange positions are adoption-point positions:
 - prospective DCA/TTP/TSL management may start only from the adoption point
   when strategy context is canonical
 
+An imported OPEN anchor without canonical fill history carries `fee=null` and
+`feePending=true`. A later CLOSE can record the exchange closure, but its net
+realized PnL remains unknown while an entry fee or the numeric exit fee is
+missing. An explicit exchange fee of zero is known. Canonical history replaces
+the synthetic OPEN anchor, updates an existing exchange-synced CLOSE trade by
+exchange trade ID, and recomputes net PnL once without duplicating the anchor.
+
 ## Runtime Loop Shape
 
 For every runtime tick or fresh market-data pass, the bot should follow this

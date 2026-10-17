@@ -4,6 +4,23 @@ import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { computePositionAddUpdate } from './positionFillMath';
 import { isExchangeCloseFillComplete } from './orders.exchangeEvents.helpers';
 
+export const resolveKnownEntryFeesInTransaction = async (
+  tx: Prisma.TransactionClient,
+  input: { userId: string; positionId: string; entrySide: 'BUY' | 'SELL'; imported: boolean }
+): Promise<number | null> => {
+  const entries = await tx.trade.findMany({
+    where: { userId: input.userId, positionId: input.positionId, side: input.entrySide },
+    select: { fee: true, feePending: true },
+  });
+  if (input.imported && entries.length === 0) return null;
+  let total = 0;
+  for (const entry of entries) {
+    if (entry.feePending || entry.fee == null || !Number.isFinite(entry.fee)) return null;
+    total += entry.fee;
+  }
+  return total;
+};
+
 type ExchangeFillFinalizationInput = {
   userId: string;
   orderId: string;
@@ -79,14 +96,15 @@ export const finalizeExchangeCloseFillInTransaction = async (
     throw new Error('Exchange CLOSE fill position is not safely closable');
   }
   const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
-  const entryFees = await tx.trade.aggregate({
-    where: { userId: input.userId, positionId: position.id, side: entrySide },
-    _sum: { fee: true },
+  const entryFees = await resolveKnownEntryFeesInTransaction(tx, {
+    userId: input.userId, positionId: position.id, entrySide,
+    imported: position.origin === 'EXCHANGE_SYNC',
   });
   const grossPnl = position.side === 'LONG'
     ? (input.fillPrice - position.entryPrice) * input.fillQuantity
     : (position.entryPrice - input.fillPrice) * input.fillQuantity;
-  const realizedPnl = grossPnl - (entryFees._sum.fee ?? 0) - (order.fee ?? 0);
+  const realizedPnl = entryFees != null && order.fee != null
+    ? grossPnl - entryFees - order.fee : null;
   await tx.position.update({
     where: { id: position.id }, data: {
       status: 'CLOSED', closedAt: input.eventAt, syncState: 'ORPHAN_LOCAL',
@@ -99,7 +117,7 @@ export const finalizeExchangeCloseFillInTransaction = async (
     strategyId: order.strategyId, orderId: order.id, positionId: position.id,
     symbol: order.symbol, side: order.side, lifecycleAction: 'CLOSE',
     price: input.fillPrice, quantity: input.fillQuantity, fee: order.fee,
-    feeSource: order.feeSource, feePending: order.feePending,
+    feeSource: order.feeSource, feePending: order.feePending || entryFees == null,
     feeCurrency: order.feeCurrency, effectiveFeeRate: order.effectiveFeeRate,
     exchangeTradeId: input.exchangeTradeId, realizedPnl,
     closeReason: input.closeReason, closeInitiator: input.closeInitiator,

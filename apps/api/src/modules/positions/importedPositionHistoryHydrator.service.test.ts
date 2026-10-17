@@ -6,6 +6,8 @@ import {
   deriveImportedLifecycleTrades,
   hydrateImportedPositionHistory,
 } from './importedPositionHistoryHydrator.service';
+import { finalizeExchangeCloseFill } from '../orders/orders.exchangeEventFinalization.service';
+import { applyLiveExchangeOrderTradeUpdateEvent } from '../orders/orders.exchangeEvents.service';
 
 describe('deriveImportedLifecycleTrades', () => {
   it('does not derive financial history from a fill with an unknown fee', () => {
@@ -136,6 +138,146 @@ describe('hydrateImportedPositionHistory', () => {
     await prisma.wallet.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
+  });
+
+  it('keeps imported entry fee and close PnL unknown until canonical history backfills once', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'imported-unknown-fee-close@example.com', password: 'hashed' },
+    });
+    const openedAt = new Date('2026-04-29T10:00:00.000Z');
+    const closedAt = new Date('2026-04-29T11:00:00.000Z');
+    const position = await prisma.position.create({ data: {
+      userId: user.id, symbol: 'ETHUSDT', side: 'LONG', status: 'OPEN',
+      quantity: 1, entryPrice: 100, openedAt,
+      origin: 'EXCHANGE_SYNC', managementMode: 'MANUAL_MANAGED',
+      syncState: 'IN_SYNC', continuityState: 'CONFIRMED',
+    } });
+    const importInput = {
+      userId: user.id, positionId: position.id, botId: null, walletId: null,
+      strategyId: null, symbol: 'ETHUSDT', positionSide: 'LONG' as const,
+      positionQuantity: 1, managementMode: 'MANUAL_MANAGED' as const,
+    };
+    const entryTrade = {
+      exchangeTradeId: 'venue-open', exchangeOrderId: 'venue-open-order',
+      symbol: 'ETHUSDT', side: 'BUY', price: 100, quantity: 1, notional: 100,
+      feeCost: null, feeCurrency: 'USDT', feeRate: null,
+      executedAt: openedAt.toISOString(),
+    };
+    await hydrateImportedPositionHistory({ ...importInput, trades: [entryTrade] });
+    await hydrateImportedPositionHistory({ ...importInput, trades: [entryTrade] });
+    const anchors = await prisma.trade.findMany({ where: { positionId: position.id } });
+    expect(anchors).toHaveLength(1);
+    expect(anchors[0]).toMatchObject({
+      lifecycleAction: 'OPEN', exchangeTradeId: null,
+      fee: null, feePending: true,
+    });
+
+    const closeOrder = await prisma.order.create({ data: {
+      userId: user.id, positionId: position.id, symbol: 'ETHUSDT',
+      side: 'SELL', type: 'MARKET', status: 'FILLED', quantity: 1,
+      filledQuantity: 1, averageFillPrice: 110, fee: 1,
+      feeSource: 'EXCHANGE_FILL', feePending: false,
+      origin: 'EXCHANGE_SYNC', managementMode: 'MANUAL_MANAGED',
+      exchangeOrderId: 'venue-close-order', filledAt: closedAt,
+    } });
+    await finalizeExchangeCloseFill({
+      userId: user.id, orderId: closeOrder.id, positionId: position.id,
+      fillPrice: 110, fillQuantity: 1, exchangeTradeId: 'venue-close',
+      eventAt: closedAt, closeReason: 'MANUAL', closeInitiator: 'USER_APP',
+    });
+    const pendingPosition = await prisma.position.findUniqueOrThrow({ where: { id: position.id } });
+    const pendingClose = await prisma.trade.findFirstOrThrow({ where: { orderId: closeOrder.id } });
+    expect(pendingPosition.realizedPnl).toBeNull();
+    expect(pendingClose.realizedPnl).toBeNull();
+    expect(pendingClose.feePending).toBe(true);
+    expect((await prisma.trade.aggregate({ where: { positionId: position.id },
+      _sum: { fee: true } }))._sum.fee).toBe(1);
+
+    await prisma.orderFill.create({ data: {
+      userId: user.id, orderId: closeOrder.id, positionId: position.id,
+      symbol: 'ETHUSDT', side: 'SELL', exchangeTradeId: 'venue-close',
+      price: 110, quantity: 1, notional: 110, feeCost: null,
+      feeCurrency: null, feeRate: null, executedAt: closedAt, raw: {},
+    } });
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: {
+      eventType: 'ORDER_TRADE_UPDATE', marketType: 'FUTURES',
+      eventTime: closedAt.getTime(), transactionTime: closedAt.getTime(),
+      symbol: 'ETHUSDT', side: 'SELL', orderType: 'MARKET',
+      orderStatus: 'FILLED', executionType: 'TRADE',
+      exchangeOrderId: 'venue-close-order', clientOrderId: 'venue-close-client',
+      averagePrice: 110, cumulativeFilledQuantity: 1,
+      lastFilledQuantity: 1, lastFilledPrice: 110,
+      fee: 1, feeCurrency: 'USDT', exchangeTradeId: 'venue-close', raw: {},
+    } });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBeNull();
+    expect((await prisma.trade.findFirstOrThrow({ where: { orderId: closeOrder.id } })).realizedPnl).toBeNull();
+    expect(await prisma.orderFill.count({ where: { orderId: closeOrder.id } })).toBe(1);
+
+    const canonicalHistory = [
+      { ...entryTrade, feeCost: 2, feeRate: 0.02 },
+      { exchangeTradeId: 'venue-close', exchangeOrderId: 'venue-close-order',
+        symbol: 'ETHUSDT', side: 'SELL', price: 110, quantity: 1, notional: 110,
+        feeCost: 1, feeCurrency: 'USDT', feeRate: 1 / 110,
+        executedAt: closedAt.toISOString() },
+    ];
+    await backfillClosedImportedPositionHistory({
+      ...importInput, trades: canonicalHistory,
+    });
+    await backfillClosedImportedPositionHistory({
+      ...importInput, trades: canonicalHistory,
+    });
+    const trades = await prisma.trade.findMany({
+      where: { positionId: position.id }, orderBy: { executedAt: 'asc' },
+    });
+    expect(trades).toHaveLength(2);
+    expect(trades.map((trade) => trade.exchangeTradeId)).toEqual(['venue-open', 'venue-close']);
+    expect(trades.map((trade) => trade.fee)).toEqual([2, 1]);
+    expect(trades.every((trade) => !trade.feePending)).toBe(true);
+    expect(trades[1]?.realizedPnl).toBe(7);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBe(7);
+    expect((await prisma.trade.aggregate({ where: { positionId: position.id },
+      _sum: { fee: true } }))._sum.fee).toBe(3);
+  });
+
+  it('accepts an explicit zero imported entry fee and computes net close PnL', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'imported-zero-fee-close@example.com', password: 'hashed' },
+    });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, symbol: 'ETHUSDT', side: 'LONG', status: 'OPEN',
+      quantity: 1, entryPrice: 100,
+      origin: 'EXCHANGE_SYNC', managementMode: 'MANUAL_MANAGED',
+      syncState: 'IN_SYNC', continuityState: 'CONFIRMED',
+    } });
+    await hydrateImportedPositionHistory({
+      userId: user.id, positionId: position.id, botId: null,
+      walletId: null, strategyId: null, symbol: 'ETHUSDT',
+      positionSide: 'LONG', positionQuantity: 1,
+      managementMode: 'MANUAL_MANAGED',
+      trades: [{
+        exchangeTradeId: 'zero-fee-open', exchangeOrderId: 'zero-fee-order',
+        symbol: 'ETHUSDT', side: 'BUY', price: 100, quantity: 1,
+        notional: 100, feeCost: 0, feeCurrency: 'USDT', feeRate: 0,
+        executedAt: '2026-04-29T10:00:00.000Z',
+      }],
+    });
+    const entry = await prisma.trade.findFirstOrThrow({ where: { positionId: position.id } });
+    expect(entry).toMatchObject({ fee: 0, feePending: false, feeSource: 'EXCHANGE_FILL' });
+    const closeOrder = await prisma.order.create({ data: {
+      userId: user.id, positionId: position.id, symbol: 'ETHUSDT',
+      side: 'SELL', type: 'MARKET', status: 'FILLED', quantity: 1,
+      filledQuantity: 1, fee: 1, feeSource: 'EXCHANGE_FILL', feePending: false,
+      origin: 'EXCHANGE_SYNC', managementMode: 'MANUAL_MANAGED',
+      exchangeOrderId: 'zero-fee-close-order',
+    } });
+    await finalizeExchangeCloseFill({
+      userId: user.id, orderId: closeOrder.id, positionId: position.id,
+      fillPrice: 110, fillQuantity: 1, exchangeTradeId: 'zero-fee-close',
+      eventAt: new Date('2026-04-29T11:00:00.000Z'),
+      closeReason: 'MANUAL', closeInitiator: 'USER_APP',
+    });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).realizedPnl).toBe(9);
+    expect((await prisma.trade.findFirstOrThrow({ where: { orderId: closeOrder.id } })).realizedPnl).toBe(9);
   });
 
   it('persists imported lifecycle trades and updates openedAt from canonical fill truth', async () => {
@@ -406,7 +548,9 @@ describe('hydrateImportedPositionHistory', () => {
         side: true,
         price: true,
         quantity: true,
+        fee: true,
         feeSource: true,
+        feePending: true,
         exchangeTradeId: true,
         executedAt: true,
         origin: true,
@@ -418,7 +562,9 @@ describe('hydrateImportedPositionHistory', () => {
         side: 'SELL',
         price: 618.46,
         quantity: 0.01,
+        fee: null,
         feeSource: 'ESTIMATED',
+        feePending: true,
         exchangeTradeId: null,
         executedAt: new Date('2026-04-29T11:05:00.000Z'),
         origin: 'EXCHANGE_SYNC',

@@ -112,6 +112,7 @@ export const deriveImportedLifecycleTrades = (input: {
   if (normalizedTrades.length === 0) return null;
 
   let cumulative = 0;
+  let unallocatedEntryFees = 0;
   const cumulativeByIndex: number[] = [];
   for (const trade of normalizedTrades) {
     cumulative += signedQuantityForTrade(trade);
@@ -165,6 +166,7 @@ export const deriveImportedLifecycleTrades = (input: {
         realizedPnl: 0,
       });
       currentSignedQuantity = nextSignedQuantity;
+      unallocatedEntryFees += trade.feeCost;
       continue;
     }
 
@@ -182,21 +184,24 @@ export const deriveImportedLifecycleTrades = (input: {
         realizedPnl: 0,
       });
       currentSignedQuantity = nextSignedQuantity;
+      unallocatedEntryFees += trade.feeCost;
       continue;
     }
 
     if (nextAbs < currentAbs) {
       const reducedQuantity = currentAbs - nextAbs;
+      const allocatedEntryFee = unallocatedEntryFees * (reducedQuantity / currentAbs);
       const realizedPnl =
         currentSignedQuantity > 0
-          ? (trade.price - averageEntryPrice) * reducedQuantity - trade.feeCost
-          : (averageEntryPrice - trade.price) * reducedQuantity - trade.feeCost;
+          ? (trade.price - averageEntryPrice) * reducedQuantity - allocatedEntryFee - trade.feeCost
+          : (averageEntryPrice - trade.price) * reducedQuantity - allocatedEntryFee - trade.feeCost;
       derivedTrades.push({
         ...trade,
         lifecycleAction: 'CLOSE',
         realizedPnl,
       });
       currentSignedQuantity = nextSignedQuantity;
+      unallocatedEntryFees -= allocatedEntryFee;
       if (nextAbs <= EPSILON) {
         averageEntryPrice = 0;
       }
@@ -223,7 +228,7 @@ const persistImportedLifecycleTrades = async (input: {
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   derivedTrades: DerivedLifecycleTrade[];
 }) => {
-  const existingTradeIds = new Set(
+  const existingTradesByExchangeId = new Map(
     (
       await prisma.trade.findMany({
         where: {
@@ -232,19 +237,29 @@ const persistImportedLifecycleTrades = async (input: {
           exchangeTradeId: { not: null },
         },
         select: {
+          id: true,
           exchangeTradeId: true,
         },
       })
     )
-      .map((trade) => trade.exchangeTradeId)
-      .filter((exchangeTradeId): exchangeTradeId is string => typeof exchangeTradeId === 'string')
+      .filter((trade): trade is { id: string; exchangeTradeId: string } =>
+        typeof trade.exchangeTradeId === 'string')
+      .map((trade) => [trade.exchangeTradeId, trade.id] as const)
   );
   const closeAttribution = resolveExternalSyncMissingCloseAttribution();
   let createdCount = 0;
 
   for (const trade of input.derivedTrades) {
-    if (existingTradeIds.has(trade.exchangeTradeId)) continue;
-    await prisma.trade.create({
+    const existingTradeId = existingTradesByExchangeId.get(trade.exchangeTradeId);
+    if (existingTradeId) {
+      await prisma.trade.update({ where: { id: existingTradeId }, data: {
+        fee: trade.feeCost, feeSource: FeeSource.EXCHANGE_FILL, feePending: false,
+        feeCurrency: trade.feeCurrency, effectiveFeeRate: trade.feeRate,
+        realizedPnl: trade.realizedPnl,
+      } });
+      continue;
+    }
+    const created = await prisma.trade.create({
       data: {
         userId: input.userId,
         botId: input.botId,
@@ -274,6 +289,7 @@ const persistImportedLifecycleTrades = async (input: {
         executedAt: trade.executedAt,
       },
     });
+    existingTradesByExchangeId.set(trade.exchangeTradeId, created.id);
     createdCount += 1;
   }
 
@@ -347,9 +363,9 @@ const persistImportedOpenAnchorTrade = async (input: {
       closeInitiator: null,
       price: input.positionEntryPrice,
       quantity: input.positionQuantity,
-      fee: 0,
+      fee: null,
       feeSource: FeeSource.ESTIMATED,
-      feePending: false,
+      feePending: true,
       feeCurrency: null,
       effectiveFeeRate: null,
       exchangeTradeId: null,
@@ -485,6 +501,7 @@ export const backfillClosedImportedPositionHistory = async (input: {
       openedAt: true,
       closedAt: true,
       status: true,
+      realizedPnl: true,
     },
   });
   if (!position) {
@@ -496,12 +513,9 @@ export const backfillClosedImportedPositionHistory = async (input: {
   }
 
   const existingTradeRows = await listExistingImportedTradeRows(input.positionId);
-  const existingSyntheticOpenAnchors =
-    existingTradeRows.length > 0 &&
-    existingTradeRows.every(isSyntheticImportedOpenAnchorTrade);
-  if (existingSyntheticOpenAnchors) {
-    await deleteImportedTradeRows(existingTradeRows.map((trade) => trade.id));
-  }
+  await deleteImportedTradeRows(
+    existingTradeRows.filter(isSyntheticImportedOpenAnchorTrade).map((trade) => trade.id)
+  );
 
   const { createdCount, firstOpenTradeAt, lastCloseTradeAt, realizedPnl } =
     await persistImportedLifecycleTrades({
@@ -524,7 +538,8 @@ export const backfillClosedImportedPositionHistory = async (input: {
     (!position.closedAt || lastCloseTradeAt.getTime() !== position.closedAt.getTime())
       ? lastCloseTradeAt
       : null;
-  if (nextOpenedAt || nextClosedAt || position.status !== PositionStatus.CLOSED) {
+  if (nextOpenedAt || nextClosedAt || position.status !== PositionStatus.CLOSED ||
+      position.realizedPnl !== realizedPnl) {
     await prisma.position.update({
       where: { id: input.positionId },
       data: {
