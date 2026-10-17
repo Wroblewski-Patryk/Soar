@@ -2,6 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
+import { reconcileLiveOrderFee } from './liveFeeReconciliation.service';
 import {
   CcxtFuturesOrderFill,
   CcxtWalletCashflowHistoryEntry,
@@ -59,6 +60,8 @@ export type SubmitLiveExchangeOrderInput = {
 export type SubmitLiveExchangeOrderResult = {
   exchangeOrderId: string | null;
   status: 'OPEN' | 'FILLED';
+  exchangeFilledQuantity?: number;
+  exchangeAverageFillPrice?: number;
   fee?: number | null;
   feeSource?: 'ESTIMATED' | 'EXCHANGE_FILL';
   feePending?: boolean;
@@ -88,6 +91,13 @@ export type CancelLiveExchangeOrderResult = {
 };
 
 type AuthenticatedConnectorLike = {
+  fetchOrderByClientOrderId?: (input: { symbol: string; clientOrderId: string }) => Promise<{
+    id: string;
+    status?: string;
+    filled?: number;
+    average?: number;
+    fills?: CcxtFuturesOrderFill[];
+  }>;
   fetchPositions: () => Promise<Record<string, unknown>[]>;
   fetchOpenOrders: () => Promise<Record<string, unknown>[]>;
   fetchTradesForWindow?: (input: {
@@ -149,6 +159,8 @@ type ExchangeAdapterBoundaryDeps = {
     }) => Promise<{
       exchangeOrderId: string | null;
       status?: string;
+      exchangeFilledQuantity?: number;
+      exchangeAverageFillPrice?: number;
       fee?: number | null;
       feeSource?: 'ESTIMATED' | 'EXCHANGE_FILL';
       feePending?: boolean;
@@ -195,7 +207,13 @@ const mapLiveOrderStatus = (
 ) => {
   if (status) {
     const normalized = status.toLowerCase();
-    if (normalized.includes('filled') || normalized.includes('closed')) return 'FILLED' as const;
+    if (normalized === 'filled' || normalized === 'closed') return 'FILLED' as const;
+    if (['open', 'new', 'pending', 'partially_filled', 'partiallyfilled'].includes(normalized)) {
+      return 'OPEN' as const;
+    }
+    // Terminal cancellation/rejection and unfamiliar states need human
+    // reconciliation; persisting either as OPEN would hide the uncertainty.
+    throw orderErrors.liveExecutionFailed();
   }
   return 'OPEN' as const;
 };
@@ -482,6 +500,8 @@ export const submitLiveOrderThroughBoundary = async (
     return {
       exchangeOrderId: result.exchangeOrderId,
       status: mapLiveOrderStatus(result.rawOrderStatus ?? result.status, params.order.type),
+      exchangeFilledQuantity: result.exchangeFilledQuantity,
+      exchangeAverageFillPrice: result.exchangeAverageFillPrice,
       fee: result.fee,
       feeSource: result.feeSource,
       feePending: result.feePending,
@@ -495,6 +515,50 @@ export const submitLiveOrderThroughBoundary = async (
       throw error;
     }
     throw orderErrors.liveExecutionFailed();
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const lookupLiveOrderThroughBoundary = async (
+  params: SubmitLiveExchangeOrderInput,
+  deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector' | 'resolveLiveExecutionApiKey'> = getDefaultDeps()
+): Promise<SubmitLiveExchangeOrderResult> => {
+  assertExchangeExecutionCapabilitySupport(params.bot.exchange, params.bot.marketType, 'LIVE_ORDER_SUBMIT');
+  if (!params.order.clientOrderId) throw orderErrors.liveExecutionFailed();
+  const apiKey = await deps.resolveLiveExecutionApiKey({ userId: params.userId, bot: params.bot });
+  if (apiKey.exchange !== params.bot.exchange) throw orderErrors.liveApiKeyRequired();
+  const connector = deps.createAuthenticatedConnector({
+    exchange: apiKey.exchange,
+    apiKey: apiKey.apiKey,
+    apiSecret: apiKey.apiSecret,
+    marketType: params.bot.marketType,
+  });
+  try {
+    if (!connector.fetchOrderByClientOrderId) throw orderErrors.liveExecutionFailed();
+    const order = await connector.fetchOrderByClientOrderId({
+      symbol: params.order.symbol.toUpperCase(),
+      clientOrderId: params.order.clientOrderId,
+    });
+    if (!order.id) throw orderErrors.liveExecutionFailed();
+    const fee = await reconcileLiveOrderFee(connector as unknown as CcxtFuturesConnector, {
+      symbol: params.order.symbol,
+      exchangeOrderId: order.id,
+      inlineFills: order.fills ?? [],
+    });
+    return {
+      exchangeOrderId: order.id,
+      status: mapLiveOrderStatus(order.status, params.order.type),
+      exchangeFilledQuantity: order.filled,
+      exchangeAverageFillPrice: order.average,
+      fee: fee.fee,
+      feeSource: fee.feeSource,
+      feePending: fee.feePending,
+      feeCurrency: fee.feeCurrency,
+      effectiveFeeRate: fee.effectiveFeeRate,
+      exchangeTradeId: fee.exchangeTradeId,
+      fills: fee.fills,
+    };
   } finally {
     await connector.disconnect().catch(() => undefined);
   }

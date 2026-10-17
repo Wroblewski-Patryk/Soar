@@ -26,6 +26,7 @@ vi.mock("sonner", () => ({
 describe("useManualOrderController", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.clear();
     openDashboardManualOrderMock.mockResolvedValue({
       id: "order-manual-controller",
       status: "FILLED",
@@ -346,6 +347,7 @@ describe("useManualOrderController", () => {
 
     expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
       botId: "bot-live-margin",
+      clientOrderId: expect.stringMatching(/^soar_[a-f0-9]{22}$/),
       symbol: "BTCUSDT",
       side: "BUY",
       type: "MARKET",
@@ -453,6 +455,7 @@ describe("useManualOrderController", () => {
     expect(confirmRiskAction).toHaveBeenCalledTimes(2);
     expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
       botId: "bot-live-confirm",
+      clientOrderId: expect.stringMatching(/^soar_[a-f0-9]{22}$/),
       symbol: "BTCUSDT",
       side: "BUY",
       type: "MARKET",
@@ -622,7 +625,7 @@ describe("useManualOrderController", () => {
       open: [],
     } as unknown as RuntimeSelectedData;
 
-    const { result } = renderHook(() =>
+    const { result, unmount } = renderHook(() =>
       useManualOrderController({
         selected,
         selectedData,
@@ -646,10 +649,34 @@ describe("useManualOrderController", () => {
     expect(result.current.manualOrderLastError).toBe("LIVE_MANUAL_SCOPE_UNRESOLVED");
     expect(toast.error).toHaveBeenCalledWith("LIVE_MANUAL_SCOPE_UNRESOLVED");
 
+    const firstClientOrderId = openDashboardManualOrderMock.mock.calls[0]?.[0]?.clientOrderId;
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[1]?.[0]?.clientOrderId).toBe(firstClientOrderId);
+
+    unmount();
+    const resumed = renderHook(() => useManualOrderController({
+      selected,
+      selectedData,
+      load: vi.fn().mockResolvedValue(undefined),
+      labels,
+    }));
+    await waitFor(() => expect(resumed.result.current.manualOrderSymbol).toBe("BTCUSDT"));
+    act(() => resumed.result.current.handleManualOrderQuantityChange("0.01"));
+    await act(async () => {
+      await resumed.result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[2]?.[0]?.clientOrderId).toBe(firstClientOrderId);
+
     act(() => {
-      result.current.handleManualOrderQuantityChange("0.02");
+      resumed.result.current.handleManualOrderQuantityChange("0.02");
     });
 
-    expect(result.current.manualOrderLastError).toBeNull();
+    expect(resumed.result.current.manualOrderLastError).toBeNull();
+    await act(async () => {
+      await resumed.result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[3]?.[0]?.clientOrderId).not.toBe(firstClientOrderId);
   });
 });

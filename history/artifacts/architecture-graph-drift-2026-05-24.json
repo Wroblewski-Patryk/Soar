@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 820,
-    "covered": 820,
+    "total": 824,
+    "covered": 824,
     "missing": 0
   },
   "categories": {
@@ -13,14 +13,14 @@
       "missingSamples": []
     },
     "apiServices": {
-      "total": 119,
-      "covered": 119,
+      "total": 120,
+      "covered": 120,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 205,
-      "covered": 205,
+      "total": 207,
+      "covered": 207,
       "missing": 0,
       "missingSamples": []
     },
@@ -55,8 +55,8 @@
       "missingSamples": []
     },
     "architectureDocs": {
-      "total": 73,
-      "covered": 73,
+      "total": 74,
+      "covered": 74,
       "missing": 0,
       "missingSamples": []
     },

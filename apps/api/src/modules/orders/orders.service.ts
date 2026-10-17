@@ -16,6 +16,13 @@ import {
   type ManualOrderContextDeps,
 } from './orders.manualContext.service';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
+import {
+  createOrderForLiveIntent,
+  executeDurableLiveOrder,
+  type LiveBotContext,
+  type LiveExecutionResult,
+  type LiveOrderPayload,
+} from './orders.liveIntent.service';
 import { resolveOpenPositionScopeWhere } from './orders.positionScope';
 import {
   resolveCanonicalRuntimeVenueContext,
@@ -23,6 +30,7 @@ import {
 } from '../engine/runtimeBotExecutionContext';
 import {
   cancelLiveOrderThroughBoundary,
+  lookupLiveOrderThroughBoundary,
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
 } from '../exchange/exchangeAdapterBoundary.service';
@@ -40,11 +48,7 @@ import {
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
-type OpenOrderInput = OpenOrderDto & {
-  positionId?: string | null;
-  origin?: 'USER' | 'BOT';
-  clientOrderId?: string | null;
-};
+type OpenOrderInput = LiveOrderPayload;
 
 const ACTIVE_LIST_ORDER_STATUSES = new Set<OrderStatus>([
   'PENDING',
@@ -77,15 +81,6 @@ export const getOrder = async (userId: string, id: string) => {
   });
 };
 
-type LiveBotContext = {
-  id: string;
-  exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
-  positionMode: 'ONE_WAY' | 'HEDGE';
-  apiKeyId: string | null;
-  walletId: string | null;
-};
-
 type CanonicalOrderBotContext = {
   id: string;
   mode: 'PAPER' | 'LIVE';
@@ -106,20 +101,13 @@ type CanonicalOrderBotContext = {
   manualStrategyScopeResolved: boolean;
 };
 
-type LiveExecutionResult = {
-  exchangeOrderId: string | null;
-  status: 'OPEN' | 'FILLED';
-  fee?: number | null;
-  feeSource?: 'ESTIMATED' | 'EXCHANGE_FILL';
-  feePending?: boolean;
-  feeCurrency?: string | null;
-  effectiveFeeRate?: number | null;
-  exchangeTradeId?: string | null;
-  fills?: ExchangeOrderFill[];
-};
-
 type OpenOrderDeps = {
   executeLiveOrder: (params: {
+    userId: string;
+    bot: LiveBotContext;
+    payload: OpenOrderInput;
+  }) => Promise<LiveExecutionResult>;
+  lookupLiveOrder?: (params: {
     userId: string;
     bot: LiveBotContext;
     payload: OpenOrderInput;
@@ -425,8 +413,25 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
   });
 };
 
+const lookupLiveOrderOnExchange: NonNullable<OpenOrderDeps['lookupLiveOrder']> = async (params) =>
+  lookupLiveOrderThroughBoundary({
+    userId: params.userId,
+    bot: params.bot,
+    order: {
+      symbol: params.payload.symbol,
+      side: params.payload.side,
+      type: resolveSupportedLiveOrderType(params.payload.type),
+      quantity: params.payload.quantity,
+      price: params.payload.price,
+      reduceOnly: params.payload.reduceOnly,
+      clientOrderId: params.payload.clientOrderId ?? undefined,
+    },
+    targetLeverage: null,
+  });
+
 const defaultOpenOrderDeps: OpenOrderDeps = {
   executeLiveOrder: executeLiveOrderOnExchange,
+  lookupLiveOrder: lookupLiveOrderOnExchange,
 };
 
 const defaultCancelOrderDeps: CancelOrderDeps = {
@@ -648,16 +653,24 @@ export const openOrder = async (
   let feeCurrency: string | null = null;
   let effectiveFeeRate: number | null = null;
   let fills: ExchangeOrderFill[] = [];
+  let exchangeFilledQuantityFromSnapshot: number | null = null;
+  let exchangeAverageFillPrice: number | null = null;
+  let liveIntentId: string | null = null;
 
   if (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
     if (!liveBot) {
       throw orderErrors.liveBotNotFound();
     }
-    const liveResult = await deps.executeLiveOrder({
+    const durable = await executeDurableLiveOrder({
       userId,
       bot: liveBot,
       payload: canonicalPayload,
+      execute: deps.executeLiveOrder,
+      lookup: deps.lookupLiveOrder ?? lookupLiveOrderOnExchange,
     });
+    if (durable.existingOrder) return durable.existingOrder;
+    liveIntentId = durable.intentId;
+    const liveResult = durable.liveResult;
     exchangeOrderId = liveResult.exchangeOrderId;
     status = liveResult.status;
     exchangeTradeId = liveResult.exchangeTradeId ?? null;
@@ -668,6 +681,10 @@ export const openOrder = async (
     effectiveFeeRate =
       typeof liveResult.effectiveFeeRate === 'number' ? liveResult.effectiveFeeRate : null;
     fills = Array.isArray(liveResult.fills) ? liveResult.fills : [];
+    exchangeFilledQuantityFromSnapshot =
+      typeof liveResult.exchangeFilledQuantity === 'number' ? liveResult.exchangeFilledQuantity : null;
+    exchangeAverageFillPrice =
+      typeof liveResult.exchangeAverageFillPrice === 'number' ? liveResult.exchangeAverageFillPrice : null;
   }
 
   const filledQuantityFromExchange =
@@ -676,7 +693,7 @@ export const openOrder = async (
           const quantity = Number(fill.quantity);
           return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
         }, 0)
-      : null;
+      : exchangeFilledQuantityFromSnapshot;
   const resolvedPaperFillPrice =
     canonicalPayload.mode === 'PAPER' && status === 'FILLED'
       ? await resolvePaperImmediateFillPrice({
@@ -687,6 +704,7 @@ export const openOrder = async (
       : null;
   const fillPriceFromExchange =
     fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ??
+    (isPositiveFiniteNumber(exchangeAverageFillPrice) ? exchangeAverageFillPrice : null) ??
     resolvedPaperFillPrice ??
     (canonicalPayload.mode === 'PAPER' && isPositiveFiniteNumber(canonicalPayload.price)
       ? canonicalPayload.price
@@ -714,8 +732,8 @@ export const openOrder = async (
     liveFillResolution,
   });
 
-  const order = await prisma.order.create({
-    data: {
+  const orderData: Prisma.OrderUncheckedCreateInput = {
+      ...(liveIntentId ? { id: liveIntentId } : {}),
       userId,
       botId: canonicalPayload.botId,
       walletId: canonicalPayload.walletId,
@@ -740,8 +758,16 @@ export const openOrder = async (
       exchangeTradeId,
       submittedAt: now,
       filledAt: orderPersistenceDecision.persistedStatus === 'FILLED' ? now : null,
-    },
+  };
+  const persisted = await createOrderForLiveIntent({
+    userId,
+    exchangeOrderId,
+    intentId: liveIntentId,
+    clientOrderId: canonicalPayload.clientOrderId,
+    data: orderData,
   });
+  if (persisted.reused) return persisted.order;
+  const order = persisted.order;
 
   const lifecycleResult =
     orderPersistenceDecision.shouldApplyImmediateFillLifecycle

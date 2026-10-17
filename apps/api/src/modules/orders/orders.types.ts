@@ -29,6 +29,7 @@ export const OpenOrderSchema = z.object({
   price: z.number().positive().optional(),
   mode: OrderExecutionModeSchema.default('PAPER'),
   riskAck: z.boolean().default(false),
+  clientOrderId: z.string().trim().min(1).max(36).regex(/^[A-Za-z0-9_-]+$/).optional(),
 });
 
 export const ManualOrderContextQuerySchema = z.object({

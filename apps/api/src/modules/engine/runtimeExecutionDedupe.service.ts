@@ -71,6 +71,7 @@ const retryableErrorClasses = parseRetryableErrorClasses(
     'prisma_client_initialization_error',
     'prisma_client_unknown_request_error',
     'prisma_client_rust_panic_error',
+    'live_execution_unknown',
   ]
 );
 

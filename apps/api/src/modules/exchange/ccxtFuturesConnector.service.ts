@@ -339,6 +339,7 @@ export class CcxtFuturesConnector {
       }
     }
     if (request.clientOrderId) {
+      // CCXT maps this to Binance newClientOrderId or Gate text (with t-).
       params.clientOrderId = request.clientOrderId;
     }
 
@@ -401,6 +402,26 @@ export class CcxtFuturesConnector {
       order: this.normalizeOrderResult(order, fills),
       fills,
     };
+  }
+
+  async fetchOrderByClientOrderId(input: { symbol: string; clientOrderId: string }): Promise<CcxtFuturesOrderResult> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchOrder !== 'function') {
+      throw new Error('fetchOrder is not supported by this CCXT connector');
+    }
+    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    // CCXT maps clientOrderId to Binance origClientOrderId and Gate text.
+    const order = await client.fetchOrder('', exchangeSymbol, { clientOrderId: input.clientOrderId });
+    if (!order.id) throw new Error('Exchange lookup returned no order identity');
+    const returnedClientId =
+      this.readString(order.clientOrderId) ??
+      this.readString(order.info?.clientOrderId) ??
+      this.readString(order.info?.text);
+    if (returnedClientId && returnedClientId.replace(/^t-/, '') !== input.clientOrderId) {
+      throw new Error('Exchange lookup returned a different client order identity');
+    }
+    const fills = this.normalizeOrderFills(order, input.symbol, 'fetchOrder');
+    return this.normalizeOrderResult(order, fills);
   }
 
   async fetchTradesForOrder(input: CcxtFetchTradesForOrderInput): Promise<CcxtFuturesOrderFill[]> {

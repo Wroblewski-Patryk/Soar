@@ -28,7 +28,7 @@ describe('LiveOrderAdapter', () => {
     expect(sleep).not.toHaveBeenCalled();
   });
 
-  it('retries on retryable errors and then succeeds', async () => {
+  it('never resubmits after a timeout, even with a legacy retry policy', async () => {
     const placeOrder = vi
       .fn()
       .mockRejectedValueOnce(new Error('Network timeout'))
@@ -38,15 +38,13 @@ describe('LiveOrderAdapter', () => {
     const sleep = vi.fn().mockResolvedValue(undefined);
     const adapter = new LiveOrderAdapter(connector, sleep);
 
-    const result = await adapter.placeLiveOrderWithRetry({
+    await expect(adapter.placeLiveOrderWithRetry({
       order: liveOrder,
       retryPolicy: { maxAttempts: 3, baseDelayMs: 200 },
-    });
+    })).rejects.toThrow('Network timeout');
 
-    expect(result.id).toBe('ok-2');
-    expect(placeOrder).toHaveBeenCalledTimes(3);
-    expect(sleep).toHaveBeenNthCalledWith(1, 200);
-    expect(sleep).toHaveBeenNthCalledWith(2, 400);
+    expect(placeOrder).toHaveBeenCalledTimes(1);
+    expect(sleep).not.toHaveBeenCalled();
   });
 
   it('stops retries on non-retryable error', async () => {
@@ -66,7 +64,7 @@ describe('LiveOrderAdapter', () => {
     expect(sleep).not.toHaveBeenCalled();
   });
 
-  it('throws after exhausting retry attempts', async () => {
+  it('does not retry a persistent network failure', async () => {
     const placeOrder = vi.fn().mockRejectedValue(new Error('network disconnected'));
     const connector = { placeOrder } as unknown as CcxtFuturesConnector;
     const sleep = vi.fn().mockResolvedValue(undefined);
@@ -79,11 +77,11 @@ describe('LiveOrderAdapter', () => {
       })
     ).rejects.toThrow('network disconnected');
 
-    expect(placeOrder).toHaveBeenCalledTimes(3);
-    expect(sleep).toHaveBeenCalledTimes(2);
+    expect(placeOrder).toHaveBeenCalledTimes(1);
+    expect(sleep).not.toHaveBeenCalled();
   });
 
-  it('emits structured retry and success logs', async () => {
+  it('emits an explicit unknown-outcome log after timeout', async () => {
     const placeOrder = vi
       .fn()
       .mockRejectedValueOnce(new Error('Network timeout'))
@@ -97,30 +95,21 @@ describe('LiveOrderAdapter', () => {
     };
     const adapter = new LiveOrderAdapter(connector, sleep, logger);
 
-    const result = await adapter.placeLiveOrderWithRetry({
+    await expect(adapter.placeLiveOrderWithRetry({
       order: liveOrder,
       retryPolicy: { maxAttempts: 3, baseDelayMs: 100 },
-    });
+    })).rejects.toThrow('Network timeout');
 
-    expect(result.id).toBe('ok-logs');
-    expect(logger.warn).toHaveBeenCalledTimes(1);
-    expect(logger.warn).toHaveBeenCalledWith(
+    expect(placeOrder).toHaveBeenCalledTimes(1);
+    expect(logger.warn).not.toHaveBeenCalled();
+    expect(logger.info).not.toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: 'exchange.live_order.retry',
+        event: 'exchange.live_order.unknown',
         attempt: 1,
-        maxAttempts: 3,
-        delayMs: 100,
+        maxAttempts: 1,
       })
     );
-    expect(logger.info).toHaveBeenCalledTimes(1);
-    expect(logger.info).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: 'exchange.live_order.success',
-        attempt: 2,
-        maxAttempts: 3,
-      })
-    );
-    expect(logger.error).not.toHaveBeenCalled();
   });
 
   it('reconciles exchange fill commissions and returns exact fee metadata', async () => {

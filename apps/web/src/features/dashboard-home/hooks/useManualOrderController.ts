@@ -65,6 +65,11 @@ export const useManualOrderController = ({
   const [manualOrderLastResponse, setManualOrderLastResponse] = useState<DashboardManualOrderResponse | null>(null);
   const [manualOrderLastError, setManualOrderLastError] = useState<string | null>(null);
   const manualOrderContextRequestIdRef = useRef(0);
+  const manualLiveIntentRef = useRef<{
+    fingerprint: string;
+    clientOrderId: string;
+    price?: number;
+  } | null>(null);
   const previousSelectedBotIdRef = useRef<string | null>(null);
   const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
 
@@ -545,16 +550,72 @@ export const useManualOrderController = ({
 
     setIsSubmittingManualOrder(true);
     clearManualOrderActionState();
+    const manualPayload = {
+      botId: selected.bot.id,
+      symbol,
+      side: manualOrderSide,
+      type: resolvedManualOrderType,
+      quantity,
+      price: effectiveManualOrderPrice,
+      riskAck: true,
+    };
+    const liveFingerprint = JSON.stringify({
+      botId: manualPayload.botId,
+      symbol: manualPayload.symbol,
+      side: manualPayload.side,
+      type: manualPayload.type,
+      quantity: manualPayload.quantity,
+      // A refreshed market reference price must not turn a retry into a new
+      // exchange order. An explicitly edited price remains part of the key.
+      price: shouldTrustManualPriceForCurrentSymbol ? parsedPrice : null,
+    });
+    const liveIntentStorageKey = `soar:manual-live-intent:${selected.bot.id}`;
+    if (selected.bot.mode === "LIVE" && manualLiveIntentRef.current?.fingerprint !== liveFingerprint) {
+      let stored: { fingerprint: string; clientOrderId: string; price?: number } | null = null;
+      try {
+        const raw = window.localStorage.getItem(liveIntentStorageKey);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { fingerprint?: unknown; clientOrderId?: unknown; price?: unknown };
+          if (parsed.fingerprint === liveFingerprint &&
+              typeof parsed.clientOrderId === "string" &&
+              /^soar_[a-f0-9]{22}$/.test(parsed.clientOrderId)) {
+            stored = {
+              fingerprint: liveFingerprint,
+              clientOrderId: parsed.clientOrderId,
+              price: typeof parsed.price === "number" && Number.isFinite(parsed.price)
+                ? parsed.price : undefined,
+            };
+          }
+        }
+      } catch {
+        // Browser storage may be unavailable; the in-memory ID still covers
+        // retries while this form remains mounted.
+      }
+      manualLiveIntentRef.current = stored ?? {
+        fingerprint: liveFingerprint,
+        clientOrderId: `soar_${globalThis.crypto.randomUUID().replace(/-/g, "").slice(0, 22)}`,
+        price: manualPayload.price,
+      };
+      try {
+        window.localStorage.setItem(liveIntentStorageKey, JSON.stringify(manualLiveIntentRef.current));
+      } catch {
+        // Preserve the in-memory ID if browser storage is unavailable.
+      }
+    }
     try {
       const response = await openDashboardManualOrder({
-        botId: selected.bot.id,
-        symbol,
-        side: manualOrderSide,
-        type: resolvedManualOrderType,
-        quantity,
-        price: effectiveManualOrderPrice,
-        riskAck: true,
+        ...manualPayload,
+        ...(selected.bot.mode === "LIVE" && manualLiveIntentRef.current
+          ? {
+              clientOrderId: manualLiveIntentRef.current.clientOrderId,
+              price: manualLiveIntentRef.current.price,
+            }
+          : {}),
       });
+      manualLiveIntentRef.current = null;
+      if (selected.bot.mode === "LIVE") {
+        try { window.localStorage.removeItem(liveIntentStorageKey); } catch { /* storage unavailable */ }
+      }
       toast.success(labels.success);
       setManualOrderQuantity("");
       setManualOrderLastResponse(response);

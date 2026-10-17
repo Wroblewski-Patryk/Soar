@@ -514,6 +514,7 @@ const defaultRuntimeExecutionDedupeGateway: RuntimeExecutionDedupeGateway = {
 };
 
 const resolveErrorClass = (error: unknown) => {
+  if ((error as { code?: unknown } | null)?.code === 'LIVE_EXECUTION_UNKNOWN') return 'live_execution_unknown';
   if (error instanceof Error && error.name) return error.name;
   return 'runtime_execution_error';
 };

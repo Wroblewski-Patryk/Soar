@@ -39,6 +39,7 @@ model User {
   runtimeExecutionDedupes  RuntimeExecutionDedupe[]
   positions                Position[]
   orders                   Order[]
+  liveOrderIntents          LiveOrderIntent[]
   trades                   Trade[]
   orderFills               OrderFill[]
   signals                  Signal[]
@@ -930,6 +931,23 @@ model Order {
   @@index([feeSource, feePending])
   @@index([symbol])
   @@index([status])
+}
+
+// Persisted before a LIVE createOrder call. The intent ID is also the local Order ID,
+// so recovery cannot create a second local order for the same exchange submission.
+model LiveOrderIntent {
+  id            String   @id @default(uuid())
+  userId        String
+  clientOrderId String   @unique
+  payloadHash   String
+  exchange      Exchange
+  marketType    TradeMarket
+  symbol        String
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
 }
 
 model Trade {

@@ -75,6 +75,48 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
 });
 
 describe('CcxtFuturesConnector scaffold', () => {
+  it.each([
+    ['binanceusdm', 'future', 'soar_order_1'],
+    ['binance', 'spot', 'soar_order_1'],
+    ['gateio', 'swap', 'soar_order_1'],
+    ['gateio', 'spot', 'soar_order_1'],
+  ] as const)('submits and looks up %s %s using the same venue client ID', async (exchangeId, marketType, submittedId) => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId, marketType },
+      vi.fn().mockResolvedValue(client)
+    );
+    await connector.placeOrder({
+      symbol: 'BTC/USDT:USDT', side: 'buy', type: 'limit', amount: 1, price: 100,
+      clientOrderId: 'soar_order_1',
+    });
+    expect(client.createOrder).toHaveBeenCalledWith(
+      'BTC/USDT:USDT', 'limit', 'buy', 1, 100,
+      expect.objectContaining({ clientOrderId: submittedId })
+    );
+    const recovered = await connector.fetchOrderByClientOrderId({
+      symbol: 'BTC/USDT:USDT', clientOrderId: 'soar_order_1',
+    });
+    expect(recovered.id).toBe('order-1');
+    expect(client.fetchOrder).toHaveBeenCalledWith(
+      '', 'BTC/USDT:USDT', { clientOrderId: 'soar_order_1' }
+    );
+  });
+
+  it('rejects a lookup result carrying a different client ID', async () => {
+    const client = createMockClient();
+    client.fetchOrder = vi.fn().mockResolvedValue({
+      id: 'unexpected-order', clientOrderId: 'different-client-id', status: 'open',
+    });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binance', marketType: 'spot' },
+      vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchOrderByClientOrderId({
+      symbol: 'BTC/USDT', clientOrderId: 'soar_order_1',
+    })).rejects.toThrow('different client order identity');
+  });
+
   it('connects and loads markets in sandbox mode', async () => {
     const client = createMockClient();
     const factory: CcxtClientFactory = vi.fn().mockResolvedValue(client);

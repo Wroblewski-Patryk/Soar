@@ -6,8 +6,8 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ## Summary
 
-| Total inventoried files | 820 |
-| Covered by graph CSV paths | 820 |
+| Total inventoried files | 824 |
+| Covered by graph CSV paths | 824 |
 | Missing graph path references | 0 |
 
 ## Categories
@@ -15,14 +15,14 @@ This audit compares representative source, test, documentation, config, and pipe
 | Category | Total | Covered | Missing |
 | --- | ---: | ---: | ---: |
 | apiRoutes | 22 | 22 | 0 |
-| apiServices | 119 | 119 | 0 |
-| apiTests | 205 | 205 | 0 |
+| apiServices | 120 | 120 | 0 |
+| apiTests | 207 | 207 | 0 |
 | webPages | 37 | 37 | 0 |
 | webComponents | 118 | 118 | 0 |
 | webHooksAndServices | 40 | 40 | 0 |
 | webTests | 150 | 150 | 0 |
 | moduleDocs | 45 | 45 | 0 |
-| architectureDocs | 73 | 73 | 0 |
+| architectureDocs | 74 | 74 | 0 |
 | configAndPipelines | 11 | 11 | 0 |
 
 ## Missing Samples

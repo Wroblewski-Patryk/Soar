@@ -1,0 +1,320 @@
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { prisma } from '../../prisma/client';
+import { openOrder } from './orders.service';
+import { ORDER_ERROR_CODES } from './orders.errors';
+import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
+import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
+
+const cleanupDb = async () => {
+  await prisma.log.deleteMany();
+  await prisma.backtestReport.deleteMany();
+  await prisma.backtestTrade.deleteMany();
+  await prisma.backtestRun.deleteMany();
+  await prisma.trade.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.liveOrderIntent.deleteMany();
+  await prisma.position.deleteMany();
+  await prisma.signal.deleteMany();
+  await prisma.botRuntimeSymbolStat.deleteMany();
+  await prisma.botRuntimeEvent.deleteMany();
+  await prisma.botRuntimeSession.deleteMany();
+  await prisma.runtimeExecutionDedupe.deleteMany();
+  await prisma.botStrategy.deleteMany();
+  await prisma.botSubagentConfig.deleteMany();
+  await prisma.botAssistantConfig.deleteMany();
+  await prisma.marketGroupStrategyLink.deleteMany();
+  await prisma.botMarketGroup.deleteMany();
+  await prisma.bot.deleteMany();
+  await prisma.symbolGroup.deleteMany();
+  await prisma.marketUniverse.deleteMany();
+  await prisma.strategy.deleteMany();
+  await prisma.wallet.deleteMany();
+  await prisma.apiKey.deleteMany();
+  await prisma.user.deleteMany();
+};
+
+const createLiveScopedBotContext = async (params: {
+  userId: string;
+  botName: string;
+  strategyName: string;
+  symbol: string;
+  apiKeyId?: string;
+}) => {
+  const strategy = await prisma.strategy.create({
+    data: {
+      userId: params.userId,
+      name: params.strategyName,
+      interval: '5m',
+      leverage: 5,
+      walletRisk: 1,
+      config: {
+        additional: {
+          orderType: 'MARKET',
+          marginMode: 'ISOLATED',
+        },
+      },
+    },
+  });
+  const wallet = await prisma.wallet.create({
+    data: {
+      userId: params.userId,
+      name: `${params.botName} wallet`,
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    },
+  });
+  const universe = await prisma.marketUniverse.create({
+    data: {
+      userId: params.userId,
+      name: `${params.botName} universe`,
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      whitelist: [params.symbol],
+      blacklist: [],
+    },
+  });
+  const symbolGroup = await prisma.symbolGroup.create({
+    data: {
+      userId: params.userId,
+      marketUniverseId: universe.id,
+      name: `${params.botName} symbols`,
+      symbols: [params.symbol],
+    },
+  });
+  const bot = await prisma.bot.create({
+    data: {
+      userId: params.userId,
+      name: params.botName,
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      positionMode: 'ONE_WAY',
+      apiKeyId: params.apiKeyId ?? null,
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+      maxOpenPositions: 3,
+      walletId: wallet.id,
+      strategyId: strategy.id,
+      symbolGroupId: symbolGroup.id,
+    },
+  });
+
+  return { bot, strategy, wallet, universe, symbolGroup };
+};
+
+const allowLive = async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
+    where: { code: 'FREE' },
+    select: { entitlements: true },
+  });
+  const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
+  await prisma.subscriptionPlan.update({
+    where: { code: 'FREE' },
+    data: {
+      entitlements: {
+        ...entitlements,
+        features: { ...entitlements.features, liveTrading: true },
+      },
+    },
+  });
+};
+
+describe('durable LIVE order intent', () => {
+  afterAll(async () => { await cleanupDb(); });
+  beforeEach(async () => {
+    await cleanupDb();
+    await allowLive();
+  });
+
+  it('persists the intent before submission and recovers a timeout without resubmitting', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-timeout-recovery@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Timeout bot', strategyName: 'Timeout strategy', symbol: 'BTCUSDT',
+    });
+    const payload = {
+      botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+      quantity: 0.01, price: 60_000, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: 'soar_timeout_recovery_1',
+    };
+    const executeLiveOrder = vi.fn(async () => {
+      const intent = await prisma.liveOrderIntent.findUnique({
+        where: { clientOrderId: payload.clientOrderId },
+      });
+      expect(intent).not.toBeNull();
+      throw new Error('network timeout after acceptance');
+    });
+    const lookupLiveOrder = vi.fn(async () => ({
+      exchangeOrderId: 'exchange-accepted-1', status: 'FILLED' as const,
+      exchangeFilledQuantity: 0.01, exchangeAverageFillPrice: 60_000,
+    }));
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const first = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      const retried = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(first.id).toBe(retried.id);
+      expect(first.exchangeOrderId).toBe('exchange-accepted-1');
+      expect(first.status).toBe('FILLED');
+      expect(first.positionId).toBeTruthy();
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.order.count({ where: { id: first.id } })).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('keeps an unresolved timeout durable and only looks up on a later retry', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-unknown-retry@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Unknown bot', strategyName: 'Unknown strategy', symbol: 'ETHUSDT',
+    });
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+      quantity: 0.02, price: 3_000, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: 'soar_unknown_retry_1',
+    };
+    const executeLiveOrder = vi.fn().mockRejectedValue(new Error('timeout'));
+    const lookupLiveOrder = vi.fn()
+      .mockRejectedValueOnce(new Error('not found'))
+      .mockResolvedValueOnce({ exchangeOrderId: 'exchange-later-1', status: 'OPEN' });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const intent = await prisma.liveOrderIntent.findUnique({
+        where: { clientOrderId: payload.clientOrderId },
+      });
+      expect(intent).not.toBeNull();
+      expect(await prisma.order.count({ where: { id: intent!.id } })).toBe(0);
+      const recovered = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(recovered.id).toBe(intent!.id);
+      expect(recovered.exchangeOrderId).toBe('exchange-later-1');
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('uses one local order when a concurrent retry recovers before the first response', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-concurrent-recovery@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Concurrent bot', strategyName: 'Concurrent strategy', symbol: 'ADAUSDT',
+    });
+    const payload = {
+      botId: bot.id, symbol: 'ADAUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+      quantity: 1, price: 1, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: 'soar_concurrent_recovery_1',
+    };
+    let releaseSubmission!: () => void;
+    const submissionHeld = new Promise<void>((resolve) => { releaseSubmission = resolve; });
+    const executeLiveOrder = vi.fn(async () => {
+      await submissionHeld;
+      return { exchangeOrderId: 'exchange-concurrent-1', status: 'OPEN' as const };
+    });
+    const lookupLiveOrder = vi.fn(async () => ({
+      exchangeOrderId: 'exchange-concurrent-1', status: 'OPEN' as const,
+    }));
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const firstPromise = openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      await vi.waitFor(() => expect(executeLiveOrder).toHaveBeenCalledTimes(1));
+      const second = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      releaseSubmission();
+      const first = await firstPromise;
+      expect(first.id).toBe(second.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.order.count({ where: { id: first.id } })).toBe(1);
+    } finally {
+      releaseSubmission();
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('derives a stable Gate.io client ID within the venue limit', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-gate-client-id@example.com', password: 'hashed' },
+    });
+    const { bot, wallet, universe } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Gate bot', strategyName: 'Gate strategy', symbol: 'BTCUSDT',
+    });
+    await prisma.wallet.update({ where: { id: wallet.id }, data: { exchange: 'GATEIO' } });
+    await prisma.marketUniverse.update({ where: { id: universe.id }, data: { exchange: 'GATEIO' } });
+    await prisma.bot.update({ where: { id: bot.id }, data: { exchange: 'GATEIO' } });
+    const runtimeId = 'soar_123456789012345678901234';
+    const executeLiveOrder = vi.fn(async ({ payload }: { payload: { clientOrderId?: string | null } }) => {
+      expect(payload.clientOrderId).toMatch(/^soar_[A-Za-z0-9_-]{22}$/);
+      expect(payload.clientOrderId?.length).toBe(27);
+      return { exchangeOrderId: 'gate-order-1', status: 'OPEN' as const };
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const payload = {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+        quantity: 1, price: 100, mode: 'LIVE' as const, riskAck: true,
+        clientOrderId: runtimeId,
+      };
+      const first = await openOrder(user.id, payload, { executeLiveOrder });
+      const retried = await openOrder(user.id, payload, { executeLiveOrder });
+      expect(retried.id).toBe(first.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('does not duplicate an exchange order imported while its submit result was unknown', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-imported-recovery@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Imported bot', strategyName: 'Imported strategy', symbol: 'SOLUSDT',
+    });
+    const payload = {
+      botId: bot.id, symbol: 'SOLUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+      quantity: 2, price: 100, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: 'soar_imported_recovery_1',
+    };
+    const executeLiveOrder = vi.fn().mockRejectedValue(new Error('timeout'));
+    const lookupLiveOrder = vi.fn()
+      .mockRejectedValueOnce(new Error('not found'))
+      .mockResolvedValue({ exchangeOrderId: 'exchange-imported-1', status: 'OPEN' });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const imported = await prisma.order.create({
+        data: {
+          userId: user.id, botId: bot.id, symbol: 'SOLUSDT', side: 'BUY', type: 'LIMIT',
+          status: 'OPEN', origin: 'EXCHANGE_SYNC', quantity: 2, price: 100,
+          exchangeOrderId: 'exchange-imported-1',
+        },
+      });
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      expect(await prisma.order.count({ where: { userId: user.id } })).toBe(1);
+      expect(await prisma.order.findUnique({ where: { id: imported.id } })).not.toBeNull();
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+});

@@ -6,6 +6,7 @@ import type {
 
 export type CcxtOrderLike = {
   id?: string;
+  clientOrderId?: string;
   status?: string;
   symbol?: string;
   side?: string;

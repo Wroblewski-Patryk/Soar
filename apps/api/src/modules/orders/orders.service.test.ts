@@ -8,7 +8,7 @@ import {
   openOrder,
   resolveLiveExecutionApiKey,
 } from './orders.service';
-import { ORDER_ERROR_CODES } from './orders.errors';
+import { ORDER_ERROR_CODES, orderErrors } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 
@@ -19,6 +19,7 @@ const cleanupDb = async () => {
   await prisma.backtestRun.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.liveOrderIntent.deleteMany();
   await prisma.position.deleteMany();
   await prisma.signal.deleteMany();
   await prisma.botRuntimeSymbolStat.deleteMany();
@@ -1859,7 +1860,7 @@ describe('openOrder live execution contract', () => {
     }
   });
 
-  it('propagates LIVE execution error', async () => {
+  it('reports an unknown outcome after an ambiguous LIVE execution error', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-live-fail@example.com', password: 'hashed' },
     });
@@ -1889,7 +1890,7 @@ describe('openOrder live execution contract', () => {
           },
           { executeLiveOrder }
         )
-      ).rejects.toThrow('LIVE_EXECUTION_FAILED');
+      ).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
@@ -1908,7 +1909,7 @@ describe('openOrder live execution contract', () => {
 
     const executeLiveOrder = vi
       .fn()
-      .mockRejectedValue(new Error('LIVE_PRETRADE_EXTERNAL_POSITION_OPEN'));
+      .mockRejectedValue(orderErrors.livePretradeExternalPositionOpen());
     const previousNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
 

@@ -1,4 +1,5 @@
 import { prisma } from '../../prisma/client';
+import { lockExchangeOrderIdentity } from '../orders/orders.exchangeIdentityLock';
 import {
   fetchExchangeOpenOrdersSnapshotByApiKeyId,
   fetchExchangePositionsSnapshotByApiKeyId,
@@ -239,56 +240,42 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   hydrateImportedPositionHistory,
   hydrateClosedImportedPositionHistory: backfillClosedImportedPositionHistory,
   upsertSyncedOpenOrder: async (input) => {
-    const existing = await prisma.order.findFirst({
-      where: {
-        userId: input.userId,
-        exchangeOrderId: input.exchangeOrderId,
-        OR: [{ botId: input.botId }, { botId: null, walletId: input.walletId }],
-      },
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-      select: {
-        id: true,
-        origin: true,
-      },
-    });
-
-    if (existing && existing.origin !== 'EXCHANGE_SYNC') {
-      return;
-    }
-
-    const data = {
-      botId: input.botId,
-      walletId: input.walletId,
-      strategyId: null,
-      positionId: null,
-      origin: 'EXCHANGE_SYNC' as const,
-      managementMode: 'BOT_MANAGED' as const,
-      syncState: 'IN_SYNC' as const,
-      symbol: input.symbol,
-      side: input.side,
-      type: input.type,
-      status: input.status,
-      quantity: input.quantity,
-      filledQuantity: input.filledQuantity,
-      price: input.price,
-      exchangeOrderId: input.exchangeOrderId,
-      submittedAt: input.submittedAt,
-      canceledAt: null,
-    };
-
-    if (existing) {
-      await prisma.order.update({
-        where: { id: existing.id },
-        data,
+    await prisma.$transaction(async (tx) => {
+      await lockExchangeOrderIdentity(tx, input.userId, input.exchangeOrderId);
+      const existing = await tx.order.findFirst({
+        where: {
+          userId: input.userId,
+          exchangeOrderId: input.exchangeOrderId,
+          OR: [{ botId: input.botId }, { botId: null, walletId: input.walletId }],
+        },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        select: { id: true, origin: true },
       });
-      return;
-    }
-
-    await prisma.order.create({
-      data: {
-        userId: input.userId,
-        ...data,
-      },
+      if (existing && existing.origin !== 'EXCHANGE_SYNC') return;
+      const data = {
+        botId: input.botId,
+        walletId: input.walletId,
+        strategyId: null,
+        positionId: null,
+        origin: 'EXCHANGE_SYNC' as const,
+        managementMode: 'BOT_MANAGED' as const,
+        syncState: 'IN_SYNC' as const,
+        symbol: input.symbol,
+        side: input.side,
+        type: input.type,
+        status: input.status,
+        quantity: input.quantity,
+        filledQuantity: input.filledQuantity,
+        price: input.price,
+        exchangeOrderId: input.exchangeOrderId,
+        submittedAt: input.submittedAt,
+        canceledAt: null,
+      };
+      if (existing) {
+        await tx.order.update({ where: { id: existing.id }, data });
+      } else {
+        await tx.order.create({ data: { userId: input.userId, ...data } });
+      }
     });
   },
   listOpenSyncedOrdersForOwner: async ({ userId, botId, walletId }) =>
