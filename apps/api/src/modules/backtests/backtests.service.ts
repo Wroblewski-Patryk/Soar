@@ -42,18 +42,13 @@ import {
   simulateInterleavedPortfolio,
 } from './backtestPortfolioSimulation.service';
 import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
-import { createBacktestRunJob } from './backtestRunJob';
+import { createClaimedBacktestRunJob } from './backtestClaimedRun';
 import { BacktestRunQueue } from './backtestRunQueue';
 import { resolveWorkerOwnershipConfig } from '../../workers/workerOwnership';
 import {
-  countLosingBacktestTrades,
-  countWinningBacktestTrades,
   createBacktestRun,
-  createBacktestTrades,
-  deleteBacktestTradesForRun,
   deleteOwnedBacktestRunCascade,
   findBacktestRunById,
-  listPendingBacktestRunIds,
   findOwnedBacktestReport,
   findOwnedBacktestRun,
   findOwnedBacktestRunId,
@@ -63,6 +58,10 @@ import {
   listOwnedBacktestRuns,
   listOwnedBacktestTrades,
 } from './backtests.repository';
+import {
+  listDiscardableBacktestRunIds,
+  listRecoverableBacktestRunIds,
+} from './backtestRunOwnership.repository';
 import {
   computeAdaptiveMaxCandles,
   computeSourceWindowMs,
@@ -77,10 +76,7 @@ import {
 } from './backtestRange.service';
 import {
   buildRunLifecyclePayload,
-  initializePendingBacktestReport,
   isTerminalBacktestStatus,
-  markBacktestEnqueueFailed,
-  safeUpsertBacktestReportForRun,
   safeUpdateRun,
 } from './backtestReportLifecycle.service';
 
@@ -93,7 +89,7 @@ export {
 } from './backtestRange.service';
 
 export class BacktestQueueUnavailableError extends Error {
-  constructor(cause: unknown) {
+  constructor(cause: unknown, readonly runId: string) {
     super('Backtest queue unavailable', { cause });
     this.name = 'BacktestQueueUnavailableError';
   }
@@ -423,9 +419,8 @@ export const buildIndicatorSeriesForTests = (
       : undefined) as SupplementalSeries | undefined,
   );
 
-const runBacktestAsync = createBacktestRunJob({
+const runBacktestAsync = createClaimedBacktestRunJob({
   findBacktestRunById,
-  safeUpdateRun,
   uniqueSorted: normalizeSymbols,
   computeAdaptiveMaxCandles,
   resolveIndicatorWarmupCandles,
@@ -435,11 +430,6 @@ const runBacktestAsync = createBacktestRunJob({
   fetchKlines,
   fetchSupplementalSeries,
   simulateInterleavedPortfolio,
-  createBacktestTrades,
-  deleteBacktestTradesForRun,
-  countWinningBacktestTrades,
-  countLosingBacktestTrades,
-  upsertBacktestReportForRun: safeUpsertBacktestReportForRun,
   computeSourceWindowMs,
   maxDrawdownFromPnlSeries,
 });
@@ -447,7 +437,8 @@ const backtestWorkerOwnership = resolveWorkerOwnershipConfig().backtest;
 export const backtestRunQueue = new BacktestRunQueue(runBacktestAsync, {
   backend: backtestWorkerOwnership === 'worker' ? 'redis' : 'inline',
   queueName: process.env.WORKER_BACKTEST_QUEUE ?? 'backtest',
-  recoverPendingRunIds: listPendingBacktestRunIds,
+  recoverPendingRunIds: listRecoverableBacktestRunIds,
+  discardProcessingRunIds: listDiscardableBacktestRunIds,
 });
 
 export const listRuns = async (userId: string, query: ListBacktestRunsQuery) => {
@@ -541,14 +532,20 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     },
     notes: data.notes,
     status: 'PENDING',
+  }, {
+    runLifecycle: buildRunLifecyclePayload({
+      status: 'PENDING',
+      reportReady: false,
+      generatedAt: null,
+    }),
   });
-  await initializePendingBacktestReport(userId, created.id);
 
   try {
     await backtestRunQueue.enqueue(created.id);
   } catch (error) {
-    await markBacktestEnqueueFailed(userId, created.id);
-    throw new BacktestQueueUnavailableError(error);
+    // Redis may have accepted the job before the connection failed. The
+    // durable PENDING run is reconciled by workers without declaring it failed.
+    throw new BacktestQueueUnavailableError(error, created.id);
   }
 
   return created;

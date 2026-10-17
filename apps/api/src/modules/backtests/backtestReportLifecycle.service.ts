@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { upsertBacktestReportForRun, updateBacktestRunById } from './backtests.repository';
+import { updateBacktestRunById } from './backtests.repository';
 
 export const isTerminalBacktestStatus = (status: string) =>
   status === 'COMPLETED' || status === 'FAILED' || status === 'CANCELED';
@@ -22,10 +22,6 @@ export const buildRunLifecyclePayload = (params: {
 const isMissingRunUpdateError = (error: unknown) =>
   error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025';
 
-const isMissingBacktestReportParentError = (error: unknown) =>
-  error instanceof Prisma.PrismaClientKnownRequestError &&
-  (error.code === 'P2025' || error.code === 'P2003');
-
 export const safeUpdateRun = async (runId: string, data: Prisma.BacktestRunUpdateInput) => {
   try {
     await updateBacktestRunById(runId, data);
@@ -34,58 +30,4 @@ export const safeUpdateRun = async (runId: string, data: Prisma.BacktestRunUpdat
     if (isMissingRunUpdateError(error)) return false;
     throw error;
   }
-};
-
-export const safeUpsertBacktestReportForRun = async (input: {
-  backtestRunId: string;
-  create: Prisma.BacktestReportUncheckedCreateInput;
-  update: Prisma.BacktestReportUpdateInput;
-}) => {
-  try {
-    await upsertBacktestReportForRun(input);
-    return true;
-  } catch (error) {
-    if (isMissingBacktestReportParentError(error)) return false;
-    throw error;
-  }
-};
-
-export const initializePendingBacktestReport = async (userId: string, runId: string) => {
-  const runLifecycle = buildRunLifecyclePayload({
-    status: 'PENDING',
-    reportReady: false,
-    generatedAt: null,
-  });
-  const emptyMetrics = {
-    totalTrades: 0,
-    winningTrades: 0,
-    losingTrades: 0,
-    winRate: null,
-    netPnl: null,
-    grossProfit: null,
-    grossLoss: null,
-    maxDrawdown: null,
-    sharpe: null,
-    metrics: { runLifecycle },
-  };
-  await upsertBacktestReportForRun({
-    backtestRunId: runId,
-    create: { userId, backtestRunId: runId, ...emptyMetrics },
-    update: emptyMetrics,
-  });
-};
-
-export const markBacktestEnqueueFailed = async (userId: string, runId: string) => {
-  const runLifecycle = buildRunLifecyclePayload({
-    status: 'FAILED',
-    reportReady: false,
-    degraded: true,
-    reason: 'queue_enqueue_failed',
-  });
-  await safeUpdateRun(runId, { status: 'FAILED', finishedAt: new Date() });
-  await safeUpsertBacktestReportForRun({
-    backtestRunId: runId,
-    create: { userId, backtestRunId: runId, metrics: { runLifecycle } },
-    update: { metrics: { runLifecycle } },
-  });
 };

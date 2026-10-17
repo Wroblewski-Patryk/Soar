@@ -106,12 +106,9 @@ describe('BacktestRunQueue', () => {
       isOpen: true,
       connect: async () => undefined,
       rPopLPush: async () => 'run-1',
-      lRem: async (_key: string, _count: number, value: string) => {
-        operations.push(`lrem:${value}`);
-        return 1;
-      },
-      sRem: async (_key: string, value: string) => {
-        operations.push(`srem:${value}`);
+      eval: async (script: string, options: { arguments: string[] }) => {
+        expect(script).toContain("redis.call('LREM', KEYS[2], 1, ARGV[1])");
+        operations.push(`ack:${options.arguments[0]}`);
         return 1;
       },
       quit: async () => undefined,
@@ -130,7 +127,7 @@ describe('BacktestRunQueue', () => {
     await expect(queue.processOneRedisJob()).resolves.toBe(true);
 
     expect(processed).toEqual(['run-1']);
-    expect(operations).toEqual(['lrem:run-1', 'srem:run-1']);
+    expect(operations).toEqual(['ack:run-1']);
   });
 
   it('requeues pending database runs after worker startup without duplicating queued ids', async () => {
@@ -139,8 +136,8 @@ describe('BacktestRunQueue', () => {
     const redisClient = {
       isOpen: true,
       connect: async () => undefined,
-      rPop: async () => null,
-      eval: async (_script: string, options: { arguments: string[] }) => {
+      eval: async (script: string, options: { arguments: string[] }) => {
+        expect(script).toContain("redis.call('LREM', KEYS[2], 0, ARGV[1])");
         const id = options.arguments[0];
         if (queued.has(id)) return 0;
         queued.add(id);
@@ -164,7 +161,7 @@ describe('BacktestRunQueue', () => {
     expect(operations).toEqual(['enqueue:orphaned-pending']);
   });
 
-  it('atomically moves interrupted processing work back to pending on startup', async () => {
+  it('recovers expired processing work from the database without moving active work', async () => {
     const lists: Record<string, string[]> = {
       'soar:queue:backtest:processing': ['interrupted-run'],
       'soar:queue:backtest:pending': [],
@@ -174,6 +171,18 @@ describe('BacktestRunQueue', () => {
     const redisClient = {
       isOpen: true,
       connect: async () => undefined,
+      eval: async (script: string, options: { arguments: string[] }) => {
+        const id = options.arguments[0];
+        if (script.includes("redis.call('LREM', KEYS[2], 0")) {
+          lists['soar:queue:backtest:processing'] = lists['soar:queue:backtest:processing'].filter((value) => value !== id);
+          lists['soar:queue:backtest:pending'].unshift(id);
+          moves.push(`reconcile:${id}`);
+        } else {
+          lists['soar:queue:backtest:processing'] = lists['soar:queue:backtest:processing'].filter((value) => value !== id);
+          moves.push(`ack:${id}`);
+        }
+        return 1;
+      },
       rPopLPush: async (source: string, destination: string) => {
         const id = lists[source].pop();
         if (!id) return null;
@@ -181,11 +190,6 @@ describe('BacktestRunQueue', () => {
         moves.push(`${source}->${destination}:${id}`);
         return id;
       },
-      lRem: async (key: string, _count: number, id: string) => {
-        lists[key] = lists[key].filter((value) => value !== id);
-        return 1;
-      },
-      sRem: async () => 1,
       quit: async () => undefined,
     };
     const queue = new BacktestRunQueue(async (id) => {
@@ -194,6 +198,7 @@ describe('BacktestRunQueue', () => {
       backend: 'redis',
       pollIntervalMs: 100,
       createRedisClient: () => redisClient as any,
+      recoverPendingRunIds: async () => ['interrupted-run'],
     });
 
     queue.startWorker();
@@ -201,8 +206,9 @@ describe('BacktestRunQueue', () => {
     await queue.stopWorker();
 
     expect(moves).toEqual([
-      'soar:queue:backtest:processing->soar:queue:backtest:pending:interrupted-run',
+      'reconcile:interrupted-run',
       'soar:queue:backtest:pending->soar:queue:backtest:processing:interrupted-run',
+      'ack:interrupted-run',
     ]);
     expect(processed).toEqual(['interrupted-run']);
     expect(lists['soar:queue:backtest:processing']).toEqual([]);
@@ -214,7 +220,6 @@ describe('BacktestRunQueue', () => {
     const redisClient = {
       isOpen: true,
       connect: async () => undefined,
-      rPop: async () => null,
       eval: async (_script: string, options: { arguments: string[] }) => {
         queued.push(options.arguments[0]);
         return 1;

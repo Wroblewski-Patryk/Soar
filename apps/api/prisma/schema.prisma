@@ -1171,6 +1171,8 @@ model BacktestRun {
   startedAt  DateTime       @default(now())
   finishedAt DateTime?
   status     BacktestStatus @default(PENDING)
+  executionToken String?
+  executionLeaseExpiresAt DateTime?
   seedConfig Json?
   notes      String?
 
@@ -1187,6 +1189,7 @@ model BacktestRun {
   @@index([userId, status, createdAt])
   @@index([strategyId])
   @@index([status])
+  @@index([status, executionLeaseExpiresAt])
   @@index([startedAt])
 }
 

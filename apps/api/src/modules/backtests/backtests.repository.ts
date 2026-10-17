@@ -12,15 +12,6 @@ export const updateBacktestRunById = (runId: string, data: Prisma.BacktestRunUpd
 export const findBacktestRunById = (runId: string) =>
   prisma.backtestRun.findUnique({ where: { id: runId } });
 
-export const listPendingBacktestRunIds = async () => {
-  const runs = await prisma.backtestRun.findMany({
-    where: { status: 'PENDING' },
-    select: { id: true },
-    orderBy: { createdAt: 'asc' },
-  });
-  return runs.map((run) => run.id);
-};
-
 export const findOwnedStrategyForBacktest = (userId: string, strategyId: string) =>
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
@@ -41,38 +32,6 @@ export const findOwnedStrategySignalConfig = (userId: string, strategyId: string
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
     select: { config: true, walletRisk: true },
-  });
-
-export const createBacktestTrades = (data: Prisma.BacktestTradeCreateManyInput[]) =>
-  prisma.backtestTrade.createMany({
-    data,
-    skipDuplicates: false,
-  });
-
-export const deleteBacktestTradesForRun = (userId: string, runId: string) =>
-  prisma.backtestTrade.deleteMany({
-    where: { userId, backtestRunId: runId },
-  });
-
-export const countWinningBacktestTrades = (userId: string, runId: string) =>
-  prisma.backtestTrade.count({
-    where: { backtestRunId: runId, userId, pnl: { gt: 0 } },
-  });
-
-export const countLosingBacktestTrades = (userId: string, runId: string) =>
-  prisma.backtestTrade.count({
-    where: { backtestRunId: runId, userId, pnl: { lt: 0 } },
-  });
-
-export const upsertBacktestReportForRun = (input: {
-  backtestRunId: string;
-  create: Prisma.BacktestReportUncheckedCreateInput;
-  update: Prisma.BacktestReportUpdateInput;
-}) =>
-  prisma.backtestReport.upsert({
-    where: { backtestRunId: input.backtestRunId },
-    update: input.update,
-    create: input.create,
   });
 
 export const findOwnedMarketUniverseById = (userId: string, marketUniverseId: string) =>
@@ -227,8 +186,20 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
   }
 };
 
-export const createBacktestRun = (data: Prisma.BacktestRunUncheckedCreateInput) =>
-  prisma.backtestRun.create({ data });
+export const createBacktestRun = (
+  data: Prisma.BacktestRunUncheckedCreateInput,
+  pendingReportMetrics: Prisma.InputJsonValue,
+) => prisma.$transaction(async (tx) => {
+  const run = await tx.backtestRun.create({ data });
+  await tx.backtestReport.create({
+    data: {
+      userId: data.userId,
+      backtestRunId: run.id,
+      metrics: pendingReportMetrics,
+    },
+  });
+  return run;
+});
 
 export const listOwnedBacktestTrades = (userId: string, runId: string, query: ListBacktestTradesQuery) =>
   prisma.backtestTrade.findMany({

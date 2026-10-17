@@ -52,7 +52,7 @@ export const createBacktestRun = async (req: Request, res: Response) => {
       return sendError(res, 400, error.message);
     }
     if (error instanceof backtestsService.BacktestQueueUnavailableError) {
-      return sendError(res, 503, error.message);
+      return sendError(res, 503, error.message, { runId: error.runId, recovery: 'pending' });
     }
     if (error instanceof ZodError) return sendValidationError(res, error);
     return sendError(res, 500, 'Backtest creation failed');

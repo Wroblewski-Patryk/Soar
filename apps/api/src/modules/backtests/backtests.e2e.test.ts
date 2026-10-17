@@ -231,7 +231,7 @@ describe('Backtests runs contract', () => {
     expect(res.body.error.message).toBe('Missing token');
   });
 
-  it('marks a run failed when its queue job cannot be enqueued', async () => {
+  it('leaves an enqueue-uncertain run recoverable without overwriting its report', async () => {
     const agent = await registerAndLogin('backtests-queue-failure@example.com');
     const enqueue = vi.spyOn(backtestRunQueue, 'enqueue').mockRejectedValueOnce(new Error('queue unavailable'));
     try {
@@ -241,16 +241,16 @@ describe('Backtests runs contract', () => {
       const run = await prisma.backtestRun.findFirstOrThrow({
         where: { name: 'BTC trend run' },
       });
-      expect(run.status).toBe('FAILED');
-      expect(run.finishedAt).not.toBeNull();
+      expect(run.status).toBe('PENDING');
+      expect(run.finishedAt).toBeNull();
+      expect(createRes.body.error.details).toMatchObject({ runId: run.id, recovery: 'pending' });
 
       const reportRes = await agent.get(`/dashboard/backtests/runs/${run.id}/report`);
       expect(reportRes.status).toBe(200);
       expect(reportRes.body.metrics.runLifecycle).toMatchObject({
-        state: 'FAILED',
+        state: 'PENDING',
         reportReady: false,
-        degraded: true,
-        reason: 'queue_enqueue_failed',
+        degraded: false,
       });
     } finally {
       enqueue.mockRestore();

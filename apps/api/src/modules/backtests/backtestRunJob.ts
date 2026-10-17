@@ -106,7 +106,7 @@ type StrategySignalConfigRecord = {
   walletRisk: number | null;
 };
 
-type CreateTradeInput = {
+export type CreateTradeInput = {
   userId: string;
   strategyId: string | null;
   backtestRunId: string;
@@ -123,7 +123,7 @@ type CreateTradeInput = {
   liquidated: boolean;
 };
 
-type BacktestRunJobDeps = {
+export type BacktestRunJobDeps = {
   findBacktestRunById: (runId: string) => Promise<BacktestRunRecord | null>;
   safeUpdateRun: (runId: string, data: Record<string, unknown>) => Promise<boolean>;
   uniqueSorted: (values: string[]) => string[];
