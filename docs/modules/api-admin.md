@@ -9,7 +9,7 @@
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
-- Provides administrator-only management for users and subscription plans.
+- Provides administrator-only management for users, subscription plans, and LIVE execution pause.
 - Exposes paged user listing plus controlled role/subscription mutations.
 - Exposes subscription catalog updates used for operational pricing/entitlement management.
 
@@ -44,6 +44,10 @@ Out of scope:
   1. Ensure catalog exists.
   2. List plans ordered by sort/display.
   3. Update mutable plan fields (`displayName`, `isActive`, `price`, `currency`, `entitlements`).
+- LIVE execution flow:
+  1. Read the shared pause state and version.
+  2. Pause or resume with a reason and matching version under an exclusive database lock.
+  3. Commit the change and audit log atomically, then read back the new version.
 
 ## 5. API and UI Integration
 - Mounted base path: `/admin`.
@@ -52,11 +56,14 @@ Out of scope:
   - `PATCH /admin/users/:userId`
   - `GET /admin/subscriptions/plans`
   - `PUT /admin/subscriptions/plans/:code`
+  - `GET /admin/live-execution`
+  - `PUT /admin/live-execution`
 
 ## 6. Security and Risk Guardrails
 - Admin-only authorization enforced at router level.
 - Demotion guardrails prevent privilege lockout.
 - Plan/user mutations are constrained to explicit whitelisted fields.
+- LIVE pause mutations require an ADMIN role, a reason, and optimistic version match.
 
 ## 7. Observability and Operations
 - Admin user updates and subscription changes are persisted via transactional writes.
@@ -66,6 +73,8 @@ Out of scope:
 - Primary tests:
   - `apps/api/src/modules/admin/users/users.e2e.test.ts`
   - `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`
+  - `apps/api/src/modules/admin/liveExecution/liveExecution.routes.e2e.test.ts`
+  - `apps/api/src/modules/orders/liveExecutionPause.service.test.ts`
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/admin/users/users.e2e.test.ts src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts

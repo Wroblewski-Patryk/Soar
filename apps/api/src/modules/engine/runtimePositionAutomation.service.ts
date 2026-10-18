@@ -2,6 +2,7 @@ import { Position, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { isAppErrorLike } from '../../lib/errors';
 import { readLiveExecutionPause } from '../orders/liveExecutionPause.service';
+import { buildManagementPassInput, classifyRuntimeDcaFailure, resolvePauseAwareManagementInput } from './runtimePositionAutomationManagementInput';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { openOrder as openOrderLifecycle } from '../orders/orders.service';
@@ -259,14 +260,8 @@ export const executeRuntimeDca = async (input: {
     const unknownAfterSubmission = input.mode === 'LIVE' && (
       (error as { code?: string } | null)?.code === 'LIVE_EXECUTION_UNKNOWN' || openedOrderId !== null
     );
-    const pretradeErrorClass = isAppErrorLike(error) &&
-      (error.code === 'LIVE_PRETRADE_PAUSED' || error.code === 'LIVE_PRETRADE_PAUSE_UNAVAILABLE')
-        ? error.code.toLowerCase() : null;
     await runtimeExecutionDedupeService.markFailed({
-      dedupeKey,
-      errorClass: unknownAfterSubmission
-        ? 'live_execution_unknown'
-        : pretradeErrorClass ?? (error instanceof Error && error.name ? error.name : 'runtime_dca_error'),
+      dedupeKey, errorClass: classifyRuntimeDcaFailure(error, unknownAfterSubmission),
     });
     if (unknownAfterSubmission) {
       await recordUnknownRuntimeOrderOutcome({
@@ -697,14 +692,10 @@ export class RuntimePositionAutomationService {
           },
         ],
       }) ?? (Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice);
-    const input = buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig);
-    if (mode === 'LIVE') {
-      const pause = await this.deps.readLiveExecutionPause();
-      // A missing shared control fails closed. Spot has no venue-enforced reduceOnly.
-      if (!pause.available || (pause.paused && marketType === 'SPOT')) return;
-      // Keep protection state, but skip proposed adds so TP/SL/TSL can reduce risk.
-      if (pause.paused) input.dca = undefined;
-    }
+    const input = await resolvePauseAwareManagementInput({ mode, marketType,
+      input: buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig),
+      readLiveExecutionPause: this.deps.readLiveExecutionPause });
+    if (!input) return;
     const defaultState = {
       quantity: position.quantity,
       averageEntryPrice: position.entryPrice,
@@ -821,18 +812,7 @@ export class RuntimePositionAutomationService {
         leverage: Math.max(1, position.leverage || 1),
       });
     }
-    const managementInput: PositionManagementInput = dcaFundsExhausted
-      ? {
-          ...input,
-          currentPnlFraction: currentPnlFraction ?? undefined,
-          dca: undefined,
-          dcaFundsExhausted: true,
-        }
-      : {
-          ...input,
-          currentPnlFraction: currentPnlFraction ?? undefined,
-          dcaFundsExhausted: false,
-        };
+    const managementInput = buildManagementPassInput(input, currentPnlFraction, dcaFundsExhausted);
 
     let result = evaluatePositionManagement(managementInput, previousState);
     let effectiveState = clonePositionManagementState(result.nextState);
@@ -862,7 +842,6 @@ export class RuntimePositionAutomationService {
             // Re-evaluate the same unfilled state without DCA, then permit only a close.
             result = evaluatePositionManagement({ ...input, dca: undefined }, previousStateSnapshot);
             effectiveState = clonePositionManagementState(result.nextState);
-            dcaResult = null;
           } else {
             if (!(error instanceof RuntimeDcaPolicyError) || error.code !== 'DCA_FUNDS_EXHAUSTED' ||
               input.dca?.sizingBasis !== 'usdt_contribution_v1') throw error;
@@ -962,9 +941,8 @@ export class RuntimePositionAutomationService {
       return;
     }
 
-    const hasPendingSubmittedDca = result.shouldClose
-      ? (await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false
-      : false;
+    const hasPendingSubmittedDca = result.shouldClose &&
+      ((await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false);
     if (result.shouldClose && hasPendingSubmittedDca) {
       if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);

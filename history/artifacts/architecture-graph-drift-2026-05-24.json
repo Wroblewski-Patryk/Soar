@@ -1,32 +1,32 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 858,
-    "covered": 858,
+    "total": 864,
+    "covered": 864,
     "missing": 0
   },
   "categories": {
     "apiRoutes": {
-      "total": 22,
-      "covered": 22,
+      "total": 23,
+      "covered": 23,
       "missing": 0,
       "missingSamples": []
     },
     "apiServices": {
-      "total": 130,
-      "covered": 130,
+      "total": 131,
+      "covered": 131,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 229,
-      "covered": 229,
+      "total": 231,
+      "covered": 231,
       "missing": 0,
       "missingSamples": []
     },
     "webPages": {
-      "total": 37,
-      "covered": 37,
+      "total": 38,
+      "covered": 38,
       "missing": 0,
       "missingSamples": []
     },
@@ -43,8 +43,8 @@
       "missingSamples": []
     },
     "webTests": {
-      "total": 152,
-      "covered": 152,
+      "total": 153,
+      "covered": 153,
       "missing": 0,
       "missingSamples": []
     },
