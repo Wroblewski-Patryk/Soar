@@ -736,7 +736,12 @@ export class RuntimePositionAutomationService {
       positionSide: position.side,
     });
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
-    const basePreviousState = stateRebasedToCanonical ? defaultState : persistedState ?? defaultState;
+    const basePreviousState = stateRebasedToCanonical
+      ? position.origin === 'BOT' && persistedState
+        ? { ...persistedState, quantity: position.quantity,
+            averageEntryPrice: position.entryPrice }
+        : defaultState
+      : persistedState ?? defaultState;
     const previousState =
       durableDcaProgress && durableDcaProgress.currentAdds > basePreviousState.currentAdds
         ? {

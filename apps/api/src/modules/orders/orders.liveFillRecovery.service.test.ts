@@ -8,10 +8,16 @@ import { lookupLiveFillCandidate, type LiveFillLookupResult } from '../exchange/
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { recoverLiveFillCandidateOnce } from './orders.liveFillRecovery.service';
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { RuntimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
+import { selectRuntimeDisplayState } from '../bots/runtimeSessionPositionsRead.service';
+import type { RuntimeManagedPosition } from '../engine/runtimePositionAutomation.types';
 
 const userIds: string[] = [];
 afterEach(async () => {
   for (const userId of userIds.splice(0)) {
+    const positions = await prisma.position.findMany({ where: { userId }, select: { id: true } });
+    for (const position of positions) await runtimePositionStateStore.deletePositionRuntimeState(position.id);
     await prisma.log.deleteMany({ where: { userId } });
     await prisma.botRuntimeSymbolStat.deleteMany({ where: { userId } });
     await prisma.botRuntimeEvent.deleteMany({ where: { userId } });
@@ -100,7 +106,116 @@ const found = (candidate: LiveFillCandidate, apiKeyId: string, venueId: string,
 });
 const useLookup = (result: LiveFillLookupResult) => vi.fn(async () => result);
 
+const createDbBackedAutomation = (fx: Awaited<ReturnType<typeof fixture>>) => {
+  const executeDca = vi.fn(async () => ({ feePaid: 0, executed: false }));
+  const closeByExitSignal = vi.fn(async () => ({ status: 'submitted' as const }));
+  const service = new RuntimePositionAutomationService({
+    listOpenPositionsBySymbol: async (symbol) => {
+      const position = await prisma.position.findFirst({ where: {
+        id: fx.position!.id, symbol, status: 'OPEN',
+      } });
+      return position ? [{ ...position, bot: {
+        walletId: fx.wallet.id, liveOptIn: true,
+        wallet: { mode: 'LIVE', exchange: 'BINANCE', marketType: 'FUTURES',
+          baseCurrency: 'USDT', paperInitialBalance: 10_000 },
+        symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+          exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+        } },
+        botMarketGroups: [],
+      } } as RuntimeManagedPosition] : [];
+    },
+    getStrategyConfigById: async () => null,
+    getDurableDcaProgress: async () => ({
+      currentAdds: await prisma.trade.count({ where: {
+        positionId: fx.position!.id, lifecycleAction: 'DCA',
+      } }),
+    }),
+    executeDca, closeByExitSignal,
+    resolveDcaFundsExhausted: async () => false,
+  });
+  return { service, executeDca, closeByExitSignal };
+};
+
+const tick = { type: 'ticker' as const, exchange: 'BINANCE' as const,
+  marketType: 'FUTURES' as const, symbol: 'BTCUSDT',
+  eventTime: Date.now(), lastPrice: 95, priceChangePercent24h: 0 };
+
 describe('explicit LIVE fill recovery', () => {
+  it('rebases console and automation after a DCA commit crash, then repairs cache on replay', async () => {
+    const fx = await fixture('DCA');
+    await runtimePositionStateStore.setPositionRuntimeState(fx.position!.id, {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
+    const snapshot = found(fx.candidate, fx.key.id, fx.venueId, 1,
+      [fill(fx.venueId, 'dca-90', 1, 0.1, 'buy', 90)]);
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot),
+      afterCoreCommit: async () => { throw new Error('crash after commit'); },
+    })).rejects.toThrow('crash after commit');
+    const canonical = await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } });
+    expect(canonical).toMatchObject({ quantity: 2, entryPrice: 95 });
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id))
+      .toMatchObject({ quantity: 1, averageEntryPrice: 100 });
+    const displayState = selectRuntimeDisplayState({ position: canonical,
+      runtimeSnapshot: null,
+      persistedState: await runtimePositionStateStore.getPositionRuntimeState(canonical.id) });
+    expect(displayState).toBeNull();
+    const automation = createDbBackedAutomation(fx);
+    await automation.service.handleTickerEvent(tick);
+    expect(automation.service.getPositionStateSnapshot(canonical.id))
+      .toMatchObject({ quantity: 2, averageEntryPrice: 95, currentAdds: 1,
+        trailingAnchorPrice: 100 });
+    expect(automation.executeDca).not.toHaveBeenCalled();
+    expect(automation.closeByExitSignal).not.toHaveBeenCalled();
+    await runtimePositionStateStore.setPositionRuntimeState(canonical.id, {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
+    const setSpy = vi.spyOn(runtimePositionStateStore, 'setPositionRuntimeState')
+      .mockResolvedValueOnce(false);
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) })).rejects.toThrow('RUNTIME_STATE_SYNC_PENDING');
+    setSpy.mockRestore();
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id))
+      .toMatchObject({ quantity: 1, averageEntryPrice: 100 });
+    const replay = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) });
+    expect(replay).toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id))
+      .toMatchObject({ quantity: 2, averageEntryPrice: 95, currentAdds: 1 });
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
+      eventType: 'DCA_EXECUTED' } })).toBe(1);
+  });
+
+  it('keeps a closed position non-actionable when cache invalidation fails, then clears it on replay', async () => {
+    const fx = await fixture('CLOSE');
+    await runtimePositionStateStore.setPositionRuntimeState(fx.position!.id, {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
+    const snapshot = found(fx.candidate, fx.key.id, fx.venueId, 1,
+      [fill(fx.venueId, 'close-110', 1, 0.1, 'sell', 110)]);
+    const deleteSpy = vi.spyOn(runtimePositionStateStore, 'deletePositionRuntimeState')
+      .mockResolvedValueOnce(false);
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) })).rejects.toThrow('RUNTIME_STATE_SYNC_PENDING');
+    deleteSpy.mockRestore();
+    const canonical = await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } });
+    expect(canonical.status).toBe('CLOSED');
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id)).not.toBeNull();
+    expect(selectRuntimeDisplayState({ position: canonical, runtimeSnapshot: null,
+      persistedState: await runtimePositionStateStore.getPositionRuntimeState(canonical.id) })).toBeNull();
+    const automation = createDbBackedAutomation(fx);
+    await automation.service.handleTickerEvent(tick);
+    expect(automation.service.getPositionStateSnapshot(canonical.id)).toBeNull();
+    expect(automation.executeDca).not.toHaveBeenCalled();
+    expect(automation.closeByExitSignal).not.toHaveBeenCalled();
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) });
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id)).toBeNull();
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
+      eventType: 'POSITION_CLOSED' } })).toBe(1);
+  });
   it('keeps partial DCA pending, finalizes once, and backfills a late fee', async () => {
     const fx = await fixture('DCA');
     const first = fill(fx.venueId, 'fill-1', 0.4, null);

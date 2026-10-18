@@ -5,7 +5,9 @@ import { lookupLiveFillCandidate, resolveLiveFillCredentials,
   type LiveFillLookupResult } from '../exchange/liveFillLookup.service';
 import type { CcxtFuturesOrderFill, CcxtFuturesOrderResult } from '../exchange/ccxtFuturesConnector.types';
 import type { LiveFillCandidate } from './orders.liveFillCandidates.service';
-import { applyLiveExchangeOrderTradeUpdateInTransaction } from './orders.exchangeEvents.service';
+import { applyLiveExchangeOrderTradeUpdateInTransaction,
+  invalidateRuntimePositionStateAfterExchangeClose,
+  syncRuntimeDcaStateFromExchangeFill } from './orders.exchangeEvents.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 
@@ -175,6 +177,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
   lookup?: typeof lookupLiveFillCandidate;
   client?: PrismaClient;
   afterEventApplied?: (index: number) => Promise<void>;
+  afterCoreCommit?: () => Promise<void>;
 }): Promise<RecoveryResult> => {
   const lookup = await (input.lookup ?? lookupLiveFillCandidate)(input.candidate);
   if (lookup.kind === 'UNKNOWN') return { kind: 'UNKNOWN', reason: lookup.reason,
@@ -198,7 +201,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
       orderId: candidate.orderId };
   }
   try {
-    return await (input.client ?? prisma).$transaction(async (tx) => {
+    const committed = await (input.client ?? prisma).$transaction(async (tx) => {
       const credentials = await resolveLiveFillCredentials(candidate, tx);
       if (credentials.kind !== 'OK' || credentials.apiKeyId !== lookup.apiKeyId) {
         return unknown('ACCOUNT_PROVENANCE_CHANGED');
@@ -246,9 +249,14 @@ export const recoverLiveFillCandidateOnce = async (input: {
         }
       }
       if (snapshot.fills.length === 0) {
-        return { kind: 'APPLIED', orderId: order.id, status: order.status, fillCount: 0 };
+        return { result: { kind: 'APPLIED' as const, orderId: order.id,
+          status: order.status, fillCount: 0 }, cacheEffect: null };
       }
       let cumulative = 0;
+      let cacheEffect:
+        | { kind: 'DCA'; input: Parameters<typeof syncRuntimeDcaStateFromExchangeFill>[0] }
+        | { kind: 'CLOSE'; positionId: string }
+        | null = null;
       for (const [index, fill] of snapshot.fills.entries()) {
         cumulative += fill.quantity;
         const last = index === snapshot.fills.length - 1;
@@ -271,6 +279,11 @@ export const recoverLiveFillCandidateOnce = async (input: {
         if (applied.status !== 'applied' || applied.orderId !== order.id) {
           return unknown('EVENT_FINALIZATION_REJECTED');
         }
+        if ('dcaSync' in applied && applied.dcaSync) {
+          cacheEffect = { kind: 'DCA', input: applied.dcaSync };
+        } else if ('closedPositionId' in applied && applied.closedPositionId) {
+          cacheEffect = { kind: 'CLOSE', positionId: applied.closedPositionId };
+        }
         await input.afterEventApplied?.(index);
       }
       order = await tx.order.findUniqueOrThrow({ where: { id: order.id } });
@@ -279,9 +292,19 @@ export const recoverLiveFillCandidateOnce = async (input: {
         return unknown('ORDER_STATUS_MISMATCH');
       }
       await settleDedupeInTransaction(tx, order, candidate, new Date());
-      return { kind: 'APPLIED', orderId: order.id, status: order.status,
-        fillCount: snapshot.fills.length };
+      return { result: { kind: 'APPLIED' as const, orderId: order.id,
+        status: order.status, fillCount: snapshot.fills.length }, cacheEffect };
     }, { timeout: 30_000, maxWait: 10_000 });
+    await input.afterCoreCommit?.();
+    if (committed.cacheEffect?.kind === 'DCA' &&
+        !await syncRuntimeDcaStateFromExchangeFill(committed.cacheEffect.input)) {
+      throw new Error('RUNTIME_STATE_SYNC_PENDING');
+    }
+    if (committed.cacheEffect?.kind === 'CLOSE' &&
+        !await invalidateRuntimePositionStateAfterExchangeClose(committed.cacheEffect.positionId)) {
+      throw new Error('RUNTIME_STATE_SYNC_PENDING');
+    }
+    return committed.result;
   } catch (error) {
     if (error instanceof RecoveryUnknown) return { kind: 'UNKNOWN', reason: error.reason,
       orderId: candidate.orderId };

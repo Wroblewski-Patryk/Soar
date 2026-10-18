@@ -268,9 +268,9 @@ const resolveRuntimePositionTrades = (
   return sortRuntimePositionTrades([...byTradeId.values()]);
 };
 
-const selectRuntimeDisplayState = (input: {
+export const selectRuntimeDisplayState = (input: {
   position: {
-    origin: 'BOT' | 'EXCHANGE_SYNC' | 'USER' | 'SYSTEM_REPAIR' | 'BACKTEST';
+    origin: 'BOT' | 'EXCHANGE_SYNC' | 'USER' | 'SYSTEM_REPAIR' | 'BACKTEST'; status: 'OPEN' | 'CLOSED' | 'LIQUIDATED';
     quantity: number;
     entryPrice: number;
   };
@@ -278,13 +278,11 @@ const selectRuntimeDisplayState = (input: {
   persistedState: PositionManagementState | null;
 }) => {
   const isCanonical = (state: PositionManagementState | null) => {
-    if (input.position.origin !== 'EXCHANGE_SYNC') return true;
+    if (input.position.origin !== 'EXCHANGE_SYNC' && input.position.origin !== 'BOT') return true;
+    if (input.position.status !== 'OPEN') return false;
     return !hasMaterialCanonicalBasisDrift({
-      position: {
-        origin: input.position.origin,
-        quantity: input.position.quantity,
-        entryPrice: input.position.entryPrice,
-      },
+      position: { origin: input.position.origin, quantity: input.position.quantity,
+        entryPrice: input.position.entryPrice },
       state: state
         ? {
             quantity: state.quantity,

@@ -350,7 +350,7 @@ const resolveLiveAccountUpdateScope = async (input: {
   return [];
 };
 
-const syncRuntimeDcaStateFromExchangeFill = async (input: {
+export const syncRuntimeDcaStateFromExchangeFill = async (input: {
   orderId: string;
   positionId: string;
   nextQuantity: number;
@@ -362,11 +362,9 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
     commandType: 'DCA',
     positionId: input.positionId,
   });
-  if (!dedupe) return;
-
   const previousState =
     (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
-  const rawLevelIndex = dedupe.commandFingerprint?.dcaLevelIndex;
+  const rawLevelIndex = dedupe?.commandFingerprint?.dcaLevelIndex;
   const levelIndex = Number(rawLevelIndex);
   const normalizedLevelIndex = Number.isFinite(levelIndex)
     ? Math.max(0, Math.floor(levelIndex))
@@ -383,7 +381,7 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
               : Array.from({ length: normalizedLevelIndex + 1 }, (_, index) => index)
           ),
         ].sort((left, right) => left - right);
-  await runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
+  return runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
     quantity: input.nextQuantity,
     averageEntryPrice: input.nextEntryPrice,
     currentAdds: Math.max(
@@ -399,6 +397,9 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
     lastDcaPrice: input.fillPrice,
   });
 };
+
+export const invalidateRuntimePositionStateAfterExchangeClose = (positionId: string) =>
+  runtimePositionStateStore.deletePositionRuntimeState(positionId);
 
 type LiveExchangeOrderTradeUpdateInput = {
   userId: string;
@@ -861,12 +862,17 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
   await refreshClosedPositionPnlAfterEntryFee({ tx, userId: input.userId, orderId: updatedOrder.id });
   await writeRuntimeTelemetryFromExchangeFill({ tx, userId: input.userId,
     orderId: updatedOrder.id, eventAt });
+  const finalPosition = updatedOrder.status === 'FILLED' && updatedOrder.positionId
+    ? await tx.position.findUnique({ where: { id: updatedOrder.positionId },
+        select: { status: true } })
+    : null;
   return {
     status: 'applied' as const,
     orderId: updatedOrder.id,
     positionId: updatedOrder.positionId ?? null,
     orderStatus: updatedOrder.status,
     dcaSync,
+    closedPositionId: finalPosition?.status === 'CLOSED' ? updatedOrder.positionId : null,
   };
 };
 
@@ -881,13 +887,16 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchange
     if ('dcaSync' in processed && processed.dcaSync) {
       await syncRuntimeDcaStateFromExchangeFill(processed.dcaSync);
     } else {
+      if ('closedPositionId' in processed && processed.closedPositionId) {
+        await invalidateRuntimePositionStateAfterExchangeClose(processed.closedPositionId);
+      }
       await runtimeExecutionDedupeService.markSucceededByOrderId({
         orderId: processed.orderId, positionId: processed.positionId,
       });
     }
   }
   if ('dcaSync' in processed) {
-    const { dcaSync: _dcaSync, ...result } = processed;
+    const { dcaSync: _dcaSync, closedPositionId: _closedPositionId, ...result } = processed;
     return result;
   }
   return processed;

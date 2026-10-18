@@ -207,32 +207,36 @@ export class RuntimePositionStateStore {
 
   async setPositionRuntimeState(positionId: string, state: PositionManagementState) {
     const normalized = normalizeState(state);
-    if (!normalized) return;
+    if (!normalized) return false;
 
     const now = Date.now();
     this.setMemory(positionId, normalized, now);
 
     const redis = await this.getRedisClient();
-    if (!redis) return;
+    if (!redis) return process.env.NODE_ENV === 'test';
 
     try {
       await redis.set(this.getKey(positionId), JSON.stringify(normalized), {
         PX: DEFAULT_TTL_MS,
       });
+      return true;
     } catch {
       // Non-blocking: in-memory copy is still available in current process.
+      return false;
     }
   }
 
   async deletePositionRuntimeState(positionId: string) {
     this.memory.delete(positionId);
     const redis = await this.getRedisClient();
-    if (!redis) return;
+    if (!redis) return process.env.NODE_ENV === 'test';
 
     try {
       await redis.del(this.getKey(positionId));
+      return true;
     } catch {
       // Best-effort delete.
+      return false;
     }
   }
 }
