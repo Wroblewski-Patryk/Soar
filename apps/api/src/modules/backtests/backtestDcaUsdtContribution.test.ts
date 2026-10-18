@@ -43,7 +43,85 @@ const advancedStrategyConfig = {
   },
 };
 
+const replayBothWithLimitedFunds = (prices: number[], config: Record<string, unknown>) => {
+  const limitedCandles = prices.map((price, index) => ({
+    ...candles[0], openTime: candles[0].openTime + index * 60_000,
+    closeTime: candles[0].closeTime + index * 60_000,
+    open: price, high: price, low: price, close: price,
+  }));
+  const single = simulateTradesForSymbolReplay({
+    symbol: 'BTCUSDT', candles: limitedCandles, marketType: 'FUTURES', leverage: 1,
+    marginMode: 'CROSSED', strategyConfig: config,
+    positionSizing: { mode: 'fixed', fixedQuantity: 1, referenceBalance: 1.1 },
+    fillModelConfig: { feeRate: 0, slippageRate: 0 },
+  });
+  const portfolio = simulateInterleavedPortfolio({
+    symbols: ['BTCUSDT'], candlesBySymbol: new Map([['BTCUSDT', limitedCandles]]),
+    marketType: 'FUTURES', leverage: 1, marginMode: 'CROSSED',
+    strategyConfig: config, walletRiskPercent: 90, initialBalance: 10,
+    fillModelConfig: { feeRate: 0, slippageRate: 0 },
+  }).perSymbol.BTCUSDT;
+  return [single, portfolio];
+};
+
 describe('USDT contribution DCA in historical replay', () => {
+  it('keeps reached positive USDT DCA pending without funds instead of taking TP or TTP', () => {
+    const additional = { ...strategyConfig.additional, dcaTimes: 1,
+      dcaLevels: [{ percent: 20, multiplier: 1 }] };
+    const tpConfig = { ...strategyConfig, close: { mode: 'basic', tp: 10, sl: 90 }, additional };
+    for (const result of replayBothWithLimitedFunds([0.99, 1, 1, 1.25, 1.25], tpConfig)) {
+      expect(result.eventCounts.ENTRY).toBeGreaterThanOrEqual(1);
+      expect(result.eventCounts.DCA).toBe(0);
+      expect(result.eventCounts.TP).toBe(0);
+      expect(result.dcaFundsExhaustedCount).toBeGreaterThan(0);
+      expect(result.dcaFundsExhaustedSamples[0]).toMatchObject({
+        levelIndex: 0, price: 1.25,
+      });
+    }
+
+    const ttpConfig = { ...strategyConfig,
+      close: { mode: 'advanced', tp: 99, sl: 90, ttp: [{ percent: 10, arm: 5 }] },
+      additional };
+    for (const result of replayBothWithLimitedFunds([0.99, 1, 1, 1.3, 1.23, 1.23], ttpConfig)) {
+      expect(result.eventCounts.ENTRY).toBeGreaterThanOrEqual(1);
+      expect(result.eventCounts.DCA).toBe(0);
+      expect(result.eventCounts.TTP).toBe(0);
+      expect(result.dcaFundsExhaustedCount).toBeGreaterThan(0);
+    }
+  });
+
+  it('releases only crossed SL for an unfunded negative USDT add, including mixed levels', () => {
+    const negative = { ...strategyConfig, close: { mode: 'basic', tp: 10, sl: 25 },
+      additional: { ...strategyConfig.additional, dcaTimes: 1,
+        dcaLevels: [{ percent: -20, multiplier: 1 }] } };
+    for (const result of replayBothWithLimitedFunds([0.99, 1, 1, 0.7, 0.7], negative)) {
+      expect(result.eventCounts.DCA).toBe(0);
+      expect(result.eventCounts.SL).toBe(1);
+      expect(result.dcaFundsExhaustedSamples[0]).toMatchObject({ levelIndex: 0, price: 0.7 });
+    }
+
+    const mixed = { ...strategyConfig, close: { mode: 'basic', tp: 10, sl: 25 },
+      additional: { ...strategyConfig.additional, dcaMode: 'advanced', dcaTimes: 2,
+        dcaLevels: [{ percent: 20, multiplier: 1 }, { percent: -20, multiplier: 1 }] } };
+    for (const result of replayBothWithLimitedFunds([0.99, 1, 1, 1.25, 0.7, 0.7], mixed)) {
+      expect(result.eventCounts.DCA).toBe(0);
+      expect(result.eventCounts.TP).toBe(0);
+      expect(result.eventCounts.SL).toBe(1);
+      expect(result.dcaFundsExhaustedSamples.map((sample) => sample.levelIndex))
+        .toEqual([0, 1]);
+    }
+  });
+
+  it('preserves quantity_v1 funds-exhausted exit behavior', () => {
+    const config = { ...strategyConfig, close: { mode: 'basic', tp: 10, sl: 90 },
+      additional: { ...strategyConfig.additional, dcaSizingBasis: 'quantity_v1',
+        dcaTimes: 1, dcaLevels: [{ percent: 20, multiplier: 1 }] } };
+    for (const result of replayBothWithLimitedFunds([0.99, 1, 1, 1.25, 1.25], config)) {
+      expect(result.eventCounts.DCA).toBe(0);
+      expect(result.eventCounts.TP).toBe(1);
+    }
+  });
+
   it('keeps basic two-add SL behind confirmed fills and the new average in both replay paths', () => {
     const prices = [0.99, 1, 1, 0.7, 0.5764, 0.5764, 0.5424];
     const exitCandles = prices.map((price, index) => ({

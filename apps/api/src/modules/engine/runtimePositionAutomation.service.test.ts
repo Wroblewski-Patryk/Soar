@@ -667,7 +667,7 @@ describe('RuntimePositionAutomationService', () => {
         level: 'WARN',
         symbol: 'SOLUSDT',
         strategyId: 'strat-3b',
-        message: 'Runtime DCA funds exhausted; close protections may execute',
+        message: 'Runtime DCA blocked by insufficient funds',
         payload: expect.objectContaining({
           reason: 'dca_funds_exhausted',
           currentAdds: 0,
@@ -752,7 +752,7 @@ describe('RuntimePositionAutomationService', () => {
         level: 'WARN',
         symbol: 'ETHUSDT',
         strategyId: 'strategy-imported-dca-funds-effective',
-        message: 'Runtime DCA funds exhausted; close protections may execute',
+        message: 'Runtime DCA blocked by insufficient funds',
         payload: expect.objectContaining({
           reason: 'dca_funds_exhausted',
           currentAdds: 0,

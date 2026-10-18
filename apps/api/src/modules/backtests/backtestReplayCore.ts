@@ -59,6 +59,14 @@ export type ReplayEventDraft = {
   candleIndex: number;
 };
 
+export type ReplayDcaFundsExhaustedSample = {
+  timestamp: Date;
+  candleIndex: number;
+  side: PositionSide;
+  levelIndex: number;
+  price: number;
+};
+
 export type ReplayParityDecisionTrace = {
   symbol: string;
   timestamp: Date;
@@ -83,6 +91,8 @@ export type ReplaySymbolSimulationResult = {
   events: ReplayEventDraft[];
   eventCounts: Record<ReplayEventType, number>;
   decisionTrace: ReplayParityDecisionTrace[];
+  dcaFundsExhaustedCount: number;
+  dcaFundsExhaustedSamples: ReplayDcaFundsExhaustedSample[];
 };
 
 type ReplayRuntimeConfig = {
@@ -109,9 +119,15 @@ export const shouldBlockCloseByPendingDca = (
     closeReason?: string;
     riskConfig: Pick<StrategyRiskConfig, 'dcaLevels'>;
     executedDcaLevelIndices?: number[];
+    dcaFundsExhausted?: boolean;
+    dcaSizingBasis?: DcaSizingBasis;
+    reachedDcaLevelIndex?: number;
   }
 ) => {
   if (!input.lockTrailingByPendingDca) return false;
+  if (input.dcaSizingBasis === 'usdt_contribution_v1' && input.dcaFundsExhausted &&
+      input.closeReason === 'stop_loss' && input.reachedDcaLevelIndex != null &&
+      input.riskConfig.dcaLevels[input.reachedDcaLevelIndex] < 0) return false;
   const blocksLossSideDca =
     input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss';
   const blocksProfitSideDca =
@@ -507,7 +523,8 @@ export const simulateTradesForSymbolReplay = (input: {
     LIQUIDATION: 0,
   };
   if (candles.length < 3) {
-    return { trades: [], liquidations: 0, events: [], eventCounts: initialEventCounts, decisionTrace: [] };
+    return { trades: [], liquidations: 0, events: [], eventCounts: initialEventCounts,
+      decisionTrace: [], dcaFundsExhaustedCount: 0, dcaFundsExhaustedSamples: [] };
   }
 
   const config: ReplayRuntimeConfig = {
@@ -532,6 +549,8 @@ export const simulateTradesForSymbolReplay = (input: {
   const events: ReplayEventDraft[] = [];
   const eventCounts: Record<ReplayEventType, number> = { ...initialEventCounts };
   const decisionTrace: ReplayParityDecisionTrace[] = [];
+  const dcaFundsExhaustedSamples: ReplayDcaFundsExhaustedSample[] = [];
+  let dcaFundsExhaustedCount = 0;
   let accountBalance = trackedBalanceEnabled ? sizingReferenceBalance : Number.POSITIVE_INFINITY;
   let liquidations = 0;
   let tradeSequence = 0;
@@ -718,19 +737,26 @@ export const simulateTradesForSymbolReplay = (input: {
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = openPosition.dcaCount < riskConfig.maxDcaPerTrade;
-    const estimatedNextDcaAddedQty = dcaProbeResult.dcaExecuted
-      ? Math.max(0, dcaProbeResult.dcaAddedQuantity)
+    const addedQty = dcaProbeResult.dcaExecuted
+      ? Math.max(0, dcaProbeResult.nextState.quantity - openPosition.quantity)
       : 0;
     const dcaFillPrice = dcaProbeResult.nextState.lastDcaPrice ?? dcaProbeInput.currentPrice ?? current.close;
-    const estimatedNextDcaMargin = (dcaFillPrice * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
+    const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
     const dcaFundsExhausted =
-      trackedBalanceEnabled && hasPendingDcaLevels && estimatedNextDcaAddedQty > 0
-        ? estimatedNextDcaMargin > accountBalance
+      trackedBalanceEnabled && hasPendingDcaLevels && addedQty > 0
+        ? addMargin > accountBalance
         : false;
-    const lockTrailingByPendingDca = hasPendingDcaLevels && !dcaFundsExhausted;
+    if (dcaFundsExhausted && dcaProbeResult.dcaLevelIndex != null) {
+      dcaFundsExhaustedCount += 1;
+      if (dcaFundsExhaustedSamples.length < 25) dcaFundsExhaustedSamples.push({
+        timestamp: new Date(current.openTime), candleIndex: index,
+        side: openPosition.side as PositionSide,
+        levelIndex: dcaProbeResult.dcaLevelIndex, price: dcaFillPrice,
+      });
+    }
+    const lockTrailingByPendingDca = hasPendingDcaLevels &&
+      (!dcaFundsExhausted || riskConfig.dcaSizingBasis === 'usdt_contribution_v1');
     if (dcaProbeResult.dcaExecuted) {
-      const addedQty = Math.max(0, dcaProbeResult.nextState.quantity - openPosition.quantity);
-      const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
       if (!trackedBalanceEnabled || addMargin <= accountBalance) {
         if (Number.isFinite(accountBalance)) {
           accountBalance = Math.max(0, accountBalance - addMargin);
@@ -789,6 +815,9 @@ export const simulateTradesForSymbolReplay = (input: {
         closeReason: managementResult.closeReason,
         riskConfig,
         executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+        dcaFundsExhausted,
+        dcaSizingBasis: riskConfig.dcaSizingBasis,
+        reachedDcaLevelIndex: dcaProbeResult.dcaExecuted ? dcaProbeResult.dcaLevelIndex : undefined,
       })
     ) {
       managementResult = {
@@ -915,5 +944,6 @@ export const simulateTradesForSymbolReplay = (input: {
     });
   }
 
-  return { trades, liquidations, events, eventCounts, decisionTrace };
+  return { trades, liquidations, events, eventCounts, decisionTrace,
+    dcaFundsExhaustedCount, dcaFundsExhaustedSamples };
 };

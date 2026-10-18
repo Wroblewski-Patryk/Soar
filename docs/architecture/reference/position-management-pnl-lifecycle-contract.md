@@ -204,6 +204,10 @@ ROI. For example, two basic `-30%` adds with `SL = -20%` do not close on the
 old `-20%` threshold immediately after the second add. A reached add blocked
 specifically by insufficient funds may release `SL` if the stop is exceeded;
 venue precision and validation failures do not count as exhausted funds.
+An unfunded positive level remains pending and continues to block `TP`/`TTP`.
+Funds exhaustion does not release `TSL` for a pending negative level.
+Runtime records `dca_funds_exhausted`; both replay paths expose a bounded count
+and samples of reached, unfunded DCA levels in parity diagnostics.
 
 Stored `quantity_v1` snapshots keep their existing sizing and same-pass exit
 behavior. Venue-side hard `TP`/`SL` orders must not bypass this application

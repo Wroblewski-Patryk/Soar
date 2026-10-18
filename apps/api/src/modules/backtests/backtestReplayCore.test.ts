@@ -1260,4 +1260,21 @@ describe('shouldBlockCloseByPendingDca', () => {
       }),
     ).toBe(true);
   });
+
+  it('keeps unfunded USDT profit exits blocked but releases reached negative SL', () => {
+    const input = {
+      lockTrailingByPendingDca: true,
+      riskConfig: { dcaLevels: [0.2, -0.2] },
+      dcaFundsExhausted: true,
+      dcaSizingBasis: 'usdt_contribution_v1' as const,
+      reachedDcaLevelIndex: 0,
+    };
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'take_profit' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'trailing_take_profit' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'stop_loss' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'stop_loss',
+      reachedDcaLevelIndex: 1 })).toBe(false);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'trailing_stop',
+      reachedDcaLevelIndex: 1 })).toBe(true);
+  });
 });

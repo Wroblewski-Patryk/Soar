@@ -15,6 +15,7 @@ import {
 } from '../engine/positionSizing';
 import {
   type ReplayEventDraft,
+  type ReplayDcaFundsExhaustedSample,
   type ReplayParityDecisionTrace,
   type ReplayEventType,
   buildReplayPositionManagementInput,
@@ -55,6 +56,8 @@ type SymbolSimulationResult = {
   events: ReplayEventDraft[];
   eventCounts: Record<ReplayEventType, number>;
   decisionTrace: ReplayParityDecisionTrace[];
+  dcaFundsExhaustedCount: number;
+  dcaFundsExhaustedSamples: ReplayDcaFundsExhaustedSample[];
 };
 
 type InterleavedPortfolioSimulationResult = {
@@ -184,6 +187,8 @@ export const simulateInterleavedPortfolio = (input: {
           LIQUIDATION: 0,
         },
         decisionTrace: [],
+        dcaFundsExhaustedCount: 0,
+        dcaFundsExhaustedSamples: [],
       } satisfies SymbolSimulationResult,
     ]),
   );
@@ -443,20 +448,27 @@ export const simulateInterleavedPortfolio = (input: {
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = position.dcaCount < riskConfig.maxDcaPerTrade;
-    const estimatedNextDcaAddedQty = dcaProbeResult.dcaExecuted
-      ? Math.max(0, dcaProbeResult.dcaAddedQuantity)
+    const addedQty = dcaProbeResult.dcaExecuted
+      ? Math.max(0, dcaProbeResult.nextState.quantity - position.quantity)
       : 0;
     const dcaFillPrice = dcaProbeResult.nextState.lastDcaPrice ?? dcaProbeInput.currentPrice ?? current.close;
-    const estimatedNextDcaMargin = (dcaFillPrice * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
+    const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
     const dcaFundsExhausted =
-      hasPendingDcaLevels && estimatedNextDcaAddedQty > 0
-        ? estimatedNextDcaMargin > cashBalance
+      hasPendingDcaLevels && addedQty > 0
+        ? addMargin > cashBalance
         : false;
-    const lockTrailingByPendingDca = hasPendingDcaLevels && !dcaFundsExhausted;
+    if (dcaFundsExhausted && dcaProbeResult.dcaLevelIndex != null) {
+      bucket.dcaFundsExhaustedCount += 1;
+      if (bucket.dcaFundsExhaustedSamples.length < 25) bucket.dcaFundsExhaustedSamples.push({
+        timestamp: new Date(current.openTime), candleIndex: index,
+        side: position.side as PositionSide,
+        levelIndex: dcaProbeResult.dcaLevelIndex, price: dcaFillPrice,
+      });
+    }
+    const lockTrailingByPendingDca = hasPendingDcaLevels &&
+      (!dcaFundsExhausted || riskConfig.dcaSizingBasis === 'usdt_contribution_v1');
 
     if (dcaProbeResult.dcaExecuted) {
-      const addedQty = Math.max(0, dcaProbeResult.nextState.quantity - position.quantity);
-      const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
       if (addMargin > cashBalance) {
         const managementWithoutDca: PositionManagementInput = {
           ...dcaProbeInput,
@@ -523,6 +535,9 @@ export const simulateInterleavedPortfolio = (input: {
         closeReason: managementResult.closeReason,
         riskConfig,
         executedDcaLevelIndices: position.executedDcaLevelIndices,
+        dcaFundsExhausted,
+        dcaSizingBasis: riskConfig.dcaSizingBasis,
+        reachedDcaLevelIndex: dcaProbeResult.dcaExecuted ? dcaProbeResult.dcaLevelIndex : undefined,
       })
     ) {
       managementResult = {

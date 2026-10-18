@@ -28,7 +28,9 @@ afterEach(() => {
 let sequence = 0;
 const runIntegratedSequence = async (input: {
   mode: 'PAPER' | 'LIVE'; marketType: 'SPOT' | 'FUTURES'; dcaMode: 'basic' | 'advanced';
-  minNotional?: number; fundsExhausted?: boolean; sl?: number;
+  minNotional?: number; fundsExhausted?: boolean; sl?: number; tp?: number;
+  closeMode?: 'basic' | 'advanced'; ttp?: Array<{ percent: number; arm: number }>;
+  dcaLevels?: Array<{ percent: number; multiplier: number }>;
 }) => {
   const id = `precision-integration-${++sequence}`;
   const leverage = input.marketType === 'SPOT' ? 1 : 5;
@@ -51,11 +53,14 @@ const runIntegratedSequence = async (input: {
   const additional = {
     dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1', dcaMode: input.dcaMode,
     dcaTimes: input.dcaMode === 'basic' ? 2 : 1,
-    dcaLevels: input.dcaMode === 'basic'
+    dcaLevels: input.dcaLevels ?? (input.dcaMode === 'basic'
       ? [{ percent: -30.5, multiplier: 2 }]
-      : [{ percent: -20, multiplier: 1 }, { percent: -30, multiplier: 0.5 }],
+      : [{ percent: -20, multiplier: 1 }, { percent: -30, multiplier: 0.5 }]),
   };
-  const config = { additional, close: input.sl == null ? {} : { sl: input.sl } };
+  const config = { additional, close: { mode: input.closeMode,
+    ...(input.sl == null ? {} : { sl: input.sl }),
+    ...(input.tp == null ? {} : { tp: input.tp }),
+    ...(input.ttp == null ? {} : { ttp: input.ttp }) } };
   vi.spyOn(prisma.position, 'findFirst').mockResolvedValue(position);
   vi.spyOn(prisma.strategy, 'findFirst').mockResolvedValue({ config, leverage } as any);
   vi.spyOn(prisma, '$transaction').mockImplementation(async (callback: any) => callback({}));
@@ -186,5 +191,47 @@ describe('runtime DCA venue precision and filled contribution', () => {
     }));
     expect(run.fills).toHaveLength(0);
     expect(openOrder).not.toHaveBeenCalled();
+  });
+
+  it.each(['PAPER', 'LIVE'] as const)('%s reports unfunded positive DCA without TP/TTP closure', async (mode) => {
+    const tp = await runIntegratedSequence({ mode, marketType: 'FUTURES',
+      dcaMode: 'advanced', dcaLevels: [{ percent: 20, multiplier: 1 }],
+      fundsExhausted: true, tp: 10, sl: 90 });
+    await tp.send(1.05);
+    expect(tp.executeDca).toHaveBeenCalledTimes(1);
+    expect(tp.closeByExitSignal).not.toHaveBeenCalled();
+    expect(tp.recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED', payload: expect.objectContaining({
+        reason: 'dca_funds_exhausted',
+      }),
+    }));
+
+    const ttp = await runIntegratedSequence({ mode, marketType: 'FUTURES',
+      dcaMode: 'advanced', dcaLevels: [{ percent: 20, multiplier: 1 }],
+      fundsExhausted: true, closeMode: 'advanced', tp: 99, sl: 90,
+      ttp: [{ percent: 10, arm: 5 }] });
+    await ttp.send(1.06);
+    await ttp.send(1.046);
+    expect(ttp.executeDca).toHaveBeenCalledTimes(2);
+    expect(ttp.closeByExitSignal).not.toHaveBeenCalled();
+    expect(ttp.recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED', payload: expect.objectContaining({
+        reason: 'dca_funds_exhausted',
+      }),
+    }));
+  });
+
+  it('keeps mixed USDT levels pending on profit and releases only crossed loss-side SL', async () => {
+    const run = await runIntegratedSequence({ mode: 'PAPER', marketType: 'FUTURES',
+      dcaMode: 'advanced', dcaLevels: [
+        { percent: 20, multiplier: 1 }, { percent: -20, multiplier: 1 },
+      ], fundsExhausted: true, tp: 10, sl: 25 });
+    await run.send(1.05);
+    expect(run.closeByExitSignal).not.toHaveBeenCalled();
+    await run.send(0.94);
+    expect(run.closeByExitSignal).toHaveBeenCalledWith(expect.objectContaining({
+      reason: 'stop_loss', markPrice: 0.94,
+    }));
+    expect(run.fills).toHaveLength(0);
   });
 });

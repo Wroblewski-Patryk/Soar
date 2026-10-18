@@ -222,7 +222,8 @@ export const evaluatePositionManagement = (
 
   // DCA-first close management; callers supply either basic TP/SL or advanced TTP/TSL inputs.
   let dcaLevelIndex: number | undefined;
-  if (dcaEnabled && executedDcaLevelIndices.size < dcaLevelsRequired) {
+  if (dcaEnabled && executedDcaLevelIndices.size < dcaLevelsRequired &&
+      !(parsedInput.dca?.sizingBasis === 'usdt_contribution_v1' && parsedInput.dcaFundsExhausted)) {
     const nextLevelIndex = selectNextDcaLevelIndex(currentPnlFraction, dcaLevels, executedDcaLevelIndices);
 
     if (nextLevelIndex != null) {
@@ -260,13 +261,19 @@ export const evaluatePositionManagement = (
   }
 
   const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || executedDcaLevelIndices.size >= dcaLevelsRequired;
-  const dcaProtectionSatisfied = dcaSequenceCompleted || parsedInput.dcaFundsExhausted === true;
+  const usdtContribution = parsedInput.dca?.sizingBasis === 'usdt_contribution_v1';
+  const dcaProtectionSatisfied = dcaSequenceCompleted ||
+    (parsedInput.dcaFundsExhausted === true && !usdtContribution);
   const ttpDcaProtectionSatisfied =
     dcaProtectionSatisfied ||
     !hasRemainingDcaLevelsBySide(dcaEnabled, dcaLevels, executedDcaLevelIndices, 'profit');
   const tslDcaProtectionSatisfied =
     dcaProtectionSatisfied ||
     !hasRemainingDcaLevelsBySide(dcaEnabled, dcaLevels, executedDcaLevelIndices, 'loss');
+  const reachedLevelIndex = selectNextDcaLevelIndex(currentPnlFraction, dcaLevels, executedDcaLevelIndices);
+  const slDcaProtectionSatisfied = tslDcaProtectionSatisfied ||
+    (usdtContribution && parsedInput.dcaFundsExhausted === true && reachedLevelIndex != null &&
+      dcaLevels[reachedLevelIndex] < 0);
 
   if (
     ttpDcaProtectionSatisfied &&
@@ -373,7 +380,7 @@ export const evaluatePositionManagement = (
   }
 
   if (
-    tslDcaProtectionSatisfied &&
+    slDcaProtectionSatisfied &&
     typeof parsedInput.stopLossPrice === 'number' &&
     isStopLossHit(parsedInput.side, parsedInput.currentPrice, parsedInput.stopLossPrice)
   ) {

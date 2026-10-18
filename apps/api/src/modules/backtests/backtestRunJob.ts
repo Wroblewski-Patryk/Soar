@@ -85,6 +85,14 @@ type SimulationPerSymbol = {
   liquidations: number;
   eventCounts: LifecycleEventCounts;
   decisionTrace: SimulationTrace[];
+  dcaFundsExhaustedCount?: number;
+  dcaFundsExhaustedSamples?: Array<{
+    timestamp: Date;
+    candleIndex: number;
+    side: PositionSide;
+    levelIndex: number;
+    price: number;
+  }>;
 };
 
 type SimulationResult = {
@@ -410,6 +418,14 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       entryEvents: number;
       closeEvents: number;
       liquidationEvents: number;
+      dcaFundsExhaustedCount: number;
+      dcaFundsExhaustedSamples: Array<{
+        timestamp: string;
+        candleIndex: number;
+        side: PositionSide;
+        levelIndex: number;
+        price: number;
+      }>;
       mismatchCount: number;
       mismatchSamples: Array<{
         timestamp: string;
@@ -501,6 +517,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             entryEvents: 0,
             closeEvents: 0,
             liquidationEvents: 0,
+            dcaFundsExhaustedCount: 0,
+            dcaFundsExhaustedSamples: [],
             mismatchCount: 0,
             mismatchSamples: [],
             mergeSamples: [],
@@ -574,6 +592,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
               symbolSimulation.eventCounts.SL +
               symbolSimulation.eventCounts.TSL,
             liquidationEvents: symbolSimulation.eventCounts.LIQUIDATION,
+            dcaFundsExhaustedCount: symbolSimulation.dcaFundsExhaustedCount ?? 0,
+            dcaFundsExhaustedSamples: (symbolSimulation.dcaFundsExhaustedSamples ?? []).map((sample) => ({
+              ...sample, timestamp: sample.timestamp.toISOString(),
+            })),
             mismatchCount: decisionTrace.filter((entry) => entry.mismatchReason !== null).length,
             mismatchSamples: decisionTrace
               .filter((entry) => entry.mismatchReason !== null)

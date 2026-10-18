@@ -805,6 +805,8 @@ export const getRunTimeline = async (
       LIQUIDATION: 0,
     } as Record<ReplayEventType, number>,
     decisionTrace: [],
+    dcaFundsExhaustedCount: 0,
+    dcaFundsExhaustedSamples: [],
   };
 
   const chunkGlobalStart = visibleStart + start;
@@ -872,6 +874,11 @@ export const getRunTimeline = async (
         parseStrategySignalRules(strategyConfig),
       ),
       eventCounts: symbolReplay.eventCounts,
+      dcaFundsExhaustedCount: symbolReplay.dcaFundsExhaustedCount,
+      dcaFundsExhaustedSamples: symbolReplay.dcaFundsExhaustedSamples
+        .filter((sample) => sample.candleIndex >= chunkGlobalStart && sample.candleIndex < chunkGlobalEnd)
+        .map((sample) => ({ ...sample, timestamp: sample.timestamp.toISOString(),
+          candleIndex: sample.candleIndex - visibleStart })),
       mismatchCount: symbolReplay.decisionTrace.filter((entry) => entry.mismatchReason !== null).length,
       mismatchSamples: symbolReplay.decisionTrace
         .filter(

@@ -861,7 +861,7 @@ export class RuntimePositionAutomationService {
             markPrice: effectiveLifecyclePrice, leverage: Math.max(1, position.leverage || 1),
           });
           const fallback = evaluatePositionManagement({ ...input,
-            currentPnlFraction: currentPnlFraction ?? undefined, dca: undefined, dcaFundsExhausted: true,
+            currentPnlFraction: currentPnlFraction ?? undefined, dcaFundsExhausted: true,
           }, previousStateSnapshot);
           if (fallback.shouldClose && fallback.closeReason === 'stop_loss') {
             result = fallback; effectiveState = this.cloneState(fallback.nextState);
