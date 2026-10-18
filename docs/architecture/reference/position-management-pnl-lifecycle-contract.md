@@ -1,7 +1,7 @@
 # Position Management PnL Lifecycle Contract
 
 Status: canonical  
-Updated: 2026-05-06
+Updated: 2026-10-19
 
 ## Purpose
 
@@ -45,21 +45,27 @@ position in this order:
 4. apply liquidation and account-floor protection
 5. persist or publish updated lifecycle state for operator views
 
-If a DCA level is enabled, valid, still pending, and affordable, close
-management must not bypass it by guessing a different close path. If DCA is
-disabled, exhausted, inapplicable to the current PnL direction, or explicitly
-classified as unaffordable according to the strategy policy, close management
-continues normally.
+If a DCA level is enabled, valid, and still pending, close management must not
+bypass the protection it owns. Once the relevant levels are confirmed executed,
+or no pending level applies to the close direction, close management proceeds
+under the selected mode. Insufficient funds follow the DCA Funds Policy below;
+they are not a generic release of close protection.
 
-An operator-activated global LIVE pause is an explicit exception to DCA-first
-ordering. Runtime skips new LIVE DCA proposals while paused and evaluates the
-existing position's TP/SL/TTP/TSL from its last confirmed, canonical quantity
-and entry basis. Only a venue-enforced `reduceOnly` Futures close may be sent;
-Spot closes are held because Spot has no `reduceOnly` guarantee. A pause that
-commits between DCA evaluation and its final submission gate causes the same
-unfilled state to be re-evaluated for a protective close. Unknown or submitted
-DCA outcomes still require reconciliation before any close. PAPER and BACKTEST
-keep normal DCA-first ordering.
+An operator-activated global LIVE pause blocks new DCA submission, but does
+not remove pending levels from the position-management evaluation. Runtime
+evaluates TP/SL/TTP/TSL against the last confirmed canonical quantity and
+entry basis. Pending negative DCA continues to block SL/TSL, and pending
+positive DCA continues to block TP/TTP. A reached DCA proposal is neither
+submitted nor recorded as filled while paused. Only a reached DCA that cannot
+be funded and is reported as funds-exhausted may release a crossed hard SL;
+pause alone does not release any DCA protection or release TSL. A Futures
+close may be submitted only when these protection rules permit it and the
+venue enforces `reduceOnly`. Spot closes remain held because Spot has no
+`reduceOnly` guarantee. If pause commits between DCA evaluation and its final
+submission gate, the denied add remains pending and the pre-fill state and
+close gates are preserved; runtime must not re-evaluate CLOSE with DCA removed.
+Unknown or submitted DCA outcomes still require reconciliation before any
+close. PAPER and BACKTEST retain normal DCA-first ordering.
 
 ## DCA Lanes
 
@@ -400,6 +406,10 @@ for:
 - signed DCA levels beyond basic TP/SL thresholds, with DCA-first ordering
 - retained basic TP/SL reachability for legacy quantity strategies
 - unaffordable DCA policy behavior
+- global LIVE pause preserving pending loss-side SL/TSL and profit-side TP/TTP
+  gates across a denied DCA submission and runtime restart
+- the reached, reported funds-exhausted exception releasing only crossed hard
+  SL; eligible Futures closes remain venue-enforced `reduceOnly`, and Spot holds
 - TTP and TSL monotonic ratcheting
 - imported `LIVE` position adoption without invented trailing history
 - exchange order/position reconciliation when user changes state outside Soar

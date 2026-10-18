@@ -66,8 +66,9 @@
   pre-fill protection and blocks a false SL/TSL close. Futures reduce-only
   closes remain eligible when the full DCA protection rules permit them.
   Existing submitted/unknown DCA blocks close until reconciliation. A reached
-  unaffordable DCA may release SL only after funds-exhausted telemetry; pause
-  alone is not evidence that funds are exhausted.
+  unfundable DCA may release only a crossed hard SL after funds-exhausted
+  telemetry; it never releases TSL. Pause alone is not evidence that funds are
+  exhausted.
 - Production proof needs exact deployed SHA, migration status, per-instance
   worker inventory, admin readback, and reconciliation evidence. Local tests
   and `/health` do not establish this proof.
