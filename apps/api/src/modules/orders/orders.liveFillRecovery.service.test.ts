@@ -112,14 +112,15 @@ const useLookup = (result: LiveFillLookupResult) => vi.fn(async () => result);
 const adapterLookup = (fx: Awaited<ReturnType<typeof fixture>>,
   trades: Array<Record<string, unknown>>,
   orderState: { status: 'open' | 'closed'; filled: number } =
-    { status: 'closed', filled: 1 }) => {
+    { status: 'closed', filled: 1 },
+  inlineTrades: Array<Record<string, unknown>> = []) => {
   const client = {
     loadMarkets: vi.fn(async () => ({ 'BTC/USDT:USDT': {
       id: 'BTCUSDT', symbol: 'BTC/USDT:USDT', swap: true,
     } })),
     fetchOrder: vi.fn(async () => ({ id: fx.venueId, status: orderState.status,
       symbol: 'BTC/USDT:USDT', side: fx.candidate.side?.toLowerCase(), type: 'market',
-      amount: 1, filled: orderState.filled, average: 90, trades: [] })),
+      amount: 1, filled: orderState.filled, average: 90, trades: inlineTrades })),
     fetchMyTrades: vi.fn(async () => trades),
     createOrder: vi.fn(),
     close: vi.fn(async () => undefined),
@@ -323,6 +324,134 @@ describe('explicit LIVE fill recovery', () => {
       expect(mixed.client.createOrder).not.toHaveBeenCalled();
       expect(complete.client.createOrder).not.toHaveBeenCalled();
     });
+
+  it.each([['stable venue ID', true], ['promoted placeholder ID', false]] as const)(
+    'recovers time from trades after a complete untimed fetchOrder: %s',
+    async (_label, inlineHasId) => {
+      const fx = await fixture('DCA');
+      const venueAt = Date.now() - 2_000;
+      const inline = { ...(inlineHasId ? { id: 'real-fill', timestamp: venueAt } : {}),
+        order: fx.venueId, symbol: 'BTC/USDT:USDT', side: 'buy',
+        price: 90, amount: 1, fee: { cost: 0.1, currency: 'USDT' } };
+      const first = adapterLookup(fx, [], undefined, [inline]);
+      await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: first.lookup })).resolves.toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+      expect(first.client.fetchMyTrades).toHaveBeenCalledOnce();
+      const before = await prisma.orderFill.findFirstOrThrow({ where: {
+        orderId: fx.intent.id,
+      } });
+      expect(before.venueExecutedAt).toBeNull();
+      expect(before.exchangeTradeId.startsWith('soar-fill-')).toBe(!inlineHasId);
+      expect(await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } }))
+        .toMatchObject({ feePending: false, feeSource: 'EXCHANGE_FILL' });
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id,
+        event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+          eventTime: venueAt + 500, transactionTime: venueAt + 500,
+          balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+            entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+      });
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .continuityState).toBe('RECOVERING');
+      const candidate = (await findLiveFillCandidatePage()).candidates.find(
+        (item) => item.orderId === fx.intent.id)!;
+      expect(candidate).toBeDefined();
+      const later = adapterLookup(fx, [{ ...inline, id: 'real-fill', timestamp: venueAt }],
+        undefined, [inline]);
+      await expect(recoverLiveFillCandidateOnce({ candidate,
+        lookup: later.lookup })).resolves.toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+      expect(later.client.fetchMyTrades).toHaveBeenCalledOnce();
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .toMatchObject({ continuityState: 'CONFIRMED',
+          lastDcaFillTimeUncertain: false, lastDcaFillVenueAt: new Date(venueAt) });
+      expect(await prisma.orderFill.findFirstOrThrow({ where: { orderId: fx.intent.id } }))
+        .toMatchObject({ id: before.id, exchangeTradeId: 'real-fill',
+          venueExecutedAt: new Date(venueAt) });
+      expect(await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } }))
+        .toMatchObject({ exchangeTradeId: 'real-fill' });
+      expect(await prisma.trade.findFirstOrThrow({ where: { orderId: fx.intent.id } }))
+        .toMatchObject({ exchangeTradeId: 'real-fill' });
+      await expect(recoverLiveFillCandidateOnce({ candidate,
+        lookup: adapterLookup(fx, [{ ...inline, id: 'real-fill', timestamp: venueAt }],
+          undefined, [inline]).lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+      expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(1);
+      expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
+        eventType: 'DCA_EXECUTED' } })).toBe(1);
+      expect(first.client.createOrder).not.toHaveBeenCalled();
+      expect(later.client.createOrder).not.toHaveBeenCalled();
+    });
+
+  it('retains RECOVERING when identical placeholder fills cannot be linked to real IDs', async () => {
+    const fx = await fixture('DCA');
+    const venueAt = Date.now() - 2_000;
+    const inline = [0, 1].map(() => ({ order: fx.venueId,
+      symbol: 'BTC/USDT:USDT', side: 'buy', price: 90, amount: 0.5,
+      fee: { cost: 0.05, currency: 'USDT' } }));
+    const first = adapterLookup(fx, [], undefined, inline);
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: first.lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: venueAt + 1_000, transactionTime: venueAt + 1_000,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    const candidate = (await findLiveFillCandidatePage()).candidates.find(
+      (item) => item.orderId === fx.intent.id)!;
+    const later = adapterLookup(fx, [
+      { ...inline[0], id: 'real-one', timestamp: venueAt },
+      { ...inline[1], id: 'real-two', timestamp: venueAt + 500 },
+    ], undefined, inline);
+    const inspected = await later.lookup(candidate);
+    expect(inspected.kind).toBe('FOUND');
+    if (inspected.kind !== 'FOUND') throw new Error('lookup failed');
+    expect(inspected.order.fills?.every((fill) => fill.source === 'fetchOrder')).toBe(true);
+    await expect(recoverLiveFillCandidateOnce({ candidate,
+      lookup: later.lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+    expect(later.client.fetchMyTrades).toHaveBeenCalled();
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id,
+      venueExecutedAt: { not: null } } })).toBe(0);
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(first.client.createOrder).not.toHaveBeenCalled();
+    expect(later.client.createOrder).not.toHaveBeenCalled();
+  });
+
+  it('does not trust a full trade set that contradicts complete aggregate economics', async () => {
+    const fx = await fixture('DCA');
+    const venueAt = Date.now() - 2_000;
+    const inline = { id: 'one', order: fx.venueId,
+      symbol: 'BTC/USDT:USDT', side: 'buy', price: 90, amount: 1,
+      fee: { cost: 0.1, currency: 'USDT' } };
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: adapterLookup(fx, [], undefined, [inline]).lookup });
+    const candidate = (await findLiveFillCandidatePage()).candidates.find(
+      (item) => item.orderId === fx.intent.id)!;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: venueAt + 500, transactionTime: venueAt + 500,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    const later = adapterLookup(fx,
+      [{ ...inline, price: 91, timestamp: venueAt }], undefined, [inline]);
+    const inspected = await later.lookup(candidate);
+    expect(inspected.kind).toBe('FOUND');
+    if (inspected.kind !== 'FOUND') throw new Error('lookup failed');
+    expect(inspected.order.fills?.[0]?.source).toBe('fetchOrder');
+    await expect(recoverLiveFillCandidateOnce({ candidate,
+      lookup: later.lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(later.client.createOrder).not.toHaveBeenCalled();
+  });
 
   it('keeps conflicting or incomplete late fill times in recovery without writes', async () => {
     const fx = await fixture('DCA');

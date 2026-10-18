@@ -33,6 +33,22 @@ const normalizeSymbol = (value: string) => value.split(':')[0].toUpperCase().rep
 const quantityMatches = (left: number, right: number, count: number) =>
   Math.abs(left - right) <= 16 * Number.EPSILON *
     Math.max(Math.abs(left), Math.abs(right)) * Math.max(1, count);
+const sameFillEconomics = (local: {
+  symbol: string; side: string; quantity: number; price: number;
+  feeCost: number | null; feeCurrency: string | null;
+  venueExecutedAt: Date | null;
+}, venue: CcxtFuturesOrderFill, symbol: string, side: 'BUY' | 'SELL') =>
+  local.symbol === symbol && local.side === side &&
+  normalizeSymbol(venue.symbol) === normalizeSymbol(symbol) &&
+  (!venue.side || venue.side.toUpperCase() === side) &&
+  quantityMatches(local.quantity, venue.quantity, 1) &&
+  quantityMatches(local.price, venue.price, 1) &&
+  (local.feeCost == null || venue.feeCost == null ||
+    quantityMatches(local.feeCost, venue.feeCost, 1)) &&
+  (!local.feeCurrency || !venue.feeCurrency ||
+    local.feeCurrency === venue.feeCurrency) &&
+  (!local.venueExecutedAt || !hasTrustedFillTime(venue) ||
+    local.venueExecutedAt.getTime() === validFillTime(venue)!.getTime());
 
 const readSubmission = (intent: { payload: Prisma.JsonValue | null }, candidate: LiveFillCandidate) => {
   const payload = intent.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
@@ -244,26 +260,60 @@ export const recoverLiveFillCandidateOnce = async (input: {
       if (!order) order = await createOrderFromIntent(tx, candidate, lookup);
       const localFills = await tx.orderFill.findMany({ where: { orderId: order.id } });
       const venueFills = new Map(snapshot.fills.map((fill) => [fill.exchangeTradeId, fill]));
+      const matchedVenueByLocalId = new Map<string, CcxtFuturesOrderFill>();
+      const usedVenueIds = new Set<string>();
+      const unmatchedLocal = [] as typeof localFills;
       for (const local of localFills) {
         const venue = venueFills.get(local.exchangeTradeId);
-        if (!venue || local.userId !== candidate.userId ||
-            local.symbol !== candidate.symbol || local.side !== candidate.side ||
-            !quantityMatches(local.quantity, venue.quantity, 1) ||
-            !quantityMatches(local.price, venue.price, 1) ||
-            (local.feeCost != null && venue.feeCost != null &&
-              !quantityMatches(local.feeCost, venue.feeCost, 1)) ||
-            (local.feeCurrency && venue.feeCurrency &&
-              local.feeCurrency !== venue.feeCurrency) ||
-            (local.venueExecutedAt && hasTrustedFillTime(venue) &&
-              local.venueExecutedAt.getTime() !== validFillTime(venue)!.getTime())) {
+        if (local.userId !== candidate.userId ||
+            (venue && !sameFillEconomics(local, venue, candidate.symbol, candidate.side!))) {
           return unknown('LOCAL_FILL_CONFLICT');
         }
+        if (venue) {
+          matchedVenueByLocalId.set(local.id, venue);
+          usedVenueIds.add(venue.exchangeTradeId!);
+        } else unmatchedLocal.push(local);
+      }
+      // A fetchOrder row without a trade ID may later acquire the real
+      // fetchMyTrades ID. Promote only a unique economic match under the
+      // order lock; a repeated price/quantity pair remains ambiguous.
+      const promotions: Array<{ id: string; oldId: string; venue: CcxtFuturesOrderFill }> = [];
+      for (const local of unmatchedLocal) {
+        if (!local.exchangeTradeId.startsWith('soar-fill-')) {
+          return unknown('LOCAL_FILL_CONFLICT');
+        }
+        const matches = snapshot.fills.filter((venue) =>
+          venue.exchangeTradeId && !venue.exchangeTradeId.startsWith('soar-fill-') &&
+          !usedVenueIds.has(venue.exchangeTradeId) && hasTrustedFillTime(venue) &&
+          sameFillEconomics(local, venue, candidate.symbol, candidate.side!));
+        if (matches.length !== 1) return unknown('LOCAL_FILL_TIME_AMBIGUOUS');
+        if (unmatchedLocal.filter((other) =>
+          sameFillEconomics(other, matches[0], candidate.symbol, candidate.side!)).length !== 1) {
+          return unknown('LOCAL_FILL_TIME_AMBIGUOUS');
+        }
+        const venue = matches[0];
+        promotions.push({ id: local.id, oldId: local.exchangeTradeId, venue });
+        matchedVenueByLocalId.set(local.id, venue);
+        usedVenueIds.add(venue.exchangeTradeId!);
+      }
+      for (const promotion of promotions) {
+        const changed = await tx.orderFill.updateMany({
+          where: { id: promotion.id, exchangeTradeId: promotion.oldId },
+          data: { exchangeTradeId: promotion.venue.exchangeTradeId! },
+        });
+        if (changed.count !== 1) return unknown('LOCAL_FILL_CONFLICT');
+        await tx.trade.updateMany({ where: {
+          orderId: order.id, exchangeTradeId: promotion.oldId,
+        }, data: { exchangeTradeId: promotion.venue.exchangeTradeId! } });
+        await tx.order.updateMany({ where: {
+          id: order.id, exchangeTradeId: promotion.oldId,
+        }, data: { exchangeTradeId: promotion.venue.exchangeTradeId! } });
       }
       // A later trade lookup can supply venue time for the same persisted fill.
       // The order lock and the economic/identity checks above make this a
       // one-way, idempotent repair; a conflicting trusted time fails closed.
       for (const local of localFills) {
-        const venue = venueFills.get(local.exchangeTradeId)!;
+        const venue = matchedVenueByLocalId.get(local.id)!;
         if (local.venueExecutedAt == null && hasTrustedFillTime(venue)) {
           if (local.exchangeTradeId.startsWith('soar-fill-') &&
               snapshot.fills.filter((fill) =>

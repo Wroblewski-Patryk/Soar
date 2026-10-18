@@ -2,7 +2,7 @@ import { Exchange, Prisma, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import type { LiveFillCandidate } from '../orders/orders.liveFillCandidates.service';
 import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
-import type { CcxtFuturesOrderResult } from './ccxtFuturesConnector.types';
+import type { CcxtFuturesOrderFill, CcxtFuturesOrderResult } from './ccxtFuturesConnector.types';
 
 type ReadConnector = {
   fetchOrderWithFills(input: { symbol: string; orderId: string }): Promise<{
@@ -45,6 +45,44 @@ const matches = (candidate: LiveFillCandidate, order: CcxtFuturesOrderResult, re
   (!candidate.side || !order.side || order.side.toUpperCase() === candidate.side) &&
   (!requireClientId || (candidate.clientOrderId != null && rawClientId(order) === candidate.clientOrderId)) &&
   (!rawClientId(order) || !candidate.clientOrderId || rawClientId(order) === candidate.clientOrderId);
+
+const quantityMatches = (left: number, right: number, count: number) =>
+  Number.isFinite(left) && Number.isFinite(right) &&
+  Math.abs(left - right) <= 16 * Number.EPSILON *
+    Math.max(Math.abs(left), Math.abs(right)) * Math.max(1, count);
+const trustedTradeTime = (fill: CcxtFuturesOrderFill) =>
+  fill.source === 'fetchMyTrades' && fill.executedAt != null &&
+  Number.isFinite(fill.executedAt.getTime()) && fill.executedAt.getTime() > 0;
+const compatibleFill = (left: CcxtFuturesOrderFill, right: CcxtFuturesOrderFill) =>
+  normalizedSymbol(left.symbol) === normalizedSymbol(right.symbol) &&
+  (!left.side || !right.side || left.side.toUpperCase() === right.side.toUpperCase()) &&
+  (!left.exchangeOrderId || !right.exchangeOrderId ||
+    left.exchangeOrderId === right.exchangeOrderId) &&
+  quantityMatches(left.quantity, right.quantity, 1) &&
+  quantityMatches(left.price, right.price, 1) &&
+  (left.feeCost == null || right.feeCost == null ||
+    quantityMatches(left.feeCost, right.feeCost, 1)) &&
+  (!left.feeCurrency || !right.feeCurrency || left.feeCurrency === right.feeCurrency);
+
+// Complete aggregate fills can carry fees but no trusted execution time. Only
+// replace them with order-scoped trades when every aggregate row has exactly
+// one matching trade. ID-less identical rows cannot establish that mapping.
+const alignCompleteFills = (inline: CcxtFuturesOrderFill[],
+  trades: CcxtFuturesOrderFill[]): number[] | null => {
+  if (inline.length !== trades.length) return null;
+  const used = new Set<number>();
+  const match: number[] = [];
+  for (const row of inline) {
+    const candidates = trades.flatMap((trade, index) =>
+      !used.has(index) && compatibleFill(row, trade) &&
+      (!row.exchangeTradeId || row.exchangeTradeId === trade.exchangeTradeId)
+        ? [index] : []);
+    if (candidates.length !== 1) return null;
+    match.push(candidates[0]);
+    used.add(candidates[0]);
+  }
+  return match;
+};
 
 export const resolveLiveFillCredentials = async (
   candidate: LiveFillCandidate,
@@ -133,21 +171,23 @@ export const lookupLiveFillCandidate = async (
     const withCompleteFills = async (order: CcxtFuturesOrderResult) => {
       const inline = order.fills ?? [];
       const inlineQuantity = inline.reduce((sum, fill) => sum + fill.quantity, 0);
-      if (!order.filled || Math.abs(inlineQuantity - order.filled) <=
-          16 * Number.EPSILON * Math.max(inlineQuantity, order.filled) * Math.max(1, inline.length) ||
-          !connector.fetchTradesForOrder) return order;
+      if (!order.filled || !connector.fetchTradesForOrder) return order;
+      const inlineComplete = quantityMatches(inlineQuantity, order.filled, inline.length);
+      if (inlineComplete && inline.every(trustedTradeTime)) return order;
       try {
         const trades = await connector.fetchTradesForOrder({ symbol: candidate.symbol,
           orderId: order.id, since: Math.max(0, candidate.createdAt.getTime() - 60_000), limit: 1000 });
         const tradeQuantity = trades.reduce((sum, fill) => sum + fill.quantity, 0);
-        if (Math.abs(tradeQuantity - order.filled) <=
-            16 * Number.EPSILON * Math.max(tradeQuantity, order.filled) * Math.max(1, trades.length)) {
-          const inlineById = new Map(inline.filter((fill) => fill.exchangeTradeId)
-            .map((fill) => [fill.exchangeTradeId, fill]));
-          return { ...order, fills: trades.map((fill) => {
-            const prior = inlineById.get(fill.exchangeTradeId);
-            return prior?.feeCost != null && fill.feeCost == null &&
-              prior.quantity === fill.quantity && prior.price === fill.price
+        if (quantityMatches(tradeQuantity, order.filled, trades.length) &&
+            trades.every((fill) => !fill.exchangeOrderId || fill.exchangeOrderId === order.id) &&
+            trades.every((fill) => normalizedSymbol(fill.symbol) === normalizedSymbol(candidate.symbol))) {
+          const alignment = inlineComplete ? alignCompleteFills(inline, trades) : [];
+          if (!alignment) return order;
+          const inlineByTradeIndex = new Map(alignment.map((tradeIndex, inlineIndex) =>
+            [tradeIndex, inline[inlineIndex]]));
+          return { ...order, fills: trades.map((fill, index) => {
+            const prior = inlineByTradeIndex.get(index);
+            return prior?.feeCost != null && fill.feeCost == null
               ? { ...fill, feeCost: prior.feeCost, feeCurrency: prior.feeCurrency } : fill;
           }) };
         }
