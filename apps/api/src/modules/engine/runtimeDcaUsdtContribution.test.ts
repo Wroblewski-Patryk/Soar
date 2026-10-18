@@ -169,6 +169,110 @@ describe('runtime confirmed USDT contribution DCA', () => {
     });
 
   it.each([
+    ['PAPER', 'LONG', [126, 151, 149, 136, 125]],
+    ['PAPER', 'SHORT', [74, 49, 51, 64, 75]],
+    ['LIVE', 'LONG', [126, 151, 149, 136, 125]],
+    ['LIVE', 'SHORT', [74, 49, 51, 64, 75]],
+  ] as const)('%s %s keeps the second TTP level on pullback with USDT DCA disabled',
+    async (mode, side, prices) => {
+      const position: any = {
+        id: `ttp-no-dca-${mode}-${side}`, userId: 'usdt-user', botId: 'usdt-bot',
+        walletId: 'usdt-wallet', strategyId: 'usdt-strategy', symbol: 'BTCUSDT',
+        side, entryPrice: 100, quantity: 1, leverage: 1, marginUsed: null,
+        stopLoss: null, takeProfit: null, managementMode: 'BOT_MANAGED',
+        origin: 'BOT', continuityState: 'CONFIRMED', status: 'OPEN',
+        unrealizedPnl: null, lastExchangeSyncAt: null,
+        bot: { walletId: 'usdt-wallet', liveOptIn: true,
+          wallet: { mode, exchange: 'BINANCE', marketType: 'FUTURES',
+            baseCurrency: 'USDT', paperInitialBalance: 1000 },
+          symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+            exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+          } },
+        },
+      };
+      const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+      const executeDca = vi.fn();
+      const deps: any = {
+        listOpenPositionsBySymbol: async () => [position],
+        getStrategyConfigById: async () => ({
+          close: { mode: 'advanced', tp: 99, sl: 99,
+            ttp: [{ percent: 25, arm: 12 }, { percent: 50, arm: 25 }] },
+          additional: { dcaEnabled: false, dcaSizingBasis: 'usdt_contribution_v1', dcaTimes: 0 },
+        }),
+        executeDca, closeByExitSignal,
+        resolveLifecyclePrice: ({ fallbackPrice }: { fallbackPrice: number }) => fallbackPrice,
+        recordRuntimeEvent: vi.fn(async () => undefined), nowMs: () => Date.now(),
+      };
+      const send = (price: number) => new RuntimePositionAutomationService(deps).handleTickerEvent({
+        type: 'ticker', exchange: 'BINANCE', marketType: 'FUTURES',
+        symbol: 'BTCUSDT', eventTime: Date.now(), lastPrice: price,
+        priceChangePercent24h: side === 'LONG' ? 40 : -40,
+      });
+      try {
+        for (const price of prices.slice(0, 4)) await send(price);
+        const protectedState = await runtimePositionStateStore.getPositionRuntimeState(position.id);
+        expect(protectedState?.trailingTakeProfitActiveLevelIndex).toBe(1);
+        expect(protectedState!.trailingTakeProfitHighPercent! -
+          protectedState!.trailingTakeProfitStepPercent!).toBeCloseTo(0.26);
+        expect(closeByExitSignal).not.toHaveBeenCalled();
+        expect(executeDca).not.toHaveBeenCalled();
+        await send(prices[4]);
+        expect(closeByExitSignal).toHaveBeenCalledTimes(1);
+        expect(closeByExitSignal).toHaveBeenCalledWith(expect.objectContaining({
+          reason: 'trailing_take_profit', markPrice: prices[4], mode,
+        }));
+      } finally {
+        await runtimePositionStateStore.deletePositionRuntimeState(position.id);
+      }
+    });
+
+  it('blocks automation when a persisted trailing tracker cannot be rebased to a confirmed fill',
+    async () => {
+      const position: any = {
+        id: 'incomplete-trailing-rebase', userId: 'usdt-user', botId: 'usdt-bot',
+        walletId: 'usdt-wallet', strategyId: 'usdt-strategy', symbol: 'BTCUSDT',
+        side: 'LONG', entryPrice: 123.08, quantity: 2, leverage: 1, marginUsed: null,
+        stopLoss: null, takeProfit: null, managementMode: 'BOT_MANAGED',
+        origin: 'BOT', continuityState: 'CONFIRMED', status: 'OPEN',
+        unrealizedPnl: null, lastExchangeSyncAt: null,
+        bot: { walletId: 'usdt-wallet', liveOptIn: true,
+          wallet: { mode: 'LIVE', exchange: 'BINANCE', marketType: 'FUTURES',
+            baseCurrency: 'USDT', paperInitialBalance: 1000 },
+          symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+            exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+          } },
+        },
+      };
+      const closeByExitSignal = vi.fn();
+      try {
+        await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+          quantity: 1, averageEntryPrice: 100, currentAdds: 0,
+          trailingTakeProfitHighPercent: 0.51,
+          trailingTakeProfitActiveLevelIndex: 1,
+        });
+        await new RuntimePositionAutomationService({
+          listOpenPositionsBySymbol: async () => [position],
+          getStrategyConfigById: async () => ({
+            close: { mode: 'advanced', tp: 99, sl: 99,
+              ttp: [{ percent: 25, arm: 12 }, { percent: 50, arm: 25 }] },
+            additional: { dcaEnabled: false, dcaSizingBasis: 'usdt_contribution_v1' },
+          }),
+          closeByExitSignal,
+          resolveLifecyclePrice: async () => 130,
+          recordRuntimeEvent: vi.fn(async () => undefined),
+        }).handleTickerEvent({ type: 'ticker', exchange: 'BINANCE', marketType: 'FUTURES',
+          symbol: 'BTCUSDT', eventTime: Date.now(), lastPrice: 130,
+          priceChangePercent24h: 30 });
+        expect(closeByExitSignal).not.toHaveBeenCalled();
+        expect(await runtimePositionStateStore.getPositionRuntimeState(position.id))
+          .toMatchObject({ averageEntryPrice: 100,
+            trailingTakeProfitHighPercent: 0.51 });
+      } finally {
+        await runtimePositionStateStore.deletePositionRuntimeState(position.id);
+      }
+    });
+
+  it.each([
     ['PAPER', 'LONG', [49, 57, 76, 63]],
     ['PAPER', 'SHORT', [151, 143, 124, 137]],
     ['LIVE', 'LONG', [49, 57, 76, 63]],

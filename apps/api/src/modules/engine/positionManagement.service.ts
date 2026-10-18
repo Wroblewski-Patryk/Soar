@@ -77,6 +77,28 @@ export const rebasePositionManagementProtection = (
   return next;
 };
 
+// An incomplete tracker has no trustworthy protected price to carry across
+// a fill. Callers must stop automation rather than reuse its old ROI.
+export const tryRebasePositionManagementProtection = (
+  state: PositionManagementState,
+  newAverageEntryPrice: number,
+  side: 'LONG' | 'SHORT',
+  leverage: number,
+): PositionManagementState | null => {
+  const high = state.trailingTakeProfitHighPercent;
+  const step = state.trailingTakeProfitStepPercent;
+  const loss = state.trailingLossLimitPercent;
+  if (!Number.isFinite(state.averageEntryPrice) || state.averageEntryPrice <= 0 ||
+      !Number.isFinite(newAverageEntryPrice) || newAverageEntryPrice <= 0 ||
+      !Number.isFinite(leverage) || leverage <= 0 ||
+      (high == null) !== (step == null) ||
+      (high != null && (!Number.isFinite(high) || !Number.isFinite(step) || step! <= 0)) ||
+      (loss != null && !Number.isFinite(loss)) ||
+      (state.trailingTakeProfitActiveLevelIndex != null && high == null) ||
+      (state.trailingLossActiveLevelIndex != null && loss == null)) return null;
+  return rebasePositionManagementProtection(state, newAverageEntryPrice, side, leverage);
+};
+
 const shouldDca = (currentPnlFraction: number | null, triggerPercent: number) => {
   if (typeof currentPnlFraction !== 'number' || !Number.isFinite(currentPnlFraction)) {
     return false;

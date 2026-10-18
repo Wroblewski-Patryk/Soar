@@ -20,6 +20,7 @@ export { applyLiveExchangeAccountUpdateEvent } from
   './orders.exchangeEvents.accountUpdate.service';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { tryRebasePositionManagementProtection } from '../engine/positionManagement.service';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
 import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
@@ -292,6 +293,8 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
   nextQuantity: number;
   nextEntryPrice: number;
   fillPrice: number;
+  positionSide: 'LONG' | 'SHORT';
+  leverage: number;
 }) => {
   const dedupe = await runtimeExecutionDedupeService.markSucceededByOrderId({
     orderId: input.orderId,
@@ -300,6 +303,10 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
   });
   const previousState =
     (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
+  const protection = previousState == null ? null
+    : tryRebasePositionManagementProtection(previousState, input.nextEntryPrice,
+        input.positionSide, input.leverage);
+  if (previousState && !protection) return false;
   const rawLevelIndex = dedupe?.commandFingerprint?.dcaLevelIndex;
   const levelIndex = Number(rawLevelIndex);
   const normalizedLevelIndex = Number.isFinite(levelIndex)
@@ -326,10 +333,12 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
     ),
     executedDcaLevelIndices:
       executedDcaLevelIndices.length > 0 ? executedDcaLevelIndices : undefined,
-    trailingAnchorPrice: previousState?.trailingAnchorPrice ?? input.nextEntryPrice,
-    trailingLossLimitPercent: previousState?.trailingLossLimitPercent,
-    trailingTakeProfitHighPercent: previousState?.trailingTakeProfitHighPercent,
-    trailingTakeProfitStepPercent: previousState?.trailingTakeProfitStepPercent,
+    trailingAnchorPrice: protection?.trailingAnchorPrice ?? input.nextEntryPrice,
+    trailingLossLimitPercent: protection?.trailingLossLimitPercent,
+    trailingLossActiveLevelIndex: protection?.trailingLossActiveLevelIndex,
+    trailingTakeProfitHighPercent: protection?.trailingTakeProfitHighPercent,
+    trailingTakeProfitStepPercent: protection?.trailingTakeProfitStepPercent,
+    trailingTakeProfitActiveLevelIndex: protection?.trailingTakeProfitActiveLevelIndex,
     lastDcaPrice: input.fillPrice,
   });
 };
@@ -633,13 +642,16 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
   });
   let dcaSync: {
     orderId: string; positionId: string; nextQuantity: number;
-    nextEntryPrice: number; fillPrice: number;
+    nextEntryPrice: number; fillPrice: number; positionSide: 'LONG' | 'SHORT';
+    leverage: number;
   } | null = existingLifecycleTrade?.lifecycleAction === 'DCA' && updatedOrder.position
     ? {
         orderId: updatedOrder.id, positionId: updatedOrder.position.id,
         nextQuantity: updatedOrder.position.quantity,
         nextEntryPrice: updatedOrder.position.entryPrice,
         fillPrice: existingLifecycleTrade.price,
+        positionSide: updatedOrder.position.side,
+        leverage: updatedOrder.position.leverage,
       }
     : null;
   if (
@@ -723,6 +735,8 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
           dcaSync = {
             orderId: updatedOrder.id, positionId: updatedOrder.position.id,
             nextQuantity, nextEntryPrice, fillPrice: averageFillPrice,
+            positionSide: updatedOrder.position.side,
+            leverage: updatedOrder.position.leverage,
           };
         }
       }
@@ -840,7 +854,9 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchange
   await input.afterCoreCommit?.();
   if (processed.status === 'applied' && processed.orderStatus === 'FILLED') {
     if ('dcaSync' in processed && processed.dcaSync) {
-      await syncRuntimeDcaStateFromExchangeFill(processed.dcaSync);
+      if (!await syncRuntimeDcaStateFromExchangeFill(processed.dcaSync)) {
+        throw new Error('RUNTIME_STATE_SYNC_PENDING');
+      }
     } else {
       if ('closedPositionId' in processed && processed.closedPositionId) {
         await invalidateRuntimePositionStateAfterExchangeClose(processed.closedPositionId);

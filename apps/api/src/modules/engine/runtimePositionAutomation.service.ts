@@ -3,7 +3,8 @@ import { prisma } from '../../prisma/client';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { openOrder as openOrderLifecycle } from '../orders/orders.service';
-import { evaluatePositionManagement, rebasePositionManagementProtection } from './positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection,
+  tryRebasePositionManagementProtection } from './positionManagement.service';
 import { clonePositionManagementState, positionManagementStatesEqual } from './positionManagementState.utils';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
@@ -453,6 +454,7 @@ export const buildPositionManagementInput = (
     side: position.side,
     currentPrice: markPrice,
     leverage: Math.max(1, position.leverage || 1),
+    dcaSizingBasis: sizingBasis,
     stopLossPrice,
     takeProfitPrice,
     trailingTakeProfit:
@@ -726,13 +728,16 @@ export class RuntimePositionAutomationService {
       return;
     }
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
+    const canonicalRebase = stateRebasedToCanonical && position.origin === 'BOT' && persistedState
+      ? tryRebasePositionManagementProtection(persistedState, position.entryPrice,
+          position.side, position.leverage || 1) : null;
+    if (stateRebasedToCanonical && position.origin === 'BOT' && persistedState && !canonicalRebase) {
+      console.warn(`[RuntimePositionAutomation] position=${position.id} skipped: trailing protection cannot be rebased`);
+      return;
+    }
     const basePreviousState = stateRebasedToCanonical
       ? position.origin === 'BOT' && persistedState
-        ? { ...(input.dca?.sizingBasis === 'usdt_contribution_v1'
-          ? rebasePositionManagementProtection(persistedState, position.entryPrice,
-            position.side, position.leverage || 1)
-          : persistedState), quantity: position.quantity,
-          averageEntryPrice: position.entryPrice }
+        ? { ...canonicalRebase!, quantity: position.quantity, averageEntryPrice: position.entryPrice }
         : defaultState
       : persistedState ?? defaultState;
     const previousState =

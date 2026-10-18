@@ -12,6 +12,7 @@ import { recoverLiveFillCandidateOnce } from './orders.liveFillRecovery.service'
 import { applyLiveExchangeAccountUpdateEvent,
   applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { evaluatePositionManagement } from '../engine/positionManagement.service';
 import { RuntimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import { selectRuntimeDisplayState } from '../bots/runtimeSessionPositionsRead.service';
 import type { RuntimeManagedPosition } from '../engine/runtimePositionAutomation.types';
@@ -139,7 +140,7 @@ const createDbBackedAutomation = (fx: Awaited<ReturnType<typeof fixture>>) => {
       const position = await prisma.position.findFirst({ where: {
         id: fx.position!.id, symbol, status: 'OPEN',
       } });
-      return position ? [{ ...position, bot: {
+      return position ? [{ ...position, strategyId: 'test-recovery-strategy', bot: {
         walletId: fx.wallet.id, liveOptIn: true,
         wallet: { mode: 'LIVE', exchange: 'BINANCE', marketType: 'FUTURES',
           baseCurrency: 'USDT', paperInitialBalance: 10_000 },
@@ -149,7 +150,10 @@ const createDbBackedAutomation = (fx: Awaited<ReturnType<typeof fixture>>) => {
         botMarketGroups: [],
       } } as RuntimeManagedPosition] : [];
     },
-    getStrategyConfigById: async () => null,
+    getStrategyConfigById: async () => ({
+      close: { mode: 'basic', tp: 99, sl: 99 },
+      additional: { dcaEnabled: false },
+    }),
     getDurableDcaProgress: async () => ({
       currentAdds: await prisma.trade.count({ where: {
         positionId: fx.position!.id, lifecycleAction: 'DCA',
@@ -654,6 +658,74 @@ describe('explicit LIVE fill recovery', () => {
     expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
     expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
       eventType: 'DCA_EXECUTED' } })).toBe(1);
+  });
+
+  it('rebases armed TTP after an asynchronous LIVE DCA fill and restart', async () => {
+    const fx = await fixture('DCA');
+    await runtimePositionStateStore.setPositionRuntimeState(fx.position!.id, {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 151,
+      trailingTakeProfitHighPercent: 0.51, trailingTakeProfitStepPercent: 0.25,
+      trailingTakeProfitActiveLevelIndex: 1,
+    });
+    const snapshot = found(fx.candidate, fx.key.id, fx.venueId, 1,
+      [fill(fx.venueId, 'dca-146', 1, 0.1, 'buy', 146.16)]);
+    expect(await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) })).toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+    const canonical = await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } });
+    expect(canonical).toMatchObject({ quantity: 2, entryPrice: 123.08 });
+    const cached = await runtimePositionStateStore.getPositionRuntimeState(canonical.id);
+    expect(cached?.trailingTakeProfitActiveLevelIndex).toBe(1);
+    expect(canonical.entryPrice * (1 + cached!.trailingTakeProfitHighPercent! -
+      cached!.trailingTakeProfitStepPercent!)).toBeCloseTo(126);
+    expect(evaluatePositionManagement({ side: 'LONG', currentPrice: 130,
+      dcaSizingBasis: 'usdt_contribution_v1',
+      trailingTakeProfitLevels: [
+        { armPercent: 0.25, trailPercent: 0.12 },
+        { armPercent: 0.5, trailPercent: 0.25 },
+      ] }, cached!).shouldClose).toBe(false);
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(snapshot) });
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id))
+      .toMatchObject({ trailingTakeProfitActiveLevelIndex: 1 });
+    const afterFillAt = canonical.lastDcaFillVenueAt!.getTime() + 1;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: afterFillAt, transactionTime: afterFillAt,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 123.08, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const automation = new RuntimePositionAutomationService({
+      listOpenPositionsBySymbol: async () => [{
+        ...await prisma.position.findUniqueOrThrow({ where: { id: canonical.id } }),
+        strategyId: 'test-trailing-strategy',
+        bot: { walletId: fx.wallet.id, liveOptIn: true,
+          wallet: { mode: 'LIVE', exchange: 'BINANCE', marketType: 'FUTURES',
+            baseCurrency: 'USDT', paperInitialBalance: 10_000 },
+          symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+            exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+          } }, botMarketGroups: [] },
+      } as RuntimeManagedPosition],
+      getStrategyConfigById: async () => ({
+        close: { mode: 'advanced', tp: 99, sl: 99,
+          ttp: [{ percent: 25, arm: 12 }, { percent: 50, arm: 25 }] },
+        additional: { dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+          dcaMode: 'advanced', dcaTimes: 1,
+          dcaLevels: [{ percent: 40, multiplier: 1 }] },
+      }),
+      getDurableDcaProgress: async () => ({ currentAdds: 1,
+        executedDcaLevelIndices: [0], lastDcaPrice: 146.16 }),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: false })),
+      closeByExitSignal,
+      resolveLifecyclePrice: async ({ fallbackPrice }) => fallbackPrice,
+      recordRuntimeEvent: vi.fn(async () => undefined),
+    });
+    await automation.handleTickerEvent({ ...tick, lastPrice: 130, eventTime: Date.now() });
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    await automation.handleTickerEvent({ ...tick, lastPrice: 125, eventTime: Date.now() + 1 });
+    expect(closeByExitSignal).toHaveBeenCalledTimes(1);
   });
 
   it('keeps a closed position non-actionable when cache invalidation fails, then clears it on replay', async () => {
