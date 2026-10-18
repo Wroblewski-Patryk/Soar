@@ -2,6 +2,7 @@ import { createClient } from 'redis';
 import { prisma } from '../../prisma/client';
 import { tryRebasePositionManagementProtection } from './positionManagement.service';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
+import { protectionMatchesEvidence } from './runtimePositionProtectionEvidence.service';
 import { parseTrustedRuntimePositionState } from './runtimePositionState.store';
 
 type Redis = Pick<ReturnType<typeof createClient>, 'get' | 'eval'>;
@@ -45,7 +46,8 @@ export const repairRuntimePositionCacheOnce = async (input: {
     where: { id: input.positionId, ...liveBotScope },
     select: { id: true, userId: true, botId: true, walletId: true, origin: true, symbol: true,
       side: true, status: true, syncState: true, continuityState: true,
-      quantity: true, entryPrice: true, leverage: true, updatedAt: true },
+      quantity: true, entryPrice: true, leverage: true, updatedAt: true,
+      runtimeTtpEverArmed: true, runtimeTslEverArmed: true },
   });
   if (!position || (position.status !== 'OPEN' && position.status !== 'CLOSED')) {
     return { kind: 'OUT_OF_SCOPE' };
@@ -77,6 +79,10 @@ export const repairRuntimePositionCacheOnce = async (input: {
   try { previous = parseTrustedRuntimePositionState(JSON.parse(raw)); }
   catch { /* Keep damaged protection pending for operator repair. */ }
   if (!previous) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
+  if (!protectionMatchesEvidence(previous, {
+    ttpEverArmed: position.runtimeTtpEverArmed,
+    tslEverArmed: position.runtimeTslEverArmed,
+  })) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
   const protection = tryRebasePositionManagementProtection(previous,
     position.entryPrice, position.side, position.leverage);
   if (!protection) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };

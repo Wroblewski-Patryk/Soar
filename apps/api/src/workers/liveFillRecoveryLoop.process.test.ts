@@ -89,7 +89,8 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       const position = await prisma.position.create({ data: { userId: user.id,
         botId: bot.id, walletId: wallet.id, symbol: 'BTCUSDT', side: 'LONG',
         status: 'OPEN', quantity: 1, entryPrice: 100,
-        origin: 'BOT', managementMode: 'BOT_MANAGED' } });
+        origin: 'BOT', managementMode: 'BOT_MANAGED',
+        runtimeTtpEverArmed: false, runtimeTslEverArmed: false } });
       positionId = position.id;
       const dcaClientId = `soar_${id.replace(/-/g, '').slice(0, 22)}`;
       const dcaVenueId = `venue-${id}`;
@@ -234,6 +235,25 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
         await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
       }
+
+      const armedCache = { ...recoveredCache, trailingAnchorPrice: 120,
+        trailingTakeProfitHighPercent: 120 / 95 - 1,
+        trailingTakeProfitStepPercent: 0.3 / 95,
+        trailingTakeProfitActiveLevelIndex: 0 };
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
+      await prisma.position.update({ where: { id: position.id },
+        data: { runtimeTtpEverArmed: true } });
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
+      const erasedTracker = JSON.stringify({ ...recoveredCache, trailingAnchorPrice: 120 });
+      await redis.set(`runtime:position-state:${position.id}`, erasedTracker);
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
+      expect(await redis.get(`runtime:position-state:${position.id}`)).toBe(erasedTracker);
+      expect((await readLiveExecutionOperationalStatus({
+        redisUrl, recoveryNamespace: namespace,
+      })).recovery.cacheRepairPendingCount).toBe(1);
+      expect(await prisma.trade.count({ where: { orderId: intent.id } })).toBe(1);
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
 
       const closeId = randomUUID();
       const closeClientId = `soar_${closeId.replace(/-/g, '').slice(0, 22)}`;

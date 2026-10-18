@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { RuntimePositionAutomationService } from
   '../engine/runtimePositionAutomation.service';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { listRuntimeAutomationOpenPositionsBySymbol } from
   '../engine/runtimePositionAutomationDefaultPositionDeps';
 import { applyLiveExchangeUserDataStreamEvent } from './orders.exchangeEvents.service';
@@ -12,6 +13,8 @@ import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { recoverLiveFillCandidateOnce } from './orders.liveFillRecovery.service';
 
 const cleanupDb = async () => {
+  const positions = await prisma.position.findMany({ select: { id: true } });
+  for (const position of positions) await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();
@@ -55,7 +58,11 @@ const createDca = async () => {
   const position = await prisma.position.create({ data: { userId: user.id,
     botId: bot.id, walletId: wallet.id, symbol: 'BTCUSDT', side: 'LONG',
     status: 'OPEN', quantity: 1, entryPrice: 100,
-    origin: 'BOT', managementMode: 'BOT_MANAGED' } });
+    origin: 'BOT', managementMode: 'BOT_MANAGED',
+    runtimeTtpEverArmed: false, runtimeTslEverArmed: false } });
+  await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+    quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+  });
   const clientOrderId = `soar_${id.replace(/-/g, '').slice(0, 22)}`;
   const exchangeOrderId = '12345';
   const intent = await prisma.liveOrderIntent.create({ data: { userId: user.id,

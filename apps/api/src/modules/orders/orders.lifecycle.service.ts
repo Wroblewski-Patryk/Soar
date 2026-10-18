@@ -400,6 +400,9 @@ export const applyOrderFillLifecycleInTransaction = async (
         origin: updatedOrder.origin,
         managementMode: updatedOrder.managementMode,
         syncState: 'IN_SYNC',
+        ...(params.mode === 'LIVE' && updatedOrder.origin === 'BOT' &&
+          updatedOrder.managementMode === 'BOT_MANAGED'
+          ? { runtimeTtpEverArmed: false, runtimeTslEverArmed: false } : {}),
         openedAt: filledAt,
       },
       select: {

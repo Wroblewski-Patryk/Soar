@@ -820,6 +820,8 @@ describe('explicit LIVE fill recovery', () => {
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
     expect(await prisma.trade.count({ where: { orderId: fx.intent.id, lifecycleAction: 'OPEN' } })).toBe(1);
     const openedOrder = await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: openedOrder.positionId! } }))
+      .toMatchObject({ runtimeTtpEverArmed: false, runtimeTslEverArmed: false });
     expect(await runtimePositionStateStore.getPositionRuntimeState(openedOrder.positionId!))
       .toMatchObject({ quantity: 1, averageEntryPrice: 100, currentAdds: 0 });
     expect((await prisma.runtimeExecutionDedupe.findUniqueOrThrow({

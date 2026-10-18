@@ -10,9 +10,12 @@ export const initializeNewLiveBotPositionState = async (input: {
     where: { id: input.positionId, userId: input.userId, origin: 'BOT',
       managementMode: 'BOT_MANAGED', status: 'OPEN', syncState: 'IN_SYNC',
       bot: { is: { mode: 'LIVE' } } },
-    select: { id: true, quantity: true, entryPrice: true },
+    select: { id: true, quantity: true, entryPrice: true,
+      runtimeTtpEverArmed: true, runtimeTslEverArmed: true },
   });
-  if (!position || !Number.isFinite(position.quantity) || position.quantity <= 0 ||
+  if (!position || position.runtimeTtpEverArmed !== false ||
+      position.runtimeTslEverArmed !== false ||
+      !Number.isFinite(position.quantity) || position.quantity <= 0 ||
       !Number.isFinite(position.entryPrice) || position.entryPrice <= 0) return false;
   return runtimePositionStateStore.initializeNewPositionRuntimeState(position.id, {
     quantity: position.quantity, averageEntryPrice: position.entryPrice,

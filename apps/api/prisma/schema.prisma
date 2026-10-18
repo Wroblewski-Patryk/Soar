@@ -846,6 +846,8 @@ model Position {
   lastAccountEntryPrice Float?
   lastDcaFillVenueAt DateTime?
   lastDcaFillTimeUncertain Boolean @default(false)
+  runtimeTtpEverArmed Boolean?
+  runtimeTslEverArmed Boolean?
   missingSince       DateTime?
   missingSyncCount   Int       @default(0)
 

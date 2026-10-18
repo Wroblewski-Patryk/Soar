@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { runtimePositionStateStore } from './runtimePositionState.store';
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -92,6 +93,9 @@ describe('runtime position USDT DCA guard', () => {
       marketType: 'FUTURES' as const, symbol: 'BTCUSDT', eventTime: 1_000,
       lastPrice: 0.8, priceChangePercent24h: -20 };
 
+    if (mode === 'LIVE') await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+      quantity: 1, averageEntryPrice: 1, currentAdds: 0, trailingAnchorPrice: 1,
+    });
     await new RuntimePositionAutomationService(deps).handleTickerEvent(event);
     await new RuntimePositionAutomationService(deps).handleTickerEvent(event);
 
@@ -102,5 +106,6 @@ describe('runtime position USDT DCA guard', () => {
     expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
       mode, eventType: 'DCA_EXECUTED',
     }));
+    if (mode === 'LIVE') await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });
 });

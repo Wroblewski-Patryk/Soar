@@ -3,7 +3,7 @@ import { RuntimePositionAutomationService } from './runtimePositionAutomation.se
 import { runtimePositionStateStore } from './runtimePositionState.store';
 
 describe('LIVE BOT protection cache guard after a DCA fill', () => {
-  it.each(['missing', 'incomplete'] as const)(
+  it.each(['missing', 'incomplete', 'erased'] as const)(
     'blocks DCA and CLOSE when the %s cache cannot prove the 119.7 TTP price',
     async (cacheFailure) => {
       const positionId = `pos-live-guard-${cacheFailure}`;
@@ -21,7 +21,7 @@ describe('LIVE BOT protection cache guard after a DCA fill', () => {
           } },
         },
       };
-      const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+      const closeByExitSignal = vi.fn(async () => ({ status: 'submitted' as const }));
       const executeDca = vi.fn();
       const recordRuntimeEvent = vi.fn(async () => undefined);
       const deps: any = {
@@ -51,12 +51,19 @@ describe('LIVE BOT protection cache guard after a DCA fill', () => {
         }));
         closeByExitSignal.mockClear();
         recordRuntimeEvent.mockClear();
-        if (cacheFailure === 'incomplete') {
+        if (cacheFailure === 'missing') {
+          await runtimePositionStateStore.deletePositionRuntimeState(positionId);
+        } else if (cacheFailure === 'incomplete') {
           await runtimePositionStateStore.setPositionRuntimeState(positionId, {
             quantity: 2, averageEntryPrice: 95, currentAdds: 1,
             trailingAnchorPrice: 120,
             trailingTakeProfitHighPercent: 120 / 95 - 1,
             trailingTakeProfitActiveLevelIndex: 0,
+          });
+        } else {
+          await runtimePositionStateStore.setPositionRuntimeState(positionId, {
+            quantity: 2, averageEntryPrice: 95, currentAdds: 1,
+            trailingAnchorPrice: 120,
           });
         }
         await new RuntimePositionAutomationService(deps).handleTickerEvent(event);

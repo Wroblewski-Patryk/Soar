@@ -336,6 +336,8 @@ describe('runtime crash/retry regression', () => {
             lastDcaFillTimeUncertain: false,
             missingSince: null,
             missingSyncCount: 0,
+            runtimeTtpEverArmed: null,
+            runtimeTslEverArmed: null,
             createdAt: new Date(),
             updatedAt: new Date(),
             botId: 'bot-1',

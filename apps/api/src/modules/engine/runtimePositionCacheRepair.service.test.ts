@@ -9,7 +9,8 @@ const fixture = (status: 'OPEN' | 'CLOSED' = 'OPEN') => {
   const position = { id: 'position-1', userId: 'user-1', botId: 'bot-1',
     walletId: 'wallet-1', symbol: 'BTCUSDT', side: 'LONG', origin: 'BOT',
     status, syncState: 'IN_SYNC', continuityState: 'CONFIRMED',
-    quantity: 2, entryPrice: 95, leverage: 1, updatedAt };
+    quantity: 2, entryPrice: 95, leverage: 1, updatedAt,
+    runtimeTtpEverArmed: false, runtimeTslEverArmed: false };
   vi.spyOn(prisma.position, 'findFirst').mockResolvedValue(position as any);
   vi.spyOn(prisma.position, 'findUnique').mockResolvedValue(position as any);
   vi.spyOn(prisma.trade, 'findMany').mockResolvedValue([{
@@ -113,5 +114,25 @@ describe('database-backed BOT runtime cache repair', () => {
     expect(f.readCache()).toBe(incomplete);
     expect(f.redis.eval).not.toHaveBeenCalled();
     f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+
+  it('keeps a fully erased TTP pending against durable armed evidence', async () => {
+    const f = fixture();
+    f.position.runtimeTtpEverArmed = true;
+    const armed = { quantity: 2, averageEntryPrice: 95, currentAdds: 1,
+      trailingAnchorPrice: 120,
+      trailingTakeProfitHighPercent: 120 / 95 - 1,
+      trailingTakeProfitStepPercent: 0.3 / 95,
+      trailingTakeProfitActiveLevelIndex: 0 };
+    f.setCache(JSON.stringify(armed));
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'CLEAN' });
+    const erased = JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 120 });
+    f.setCache(erased);
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' });
+    expect(f.readCache()).toBe(erased);
+    expect(f.redis.eval).not.toHaveBeenCalled();
   });
 });

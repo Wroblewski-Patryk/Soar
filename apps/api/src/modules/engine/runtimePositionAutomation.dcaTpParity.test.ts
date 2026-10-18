@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { runtimePositionStateStore } from './runtimePositionState.store';
 
 const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity') => ({
   walletId: 'wallet-runtime-dca-close-parity',
@@ -95,6 +96,9 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
       nowMs: vi.fn(() => Date.now()),
     };
 
+    await runtimePositionStateStore.setPositionRuntimeState('pos-runtime-tp-profit-side-dca', {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
     const service = new RuntimePositionAutomationService(deps);
     await service.handleTickerEvent({
       type: 'ticker',
@@ -122,6 +126,7 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
         executedDcaLevelIndices: [0],
       })
     );
+    await runtimePositionStateStore.deletePositionRuntimeState('pos-runtime-tp-profit-side-dca');
   });
 
   it('allows runtime SL after loss-side DCA when remaining DCA levels are profit-side only', async () => {
@@ -184,6 +189,9 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
       nowMs: vi.fn(() => Date.now()),
     };
 
+    await runtimePositionStateStore.setPositionRuntimeState('pos-runtime-sl-profit-side-dca', {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
     const service = new RuntimePositionAutomationService(deps);
     await service.handleTickerEvent({
       type: 'ticker',
@@ -209,5 +217,6 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
         quantity: 2,
       })
     );
+    await runtimePositionStateStore.deletePositionRuntimeState('pos-runtime-sl-profit-side-dca');
   });
 });

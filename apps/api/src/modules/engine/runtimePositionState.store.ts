@@ -144,6 +144,9 @@ const cloneState = (state: PersistedRuntimePositionState): PersistedRuntimePosit
 
 export class RuntimePositionStateStore {
   private readonly memory = new Map<string, { state: PersistedRuntimePositionState; expiresAt: number }>();
+  private readonly testProtectionEvidence = new Map<string, {
+    ttpEverArmed: boolean; tslEverArmed: boolean;
+  }>();
   private redisClientPromise: Promise<RedisClient | null> | null = null;
   private redisRetryAt = 0;
 
@@ -197,6 +200,18 @@ export class RuntimePositionStateStore {
     this.memory.set(positionId, {
       state: cloneState(state),
       expiresAt: now + DEFAULT_TTL_MS,
+    });
+  }
+
+  getTestProtectionEvidence(positionId: string) {
+    return this.testProtectionEvidence.get(positionId) ?? null;
+  }
+
+  markTestProtectionEvidence(positionId: string, active: { ttp: boolean; tsl: boolean }) {
+    const previous = this.testProtectionEvidence.get(positionId);
+    this.testProtectionEvidence.set(positionId, {
+      ttpEverArmed: Boolean(previous?.ttpEverArmed || active.ttp),
+      tslEverArmed: Boolean(previous?.tslEverArmed || active.tsl),
     });
   }
 
@@ -283,6 +298,11 @@ export class RuntimePositionStateStore {
 
     const now = Date.now();
     this.setMemory(positionId, normalized, now);
+    if (process.env.NODE_ENV === 'test') this.markTestProtectionEvidence(positionId, {
+      ttp: normalized.trailingTakeProfitHighPercent != null &&
+        normalized.trailingTakeProfitStepPercent != null,
+      tsl: normalized.trailingLossLimitPercent != null,
+    });
 
     const redis = await this.getRedisClient();
     if (!redis) return process.env.NODE_ENV === 'test';
@@ -302,7 +322,10 @@ export class RuntimePositionStateStore {
     const normalized = parseTrustedRuntimePositionState(state);
     if (!normalized) return false;
     if (process.env.NODE_ENV === 'test') {
-      if (!this.memory.has(positionId)) this.setMemory(positionId, normalized);
+      if (!this.memory.has(positionId)) {
+        this.setMemory(positionId, normalized);
+        this.markTestProtectionEvidence(positionId, { ttp: false, tsl: false });
+      }
       return this.getMemory(positionId) != null;
     }
     const redis = await this.getRedisClient();
@@ -319,6 +342,7 @@ export class RuntimePositionStateStore {
 
   async deletePositionRuntimeState(positionId: string) {
     this.memory.delete(positionId);
+    if (process.env.NODE_ENV === 'test') this.testProtectionEvidence.delete(positionId);
     const redis = await this.getRedisClient();
     if (!redis) return process.env.NODE_ENV === 'test';
 

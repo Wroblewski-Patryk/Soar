@@ -10,11 +10,8 @@ import { PositionManagementInput, PositionManagementState } from './positionMana
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
-import { readPositionStateForAutomation } from './runtimePositionAutomationProtectionGuard';
-import {
-  buildDcaExecutionDedupeKey,
-  runtimeExecutionDedupeService,
-} from './runtimeExecutionDedupe.service';
+import { confirmProtectionBeforeAutomationActions, readPositionStateForAutomation } from './runtimePositionAutomationProtectionGuard';
+import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
 import { finalizeRuntimeDcaFill, recordUnknownRuntimeOrderOutcome } from './runtimeImmediateFillFinalizer.service';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
@@ -825,6 +822,7 @@ export class RuntimePositionAutomationService {
 
     let result = evaluatePositionManagement(managementInput, previousState);
     let effectiveState = clonePositionManagementState(result.nextState);
+    if (!await confirmProtectionBeforeAutomationActions({ position, event, strategyId: effectiveStrategyId, recordRuntimeEvent: this.deps.recordRuntimeEvent, evidence: stateRead.evidence, nextState: effectiveState })) return;
     let dcaPendingExchangeFill = false;
 
     if (result.dcaExecuted) {

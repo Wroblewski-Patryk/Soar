@@ -22,6 +22,7 @@ import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import { tryRebasePositionManagementProtection } from '../engine/positionManagement.service';
+import { protectionMatchesEvidence, readRuntimeProtectionEvidence } from '../engine/runtimePositionProtectionEvidence.service';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
 import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
@@ -305,6 +306,8 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
   const previousState =
     (await runtimePositionStateStore.getTrustedPositionRuntimeState(input.positionId)) ?? null;
   if (!previousState) return false;
+  const evidence = await readRuntimeProtectionEvidence(input.positionId).catch(() => null);
+  if (!protectionMatchesEvidence(previousState, evidence)) return false;
   const protection = tryRebasePositionManagementProtection(previousState, input.nextEntryPrice,
     input.positionSide, input.leverage);
   if (!protection) return false;
@@ -777,6 +780,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
       const lifecycleResult = await applyOrderFillLifecycleInTransaction(tx, {
         userId: input.userId,
         orderId: updatedOrder.id,
+        mode: 'LIVE',
         fillPrice: averageFillPrice,
         fillQuantity: cumulativeFilledQuantity,
         filledAt: eventAt,
