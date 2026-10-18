@@ -2,7 +2,7 @@ import { Position, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { isAppErrorLike } from '../../lib/errors';
 import { readLiveExecutionPause } from '../orders/liveExecutionPause.service';
-import { buildManagementPassInput, classifyRuntimeDcaFailure, resolvePauseAwareManagementInput } from './runtimePositionAutomationManagementInput';
+import { buildManagementPassInput, classifyRuntimeDcaFailure, guardPausedFundsExhaustion, resolvePauseAwareManagementInput } from './runtimePositionAutomationManagementInput';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { openOrder as openOrderLifecycle } from '../orders/orders.service';
@@ -54,7 +54,6 @@ export type RuntimeFallbackConfig = {
   trailingType: 'percent' | 'absolute';
   trailingValue: number;
 };
-
 const envBoolean = (value: string | undefined, fallback: boolean) => {
   if (value == null) return fallback;
   return value.trim().toLowerCase() === 'true';
@@ -692,10 +691,11 @@ export class RuntimePositionAutomationService {
           },
         ],
       }) ?? (Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice);
-    const input = await resolvePauseAwareManagementInput({ mode, marketType,
+    const pauseManagement = await resolvePauseAwareManagementInput({ mode, marketType,
       input: buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig),
       readLiveExecutionPause: this.deps.readLiveExecutionPause });
-    if (!input) return;
+    if (!pauseManagement) return;
+    const { input, paused: livePaused } = pauseManagement;
     const defaultState = {
       quantity: position.quantity,
       averageEntryPrice: position.entryPrice,
@@ -813,13 +813,14 @@ export class RuntimePositionAutomationService {
       });
     }
     const managementInput = buildManagementPassInput(input, currentPnlFraction, dcaFundsExhausted);
-
-    let result = evaluatePositionManagement(managementInput, previousState);
+    let result = guardPausedFundsExhaustion({ paused: livePaused, fundsExhausted: dcaFundsExhausted,
+      input: { ...input, currentPnlFraction: currentPnlFraction ?? undefined }, state: previousState,
+      result: evaluatePositionManagement(managementInput, previousState) });
     let effectiveState = clonePositionManagementState(result.nextState);
+    let dcaPendingExchangeFill = livePaused && result.dcaExecuted;
+    if (dcaPendingExchangeFill) effectiveState = previousStateSnapshot;
     if (!await confirmProtectionBeforeAutomationActions({ position, event, strategyId: effectiveStrategyId, recordRuntimeEvent: this.deps.recordRuntimeEvent, evidence: stateRead.evidence, nextState: effectiveState })) return;
-    let dcaPendingExchangeFill = false;
-
-    if (result.dcaExecuted) {
+    if (result.dcaExecuted && !livePaused) {
       const dcaAddedQuantity = Number.isFinite(result.dcaAddedQuantity)
         ? Math.max(0, result.dcaAddedQuantity)
         : Math.max(0, result.nextState.quantity - previousState.quantity);
@@ -839,9 +840,9 @@ export class RuntimePositionAutomationService {
         } catch (error) {
           if (mode === 'LIVE' && isAppErrorLike(error) && error.code === 'LIVE_PRETRADE_PAUSED') {
             // Pause may have committed after the first read and before DCA's final gate.
-            // Re-evaluate the same unfilled state without DCA, then permit only a close.
-            result = evaluatePositionManagement({ ...input, dca: undefined }, previousStateSnapshot);
-            effectiveState = clonePositionManagementState(result.nextState);
+            // A denied DCA is still pending and continues to guard SL/TSL.
+            effectiveState = previousStateSnapshot;
+            dcaPendingExchangeFill = true;
           } else {
             if (!(error instanceof RuntimeDcaPolicyError) || error.code !== 'DCA_FUNDS_EXHAUSTED' ||
               input.dca?.sizingBasis !== 'usdt_contribution_v1') throw error;

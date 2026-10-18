@@ -59,9 +59,14 @@
 - Missing row and DB outage deny before submission. Anonymous and regular
   users cannot access the admin API. Invalid/stale version cannot overwrite a
   newer decision. The audit log records the reason and version change.
-- Runtime skips LIVE DCA under pause and allows protection close using the
-  confirmed pre-DCA position. A pause/DCA race re-evaluates protection. Existing
-  pending/unknown DCA continues to block unsafe close until reconciliation.
+- Runtime retains pending DCA levels in TP/TTP/SL/TSL evaluation while paused.
+  Reached LIVE DCA is not submitted; its unfilled proposal does not advance
+  quantity, average price, or DCA progress. A pause/DCA race keeps the same
+  pre-fill protection and blocks a false SL/TSL close. Futures reduce-only
+  closes remain eligible when the full DCA protection rules permit them.
+  Existing submitted/unknown DCA blocks close until reconciliation. A reached
+  unaffordable DCA may release SL only after funds-exhausted telemetry; pause
+  alone is not evidence that funds are exhausted.
 - Production proof needs exact deployed SHA, migration status, per-instance
   worker inventory, admin readback, and reconciliation evidence. Local tests
   and `/health` do not establish this proof.

@@ -2,13 +2,15 @@ import { describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
 import { DomainError } from '../../lib/errors';
+import { RuntimeDcaPolicyError } from './runtimeDcaPolicy';
 
-const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity') => ({
+const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity',
+  exchange: 'BINANCE' | 'GATEIO' = 'BINANCE') => ({
   walletId: 'wallet-runtime-dca-close-parity',
   liveOptIn: true,
   wallet: {
     mode: 'LIVE' as const,
-    exchange: 'BINANCE' as const,
+    exchange,
     marketType: 'FUTURES' as const,
     baseCurrency: 'USDT',
     paperInitialBalance: 10_000,
@@ -16,7 +18,7 @@ const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity')
   symbolGroup: {
     symbols: ['ADAUSDT'],
     marketUniverse: {
-      exchange: 'BINANCE' as const,
+      exchange,
       marketType: 'FUTURES' as const,
       baseCurrency: 'USDT',
     },
@@ -26,7 +28,7 @@ const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity')
       symbolGroup: {
         symbols: ['ADAUSDT'],
         marketUniverse: {
-          exchange: 'BINANCE' as const,
+          exchange,
           marketType: 'FUTURES' as const,
           baseCurrency: 'USDT',
         },
@@ -75,17 +77,18 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
   });
 
   it.each(['already paused', 'pause races with DCA'] as const)(
-    'permits a LIVE reduce-only TP while %s', async (scenario) => {
+    'keeps reached positive DCA ahead of LIVE TP while %s, including restart', async (scenario) => {
       process.env.RUNTIME_TRAILING_ENABLED = 'false';
       process.env.RUNTIME_DCA_ENABLED = 'false';
       const positionId = `pos-runtime-pause-${scenario.replaceAll(' ', '-')}`;
+      let paused = scenario === 'already paused';
       const executeDca = vi.fn(async () => {
+        paused = true;
         throw new DomainError('LIVE_PRETRADE_PAUSED', 'LIVE_PRETRADE_PAUSED', { status: 503 });
       });
       const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
       const deps: any = {
-        readLiveExecutionPause: vi.fn(async () => ({ available: true,
-          paused: scenario === 'already paused' })),
+        readLiveExecutionPause: vi.fn(async () => ({ available: true, paused })),
         listOpenPositionsBySymbol: vi.fn(async () => [{
           id: positionId, userId: 'user-runtime-pause', botId: 'bot-runtime-pause',
           walletId: 'wallet-runtime-dca-close-parity', strategyId: 'strat-runtime-pause',
@@ -114,14 +117,133 @@ describe('RuntimePositionAutomationService DCA/close parity', () => {
           symbol: 'ADAUSDT', eventTime: 25_000, lastPrice: 112, priceChangePercent24h: 1.1,
         });
         expect(executeDca).toHaveBeenCalledTimes(scenario === 'already paused' ? 0 : 1);
-        expect(closeByExitSignal).toHaveBeenCalledWith(expect.objectContaining({
-          reason: 'take_profit', mode: 'LIVE', quantity: 1,
+        expect(closeByExitSignal).not.toHaveBeenCalled();
+        const restarted = new RuntimePositionAutomationService(deps);
+        await restarted.handleTickerEvent({ type: 'ticker', exchange: 'BINANCE',
+          marketType: 'FUTURES', symbol: 'ADAUSDT', eventTime: 26_000,
+          lastPrice: 112, priceChangePercent24h: 1.1 });
+        expect(executeDca).toHaveBeenCalledTimes(scenario === 'already paused' ? 0 : 1);
+        expect(closeByExitSignal).not.toHaveBeenCalled();
+        expect(restarted.getPositionStateSnapshot(positionId)).toEqual(expect.objectContaining({
+          quantity: 1, averageEntryPrice: 100, currentAdds: 0,
         }));
       } finally {
         await runtimePositionStateStore.deletePositionRuntimeState(positionId);
       }
     }
   );
+
+  it.each([
+    ['BINANCE', 'already paused'], ['BINANCE', 'pause races with DCA'],
+    ['GATEIO', 'already paused'], ['GATEIO', 'pause races with DCA'],
+  ] as const)(
+    '%s does not turn reached -30%% DCA into a false SL at 69.5 while %s or after restart',
+    async (exchange, scenario) => {
+      process.env.RUNTIME_TRAILING_ENABLED = 'false';
+      process.env.RUNTIME_DCA_ENABLED = 'false';
+      const positionId = `pos-paused-dca-sl-${exchange}-${scenario.replaceAll(' ', '-')}`;
+      let paused = scenario === 'already paused';
+      const executeDca = vi.fn(async () => {
+        paused = true;
+        throw new DomainError('LIVE_PRETRADE_PAUSED', 'LIVE_PRETRADE_PAUSED', { status: 503 });
+      });
+      const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+      const deps: any = {
+        readLiveExecutionPause: vi.fn(async () => ({ available: true, paused })),
+        listOpenPositionsBySymbol: vi.fn(async () => [{
+          id: positionId, userId: 'user-paused-dca-sl', botId: 'bot-paused-dca-sl',
+          walletId: 'wallet-runtime-dca-close-parity', strategyId: 'strat-paused-dca-sl',
+          symbol: 'ADAUSDT', side: 'LONG' as const, entryPrice: 100, quantity: 1,
+          leverage: 1, marginUsed: 100, stopLoss: null, takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const, origin: 'BOT' as const,
+          continuityState: 'CONFIRMED' as const, status: 'OPEN' as const,
+          unrealizedPnl: null, lastExchangeSyncAt: null,
+          bot: buildBotExecutionContext('strat-paused-dca-sl', exchange),
+        }]),
+        getStrategyConfigById: vi.fn(async () => ({
+          close: { mode: 'basic', tp: 50, sl: 20, ttp: [], tsl: [] },
+          additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
+            dcaLevels: [{ percent: -30, multiplier: 1 }],
+            dcaSizingBasis: 'usdt_contribution_v1' },
+        })),
+        getDurableDcaProgress: vi.fn(async () => ({ currentAdds: 0, executedDcaLevelIndices: [] })),
+        executeDca, closeByExitSignal,
+        resolveDcaFundsExhausted: vi.fn(async () => false),
+        nowMs: vi.fn(() => Date.now()),
+      };
+      await runtimePositionStateStore.setPositionRuntimeState(positionId, {
+        quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+      });
+      try {
+        for (const eventTime of [30_000, 31_000]) {
+          await new RuntimePositionAutomationService(deps).handleTickerEvent({
+            type: 'ticker', exchange, marketType: 'FUTURES',
+            symbol: 'ADAUSDT', eventTime, lastPrice: 69.5, priceChangePercent24h: -30.5,
+          });
+        }
+        expect(executeDca).toHaveBeenCalledTimes(scenario === 'already paused' ? 0 : 1);
+        expect(closeByExitSignal).not.toHaveBeenCalled();
+        expect(await runtimePositionStateStore.getPositionRuntimeState(positionId)).toEqual(
+          expect.objectContaining({ quantity: 1, averageEntryPrice: 100, currentAdds: 0 }),
+        );
+      } finally {
+        await runtimePositionStateStore.deletePositionRuntimeState(positionId);
+      }
+    }
+  );
+
+  it('releases SL only after a reached USDT DCA reports insufficient funds', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+    const executeDca = vi.fn(async () => {
+      throw new RuntimeDcaPolicyError({ code: 'DCA_FUNDS_EXHAUSTED',
+        message: 'Runtime USDT DCA requires more free USDT than the wallet has' });
+    });
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      readLiveExecutionPause: vi.fn(async () => ({ available: true, paused: false })),
+      listOpenPositionsBySymbol: vi.fn(async () => [{
+        id: 'pos-dca-funds-sl', userId: 'user-dca-funds-sl', botId: 'bot-dca-funds-sl',
+        walletId: 'wallet-runtime-dca-close-parity', strategyId: 'strat-dca-funds-sl',
+        symbol: 'ADAUSDT', side: 'LONG' as const, entryPrice: 100, quantity: 1,
+        leverage: 1, marginUsed: 100, stopLoss: null, takeProfit: null,
+        managementMode: 'BOT_MANAGED' as const, origin: 'BOT' as const,
+        continuityState: 'CONFIRMED' as const, status: 'OPEN' as const,
+        unrealizedPnl: null, lastExchangeSyncAt: null,
+        bot: buildBotExecutionContext('strat-dca-funds-sl'),
+      }]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { mode: 'basic', tp: 50, sl: 20, ttp: [], tsl: [] },
+        additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
+          dcaLevels: [{ percent: -30, multiplier: 1 }],
+          dcaSizingBasis: 'usdt_contribution_v1' },
+      })),
+      getDurableDcaProgress: vi.fn(async () => ({ currentAdds: 0, executedDcaLevelIndices: [] })),
+      executeDca, closeByExitSignal, recordRuntimeEvent,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+    await runtimePositionStateStore.setPositionRuntimeState('pos-dca-funds-sl', {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+    });
+    try {
+      await new RuntimePositionAutomationService(deps).handleTickerEvent({
+        type: 'ticker', exchange: 'BINANCE', marketType: 'FUTURES',
+        symbol: 'ADAUSDT', eventTime: 32_000, lastPrice: 69.5, priceChangePercent24h: -30.5,
+      });
+      expect(executeDca).toHaveBeenCalledOnce();
+      expect(closeByExitSignal).toHaveBeenCalledWith(expect.objectContaining({
+        reason: 'stop_loss', quantity: 1, mode: 'LIVE',
+      }));
+      expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED', message: 'Runtime DCA blocked by insufficient funds',
+        payload: expect.objectContaining({ reason: 'dca_funds_exhausted' }),
+      }));
+    } finally {
+      await runtimePositionStateStore.deletePositionRuntimeState('pos-dca-funds-sl');
+    }
+  });
 
   it('keeps runtime TP blocked while profit-side DCA levels remain pending', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
