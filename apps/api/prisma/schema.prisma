@@ -841,8 +841,11 @@ model Position {
   lastExchangeSeenAt DateTime?
   lastExchangeSyncAt DateTime?
   lastAccountSeenAt   DateTime?
+  lastAccountTransactionAt DateTime?
   lastAccountQuantity Float?
   lastAccountEntryPrice Float?
+  lastDcaFillVenueAt DateTime?
+  lastDcaFillTimeUncertain Boolean @default(false)
   missingSince       DateTime?
   missingSyncCount   Int       @default(0)
 

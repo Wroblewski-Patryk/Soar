@@ -31,6 +31,8 @@ type ExchangeFillFinalizationInput = {
   fillQuantity: number;
   exchangeTradeId: string | null;
   eventAt: Date;
+  fillTimeFromVenue?: boolean;
+  requiresAccountConfirmation?: boolean;
   client?: PrismaClient;
 };
 
@@ -56,15 +58,27 @@ export const finalizeExchangeDcaFillInTransaction = async (
     });
     const hasAccountSnapshot = position.origin !== 'EXCHANGE_SYNC' &&
       position.lastAccountSeenAt != null;
-    const agreesWithAccount = hasAccountSnapshot && confirmedAccountSnapshotMatches({
+    const trustedFillAt = input.fillTimeFromVenue ? input.eventAt : null;
+    const lastTrustedFillAt = position.lastDcaFillVenueAt &&
+      (!trustedFillAt || position.lastDcaFillVenueAt > trustedFillAt)
+      ? position.lastDcaFillVenueAt : trustedFillAt;
+    const fillTimeUncertain = position.lastDcaFillTimeUncertain ||
+      (position.lastExchangeSyncAt != null && position.lastDcaFillVenueAt == null) ||
+      trustedFillAt == null;
+    const agreesWithAccount = hasAccountSnapshot && !fillTimeUncertain &&
+      lastTrustedFillAt != null &&
+      position.lastAccountTransactionAt != null &&
+      position.lastAccountTransactionAt > lastTrustedFillAt &&
+      confirmedAccountSnapshotMatches({
       quantity: nextQuantity, entryPrice: nextEntryPrice,
       lastAccountSeenAt: position.lastAccountSeenAt,
       lastAccountQuantity: position.lastAccountQuantity,
       lastAccountEntryPrice: position.lastAccountEntryPrice,
     });
-    const continuityState = hasAccountSnapshot
-      ? agreesWithAccount ? 'CONFIRMED' : 'RECOVERING'
-      : position.origin === 'EXCHANGE_SYNC' ? 'CONFIRMED' : position.continuityState;
+    const continuityState = position.origin === 'EXCHANGE_SYNC'
+      ? 'CONFIRMED' : agreesWithAccount ? 'CONFIRMED'
+        : hasAccountSnapshot || input.requiresAccountConfirmation
+          ? 'RECOVERING' : position.continuityState;
     const recovering = continuityState === 'RECOVERING';
     await tx.position.update({
       where: { id: position.id }, data: {
@@ -72,7 +86,11 @@ export const finalizeExchangeDcaFillInTransaction = async (
         lastExchangeSeenAt: position.lastExchangeSeenAt &&
           position.lastExchangeSeenAt > input.eventAt
           ? position.lastExchangeSeenAt : input.eventAt,
-        lastExchangeSyncAt: input.eventAt,
+        lastExchangeSyncAt: position.lastExchangeSyncAt &&
+          position.lastExchangeSyncAt > input.eventAt
+          ? position.lastExchangeSyncAt : input.eventAt,
+        lastDcaFillVenueAt: lastTrustedFillAt,
+        lastDcaFillTimeUncertain: fillTimeUncertain,
         missingSince: recovering ? position.missingSince ?? input.eventAt : null,
         missingSyncCount: recovering ? Math.max(1, position.missingSyncCount) : 0,
         continuityState,

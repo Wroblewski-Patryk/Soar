@@ -399,8 +399,9 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       expect(eligible.filter((account) => account.userId === user.id))
         .toEqual([expect.objectContaining({ apiKeyId: key.id, marketType: 'FUTURES' })]);
 
+      const fillAt = Date.now() + 1_000;
       const event = normalizeBinanceUserDataStreamEvent('FUTURES', {
-        e: 'ORDER_TRADE_UPDATE', E: Date.now(), T: Date.now(), o: {
+        e: 'ORDER_TRADE_UPDATE', E: fillAt, T: fillAt, o: {
           s: 'BTCUSDT', S: 'BUY', o: 'MARKET', X: 'FILLED', x: 'TRADE',
           i: exchangeOrderId, c: clientOrderId, ap: '90', l: '1', z: '1',
           L: '90', n: '0.1', N: 'USDT', t: 991,
@@ -434,7 +435,7 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       await streamLoop.runOnce();
       stream.open('FUTURES');
       await streamLoop.runOnce();
-      const accountUpdateAt = Date.now();
+      const accountUpdateAt = fillAt - 1_000;
       const accountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
         e: 'ACCOUNT_UPDATE', E: accountUpdateAt, T: accountUpdateAt,
         a: { B: [], P: [{ s: 'BTCUSDT', pa: '2', ep: '95', up: '5', ps: 'LONG' }] },
@@ -453,7 +454,9 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       await until(async () => (await prisma.position.findUniqueOrThrow({
         where: { id: position.id },
       })).quantity === 2);
-      const afterDcaAt = Math.max(Date.now(), accountUpdateAt + 1);
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })))
+        .toMatchObject({ continuityState: 'RECOVERING', lastAccountQuantity: 2 });
+      const afterDcaAt = Math.max(Date.now(), fillAt + 1);
       const afterDcaAccountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
         e: 'ACCOUNT_UPDATE', E: afterDcaAt, T: afterDcaAt,
         a: { B: [], P: [{ s: 'BTCUSDT', pa: '2', ep: '95', up: '4', ps: 'LONG' }] },

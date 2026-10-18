@@ -45,8 +45,9 @@ export const resolveLiveAccountUpdateScope = async (input: {
     select: { id: true, origin: true, quantity: true, entryPrice: true,
       missingSince: true, missingSyncCount: true, continuityState: true,
       lastExchangeSeenAt: true, lastExchangeSyncAt: true,
-      lastAccountSeenAt: true, lastAccountQuantity: true,
-      lastAccountEntryPrice: true },
+      lastAccountSeenAt: true, lastAccountTransactionAt: true,
+      lastAccountQuantity: true, lastAccountEntryPrice: true,
+      lastDcaFillVenueAt: true, lastDcaFillTimeUncertain: true },
     orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
   });
 
@@ -69,6 +70,17 @@ export const confirmedAccountSnapshotMatches = (input: {
   input.lastAccountEntryPrice != null &&
   matchesAccountSnapshot(input.quantity, input.lastAccountQuantity) &&
   matchesAccountSnapshot(input.entryPrice, input.lastAccountEntryPrice);
+
+export const accountSnapshotFollowsDcaFill = (input: {
+  lastAccountTransactionAt: Date | null;
+  lastDcaFillVenueAt: Date | null;
+  lastDcaFillTimeUncertain: boolean;
+  lastExchangeSyncAt: Date | null;
+}) => !input.lastDcaFillTimeUncertain &&
+  (input.lastDcaFillVenueAt != null
+    ? input.lastAccountTransactionAt != null &&
+      input.lastAccountTransactionAt > input.lastDcaFillVenueAt
+    : input.lastExchangeSyncAt == null);
 
 export const lockLivePosition = async (tx: Prisma.TransactionClient,
   userId: string, positionId: string) => {

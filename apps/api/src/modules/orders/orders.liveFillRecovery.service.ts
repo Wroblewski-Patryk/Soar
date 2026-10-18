@@ -275,6 +275,10 @@ export const recoverLiveFillCandidateOnce = async (input: {
         };
         const applied = await applyLiveExchangeOrderTradeUpdateInTransaction(tx, {
           userId: candidate.userId, event, sourceExchange: candidate.exchange!, snapshotRecovery: true,
+          fillTimeFromVenue: fill.source === 'fetchMyTrades' &&
+            fill.executedAt != null &&
+            Number.isFinite(fill.executedAt.getTime()) &&
+            fill.executedAt.getTime() > 0,
         });
         if (applied.status !== 'applied' || applied.orderId !== order.id) {
           return unknown('EVENT_FINALIZATION_REJECTED');

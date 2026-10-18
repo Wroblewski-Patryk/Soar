@@ -1,7 +1,7 @@
 import { prisma } from '../../prisma/client';
 import type { NormalizedBinanceAccountUpdateEvent } from
   '../exchange/binanceUserDataStream.types';
-import { confirmedAccountSnapshotMatches, lockLivePosition,
+import { accountSnapshotFollowsDcaFill, confirmedAccountSnapshotMatches, lockLivePosition,
   resolveLiveAccountUpdateScope } from './orders.exchangeAccountUpdateScope';
 
 const normalizeSymbol = (symbol: string) => symbol.trim().toUpperCase().replace(/[/:]/g, '');
@@ -13,7 +13,13 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
   afterInitialScopeRead?: () => Promise<void>;
 }) => {
   let updatedPositions = 0;
-  const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
+  const transactionAt = input.event.transactionTime != null &&
+    Number.isSafeInteger(input.event.transactionTime) &&
+    input.event.transactionTime > 0
+    ? new Date(input.event.transactionTime) : null;
+  const eventAt = transactionAt ?? new Date(input.event.eventTime);
+  if (!Number.isFinite(eventAt.getTime())) return { status: 'applied' as const,
+    updatedPositions: 0 };
   for (const accountPosition of input.event.positions) {
     const symbol = normalizeSymbol(accountPosition.symbol);
     if (!symbol) continue;
@@ -40,14 +46,21 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       if (position.origin !== 'EXCHANGE_SYNC') {
         if ((quantity == null && entryPrice == null) ||
             (position.lastAccountSeenAt && eventAt <= position.lastAccountSeenAt) ||
-            (position.lastExchangeSyncAt && eventAt < position.lastExchangeSyncAt)) return 0;
-        const matches = confirmedAccountSnapshotMatches({
+            (transactionAt && position.lastDcaFillVenueAt &&
+              transactionAt <= position.lastDcaFillVenueAt)) return 0;
+        const matches = accountSnapshotFollowsDcaFill({
+          lastAccountTransactionAt: transactionAt,
+          lastDcaFillVenueAt: position.lastDcaFillVenueAt,
+          lastDcaFillTimeUncertain: position.lastDcaFillTimeUncertain,
+          lastExchangeSyncAt: position.lastExchangeSyncAt,
+        }) && confirmedAccountSnapshotMatches({
           quantity: position.quantity, entryPrice: position.entryPrice,
           lastAccountSeenAt: eventAt, lastAccountQuantity: quantity,
           lastAccountEntryPrice: entryPrice,
         });
         await tx.position.update({ where: { id: position.id }, data: {
-          lastAccountSeenAt: eventAt, lastAccountQuantity: quantity,
+          lastAccountSeenAt: eventAt, lastAccountTransactionAt: transactionAt,
+          lastAccountQuantity: quantity,
           lastAccountEntryPrice: entryPrice,
           lastExchangeSeenAt: position.lastExchangeSeenAt &&
             position.lastExchangeSeenAt > eventAt ? position.lastExchangeSeenAt : eventAt,

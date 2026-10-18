@@ -7,7 +7,8 @@ import type { CcxtFuturesOrderFill, CcxtFuturesOrderResult } from '../exchange/c
 import { lookupLiveFillCandidate, type LiveFillLookupResult } from '../exchange/liveFillLookup.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { recoverLiveFillCandidateOnce } from './orders.liveFillRecovery.service';
-import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
+import { applyLiveExchangeAccountUpdateEvent,
+  applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { RuntimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import { selectRuntimeDisplayState } from '../bots/runtimeSessionPositionsRead.service';
@@ -153,7 +154,8 @@ describe('explicit LIVE fill recovery', () => {
       afterCoreCommit: async () => { throw new Error('crash after commit'); },
     })).rejects.toThrow('crash after commit');
     const canonical = await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } });
-    expect(canonical).toMatchObject({ quantity: 2, entryPrice: 95 });
+    expect(canonical).toMatchObject({ quantity: 2, entryPrice: 95,
+      continuityState: 'RECOVERING' });
     expect(await runtimePositionStateStore.getPositionRuntimeState(canonical.id))
       .toMatchObject({ quantity: 1, averageEntryPrice: 100 });
     const displayState = selectRuntimeDisplayState({ position: canonical,
@@ -161,6 +163,20 @@ describe('explicit LIVE fill recovery', () => {
       persistedState: await runtimePositionStateStore.getPositionRuntimeState(canonical.id) });
     expect(displayState).toBeNull();
     const automation = createDbBackedAutomation(fx);
+    await automation.service.handleTickerEvent(tick);
+    expect(automation.service.getPositionStateSnapshot(canonical.id)).toBeNull();
+    expect(automation.executeDca).not.toHaveBeenCalled();
+    expect(automation.closeByExitSignal).not.toHaveBeenCalled();
+    const afterFillAt = canonical.lastDcaFillVenueAt!.getTime() + 1;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: afterFillAt, transactionTime: afterFillAt,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: canonical.id } }))
+      .continuityState).toBe('CONFIRMED');
     await automation.service.handleTickerEvent(tick);
     expect(automation.service.getPositionStateSnapshot(canonical.id))
       .toMatchObject({ quantity: 2, averageEntryPrice: 95, currentAdds: 1,

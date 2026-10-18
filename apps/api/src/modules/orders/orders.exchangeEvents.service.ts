@@ -341,6 +341,7 @@ type LiveExchangeOrderTradeUpdateInput = {
   sourceApiKeyId?: string | null;
   sourceExchange?: Exchange;
   snapshotRecovery?: boolean;
+  fillTimeFromVenue?: boolean;
   client?: PrismaClient;
   afterOrderUpdate?: () => Promise<void>;
   afterCoreCommit?: () => Promise<void>;
@@ -705,6 +706,12 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
             userId: input.userId, orderId: updatedOrder.id, positionId: updatedOrder.position.id,
             fillPrice: averageFillPrice, fillQuantity: cumulativeFilledQuantity,
             exchangeTradeId: input.event.exchangeTradeId ?? null, eventAt,
+            fillTimeFromVenue: input.fillTimeFromVenue ??
+              (input.event.transactionTime != null &&
+                Number.isSafeInteger(input.event.transactionTime) &&
+                input.event.transactionTime > 0),
+            requiresAccountConfirmation: input.event.marketType === 'FUTURES' &&
+              (input.sourceExchange ?? 'BINANCE') === 'BINANCE',
           });
           dcaSync = {
             orderId: updatedOrder.id, positionId: updatedOrder.position.id,
