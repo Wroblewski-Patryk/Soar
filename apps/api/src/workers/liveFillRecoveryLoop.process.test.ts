@@ -73,6 +73,7 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
     const processes: ProofProcess[] = [];
     let userId: string | null = null;
     let positionId: string | null = null;
+    const extraCacheIds: string[] = [];
     try {
       await redis.connect();
       const id = randomUUID();
@@ -93,6 +94,29 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         origin: 'BOT', managementMode: 'BOT_MANAGED',
         runtimeTtpEverArmed: false, runtimeTslEverArmed: false } });
       positionId = position.id;
+      // Historical CLOSED rows precede the active ID. A single mixed DB
+      // cursor would delay its repair for at least 25 one-second cycles.
+      const historyPrefix = id.replace(/-/g, '').slice(0, 6);
+      const historicalId = (index: number) =>
+        `00000000-0000-4000-8000-${historyPrefix}${String(index).padStart(6, '0')}`;
+      await prisma.position.createMany({ data: Array.from({ length: 500 }, (_, index) => ({
+        id: historicalId(index), userId: user.id, botId: bot.id, walletId: wallet.id,
+        symbol: 'BTCUSDT', side: 'LONG' as const, status: 'CLOSED' as const,
+        quantity: 1, entryPrice: 100, origin: 'BOT' as const,
+        managementMode: 'BOT_MANAGED' as const,
+      })) });
+      const openIds = Array.from({ length: 45 }, (_, index) => historicalId(1_000 + index));
+      await prisma.position.createMany({ data: openIds.map((openId, index) => ({
+        id: openId, userId: user.id, botId: bot.id, walletId: wallet.id,
+        symbol: `PROOF${index}USDT`, side: 'LONG' as const, status: 'OPEN' as const,
+        quantity: 1, entryPrice: 100, origin: 'BOT' as const,
+        managementMode: 'BOT_MANAGED' as const,
+        runtimeTtpEverArmed: false, runtimeTslEverArmed: false,
+      })) });
+      extraCacheIds.push(...openIds);
+      for (const openId of openIds) await redis.set(`runtime:position-state:${openId}`,
+        JSON.stringify({ quantity: 1, averageEntryPrice: 100, currentAdds: 0,
+          trailingAnchorPrice: 100 }));
       const dcaClientId = `soar_${id.replace(/-/g, '').slice(0, 22)}`;
       const dcaVenueId = `venue-${id}`;
       const intent = await prisma.liveOrderIntent.create({ data: { userId: user.id,
@@ -128,6 +152,19 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         dcaOrderId: intent.id, redisUrl });
       processes.push(crash);
       await until(async () => crash.lines.includes('READY'));
+      await until(async () => {
+        const raw = await redis.get(`${namespace}:status`);
+        return raw != null && JSON.parse(raw).cacheRepairDiscovery?.complete === false;
+      });
+      const partialCoverage = JSON.parse((await redis.get(`${namespace}:status`))!);
+      expect(partialCoverage.cacheRepairDiscovery.openPositions).toMatchObject({
+        complete: false, visitedCount: 20 });
+      expect(partialCoverage.cacheRepairDiscovery.openPositions.scanAgeMs)
+        .toBeGreaterThanOrEqual(0);
+      expect(partialCoverage.cacheRepairDiscovery.cacheKeys).toMatchObject({ complete: false });
+      expect(partialCoverage.cacheRepairDiscovery.cacheKeys.scanAgeMs)
+        .toBeGreaterThanOrEqual(0);
+      expect(partialCoverage.status).toBe('degraded');
       await until(async () => (await prisma.orderFill.count({ where: { orderId: intent.id } })) === 1);
       expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).quantity).toBe(1);
       expect(await prisma.trade.count({ where: { orderId: intent.id } })).toBe(0);
@@ -154,6 +191,14 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       expect(await redis.hGet(`${namespace}:pending:data`, intent.id)).not.toBeNull();
 
       standby.child.stdin.write('ACTIVATE\n');
+      await until(async () => {
+        const raw = await redis.get(`${namespace}:repair:open:scan`);
+        return raw != null && JSON.parse(raw).lastCompletedAt != null;
+      });
+      await until(async () => {
+        const raw = await redis.get(`${namespace}:repair:cache:scan`);
+        return raw != null && JSON.parse(raw).lastCompletedAt != null;
+      });
       await until(async () => {
         const raw = await redis.get(`runtime:position-state:${position.id}`);
         return raw != null && JSON.parse(raw).quantity === 2 &&
@@ -230,9 +275,9 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
         const observed = await redis.get(`runtime:position-state:${position.id}`);
         expect(observed).toBe(damaged);
-        expect((await readLiveExecutionOperationalStatus({
+        await until(async () => (await readLiveExecutionOperationalStatus({
           redisUrl, recoveryNamespace: namespace,
-        })).recovery.cacheRepairPendingCount).toBe(1);
+        })).recovery.cacheRepairPendingCount === 1);
         await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
         await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
       }
@@ -281,9 +326,9 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       await redis.set(`runtime:position-state:${position.id}`, erasedTracker);
       await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
       expect(await redis.get(`runtime:position-state:${position.id}`)).toBe(erasedTracker);
-      expect((await readLiveExecutionOperationalStatus({
+      await until(async () => (await readLiveExecutionOperationalStatus({
         redisUrl, recoveryNamespace: namespace,
-      })).recovery.cacheRepairPendingCount).toBe(1);
+      })).recovery.cacheRepairPendingCount === 1);
       expect(await prisma.order.count({ where: { positionId: position.id } })).toBe(1);
       expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(2);
       expect(await prisma.trade.count({ where: { orderId: intent.id } })).toBe(1);
@@ -361,6 +406,7 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         const keys = await redis.keys(`${namespace}:*`);
         if (keys.length) await redis.del(keys);
         if (positionId) await redis.del(`runtime:position-state:${positionId}`);
+        for (const extraId of extraCacheIds) await redis.del(`runtime:position-state:${extraId}`);
         await redis.quit();
       }
       if (userId) {
@@ -380,5 +426,5 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         await prisma.user.deleteMany({ where: { id: userId } });
       }
     }
-  }, 90_000);
+  }, 120_000);
 });

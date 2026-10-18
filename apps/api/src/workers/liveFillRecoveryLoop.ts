@@ -9,6 +9,10 @@ import { findRuntimeCacheRepairPage, repairRuntimePositionCacheOnce } from
 type RedisClient = ReturnType<typeof createClient>;
 type CursorState = { intentCursor: string | null; orderCursor: string | null;
   intentDone: boolean; orderDone: boolean };
+type RepairScanState = { cursor: string | null; backlog: string[];
+  startedAt: number; lastCompletedAt: number | null; visitedCount: number };
+type RepairCoverage = { complete: boolean; scanAgeMs: number | null;
+  lastFullScanAgeMs: number | null; visitedCount: number };
 type RecoveryOutcome = Awaited<ReturnType<typeof recoverLiveFillCandidateOnce>>;
 type Dependencies = {
   lookup?: (candidate: LiveFillCandidate) => Promise<LiveFillLookupResult>;
@@ -38,6 +42,27 @@ const parseCandidate = (raw: string): LiveFillCandidate | null => {
     return { ...value, createdAt };
   } catch { return null; }
 };
+const emptyRepairScan = (): RepairScanState => ({ cursor: null, backlog: [],
+  startedAt: Date.now(), lastCompletedAt: null, visitedCount: 0 });
+const parseRepairScan = (raw: string | null): RepairScanState => {
+  if (!raw) return emptyRepairScan();
+  try {
+    const value = JSON.parse(raw) as RepairScanState;
+    if ((value.cursor === null || typeof value.cursor === 'string') &&
+        Array.isArray(value.backlog) && value.backlog.every((id) => typeof id === 'string') &&
+        Number.isFinite(value.startedAt) &&
+        (value.lastCompletedAt === null || Number.isFinite(value.lastCompletedAt)) &&
+        Number.isSafeInteger(value.visitedCount) && value.visitedCount >= 0) return value;
+  } catch { /* Damaged progress loses coverage evidence, then starts over. */ }
+  return emptyRepairScan();
+};
+const coverage = (state: RepairScanState, complete: boolean, now: number): RepairCoverage => ({
+  complete,
+  scanAgeMs: complete ? null : Math.max(0, now - state.startedAt),
+  lastFullScanAgeMs: state.lastCompletedAt == null ? null :
+    Math.max(0, now - state.lastCompletedAt),
+  visitedCount: state.visitedCount,
+});
 
 const OWNED_SET = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 redis.call('SET', KEYS[2], ARGV[2]); return 1`;
@@ -50,6 +75,9 @@ redis.call('HDEL', KEYS[2], ARGV[2]); redis.call('ZREM', KEYS[3], ARGV[2]);
 redis.call('ZREM', KEYS[4], ARGV[2]); return 1`;
 const OWNED_STATUS = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 redis.call('SET', KEYS[2], ARGV[2], 'PX', ARGV[3]); return 1`;
+const OWNED_REPAIR_PENDING = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
+if ARGV[2] == 'add' then redis.call('ZADD', KEYS[2], 'NX', ARGV[3], ARGV[4])
+else redis.call('ZREM', KEYS[2], ARGV[4]) end; return 1`;
 const OWNED_RENEW = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 return redis.call('PEXPIRE', KEYS[1], ARGV[2])`;
 const OWNED_RELEASE = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
@@ -73,6 +101,7 @@ export class LiveFillRecoveryLoop {
   private outstandingLookup: Promise<LiveFillLookupResult> | null = null;
   private running = false;
   private stopping = false;
+  private repairCoverage: { open: RepairCoverage; cache: RepairCoverage } | null = null;
 
   constructor(options: Options = {}, deps: Dependencies = {}) {
     this.namespace = options.namespace ?? 'soar:live-fill-recovery:v1';
@@ -255,35 +284,127 @@ export class LiveFillRecoveryLoop {
     const repairScore = Array.isArray(repairOldest) && repairOldest.length >= 2
       ? Number(repairOldest[1]) : null;
     const now = Date.now();
-    const snapshot = { status: status === 'healthy' && repairPendingCount === 0 ? 'healthy' : 'degraded',
+    const openCoverage = this.repairCoverage?.open ?? null;
+    const cacheCoverage = this.repairCoverage?.cache ?? null;
+    const discoveryComplete = openCoverage?.complete === true && cacheCoverage?.complete === true;
+    const maxCoverageAgeMs = Math.max(180_000, this.intervalMs * 3);
+    const discoveryRecent = discoveryComplete &&
+      openCoverage.lastFullScanAgeMs != null &&
+      openCoverage.lastFullScanAgeMs <= maxCoverageAgeMs &&
+      cacheCoverage.lastFullScanAgeMs != null &&
+      cacheCoverage.lastFullScanAgeMs <= maxCoverageAgeMs;
+    const snapshot = { status: status === 'healthy' && repairPendingCount === 0 &&
+        discoveryRecent ? 'healthy' : 'degraded',
       updatedAt: now, pendingCount,
       oldestPendingAgeMs: oldestScore != null && Number.isFinite(oldestScore)
         ? Math.max(0, now - oldestScore) : null,
       cacheRepairPendingCount: repairPendingCount,
       oldestCacheRepairAgeMs: repairScore != null && Number.isFinite(repairScore)
         ? Math.max(0, now - repairScore) : null,
+      cacheRepairDiscovery: { complete: discoveryComplete,
+        maxCoverageAgeMs, openPositions: openCoverage, cacheKeys: cacheCoverage },
       unknownTotal: Number(stats.unknown_total ?? 0),
       errorTotal: Number(stats.error_total ?? 0) };
     await redis.eval(OWNED_STATUS, { keys: [this.key('lease'), this.key('status')],
       arguments: [token, JSON.stringify(snapshot), '180000'] });
   }
 
-  private async processRepairPosition(redis: RedisClient, id: string) {
+  private async processRepairPosition(redis: RedisClient, token: string, id: string) {
     try {
-      const outcome = await repairRuntimePositionCacheOnce({ positionId: id, redis });
+      const outcome = await repairRuntimePositionCacheOnce({ positionId: id, redis,
+        userId: this.deps.scanUserId });
       if (outcome.kind === 'PENDING') {
-        await redis.sendCommand(['ZADD', this.key('repair:pending'), 'NX',
-          String(Date.now()), id]);
+        await redis.eval(OWNED_REPAIR_PENDING, { keys: [this.key('lease'),
+          this.key('repair:pending')], arguments: [token, 'add', String(Date.now()), id] });
         this.log('cache_repair_pending', outcome.reason);
       } else {
-        await redis.zRem(this.key('repair:pending'), id);
+        await redis.eval(OWNED_REPAIR_PENDING, { keys: [this.key('lease'),
+          this.key('repair:pending')], arguments: [token, 'remove', '0', id] });
         if (outcome.kind === 'REPAIRED') this.log('cache_repaired');
       }
     } catch (error) {
-      await redis.sendCommand(['ZADD', this.key('repair:pending'), 'NX',
-        String(Date.now()), id]);
+      await redis.eval(OWNED_REPAIR_PENDING, { keys: [this.key('lease'),
+        this.key('repair:pending')], arguments: [token, 'add', String(Date.now()), id] });
       this.log('cache_repair_failed', error instanceof Error ? error.message : 'unknown_error');
     }
+  }
+
+  private async writeRepairScan(redis: RedisClient, token: string,
+    lane: 'open' | 'cache', state: RepairScanState) {
+    return Number(await redis.eval(OWNED_SET, { keys: [this.key('lease'),
+      this.key(`repair:${lane}:scan`)], arguments: [token, JSON.stringify(state)] })) === 1;
+  }
+
+  private async scanOpenPositions(redis: RedisClient, token: string, seen: Set<string>) {
+    const state = parseRepairScan(await redis.get(this.key('repair:open:scan')));
+    if (state.cursor === null && state.lastCompletedAt != null) {
+      state.startedAt = Date.now();
+      state.visitedCount = 0;
+    }
+    let complete = false;
+    for (let page = 0; page < this.repairMaxPages; page += 1) {
+      if (!await this.owned(redis, token)) return null;
+      const batch = await findRuntimeCacheRepairPage({ cursor: state.cursor,
+        limit: this.repairPageLimit, userId: this.deps.scanUserId });
+      for (const id of batch.ids) {
+        if (!await this.owned(redis, token)) return null;
+        if (!seen.has(id)) await this.processRepairPosition(redis, token, id);
+        seen.add(id);
+      }
+      state.visitedCount += batch.ids.length;
+      state.cursor = batch.nextCursor;
+      if (!state.cursor) {
+        state.lastCompletedAt = Date.now();
+        complete = true;
+      }
+      if (!await this.writeRepairScan(redis, token, 'open', state)) return null;
+      if (complete) break;
+    }
+    return coverage(state, complete, Date.now());
+  }
+
+  private async scanCacheKeys(redis: RedisClient, token: string, seen: Set<string>) {
+    const state = parseRepairScan(await redis.get(this.key('repair:cache:scan')));
+    if (state.cursor === null && state.backlog.length === 0 && state.lastCompletedAt != null) {
+      state.startedAt = Date.now();
+      state.visitedCount = 0;
+    }
+    let complete = false;
+    for (let page = 0; page < this.repairMaxPages; page += 1) {
+      if (!await this.owned(redis, token)) return null;
+      if (state.backlog.length === 0 && state.cursor !== '0') {
+        const reply = await redis.sendCommand(['SCAN', state.cursor ?? '0', 'MATCH',
+          'runtime:position-state:*', 'COUNT', String(this.repairPageLimit)]);
+        if (!Array.isArray(reply) || reply.length !== 2 ||
+            typeof reply[0] !== 'string' || !Array.isArray(reply[1]) ||
+            !reply[1].every((key) => typeof key === 'string')) {
+          throw new Error('Invalid runtime cache SCAN result');
+        }
+        state.cursor = reply[0];
+        state.backlog = reply[1].map((key) => key.slice('runtime:position-state:'.length))
+          .filter((id) => id.length > 0);
+        // Save the returned keys before processing. A restarted worker cannot
+        // skip a batch when Redis has already advanced its SCAN cursor.
+        if (!await this.writeRepairScan(redis, token, 'cache', state)) return null;
+      }
+      const ids = state.backlog.slice(0, this.repairPageLimit);
+      for (const id of ids) {
+        if (!await this.owned(redis, token)) return null;
+        if (!seen.has(id)) await this.processRepairPosition(redis, token, id);
+        seen.add(id);
+        state.backlog.shift();
+        state.visitedCount += 1;
+        if (!await this.writeRepairScan(redis, token, 'cache', state)) return null;
+      }
+      if (state.cursor === '0' && state.backlog.length === 0) {
+        state.cursor = null;
+        state.lastCompletedAt = Date.now();
+        complete = true;
+        if (!await this.writeRepairScan(redis, token, 'cache', state)) return null;
+        break;
+      }
+    }
+    return coverage(state, complete, Date.now());
   }
 
   private async scanRuntimeCache(redis: RedisClient, token: string) {
@@ -292,29 +413,17 @@ export class LiveFillRecoveryLoop {
     const seen = new Set<string>();
     for (const id of Array.isArray(pendingIds) ? pendingIds as string[] : []) {
       if (!await this.owned(redis, token)) return;
-      await this.processRepairPosition(redis, id);
+      await this.processRepairPosition(redis, token, id);
       seen.add(id);
     }
-    let cursor = await redis.get(this.key('repair:cursor'));
-    for (let page = 0; page < this.repairMaxPages; page += 1) {
-      if (!await this.owned(redis, token)) return;
-      const batch = await findRuntimeCacheRepairPage({ cursor,
-        limit: this.repairPageLimit, userId: this.deps.scanUserId });
-      for (const id of batch.ids) {
-        if (!await this.owned(redis, token)) return;
-        if (!seen.has(id)) await this.processRepairPosition(redis, id);
-      }
-      cursor = batch.nextCursor;
-      // A separate cursor key survives worker restarts but is safe to lose:
-      // restarting a bounded scan never authorizes an order or fill write.
-      if (Number(await redis.eval(OWNED_SET, { keys: [this.key('lease'),
-        this.key('repair:cursor')], arguments: [token, cursor ?? ''] })) !== 1) return;
-      if (!cursor) break;
-    }
+    const open = await this.scanOpenPositions(redis, token, seen);
+    const cache = await this.scanCacheKeys(redis, token, seen);
+    if (open && cache) this.repairCoverage = { open, cache };
   }
 
   async runOnce() {
     if (this.stopping) return;
+    this.repairCoverage = null;
     const redis = await this.client();
     const token = randomUUID();
     const lease = await redis.set(this.key('lease'), token, { NX: true, PX: this.leaseMs });

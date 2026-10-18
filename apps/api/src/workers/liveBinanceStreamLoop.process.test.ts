@@ -17,6 +17,7 @@ import { normalizeBinanceUserDataStreamEvent } from
   '../modules/exchange/binanceUserDataStream.service';
 import { applyLiveExchangeUserDataStreamEvent } from
   '../modules/orders/orders.exchangeEvents.service';
+import { runtimePositionStateStore } from '../modules/engine/runtimePositionState.store';
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const until = async (predicate: () => Promise<boolean> | boolean, timeoutMs = 3_000) => {
@@ -236,6 +237,9 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       await redis.connect();
       await redis.set(`${recoveryNamespace}:status`, JSON.stringify({
         status: 'healthy', updatedAt: Date.now(), pendingCount: 0, oldestPendingAgeMs: null,
+        cacheRepairDiscovery: { complete: true, maxCoverageAgeMs: 180_000,
+          openPositions: { complete: true, lastFullScanAgeMs: 0 },
+          cacheKeys: { complete: true, lastFullScanAgeMs: 0 } },
         unknownTotal: 0, errorTotal: 0 }), { PX: 60_000 });
       await loopA.runOnce();
       expect(streamA.connects).toEqual(['SPOT', 'FUTURES']);
@@ -247,6 +251,17 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
         redisUrl, streamNamespace: namespace, recoveryNamespace });
       expect(healthy.status).toBe('healthy');
       expect(healthy.stream).toMatchObject({ eligibleAccounts: 2, connectedAccounts: 2 });
+      const coveredRecovery = (await redis.get(`${recoveryNamespace}:status`))!;
+      await redis.set(`${recoveryNamespace}:status`, JSON.stringify({
+        status: 'healthy', updatedAt: Date.now(), pendingCount: 0 }), { PX: 60_000 });
+      expect((await readLiveExecutionOperationalStatus({ redisUrl,
+        streamNamespace: namespace, recoveryNamespace })).status).toBe('degraded');
+      const lateRecovery = JSON.parse(coveredRecovery);
+      lateRecovery.cacheRepairDiscovery.cacheKeys.lastFullScanAgeMs = 180_001;
+      await redis.set(`${recoveryNamespace}:status`, JSON.stringify(lateRecovery), { PX: 60_000 });
+      expect((await readLiveExecutionOperationalStatus({ redisUrl,
+        streamNamespace: namespace, recoveryNamespace })).status).toBe('degraded');
+      await redis.set(`${recoveryNamespace}:status`, coveredRecovery, { PX: 60_000 });
       expect(await redis.get(`${namespace}:account:${accounts[0].apiKeyId}:SPOT`))
         .not.toContain('plain-spot-key');
 
@@ -373,7 +388,14 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       const position = await prisma.position.create({ data: { userId: user.id,
         botId: bot.id, walletId: wallet.id, symbol: 'BTCUSDT', side: 'LONG',
         status: 'OPEN', quantity: 1, entryPrice: 100,
-        origin: 'BOT', managementMode: 'BOT_MANAGED' } });
+        origin: 'BOT', managementMode: 'BOT_MANAGED',
+        runtimeTtpEverArmed: false, runtimeTslEverArmed: false } });
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify({
+        quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+      }));
+      await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+        quantity: 1, averageEntryPrice: 100, currentAdds: 0, trailingAnchorPrice: 100,
+      });
       const clientOrderId = `soar_${id.replace(/-/g, '').slice(0, 22)}`;
       const exchangeOrderId = '12345';
       const intent = await prisma.liveOrderIntent.create({ data: { userId: user.id,
@@ -536,6 +558,14 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       if (redis.isOpen) {
         const keys = await redis.keys(`${namespace}:*`);
         if (keys.length) await redis.del(keys);
+        if (userId) {
+          const positions = await prisma.position.findMany({ where: { userId },
+            select: { id: true } });
+          for (const position of positions) {
+            await redis.del(`runtime:position-state:${position.id}`);
+            await runtimePositionStateStore.deletePositionRuntimeState(position.id);
+          }
+        }
         await redis.quit();
       }
       if (userId) {

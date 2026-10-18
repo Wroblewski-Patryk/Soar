@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { repairRuntimePositionCacheOnce } from './runtimePositionCacheRepair.service';
+import { findRuntimeCacheRepairPage, repairRuntimePositionCacheOnce } from
+  './runtimePositionCacheRepair.service';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -48,6 +49,22 @@ const fixture = (status: 'OPEN' | 'CLOSED' = 'OPEN') => {
 };
 
 describe('database-backed BOT runtime cache repair', () => {
+  it('pages OPEN LIVE BOT positions without walking CLOSED history', async () => {
+    const find = vi.spyOn(prisma.position, 'findMany').mockResolvedValue([
+      { id: 'a' }, { id: 'b' }, { id: 'c' },
+    ] as any);
+    await expect(findRuntimeCacheRepairPage({ cursor: 'before', limit: 2,
+      userId: 'user-1' })).resolves.toEqual({ ids: ['a', 'b'], nextCursor: 'b' });
+    expect(find).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ status: 'OPEN', userId: 'user-1',
+        id: { gt: 'before' }, origin: 'BOT', managementMode: 'BOT_MANAGED' }),
+      take: 3,
+    }));
+    find.mockResolvedValueOnce([{ id: 'c' }] as any);
+    await expect(findRuntimeCacheRepairPage({ cursor: 'b', limit: 2,
+      userId: 'user-1' })).resolves.toEqual({ ids: ['c'], nextCursor: null });
+  });
+
   it('repairs a stale DCA basis and level once without lifecycle writes', async () => {
     const f = fixture();
     await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,

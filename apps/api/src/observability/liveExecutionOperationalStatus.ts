@@ -3,13 +3,12 @@ import { createClient } from 'redis';
 const STREAM_NAMESPACE = 'soar:live-binance-stream:v1';
 const RECOVERY_NAMESPACE = 'soar:live-fill-recovery:v1';
 const MAX_STATUS_AGE_MS = 45_000;
+const record = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown> : null;
 const parse = (raw: string | null): Record<string, unknown> | null => {
   if (!raw) return null;
-  try {
-    const value: unknown = JSON.parse(raw);
-    return value && typeof value === 'object' && !Array.isArray(value)
-      ? value as Record<string, unknown> : null;
-  } catch { return null; }
+  try { return record(JSON.parse(raw)); } catch { return null; }
 };
 const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value)
   ? value : null;
@@ -63,7 +62,17 @@ export const readLiveExecutionOperationalStatus = async (options: {
     const recoveryUpdatedAt = number(recovery?.updatedAt);
     const recoveryRecent = recoveryUpdatedAt != null && now - recoveryUpdatedAt >= 0 &&
       now - recoveryUpdatedAt <= 90_000;
-    const recoveryHealthy = recoveryRecent && recovery?.status === 'healthy';
+    const discovery = record(recovery?.cacheRepairDiscovery);
+    const openCoverage = record(discovery?.openPositions);
+    const cacheCoverage = record(discovery?.cacheKeys);
+    const maxCoverageAgeMs = number(discovery?.maxCoverageAgeMs);
+    const openAgeMs = number(openCoverage?.lastFullScanAgeMs);
+    const cacheAgeMs = number(cacheCoverage?.lastFullScanAgeMs);
+    const discoveryHealthy = discovery?.complete === true &&
+      openCoverage?.complete === true && cacheCoverage?.complete === true &&
+      maxCoverageAgeMs != null && openAgeMs != null && cacheAgeMs != null &&
+      openAgeMs <= maxCoverageAgeMs && cacheAgeMs <= maxCoverageAgeMs;
+    const recoveryHealthy = recoveryRecent && recovery?.status === 'healthy' && discoveryHealthy;
     return {
       status: streamStatus === 'healthy' && recoveryHealthy ? 'healthy' : 'degraded',
       stream: {
@@ -73,12 +82,18 @@ export const readLiveExecutionOperationalStatus = async (options: {
         errorTotal: Number(streamStats.errors ?? 0),
       },
       recovery: {
-        status: recoveryRecent ? recovery?.status === 'healthy' ? 'healthy' : 'degraded'
+        status: recoveryRecent ? recoveryHealthy ? 'healthy' : 'degraded'
           : 'unavailable',
         pendingCount: recoveryRecent ? number(recovery?.pendingCount) : null,
         oldestPendingAgeMs: recoveryRecent ? number(recovery?.oldestPendingAgeMs) : null,
         cacheRepairPendingCount: recoveryRecent ? number(recovery?.cacheRepairPendingCount) : null,
         oldestCacheRepairAgeMs: recoveryRecent ? number(recovery?.oldestCacheRepairAgeMs) : null,
+        cacheRepairDiscovery: {
+          complete: recoveryRecent ? discovery?.complete === true : false,
+          maxCoverageAgeMs: recoveryRecent ? maxCoverageAgeMs : null,
+          openPositions: recoveryRecent ? openCoverage : null,
+          cacheKeys: recoveryRecent ? cacheCoverage : null,
+        },
         unknownTotal: recoveryRecent ? number(recovery?.unknownTotal) : null,
         errorTotal: recoveryRecent ? number(recovery?.errorTotal) : null,
         updatedAt: recoveryUpdatedAt,

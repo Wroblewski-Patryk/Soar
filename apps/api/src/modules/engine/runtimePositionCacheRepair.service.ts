@@ -29,21 +29,24 @@ const liveBotScope = {
 export const findRuntimeCacheRepairPage = async (input: {
   cursor?: string | null; limit: number; userId?: string;
 }) => {
+  const limit = Math.min(100, Math.max(1, input.limit));
   const rows = await prisma.position.findMany({
     where: { ...liveBotScope, ...(input.userId ? { userId: input.userId } : {}),
-      status: { in: ['OPEN', 'CLOSED'] },
+      status: 'OPEN',
       ...(input.cursor ? { id: { gt: input.cursor } } : {}) },
-    select: { id: true }, orderBy: { id: 'asc' }, take: Math.min(100, Math.max(1, input.limit)),
+    select: { id: true }, orderBy: { id: 'asc' }, take: limit + 1,
   });
-  return { ids: rows.map((row) => row.id),
-    nextCursor: rows.length === input.limit ? rows.at(-1)!.id : null };
+  const page = rows.slice(0, limit);
+  return { ids: page.map((row) => row.id),
+    nextCursor: rows.length > limit ? page.at(-1)!.id : null };
 };
 
 export const repairRuntimePositionCacheOnce = async (input: {
-  positionId: string; redis: Redis;
+  positionId: string; redis: Redis; userId?: string;
 }): Promise<CacheRepairResult> => {
   const position = await prisma.position.findFirst({
-    where: { id: input.positionId, ...liveBotScope },
+    where: { id: input.positionId, ...liveBotScope,
+      ...(input.userId ? { userId: input.userId } : {}) },
     select: { id: true, userId: true, botId: true, walletId: true, origin: true, symbol: true,
       side: true, status: true, syncState: true, continuityState: true,
       quantity: true, entryPrice: true, leverage: true, updatedAt: true,
