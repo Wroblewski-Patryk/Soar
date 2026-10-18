@@ -1,7 +1,51 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
 
+afterEach(() => vi.unstubAllEnvs());
+
 describe('runtime position USDT DCA guard', () => {
+  it.each([
+    ['stop_loss', 0.9, false], ['DCA', null, true],
+  ] as const)('blocks automatic %s when strategy config is missing', async (_decision, stopLoss, dcaFallback) => {
+    vi.stubEnv('RUNTIME_DCA_ENABLED', dcaFallback ? 'true' : 'false');
+    const executeDca = vi.fn(async () => ({ feePaid: 0, executed: true }));
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [{
+        id: `pos-missing-config-${_decision}`, userId: 'user-1', botId: 'bot-1',
+        walletId: 'wallet-1', strategyId: 'strategy-1', symbol: 'BTCUSDT',
+        side: 'LONG', entryPrice: 1, quantity: 1, leverage: 1,
+        stopLoss, takeProfit: null, managementMode: 'BOT_MANAGED',
+        origin: 'BOT', continuityState: 'CONFIRMED', status: 'OPEN',
+        unrealizedPnl: null, lastExchangeSyncAt: null,
+        bot: {
+          walletId: 'wallet-1', liveOptIn: true,
+          wallet: { mode: 'PAPER', exchange: 'BINANCE', marketType: 'FUTURES',
+            baseCurrency: 'USDT', paperInitialBalance: 10_000 },
+          symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+            exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+          } },
+        },
+      }]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca, closeByExitSignal, recordRuntimeEvent,
+    };
+    await new RuntimePositionAutomationService(deps).handleTickerEvent({
+      type: 'ticker', exchange: 'BINANCE', marketType: 'FUTURES',
+      symbol: 'BTCUSDT', eventTime: 1_000, lastPrice: 0.8,
+      priceChangePercent24h: -20,
+    });
+
+    expect(deps.getStrategyConfigById).toHaveBeenCalledWith('strategy-1');
+    expect(executeDca).not.toHaveBeenCalled();
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED', level: 'WARN',
+      payload: expect.objectContaining({ reason: 'RUNTIME_DCA_STRATEGY_UNAVAILABLE' }),
+    }));
+  });
+
   it.each([
     ['PAPER', 2], ['PAPER', 5], ['LIVE', 2], ['LIVE', 5],
   ] as const)('blocks existing %s position with multiplier %s across restart', async (mode, multiplier) => {

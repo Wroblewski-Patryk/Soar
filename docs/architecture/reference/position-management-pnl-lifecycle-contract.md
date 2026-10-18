@@ -86,8 +86,13 @@ negative.
   existing active bot loaded after restart is blocked and emits a runtime
   `PRETRADE_BLOCKED` reason. Quantity-based runtime DCA retains multiplier
   limit `2`; larger configured values fail closed rather than being silently
-  interpreted as asset quantity. Direct DCA also refuses an order if its
-  strategy configuration cannot be read. A full single-symbol BACKTEST replay with
+  interpreted as asset quantity. Direct DCA reads the position and its active
+  bot strategy links, rejects a supplied strategy or bot ID that differs from
+  that canonical owner, and refuses an order if the position or strategy
+  configuration cannot be read. Position automation blocks automatic DCA and
+  protection closes with `PRETRADE_BLOCKED` when strategy configuration is
+  unavailable; the owner's separate manual close path remains available. A
+  full single-symbol BACKTEST replay with
   nonzero modeled fee verifies that fee changes trade cost, not the USDT
   contribution used by the DCA multiplier.
 

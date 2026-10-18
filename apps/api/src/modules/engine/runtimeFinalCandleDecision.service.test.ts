@@ -138,6 +138,23 @@ const createContext = (options?: {
 };
 
 describe('runtimeFinalCandleDecision.service', () => {
+  it('blocks an existing bot with missing strategy config before a new signal or order', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      botOverrides: { runtimeContext: {
+        ...baseBot.runtimeContext,
+        strategy: { ...baseStrategy, strategyConfig: null },
+      } } as any,
+    });
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED',
+      payload: expect.objectContaining({ reason: 'RUNTIME_DCA_STRATEGY_UNAVAILABLE' }),
+    }));
+  });
+
   it.each([2, 5])('blocks a restarted active bot with USDT DCA multiplier %s before any signal or order', async (multiplier) => {
     const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
       botOverrides: { runtimeContext: {
