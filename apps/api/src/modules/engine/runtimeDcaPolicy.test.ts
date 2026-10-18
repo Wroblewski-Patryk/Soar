@@ -169,7 +169,11 @@ describe('runtime DCA sizing guard', () => {
     await expect(executeRuntimeDca(request, {
       getOrderRules: async () => ({ ...validRules, amountPrecision: 0 }),
       resolveFundsExhausted,
-    })).rejects.toMatchObject({ code: 'DCA_ORDER_RULES_INVALID' });
+    })).resolves.toMatchObject({ executed: false });
+    expect(resolveFundsExhausted).toHaveBeenLastCalledWith(expect.objectContaining({
+      addedQuantity: 12, markPrice: 0.8,
+    }));
+    acquire.mockClear();
     await expect(executeRuntimeDca(request, {
       getOrderRules: async () => ({ ...validRules, minNotional: 20 }),
       resolveFundsExhausted,

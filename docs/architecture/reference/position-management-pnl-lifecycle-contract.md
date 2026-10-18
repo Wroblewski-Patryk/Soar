@@ -87,6 +87,12 @@ negative.
   cannot be reconciled after restart, runtime DCA stops with
   `DCA_PROGRESS_UNCONFIRMED`. Trading fees and funding remain separate from
   contribution.
+- Before a PAPER/LIVE USDT DCA order, runtime floors the requested asset
+  quantity to the venue amount precision or quantity step. It checks minimum
+  quantity and notional against this order quantity, then checks available
+  funds for that quantity. Rounding never increases the requested add at the
+  current mark price. A zero or too-small result blocks the add before dedupe
+  or order submission; the actual fill drives subsequent contribution and ROI.
 - Basic DCA repeats its first configured threshold and multiplier for exactly
   `dcaTimes` executions. Advanced DCA uses each configured threshold and
   multiplier pair once. Each later threshold is evaluated against ROI from the
@@ -101,6 +107,11 @@ negative.
   positions, the exchange-confirmed margin must agree with the canonical
   average, quantity, and leverage before another add. Quantity-based runtime
   DCA retains multiplier limit `2`; larger configured values fail closed.
+  If a reached USDT DCA level is blocked specifically for insufficient funds,
+  runtime records that reason and may close the position by configured stop
+  loss only when the stop loss is exceeded. This exception does not apply to
+  venue rule, precision, or other validation failures, nor before the DCA
+  threshold is reached.
   Direct DCA reads the position and its active bot strategy links, rejects a
   supplied strategy or bot ID that differs from the canonical owner, and
   refuses an order if the position or strategy configuration cannot be read.

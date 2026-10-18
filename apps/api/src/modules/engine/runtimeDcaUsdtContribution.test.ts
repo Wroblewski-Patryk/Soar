@@ -79,7 +79,8 @@ const runSequence = async (input: {
     .toBeCloseTo(input.dcaMode === 'basic' ? 9 : 3, 8);
   await send(fills[1].price);
   expect(executeDca).toHaveBeenCalledTimes(2);
-  expect(resolveDcaFundsExhausted).toHaveBeenCalled();
+  // USDT funds are checked after a reached level is sized to venue precision.
+  expect(resolveDcaFundsExhausted).not.toHaveBeenCalled();
   expect(fills[0].price * fills[0].quantity / leverage)
     .toBeCloseTo(input.dcaMode === 'basic' ? 2 : 1, 8);
   expect(fills[1].price * fills[1].quantity / leverage)
