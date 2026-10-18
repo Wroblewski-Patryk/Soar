@@ -44,6 +44,39 @@ const advancedStrategyConfig = {
 };
 
 describe('USDT contribution DCA in historical replay', () => {
+  it('keeps basic two-add SL behind confirmed fills and the new average in both replay paths', () => {
+    const prices = [0.99, 1, 1, 0.7, 0.5764, 0.5764, 0.5424];
+    const exitCandles = prices.map((price, index) => ({
+      ...candles[0], openTime: candles[0].openTime + index * 60_000,
+      closeTime: candles[0].closeTime + index * 60_000,
+      open: price, high: price, low: price, close: price,
+    }));
+    const config = { ...strategyConfig, close: { mode: 'basic', tp: 99, sl: 20 },
+      additional: { ...strategyConfig.additional, dcaTimes: 2,
+        dcaLevels: [{ percent: -30, multiplier: 1 }] } };
+    const single = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT', candles: exitCandles, marketType: 'FUTURES', leverage: 1,
+      marginMode: 'CROSSED', strategyConfig: config,
+      positionSizing: { mode: 'fixed', fixedQuantity: 1 },
+      fillModelConfig: { feeRate: 0, slippageRate: 0 },
+    });
+    const portfolio = simulateInterleavedPortfolio({
+      symbols: ['BTCUSDT'], candlesBySymbol: new Map([['BTCUSDT', exitCandles]]),
+      marketType: 'FUTURES', leverage: 1, marginMode: 'CROSSED',
+      strategyConfig: config, walletRiskPercent: 10, initialBalance: 10,
+      fillModelConfig: { feeRate: 0, slippageRate: 0 },
+    }).perSymbol.BTCUSDT;
+
+    for (const result of [single, portfolio]) {
+      expect(result.eventCounts.DCA).toBe(2);
+      expect(result.eventCounts.SL).toBe(1);
+      expect(result.events.filter((event) => event.type === 'DCA').map((event) => event.price))
+        .toEqual([0.7, 0.5764]);
+      expect(result.events.find((event) => event.type === 'SL')?.price).toBe(0.5424);
+      expect(result.trades[0].entryPrice).toBeCloseTo(0.678, 2);
+    }
+  });
+
   it('replays two adds in the single-symbol path and resumes from the same saved snapshot', () => {
     const run = (config: Record<string, unknown>) => simulateTradesForSymbolReplay({
       symbol: 'BTCUSDT', candles, marketType: 'FUTURES', leverage: 1, marginMode: 'CROSSED',

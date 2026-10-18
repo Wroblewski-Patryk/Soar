@@ -189,24 +189,25 @@ If `SL = -10%`:
 - `-9.5%` does not close
 - `-11.3%` closes because `-11.3% < -10%`
 
-### DCA Reachability Warnings
+### DCA Before Basic Protection
 
-When `basic` mode and DCA are both enabled, configuration validation must warn
-or block unreachable DCA levels:
+For `usdt_contribution_v1`, a pending positive DCA level blocks `TP` and a
+pending negative level blocks `SL`. The corresponding trailing protection is
+blocked on the same side. A remaining negative level does not block `TP`; a
+remaining positive level does not block `SL`. Basic DCA repeats the first level
+exactly `dcaTimes`; advanced DCA executes only defined levels.
 
-- positive DCA levels above `TP` cannot execute before hard take-profit closes
-  the position
-- negative DCA levels below `SL` cannot execute before hard stop-loss closes
-  the position
+When a USDT DCA level executes, that decision does not also close the position
+using pre-fill ROI or a pre-fill protection price. After the fill is confirmed,
+the next decision uses the filled quantity, new average entry, and resulting
+ROI. For example, two basic `-30%` adds with `SL = -20%` do not close on the
+old `-20%` threshold immediately after the second add. A reached add blocked
+specifically by insufficient funds may release `SL` if the stop is exceeded;
+venue precision and validation failures do not count as exhausted funds.
 
-For example, if `TP = 10%`, a positive DCA at `20%` is unreachable. If
-`SL = -10%`, a negative DCA at `-20%` is unreachable.
-
-In `LIVE`, venue-side hard `TP`/`SL` orders must not make the application claim
-that an unreachable DCA level can still execute. The implementation must either
-delay or reshape venue protection according to the approved DCA-first lifecycle
-contract, or make the unreachable DCA state explicit before the strategy can be
-treated as valid.
+Stored `quantity_v1` snapshots keep their existing sizing and same-pass exit
+behavior. Venue-side hard `TP`/`SL` orders must not bypass this application
+ordering or imply that a protected DCA level is unreachable without evidence.
 
 ## Advanced Close Mode
 

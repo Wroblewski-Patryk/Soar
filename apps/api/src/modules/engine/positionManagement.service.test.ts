@@ -258,6 +258,83 @@ describe('position management', () => {
     ).dcaExecuted).toBe(false);
   });
 
+  it('defers SL after the final basic USDT add until ROI is measured from its new average', () => {
+    const dca = { enabled: true, maxAdds: 2, stepPercent: 0.3,
+      addSizeFraction: 1, levelPercents: [-0.3, -0.3],
+      addSizeFractions: [1, 1], sizingBasis: 'usdt_contribution_v1' as const };
+    const first = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.7, stopLossPrice: 0.8, dca },
+      { averageEntryPrice: 1, quantity: 1, currentAdds: 0 },
+    );
+    expect(first.dcaExecuted).toBe(true);
+    expect(first.shouldClose).toBe(false);
+
+    const secondPrice = first.nextState.averageEntryPrice * 0.7;
+    const second = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: secondPrice,
+        stopLossPrice: first.nextState.averageEntryPrice * 0.8, dca },
+      JSON.parse(JSON.stringify(first.nextState)),
+    );
+    expect(second.dcaExecuted).toBe(true);
+    expect(second.nextState.currentAdds).toBe(2);
+    expect(second.shouldClose).toBe(false);
+
+    const filledState = JSON.parse(JSON.stringify(second.nextState));
+    const newStopLossPrice = filledState.averageEntryPrice * 0.8;
+    const resumed = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: secondPrice, stopLossPrice: newStopLossPrice, dca },
+      filledState,
+    );
+    expect(resumed.dcaExecuted).toBe(false);
+    expect(resumed.shouldClose).toBe(false);
+
+    const crossed = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: newStopLossPrice - 0.0001,
+        stopLossPrice: newStopLossPrice, dca },
+      resumed.nextState,
+    );
+    expect(crossed.shouldClose).toBe(true);
+    expect(crossed.closeReason).toBe('stop_loss');
+  });
+
+  it('gates USDT TP/TTP by pending profit adds and SL/TSL by pending loss adds', () => {
+    const dca = { enabled: true, maxAdds: 2, stepPercent: 0.3,
+      addSizeFraction: 1, levelPercents: [0.3, -0.3],
+      addSizeFractions: [1, 1], sizingBasis: 'usdt_contribution_v1' as const };
+    const base = { averageEntryPrice: 1, quantity: 1, currentAdds: 0 };
+    const tp = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 1.1, takeProfitPrice: 1.05, dca }, base,
+    );
+    const ttp = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 1.1, dca,
+        trailingTakeProfit: { enabled: true, armPercent: 0.05, trailPercent: 0.05 } },
+      { ...base, trailingTakeProfitHighPercent: 0.2, trailingTakeProfitStepPercent: 0.05 },
+    );
+    const sl = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.9, stopLossPrice: 0.95, dca }, base,
+    );
+    const tsl = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.9, dca,
+        trailingLoss: { enabled: true, startPercent: -0.03, stepPercent: 0.02 } },
+      { ...base, trailingLossLimitPercent: -0.05 },
+    );
+    for (const blocked of [tp, ttp, sl, tsl]) {
+      expect(blocked.dcaExecuted).toBe(false);
+      expect(blocked.shouldClose).toBe(false);
+    }
+
+    const slWithProfitPending = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.9, stopLossPrice: 0.95, dca },
+      { ...base, currentAdds: 1, executedDcaLevelIndices: [1] },
+    );
+    const tpWithLossPending = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 1.1, takeProfitPrice: 1.05, dca },
+      { ...base, currentAdds: 1, executedDcaLevelIndices: [0] },
+    );
+    expect(slWithProfitPending.closeReason).toBe('stop_loss');
+    expect(tpWithLossPending.closeReason).toBe('take_profit');
+  });
+
   it('keeps advanced USDT level multipliers paired and leaves legacy quantity sizing unchanged', () => {
     const dca = {
       enabled: true,

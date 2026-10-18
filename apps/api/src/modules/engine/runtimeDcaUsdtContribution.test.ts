@@ -88,6 +88,74 @@ const runSequence = async (input: {
 };
 
 describe('runtime confirmed USDT contribution DCA', () => {
+  it.each(['PAPER', 'LIVE'] as const)('%s basic two-add SL waits for the filled average across restart', async (mode) => {
+    const position: any = {
+      id: `usdt-exit-${mode}`, userId: 'usdt-user', botId: 'usdt-bot',
+      walletId: 'usdt-wallet', strategyId: 'usdt-strategy', symbol: 'BTCUSDT',
+      side: 'LONG', entryPrice: 1, quantity: 1, leverage: 1, marginUsed: null,
+      stopLoss: null, takeProfit: null, managementMode: 'BOT_MANAGED',
+      origin: 'BOT', continuityState: 'CONFIRMED', status: 'OPEN',
+      unrealizedPnl: null, lastExchangeSyncAt: null,
+      bot: { walletId: 'usdt-wallet', liveOptIn: true,
+        wallet: { mode, exchange: 'BINANCE', marketType: 'FUTURES',
+          baseCurrency: 'USDT', paperInitialBalance: 100 },
+        symbolGroup: { symbols: ['BTCUSDT'], marketUniverse: {
+          exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+        } },
+      },
+    };
+    const fills: number[] = [];
+    const executeDca = vi.fn(async (request: { markPrice: number; addedQuantity: number }) => {
+      const nextQuantity = position.quantity + request.addedQuantity;
+      const nextEntryPrice = (position.entryPrice * position.quantity
+        + request.markPrice * request.addedQuantity) / nextQuantity;
+      fills.push(request.markPrice);
+      position.quantity = nextQuantity;
+      position.entryPrice = nextEntryPrice;
+      return { feePaid: 0, executed: true, nextQuantity, nextEntryPrice };
+    });
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: async () => [position],
+      getStrategyConfigById: async () => ({
+        close: { mode: 'basic', tp: 99, sl: 20 },
+        additional: { dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+          dcaMode: 'basic', dcaTimes: 2,
+          dcaLevels: [{ percent: -30, multiplier: 1 }] },
+      }),
+      getCanonicalPositionState: async () => ({ quantity: position.quantity,
+        averageEntryPrice: position.entryPrice }),
+      getDurableDcaProgress: async () => ({ currentAdds: fills.length,
+        lastDcaPrice: fills.at(-1), executedDcaLevelIndices: fills.map((_, index) => index) }),
+      executeDca, closeByExitSignal,
+      resolveLifecyclePrice: ({ fallbackPrice }: { fallbackPrice: number }) => fallbackPrice,
+      recordRuntimeEvent: vi.fn(async () => undefined),
+      nowMs: () => Date.now(),
+    };
+    const send = (price: number) => new RuntimePositionAutomationService(deps).handleTickerEvent({
+      type: 'ticker', exchange: 'BINANCE', marketType: 'FUTURES',
+      symbol: 'BTCUSDT', eventTime: Date.now(), lastPrice: price,
+      priceChangePercent24h: -30,
+    });
+
+    await send(0.7);
+    expect(fills).toHaveLength(1);
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    const secondPrice = position.entryPrice * 0.7;
+    await send(secondPrice);
+    expect(fills).toHaveLength(2);
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    await send(secondPrice);
+    expect(executeDca).toHaveBeenCalledTimes(2);
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    const newStopPrice = position.entryPrice * 0.8;
+    await send(newStopPrice - 0.0001);
+    expect(closeByExitSignal).toHaveBeenCalledTimes(1);
+    expect(closeByExitSignal).toHaveBeenCalledWith(expect.objectContaining({
+      mode, reason: 'stop_loss',
+    }));
+  });
+
   it.each([
     ['PAPER', 'SPOT'], ['PAPER', 'FUTURES'],
     ['LIVE', 'SPOT'], ['LIVE', 'FUTURES'],

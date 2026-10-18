@@ -252,6 +252,13 @@ export const evaluatePositionManagement = (
     }
   }
 
+  // In the USDT version, this add is only a proposal until its fill is confirmed.
+  // A close here would still use the pre-fill ROI and protection price. Keep
+  // quantity_v1 snapshot behavior unchanged.
+  if (dcaExecuted && parsedInput.dca?.sizingBasis === 'usdt_contribution_v1') {
+    return { shouldClose: false, dcaExecuted, dcaAddedQuantity, dcaLevelIndex, nextState };
+  }
+
   const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || executedDcaLevelIndices.size >= dcaLevelsRequired;
   const dcaProtectionSatisfied = dcaSequenceCompleted || parsedInput.dcaFundsExhausted === true;
   const ttpDcaProtectionSatisfied =

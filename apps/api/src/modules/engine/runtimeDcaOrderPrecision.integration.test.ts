@@ -161,6 +161,9 @@ describe('runtime DCA venue precision and filled contribution', () => {
     expect(run.acquire).not.toHaveBeenCalled();
     expect(openOrder).not.toHaveBeenCalled();
     expect(run.closeByExitSignal).not.toHaveBeenCalled();
+    expect(run.recordRuntimeEvent).not.toHaveBeenCalledWith(expect.objectContaining({
+      payload: expect.objectContaining({ reason: 'dca_funds_exhausted' }),
+    }));
   });
 
   it('reports insufficient funds and closes by SL only after the reached DCA threshold', async () => {
