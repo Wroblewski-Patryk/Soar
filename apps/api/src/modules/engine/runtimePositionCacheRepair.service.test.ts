@@ -135,4 +135,28 @@ describe('database-backed BOT runtime cache repair', () => {
     expect(f.readCache()).toBe(erased);
     expect(f.redis.eval).not.toHaveBeenCalled();
   });
+
+  it('accepts TTP after TSL while keeping stale TSL and erased cache pending', async () => {
+    const f = fixture();
+    f.position.runtimeTslEverArmed = true;
+    f.position.runtimeTtpEverArmed = true;
+    const ttp = JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 120,
+      trailingTakeProfitHighPercent: 120 / 95 - 1,
+      trailingTakeProfitStepPercent: 0.3 / 95,
+      trailingTakeProfitActiveLevelIndex: 0 });
+    f.setCache(ttp);
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'CLEAN' });
+    f.setCache(JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 120,
+      trailingLossLimitPercent: -0.16, trailingLossActiveLevelIndex: 0 }));
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' });
+    f.setCache(JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 120 }));
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' });
+    expect(f.redis.eval).not.toHaveBeenCalled();
+  });
 });

@@ -2,9 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { resolve } from 'node:path';
 import { createClient } from 'redis';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { prisma } from '../prisma/client';
 import { selectRuntimeDisplayState } from '../modules/bots/runtimeSessionPositionsRead.service';
+import { applyLiveExchangeUserDataStreamEvent } from '../modules/orders/orders.exchangeEvents.service';
 import { readLiveExecutionOperationalStatus } from '../observability/liveExecutionOperationalStatus';
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -236,13 +237,45 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
       }
 
+      const tslCache = { ...recoveredCache, trailingAnchorPrice: 100,
+        trailingLossLimitPercent: -0.16, trailingLossActiveLevelIndex: 0 };
+      await prisma.position.update({ where: { id: position.id },
+        data: { runtimeTslEverArmed: true } });
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(tslCache));
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
+      const erasedTsl = JSON.stringify({ ...recoveredCache, trailingAnchorPrice: 100 });
+      await redis.set(`runtime:position-state:${position.id}`, erasedTsl);
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
+      expect(await redis.get(`runtime:position-state:${position.id}`)).toBe(erasedTsl);
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(tslCache));
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
+
       const armedCache = { ...recoveredCache, trailingAnchorPrice: 120,
         trailingTakeProfitHighPercent: 120 / 95 - 1,
         trailingTakeProfitStepPercent: 0.3 / 95,
         trailingTakeProfitActiveLevelIndex: 0 };
-      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
       await prisma.position.update({ where: { id: position.id },
         data: { runtimeTtpEverArmed: true } });
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
+      vi.stubEnv('NODE_ENV', 'development');
+      try {
+        await applyLiveExchangeUserDataStreamEvent({ userId: user.id,
+          sourceApiKeyId: key.id, event: { eventType: 'ORDER_TRADE_UPDATE',
+            marketType: 'FUTURES', eventTime: new Date(second.executedAt).getTime(),
+            transactionTime: new Date(second.executedAt).getTime(), symbol: 'BTCUSDT',
+            side: 'BUY', orderType: 'MARKET', orderStatus: 'FILLED',
+            executionType: 'TRADE', exchangeOrderId: dcaVenueId,
+            clientOrderId: dcaClientId, averagePrice: 90, cumulativeFilledQuantity: 1,
+            lastFilledQuantity: 0.6, lastFilledPrice: 90, fee: 0.06,
+            feeCurrency: 'USDT', exchangeTradeId: second.exchangeTradeId, raw: {} } });
+      } finally { vi.unstubAllEnvs(); }
+      expect(JSON.parse((await redis.get(`runtime:position-state:${position.id}`))!))
+        .toMatchObject({ trailingTakeProfitHighPercent: armedCache.trailingTakeProfitHighPercent,
+          trailingTakeProfitStepPercent: armedCache.trailingTakeProfitStepPercent });
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(tslCache));
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
       await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
       const erasedTracker = JSON.stringify({ ...recoveredCache, trailingAnchorPrice: 120 });
       await redis.set(`runtime:position-state:${position.id}`, erasedTracker);
@@ -251,6 +284,8 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       expect((await readLiveExecutionOperationalStatus({
         redisUrl, recoveryNamespace: namespace,
       })).recovery.cacheRepairPendingCount).toBe(1);
+      expect(await prisma.order.count({ where: { positionId: position.id } })).toBe(1);
+      expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(2);
       expect(await prisma.trade.count({ where: { orderId: intent.id } })).toBe(1);
       await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(armedCache));
       await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);

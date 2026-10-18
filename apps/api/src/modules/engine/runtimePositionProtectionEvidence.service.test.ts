@@ -4,7 +4,7 @@ import { prisma } from '../../prisma/client';
 import { markRuntimeProtectionArmed, protectionMatchesEvidence,
   readRuntimeProtectionEvidence } from './runtimePositionProtectionEvidence.service';
 
-it('persists monotonic TTP evidence outside Redis and rejects erased tracker fields', async () => {
+it('persists monotonic protection evidence and confirms TSL to TTP transition', async () => {
   const id = randomUUID();
   const user = await prisma.user.create({ data: {
     email: `protection-evidence-${id}@example.test`, password: 'test-only',
@@ -50,6 +50,33 @@ it('persists monotonic TTP evidence outside Redis and rejects erased tracker fie
     expect(await markRuntimeProtectionArmed({ positionId: position.id,
       state: armed, evidence: persisted! })).toBe(true);
     expect(await readRuntimeProtectionEvidence(position.id)).toEqual(persisted);
+
+    const transitioning = await prisma.position.create({ data: { userId: user.id,
+      botId: bot.id, symbol: 'SOLUSDT', side: 'LONG', status: 'OPEN',
+      quantity: 1, entryPrice: 100, origin: 'BOT', managementMode: 'BOT_MANAGED',
+      runtimeTtpEverArmed: false, runtimeTslEverArmed: false } });
+    const tsl = { quantity: 1, averageEntryPrice: 100, currentAdds: 0,
+      trailingAnchorPrice: 100, trailingLossLimitPercent: -0.16,
+      trailingLossActiveLevelIndex: 0 };
+    const ttp = { quantity: 1, averageEntryPrice: 100, currentAdds: 0,
+      trailingAnchorPrice: 121, trailingTakeProfitHighPercent: 0.21,
+      trailingTakeProfitStepPercent: 0.01,
+      trailingTakeProfitActiveLevelIndex: 0 };
+    expect(await markRuntimeProtectionArmed({ positionId: transitioning.id,
+      state: tsl, evidence: baseline! })).toBe(true);
+    const tslEvidence = await readRuntimeProtectionEvidence(transitioning.id);
+    expect(tslEvidence).toEqual({ ttpEverArmed: false, tslEverArmed: true });
+    expect(protectionMatchesEvidence(tsl, tslEvidence)).toBe(true);
+    expect(await markRuntimeProtectionArmed({ positionId: transitioning.id,
+      state: ttp, evidence: tslEvidence! })).toBe(true);
+    const both = await readRuntimeProtectionEvidence(transitioning.id);
+    expect(both).toEqual({ ttpEverArmed: true, tslEverArmed: true });
+    expect(protectionMatchesEvidence(ttp, both)).toBe(true);
+    expect(protectionMatchesEvidence(tsl, both)).toBe(false);
+    expect(protectionMatchesEvidence({ quantity: 1, averageEntryPrice: 100,
+      currentAdds: 0 }, both)).toBe(false);
+    expect(await markRuntimeProtectionArmed({ positionId: transitioning.id,
+      state: tsl, evidence: tslEvidence! })).toBe(false);
   } finally {
     vi.unstubAllEnvs();
     await prisma.position.deleteMany({ where: { userId: user.id } });

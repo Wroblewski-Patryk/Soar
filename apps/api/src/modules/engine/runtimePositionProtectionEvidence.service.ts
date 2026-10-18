@@ -18,7 +18,11 @@ export const protectionMatchesEvidence = (
 ) => {
   if (!evidence || evidence.ttpEverArmed == null || evidence.tslEverArmed == null) return false;
   const active = armed(state);
-  return active.ttp === evidence.ttpEverArmed && active.tsl === evidence.tslEverArmed;
+  if (active.ttp && active.tsl) return false;
+  // TTP supersedes TSL. Both monotonic flags mean TTP was armed after TSL.
+  if (evidence.ttpEverArmed) return active.ttp;
+  if (evidence.tslEverArmed) return active.tsl;
+  return !active.ttp && !active.tsl;
 };
 
 export const readRuntimeProtectionEvidence = async (
@@ -41,8 +45,9 @@ export const markRuntimeProtectionArmed = async (input: {
   evidence: RuntimeProtectionEvidence;
 }) => {
   const active = armed(input.state);
-  if ((input.evidence.ttpEverArmed && !active.ttp) ||
-      (input.evidence.tslEverArmed && !active.tsl)) return false;
+  if (active.ttp && active.tsl) return false;
+  if (input.evidence.ttpEverArmed && !active.ttp) return false;
+  if (input.evidence.tslEverArmed && !active.tsl && !active.ttp) return false;
   if (process.env.NODE_ENV === 'test') {
     const current = runtimePositionStateStore.getTestProtectionEvidence(input.positionId);
     if (!current || current.ttpEverArmed !== input.evidence.ttpEverArmed ||
