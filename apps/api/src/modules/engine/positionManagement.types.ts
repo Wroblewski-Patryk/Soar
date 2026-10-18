@@ -32,13 +32,19 @@ export const TrailingLossConfigSchema = z.object({
   stepPercent: z.number().positive().max(10),
 });
 
+// Missing in stored strategy configs means the original quantity-based behavior.
+// The explicit USDT mode is opt-in until PAPER and LIVE are migrated separately.
+export const DcaSizingBasisSchema = z.enum(['quantity_v1', 'usdt_contribution_v1']);
+export type DcaSizingBasis = z.infer<typeof DcaSizingBasisSchema>;
+
 export const DcaConfigSchema = z.object({
   enabled: z.boolean().default(false),
   maxAdds: z.number().int().min(0).default(0),
   stepPercent: z.number().positive().max(1).default(0.01),
-  addSizeFraction: z.number().positive().max(2).default(0.5),
+  addSizeFraction: z.number().positive().max(10).default(0.5),
   levelPercents: z.array(z.number().min(-10).max(10)).optional(),
   addSizeFractions: z.array(z.number().positive().max(10)).optional(),
+  sizingBasis: DcaSizingBasisSchema.default('quantity_v1'),
 });
 
 export const PositionManagementInputSchema = z.object({

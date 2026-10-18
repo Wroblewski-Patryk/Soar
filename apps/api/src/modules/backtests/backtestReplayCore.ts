@@ -1,7 +1,7 @@
 import { PositionSide } from '@prisma/client';
 import { decideExecutionAction } from '../engine/sharedExecutionCore';
 import { evaluatePositionManagement } from '../engine/positionManagement.service';
-import { PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
+import { DcaSizingBasis, PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
 import {
   buildStrategySignalPriceSeries,
   evaluateStrategySignalAtIndex,
@@ -100,6 +100,7 @@ export type StrategyRiskConfig = {
   maxDcaPerTrade: number;
   dcaLevels: number[];
   dcaMultipliers: number[];
+  dcaSizingBasis: DcaSizingBasis;
 };
 
 export const shouldBlockCloseByPendingDca = (
@@ -247,6 +248,7 @@ export const buildReplayPositionManagementInput = (args: {
             addSizeFraction: Math.max(0.01, riskConfig.dcaMultipliers[0] ?? 1),
             levelPercents: riskConfig.dcaLevels,
             addSizeFractions: riskConfig.dcaMultipliers,
+            sizingBasis: riskConfig.dcaSizingBasis,
           }
         : undefined,
   };
@@ -290,8 +292,8 @@ export const resolveReplayDcaProbePrice = (args: {
       const reached =
         typeof pnl === 'number' && Number.isFinite(pnl)
           ? level >= 0
-            ? pnl >= level
-            : pnl <= level
+            ? pnl >= level - 1e-12
+            : pnl <= level + 1e-12
           : false;
       return { index, level, price, reached };
     })
@@ -320,6 +322,13 @@ const defaultRiskConfig: StrategyRiskConfig = {
   maxDcaPerTrade: 1,
   dcaLevels: [-0.008],
   dcaMultipliers: [1],
+  dcaSizingBasis: 'quantity_v1',
+};
+
+const parseDcaSizingBasis = (value: unknown): DcaSizingBasis => {
+  if (value == null || value === 'quantity_v1') return 'quantity_v1';
+  if (value === 'usdt_contribution_v1') return value;
+  throw new Error('Unsupported DCA sizing basis in backtest strategy snapshot');
 };
 
 const toSignalDirection = (
@@ -362,6 +371,7 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     dcaMode?: unknown;
     dcaTimes?: unknown;
     dcaLevels?: Array<{ percent?: unknown; multiplier?: unknown }>;
+    dcaSizingBasis?: unknown;
   } | undefined) ?? { };
 
   const closeMode = close.mode === 'advanced' ? 'advanced' : 'basic';
@@ -393,6 +403,7 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
       ? { start: trailingLossRawPercent / 100, step: Math.abs(trailingLossRawStep) / 100 }
       : null;
   const dcaMode = additional.dcaMode === 'advanced' ? 'advanced' : 'basic';
+  const dcaSizingBasis = parseDcaSizingBasis(additional.dcaSizingBasis);
   const maxDcaRaw = Number(additional.dcaTimes);
   const dcaEnabled = Boolean(additional.dcaEnabled ?? true);
   const configuredMaxDcaPerTrade = dcaEnabled
@@ -401,12 +412,30 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
       : defaultRiskConfig.maxDcaPerTrade
     : 0;
   const rawDcaLevels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];
-  const configuredLevels = rawDcaLevels
-    .map((level) => asSignedPercent(level?.percent, Number.NaN))
-    .filter((value) => Number.isFinite(value) && value !== 0);
-  const configuredMultipliers = rawDcaLevels
-    .map((level) => Number(level?.multiplier))
-    .filter((value) => Number.isFinite(value) && value > 0);
+  const quotePairs = dcaSizingBasis === 'usdt_contribution_v1' && dcaEnabled
+    ? rawDcaLevels.map((level, index) => {
+        const percent = asSignedPercent(level?.percent, Number.NaN);
+        const multiplier = Number(level?.multiplier);
+        if (!Number.isFinite(percent) || percent === 0 || !Number.isFinite(multiplier) || multiplier <= 0 || multiplier > 10) {
+          throw new Error(`Invalid USDT DCA level at index ${index}`);
+        }
+        return { percent, multiplier };
+      })
+    : null;
+  if (dcaSizingBasis === 'usdt_contribution_v1' && dcaEnabled &&
+      (dcaMode === 'advanced' || configuredMaxDcaPerTrade > 0) && quotePairs?.length === 0) {
+    throw new Error('USDT DCA requires an explicit level');
+  }
+  const configuredLevels = quotePairs
+    ? quotePairs.map((level) => level.percent)
+    : rawDcaLevels
+        .map((level) => asSignedPercent(level?.percent, Number.NaN))
+        .filter((value) => Number.isFinite(value) && value !== 0);
+  const configuredMultipliers = quotePairs
+    ? quotePairs.map((level) => level.multiplier)
+    : rawDcaLevels
+        .map((level) => Number(level?.multiplier))
+        .filter((value) => Number.isFinite(value) && value > 0);
   const dcaLevels =
     !dcaEnabled
       ? []
@@ -444,6 +473,7 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     maxDcaPerTrade: dcaLevels.length,
     dcaLevels,
     dcaMultipliers,
+    dcaSizingBasis,
   };
 };
 

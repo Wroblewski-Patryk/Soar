@@ -44,10 +44,11 @@ const shouldDca = (currentPnlFraction: number | null, triggerPercent: number) =>
   if (typeof currentPnlFraction !== 'number' || !Number.isFinite(currentPnlFraction)) {
     return false;
   }
+  // Inclusive thresholds should survive floating-point representation at the boundary.
   if (triggerPercent >= 0) {
-    return currentPnlFraction >= triggerPercent;
+    return currentPnlFraction >= triggerPercent - 1e-12;
   }
-  return currentPnlFraction <= triggerPercent;
+  return currentPnlFraction <= triggerPercent + 1e-12;
 };
 
 const normalizeTrailingTakeProfitLevels = (
@@ -226,7 +227,12 @@ export const evaluatePositionManagement = (
     if (nextLevelIndex != null) {
       const nextAddSizeFraction =
         dcaAddFractions[nextLevelIndex] ?? parsedInput.dca?.addSizeFraction ?? 0.5;
-      const addedQuantity = nextState.quantity * nextAddSizeFraction;
+      // Book contribution is the sum of confirmed fill notionals (excluding fees),
+      // represented by average entry times quantity. Leverage changes required
+      // margin, not the USDT notional used to size the next add.
+      const addedQuantity = parsedInput.dca?.sizingBasis === 'usdt_contribution_v1'
+        ? (nextState.averageEntryPrice * nextState.quantity * nextAddSizeFraction) / parsedInput.currentPrice
+        : nextState.quantity * nextAddSizeFraction;
       const newQuantity = nextState.quantity + addedQuantity;
       const newAverage =
         (nextState.averageEntryPrice * nextState.quantity + parsedInput.currentPrice * addedQuantity) /

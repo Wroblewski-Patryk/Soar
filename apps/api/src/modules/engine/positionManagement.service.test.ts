@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { resolvePositionPnlFraction } from './positionPnlSemantics';
 import { evaluatePositionManagement } from './positionManagement.service';
 
 describe('position management', () => {
@@ -212,6 +213,104 @@ describe('position management', () => {
     expect(first.nextState.averageEntryPrice).toBe(95);
     expect(second.dcaExecuted).toBe(true);
     expect(second.nextState.currentAdds).toBe(2);
+  });
+
+  it('sizes repeated USDT DCA from confirmed contribution and resumes at the new average', () => {
+    const dca = {
+      enabled: true,
+      maxAdds: 2,
+      stepPercent: 0.305,
+      addSizeFraction: 2,
+      levelPercents: [-0.305, -0.305],
+      addSizeFractions: [2, 2],
+      sizingBasis: 'usdt_contribution_v1' as const,
+    };
+    const firstPrice = 0.695;
+    const first = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: firstPrice, leverage: 1, dca },
+      { averageEntryPrice: 1, quantity: 1, currentAdds: 0 },
+    );
+    expect(first.dcaExecuted).toBe(true);
+    expect(first.dcaAddedQuantity * firstPrice).toBeCloseTo(2, 4);
+    expect(first.nextState.averageEntryPrice * first.nextState.quantity).toBeCloseTo(3, 4);
+    expect(resolvePositionPnlFraction({
+      side: 'LONG', entryPrice: first.nextState.averageEntryPrice,
+      quantity: first.nextState.quantity, currentPrice: firstPrice, leverage: 1,
+    })).toBeCloseTo(-0.1016667, 4);
+
+    const resumedState = JSON.parse(JSON.stringify(first.nextState));
+    const secondPrice = first.nextState.averageEntryPrice * (1 - 0.305);
+    const second = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: secondPrice, leverage: 1, dca },
+      resumedState,
+    );
+    expect(second.dcaExecuted).toBe(true);
+    expect(second.dcaAddedQuantity * secondPrice).toBeCloseTo(6, 4);
+    expect(second.nextState.averageEntryPrice * second.nextState.quantity).toBeCloseTo(9, 4);
+    expect(second.nextState.currentAdds).toBe(2);
+    expect(resolvePositionPnlFraction({
+      side: 'LONG', entryPrice: second.nextState.averageEntryPrice,
+      quantity: second.nextState.quantity, currentPrice: secondPrice, leverage: 1,
+    })).toBeCloseTo(-0.1016667, 4);
+    expect(evaluatePositionManagement(
+      { side: 'LONG', currentPrice: secondPrice, leverage: 1, dca },
+      JSON.parse(JSON.stringify(second.nextState)),
+    ).dcaExecuted).toBe(false);
+  });
+
+  it('keeps advanced USDT level multipliers paired and leaves legacy quantity sizing unchanged', () => {
+    const dca = {
+      enabled: true,
+      maxAdds: 2,
+      stepPercent: 0.2,
+      addSizeFraction: 1,
+      levelPercents: [-0.2, -0.3],
+      addSizeFractions: [1, 0.5],
+      sizingBasis: 'usdt_contribution_v1' as const,
+    };
+    const first = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.8, leverage: 1, dca },
+      { averageEntryPrice: 1, quantity: 1, currentAdds: 0 },
+    );
+    const secondPrice = first.nextState.averageEntryPrice * 0.7;
+    const second = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: secondPrice, leverage: 1, dca },
+      first.nextState,
+    );
+    expect(first.dcaAddedQuantity * 0.8).toBeCloseTo(1, 4);
+    expect(first.nextState.averageEntryPrice * first.nextState.quantity).toBeCloseTo(2, 4);
+    expect(second.dcaAddedQuantity * secondPrice).toBeCloseTo(1, 4);
+    expect(second.nextState.averageEntryPrice * second.nextState.quantity).toBeCloseTo(3, 4);
+    expect(resolvePositionPnlFraction({
+      side: 'LONG', entryPrice: second.nextState.averageEntryPrice,
+      quantity: second.nextState.quantity, currentPrice: secondPrice, leverage: 1,
+    })).toBeCloseTo(-0.2, 4);
+
+    const legacy = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: 0.8, leverage: 1, dca: { ...dca, sizingBasis: undefined } },
+      { averageEntryPrice: 1, quantity: 1, currentAdds: 0 },
+    );
+    expect(legacy.dcaAddedQuantity).toBe(1);
+    expect(legacy.nextState.averageEntryPrice * legacy.nextState.quantity).toBeCloseTo(1.8, 5);
+  });
+
+  it('keeps USDT add notional independent of leverage while ROI uses leveraged margin', () => {
+    const price = 0.8475;
+    const result = evaluatePositionManagement(
+      { side: 'LONG', currentPrice: price, leverage: 2, dca: {
+        enabled: true, maxAdds: 1, stepPercent: 0.305, addSizeFraction: 2,
+        levelPercents: [-0.305], addSizeFractions: [2],
+        sizingBasis: 'usdt_contribution_v1',
+      } },
+      { averageEntryPrice: 1, quantity: 1, currentAdds: 0 },
+    );
+
+    expect(result.dcaAddedQuantity * price).toBeCloseTo(2, 4);
+    expect(result.nextState.averageEntryPrice * result.nextState.quantity).toBeCloseTo(3, 4);
+    expect(resolvePositionPnlFraction({
+      side: 'LONG', entryPrice: result.nextState.averageEntryPrice,
+      quantity: result.nextState.quantity, currentPrice: price, leverage: 2,
+    })).toBeCloseTo(-0.1016667, 4);
   });
 
   it('applies DCA before TP and keeps TP blocked while profit-side DCA remains pending', () => {

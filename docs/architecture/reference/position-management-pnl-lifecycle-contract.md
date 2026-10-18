@@ -59,8 +59,27 @@ negative.
 - Positive DCA levels execute as PnL moves upward.
 - Negative DCA levels execute as PnL moves downward.
 - Each level has an execution threshold and a size multiplier.
-- A multiplier of `1` means the DCA add size equals the current position size
-  according to the runtime sizing contract for the lifecycle.
+- In existing configurations and snapshots without `additional.dcaSizingBasis`,
+  the effective version is `quantity_v1`: multiplier `1` adds the current asset
+  quantity. The explicit `quantity_v1` value has the same behavior.
+- The explicit `additional.dcaSizingBasis: "usdt_contribution_v1"` opts the
+  computation engine and both BACKTEST replay paths into USDT contribution
+  sizing. This version is not wired to the strategy form or PAPER/LIVE orders
+  under SOAR-DCA-USDT-001A. Unknown versions fail BACKTEST parsing.
+- For `usdt_contribution_v1`, current book contribution is the sum of confirmed
+  fill notionals, represented by `averageEntryPrice * quantity` in the
+  position state. The next add has USDT notional `bookContribution * multiplier`
+  and asset quantity `addNotional / DCA fillPrice`; the new average uses the
+  confirmed fill price and both quantities. A multiplier of `1` therefore adds
+  the current USDT contribution. This amount excludes trading fees and funding;
+  leverage affects required margin and ROI, not the USDT notional multiplier.
+  BACKTEST uses its historical DCA probe fill price and reserves
+  `addNotional / leverage` as margin.
+- Basic DCA repeats its first configured threshold and multiplier for exactly
+  `dcaTimes` executions. Advanced DCA uses each configured threshold and
+  multiplier pair once. Each later threshold is evaluated against ROI from the
+  updated average entry. The versioned BACKTEST parser rejects incomplete or
+  invalid USDT level pairs instead of silently falling back to old sizing.
 
 The execution ladder must be deterministic. For normalized strategy evaluation:
 
