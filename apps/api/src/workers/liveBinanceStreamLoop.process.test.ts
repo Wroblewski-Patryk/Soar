@@ -445,7 +445,8 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
         where: { id: position.id },
       })).lastExchangeSeenAt?.getTime() === accountUpdateAt);
       expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
-        .toMatchObject({ quantity: 1, entryPrice: 100 });
+        .toMatchObject({ quantity: 1, entryPrice: 100, lastAccountQuantity: 2,
+          lastAccountEntryPrice: 95, continuityState: 'RECOVERING' });
       const polling = recoveryLoop.runOnce();
       stream.emit('FUTURES', event);
       await polling;
@@ -472,7 +473,7 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
         eventType: 'DCA_EXECUTED' } })).toBe(1);
       expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })))
         .toMatchObject({ quantity: 2, entryPrice: 95, continuityState: 'CONFIRMED',
-          missingSyncCount: 0 });
+          lastAccountQuantity: 2, missingSyncCount: 0 });
       expect(await prisma.order.count({ where: { id: intent.id } })).toBe(1);
 
       const closeClientOrderId = `soar_${id.replace(/-/g, '').slice(0, 20)}cl`;
@@ -501,7 +502,8 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       })).lastExchangeSeenAt?.getTime() === beforeCloseAt);
       expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
         .toMatchObject({ status: 'OPEN', syncState: 'IN_SYNC', quantity: 2,
-          entryPrice: 95, continuityState: 'RECOVERING' });
+          entryPrice: 95, lastAccountQuantity: 0,
+          continuityState: 'RECOVERING' });
       const closeEvent = normalizeBinanceUserDataStreamEvent('FUTURES', {
         e: 'ORDER_TRADE_UPDATE', E: beforeCloseAt + 1, T: beforeCloseAt + 1, o: {
           s: 'BTCUSDT', S: 'SELL', o: 'MARKET', X: 'FILLED', x: 'TRADE',
@@ -522,7 +524,8 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'POSITION_CLOSED' } })).toBe(1);
       expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
-        .toMatchObject({ status: 'CLOSED', quantity: 2, entryPrice: 95 });
+        .toMatchObject({ status: 'CLOSED', quantity: 2, entryPrice: 95,
+          lastAccountQuantity: 0, continuityState: 'EXTERNAL_CLOSE_CONFIRMED' });
     } finally {
       await streamLoop?.stop();
       await recoveryLoop?.stop();

@@ -840,6 +840,9 @@ model Position {
   marginUsed    Float?
   lastExchangeSeenAt DateTime?
   lastExchangeSyncAt DateTime?
+  lastAccountSeenAt   DateTime?
+  lastAccountQuantity Float?
+  lastAccountEntryPrice Float?
   missingSince       DateTime?
   missingSyncCount   Int       @default(0)
 

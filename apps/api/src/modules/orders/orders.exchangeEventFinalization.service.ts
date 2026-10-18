@@ -1,6 +1,8 @@
 import { PositionCloseInitiator, PositionCloseReason, Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
+import { confirmedAccountSnapshotMatches, lockLivePosition,
+  matchesAccountSnapshot } from './orders.exchangeAccountUpdateScope';
 import { computePositionAddUpdate } from './positionFillMath';
 import { isExchangeCloseFillComplete } from './orders.exchangeEvents.helpers';
 
@@ -39,6 +41,7 @@ export const finalizeExchangeDcaFillInTransaction = async (
     const order = await tx.order.findFirstOrThrow({
       where: { id: input.orderId, userId: input.userId, positionId: input.positionId },
     });
+    await lockLivePosition(tx, input.userId, input.positionId);
     const position = await tx.position.findUniqueOrThrow({ where: { id: input.positionId } });
     const existingTrade = await tx.trade.findFirst({
       where: { orderId: order.id, lifecycleAction: 'DCA' }, select: { id: true },
@@ -51,6 +54,18 @@ export const finalizeExchangeDcaFillInTransaction = async (
       currentQuantity: position.quantity, currentEntryPrice: position.entryPrice,
       addedQuantity: input.fillQuantity, fillPrice: input.fillPrice,
     });
+    const hasAccountSnapshot = position.origin !== 'EXCHANGE_SYNC' &&
+      position.lastAccountSeenAt != null;
+    const agreesWithAccount = hasAccountSnapshot && confirmedAccountSnapshotMatches({
+      quantity: nextQuantity, entryPrice: nextEntryPrice,
+      lastAccountSeenAt: position.lastAccountSeenAt,
+      lastAccountQuantity: position.lastAccountQuantity,
+      lastAccountEntryPrice: position.lastAccountEntryPrice,
+    });
+    const continuityState = hasAccountSnapshot
+      ? agreesWithAccount ? 'CONFIRMED' : 'RECOVERING'
+      : position.origin === 'EXCHANGE_SYNC' ? 'CONFIRMED' : position.continuityState;
+    const recovering = continuityState === 'RECOVERING';
     await tx.position.update({
       where: { id: position.id }, data: {
         quantity: nextQuantity, entryPrice: nextEntryPrice,
@@ -58,7 +73,9 @@ export const finalizeExchangeDcaFillInTransaction = async (
           position.lastExchangeSeenAt > input.eventAt
           ? position.lastExchangeSeenAt : input.eventAt,
         lastExchangeSyncAt: input.eventAt,
-        missingSince: null, missingSyncCount: 0, continuityState: 'CONFIRMED',
+        missingSince: recovering ? position.missingSince ?? input.eventAt : null,
+        missingSyncCount: recovering ? Math.max(1, position.missingSyncCount) : 0,
+        continuityState,
       },
     });
     await tx.trade.create({ data: {
@@ -89,6 +106,7 @@ export const finalizeExchangeCloseFillInTransaction = async (
   const order = await tx.order.findFirstOrThrow({
     where: { id: input.orderId, userId: input.userId, positionId: input.positionId },
   });
+  await lockLivePosition(tx, input.userId, input.positionId);
   const position = await tx.position.findUniqueOrThrow({ where: { id: input.positionId } });
   const existingTrade = await tx.trade.findFirst({
     where: { orderId: order.id, lifecycleAction: 'CLOSE' }, select: { id: true },
@@ -108,10 +126,18 @@ export const finalizeExchangeCloseFillInTransaction = async (
     : (position.entryPrice - input.fillPrice) * input.fillQuantity;
   const realizedPnl = entryFees != null && order.fee != null && !order.feePending
     ? grossPnl - entryFees - order.fee : null;
+  const accountDisagreesWithClose = position.origin !== 'EXCHANGE_SYNC' &&
+    position.lastAccountSeenAt != null &&
+    (position.lastAccountQuantity == null ||
+      !matchesAccountSnapshot(0, position.lastAccountQuantity));
   await tx.position.update({
     where: { id: position.id }, data: {
       status: 'CLOSED', closedAt: input.eventAt, syncState: 'ORPHAN_LOCAL',
-      continuityState: 'EXTERNAL_CLOSE_CONFIRMED', realizedPnl, unrealizedPnl: 0,
+      continuityState: accountDisagreesWithClose ? 'RECOVERING' : 'EXTERNAL_CLOSE_CONFIRMED',
+      missingSince: accountDisagreesWithClose ? position.missingSince ?? input.eventAt : null,
+      missingSyncCount: accountDisagreesWithClose
+        ? Math.max(1, position.missingSyncCount) : 0,
+      realizedPnl, unrealizedPnl: 0,
       closeReason: input.closeReason, closeInitiator: input.closeInitiator,
     },
   });

@@ -92,6 +92,15 @@ describe('orders.exchangeEvents.service account updates', () => {
     expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
       .toMatchObject({ quantity: 1, entryPrice: 100, syncState: 'IN_SYNC',
         continuityState: 'RECOVERING', missingSyncCount: 2 });
+
+    await applyLiveExchangeAccountUpdateEvent({ userId: user.id,
+      sourceApiKeyId: key.id, event: { ...event, eventTime: 5_003,
+        transactionTime: 5_003, positions: [{ ...event.positions[0],
+          amount: 3, entryPrice: null }] } });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ quantity: 1, entryPrice: 100,
+        continuityState: 'RECOVERING', lastAccountQuantity: 3,
+        lastAccountEntryPrice: null, missingSyncCount: 3 });
   });
 
   it('requires source api-key scope before refreshing canonical quantities and pnl', async () => {

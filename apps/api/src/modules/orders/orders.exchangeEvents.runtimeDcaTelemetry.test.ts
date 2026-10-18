@@ -37,7 +37,7 @@ const cleanupDb = async () => {
 describe('runtime exchange DCA telemetry', () => {
   beforeEach(cleanupDb);
   afterEach(async () => { await prisma.liveOrderIntent.deleteMany(); });
-  it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {
+  it('replays DCA telemetry while preserving unverified continuity without an account snapshot', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-dca@example.com', password: 'hashed' },
     });
@@ -185,8 +185,8 @@ describe('runtime exchange DCA telemetry', () => {
     });
     expect(updatedPosition.quantity).toBeCloseTo(0.15, 10);
     expect(updatedPosition.entryPrice).toBeCloseTo(62_500, 10);
-    expect(updatedPosition.continuityState).toBe('CONFIRMED');
-    expect(updatedPosition.missingSyncCount).toBe(0);
+    expect(updatedPosition.continuityState).toBe('RECOVERING');
+    expect(updatedPosition.missingSyncCount).toBe(2);
     const dcaTrade = await prisma.trade.findFirstOrThrow({
       where: { orderId: order.id },
     });

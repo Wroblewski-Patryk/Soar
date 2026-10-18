@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 
 export const resolveLiveAccountUpdateScope = async (input: {
@@ -6,6 +7,7 @@ export const resolveLiveAccountUpdateScope = async (input: {
   side: 'LONG' | 'SHORT';
   marketType: 'FUTURES' | 'SPOT';
   sourceApiKeyId: string | null;
+  client?: Prisma.TransactionClient;
 }) => {
   if (!input.sourceApiKeyId) {
     console.warn(
@@ -14,7 +16,7 @@ export const resolveLiveAccountUpdateScope = async (input: {
     return [];
   }
 
-  const candidates = await prisma.position.findMany({
+  const candidates = await (input.client ?? prisma).position.findMany({
     where: {
       userId: input.userId,
       symbol: input.symbol,
@@ -41,7 +43,10 @@ export const resolveLiveAccountUpdateScope = async (input: {
       ],
     },
     select: { id: true, origin: true, quantity: true, entryPrice: true,
-      missingSince: true },
+      missingSince: true, missingSyncCount: true, continuityState: true,
+      lastExchangeSeenAt: true, lastExchangeSyncAt: true,
+      lastAccountSeenAt: true, lastAccountQuantity: true,
+      lastAccountEntryPrice: true },
     orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
   });
 
@@ -55,3 +60,18 @@ export const resolveLiveAccountUpdateScope = async (input: {
 export const matchesAccountSnapshot = (canonical: number, observed: number | null) =>
   observed == null || Math.abs(canonical - observed) <=
     1e-9 * Math.max(1, Math.abs(canonical), Math.abs(observed));
+
+export const confirmedAccountSnapshotMatches = (input: {
+  quantity: number; entryPrice: number;
+  lastAccountSeenAt: Date | null; lastAccountQuantity: number | null;
+  lastAccountEntryPrice: number | null;
+}) => input.lastAccountSeenAt != null && input.lastAccountQuantity != null &&
+  input.lastAccountEntryPrice != null &&
+  matchesAccountSnapshot(input.quantity, input.lastAccountQuantity) &&
+  matchesAccountSnapshot(input.entryPrice, input.lastAccountEntryPrice);
+
+export const lockLivePosition = async (tx: Prisma.TransactionClient,
+  userId: string, positionId: string) => {
+  await tx.$queryRaw`SELECT "id" FROM "public"."Position"
+    WHERE "id" = ${positionId} AND "userId" = ${userId} FOR UPDATE`;
+};

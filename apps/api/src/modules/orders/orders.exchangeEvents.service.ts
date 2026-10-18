@@ -2,7 +2,6 @@ import { Exchange, Prisma, PrismaClient } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import {
-  NormalizedBinanceAccountUpdateEvent,
   NormalizedBinanceOrderTradeUpdateEvent,
   NormalizedBinanceUserDataStreamEvent,
 } from '../exchange/binanceUserDataStream.types';
@@ -15,8 +14,10 @@ import {
   finalizeExchangeDcaFillInTransaction,
 } from './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
-import { matchesAccountSnapshot, resolveLiveAccountUpdateScope } from
-  './orders.exchangeAccountUpdateScope';
+import { applyLiveExchangeAccountUpdateEvent } from
+  './orders.exchangeEvents.accountUpdate.service';
+export { applyLiveExchangeAccountUpdateEvent } from
+  './orders.exchangeEvents.accountUpdate.service';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
@@ -840,98 +841,6 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchange
     return result;
   }
   return processed;
-};
-
-export const applyLiveExchangeAccountUpdateEvent = async (input: {
-  userId: string;
-  sourceApiKeyId?: string | null;
-  event: NormalizedBinanceAccountUpdateEvent;
-}) => {
-  let updatedPositions = 0;
-  const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
-  for (const position of input.event.positions) {
-    const normalizedSymbol = normalizeSymbol(position.symbol);
-    if (!normalizedSymbol) continue;
-    const side =
-      position.positionSide === 'LONG' || position.positionSide === 'SHORT'
-        ? position.positionSide
-        : position.amount != null && position.amount < 0
-          ? 'SHORT'
-          : 'LONG';
-    const quantity =
-      typeof position.amount === 'number' && Number.isFinite(position.amount)
-        ? Math.abs(position.amount)
-        : null;
-    const scopedPositions = await resolveLiveAccountUpdateScope({
-      userId: input.userId,
-      symbol: normalizedSymbol,
-      side,
-      marketType: input.event.marketType,
-      sourceApiKeyId: input.sourceApiKeyId ?? null,
-    });
-    if (scopedPositions.length === 0) continue;
-    const scoped = scopedPositions[0];
-    const freshWhere = { id: scoped.id,
-      OR: [{ lastExchangeSeenAt: null }, { lastExchangeSeenAt: { lt: eventAt } }] };
-    if (scoped.origin !== 'EXCHANGE_SYNC') {
-      // BOT/USER accounting changes only with a matched order fill. An account
-      // snapshot may arrive before that fill or be replayed after a newer fill.
-      const differs = !matchesAccountSnapshot(scoped.quantity, quantity) ||
-        !matchesAccountSnapshot(scoped.entryPrice, position.entryPrice);
-      const result = await prisma.position.updateMany({
-        where: freshWhere,
-        data: {
-          lastExchangeSeenAt: eventAt,
-          ...(differs ? {
-            continuityState: 'RECOVERING',
-            missingSince: scoped.missingSince ?? eventAt,
-            missingSyncCount: { increment: 1 },
-          } : typeof position.unrealizedPnl === 'number' ? {
-            unrealizedPnl: position.unrealizedPnl,
-          } : {}),
-        },
-      });
-      updatedPositions += result.count;
-      continue;
-    }
-    if (quantity === 0) {
-      const result = await prisma.position.updateMany({
-        where: { id: scoped.id },
-        data: {
-          syncState: 'DRIFT',
-          continuityState: 'RECOVERING',
-          unrealizedPnl: 0,
-          missingSince: eventAt,
-          lastExchangeSeenAt: eventAt,
-          lastExchangeSyncAt: eventAt,
-          missingSyncCount: { increment: 1 },
-        },
-      });
-      updatedPositions += result.count;
-      continue;
-    }
-    const result = await prisma.position.updateMany({
-      where: { id: scoped.id },
-      data: {
-        ...(typeof quantity === 'number' ? { quantity } : {}),
-        ...(typeof position.entryPrice === 'number' ? { entryPrice: position.entryPrice } : {}),
-        ...(typeof position.unrealizedPnl === 'number'
-          ? { unrealizedPnl: position.unrealizedPnl }
-          : {}),
-        lastExchangeSeenAt: eventAt,
-        lastExchangeSyncAt: eventAt,
-        missingSince: null,
-        missingSyncCount: 0,
-        continuityState: 'CONFIRMED',
-      },
-    });
-    updatedPositions += result.count;
-  }
-
-  return {
-    status: 'applied' as const,
-    updatedPositions,
-  };
 };
 
 export const applyLiveExchangeUserDataStreamEvent = async (input: {
