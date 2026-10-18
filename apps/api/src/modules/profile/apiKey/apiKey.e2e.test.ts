@@ -2,6 +2,7 @@ import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { app } from "../../../index";
 import { prisma } from "../../../prisma/client";
+import { signAuthToken } from '../../auth/auth.jwt';
 
 const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE"] as const;
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
@@ -119,6 +120,55 @@ describe("API Keys security contract", () => {
     expect(listRes.body[0].apiKey).not.toBe(payload.apiKey);
     expect(listRes.body[0].syncExternalPositions).toBe(true);
     expect(listRes.body[0].manageExternalPositions).toBe(false);
+  });
+
+  it('rejects external Bearer key creation even when the same token is copied into Cookie', async () => {
+    const email = `apikey-client-boundary-${Date.now()}@example.com`;
+    const agent = await registerAndLogin(email);
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    const token = signAuthToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      sessionVersion: user.sessionVersion,
+    }, '1h');
+    const payload = {
+      label: 'manual-only', exchange: 'BINANCE',
+      apiKey: 'CLIENTBOUNDARYKEY1234', apiSecret: 'CLIENTBOUNDARYSECRET1234',
+    };
+
+    const bearer = await request(app).post('/dashboard/profile/apiKeys')
+      .set('Authorization', `Bearer ${token}`).send(payload);
+    expect(bearer.status).toBe(403);
+    const relocated = await request(app).post('/dashboard/profile/apiKeys')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', [`token=${token}`]).send(payload);
+    expect(relocated.status).toBe(403);
+    const legacyCookie = await request(app).post('/dashboard/profile/apiKeys')
+      .set('Cookie', [`token=${token}`]).send(payload);
+    expect(legacyCookie.status).toBe(401);
+    expect(await prisma.apiKey.count({ where: { userId: user.id } })).toBe(0);
+
+    const manual = await agent.post('/dashboard/profile/apiKeys').send(payload);
+    expect(manual.status).toBe(201);
+    expect(JSON.stringify(manual.body)).not.toContain(payload.apiKey);
+    expect(JSON.stringify(manual.body)).not.toContain(payload.apiSecret);
+
+    const keyId = manual.body.id as string;
+    const denied = [
+      request(app).get('/dashboard/profile/apiKeys'),
+      request(app).post('/dashboard/profile/apiKeys/test').send(payload),
+      request(app).post(`/dashboard/profile/apiKeys/${keyId}/test`),
+      request(app).patch(`/dashboard/profile/apiKeys/${keyId}`).send({ label: 'external' }),
+      request(app).post(`/dashboard/profile/apiKeys/${keyId}/rotate`).send(payload),
+      request(app).post(`/dashboard/profile/apiKeys/${keyId}/revoke`),
+      request(app).delete(`/dashboard/profile/apiKeys/${keyId}`),
+    ];
+    for (const call of denied) {
+      expect((await call.set('Authorization', `Bearer ${token}`)).status).toBe(403);
+    }
+    const unchanged = await prisma.apiKey.findUniqueOrThrow({ where: { id: keyId } });
+    expect(unchanged.label).toBe('manual-only');
   });
 
   it("does not persist API key create fields outside the request DTO allowlist", async () => {

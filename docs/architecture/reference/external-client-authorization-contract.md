@@ -43,3 +43,11 @@ revocation, or LIVE client proof in the current documentation. Acceptance needs
 tests for denied account/plan/role/key actions, active and revoked grants,
 ownership isolation, LIVE guardrails, audit evidence, and a real external-client
 journey. Ordinary API tests or an endpoint inventory do not close this gate.
+
+The local API now distinguishes newly issued human browser sessions by a signed
+audience and claim. Legacy `cryptosparrow-app` tokens remain compatible with
+ordinary domain routes but cannot mutate account/profile secrets, API keys, or
+administrator state, even when copied into Cookie. This boundary is not a
+delegated grant or proof of human presence: a compromised human session is still
+a compromised credential. A separate scoped, revocable client principal remains
+required before accepting external domain or LIVE access.

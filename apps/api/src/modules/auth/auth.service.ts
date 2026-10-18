@@ -3,7 +3,7 @@ import { RegisterInput, LoginInput } from './auth.types';
 import { hashPassword, comparePassword } from '../../utils/hash';
 import { serverUrl } from '../../config/runtime';
 import { getSessionJwtExpiresIn } from './auth.session';
-import { signAuthToken } from './auth.jwt';
+import { signHumanSessionToken } from './auth.jwt';
 import { publicUserSelect } from '../users/publicUser';
 
 export const registerUser = async (
@@ -57,7 +57,7 @@ export const loginUser = async (input: LoginInput) => {
     throw new Error('Invalid email or password');
   }
 
-  const token = signAuthToken(
+  const token = signHumanSessionToken(
     { userId: user.id, email: user.email, role: user.role, sessionVersion: user.sessionVersion },
     getSessionJwtExpiresIn(input.remember)
   );

@@ -10,7 +10,7 @@
 
 ## 1. Purpose and Scope
 - Handles account registration, login, session bootstrap, and logout.
-- Issues JWT-based session tokens and returns public user payload.
+- Issues JWT-based human browser sessions in an HttpOnly cookie and returns public user payload.
 - Registration creates an account without assigning a subscription plan.
 
 Out of scope:
@@ -29,12 +29,13 @@ Out of scope:
 ## 3. Data and Contract Surface
 - Input contracts: `RegisterInput`, `LoginInput` (`auth.types.ts`).
 - Output contracts:
-  - registration returns public user profile.
-  - login returns `{ token, user }` where user matches `publicUserSelect`.
+  - registration and login return public user data; the session JWT is set in a cookie, not returned in the JSON body.
 - Invariants:
   - unique email enforced before create.
   - login requires password validation.
   - `sessionVersion` carried in token payload for forced logout/session invalidation.
+  - newly issued browser sessions use audience `cryptosparrow-human-session` and signed `sessionKind=human`.
+  - older `cryptosparrow-app` tokens never gain browser authority by moving from Bearer to Cookie.
 
 ## 4. Runtime Flows
 - Register:
@@ -45,10 +46,11 @@ Out of scope:
 - Login:
   1. Load user + password hash + `sessionVersion`.
   2. Validate password.
-  3. Sign token with remember-aware TTL.
-  4. Return token + public user fields.
+  3. Sign a human-session token with remember-aware TTL.
+  4. Set the HttpOnly cookie and return public user fields.
 - Logout:
-  - Token/cookie invalidation handled in controller/cookie helpers.
+  - A human cookie session increments `sessionVersion` and clears the cookie.
+  - An old cookie is cleared without promotion or server-side version increment; a Bearer request cannot revoke a human session through logout.
 
 ## 5. API and UI Integration
 - Routes:
@@ -63,6 +65,8 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - Passwords are never stored plaintext (hash-only persistence).
 - Session token includes `sessionVersion` for revocation after sensitive actions.
+- The old audience remains valid as a legacy API credential for compatible domain reads/writes, but an old cookie is rejected with 401 and requires a fresh login. The separate human audience plus cookie use is required for account, key, and administrator mutations.
+- `/auth/me` does not copy a Bearer token into a browser cookie.
 - Auth endpoints are rate-limited to reduce brute-force pressure.
 - Public response uses `publicUserSelect` (no password leakage).
 

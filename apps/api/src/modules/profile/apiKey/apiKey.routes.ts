@@ -2,8 +2,10 @@
 import { Router } from 'express';
 import * as controller from './apiKey.controller';
 import { createRateLimiter } from '../../../middleware/rateLimit';
+import { requireHumanSession } from '../../../middleware/requireHumanSession';
 
 const apiKeyRouter = Router();
+apiKeyRouter.use(requireHumanSession);
 const apiKeyTestLimiter = createRateLimiter({ windowMs: 60_000, max: 5, keyScope: 'user_exchange' });
 
 apiKeyRouter.route('/')

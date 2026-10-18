@@ -108,7 +108,7 @@ describe('Admin users API', () => {
     });
   });
 
-  it('rejects role and plan writes from a regular user and bearer-only admin client', async () => {
+  it('rejects role and plan writes from a regular user and a relocated legacy admin token', async () => {
     const admin = await createAgent('ADMIN');
     const regular = await createAgent('USER');
     const target = await createAgent('USER');
@@ -134,10 +134,45 @@ describe('Admin users API', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(payload);
       expect(externalWrite.status).toBe(403);
+      const relocatedWrite = await request(app)
+        .patch(`/admin/users/${target.user.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', [`token=${token}`])
+        .send(payload);
+      expect(relocatedWrite.status).toBe(403);
+      const legacyCookieWrite = await request(app)
+        .patch(`/admin/users/${target.user.id}`)
+        .set('Cookie', [`token=${token}`])
+        .send(payload);
+      expect(legacyCookieWrite.status).toBe(401);
     }
+    const humanLogin = await request(app).post('/auth/login').send({
+      email: admin.user.email, password: 'AdminUsers12#$',
+    });
+    expect(humanLogin.status).toBe(200);
+    const humanCookie = humanLogin.headers['set-cookie']?.[0] ?? '';
+    const humanToken = /^token=([^;]+)/.exec(humanCookie)?.[1];
+    expect(humanToken).toBeTruthy();
+    const mixedTransport = await request(app)
+      .patch(`/admin/users/${target.user.id}`)
+      .set('Authorization', `Bearer ${humanToken}`)
+      .set('Cookie', [humanCookie])
+      .send({ role: 'ADMIN' });
+    expect(mixedTransport.status).toBe(403);
     expect(await prisma.userSubscription.count({ where: { userId: target.user.id } })).toBe(0);
     const targetAfter = await prisma.user.findUniqueOrThrow({ where: { id: target.user.id } });
     expect(targetAfter.role).toBe('USER');
+  });
+
+  it('rejects a cross-origin admin mutation under the current cookie CSRF guard', async () => {
+    const admin = await createAgent('ADMIN');
+    const target = await createAgent('USER');
+    const response = await admin.agent
+      .patch(`/admin/users/${target.user.id}`)
+      .set('Origin', 'https://untrusted.example')
+      .send({ role: 'ADMIN' });
+    expect(response.status).toBe(403);
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: target.user.id } })).role).toBe('USER');
   });
 
   it('blocks self demotion', async () => {

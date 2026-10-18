@@ -6,6 +6,7 @@ import fs from 'fs';
 import crypto from 'crypto';
 import { sendError } from '../../utils/apiError';
 import { requireAuth } from '../../middleware/requireAuth';
+import { requireHumanSession } from '../../middleware/requireHumanSession';
 import { createRateLimiter } from '../../middleware/rateLimit';
 import { uploadPublicOrigin } from '../../config/runtime';
 
@@ -62,7 +63,7 @@ export const transformAvatarToJpeg = (inputPath: string, outputPath: string) =>
     .jpeg({ quality: 80 })
     .toFile(outputPath);
 
-uploadRouter.post('/avatar', requireAuth, uploadLimiter, async (req, res) => {
+uploadRouter.post('/avatar', requireAuth, requireHumanSession, uploadLimiter, async (req, res) => {
   await uploadAvatarMiddleware(req, res);
   if (res.headersSent) {
     return;

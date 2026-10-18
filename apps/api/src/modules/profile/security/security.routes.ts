@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import * as controller from './security.controller';
 import { createRateLimiter } from '../../../middleware/rateLimit';
+import { requireHumanSession } from '../../../middleware/requireHumanSession';
 
 const securityRouter = Router();
+securityRouter.use(requireHumanSession);
 const passwordUpdateLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 5, keyScope: 'user' });
 export const accountDeleteLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 3, keyScope: 'user' });
 

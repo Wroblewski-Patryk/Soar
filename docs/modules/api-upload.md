@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/upload`
 - Owner: backend/profile-media
-- Last updated: 2026-04-12
+- Last updated: 2026-10-19
 - Related planning task: `DCP-07`
 
 ## 1. Purpose and Scope
@@ -35,7 +35,7 @@ Out of scope:
 
 ## 4. Runtime Flows
 - Avatar upload flow:
-  1. Enforce auth and upload rate limit.
+  1. Enforce auth, signed human browser session, and upload rate limit.
   2. Validate file type and size with multer.
   3. Resize to `150x150`, encode JPEG quality 80.
   4. Remove temporary file.
@@ -48,7 +48,7 @@ Out of scope:
   - static files are served from `/avatars/*`.
 
 ## 6. Security and Risk Guardrails
-- Requires authenticated user (`requireAuth`).
+- Requires authenticated user (`requireAuth`) and the human browser-session audience in a cookie. Legacy Bearer tokens cannot upload an avatar by relocating into Cookie.
 - Strict MIME and file-size validation to reduce abuse surface.
 - Rate limiter enabled on upload route.
 - URL is generated from trusted runtime origin, ignoring spoofed forwarded headers.

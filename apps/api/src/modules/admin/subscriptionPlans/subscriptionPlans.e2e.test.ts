@@ -141,6 +141,12 @@ describe('Admin subscription plans API', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ displayName: 'Bearer change' });
     expect(response.status).toBe(403);
+    const relocated = await request(app)
+      .put('/admin/subscriptions/plans/FREE')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', [`token=${token}`])
+      .send({ displayName: 'Relocated change' });
+    expect(relocated.status).toBe(403);
     const after = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { code: 'FREE' } });
     expect(after.displayName).toBe(before.displayName);
   });

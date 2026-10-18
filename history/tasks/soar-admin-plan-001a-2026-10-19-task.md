@@ -88,3 +88,11 @@ using bearer authentication cannot mutate plan or role state.
    preserved in a non-production fixture.
 5. Record the deployed SHA and run an authenticated browser journey before
    declaring production acceptance.
+
+## Independent acceptance result and follow-up
+- Independent local acceptance of `f5888ab20c3e95ff97ec37767ecbb7467ef4a232`
+  failed with P1 client-boundary reproductions: a legacy admin JWT copied from
+  Bearer into Cookie could change a role, and a Bearer user token could create
+  an exchange API key. This task is not accepted as a security boundary.
+- Bounded remediation and re-verification are tracked in
+  `history/tasks/soar-admin-plan-001a-client-boundary-2026-10-19-task.md`.

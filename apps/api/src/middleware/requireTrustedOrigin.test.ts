@@ -2,7 +2,7 @@ import request from 'supertest';
 import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../index';
 import { prisma } from '../prisma/client';
-import { signAuthToken } from '../modules/auth/auth.jwt';
+import { signHumanSessionToken } from '../modules/auth/auth.jwt';
 import { clientUrl } from '../config/runtime';
 
 const originalCookieSameSite = process.env.COOKIE_SAME_SITE;
@@ -30,7 +30,7 @@ const createSessionCookie = async () => {
     },
   });
 
-  const token = signAuthToken(
+  const token = signHumanSessionToken(
     {
       userId: user.id,
       email: user.email,

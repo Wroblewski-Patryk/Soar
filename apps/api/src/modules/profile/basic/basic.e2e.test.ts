@@ -2,6 +2,7 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../index';
 import { prisma } from '../../../prisma/client';
+import { signAuthToken } from '../../auth/auth.jwt';
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -62,6 +63,38 @@ describe('Profile basic contract', () => {
     const agent = await registerAndLogin('profile-delete-legacy@example.com');
     const deleteRes = await agent.delete('/dashboard/profile/basic/some-id');
     expect(deleteRes.status).toBe(404);
+  });
+
+  it('keeps account, password, deletion, and avatar writes manual for a legacy client token', async () => {
+    const email = `profile-client-boundary-${Date.now()}@example.com`;
+    const agent = await registerAndLogin(email);
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    const token = signAuthToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      sessionVersion: user.sessionVersion,
+    }, '1h');
+    const client = (test: request.Test) => test.set('Authorization', `Bearer ${token}`);
+    expect((await client(request(app).patch('/dashboard/profile/basic').send({ name: 'External' }))).status).toBe(403);
+    expect((await client(request(app).delete('/dashboard/profile/basic').send({ password: 'test1234' }))).status).toBe(403);
+    expect((await client(request(app).patch('/dashboard/profile/security/password').send({
+      currentPassword: 'test1234', newPassword: 'OtherPass12#$',
+    }))).status).toBe(403);
+    expect((await client(request(app).delete('/dashboard/profile/security/account').send({ password: 'test1234' }))).status).toBe(403);
+    expect((await client(request(app).post('/upload/avatar').attach('avatar', Buffer.from('not-an-image'), 'avatar.png'))).status).toBe(403);
+    const relocated = await request(app).patch('/dashboard/profile/basic')
+      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', [`token=${token}`])
+      .send({ name: 'Relocated' });
+    expect(relocated.status).toBe(403);
+    const unchanged = await prisma.user.findUniqueOrThrow({ where: { id: user.id } });
+    expect(unchanged.name).toBeNull();
+
+    const manual = await agent.patch('/dashboard/profile/basic').send({ name: 'Human' });
+    expect(manual.status).toBe(200);
+    expect(manual.body.name).toBe('Human');
+    expect(manual.body.password).toBeUndefined();
   });
 
   it('persists valid uiPreferences.timeZonePreference in profile basic update', async () => {

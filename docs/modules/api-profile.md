@@ -22,6 +22,7 @@ Out of scope:
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/profile/*` via `apps/api/src/router/dashboard.routes.ts`.
 - Protected by global `requireAuth` on dashboard router.
+- Account and key operations require the signed human browser session in a cookie; moving a legacy Bearer token into Cookie does not qualify.
 - Depends on:
   - `prisma` persistence.
   - `users/publicUser` projection contract.
@@ -78,6 +79,8 @@ Out of scope:
 - Sensitive profile routes are rate-limited (`user`/`user_exchange` scopes).
 - Security actions require current password verification.
 - Account deletion clears dependent runtime/trading entities before user removal.
+- Profile basic PATCH/DELETE, security PATCH/DELETE, all API-key routes, and avatar upload reject legacy or Bearer-only credentials. Basic and subscription reads remain separately authenticated.
+- API-key create/list/update/rotate responses return masked key metadata and never the secret; connection tests return status and permissions only.
 
 ## 7. Observability and Operations
 - API key tests write structured audit entries (`profile.api_key.test_connection`).

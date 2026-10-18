@@ -9,8 +9,11 @@ checkout/provider instructions describe historical implementation only.
   grant plan-gated access.
 - A human administrator assigns `FREE`, `ADVANCED`, or `PROFESSIONAL` and changes
   account roles in `/admin/users` after signing in to the Soar panel.
-- External Bearer-only clients and delegated API/MCP clients cannot use role or
-  plan mutation routes. Do not issue an administrator browser session to them.
+- External Bearer-only clients, including a legacy token copied into Cookie,
+  cannot use role or plan mutation routes. Do not issue an administrator
+  browser session to a delegated client.
+- Sessions issued before the signed human-session audience change must sign in
+  again. An old cookie is rejected; moving it to another header never upgrades it.
 - There is no current self-service checkout or in-app payment. The old
   `/dashboard/profile/subscription/checkout-intents` route returns 404.
 

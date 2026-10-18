@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { REMEMBER_ME_TTL_MS, SESSION_TTL_MS } from './auth.session';
+import { signAuthToken } from './auth.jwt';
 
 const restoreEnv = (key: string, value: string | undefined) => {
   if (value === undefined || value === 'undefined') delete process.env[key];
@@ -201,6 +202,65 @@ describe('POST /auth/register', () => {
     expect(meAfterReloginRes.body.email).toBe(email);
   });
 
+  it('requires fresh login for an old cookie and never turns a Bearer token into a browser session', async () => {
+    const email = `legacy-session-rollout-${Date.now()}@example.com`;
+    const agent = request.agent(app);
+    const registered = await agent.post('/auth/register').send({ email, password: 'test1234' });
+    expect(registered.status).toBe(201);
+    const humanCookie = registered.headers['set-cookie']?.[0] ?? '';
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    const legacyToken = signAuthToken({
+      userId: user.id, email, role: user.role, sessionVersion: user.sessionVersion,
+    }, '1h');
+
+    const oldCookie = await request(app).get('/auth/me').set('Cookie', [`token=${legacyToken}`]);
+    expect(oldCookie.status).toBe(401);
+    expect(oldCookie.headers['set-cookie']?.[0]).toContain('token=');
+    const bearerRead = await request(app).get('/auth/me').set('Authorization', `Bearer ${legacyToken}`);
+    expect(bearerRead.status).toBe(200);
+    expect(bearerRead.headers['set-cookie']).toBeUndefined();
+    const bearerLogout = await request(app).post('/auth/logout').set('Authorization', `Bearer ${legacyToken}`);
+    expect(bearerLogout.status).toBe(403);
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).sessionVersion).toBe(user.sessionVersion);
+
+    const freshClientRead = await request(app).get('/auth/me').set('Cookie', [humanCookie]);
+    expect(freshClientRead.status).toBe(200);
+    expect(freshClientRead.body.id).toBe(user.id);
+    const signedOut = await request(app).post('/auth/logout').set('Cookie', [humanCookie]);
+    expect(signedOut.status).toBe(200);
+    expect((await request(app).get('/auth/me').set('Cookie', [humanCookie])).status).toBe(401);
+    const relogin = await agent.post('/auth/login').send({ email, password: 'test1234' });
+    expect(relogin.status).toBe(200);
+    expect((await agent.get('/auth/me')).status).toBe(200);
+  });
+
+  it('keeps a human cookie valid across an HTTP listener restart and revokes it on logout', async () => {
+    const email = `human-listener-restart-${Date.now()}@example.com`;
+    let listener = app.listen(0);
+    const closeListener = (server: typeof listener) =>
+      new Promise<void>((resolve, reject) => {
+        server.close((error) => error ? reject(error) : resolve());
+      });
+
+    try {
+      const registered = await request(listener).post('/auth/register').send({ email, password: 'test1234' });
+      expect(registered.status).toBe(201);
+      expect(registered.body.token).toBeUndefined();
+      expect(JSON.stringify(registered.body)).not.toContain('test1234');
+      const humanCookie = registered.headers['set-cookie']?.[0] ?? '';
+      expect(humanCookie).toContain('HttpOnly');
+
+      await closeListener(listener);
+      listener = app.listen(0);
+
+      expect((await request(listener).get('/auth/me').set('Cookie', [humanCookie])).status).toBe(200);
+      expect((await request(listener).post('/auth/logout').set('Cookie', [humanCookie])).status).toBe(200);
+      expect((await request(listener).get('/auth/me').set('Cookie', [humanCookie])).status).toBe(401);
+    } finally {
+      if (listener.listening) await closeListener(listener);
+    }
+  });
+
   it('clears expired JWT sessions and asks the operator to sign in again', async () => {
     const originalJwtSecret = process.env.JWT_SECRET;
     const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
@@ -277,6 +337,7 @@ describe('POST /auth/register', () => {
           email: olderUser.email,
           role: 'USER',
           sessionVersion: 1,
+          sessionKind: 'human',
           iat: nowSec - 120,
           exp: nowSec + 3600,
         },
@@ -284,7 +345,7 @@ describe('POST /auth/register', () => {
         {
           algorithm: 'HS256',
           issuer: 'cryptosparrow',
-          audience: 'cryptosparrow-app',
+          audience: 'cryptosparrow-human-session',
         }
       );
       const newerToken = jwt.sign(
@@ -293,6 +354,7 @@ describe('POST /auth/register', () => {
           email: newerUser.email,
           role: 'USER',
           sessionVersion: 1,
+          sessionKind: 'human',
           iat: nowSec - 60,
           exp: nowSec + 3600,
         },
@@ -300,7 +362,7 @@ describe('POST /auth/register', () => {
         {
           algorithm: 'HS256',
           issuer: 'cryptosparrow',
-          audience: 'cryptosparrow-app',
+          audience: 'cryptosparrow-human-session',
         }
       );
 

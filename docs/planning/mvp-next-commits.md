@@ -6214,6 +6214,11 @@ Operational queue for one-task execution runs.
     open. Do not treat this review row as authority to migrate payment data,
     deploy, or run LIVE trades. Evidence:
     `history/tasks/soar-admin-plan-001a-2026-10-19-task.md`.
+  - 2026-10-19 P1 acceptance failure at `f5888ab20c3e95ff97ec37767ecbb7467ef4a232`:
+    legacy JWT relocation allowed a role write and Bearer allowed API-key
+    creation. Local client-boundary remediation is in
+    `history/tasks/soar-admin-plan-001a-client-boundary-2026-10-19-task.md`;
+    repeat independent acceptance on its exact new SHA before closing this row.
 - [x] `V1ROE-02 test(api-contract): lock runtime positions margin-basis and unrealizedPnlPercent contract`
   - 2026-04-30: Closed with a focused API e2e regression in `apps/api/src/modules/bots/bots.runtime-pnl-parity.e2e.test.ts`. The contract now proves that runtime session positions expose canonical `marginUsed`, preserve `unrealizedPnl`, and compute `unrealizedPnlPercent` from the persisted margin basis rather than silently falling back to the old modeled-margin shortcut when those values differ. Validation PASS: focused API e2e, `pnpm run quality:guardrails`.
 - [x] `V1ROE-03 fix(api-normalization): prefer isolated-wallet margin truth for isolated LIVE futures positions`

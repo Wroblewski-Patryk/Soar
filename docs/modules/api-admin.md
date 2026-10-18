@@ -19,7 +19,7 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Router mount: `/admin` via `apps/api/src/router/admin.routes.ts`.
-- Access boundary: guarded by `requireAuth` + `requireRole('ADMIN')`; role and plan writes also require an interactive admin panel cookie session.
+- Access boundary: guarded by `requireAuth` + `requireRole('ADMIN')`; every non-read admin request also requires the signed human browser-session audience in a cookie, without an Authorization header.
 - Depends on:
   - `prisma` persistence.
   - `subscriptions.service` for catalog initialization and assignment helpers.
@@ -63,8 +63,8 @@ Out of scope:
 - Admin-only authorization enforced at router level.
 - Demotion guardrails prevent privilege lockout.
 - Plan/user mutations are constrained to explicit whitelisted fields.
-- Bearer-only clients, including future delegated clients, receive 403 on role and plan writes.
-- LIVE pause mutations require an ADMIN role, a reason, and optimistic version match.
+- Bearer-only clients and legacy tokens replayed as cookies receive 403/401 on role, plan, and LIVE pause writes. A fresh browser login is required after the legacy token rollout.
+- LIVE pause mutations require a human ADMIN session, a reason, and optimistic version match.
 
 ## 7. Observability and Operations
 - Admin user updates, subscription assignments, and their actor/old/new audit entries are persisted via transactional writes.

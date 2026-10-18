@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import jwt from 'jsonwebtoken';
-import { signAuthToken, verifyAuthToken } from './auth.jwt';
+import { isHumanSessionToken, signAuthToken, signHumanSessionToken, verifyAuthToken } from './auth.jwt';
 
 const originalJwtSecret = process.env.JWT_SECRET;
 const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
@@ -36,6 +36,22 @@ describe('auth.jwt', () => {
     expect(payload.email).toBe('test@example.com');
     expect(payload.role).toBe('USER');
     expect(payload.sessionVersion).toBe(1);
+    expect(isHumanSessionToken(payload)).toBe(false);
+  });
+
+  it('uses a distinct audience and claim for a human browser session', () => {
+    process.env.JWT_SECRET = 'human-session-secret';
+    process.env.JWT_SECRET_PREVIOUS = '';
+    const token = signHumanSessionToken({
+      userId: 'human-1', email: 'human@example.com', role: 'USER', sessionVersion: 2,
+    }, '1h');
+    const payload = verifyAuthToken(token);
+    expect(payload.aud).toBe('cryptosparrow-human-session');
+    expect(payload.sessionKind).toBe('human');
+    expect(isHumanSessionToken(payload)).toBe(true);
+    expect(() => jwt.verify(token, 'human-session-secret', {
+      algorithms: ['HS256'], issuer: 'cryptosparrow', audience: 'cryptosparrow-app',
+    })).toThrow();
   });
 
   it('accepts token signed with previous secret during rotation window', () => {
