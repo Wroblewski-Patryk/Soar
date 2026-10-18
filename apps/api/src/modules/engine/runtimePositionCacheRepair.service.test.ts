@@ -1,0 +1,93 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { prisma } from '../../prisma/client';
+import { repairRuntimePositionCacheOnce } from './runtimePositionCacheRepair.service';
+
+afterEach(() => vi.restoreAllMocks());
+
+const fixture = (status: 'OPEN' | 'CLOSED' = 'OPEN') => {
+  const updatedAt = new Date('2026-10-18T12:00:00.000Z');
+  const position = { id: 'position-1', userId: 'user-1', botId: 'bot-1',
+    walletId: 'wallet-1', symbol: 'BTCUSDT', side: 'LONG', origin: 'BOT',
+    status, syncState: 'IN_SYNC', continuityState: 'CONFIRMED',
+    quantity: 2, entryPrice: 95, leverage: 1, updatedAt };
+  vi.spyOn(prisma.position, 'findFirst').mockResolvedValue(position as any);
+  vi.spyOn(prisma.position, 'findUnique').mockResolvedValue(position as any);
+  vi.spyOn(prisma.trade, 'findMany').mockResolvedValue([{
+    orderId: 'order-1', price: 90, quantity: 1, executedAt: updatedAt,
+    botId: 'bot-1', walletId: 'wallet-1', symbol: 'BTCUSDT', side: 'BUY',
+    origin: 'BOT', managementMode: 'BOT_MANAGED', executionMode: 'LIVE',
+  }] as any);
+  vi.spyOn(prisma.order, 'findMany').mockResolvedValue([{
+    id: 'order-1', userId: 'user-1', botId: 'bot-1', walletId: 'wallet-1',
+    positionId: 'position-1', symbol: 'BTCUSDT', side: 'BUY', origin: 'BOT',
+    syncState: 'IN_SYNC', status: 'FILLED', filledQuantity: 1,
+  }] as any);
+  vi.spyOn(prisma.runtimeExecutionDedupe, 'findMany').mockResolvedValue([{
+    orderId: 'order-1', botId: 'bot-1', symbol: 'BTCUSDT',
+    commandFingerprint: { positionId: 'position-1', dcaLevelIndex: 0 },
+  }] as any);
+  const writes = [vi.spyOn(prisma.order, 'create'), vi.spyOn(prisma.trade, 'create'),
+    vi.spyOn(prisma.position, 'update')];
+  let cache: string | null = JSON.stringify({ quantity: 1, averageEntryPrice: 100,
+    currentAdds: 0, trailingAnchorPrice: 100 });
+  let beforeCas: (() => void) | null = null;
+  const redis: any = {
+    get: vi.fn(async () => cache),
+    eval: vi.fn(async (_script: string, input: { arguments: string[] }) => {
+      beforeCas?.();
+      const [expected, next, , expectMissing] = input.arguments;
+      if (expectMissing === '1' ? cache != null : cache !== expected) return 0;
+      cache = next === 'delete' ? null : next;
+      return 1;
+    }),
+  };
+  return { position, redis, writes,
+    readCache: () => cache, setCache: (value: string | null) => { cache = value; },
+    race: (callback: () => void) => { beforeCas = callback; } };
+};
+
+describe('database-backed BOT runtime cache repair', () => {
+  it('repairs a stale DCA basis and level once without lifecycle writes', async () => {
+    const f = fixture();
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'REPAIRED' });
+    expect(JSON.parse(f.readCache()!)).toMatchObject({ quantity: 2,
+      averageEntryPrice: 95, currentAdds: 1,
+      executedDcaLevelIndices: [0], lastDcaPrice: 90,
+      trailingAnchorPrice: 100 });
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'CLEAN' });
+    expect(f.redis.eval).toHaveBeenCalledTimes(1);
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+
+  it('deletes a stale CLOSED cache without creating a second CLOSE', async () => {
+    const f = fixture('CLOSED');
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'REPAIRED' });
+    expect(f.readCache()).toBeNull();
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'CLEAN' });
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+
+  it('keeps an updated stream cache when it wins the compare-and-set race', async () => {
+    const f = fixture();
+    const fresh = JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 100 });
+    f.race(() => f.setCache(fresh));
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'CACHE_CHANGED' });
+    expect(f.readCache()).toBe(fresh);
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+
+  it('leaves an ambiguous DCA cache pending when a successful dedupe is missing', async () => {
+    const f = fixture();
+    vi.mocked(prisma.runtimeExecutionDedupe.findMany).mockResolvedValue([]);
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'DCA_LIFECYCLE_UNCONFIRMED' });
+    expect(f.redis.eval).not.toHaveBeenCalled();
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+});

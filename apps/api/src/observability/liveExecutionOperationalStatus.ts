@@ -77,6 +77,8 @@ export const readLiveExecutionOperationalStatus = async (options: {
           : 'unavailable',
         pendingCount: recoveryRecent ? number(recovery?.pendingCount) : null,
         oldestPendingAgeMs: recoveryRecent ? number(recovery?.oldestPendingAgeMs) : null,
+        cacheRepairPendingCount: recoveryRecent ? number(recovery?.cacheRepairPendingCount) : null,
+        oldestCacheRepairAgeMs: recoveryRecent ? number(recovery?.oldestCacheRepairAgeMs) : null,
         unknownTotal: recoveryRecent ? number(recovery?.unknownTotal) : null,
         errorTotal: recoveryRecent ? number(recovery?.errorTotal) : null,
         updatedAt: recoveryUpdatedAt,

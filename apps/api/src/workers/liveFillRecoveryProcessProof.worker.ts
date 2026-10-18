@@ -39,8 +39,9 @@ const readSnapshot = async (orderId: string) => {
 const loop = new LiveFillRecoveryLoop({
   redisUrl, namespace, intervalMs: 1_000, leaseMs: 2_000,
   pageLimit: 10, maxPages: 2, minGapMs: 20, lookupTimeoutMs: 2_000,
-  appliedCooldownMs: 300,
+  appliedCooldownMs: 300, repairPageLimit: 10, repairMaxPages: 2,
 }, {
+  scanUserId: userId,
   acceptCandidate: (candidate) => active && candidate.userId === userId,
   lookup: (candidate) => lookupLiveFillCandidate(candidate, { createConnector: () => ({
     fetchOrderWithFills: async ({ orderId }) => {

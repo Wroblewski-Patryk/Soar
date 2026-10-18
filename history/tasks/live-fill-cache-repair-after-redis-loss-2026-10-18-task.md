@@ -1,6 +1,6 @@
 # SOAR-LIVE-FILL-CACHE-REPAIR-001 — repair after Redis marker loss
 
-Status: open, separate from SOAR-LIVE-FILL-RECON-001 stage 4. No production repair is authorized by this ticket.
+Status: local implementation candidate, pending independent review and controlled production evidence. Separate from SOAR-LIVE-FILL-RECON-001 stage 4. No production repair is authorized by this ticket.
 
 ## Reproduction
 

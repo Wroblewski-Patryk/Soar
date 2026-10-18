@@ -3,6 +3,8 @@ import { createClient } from 'redis';
 import { findLiveFillCandidatePage, type LiveFillCandidate } from '../modules/orders/orders.liveFillCandidates.service';
 import { lookupLiveFillCandidate, type LiveFillLookupResult } from '../modules/exchange/liveFillLookup.service';
 import { recoverLiveFillCandidateOnce } from '../modules/orders/orders.liveFillRecovery.service';
+import { findRuntimeCacheRepairPage, repairRuntimePositionCacheOnce } from
+  '../modules/engine/runtimePositionCacheRepair.service';
 
 type RedisClient = ReturnType<typeof createClient>;
 type CursorState = { intentCursor: string | null; orderCursor: string | null;
@@ -13,12 +15,14 @@ type Dependencies = {
   finalize?: (candidate: LiveFillCandidate,
     found: Extract<LiveFillLookupResult, { kind: 'FOUND' }>) => Promise<RecoveryOutcome>;
   acceptCandidate?: (candidate: LiveFillCandidate) => boolean;
+  scanUserId?: string;
   onEvent?: (event: string, detail?: string) => void;
 };
 type Options = {
   redisUrl?: string; namespace?: string; intervalMs?: number; leaseMs?: number;
   pageLimit?: number; maxPages?: number; minGapMs?: number; lookupTimeoutMs?: number;
   appliedCooldownMs?: number;
+  repairPageLimit?: number; repairMaxPages?: number;
 };
 
 const emptyCursor = (): CursorState => ({ intentCursor: null, orderCursor: null,
@@ -60,6 +64,8 @@ export class LiveFillRecoveryLoop {
   private readonly minGapMs: number;
   private readonly lookupTimeoutMs: number;
   private readonly appliedCooldownMs: number;
+  private readonly repairPageLimit: number;
+  private readonly repairMaxPages: number;
   private readonly deps: Dependencies;
   private redis: RedisClient | null = null;
   private timer: NodeJS.Timeout | null = null;
@@ -77,6 +83,8 @@ export class LiveFillRecoveryLoop {
     this.minGapMs = clamp(options.minGapMs, 1_000, 0, 10_000);
     this.lookupTimeoutMs = clamp(options.lookupTimeoutMs, 20_000, 500, 60_000);
     this.appliedCooldownMs = clamp(options.appliedCooldownMs, 30_000, 100, 600_000);
+    this.repairPageLimit = clamp(options.repairPageLimit, 25, 1, 100);
+    this.repairMaxPages = clamp(options.repairMaxPages, 2, 1, 10);
     this.redisUrl = options.redisUrl ?? process.env.REDIS_URL ?? 'redis://localhost:6379';
     this.deps = deps;
   }
@@ -236,20 +244,73 @@ export class LiveFillRecoveryLoop {
 
   private async publishStatus(redis: RedisClient, token: string,
     status: 'healthy' | 'degraded') {
-    const [pendingCount, oldest, stats] = await Promise.all([
+    const [pendingCount, oldest, stats, repairPendingCount, repairOldest] = await Promise.all([
       redis.zCard(this.key('pending:due')),
       redis.sendCommand(['ZRANGE', this.key('pending:created'), '0', '0', 'WITHSCORES']),
       redis.hGetAll(this.key('stats')),
+      redis.zCard(this.key('repair:pending')),
+      redis.sendCommand(['ZRANGE', this.key('repair:pending'), '0', '0', 'WITHSCORES']),
     ]);
     const oldestScore = Array.isArray(oldest) && oldest.length >= 2 ? Number(oldest[1]) : null;
+    const repairScore = Array.isArray(repairOldest) && repairOldest.length >= 2
+      ? Number(repairOldest[1]) : null;
     const now = Date.now();
-    const snapshot = { status, updatedAt: now, pendingCount,
+    const snapshot = { status: status === 'healthy' && repairPendingCount === 0 ? 'healthy' : 'degraded',
+      updatedAt: now, pendingCount,
       oldestPendingAgeMs: oldestScore != null && Number.isFinite(oldestScore)
         ? Math.max(0, now - oldestScore) : null,
+      cacheRepairPendingCount: repairPendingCount,
+      oldestCacheRepairAgeMs: repairScore != null && Number.isFinite(repairScore)
+        ? Math.max(0, now - repairScore) : null,
       unknownTotal: Number(stats.unknown_total ?? 0),
       errorTotal: Number(stats.error_total ?? 0) };
     await redis.eval(OWNED_STATUS, { keys: [this.key('lease'), this.key('status')],
       arguments: [token, JSON.stringify(snapshot), '180000'] });
+  }
+
+  private async processRepairPosition(redis: RedisClient, id: string) {
+    try {
+      const outcome = await repairRuntimePositionCacheOnce({ positionId: id, redis });
+      if (outcome.kind === 'PENDING') {
+        await redis.sendCommand(['ZADD', this.key('repair:pending'), 'NX',
+          String(Date.now()), id]);
+        this.log('cache_repair_pending', outcome.reason);
+      } else {
+        await redis.zRem(this.key('repair:pending'), id);
+        if (outcome.kind === 'REPAIRED') this.log('cache_repaired');
+      }
+    } catch (error) {
+      await redis.sendCommand(['ZADD', this.key('repair:pending'), 'NX',
+        String(Date.now()), id]);
+      this.log('cache_repair_failed', error instanceof Error ? error.message : 'unknown_error');
+    }
+  }
+
+  private async scanRuntimeCache(redis: RedisClient, token: string) {
+    const pendingIds = await redis.sendCommand(['ZRANGE', this.key('repair:pending'),
+      '0', String(this.repairPageLimit - 1)]);
+    const seen = new Set<string>();
+    for (const id of Array.isArray(pendingIds) ? pendingIds as string[] : []) {
+      if (!await this.owned(redis, token)) return;
+      await this.processRepairPosition(redis, id);
+      seen.add(id);
+    }
+    let cursor = await redis.get(this.key('repair:cursor'));
+    for (let page = 0; page < this.repairMaxPages; page += 1) {
+      if (!await this.owned(redis, token)) return;
+      const batch = await findRuntimeCacheRepairPage({ cursor,
+        limit: this.repairPageLimit, userId: this.deps.scanUserId });
+      for (const id of batch.ids) {
+        if (!await this.owned(redis, token)) return;
+        if (!seen.has(id)) await this.processRepairPosition(redis, id);
+      }
+      cursor = batch.nextCursor;
+      // A separate cursor key survives worker restarts but is safe to lose:
+      // restarting a bounded scan never authorizes an order or fill write.
+      if (Number(await redis.eval(OWNED_SET, { keys: [this.key('lease'),
+        this.key('repair:cursor')], arguments: [token, cursor ?? ''] })) !== 1) return;
+      if (!cursor) break;
+    }
   }
 
   async runOnce() {
@@ -298,6 +359,7 @@ export class LiveFillRecoveryLoop {
         if (!await this.writeCursor(redis, token, cursor)) return;
         if (!result.nextIntentCursor && !result.nextOrderCursor) break;
       }
+      if (!lost && await this.owned(redis, token)) await this.scanRuntimeCache(redis, token);
     } catch (error) {
       cycleFailed = true;
       await redis.hIncrBy(this.key('stats'), 'error_total', 1).catch(() => undefined);

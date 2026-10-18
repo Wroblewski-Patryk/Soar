@@ -5,6 +5,7 @@ import { createClient } from 'redis';
 import { describe, expect, it } from 'vitest';
 import { prisma } from '../prisma/client';
 import { selectRuntimeDisplayState } from '../modules/bots/runtimeSessionPositionsRead.service';
+import { readLiveExecutionOperationalStatus } from '../observability/liveExecutionOperationalStatus';
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const until = async (predicate: () => Promise<boolean>, timeoutMs = 25_000) => {
@@ -172,20 +173,49 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'DCA_EXECUTED' } })).toBe(1);
 
-      // Model the post-commit Redis-loss gap after fee and fills are complete:
-      // the pending marker disappears while the older BOT runtime cache survives.
+      const peer = start('normal', { namespace, userId: user.id,
+        dcaOrderId: intent.id, redisUrl });
+      processes.push(peer);
+      await until(async () => peer.lines.includes('READY'));
+      // A fully settled order is absent from the fill selector. Remove every
+      // Redis recovery marker, while leaving the pre-DCA cache behind.
+      await prisma.runtimeExecutionDedupe.update({ where: { dedupeKey: `dca-${id}` },
+        data: { status: 'PENDING' } });
       await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(stale));
       await redis.hDel(`${namespace}:pending:data`, intent.id);
       await redis.zRem(`${namespace}:pending:due`, intent.id);
       await redis.zRem(`${namespace}:pending:created`, intent.id);
-      await pause(1_200);
-      const orphanedCache = JSON.parse((await redis.get(
-        `runtime:position-state:${position.id}`))!);
-      expect(orphanedCache).toMatchObject({ quantity: 1, averageEntryPrice: 100 });
+      await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
+      await until(async () => {
+        const raw = await redis.get(`${namespace}:status`);
+        return raw != null && JSON.parse(raw).cacheRepairPendingCount === 1;
+      });
+      const pendingStatus = await readLiveExecutionOperationalStatus({
+        redisUrl, recoveryNamespace: namespace,
+      });
+      expect(pendingStatus.recovery).toMatchObject({ status: 'degraded',
+        cacheRepairPendingCount: 1 });
+      expect(pendingStatus.recovery.oldestCacheRepairAgeMs).toBeGreaterThanOrEqual(0);
       expect(selectRuntimeDisplayState({ position: await prisma.position.findUniqueOrThrow({
-        where: { id: position.id } }), runtimeSnapshot: null,
-        persistedState: orphanedCache })).toBeNull();
-      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
+        where: { id: position.id } }), runtimeSnapshot: null, persistedState: stale })).toBeNull();
+      await prisma.runtimeExecutionDedupe.update({ where: { dedupeKey: `dca-${id}` },
+        data: { status: 'SUCCEEDED' } });
+      try {
+        await until(async () => {
+          const raw = await redis.get(`runtime:position-state:${position.id}`);
+          return raw != null && JSON.parse(raw).quantity === 2 &&
+            await redis.zScore(`${namespace}:repair:pending`, position.id) == null;
+        });
+      } catch (error) {
+        throw new Error(`${String(error)}; standby=${standby.lines.slice(-12).join(',')}; ` +
+          `peer=${peer.lines.slice(-12).join(',')}`);
+      }
+      expect(JSON.parse((await redis.get(`runtime:position-state:${position.id}`))!))
+        .toMatchObject({ quantity: 2, averageEntryPrice: 95, currentAdds: 1 });
+      expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(2);
+      expect(await prisma.trade.count({ where: { orderId: intent.id } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
+        eventType: 'DCA_EXECUTED' } })).toBe(1);
 
       const closeId = randomUUID();
       const closeClientId = `soar_${closeId.replace(/-/g, '').slice(0, 22)}`;
@@ -218,6 +248,11 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         where: { id: position.id }, select: { status: true },
       })).status === 'CLOSED');
       await until(async () => await redis.get(`runtime:position-state:${position.id}`) == null);
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
+      await redis.hDel(`${namespace}:pending:data`, closeIntent.id);
+      await redis.zRem(`${namespace}:pending:due`, closeIntent.id);
+      await redis.zRem(`${namespace}:pending:created`, closeIntent.id);
+      await until(async () => await redis.get(`runtime:position-state:${position.id}`) == null);
       expect(await prisma.trade.count({ where: { orderId: closeIntent.id } })).toBe(1);
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'POSITION_CLOSED' } })).toBe(1);
@@ -225,10 +260,6 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         where: { id: position.id } }), runtimeSnapshot: null, persistedState: stale })).toBeNull();
       expect(standby.lines.some((line) => line === 'LEASE_ACQUIRED')).toBe(true);
 
-      const peer = start('normal', { namespace, userId: user.id,
-        dcaOrderId: intent.id, redisUrl });
-      processes.push(peer);
-      await until(async () => peer.lines.includes('READY'));
       const unknownId = randomUUID();
       const unknownIntent = await prisma.liveOrderIntent.create({ data: {
         userId: user.id,

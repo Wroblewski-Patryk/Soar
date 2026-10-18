@@ -59,7 +59,7 @@ const toFiniteNonNegativeIntArray = (value: unknown): number[] | undefined => {
   return normalized.length > 0 ? normalized : undefined;
 };
 
-const normalizeState = (value: unknown): PersistedRuntimePositionState | null => {
+export const parseRuntimePositionState = (value: unknown): PersistedRuntimePositionState | null => {
   if (!value || typeof value !== 'object') return null;
   const raw = value as Record<string, unknown>;
 
@@ -108,10 +108,16 @@ const cloneState = (state: PersistedRuntimePositionState): PersistedRuntimePosit
 export class RuntimePositionStateStore {
   private readonly memory = new Map<string, { state: PersistedRuntimePositionState; expiresAt: number }>();
   private redisClientPromise: Promise<RedisClient | null> | null = null;
+  private redisRetryAt = 0;
 
   private async getRedisClient() {
     if (process.env.NODE_ENV === 'test') return null;
-
+    if (this.redisClientPromise) {
+      const existing = await this.redisClientPromise;
+      if (existing?.isOpen) return existing;
+      this.redisClientPromise = null;
+    }
+    if (Date.now() < this.redisRetryAt) return null;
     if (!this.redisClientPromise) {
       this.redisClientPromise = (async () => {
         try {
@@ -122,8 +128,10 @@ export class RuntimePositionStateStore {
             // Runtime state should gracefully fallback to in-memory if Redis is down.
           });
           await client.connect();
+          this.redisRetryAt = 0;
           return client;
         } catch {
+          this.redisRetryAt = Date.now() + 5_000;
           return null;
         }
       })();
@@ -155,21 +163,18 @@ export class RuntimePositionStateStore {
 
   async getPositionRuntimeState(positionId: string): Promise<PersistedRuntimePositionState | null> {
     const now = Date.now();
-    const fromMemory = this.getMemory(positionId, now);
-    if (fromMemory) return fromMemory;
-
     const redis = await this.getRedisClient();
-    if (!redis) return null;
+    if (!redis) return this.getMemory(positionId, now);
 
     try {
       const raw = await redis.get(this.getKey(positionId));
-      if (!raw) return null;
-      const parsed = normalizeState(JSON.parse(raw));
-      if (!parsed) return null;
+      if (!raw) { this.memory.delete(positionId); return null; }
+      const parsed = parseRuntimePositionState(JSON.parse(raw));
+      if (!parsed) { this.memory.delete(positionId); return null; }
       this.setMemory(positionId, parsed, now);
       return cloneState(parsed);
     } catch {
-      return null;
+      return this.getMemory(positionId, now);
     }
   }
 
@@ -179,38 +184,35 @@ export class RuntimePositionStateStore {
     if (uniqueIds.length === 0) return result;
 
     const now = Date.now();
-    const missing: string[] = [];
-
-    for (const positionId of uniqueIds) {
-      const cached = this.getMemory(positionId, now);
-      if (cached) {
-        result.set(positionId, cached);
-      } else {
-        missing.push(positionId);
+    const redis = await this.getRedisClient();
+    if (!redis) {
+      for (const id of uniqueIds) {
+        const cached = this.getMemory(id, now);
+        if (cached) result.set(id, cached);
       }
+      return result;
     }
 
-    if (missing.length === 0) return result;
-
-    const redis = await this.getRedisClient();
-    if (!redis) return result;
-
     try {
-      const payloads = await redis.mGet(missing.map((positionId) => this.getKey(positionId)));
+      const payloads = await redis.mGet(uniqueIds.map((positionId) => this.getKey(positionId)));
       payloads.forEach((payload, index) => {
-        if (!payload) return;
-        const positionId = missing[index];
+        const positionId = uniqueIds[index];
         if (!positionId) return;
+        if (!payload) { this.memory.delete(positionId); return; }
         try {
-          const parsed = normalizeState(JSON.parse(payload));
-          if (!parsed) return;
+          const parsed = parseRuntimePositionState(JSON.parse(payload));
+          if (!parsed) { this.memory.delete(positionId); return; }
           this.setMemory(positionId, parsed, now);
           result.set(positionId, cloneState(parsed));
         } catch {
-          // Skip malformed payloads.
+          this.memory.delete(positionId);
         }
       });
     } catch {
+      for (const id of uniqueIds) {
+        const cached = this.getMemory(id, now);
+        if (cached) result.set(id, cached);
+      }
       return result;
     }
 
@@ -218,7 +220,7 @@ export class RuntimePositionStateStore {
   }
 
   async setPositionRuntimeState(positionId: string, state: PositionManagementState) {
-    const normalized = normalizeState(state);
+    const normalized = parseRuntimePositionState(state);
     if (!normalized) return false;
 
     const now = Date.now();
