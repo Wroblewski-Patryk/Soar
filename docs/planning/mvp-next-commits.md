@@ -6205,6 +6205,15 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
+- [ ] `SOAR-ADMIN-PLAN-001A review: independently accept administrator-only plan and role writes`
+  - 2026-10-19: Backend source removes automatic registration plan assignment
+    and profile checkout, fails closed without an assigned plan, and requires
+    an administrator panel session for role and plan writes. Local tests and
+    exact source SHA belong to the handoff; independent browser/deployed
+    acceptance and a read-only legacy payment/subscription inventory remain
+    open. Do not treat this review row as authority to migrate payment data,
+    deploy, or run LIVE trades. Evidence:
+    `history/tasks/soar-admin-plan-001a-2026-10-19-task.md`.
 - [x] `V1ROE-02 test(api-contract): lock runtime positions margin-basis and unrealizedPnlPercent contract`
   - 2026-04-30: Closed with a focused API e2e regression in `apps/api/src/modules/bots/bots.runtime-pnl-parity.e2e.test.ts`. The contract now proves that runtime session positions expose canonical `marginUsed`, preserve `unrealizedPnl`, and compute `unrealizedPnlPercent` from the persisted margin basis rather than silently falling back to the old modeled-margin shortcut when those values differ. Validation PASS: focused API e2e, `pnpm run quality:guardrails`.
 - [x] `V1ROE-03 fix(api-normalization): prefer isolated-wallet margin truth for isolated LIVE futures positions`

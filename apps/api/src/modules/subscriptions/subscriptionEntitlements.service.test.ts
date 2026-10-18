@@ -20,10 +20,7 @@ const createFakeDb = ({ activeSubscription }: FakeDbOptions) => ({
     })),
   },
   userSubscription: {
-    findFirst: vi
-      .fn()
-      .mockResolvedValueOnce({ id: 'existing-active-subscription' })
-      .mockResolvedValueOnce(activeSubscription),
+    findFirst: vi.fn(async () => activeSubscription),
     updateMany: vi.fn(async () => ({ count: 0 })),
     create: vi.fn(async () => ({ id: 'created-subscription' })),
   },
@@ -33,6 +30,16 @@ const createFakeDb = ({ activeSubscription }: FakeDbOptions) => ({
 });
 
 describe('subscriptionEntitlements.service', () => {
+  it('denies a user without a human-assigned plan without creating a default subscription', async () => {
+    const db = createFakeDb({ activeSubscription: null });
+
+    await expect(resolveUserEntitlementsContext('user-1', db as never)).rejects.toMatchObject({
+      message: 'SUBSCRIPTION_ASSIGNMENT_REQUIRED',
+      status: 403,
+    });
+    expect(db.userSubscription.create).not.toHaveBeenCalled();
+  });
+
   it('falls back to FREE entitlements when a stored plan payload is invalid', async () => {
     const db = createFakeDb({
       activeSubscription: {

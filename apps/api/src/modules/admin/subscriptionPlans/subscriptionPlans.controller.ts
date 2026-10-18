@@ -11,10 +11,11 @@ export const listSubscriptionPlans = async (_req: Request, res: Response) => {
 
 export const updateSubscriptionPlan = async (req: Request, res: Response) => {
   try {
+    if (!req.user?.id) return sendError(res, 401, 'Missing token');
     const params = AdminSubscriptionPlanCodeParamsSchema.parse(req.params);
     const payload = UpdateAdminSubscriptionPlanSchema.parse(req.body);
 
-    const updated = await service.updateAdminSubscriptionPlan(params.code, payload);
+    const updated = await service.updateAdminSubscriptionPlan(params.code, payload, req.user.id);
     if (!updated) return sendError(res, 404, 'Not found');
 
     return res.json(updated);

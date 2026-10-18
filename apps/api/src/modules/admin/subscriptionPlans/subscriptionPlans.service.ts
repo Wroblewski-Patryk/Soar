@@ -49,6 +49,7 @@ export const listAdminSubscriptionPlans = async (): Promise<AdminSubscriptionPla
 export const updateAdminSubscriptionPlan = async (
   code: SubscriptionPlanCode,
   payload: UpdateAdminSubscriptionPlanDto,
+  actorUserId: string,
 ): Promise<AdminSubscriptionPlanItem | null> => {
   await ensureSubscriptionCatalog(prisma);
 
@@ -58,30 +59,46 @@ export const updateAdminSubscriptionPlan = async (
   });
   if (!existing) return null;
 
-  const updated = await prisma.subscriptionPlan.update({
-    where: { code },
-    data: {
-      ...(payload.displayName !== undefined ? { displayName: payload.displayName } : {}),
-      ...(payload.isActive !== undefined ? { isActive: payload.isActive } : {}),
-      ...(payload.monthlyPriceMinor !== undefined
-        ? { monthlyPriceMinor: payload.monthlyPriceMinor }
-        : {}),
-      ...(payload.currency !== undefined ? { currency: payload.currency } : {}),
-      ...(payload.entitlements !== undefined
-        ? { entitlements: payload.entitlements as Prisma.InputJsonValue }
-        : {}),
-    },
-    select: {
-      code: true,
-      slug: true,
-      displayName: true,
-      sortOrder: true,
-      isActive: true,
-      monthlyPriceMinor: true,
-      currency: true,
-      entitlements: true,
-      updatedAt: true,
-    },
+  const updated = await prisma.$transaction(async (tx) => {
+    const plan = await tx.subscriptionPlan.update({
+      where: { code },
+      data: {
+        ...(payload.displayName !== undefined ? { displayName: payload.displayName } : {}),
+        ...(payload.isActive !== undefined ? { isActive: payload.isActive } : {}),
+        ...(payload.monthlyPriceMinor !== undefined
+          ? { monthlyPriceMinor: payload.monthlyPriceMinor }
+          : {}),
+        ...(payload.currency !== undefined ? { currency: payload.currency } : {}),
+        ...(payload.entitlements !== undefined
+          ? { entitlements: payload.entitlements as Prisma.InputJsonValue }
+          : {}),
+      },
+      select: {
+        code: true,
+        slug: true,
+        displayName: true,
+        sortOrder: true,
+        isActive: true,
+        monthlyPriceMinor: true,
+        currency: true,
+        entitlements: true,
+        updatedAt: true,
+      },
+    });
+    await tx.log.create({
+      data: {
+        userId: actorUserId,
+        actor: actorUserId,
+        action: 'admin.subscription_plan.updated',
+        source: 'admin.subscriptionPlans',
+        message: 'Administrator updated a subscription plan.',
+        category: 'SECURITY',
+        entityType: 'SUBSCRIPTION_PLAN',
+        entityId: existing.id,
+        metadata: { code, changedFields: Object.keys(payload) },
+      },
+    });
+    return plan;
   });
 
   return toAdminPlanItem(updated);

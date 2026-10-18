@@ -17,7 +17,7 @@ tags: [soar-map, workflow, fullstack, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Workflow from admin/profile subscription UI through Web services API routes controllers schemas services entitlements checkout DB tests and docs. |
+| Description | Workflow from admin/profile subscription UI through Web services, API, entitlements, and audit-backed admin writes. |
 | File path | docs/architecture/chains/chains.csv |
 | Related files | docs/architecture/chains/CHAIN-SUBSCRIPTIONS-ADMIN.md |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

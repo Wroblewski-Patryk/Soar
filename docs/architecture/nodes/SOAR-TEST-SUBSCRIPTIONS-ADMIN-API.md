@@ -17,7 +17,7 @@ tags: [soar-map, test, testing, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Admin users plan profile subscription checkout and admin access tests. |
+| Description | Admin user/plan authority, profile read, and retired checkout absence tests. |
 | File path | apps/api/src/modules/admin/users/users.e2e.test.ts |
 | Related files | apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts, apps/api/src/modules/profile/subscription/subscription.e2e.test.ts |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

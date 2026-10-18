@@ -1,12 +1,11 @@
 import { prisma } from '../../../prisma/client';
-import { ensureDefaultSubscriptionForUser, ensureSubscriptionCatalog } from '../../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog } from '../../subscriptions/subscriptions.service';
 import { ProfileSubscriptionResponse } from './subscription.types';
 
 const toIso = (value: Date | null) => (value ? value.toISOString() : null);
 
 export const getProfileSubscription = async (userId: string): Promise<ProfileSubscriptionResponse> => {
   await ensureSubscriptionCatalog(prisma);
-  await ensureDefaultSubscriptionForUser(prisma, userId);
 
   const [catalog, active] = await Promise.all([
     prisma.subscriptionPlan.findMany({

@@ -17,7 +17,7 @@ tags: [soar-map, feature, fullstack, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Subscription catalog entitlement checkout and admin user/plan management feature. |
+| Description | Subscription catalog, fail-closed entitlement, and admin-only user/plan management feature. |
 | File path | docs/modules/api-subscriptions.md |
 | Related files | docs/modules/api-admin.md, docs/modules/web-admin.md |
 | Parent |  |

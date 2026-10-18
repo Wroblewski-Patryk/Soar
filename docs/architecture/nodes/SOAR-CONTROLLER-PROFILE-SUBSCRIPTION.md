@@ -17,7 +17,7 @@ tags: [soar-map, controller, backend, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Profile subscription controller for current subscription and checkout intent reads. |
+| Description | Profile subscription controller for current subscription reads. |
 | File path | apps/api/src/modules/profile/subscription/subscription.controller.ts |
 | Related files |  |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

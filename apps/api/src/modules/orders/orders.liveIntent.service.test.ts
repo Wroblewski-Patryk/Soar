@@ -1,5 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
+import { createEntitledUser } from '../../test/createEntitledUser';
 import { openOrder } from './orders.service';
 import { createOrderForLiveIntent, materializeLiveOrderInTransaction } from './orders.liveIntent.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
@@ -144,7 +145,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('reselects unresolved intent and partial LIVE order from the database after a fresh read', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'live-fill-candidate@example.com', password: 'hashed' },
     });
     const { bot, wallet } = await createLiveScopedBotContext({
@@ -171,7 +172,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('selects FILLED quantity gaps and zero anomalies with or without an intent', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'live-fill-quantity-gap@example.com', password: 'hashed' },
     });
     const { bot, wallet } = await createLiveScopedBotContext({
@@ -239,7 +240,7 @@ describe('durable LIVE order intent', () => {
   ])('materializes $label through the adapter and replays without new fills', async ({
     requestedQuantity, expectedFillCount, expectedFee,
   }) => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: `orders-live-identical-${requestedQuantity}@example.com`, password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -300,7 +301,7 @@ describe('durable LIVE order intent', () => {
   ])('preserves $label through raw CCXT, adapter, Order, and replay', async ({
     explicitZero, expectedFee, expectedPending,
   }) => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: `orders-live-fee-${explicitZero}@example.com`, password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -381,7 +382,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('keeps the intent UNKNOWN when identical unidentified fills cannot explain the venue quantity', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-ambiguous-fills@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -454,7 +455,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('persists the intent before submission and recovers a timeout without resubmitting', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-timeout-recovery@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -494,7 +495,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('keeps an unresolved timeout durable and only looks up on a later retry', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-unknown-retry@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -533,7 +534,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('recovers a DCA accepted before timeout with original parameters and one local add', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-dca-timeout@example.com', password: 'hashed' },
     });
     const { bot, wallet, strategy } = await createLiveScopedBotContext({
@@ -594,7 +595,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('uses one local order when a concurrent retry recovers before the first response', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-concurrent-recovery@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -633,7 +634,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('rolls back the local order if materialization fails before commit', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-atomic-materialization@example.com', password: 'hashed' },
     });
     const intent = await prisma.liveOrderIntent.create({
@@ -672,7 +673,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('rolls back runtime OPEN Position, Trade, and telemetry when interrupted before Trade', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-runtime-open-atomic@example.com', password: 'hashed' },
     });
     const { bot, wallet, strategy } = await createLiveScopedBotContext({
@@ -725,7 +726,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('materializes runtime OPEN telemetry through the normal durable order path', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-runtime-open-path@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -785,7 +786,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('recovers an older filled runtime intent without a stored session by lookup only', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-runtime-old-intent@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -827,7 +828,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('derives a stable Gate.io client ID within the venue limit', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-gate-client-id@example.com', password: 'hashed' },
     });
     const { bot, wallet, universe } = await createLiveScopedBotContext({
@@ -860,7 +861,7 @@ describe('durable LIVE order intent', () => {
   });
 
   it('does not duplicate an exchange order imported while its submit result was unknown', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-imported-recovery@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({

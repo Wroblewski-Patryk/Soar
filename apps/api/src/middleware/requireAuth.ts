@@ -52,6 +52,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       email: userExists.email,
       role: userExists.role,
     };
+    req.authSource = candidate.token === req.cookies?.token ? 'cookie' : 'bearer';
 
     return next();
   }

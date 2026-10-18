@@ -136,12 +136,36 @@ export const updateAdminUser = async (
 
   try {
     const updatedUser = await prisma.$transaction(async (tx) => {
+      const previousSubscription = input.subscriptionPlanCode
+        ? await tx.userSubscription.findFirst({
+            where: { userId: input.userId, status: 'ACTIVE' },
+            orderBy: { startsAt: 'desc' },
+            select: {
+              source: true,
+              subscriptionPlan: { select: { code: true } },
+            },
+          })
+        : null;
+
       if (input.role !== undefined && input.role !== existing.role) {
         await tx.user.update({
           where: { id: input.userId },
           data: {
             role: input.role,
             sessionVersion: { increment: 1 },
+          },
+        });
+        await tx.log.create({
+          data: {
+            userId: input.userId,
+            actor: input.actorUserId,
+            action: 'admin.user.role_changed',
+            source: 'admin.users',
+            message: 'Administrator changed account role.',
+            category: 'SECURITY',
+            entityType: 'USER',
+            entityId: input.userId,
+            metadata: { fromRole: existing.role, toRole: input.role },
           },
         });
       }
@@ -154,8 +178,32 @@ export const updateAdminUser = async (
           autoRenew: false,
           metadata: {
             reason: 'admin_user_management',
+            actorUserId: input.actorUserId,
           },
         });
+        if (
+          previousSubscription?.subscriptionPlan.code !== input.subscriptionPlanCode ||
+          previousSubscription?.source !== 'ADMIN_OVERRIDE'
+        ) {
+          await tx.log.create({
+            data: {
+              userId: input.userId,
+              actor: input.actorUserId,
+              action: 'admin.user.plan_assigned',
+              source: 'admin.users',
+              message: 'Administrator assigned an account plan.',
+              category: 'SECURITY',
+              entityType: 'USER_SUBSCRIPTION',
+              entityId: input.userId,
+              metadata: {
+                fromPlanCode: previousSubscription?.subscriptionPlan.code ?? null,
+                fromSource: previousSubscription?.source ?? null,
+                toPlanCode: input.subscriptionPlanCode,
+                toSource: 'ADMIN_OVERRIDE',
+              },
+            },
+          });
+        }
       }
 
       return tx.user.findUnique({

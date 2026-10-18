@@ -2,6 +2,7 @@ import request from 'supertest';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const createStrategyPayload = () => ({
   name: 'RSI + MACD',
@@ -24,6 +25,14 @@ const registerAndLogin = async (email: string) => {
   });
 
   expect(res.status).toBe(201);
+  await ensureSubscriptionCatalog(prisma);
+  await setActiveSubscriptionForUser(prisma, {
+    userId: res.body.user.id as string,
+    planCode: 'FREE',
+    source: 'ADMIN_OVERRIDE',
+    autoRenew: false,
+    metadata: { reason: 'strategies_test_fixture' },
+  });
   return agent;
 };
 

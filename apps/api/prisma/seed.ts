@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { resolveSeedAdminPassword } from './seedAdminPassword';
-import { ensureSubscriptionCatalog, OWNER_ACCOUNT_EMAIL, setActiveSubscriptionForUser } from '../src/modules/subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, OWNER_ACCOUNT_EMAIL } from '../src/modules/subscriptions/subscriptions.service';
 
 const prisma = new PrismaClient();
 
@@ -178,17 +178,6 @@ async function main() {
       role: 'ADMIN',
     },
     select: { id: true },
-  });
-
-  await setActiveSubscriptionForUser(prisma, {
-    userId: user.id,
-    planCode: 'PROFESSIONAL',
-    source: 'ADMIN_OVERRIDE',
-    autoRenew: false,
-    metadata: {
-      reason: 'seed_owner_bootstrap',
-      updatedBy: 'seed',
-    },
   });
 
   const marketUniverseIds = new Map<string, string>();

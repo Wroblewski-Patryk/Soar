@@ -5,13 +5,13 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/auth`
 - Owner: backend/core
-- Last updated: 2026-04-12
+- Last updated: 2026-10-19
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
 - Handles account registration, login, session bootstrap, and logout.
 - Issues JWT-based session tokens and returns public user payload.
-- Initializes default subscription state during registration transaction.
+- Registration creates an account without assigning a subscription plan.
 
 Out of scope:
 - Dashboard resource authorization (handled by `requireAuth` middleware on dashboard/admin routers).
@@ -23,7 +23,7 @@ Out of scope:
   - `prisma` for user/sessionVersion data.
   - password hashing utils (`hashPassword`, `comparePassword`).
   - JWT/session helpers (`auth.jwt`, `auth.session`, cookie helpers).
-  - subscriptions bootstrap (`ensureSubscriptionCatalog`, `ensureDefaultSubscriptionForUser`).
+  - admin subscription assignment is a separate, human-operated flow.
 - Consumed by web auth flows (`/auth/login`, `/auth/register`) and session bootstrap calls.
 
 ## 3. Data and Contract Surface
@@ -41,7 +41,7 @@ Out of scope:
   1. Check duplicate email.
   2. Hash password.
   3. Create user in transaction.
-  4. Ensure subscription catalog/default assignment.
+  4. Leave plan assignment to an administrator; registration grants no plan entitlement.
 - Login:
   1. Load user + password hash + `sessionVersion`.
   2. Validate password.

@@ -1,146 +1,56 @@
-# Subscription Admin + Billing Provider Runbook
+# Subscription Administrator Runbook
 
-Status: active (`SUBS-12`, 2026-04-07)
+Status: current manual assignment workflow (2026-10-19). The April 2026
+checkout/provider instructions describe historical implementation only.
 
-## Purpose
-- Provide one operator playbook for:
-  - editing subscription plans (price + entitlements),
-  - manually assigning plans to users,
-  - switching checkout provider strategy without refactoring domain logic.
+## Authority
 
-## Current V1 Capabilities
-- Canonical plans: `FREE`, `ADVANCED`, `PROFESSIONAL`.
-- Profile read endpoint: `GET /dashboard/profile/subscription`.
-- Checkout-intent endpoint: `POST /dashboard/profile/subscription/checkout-intents`.
-- Admin plans API (ADMIN only):
-  - `GET /admin/subscriptions/plans`
-  - `PUT /admin/subscriptions/plans/:code`
-- Provider adapters currently implemented:
-  - `MANUAL` (default)
-  - `STRIPE`
-- Reserved (not implemented yet): `KLARNA`, `OTHER`.
+- Registration creates a `USER` without a subscription assignment. It does not
+  grant plan-gated access.
+- A human administrator assigns `FREE`, `ADVANCED`, or `PROFESSIONAL` and changes
+  account roles in `/admin/users` after signing in to the Soar panel.
+- External Bearer-only clients and delegated API/MCP clients cannot use role or
+  plan mutation routes. Do not issue an administrator browser session to them.
+- There is no current self-service checkout or in-app payment. The old
+  `/dashboard/profile/subscription/checkout-intents` route returns 404.
 
-## Preconditions
-- API and web are running.
-- Operator account has `ADMIN` role.
-- DB migration/seed state is up to date (`SubscriptionPlan`, `UserSubscription`, `PaymentIntent` tables present).
+## Assign a plan or change a role
 
-## A. Edit Plan Limits and Pricing
+1. Open `/admin/users` in an administrator browser session.
+2. Find the intended account and verify its current role and active plan. A new
+   account displays no active subscription.
+3. Select the plan or role, review the panel confirmation, and submit once.
+4. Read back the target row. A plan assignment has source `ADMIN_OVERRIDE`;
+   role changes invalidate the target's existing sessions.
+5. Confirm the corresponding `admin.user.plan_assigned` or
+   `admin.user.role_changed` audit entry contains the actor and old/new state.
+   Do not put credentials or personal notes in the audit metadata.
+6. Have the user reload the profile subscription view. It must show the selected
+   active plan, or `null` before any assignment. Check one permitted and one
+   denied plan-gated action as appropriate.
 
-### A1. Recommended path (Admin UI)
-1. Open `web` admin view: `/admin/subscriptions`.
-2. Use `Edit` for selected plan.
-3. Update supported fields:
-   - `monthlyPriceMinor`
-   - `currency`
-   - `maxBotsTotal`
-   - `maxBotsByMode.PAPER`
-   - `maxBotsByMode.LIVE`
-   - `maxConcurrentBacktests`
-4. Save and confirm updated values in table.
+The panel calls `PATCH /admin/users/:userId`. API credentials alone do not grant
+permission to perform this operation. The server prevents self-demotion and
+demotion of the last administrator.
 
-### A2. API path (automation/fallback)
-`PUT /admin/subscriptions/plans/:code`
+## Edit the plan catalog
 
-Example payload:
+1. Open `/admin/subscriptions` in the administrator browser session.
+2. Edit the selected plan's active state, display name, price fields, or
+   entitlement limits. Stored price fields are catalog data, not a payment path.
+3. Save, read back the plan row, and verify the
+   `admin.subscription_plan.updated` audit entry.
 
-```json
-{
-  "monthlyPriceMinor": 9900,
-  "currency": "USD",
-  "entitlements": {
-    "version": 1,
-    "limits": {
-      "maxBotsTotal": 5,
-      "maxBotsByMode": { "PAPER": 5, "LIVE": 3 },
-      "maxConcurrentBacktests": 5
-    },
-    "features": {
-      "liveTrading": true,
-      "syncExternalPositions": true,
-      "manageExternalPositions": true
-    },
-    "cadence": {
-      "allowedIntervals": ["1m", "5m", "15m", "30m", "1h"],
-      "defaultMarketScanInterval": "5m",
-      "defaultPositionScanInterval": "5m"
-    }
-  }
-}
-```
+## Existing data and rollout
 
-Validation guardrails:
-- currency must be 3-letter ISO code,
-- numeric limits must be non-negative (backtests `>= 1`),
-- mode limits cannot exceed `maxBotsTotal`.
+- Do not delete `PaymentIntent` records or payment/assignment enums merely to
+  disable checkout. They document historical attempts and provider references.
+- Before changing legacy access, inventory active `DEFAULT`, `CHECKOUT`, and
+  `ADMIN_OVERRIDE` assignments and accounts with active bots. A human
+  administrator must decide the disposition of each ambiguous legacy account.
+- Deploy code that stops automatic assignments before any approved data
+  migration, then read back counts and representative accounts after migration.
+- An application code test does not prove production behavior. Verify the
+  signed-in user and admin journeys in the deployed environment separately.
 
-### A3. Post-change verification
-1. `GET /admin/subscriptions/plans` -> confirm persisted values.
-2. For affected user, `GET /dashboard/profile/subscription` -> confirm active plan + catalog payload.
-3. Entitlement sanity smoke:
-   - create bot above plan cap -> expect `409`,
-   - create bot within cap -> expect `201`.
-
-## B. Manual Plan Assignment (Admin Override)
-
-Note: V1 has no dedicated admin endpoint for changing another user subscription directly.
-Use controlled one-off operator command below.
-
-### B1. One-off assignment command (recommended)
-Run from repository root:
-
-```bash
-pnpm --filter api exec tsx -e "import { prisma } from './src/prisma/client'; import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from './src/modules/subscriptions/subscriptions.service'; const email='user@example.com'; const planCode='PROFESSIONAL' as const; const user=await prisma.user.findUnique({ where:{ email }, select:{ id:true } }); if(!user) throw new Error('USER_NOT_FOUND'); await ensureSubscriptionCatalog(prisma); await setActiveSubscriptionForUser(prisma,{ userId:user.id, planCode, source:'ADMIN_OVERRIDE', autoRenew:false, metadata:{ actor:'admin', note:'manual override' } }); await prisma.$disconnect();"
-```
-
-### B2. Verify assignment
-1. Login as target user.
-2. `GET /dashboard/profile/subscription`.
-3. Confirm:
-   - `activePlanCode` matches target plan,
-   - `activeSubscription.source === "ADMIN_OVERRIDE"`,
-   - previous active subscription is no longer active.
-
-## C. Payment Provider Switch Strategy
-
-### C1. Supported provider values
-- `SUBSCRIPTION_PAYMENT_PROVIDER=MANUAL` (default, safest fallback).
-- `SUBSCRIPTION_PAYMENT_PROVIDER=STRIPE` (requires Stripe env keys).
-
-### C2. Switch to Stripe
-1. Set env values:
-   - `SUBSCRIPTION_PAYMENT_PROVIDER=STRIPE`
-   - `STRIPE_SECRET_KEY=...`
-   - `STRIPE_PRICE_ID_ADVANCED_MONTHLY=...`
-   - `STRIPE_PRICE_ID_PROFESSIONAL_MONTHLY=...`
-2. Restart API service.
-3. Smoke test as authenticated user:
-   - `POST /dashboard/profile/subscription/checkout-intents` with `planCode: "ADVANCED"`.
-   - Expect `201`, `provider: "STRIPE"`, non-null `checkoutUrl`.
-
-### C3. Fast rollback to MANUAL
-1. Set `SUBSCRIPTION_PAYMENT_PROVIDER=MANUAL`.
-2. Restart API service.
-3. Repeat checkout-intent smoke:
-   - expect `provider: "MANUAL"` and deterministic response.
-
-### C4. Error mapping reference
-- `503`: provider not configured / Stripe key missing / Stripe price missing.
-- `501`: provider enum configured but adapter not implemented.
-- `400`: non-payable plan selected (`FREE`).
-- `404`: subscription plan missing in catalog.
-
-## D. Safety Rules
-- Never edit plan payload directly in DB without preserving schema contract.
-- Keep one active subscription per user invariant.
-- Prefer `ADMIN_OVERRIDE` source for manual operator actions.
-- Always capture actor + reason in assignment metadata.
-- For production changes: apply in stage first, run checkout smoke, then promote.
-
-## References
-- Contract: `docs/architecture/reference/subscription-tier-entitlements-contract.md`
-- Rollout plan: `history/plans/subscription-entitlements-rollout-plan-2026-04-06.md`
-- API modules:
-  - `apps/api/src/modules/admin/subscriptionPlans/*`
-  - `apps/api/src/modules/profile/subscription/*`
-  - `apps/api/src/modules/subscriptions/payments/*`
+Contract: `docs/architecture/reference/subscription-tier-entitlements-contract.md`.

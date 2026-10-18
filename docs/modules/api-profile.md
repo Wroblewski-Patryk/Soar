@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/profile`
 - Owner: backend/core
-- Last updated: 2026-05-09
+- Last updated: 2026-10-19
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -13,7 +13,7 @@
   - basic profile + UI preferences
   - security actions (password/account deletion)
   - API key lifecycle and exchange connection tests
-  - active subscription view + checkout intent bootstrap
+  - read-only subscription catalog and active assignment view
 
 Out of scope:
 - Admin-managed user mutations.
@@ -25,7 +25,7 @@ Out of scope:
 - Depends on:
   - `prisma` persistence.
   - `users/publicUser` projection contract.
-  - `subscriptions.service` for catalog/default subscription alignment.
+  - `subscriptions.service` for catalog initialization; profile reads do not assign a plan.
   - exchange capability/probe helpers for API-key tests.
   - crypto helpers for encrypted API key storage.
 
@@ -47,7 +47,8 @@ Out of scope:
   - `POST /dashboard/profile/apiKeys/:id/revoke`
 - Subscription:
   - `GET /dashboard/profile/subscription`
-  - `POST /dashboard/profile/subscription/checkout-intents`
+  - `activeSubscription` and `activePlanCode` are null until an administrator assigns a plan.
+  - `POST /dashboard/profile/subscription/checkout-intents` is retired and returns 404.
 
 ## 4. Runtime Flows
 - Basic profile update:

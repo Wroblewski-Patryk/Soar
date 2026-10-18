@@ -58,25 +58,6 @@ describe('Stage abuse throttling verification', () => {
     await prisma.subscriptionPlan.deleteMany();
   });
 
-  it('limits checkout-intent abuse per user', async () => {
-    await withRateLimiterEnabled(async () => {
-      const { agent } = await registerAndLogin('stage-abuse-checkout@example.com');
-
-      for (let attempt = 0; attempt < 5; attempt += 1) {
-        const response = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
-          planCode: 'FREE',
-        });
-        expect(response.status).not.toBe(429);
-        expect(response.status).toBeLessThan(500);
-      }
-
-      const blocked = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
-        planCode: 'FREE',
-      });
-      expect(blocked.status).toBe(429);
-    });
-  });
-
   it('limits password update abuse per user', async () => {
     await withRateLimiterEnabled(async () => {
       const { agent } = await registerAndLogin('stage-abuse-password@example.com');

@@ -17,7 +17,7 @@ tags: [soar-map, database_model, data, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | PaymentIntent model for checkout intent lifecycle and provider references. |
+| Description | Historical PaymentIntent model retained from the retired checkout flow. |
 | File path | apps/api/prisma/schema.prisma |
 | Related files |  |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

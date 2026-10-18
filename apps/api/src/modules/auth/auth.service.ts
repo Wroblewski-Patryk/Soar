@@ -5,7 +5,6 @@ import { serverUrl } from '../../config/runtime';
 import { getSessionJwtExpiresIn } from './auth.session';
 import { signAuthToken } from './auth.jwt';
 import { publicUserSelect } from '../users/publicUser';
-import { ensureDefaultSubscriptionForUser, ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 
 export const registerUser = async (
     input: RegisterInput
@@ -31,9 +30,6 @@ export const registerUser = async (
       },
       select: publicUserSelect,
     });
-
-    await ensureSubscriptionCatalog(tx);
-    await ensureDefaultSubscriptionForUser(tx, createdUser.id);
 
     return createdUser;
   });

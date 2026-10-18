@@ -4,6 +4,7 @@ import { app } from '../../../index';
 import { prisma } from '../../../prisma/client';
 import { SubscriptionEntitlementsSchema } from '../../subscriptions/subscriptionEntitlements.service';
 import { ensureSubscriptionCatalog } from '../../subscriptions/subscriptions.service';
+import { signAuthToken } from '../../auth/auth.jwt';
 
 const createAdminAgent = async () => {
   const email = `admin-subscriptions-${Date.now()}-${Math.random()}@example.com`;
@@ -117,6 +118,31 @@ describe('Admin subscription plans API', () => {
       PAPER: 2,
       LIVE: 0,
     });
+    const audit = await prisma.log.findFirstOrThrow({
+      where: { action: 'admin.subscription_plan.updated', entityType: 'SUBSCRIPTION_PLAN' },
+      orderBy: { occurredAt: 'desc' },
+    });
+    expect(audit.metadata).toMatchObject({ code: 'FREE' });
+  });
+
+  it('rejects catalog mutation from bearer-only admin client', async () => {
+    const adminAgent = await createAdminAgent();
+    const me = await adminAgent.get('/auth/me');
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: me.body.id as string } });
+    const token = signAuthToken({
+      userId: user.id,
+      email: user.email,
+      role: 'ADMIN',
+      sessionVersion: user.sessionVersion,
+    }, '1h');
+    const before = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { code: 'FREE' } });
+    const response = await request(app)
+      .put('/admin/subscriptions/plans/FREE')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ displayName: 'Bearer change' });
+    expect(response.status).toBe(403);
+    const after = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { code: 'FREE' } });
+    expect(after.displayName).toBe(before.displayName);
   });
 
   it('returns 400 for invalid entitlements payload', async () => {

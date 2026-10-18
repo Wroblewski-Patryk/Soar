@@ -49,9 +49,9 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | high | CHAIN-BACKTESTS | backtests | verified_local | missing_proof:Fresh authenticated browser proof and heavy replay performance proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-REPORTS | reports | verified_local | missing_proof:Fresh authenticated browser proof and production report readback remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-LOGS-AUDIT | logs-audit | verified_local | missing_proof:Fresh authenticated browser proof and production action-produced readback remain separate; production_or_browser_proof_not_implied |
-| high | CHAIN-SUBSCRIPTIONS-ADMIN | subscriptions-admin | verified_local | missing_proof:Fresh authenticated browser proof checkout provider callback proof and production admin mutation proof remain separate; production_or_browser_proof_not_implied |
+| high | CHAIN-SUBSCRIPTIONS-ADMIN | subscriptions-admin | verified_local | missing_proof:Fresh authenticated browser and production admin mutation proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-AI-ASSISTANT-FOUNDATION | ai-assistant-foundation | verified_local | missing_proof:Hot-path runtime AI trading remains deferred and requires separate red-team proof; production_or_browser_proof_not_implied |
-| high | CHAIN-OPS-CONFIG-PIPELINE | ops-config-pipeline | verified_local | missing_proof:Remote CI run status and protected production deployment proof remain separate; production_or_browser_proof_not_implied |
+| high | CHAIN-OPS-CONFIG-PIPELINE | ops-config-pipeline | verified_local | missing_proof:Production Coolify stack deployment and protected proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-API-SUPPORT-ROUTES | api-support-routes | verified_local | missing_proof:Fresh authenticated browser proof for profile/upload UI consumers remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-RUNTIME-SUPPORT-SERVICES | runtime-support-services | verified_local | missing_proof:Fresh end-to-end runtime journey and protected LIVE proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-API-PLATFORM-SAFETY | api-platform-safety | verified_local | missing_proof:Fresh adversarial security review remains separate; production_or_browser_proof_not_implied |
@@ -71,8 +71,8 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | medium | SOAR-API-POSITION-MANAGEMENT-MODE | positions | verified_local | not_in_function_chain |
 | medium | SOAR-API-STRATEGY-INDICATORS | strategies | verified_local | no_data_or_explicit_na |
 | medium | SOAR-API-MARKET-CATALOG | markets | verified_local | no_data_or_explicit_na |
+| medium | SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT | subscriptions-admin | deprecated | not_in_function_chain |
 | medium | SOAR-API-ICON-LOOKUP | api-support-routes | verified_local | no_data_or_explicit_na |
-| medium | SOAR-API-MARKET-STREAM-EVENTS | api-support-routes | verified_local | no_data_or_explicit_na |
 
 ## Use
 

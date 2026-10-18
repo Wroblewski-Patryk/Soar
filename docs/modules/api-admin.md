@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/admin`
 - Owner: backend/core
-- Last updated: 2026-04-12
+- Last updated: 2026-10-19
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -19,7 +19,7 @@ Out of scope:
 
 ## 2. Boundaries and Dependencies
 - Router mount: `/admin` via `apps/api/src/router/admin.routes.ts`.
-- Access boundary: guarded by `requireAuth` + `requireRole('ADMIN')`.
+- Access boundary: guarded by `requireAuth` + `requireRole('ADMIN')`; role and plan writes also require an interactive admin panel cookie session.
 - Depends on:
   - `prisma` persistence.
   - `subscriptions.service` for catalog initialization and assignment helpers.
@@ -63,10 +63,11 @@ Out of scope:
 - Admin-only authorization enforced at router level.
 - Demotion guardrails prevent privilege lockout.
 - Plan/user mutations are constrained to explicit whitelisted fields.
+- Bearer-only clients, including future delegated clients, receive 403 on role and plan writes.
 - LIVE pause mutations require an ADMIN role, a reason, and optimistic version match.
 
 ## 7. Observability and Operations
-- Admin user updates and subscription changes are persisted via transactional writes.
+- Admin user updates, subscription assignments, and their actor/old/new audit entries are persisted via transactional writes.
 - Operational parity depends on subscription catalog bootstrap consistency.
 
 ## 8. Test Coverage and Evidence
@@ -82,4 +83,4 @@ pnpm --filter api test -- src/modules/admin/users/users.e2e.test.ts src/modules/
 
 ## 9. Open Issues and Follow-Ups
 - Replace remaining message-string error signaling with typed domain errors (optimization wave).
-- Extend audit log detail for admin mutations if stronger compliance trace is required.
+- Define a distinct delegated-client principal in the API/MCP slice; it must never be accepted as an admin panel session.

@@ -69,6 +69,13 @@ const registerAndLogin = async (email: string) => {
     password: 'test1234',
   });
   expect(res.status).toBe(201);
+  await setActiveSubscriptionForUser(prisma, {
+    userId: res.body.user.id as string,
+    planCode: 'FREE',
+    source: 'ADMIN_OVERRIDE',
+    autoRenew: false,
+    metadata: { reason: 'entitlements_test_fixture' },
+  });
   return agent;
 };
 
@@ -176,6 +183,25 @@ describe('Bots subscription entitlements', () => {
     await prisma.userSubscription.deleteMany();
     await prisma.user.deleteMany();
     await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  });
+
+  it('rejects bot creation for a registered account without an assigned plan', async () => {
+    const email = 'bots-subscription-unassigned@example.com';
+    const agent = request.agent(app);
+    const registration = await agent.post('/auth/register').send({ email, password: 'test1234' });
+    expect(registration.status).toBe(201);
+    const userId = registration.body.user.id as string;
+    const strategyId = await createStrategy(agent, 'Unassigned Strategy');
+    const marketGroupId = await createMarketGroup(email);
+
+    const response = await agent.post('/dashboard/bots').send(createPayload({
+      strategyId,
+      marketGroupId,
+    }));
+    expect(response.status).toBe(403);
+    expect(response.body.error.message).toBe('SUBSCRIPTION_ASSIGNMENT_REQUIRED');
+    expect(await prisma.bot.count({ where: { userId } })).toBe(0);
+    expect(await prisma.userSubscription.count({ where: { userId } })).toBe(0);
   });
 
   it('blocks second bot on FREE plan with 409 entitlement error payload', async () => {
