@@ -64,7 +64,12 @@ negative.
   quantity. The explicit `quantity_v1` value has the same behavior.
 - The explicit `additional.dcaSizingBasis: "usdt_contribution_v1"` opts the
   computation engine, both BACKTEST replay paths, and PAPER/LIVE runtime into
-  USDT contribution sizing. The strategy form does not yet expose this opt-in.
+  USDT contribution sizing. New strategies from the strategy form and its
+  presets persist this version explicitly. Clones of unversioned strategies
+  retain quantity sizing, and edits preserve the absent version field.
+  Legacy quantity strategies retain the basic TP/SL reachability guard;
+  USDT contribution strategies can place a signed DCA level beyond the
+  same-side exit threshold because their reached DCA runs first.
   Unknown versions fail parsing or runtime policy validation.
 - For `usdt_contribution_v1`, current book contribution is the sum of confirmed
   fill notionals, represented by `averageEntryPrice * quantity` in the
@@ -376,7 +381,8 @@ for:
 - `advanced` mode using `TTP`/`TSL` instead of hard `TP`/`SL`
 - DCA-first gating before close management
 - positive and negative DCA lane ordering
-- unreachable DCA warnings in `basic` mode
+- signed DCA levels beyond basic TP/SL thresholds, with DCA-first ordering
+- retained basic TP/SL reachability for legacy quantity strategies
 - unaffordable DCA policy behavior
 - TTP and TSL monotonic ratcheting
 - imported `LIVE` position adoption without invented trailing history

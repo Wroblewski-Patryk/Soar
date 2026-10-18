@@ -8,21 +8,6 @@ const toFiniteNumber = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const resolveDcaLevelPercents = (additional: Record<string, unknown>) => {
-  if (additional.dcaEnabled !== true) return [];
-  const rawLevels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];
-  if (additional.dcaMode === 'advanced') {
-    return rawLevels
-      .map((entry) => toFiniteNumber(asRecord(entry)?.percent))
-      .filter((value): value is number => value != null && value !== 0);
-  }
-
-  const firstLevelPercent = toFiniteNumber(asRecord(rawLevels[0])?.percent);
-  const repeatCount = Math.max(0, Math.floor(toFiniteNumber(additional.dcaTimes) ?? 0));
-  if (firstLevelPercent == null || firstLevelPercent === 0 || repeatCount <= 0) return [];
-  return Array.from({ length: repeatCount }, () => firstLevelPercent);
-};
-
 const validateTrailingTakeProfitLevels = (config: unknown) => {
   const root = asRecord(config);
   const close = asRecord(root?.close);
@@ -73,31 +58,55 @@ const validateTrailingStopLevels = (config: unknown) => {
   });
 };
 
-const validateBasicCloseDcaReachability = (config: unknown) => {
+const validateDcaConfig = (config: unknown) => {
   const root = asRecord(config);
   const close = asRecord(root?.close);
   const additional = asRecord(root?.additional);
-  const mode = typeof close?.mode === 'string' ? close.mode.trim().toLowerCase() : 'basic';
-  if (mode !== 'basic' || !additional) return;
+  if (!additional) return;
+  const basis = additional.dcaSizingBasis;
+  if (basis != null && basis !== 'quantity_v1' && basis !== 'usdt_contribution_v1') {
+    throw strategyErrors.invalidCloseConfig({ field: 'additional.dcaSizingBasis', rule: 'invalid_dca_sizing_basis' });
+  }
+  const closeMode = typeof close?.mode === 'string' ? close.mode.trim().toLowerCase() : 'basic';
+  if (additional.dcaEnabled === true && basis !== 'usdt_contribution_v1' && closeMode === 'basic') {
+    const rawLevels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];
+    const levels = additional.dcaMode === 'basic'
+      ? (Number(additional.dcaTimes) > 0 ? rawLevels.slice(0, 1) : [])
+      : rawLevels;
+    const tp = toFiniteNumber(close?.tp);
+    const sl = toFiniteNumber(close?.sl);
+    levels.forEach((entry, index) => {
+      const percent = toFiniteNumber(asRecord(entry)?.percent);
+      if (percent == null || percent === 0) return;
+      if (tp != null && tp > 0 && percent > tp) {
+        throw strategyErrors.invalidCloseConfig({ field: `additional.dcaLevels[${index}]`,
+          rule: 'positive_dca_above_take_profit_unreachable', dcaPercent: percent, takeProfitPercent: tp });
+      }
+      if (sl != null && sl > 0 && percent < -Math.abs(sl)) {
+        throw strategyErrors.invalidCloseConfig({ field: `additional.dcaLevels[${index}]`,
+          rule: 'negative_dca_below_stop_loss_unreachable', dcaPercent: percent, stopLossPercent: -Math.abs(sl) });
+      }
+    });
+  }
+  if (additional.dcaEnabled !== true || basis !== 'usdt_contribution_v1') return;
 
-  const takeProfitPercent = toFiniteNumber(close?.tp);
-  const stopLossPercent = toFiniteNumber(close?.sl);
-  const dcaLevelPercents = resolveDcaLevelPercents(additional);
-  dcaLevelPercents.forEach((percent, index) => {
-    if (takeProfitPercent != null && takeProfitPercent > 0 && percent > takeProfitPercent) {
+  const levels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];
+  const mode = additional.dcaMode;
+  const count = additional.dcaTimes;
+  if ((mode !== 'basic' && mode !== 'advanced') || levels.length === 0 ||
+    (mode === 'basic' && (!Number.isInteger(count) || Number(count) < 1 || Number(count) > 10)) ||
+    (mode === 'advanced' && count !== levels.length)) {
+    throw strategyErrors.invalidCloseConfig({ field: 'additional.dcaLevels', rule: 'invalid_dca_ladder' });
+  }
+  const activeLevels = mode === 'basic' ? levels.slice(0, 1) : levels;
+  activeLevels.forEach((entry, index) => {
+    const level = asRecord(entry);
+    const percent = toFiniteNumber(level?.percent);
+    const multiplier = toFiniteNumber(level?.multiplier);
+    if (percent == null || percent === 0 || multiplier == null || multiplier <= 0 || multiplier > 10) {
       throw strategyErrors.invalidCloseConfig({
         field: `additional.dcaLevels[${index}]`,
-        rule: 'positive_dca_above_take_profit_unreachable',
-        dcaPercent: percent,
-        takeProfitPercent,
-      });
-    }
-    if (stopLossPercent != null && stopLossPercent > 0 && percent < -Math.abs(stopLossPercent)) {
-      throw strategyErrors.invalidCloseConfig({
-        field: `additional.dcaLevels[${index}]`,
-        rule: 'negative_dca_below_stop_loss_unreachable',
-        dcaPercent: percent,
-        stopLossPercent: -Math.abs(stopLossPercent),
+        rule: 'invalid_dca_level',
       });
     }
   });
@@ -106,5 +115,5 @@ const validateBasicCloseDcaReachability = (config: unknown) => {
 export const validateStrategyConfig = (config: unknown) => {
   validateTrailingTakeProfitLevels(config);
   validateTrailingStopLevels(config);
-  validateBasicCloseDcaReachability(config);
+  validateDcaConfig(config);
 };

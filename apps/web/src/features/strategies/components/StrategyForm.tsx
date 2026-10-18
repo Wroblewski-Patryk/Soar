@@ -7,7 +7,8 @@ import Tabs from "@/ui/components/Tabs";
 import { focusFirstInvalidField, FormPageShell, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
 import { useStrategyForm } from "../hooks/useStrategyForm";
 import { StrategyFormProps } from "../types/StrategyForm.type";
-import { hasInvalidTrailingCloseThresholds, hasUnreachableBasicDcaLevels } from "../utils/strategyCloseValidation";
+import { hasInvalidTrailingCloseThresholds, hasUnreachableLegacyDcaLevels } from "../utils/strategyCloseValidation";
+import { hasInvalidUsdtDcaConfig } from "../utils/strategyDcaValidation";
 import { Additional } from "./StrategyFormSections/Additional";
 import { Basic } from "./StrategyFormSections/Basic";
 import { Close } from "./StrategyFormSections/Close";
@@ -27,7 +28,7 @@ export default function StrategyForm({
   const { form, setForm, setBasic, setOpenConditions, setCloseConditions, setAdditional } = useStrategyForm();
 
   useEffect(() => {
-    if (initial) setForm((prev) => ({ ...prev, ...initial }));
+    if (initial) setForm(initial);
   }, [initial, setForm]);
 
   const copy = useMemo(() => ({
@@ -43,7 +44,8 @@ export default function StrategyForm({
     nameRequiredValidation: t("dashboard.strategies.form.basic.nameRequiredValidation"),
     intervalRequiredValidation: t("dashboard.strategies.form.basic.intervalRequiredValidation"),
     closeThresholdValidation: t("dashboard.strategies.form.close.trailingThresholdValidation"),
-    basicDcaReachabilityValidation: t("dashboard.strategies.form.close.basicDcaReachabilityValidation"),
+    legacyDcaReachabilityValidation: t("dashboard.strategies.form.close.basicDcaReachabilityValidation"),
+    dcaValidation: t("dashboard.strategies.form.additional.dcaValidation"),
   }), [t]);
 
   const steps = useMemo(
@@ -56,7 +58,7 @@ export default function StrategyForm({
     [copy.steps],
   );
   const fieldErrors = useMemo(() => {
-    const errors: { name?: string; interval?: string; closeThresholds?: string; dcaReachability?: string } = {};
+    const errors: { name?: string; interval?: string; closeThresholds?: string; dca?: string; legacyDca?: string } = {};
     if (!form.name.trim()) {
       errors.name = copy.nameRequiredValidation;
     }
@@ -66,13 +68,17 @@ export default function StrategyForm({
     if (hasInvalidTrailingCloseThresholds(form.closeConditions)) {
       errors.closeThresholds = copy.closeThresholdValidation;
     }
-    if (hasUnreachableBasicDcaLevels(form.closeConditions, form.additional)) {
-      errors.dcaReachability = copy.basicDcaReachabilityValidation;
+    if (hasInvalidUsdtDcaConfig(form.additional)) {
+      errors.dca = copy.dcaValidation;
+    }
+    if (hasUnreachableLegacyDcaLevels(form.closeConditions, form.additional)) {
+      errors.legacyDca = copy.legacyDcaReachabilityValidation;
     }
     return errors;
   }, [
-    copy.basicDcaReachabilityValidation,
     copy.closeThresholdValidation,
+    copy.dcaValidation,
+    copy.legacyDcaReachabilityValidation,
     copy.intervalRequiredValidation,
     copy.nameRequiredValidation,
     form.closeConditions,
@@ -103,7 +109,7 @@ export default function StrategyForm({
     if (submitting) return;
     setShowValidation(true);
     if (hasValidationErrors) {
-      setCurrentStep(fieldErrors.closeThresholds ? "close" : fieldErrors.dcaReachability ? "additional" : "basic");
+      setCurrentStep(fieldErrors.closeThresholds ? "close" : fieldErrors.dca || fieldErrors.legacyDca ? "additional" : "basic");
       requestAnimationFrame(() => {
         if (!fieldErrors.closeThresholds) {
           focusFirstInvalidControl();

@@ -12,12 +12,12 @@ describe('StrategyForm', () => {
     window.history.pushState({}, '', '/');
   });
 
-  const renderWithI18n = async (onSubmit?: (payload: StrategyFormState) => Promise<void>) => {
+  const renderWithI18n = async (onSubmit?: (payload: StrategyFormState) => Promise<void>, initial?: StrategyFormState) => {
     let view: ReturnType<typeof render>;
     await act(async () => {
       view = render(
         <I18nProvider>
-          <StrategyForm onSubmit={onSubmit} />
+          <StrategyForm onSubmit={onSubmit} initial={initial} />
         </I18nProvider>
       );
     });
@@ -190,7 +190,7 @@ describe('StrategyForm', () => {
     fireEvent.change(percentInputs()[0], { target: { value: '-1' } });
     fireEvent.change(multiplierInputs()[0], { target: { value: '10' } });
     fireEvent.change(percentInputs()[1], { target: { value: '-1.5' } });
-    fireEvent.change(multiplierInputs()[1], { target: { value: '20' } });
+    fireEvent.change(multiplierInputs()[1], { target: { value: '8' } });
     fireEvent.change(percentInputs()[2], { target: { value: '-0.5' } });
     fireEvent.change(multiplierInputs()[2], { target: { value: '5' } });
 
@@ -212,11 +212,11 @@ describe('StrategyForm', () => {
     }))).toEqual([
       { percent: -0.5, multiplier: 5 },
       { percent: -1, multiplier: 10 },
-      { percent: -1.5, multiplier: 20 },
+      { percent: -1.5, multiplier: 8 },
     ]);
   });
 
-  it('blocks submit when basic TP/SL makes a DCA level unreachable', async () => {
+  it('submits a negative DCA level beyond basic Stop Loss and previews USDT contribution', async () => {
     window.localStorage.setItem('cryptosparrow-locale', 'pl');
     window.history.pushState({}, '', '/dashboard/strategies/create');
     const onSubmit = vi.fn().mockResolvedValue(undefined);
@@ -243,12 +243,53 @@ describe('StrategyForm', () => {
     expect(form).not.toBeNull();
     fireEvent.submit(form as HTMLFormElement);
 
-    expect(onSubmit).not.toHaveBeenCalled();
-    expect(screen.getByTestId('form-validation-summary')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'W trybie podstawowym TP/SL poziomy DCA musza byc osiagalne zanim Take Profit albo Stop Loss zamknie pozycje.'
-      )
-    ).toBeInTheDocument();
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(screen.getByTestId('dca-contribution-preview')).toHaveTextContent('-20%: 2 USDT → 3 USDT');
+    const submitted = onSubmit.mock.calls[0]?.[0] as StrategyFormState;
+    expect(submitted.additional.dcaSizingBasis).toBe('usdt_contribution_v1');
+  });
+
+  it('previews exactly two Basic adds from the current USDT contribution', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'en');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    const { container } = await renderWithI18n();
+    fireEvent.click(screen.getByRole('tab', { name: 'Additional settings' }));
+    fireEvent.click(container.querySelector('#strategy-dca-mode-basic') as HTMLInputElement);
+    fireEvent.change(container.querySelector('#strategy-dca-times-input') as HTMLInputElement,
+      { target: { value: '2' } });
+    const preview = screen.getByTestId('dca-contribution-preview');
+    expect(preview).toHaveTextContent('2 USDT → 3 USDT');
+    expect(preview).toHaveTextContent('6 USDT → 9 USDT');
+    expect(preview.querySelectorAll('li')).toHaveLength(2);
+
+    fireEvent.change(container.querySelector('#strategy-dca-multiplier') as HTMLInputElement,
+      { target: { value: '0.5' } });
+    expect(preview).toHaveTextContent('0.5 USDT → 1.5 USDT');
+    expect(preview).toHaveTextContent('0.75 USDT → 2.25 USDT');
+  });
+
+  it('shows the old quantity meaning and preserves an absent basis on edit', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'en');
+    window.history.pushState({}, '', '/dashboard/strategies/legacy/edit');
+    const initial: StrategyFormState = {
+      name: 'Legacy', description: '', interval: '5m', leverage: 10, walletRisk: 1,
+      openConditions: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+      closeConditions: { mode: 'basic', tp: 3, sl: 2, ttp: [], tsl: [] },
+      additional: {
+        dcaEnabled: true, dcaMode: 'basic', dcaTimes: 1, dcaMultiplier: 1,
+        dcaLevels: [{ percent: -1, multiplier: 1 }], maxPositions: 1, maxOrders: 1,
+        positionLifetime: 1, positionUnit: 'h', orderLifetime: 1, orderUnit: 'h', marginMode: 'CROSSED',
+      },
+    };
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit, initial);
+    fireEvent.click(screen.getByRole('tab', { name: 'Additional settings' }));
+    expect(screen.getByTestId('dca-sizing-contract')).toHaveTextContent('Legacy quantity sizing');
+    expect(screen.getByRole('link', { name: 'Create a new USDT contribution strategy' }))
+      .toHaveAttribute('href', '/dashboard/strategies/create');
+    expect(screen.queryByTestId('dca-contribution-preview')).not.toBeInTheDocument();
+    fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect((onSubmit.mock.calls[0]?.[0] as StrategyFormState).additional.dcaSizingBasis).toBeUndefined();
   });
 });

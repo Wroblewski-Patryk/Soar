@@ -37,6 +37,18 @@ const baseForm = (): StrategyFormState => ({
 });
 
 describe('formToPayload', () => {
+  it('preserves an unversioned legacy quantity strategy on edit', () => {
+    const legacy = baseForm();
+    const form = dtoToForm({
+      id: 'legacy-1', name: legacy.name, description: legacy.description,
+      interval: legacy.interval, leverage: legacy.leverage, walletRisk: legacy.walletRisk,
+      createdAt: new Date().toISOString(),
+      config: { open: legacy.openConditions, close: legacy.closeConditions, additional: legacy.additional },
+    });
+    expect(form.additional.dcaSizingBasis).toBeUndefined();
+    expect(formToPayload(form).config.additional.dcaSizingBasis).toBeUndefined();
+  });
+
   it('keeps signed basic DCA trigger percent', () => {
     const payload = formToPayload(baseForm());
     const additional = payload.config.additional as {

@@ -205,6 +205,35 @@ describe('Strategies CRUD contract', () => {
     expect(createRes.body.config.close.tsl).toEqual([{ arm: 10, percent: -20 }]);
   });
 
+  it('persists the explicit USDT DCA version through create, read and edit', async () => {
+    const agent = await registerAndLogin('strategies-usdt-dca-contract@example.com');
+    const config = {
+      open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+      close: { mode: 'basic', tp: 10, sl: 10, ttp: [], tsl: [] },
+      additional: {
+        dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+        dcaMode: 'advanced', dcaTimes: 2,
+        dcaLevels: [{ percent: -20, multiplier: 0.5 }, { percent: 20, multiplier: 2 }],
+      },
+    };
+    const createRes = await agent.post('/dashboard/strategies').send({ ...createStrategyPayload(), config });
+    expect(createRes.status).toBe(201);
+    const strategyId = createRes.body.id as string;
+    const readRes = await agent.get(`/dashboard/strategies/${strategyId}`);
+    expect(readRes.status).toBe(200);
+    expect(readRes.body.config.additional).toEqual(config.additional);
+
+    const editedConfig = {
+      ...config,
+      additional: { ...config.additional, dcaMode: 'basic', dcaTimes: 2,
+        dcaLevels: [{ percent: -30.5, multiplier: 0.5 }] },
+    };
+    const updateRes = await agent.put(`/dashboard/strategies/${strategyId}`)
+      .send({ ...createStrategyPayload(), config: editedConfig });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.config.additional).toEqual(editedConfig.additional);
+  });
+
   it('rejects TSL levels that do not use negative start and positive step', async () => {
     const agent = await registerAndLogin('strategies-invalid-close-create@example.com');
 
