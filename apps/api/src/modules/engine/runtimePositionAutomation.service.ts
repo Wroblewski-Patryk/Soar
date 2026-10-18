@@ -3,7 +3,8 @@ import { prisma } from '../../prisma/client';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { openOrder as openOrderLifecycle } from '../orders/orders.service';
-import { evaluatePositionManagement } from './positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection } from './positionManagement.service';
+import { clonePositionManagementState, positionManagementStatesEqual } from './positionManagementState.utils';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
@@ -397,10 +398,15 @@ export const buildPositionManagementInput = (
     }))
     .filter((level) => level.armPercent > 0 && level.value > 0)
     .sort((left, right) => left.armPercent - right.armPercent);
-  const hasConfiguredTrailingLoss =
-    Number.isFinite(trailingLossStartPercent) &&
-    trailingLossStartPercent < 0 &&
-    trailingLossStepPercent > 0;
+  const trailingLossLevels = (closeMode === 'advanced' ? tslConfig : [])
+    .map((level) => ({
+      startPercent: toSignedPercent(level.percent, Number.NaN),
+      stepPercent: toPercent(level.arm),
+    }))
+    .filter((level) => Number.isFinite(level.startPercent) && level.startPercent < 0 &&
+      level.stepPercent > 0)
+    .sort((left, right) => left.startPercent - right.startPercent);
+  const hasConfiguredTrailingLoss = trailingLossLevels.length > 0;
   const dcaEnabled = Boolean(additionalConfig?.dcaEnabled ?? fallback.dcaEnabled);
   const configuredMaxAdds = Math.floor(toPositive(additionalConfig?.dcaTimes, fallback.dcaMaxAdds));
   const dcaMaxAdds =
@@ -460,7 +466,8 @@ export const buildPositionManagementInput = (
     trailingTakeProfitLevels:
       trailingTakeProfitLevels.length > 0 ? trailingTakeProfitLevels : undefined,
     trailingStop:
-      !hasConfiguredTrailingLoss && closeMode === 'advanced' && fallback.trailingEnabled
+      !hasConfiguredTrailingLoss && closeMode === 'advanced' &&
+        sizingBasis !== 'usdt_contribution_v1' && fallback.trailingEnabled
           ? {
               enabled: true,
               type: fallback.trailingType,
@@ -479,6 +486,9 @@ export const buildPositionManagementInput = (
             stepPercent: trailingLossStepPercent,
           }
         : undefined,
+    trailingLossLevels:
+      (sizingBasis === 'usdt_contribution_v1' || trailingLossLevels.length > 1) &&
+      trailingLossLevels.length > 0 ? trailingLossLevels : undefined,
     dca:
       dcaEnabled && dcaMaxAdds > 0
         ? {
@@ -516,35 +526,7 @@ export class RuntimePositionAutomationService {
     };
   }
 
-  private cloneState(state: PositionManagementState): PositionManagementState {
-    return {
-      quantity: state.quantity,
-      averageEntryPrice: state.averageEntryPrice,
-      currentAdds: state.currentAdds,
-      executedDcaLevelIndices: state.executedDcaLevelIndices ? [...state.executedDcaLevelIndices] : undefined,
-      trailingAnchorPrice: state.trailingAnchorPrice,
-      trailingLossLimitPercent: state.trailingLossLimitPercent,
-      trailingTakeProfitHighPercent: state.trailingTakeProfitHighPercent,
-      trailingTakeProfitStepPercent: state.trailingTakeProfitStepPercent,
-      lastDcaPrice: state.lastDcaPrice,
-    };
-  }
-
-  private statesEqual(left: PositionManagementState, right: PositionManagementState) {
-    return (
-      left.quantity === right.quantity &&
-      left.averageEntryPrice === right.averageEntryPrice &&
-      left.currentAdds === right.currentAdds &&
-      JSON.stringify(left.executedDcaLevelIndices ?? []) === JSON.stringify(right.executedDcaLevelIndices ?? []) &&
-      left.trailingAnchorPrice === right.trailingAnchorPrice &&
-      left.trailingLossLimitPercent === right.trailingLossLimitPercent &&
-      left.trailingTakeProfitHighPercent === right.trailingTakeProfitHighPercent &&
-      left.trailingTakeProfitStepPercent === right.trailingTakeProfitStepPercent &&
-      left.lastDcaPrice === right.lastDcaPrice
-    );
-  }
-
-  getPositionStateSnapshot(positionId: string): PositionManagementState | null { const state = this.positionStates.get(positionId); return state ? this.cloneState(state) : null; }
+  getPositionStateSnapshot(positionId: string): PositionManagementState | null { const state = this.positionStates.get(positionId); return state ? clonePositionManagementState(state) : null; }
 
   async handleTickerEvent(event: StreamTickerEvent) {
     await Promise.all((await this.deps.listOpenPositionsBySymbol(event.symbol)).map((position) => this.processPosition(event, position)));
@@ -746,8 +728,11 @@ export class RuntimePositionAutomationService {
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
     const basePreviousState = stateRebasedToCanonical
       ? position.origin === 'BOT' && persistedState
-        ? { ...persistedState, quantity: position.quantity,
-            averageEntryPrice: position.entryPrice }
+        ? { ...(input.dca?.sizingBasis === 'usdt_contribution_v1'
+          ? rebasePositionManagementProtection(persistedState, position.entryPrice,
+            position.side, position.leverage || 1)
+          : persistedState), quantity: position.quantity,
+          averageEntryPrice: position.entryPrice }
         : defaultState
       : persistedState ?? defaultState;
     const previousState =
@@ -762,7 +747,7 @@ export class RuntimePositionAutomationService {
             lastDcaPrice: durableDcaProgress.lastDcaPrice ?? basePreviousState.lastDcaPrice,
           }
         : basePreviousState;
-    const previousStateSnapshot = this.cloneState(previousState);
+    const previousStateSnapshot = clonePositionManagementState(previousState);
     const currentPnlFraction = resolveRuntimeCurrentPnlFraction({
       side: position.side,
       currentPrice: effectiveLifecyclePrice,
@@ -829,7 +814,7 @@ export class RuntimePositionAutomationService {
         };
 
     let result = evaluatePositionManagement(managementInput, previousState);
-    let effectiveState = this.cloneState(result.nextState);
+    let effectiveState = clonePositionManagementState(result.nextState);
     let dcaPendingExchangeFill = false;
 
     if (result.dcaExecuted) {
@@ -864,7 +849,7 @@ export class RuntimePositionAutomationService {
             currentPnlFraction: currentPnlFraction ?? undefined, dcaFundsExhausted: true,
           }, previousStateSnapshot);
           if (fallback.shouldClose && fallback.closeReason === 'stop_loss') {
-            result = fallback; effectiveState = this.cloneState(fallback.nextState);
+            result = fallback; effectiveState = clonePositionManagementState(fallback.nextState);
           } else {
             effectiveState = previousStateSnapshot; dcaPendingExchangeFill = true;
           }
@@ -880,8 +865,13 @@ export class RuntimePositionAutomationService {
           if (!canonicalState) {
             effectiveState = previousStateSnapshot;
           } else {
+            const rebasedProtection = input.dca?.sizingBasis === 'usdt_contribution_v1'
+              ? rebasePositionManagementProtection({ ...result.nextState,
+                  averageEntryPrice: previousStateSnapshot.averageEntryPrice },
+                canonicalState.averageEntryPrice, position.side, position.leverage || 1)
+              : result.nextState;
             effectiveState = {
-              ...result.nextState,
+              ...rebasedProtection,
               quantity: canonicalState.quantity,
               averageEntryPrice: canonicalState.averageEntryPrice,
             };
@@ -936,7 +926,7 @@ export class RuntimePositionAutomationService {
     this.positionStates.set(position.id, effectiveState);
 
     if (dcaPendingExchangeFill) {
-      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
@@ -945,7 +935,7 @@ export class RuntimePositionAutomationService {
     const hasPendingSubmittedDca =
       (await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false;
     if (result.shouldClose && hasPendingSubmittedDca) {
-      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
@@ -984,13 +974,13 @@ export class RuntimePositionAutomationService {
       if (closeResult.status === 'closed') {
         await runtimePositionStateStore.deletePositionRuntimeState(position.id);
         this.positionStates.delete(position.id);
-      } else if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      } else if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
     }
 
-    if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+    if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
       await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
     }
   }

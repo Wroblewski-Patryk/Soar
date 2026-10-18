@@ -157,17 +157,11 @@ If the next DCA cannot be funded:
 - do not silently pretend the DCA was executed
 - apply the strategy's DCA-funds policy
 
-Canonical policy options:
-
-- `block_protection`: keep close protection blocked while the DCA remains
-  pending, making the risk explicit to the operator
-- `release_protection`: classify the remaining DCA ladder as non-blocking for
-  this pass and allow `TP`/`SL` or `TTP`/`TSL` to protect the position
-
-The safer default for live automation should be `release_protection`: if the
-bot cannot add risk because funds are unavailable, it should not also block
-protective closing. Any different default must be explicit in the strategy
-contract and UI copy.
+For `usdt_contribution_v1`, an unfunded positive level remains pending and
+continues to block `TP`/`TTP`. An unfunded negative level releases only a
+crossed hard `SL` after its DCA threshold is reached and the shortage is
+reported; it does not release `TSL`. Stored `quantity_v1` keeps its existing
+funds policy.
 
 ## Basic Close Mode
 
@@ -254,6 +248,9 @@ The tracked high and protected percent must ratchet only in the protective
 direction. Switching to a higher activation level with a wider trail distance
 is allowed only if the resulting protected percent is not weaker than the
 current protected percent.
+The active configured level survives a runtime snapshot and cannot downgrade
+on pullback. A confirmed DCA rebases the tracked high and protected percent to
+the filled average while preserving their market prices.
 
 It is valid for a position to close by TTP before it ever reaches later
 configured levels.
@@ -283,6 +280,11 @@ Example progression:
 
 TSL protection must move only toward lower risk as the position recovers. It
 must not loosen because the market moves back in the unfavorable direction.
+The first configured loss level arms on the adverse move; later levels replace
+its trail distance as ROI recovers through their activation thresholds. The
+active level and protected percent survive a runtime snapshot. After a
+confirmed DCA, the protected market price is retained and its ROI is rebased
+to the filled average.
 
 ### Single Effective Protection Source
 

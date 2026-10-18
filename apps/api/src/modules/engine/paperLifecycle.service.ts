@@ -1,6 +1,6 @@
 import { evaluateOrderExecution } from './orderTypes.service';
 import { OrderEvaluationInput, OrderEvaluationState } from './orderTypes.types';
-import { evaluatePositionManagement } from './positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection } from './positionManagement.service';
 import { PositionManagementInput } from './positionManagement.types';
 import { simulateTrade } from './simulator.service';
 import { SimulatorResult } from './simulator.types';
@@ -13,8 +13,10 @@ export type PaperPositionState = {
   currentAdds: number;
   trailingAnchorPrice?: number;
   trailingLossLimitPercent?: number;
+  trailingLossActiveLevelIndex?: number;
   trailingTakeProfitHighPercent?: number;
   trailingTakeProfitStepPercent?: number;
+  trailingTakeProfitActiveLevelIndex?: number;
   lastDcaPrice?: number;
 };
 
@@ -234,11 +236,21 @@ export const processPaperLifecycleTick = (
       currentAdds: state.position.currentAdds,
       trailingAnchorPrice: state.position.trailingAnchorPrice,
       trailingLossLimitPercent: state.position.trailingLossLimitPercent,
+      trailingLossActiveLevelIndex: state.position.trailingLossActiveLevelIndex,
       trailingTakeProfitHighPercent: state.position.trailingTakeProfitHighPercent,
       trailingTakeProfitStepPercent: state.position.trailingTakeProfitStepPercent,
+      trailingTakeProfitActiveLevelIndex: state.position.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: state.position.lastDcaPrice,
     }
   );
+
+  const nextManagementState = managementEval.dcaExecuted &&
+    input.management.dca?.sizingBasis === 'usdt_contribution_v1'
+      ? rebasePositionManagementProtection({ ...managementEval.nextState,
+          averageEntryPrice: state.position.averageEntryPrice },
+        managementEval.nextState.averageEntryPrice, state.position.side,
+        input.management.leverage ?? 1)
+      : managementEval.nextState;
 
   if (!managementEval.shouldClose) {
     return {
@@ -247,14 +259,16 @@ export const processPaperLifecycleTick = (
         pendingEntry: null,
         position: {
           side: state.position.side,
-          averageEntryPrice: managementEval.nextState.averageEntryPrice,
-          quantity: managementEval.nextState.quantity,
-          currentAdds: managementEval.nextState.currentAdds,
-          trailingAnchorPrice: managementEval.nextState.trailingAnchorPrice,
-          trailingLossLimitPercent: managementEval.nextState.trailingLossLimitPercent,
-          trailingTakeProfitHighPercent: managementEval.nextState.trailingTakeProfitHighPercent,
-          trailingTakeProfitStepPercent: managementEval.nextState.trailingTakeProfitStepPercent,
-          lastDcaPrice: managementEval.nextState.lastDcaPrice,
+          averageEntryPrice: nextManagementState.averageEntryPrice,
+          quantity: nextManagementState.quantity,
+          currentAdds: nextManagementState.currentAdds,
+          trailingAnchorPrice: nextManagementState.trailingAnchorPrice,
+          trailingLossLimitPercent: nextManagementState.trailingLossLimitPercent,
+          trailingLossActiveLevelIndex: nextManagementState.trailingLossActiveLevelIndex,
+          trailingTakeProfitHighPercent: nextManagementState.trailingTakeProfitHighPercent,
+          trailingTakeProfitStepPercent: nextManagementState.trailingTakeProfitStepPercent,
+          trailingTakeProfitActiveLevelIndex: nextManagementState.trailingTakeProfitActiveLevelIndex,
+          lastDcaPrice: nextManagementState.lastDcaPrice,
         },
       },
       openedPosition: false,

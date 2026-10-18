@@ -64,7 +64,94 @@ const replayBothWithLimitedFunds = (prices: number[], config: Record<string, unk
   return [single, portfolio];
 };
 
+const replayBothTrailingPaths = (prices: number[], config: Record<string, unknown>) => {
+  const replayCandles = prices.map((price, index) => ({
+    ...candles[0], openTime: candles[0].openTime + index * 60_000,
+    closeTime: candles[0].closeTime + index * 60_000,
+    open: price, high: price, low: price, close: price,
+  }));
+  return [
+    simulateTradesForSymbolReplay({ symbol: 'BTCUSDT', candles: replayCandles,
+      marketType: 'FUTURES', leverage: 1, marginMode: 'CROSSED', strategyConfig: config,
+      positionSizing: { mode: 'fixed', fixedQuantity: 1 },
+      fillModelConfig: { feeRate: 0, slippageRate: 0 } }),
+    simulateInterleavedPortfolio({ symbols: ['BTCUSDT'],
+      candlesBySymbol: new Map([['BTCUSDT', replayCandles]]),
+      marketType: 'FUTURES', leverage: 1, marginMode: 'CROSSED',
+      strategyConfig: config, walletRiskPercent: 10, initialBalance: 10,
+      fillModelConfig: { feeRate: 0, slippageRate: 0 } }).perSymbol.BTCUSDT,
+  ];
+};
+
+const trailingDirectionConfig = (side: 'LONG' | 'SHORT') => ({
+  ...strategyConfig,
+  openConditions: side === 'LONG' ? strategyConfig.openConditions : {
+    direction: 'short', indicatorsLong: [],
+    indicatorsShort: [{ name: 'MOMENTUM', condition: '<', value: 999,
+      params: { period: 1 } }],
+  },
+});
+
 describe('USDT contribution DCA in historical replay', () => {
+  it.each([
+    ['LONG', [99, 100, 100, 126, 151, 149, 125], [99, 100, 100, 49, 57, 76, 63]],
+    ['SHORT', [101, 100, 100, 74, 49, 51, 75], [101, 100, 100, 151, 143, 124, 137]],
+  ] as const)('%s uses both configured TTP and TSL levels in single and portfolio replay',
+    (side, ttpPrices, tslPrices) => {
+      const base = trailingDirectionConfig(side);
+      const additional = { ...base.additional, dcaEnabled: false, dcaTimes: 0 };
+      const ttp = { ...base, additional, close: { mode: 'advanced', tp: 99, sl: 99,
+        ttp: [{ percent: 25, arm: 12 }, { percent: 50, arm: 25 }] } };
+      for (const result of replayBothTrailingPaths([...ttpPrices], ttp)) {
+        expect(result.eventCounts.TTP).toBe(1);
+        expect(result.events.find((event) => event.type === 'TTP')?.price)
+          .toBe(ttpPrices.at(-1));
+      }
+      const tsl = { ...base, additional, close: { mode: 'advanced', tp: 99, sl: 99,
+        tsl: [{ percent: -50, arm: 25 }, { percent: -25, arm: 12 }] } };
+      for (const result of replayBothTrailingPaths([...tslPrices], tsl)) {
+        expect(result.eventCounts.TSL).toBe(1);
+        expect(result.events.find((event) => event.type === 'TSL')?.price)
+          .toBe(tslPrices.at(-1));
+      }
+    });
+
+  it.each([
+    ['LONG', [99, 100, 100, 130, 140, 140, 127], 140, 127],
+    ['SHORT', [101, 100, 100, 70, 60, 60, 68], 60, 68],
+  ] as const)('%s rebases armed TTP after confirmed DCA in both replay paths',
+    (side, prices, dcaPrice, closePrice) => {
+      const base = trailingDirectionConfig(side);
+      const config = { ...base, close: { mode: 'advanced', tp: 99, sl: 99,
+        ttp: [{ percent: 20, arm: 10 }] },
+      additional: { ...base.additional, dcaMode: 'advanced', dcaTimes: 1,
+        dcaLevels: [{ percent: 40, multiplier: 1 }] } };
+      for (const result of replayBothTrailingPaths([...prices], config)) {
+        expect(result.eventCounts.DCA).toBe(1);
+        expect(result.events.find((event) => event.type === 'DCA')?.price).toBe(dcaPrice);
+        expect(result.eventCounts.TTP).toBe(1);
+        expect(result.events.find((event) => event.type === 'TTP')?.price).toBe(closePrice);
+      }
+    });
+
+  it.each([
+    ['LONG', [99, 100, 100, 49, 57, 140, 140, 130, 125], 140, 125],
+    ['SHORT', [101, 100, 100, 151, 143, 60, 60, 65, 70], 60, 70],
+  ] as const)('%s rebases armed TSL after DCA in both replay paths',
+    (side, prices, dcaPrice, closePrice) => {
+      const base = trailingDirectionConfig(side);
+      const config = { ...base, close: { mode: 'advanced', tp: 99, sl: 99,
+        tsl: [{ percent: -50, arm: 25 }, { percent: -25, arm: 12 }] },
+      additional: { ...base.additional, dcaMode: 'advanced', dcaTimes: 1,
+        dcaLevels: [{ percent: 40, multiplier: 1 }] } };
+      for (const result of replayBothTrailingPaths([...prices], config)) {
+        expect(result.eventCounts.DCA).toBe(1);
+        expect(result.events.find((event) => event.type === 'DCA')?.price).toBe(dcaPrice);
+        expect(result.eventCounts.TSL).toBe(1);
+        expect(result.events.find((event) => event.type === 'TSL')?.price).toBe(closePrice);
+      }
+    });
+
   it('keeps reached positive USDT DCA pending without funds instead of taking TP or TTP', () => {
     const additional = { ...strategyConfig.additional, dcaTimes: 1,
       dcaLevels: [{ percent: 20, multiplier: 1 }] };

@@ -11,8 +11,10 @@ export type PersistedRuntimePositionState = Pick<
   | 'executedDcaLevelIndices'
   | 'trailingAnchorPrice'
   | 'trailingLossLimitPercent'
+  | 'trailingLossActiveLevelIndex'
   | 'trailingTakeProfitHighPercent'
   | 'trailingTakeProfitStepPercent'
+  | 'trailingTakeProfitActiveLevelIndex'
   | 'lastDcaPrice'
 >;
 
@@ -36,6 +38,12 @@ const toFiniteNonNegativeInt = (value: unknown, fallback = 0) => {
   const parsed = toFiniteNumber(value);
   if (parsed == null) return fallback;
   return Math.max(0, Math.floor(parsed));
+};
+
+const toOptionalLevelIndex = (value: unknown): number | undefined => {
+  if (value == null) return undefined;
+  const parsed = toFiniteNumber(value);
+  return parsed != null && Number.isInteger(parsed) && parsed >= 0 ? parsed : undefined;
 };
 
 const toFiniteNonNegativeIntArray = (value: unknown): number[] | undefined => {
@@ -73,10 +81,12 @@ const normalizeState = (value: unknown): PersistedRuntimePositionState | null =>
     trailingAnchorPrice,
     trailingLossLimitPercent:
       trailingLossLimitPercent != null ? trailingLossLimitPercent : undefined,
+    trailingLossActiveLevelIndex: toOptionalLevelIndex(raw.trailingLossActiveLevelIndex),
     trailingTakeProfitHighPercent:
       trailingTakeProfitHighPercent != null ? trailingTakeProfitHighPercent : undefined,
     trailingTakeProfitStepPercent:
       trailingTakeProfitStepPercent != null ? trailingTakeProfitStepPercent : undefined,
+    trailingTakeProfitActiveLevelIndex: toOptionalLevelIndex(raw.trailingTakeProfitActiveLevelIndex),
     lastDcaPrice: lastDcaPrice != null ? lastDcaPrice : undefined,
   };
 };
@@ -88,8 +98,10 @@ const cloneState = (state: PersistedRuntimePositionState): PersistedRuntimePosit
   executedDcaLevelIndices: state.executedDcaLevelIndices ? [...state.executedDcaLevelIndices] : undefined,
   trailingAnchorPrice: state.trailingAnchorPrice,
   trailingLossLimitPercent: state.trailingLossLimitPercent,
+  trailingLossActiveLevelIndex: state.trailingLossActiveLevelIndex,
   trailingTakeProfitHighPercent: state.trailingTakeProfitHighPercent,
   trailingTakeProfitStepPercent: state.trailingTakeProfitStepPercent,
+  trailingTakeProfitActiveLevelIndex: state.trailingTakeProfitActiveLevelIndex,
   lastDcaPrice: state.lastDcaPrice,
 });
 

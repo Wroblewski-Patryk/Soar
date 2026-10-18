@@ -41,6 +41,42 @@ const updateTrailingAnchor = (side: 'LONG' | 'SHORT', currentPrice: number, curr
   return side === 'LONG' ? Math.max(currentAnchor, currentPrice) : Math.min(currentAnchor, currentPrice);
 };
 
+// Preserve the protected market price when a confirmed USDT fill changes the
+// average entry. Stored trailing ROI must be expressed against the new basis.
+export const rebasePositionManagementProtection = (
+  state: PositionManagementState,
+  newAverageEntryPrice: number,
+  side: 'LONG' | 'SHORT',
+  leverage: number,
+): PositionManagementState => {
+  const oldEntry = state.averageEntryPrice;
+  if (!Number.isFinite(newAverageEntryPrice) || newAverageEntryPrice <= 0 ||
+      oldEntry === newAverageEntryPrice) return { ...state };
+  const effectiveLeverage = Math.max(1, leverage);
+  const rebaseRoi = (roi: number) => {
+    const price = side === 'LONG'
+      ? oldEntry * (1 + roi / effectiveLeverage)
+      : oldEntry * (1 - roi / effectiveLeverage);
+    return side === 'LONG'
+      ? (price / newAverageEntryPrice - 1) * effectiveLeverage
+      : (1 - price / newAverageEntryPrice) * effectiveLeverage;
+  };
+  const next = { ...state, averageEntryPrice: newAverageEntryPrice };
+  if (typeof state.trailingLossLimitPercent === 'number') {
+    next.trailingLossLimitPercent = rebaseRoi(state.trailingLossLimitPercent);
+  }
+  if (typeof state.trailingTakeProfitHighPercent === 'number' &&
+      typeof state.trailingTakeProfitStepPercent === 'number') {
+    const high = rebaseRoi(state.trailingTakeProfitHighPercent);
+    const protectedRoi = rebaseRoi(
+      state.trailingTakeProfitHighPercent - state.trailingTakeProfitStepPercent,
+    );
+    next.trailingTakeProfitHighPercent = high;
+    next.trailingTakeProfitStepPercent = high - protectedRoi;
+  }
+  return next;
+};
+
 const shouldDca = (currentPnlFraction: number | null, triggerPercent: number) => {
   if (typeof currentPnlFraction !== 'number' || !Number.isFinite(currentPnlFraction)) {
     return false;
@@ -261,7 +297,8 @@ export const evaluatePositionManagement = (
   }
 
   const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || executedDcaLevelIndices.size >= dcaLevelsRequired;
-  const usdtContribution = parsedInput.dca?.sizingBasis === 'usdt_contribution_v1';
+  const usdtContribution = parsedInput.dca?.sizingBasis === 'usdt_contribution_v1' ||
+    parsedInput.dcaSizingBasis === 'usdt_contribution_v1';
   const dcaProtectionSatisfied = dcaSequenceCompleted ||
     (parsedInput.dcaFundsExhausted === true && !usdtContribution);
   const ttpDcaProtectionSatisfied =
@@ -326,25 +363,52 @@ export const evaluatePositionManagement = (
     : null;
 
   if (ttpConfigured) {
-    if (
-      dynamicTtpLevel &&
-      typeof nextState.trailingTakeProfitHighPercent !== 'number' &&
-      favorableMove >= dynamicTtpLevel.armPercent
-    ) {
-      nextState.trailingTakeProfitHighPercent = favorableMove;
-      nextState.trailingTakeProfitStepPercent = dynamicTtpLevel.trailPercent;
-    }
+    if (usdtContribution) {
+      const reachedIndex = trailingTakeProfitLevels.findLastIndex(
+        (level) => favorableMove >= level.armPercent - 1e-12,
+      );
+      const recoveredIndex = typeof nextState.trailingTakeProfitHighPercent === 'number'
+        ? Math.max(0, trailingTakeProfitLevels.findLastIndex(
+          (level) => nextState.trailingTakeProfitHighPercent! >= level.armPercent,
+        ))
+        : -1;
+      const activeIndex = Math.min(trailingTakeProfitLevels.length - 1, Math.max(
+        nextState.trailingTakeProfitActiveLevelIndex ?? recoveredIndex, reachedIndex,
+      ));
+      if (activeIndex >= 0) {
+        nextState.trailingTakeProfitActiveLevelIndex = activeIndex;
+        const currentProtection =
+          typeof nextState.trailingTakeProfitHighPercent === 'number' &&
+          typeof nextState.trailingTakeProfitStepPercent === 'number'
+            ? nextState.trailingTakeProfitHighPercent - nextState.trailingTakeProfitStepPercent
+            : Number.NEGATIVE_INFINITY;
+        const step = trailingTakeProfitLevels[activeIndex].trailPercent;
+        if (favorableMove - step > currentProtection) {
+          nextState.trailingTakeProfitHighPercent = favorableMove;
+          nextState.trailingTakeProfitStepPercent = step;
+        }
+      }
+    } else {
+      if (
+        dynamicTtpLevel &&
+        typeof nextState.trailingTakeProfitHighPercent !== 'number' &&
+        favorableMove >= dynamicTtpLevel.armPercent
+      ) {
+        nextState.trailingTakeProfitHighPercent = favorableMove;
+        nextState.trailingTakeProfitStepPercent = dynamicTtpLevel.trailPercent;
+      }
 
-    const trackedHigh = nextState.trailingTakeProfitHighPercent;
-    const trackedStep = nextState.trailingTakeProfitStepPercent;
-    if (
-      dynamicTtpLevel &&
-      typeof trackedHigh === 'number' &&
-      typeof trackedStep === 'number' &&
-      favorableMove - dynamicTtpLevel.trailPercent > trackedHigh - trackedStep
-    ) {
-      nextState.trailingTakeProfitHighPercent = favorableMove;
-      nextState.trailingTakeProfitStepPercent = dynamicTtpLevel.trailPercent;
+      const trackedHigh = nextState.trailingTakeProfitHighPercent;
+      const trackedStep = nextState.trailingTakeProfitStepPercent;
+      if (
+        dynamicTtpLevel &&
+        typeof trackedHigh === 'number' &&
+        typeof trackedStep === 'number' &&
+        favorableMove - dynamicTtpLevel.trailPercent > trackedHigh - trackedStep
+      ) {
+        nextState.trailingTakeProfitHighPercent = favorableMove;
+        nextState.trailingTakeProfitStepPercent = dynamicTtpLevel.trailPercent;
+      }
     }
 
     const finalTrackedHigh = nextState.trailingTakeProfitHighPercent;
@@ -370,6 +434,7 @@ export const evaluatePositionManagement = (
   } else {
     nextState.trailingTakeProfitHighPercent = undefined;
     nextState.trailingTakeProfitStepPercent = undefined;
+    nextState.trailingTakeProfitActiveLevelIndex = undefined;
   }
 
   const ttpTrackingActive =
@@ -377,6 +442,7 @@ export const evaluatePositionManagement = (
     typeof nextState.trailingTakeProfitStepPercent === 'number';
   if (ttpTrackingActive && typeof nextState.trailingLossLimitPercent === 'number') {
     nextState.trailingLossLimitPercent = undefined;
+    nextState.trailingLossActiveLevelIndex = undefined;
   }
 
   if (
@@ -395,7 +461,31 @@ export const evaluatePositionManagement = (
   }
 
   if (tslDcaProtectionSatisfied && !ttpTrackingActive) {
-    if (parsedInput.trailingLoss?.enabled) {
+    const configuredLossLevels = [...(parsedInput.trailingLossLevels ?? [])]
+      .sort((left, right) => left.startPercent - right.startPercent);
+    if (configuredLossLevels.length > 0) {
+      let activeIndex = Math.min(configuredLossLevels.length - 1,
+        nextState.trailingLossActiveLevelIndex ??
+          (typeof nextState.trailingLossLimitPercent === 'number' ? 0 : -1));
+      if (activeIndex < 0 && favorableMove <= configuredLossLevels[0].startPercent + 1e-12) {
+        activeIndex = 0;
+        nextState.trailingLossLimitPercent = favorableMove - configuredLossLevels[0].stepPercent;
+      } else if (activeIndex >= 0) {
+        while (activeIndex + 1 < configuredLossLevels.length &&
+          favorableMove >= configuredLossLevels[activeIndex + 1].startPercent - 1e-12) {
+          activeIndex += 1;
+        }
+        const priorLimit = nextState.trailingLossLimitPercent ?? Number.NEGATIVE_INFINITY;
+        nextState.trailingLossLimitPercent = Math.max(
+          priorLimit, favorableMove - configuredLossLevels[activeIndex].stepPercent,
+        );
+        if (favorableMove < nextState.trailingLossLimitPercent) {
+          return { shouldClose: true, closeReason: 'trailing_stop',
+            dcaExecuted, dcaAddedQuantity, dcaLevelIndex, nextState };
+        }
+      }
+      nextState.trailingLossActiveLevelIndex = activeIndex >= 0 ? activeIndex : undefined;
+    } else if (parsedInput.trailingLoss?.enabled) {
       const start = parsedInput.trailingLoss.startPercent;
       const step = parsedInput.trailingLoss.stepPercent;
       const currentLimit = nextState.trailingLossLimitPercent;
@@ -421,15 +511,16 @@ export const evaluatePositionManagement = (
       }
     }
 
-    const activeTslLevel =
-      selectActiveTrailingStop(
-        favorableMove,
-        parsedInput.trailingStopLevels ?? []
-      ) ??
-      (parsedInput.trailingStop?.enabled &&
-      favorableMove >= (parsedInput.trailingStop.armPercent ?? 0)
-        ? parsedInput.trailingStop
-        : null);
+    const activeTslLevel = configuredLossLevels.length > 0
+      ? null
+      : selectActiveTrailingStop(
+          favorableMove,
+          parsedInput.trailingStopLevels ?? []
+        ) ??
+        (parsedInput.trailingStop?.enabled &&
+        favorableMove >= (parsedInput.trailingStop.armPercent ?? 0)
+          ? parsedInput.trailingStop
+          : null);
 
     if (
       activeTslLevel &&

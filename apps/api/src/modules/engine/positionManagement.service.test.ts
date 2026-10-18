@@ -1,8 +1,124 @@
 import { describe, expect, it } from 'vitest';
 import { resolvePositionPnlFraction } from './positionPnlSemantics';
-import { evaluatePositionManagement } from './positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection } from './positionManagement.service';
 
 describe('position management', () => {
+  it.each([
+    ['LONG', [126, 151, 149, 125]],
+    ['SHORT', [74, 49, 51, 75]],
+  ] as const)('%s two-level TTP ratchets protection and survives a snapshot', (side, prices) => {
+    const input = { side, dcaSizingBasis: 'usdt_contribution_v1' as const,
+      trailingTakeProfitLevels: [
+        { armPercent: 0.25, trailPercent: 0.12 },
+        { armPercent: 0.5, trailPercent: 0.25 },
+      ] };
+    const state = { averageEntryPrice: 100, quantity: 1, currentAdds: 0 };
+    const first = evaluatePositionManagement({ ...input, currentPrice: prices[0] }, state);
+    expect(first.shouldClose).toBe(false);
+    expect(first.nextState.trailingTakeProfitActiveLevelIndex).toBe(0);
+    expect(first.nextState.trailingTakeProfitHighPercent! -
+      first.nextState.trailingTakeProfitStepPercent!).toBeCloseTo(0.14);
+    const second = evaluatePositionManagement({ ...input, currentPrice: prices[1] },
+      JSON.parse(JSON.stringify(first.nextState)));
+    expect(second.nextState.trailingTakeProfitActiveLevelIndex).toBe(1);
+    expect(second.nextState.trailingTakeProfitHighPercent! -
+      second.nextState.trailingTakeProfitStepPercent!).toBeCloseTo(0.26);
+    const pullback = evaluatePositionManagement({ ...input, currentPrice: prices[2] },
+      JSON.parse(JSON.stringify(second.nextState)));
+    expect(pullback.shouldClose).toBe(false);
+    expect(pullback.nextState.trailingTakeProfitActiveLevelIndex).toBe(1);
+    expect(pullback.nextState.trailingTakeProfitHighPercent! -
+      pullback.nextState.trailingTakeProfitStepPercent!).toBeCloseTo(0.26);
+    const closed = evaluatePositionManagement({ ...input, currentPrice: prices[3] },
+      pullback.nextState);
+    expect(closed.closeReason).toBe('trailing_take_profit');
+  });
+
+  it.each([
+    ['LONG', [49, 57, 76, 63]],
+    ['SHORT', [151, 143, 124, 137]],
+  ] as const)('%s two-level TSL arms, recovers, ratchets, and survives a snapshot', (side, prices) => {
+    const input = { side, dcaSizingBasis: 'usdt_contribution_v1' as const,
+      trailingLossLevels: [
+        { startPercent: -0.5, stepPercent: 0.25 },
+        { startPercent: -0.25, stepPercent: 0.12 },
+      ] };
+    const state = { averageEntryPrice: 100, quantity: 1, currentAdds: 0 };
+    const first = evaluatePositionManagement({ ...input, currentPrice: prices[0] }, state);
+    expect(first.shouldClose).toBe(false);
+    expect(first.nextState.trailingLossActiveLevelIndex).toBe(0);
+    expect(first.nextState.trailingLossLimitPercent).toBeCloseTo(-0.76);
+    const recovery = evaluatePositionManagement({ ...input, currentPrice: prices[1] },
+      JSON.parse(JSON.stringify(first.nextState)));
+    expect(recovery.nextState.trailingLossLimitPercent).toBeCloseTo(-0.68);
+    const nextLevel = evaluatePositionManagement({ ...input, currentPrice: prices[2] },
+      recovery.nextState);
+    expect(nextLevel.shouldClose).toBe(false);
+    expect(nextLevel.nextState.trailingLossActiveLevelIndex).toBe(1);
+    expect(nextLevel.nextState.trailingLossLimitPercent).toBeCloseTo(-0.36);
+    const closed = evaluatePositionManagement({ ...input, currentPrice: prices[3] },
+      JSON.parse(JSON.stringify(nextLevel.nextState)));
+    expect(closed.closeReason).toBe('trailing_stop');
+  });
+
+  it('rebases an armed TTP price after a confirmed USDT DCA fill', () => {
+    const dca = { enabled: true, maxAdds: 1, stepPercent: 0.4,
+      addSizeFraction: 1, levelPercents: [0.4], addSizeFractions: [1],
+      sizingBasis: 'usdt_contribution_v1' as const };
+    const input = { side: 'LONG' as const, dca,
+      trailingTakeProfitLevels: [{ armPercent: 0.2, trailPercent: 0.1 }] };
+    const armed = evaluatePositionManagement({ ...input, currentPrice: 130 },
+      { averageEntryPrice: 100, quantity: 1, currentAdds: 0 });
+    const add = evaluatePositionManagement({ ...input, currentPrice: 140 }, armed.nextState);
+    expect(add.dcaExecuted).toBe(true);
+    expect(add.shouldClose).toBe(false);
+    const filled = rebasePositionManagementProtection({ ...add.nextState,
+      averageEntryPrice: armed.nextState.averageEntryPrice },
+    120, 'LONG', 1);
+    expect(filled.trailingTakeProfitHighPercent! - filled.trailingTakeProfitStepPercent!)
+      .toBeCloseTo(0);
+    const resumed = evaluatePositionManagement({ ...input, currentPrice: 140 }, filled);
+    expect(resumed.dcaExecuted).toBe(false);
+    expect(resumed.shouldClose).toBe(false);
+    expect(resumed.nextState.trailingTakeProfitActiveLevelIndex).toBe(0);
+  });
+
+  it('rebases an armed TSL floor to the new average without weakening its market price', () => {
+    const state = { averageEntryPrice: 100, quantity: 1, currentAdds: 0,
+      trailingLossLimitPercent: -0.68, trailingLossActiveLevelIndex: 0 };
+    const filled = rebasePositionManagementProtection(state, 80, 'LONG', 1);
+    expect(filled.trailingLossLimitPercent).toBeCloseTo(-0.6);
+    expect(100 * (1 + state.trailingLossLimitPercent)).toBeCloseTo(
+      filled.averageEntryPrice * (1 + filled.trailingLossLimitPercent!),
+    );
+    expect(filled.trailingLossActiveLevelIndex).toBe(0);
+  });
+
+  it('holds both configured trailing sides behind their matching pending USDT adds', () => {
+    const config = { dcaSizingBasis: 'usdt_contribution_v1' as const,
+      trailingTakeProfitLevels: [
+        { armPercent: 0.25, trailPercent: 0.12 },
+        { armPercent: 0.5, trailPercent: 0.25 },
+      ],
+      trailingLossLevels: [
+        { startPercent: -0.5, stepPercent: 0.25 },
+        { startPercent: -0.25, stepPercent: 0.12 },
+      ] };
+    const positive = evaluatePositionManagement({ ...config, side: 'LONG', currentPrice: 113,
+      dca: { enabled: true, maxAdds: 1, stepPercent: 0.4, addSizeFraction: 1,
+        levelPercents: [0.4], addSizeFractions: [1], sizingBasis: 'usdt_contribution_v1' } },
+    { averageEntryPrice: 100, quantity: 1, currentAdds: 0,
+      trailingTakeProfitHighPercent: 0.26, trailingTakeProfitStepPercent: 0.12,
+      trailingTakeProfitActiveLevelIndex: 0 });
+    expect(positive.shouldClose).toBe(false);
+    const negative = evaluatePositionManagement({ ...config, side: 'LONG', currentPrice: 23,
+      dca: { enabled: true, maxAdds: 1, stepPercent: 0.8, addSizeFraction: 1,
+        levelPercents: [-0.8], addSizeFractions: [1], sizingBasis: 'usdt_contribution_v1' } },
+    { averageEntryPrice: 100, quantity: 1, currentAdds: 0,
+      trailingLossLimitPercent: -0.76, trailingLossActiveLevelIndex: 0 });
+    expect(negative.shouldClose).toBe(false);
+  });
+
   it('closes position on take-profit hit', () => {
     const result = evaluatePositionManagement(
       {

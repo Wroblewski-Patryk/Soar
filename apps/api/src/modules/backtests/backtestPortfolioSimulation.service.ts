@@ -1,6 +1,6 @@
 import { PositionSide } from '@prisma/client';
 import { decideExecutionAction } from '../engine/sharedExecutionCore';
-import { evaluatePositionManagement } from '../engine/positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection } from '../engine/positionManagement.service';
 import { PositionManagementInput } from '../engine/positionManagement.types';
 import {
   buildStrategySignalPriceSeries,
@@ -222,8 +222,10 @@ export const simulateInterleavedPortfolio = (input: {
     marginUsed: number;
     executedDcaLevelIndices?: number[];
     trailingLossLimit?: number;
+    trailingLossActiveLevelIndex?: number;
     trailingTakeProfitHigh?: number;
     trailingTakeProfitStep?: number;
+    trailingTakeProfitActiveLevelIndex?: number;
     strategyId: string | null;
     riskConfig: ReturnType<typeof parseStrategyRiskConfig>;
   }>();
@@ -417,8 +419,10 @@ export const simulateInterleavedPortfolio = (input: {
       currentAdds: position.dcaCount,
       trailingAnchorPrice: position.bestPrice,
       trailingLossLimitPercent: position.trailingLossLimit,
+      trailingLossActiveLevelIndex: position.trailingLossActiveLevelIndex,
       trailingTakeProfitHighPercent: position.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: position.trailingTakeProfitStep,
+      trailingTakeProfitActiveLevelIndex: position.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: position.lastDcaPrice,
       executedDcaLevelIndices: position.executedDcaLevelIndices,
     };
@@ -445,6 +449,7 @@ export const simulateInterleavedPortfolio = (input: {
       trailingStop: undefined,
       trailingStopLevels: undefined,
       trailingLoss: undefined,
+      trailingLossLevels: undefined,
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = position.dcaCount < riskConfig.maxDcaPerTrade;
@@ -469,21 +474,30 @@ export const simulateInterleavedPortfolio = (input: {
       (!dcaFundsExhausted || riskConfig.dcaSizingBasis === 'usdt_contribution_v1');
 
     if (dcaProbeResult.dcaExecuted) {
-      if (addMargin > cashBalance) {
+      if (addMargin > cashBalance && riskConfig.dcaSizingBasis !== 'usdt_contribution_v1') {
         const managementWithoutDca: PositionManagementInput = {
           ...dcaProbeInput,
           dca: undefined,
         };
         const noDcaProbe = evaluatePositionManagement(managementWithoutDca, baseState);
         position.trailingLossLimit = noDcaProbe.nextState.trailingLossLimitPercent;
+        position.trailingLossActiveLevelIndex = noDcaProbe.nextState.trailingLossActiveLevelIndex;
         position.trailingTakeProfitHigh = noDcaProbe.nextState.trailingTakeProfitHighPercent;
         position.trailingTakeProfitStep = noDcaProbe.nextState.trailingTakeProfitStepPercent;
+        position.trailingTakeProfitActiveLevelIndex = noDcaProbe.nextState.trailingTakeProfitActiveLevelIndex;
         position.bestPrice = noDcaProbe.nextState.trailingAnchorPrice ?? position.bestPrice;
-      } else {
+      } else if (addMargin <= cashBalance) {
         cashBalance -= addMargin;
         position.marginUsed += addMargin;
         position.quantity = dcaProbeResult.nextState.quantity;
         position.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
+        if (riskConfig.dcaSizingBasis === 'usdt_contribution_v1') {
+          const rebased = rebasePositionManagementProtection(baseState,
+            position.entryPrice, position.side, effectiveLeverage);
+          position.trailingLossLimit = rebased.trailingLossLimitPercent;
+          position.trailingTakeProfitHigh = rebased.trailingTakeProfitHighPercent;
+          position.trailingTakeProfitStep = rebased.trailingTakeProfitStepPercent;
+        }
         position.dcaCount = dcaProbeResult.nextState.currentAdds;
         position.executedDcaLevelIndices = dcaProbeResult.nextState.executedDcaLevelIndices;
         position.lastDcaPrice = dcaFillPrice;
@@ -517,15 +531,19 @@ export const simulateInterleavedPortfolio = (input: {
       currentAdds: position.dcaCount,
       trailingAnchorPrice: position.bestPrice,
       trailingLossLimitPercent: position.trailingLossLimit,
+      trailingLossActiveLevelIndex: position.trailingLossActiveLevelIndex,
       trailingTakeProfitHighPercent: position.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: position.trailingTakeProfitStep,
+      trailingTakeProfitActiveLevelIndex: position.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: position.lastDcaPrice,
       executedDcaLevelIndices: position.executedDcaLevelIndices,
     });
 
     position.trailingLossLimit = managementResult.nextState.trailingLossLimitPercent;
+    position.trailingLossActiveLevelIndex = managementResult.nextState.trailingLossActiveLevelIndex;
     position.trailingTakeProfitHigh = managementResult.nextState.trailingTakeProfitHighPercent;
     position.trailingTakeProfitStep = managementResult.nextState.trailingTakeProfitStepPercent;
+    position.trailingTakeProfitActiveLevelIndex = managementResult.nextState.trailingTakeProfitActiveLevelIndex;
     position.bestPrice = managementResult.nextState.trailingAnchorPrice ?? position.bestPrice;
 
     if (
