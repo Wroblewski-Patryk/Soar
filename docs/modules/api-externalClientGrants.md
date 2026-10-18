@@ -28,7 +28,10 @@ and current `password`. Amounts are positive, at most 12 integral and 8 fraction
 digits, and total covers at least one action. The bot must be in LIVE mode,
 the exact exchange/market type must support `LIVE_ORDER_SUBMIT` in the code
 capability matrix, and the symbol must be assigned to its active market group
-(or legacy primary group) with matching market context.
+(or legacy primary group only when no new market-group assignment exists) with
+matching market context. Creation uses the same current LIVE subscription
+entitlement gate as domain order submission. A canceled, missing, or downgraded
+plan makes an existing grant fail internal inspection; read errors fail closed.
 The response secret has a `soar_ext_` prefix and 256 random bits; only its SHA-256
 hash is stored. Logs record creation and revocation without the secret or hash.
 

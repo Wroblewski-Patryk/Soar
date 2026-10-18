@@ -3,6 +3,7 @@ import { Exchange, ExternalClientAction, Prisma, TradeMarket } from '@prisma/cli
 import { prisma } from '../../prisma/client';
 import { comparePassword } from '../../utils/hash';
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
+import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 
 const SECRET_PATTERN = /^soar_ext_[A-Za-z0-9_-]{43}$/;
 const hashSecret = (secret: string) => createHash('sha256').update(secret, 'utf8').digest('hex');
@@ -33,10 +34,16 @@ const publicGrantSelect = {
 
 const containsAssignedSymbol = (bot: {
   symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket } } | null;
-  botMarketGroups: Array<{ symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket } } }>;
+  botMarketGroups: Array<{
+    isEnabled: boolean;
+    lifecycleStatus: string;
+    symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket } };
+  }>;
 }, symbol: string, exchange: Exchange, marketType: TradeMarket) => {
   const groups = bot.botMarketGroups.length > 0
-    ? bot.botMarketGroups.map((group) => group.symbolGroup)
+    ? bot.botMarketGroups
+        .filter((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
+        .map((group) => group.symbolGroup)
     : bot.symbolGroup ? [bot.symbolGroup] : [];
   return groups.some((group) => group.marketUniverse.exchange === exchange &&
     group.marketUniverse.marketType === marketType && group.symbols.includes(symbol));
@@ -49,8 +56,10 @@ const ownedBotScope = (userId: string, botId: string) => prisma.bot.findFirst({
     isActive: true, liveOptIn: true,
     symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true } } } },
     botMarketGroups: {
-      where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
-      select: { symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true } } } } },
+      select: {
+        isEnabled: true, lifecycleStatus: true,
+        symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true } } } },
+      },
     },
   },
 });
@@ -83,6 +92,7 @@ export const createExternalClientGrant = async (userId: string, input: CreateGra
   if (!user || !(await comparePassword(input.password, user.password))) {
     throw new GrantInputError('Invalid password', 403);
   }
+  await assertSubscriptionAllowsLiveTrading(userId);
 
   const bot = await ownedBotScope(userId, input.botId);
   if (!bot) throw new GrantInputError('Bot not found', 404);
@@ -166,23 +176,27 @@ export const inspectExternalClientGrant = async (input: {
   quoteAmount: string;
 }) => {
   if (!SECRET_PATTERN.test(input.secret)) return null;
-  let amount: Prisma.Decimal;
-  try { amount = parseAmount(input.quoteAmount); } catch { return null; }
-  const grant = await prisma.externalClientGrant.findUnique({
-    where: { secretHash: hashSecret(input.secret) },
-  });
-  if (!grant || grant.userId !== input.userId || grant.botId !== input.botId ||
-      grant.exchange !== input.exchange || grant.marketType !== input.marketType ||
-      grant.symbol !== input.symbol || grant.action !== input.action ||
-      grant.revokedAt || grant.expiresAt <= new Date() ||
-      grant.usedActions >= grant.maxActions ||
-      amount.gt(grant.maxActionQuoteAmount) ||
-      grant.usedQuoteAmount.plus(amount).gt(grant.maxTotalQuoteAmount)) return null;
+  try {
+    const amount = parseAmount(input.quoteAmount);
+    const grant = await prisma.externalClientGrant.findUnique({
+      where: { secretHash: hashSecret(input.secret) },
+    });
+    if (!grant || grant.userId !== input.userId || grant.botId !== input.botId ||
+        grant.exchange !== input.exchange || grant.marketType !== input.marketType ||
+        grant.symbol !== input.symbol || grant.action !== input.action ||
+        grant.revokedAt || grant.expiresAt <= new Date() ||
+        grant.usedActions >= grant.maxActions ||
+        amount.gt(grant.maxActionQuoteAmount) ||
+        grant.usedQuoteAmount.plus(amount).gt(grant.maxTotalQuoteAmount)) return null;
 
-  const bot = await ownedBotScope(grant.userId, grant.botId);
-  if (!bot || bot.mode !== 'LIVE' || !bot.isActive || !bot.liveOptIn ||
-      bot.exchange !== grant.exchange || bot.marketType !== grant.marketType ||
-      !supportsExchangeExecutionCapability(grant.exchange, grant.marketType, 'LIVE_ORDER_SUBMIT') ||
-      !containsAssignedSymbol(bot, grant.symbol, grant.exchange, grant.marketType)) return null;
-  return { grantId: grant.id, userId: grant.userId, botId: grant.botId };
+    const bot = await ownedBotScope(grant.userId, grant.botId);
+    if (!bot || bot.mode !== 'LIVE' || !bot.isActive || !bot.liveOptIn ||
+        bot.exchange !== grant.exchange || bot.marketType !== grant.marketType ||
+        !supportsExchangeExecutionCapability(grant.exchange, grant.marketType, 'LIVE_ORDER_SUBMIT') ||
+        !containsAssignedSymbol(bot, grant.symbol, grant.exchange, grant.marketType)) return null;
+    await assertSubscriptionAllowsLiveTrading(grant.userId);
+    return { grantId: grant.id, userId: grant.userId, botId: grant.botId };
+  } catch {
+    return null;
+  }
 };

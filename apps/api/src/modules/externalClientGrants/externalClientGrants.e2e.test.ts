@@ -1,9 +1,10 @@
 import request from 'supertest';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
 import { signAuthToken, signHumanSessionToken } from '../auth/auth.jwt';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { inspectExternalClientGrant } from './externalClientGrants.service';
 
 const createdUserIds: string[] = [];
@@ -14,18 +15,27 @@ afterEach(async () => {
   for (const id of createdUserIds.splice(0)) {
     await prisma.log.deleteMany({ where: { userId: id } });
     await prisma.externalClientGrant.deleteMany({ where: { userId: id } });
+    await prisma.botMarketGroup.deleteMany({ where: { userId: id } });
     await prisma.bot.deleteMany({ where: { userId: id } });
     await prisma.symbolGroup.deleteMany({ where: { userId: id } });
     await prisma.marketUniverse.deleteMany({ where: { userId: id } });
+    await prisma.userSubscription.deleteMany({ where: { userId: id } });
     await prisma.user.delete({ where: { id } });
   }
+  vi.restoreAllMocks();
 });
 
-const fixture = async (role: 'USER' | 'ADMIN' = 'USER') => {
+const fixture = async (role: 'USER' | 'ADMIN' = 'USER', assignPlan = true) => {
   const user = await prisma.user.create({
     data: { email: `grant-${crypto.randomUUID()}@example.com`, password: await hashPassword(password), role },
   });
   createdUserIds.push(user.id);
+  if (assignPlan) {
+    await ensureSubscriptionCatalog(prisma);
+    await setActiveSubscriptionForUser(prisma, {
+      userId: user.id, planCode: 'ADVANCED', source: 'ADMIN_OVERRIDE', autoRenew: false,
+    });
+  }
   const universe = await prisma.marketUniverse.create({
     data: { userId: user.id, name: 'Grant test', exchange: 'BINANCE', marketType: 'FUTURES' },
   });
@@ -44,7 +54,7 @@ const fixture = async (role: 'USER' | 'ADMIN' = 'USER') => {
     action: 'PLACE_LIVE_ORDER', maxActionQuoteAmount: '50.00', maxTotalQuoteAmount: '100.00',
     maxActions: 2, ttlSeconds: 3600, password,
   };
-  return { user, bot, humanToken, legacyToken, body };
+  return { user, bot, group, humanToken, legacyToken, body };
 };
 
 describe('external client grant foundation', () => {
@@ -127,5 +137,78 @@ describe('external client grant foundation', () => {
       botId: f.bot.id, exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
       action: 'PLACE_LIVE_ORDER', quoteAmount: '1' })).toBeNull();
     expect((await request(app).post(`${path}/anything/execute`).set('Cookie', cookie).send({})).status).toBe(404);
+  });
+
+  it('requires the same current LIVE entitlement as domain order execution', async () => {
+    const unassigned = await fixture('USER', false);
+    const unassignedResponse = await request(app).post(path)
+      .set('Cookie', `token=${unassigned.humanToken}`).send(unassigned.body);
+    expect(unassignedResponse.status).toBe(403);
+    expect(await prisma.externalClientGrant.count({ where: { userId: unassigned.user.id } })).toBe(0);
+
+    const f = await fixture();
+    const cookie = `token=${f.humanToken}`;
+    const created = await request(app).post(path).set('Cookie', cookie).send(f.body);
+    expect(created.status).toBe(201);
+    const scope = { secret: created.body.secret, userId: f.user.id, botId: f.bot.id,
+      exchange: 'BINANCE' as const, marketType: 'FUTURES' as const, symbol: 'BTCUSDT',
+      action: 'PLACE_LIVE_ORDER' as const, quoteAmount: '1' };
+    expect(await inspectExternalClientGrant(scope)).toMatchObject({ grantId: created.body.grant.id });
+
+    await prisma.userSubscription.updateMany({
+      where: { userId: f.user.id, status: 'ACTIVE' }, data: { status: 'CANCELED', endsAt: new Date() },
+    });
+    expect(await inspectExternalClientGrant(scope)).toBeNull();
+    expect((await request(app).post(path).set('Cookie', cookie).send(f.body)).status).toBe(403);
+
+    await setActiveSubscriptionForUser(prisma, {
+      userId: f.user.id, planCode: 'FREE', source: 'ADMIN_OVERRIDE', autoRenew: false,
+    });
+    expect(await inspectExternalClientGrant(scope)).toBeNull();
+    expect((await request(app).post(path).set('Cookie', cookie).send(f.body)).status).toBe(403);
+  });
+
+  it('keeps legacy fallback only when no new market-group assignment exists', async () => {
+    const f = await fixture();
+    const cookie = `token=${f.humanToken}`;
+    const legacy = await request(app).post(path).set('Cookie', cookie).send(f.body);
+    expect(legacy.status).toBe(201);
+    const scope = { secret: legacy.body.secret, userId: f.user.id, botId: f.bot.id,
+      exchange: 'BINANCE' as const, marketType: 'FUTURES' as const, symbol: 'BTCUSDT',
+      action: 'PLACE_LIVE_ORDER' as const, quoteAmount: '1' };
+    expect(await inspectExternalClientGrant(scope)).toMatchObject({ grantId: legacy.body.grant.id });
+
+    const assignment = await prisma.botMarketGroup.create({
+      data: { userId: f.user.id, botId: f.bot.id, symbolGroupId: f.group.id,
+        isEnabled: true, lifecycleStatus: 'ACTIVE' },
+    });
+    expect(await inspectExternalClientGrant(scope)).toMatchObject({ grantId: legacy.body.grant.id });
+    await prisma.botMarketGroup.update({ where: { id: assignment.id }, data: { lifecycleStatus: 'PAUSED' } });
+    expect(await inspectExternalClientGrant(scope)).toBeNull();
+    expect((await request(app).post(path).set('Cookie', cookie).send(f.body)).status).toBe(400);
+    await prisma.botMarketGroup.update({
+      where: { id: assignment.id }, data: { lifecycleStatus: 'ACTIVE', isEnabled: false },
+    });
+    expect(await inspectExternalClientGrant(scope)).toBeNull();
+    await prisma.botMarketGroup.update({ where: { id: assignment.id }, data: { isEnabled: true } });
+    expect(await inspectExternalClientGrant(scope)).toMatchObject({ grantId: legacy.body.grant.id });
+  });
+
+  it('fails closed when the entitlement read fails during creation or inspection', async () => {
+    const f = await fixture();
+    const cookie = `token=${f.humanToken}`;
+    const created = await request(app).post(path).set('Cookie', cookie).send(f.body);
+    expect(created.status).toBe(201);
+    expect(await inspectExternalClientGrant({ secret: created.body.secret, userId: f.user.id,
+      botId: f.bot.id, exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+      action: 'PLACE_LIVE_ORDER', quoteAmount: '1' })).toMatchObject({ grantId: created.body.grant.id });
+    const inspectRead = vi.spyOn(prisma.userSubscription, 'findFirst')
+      .mockRejectedValueOnce(new Error('test entitlement read failure'));
+    expect(await inspectExternalClientGrant({ secret: created.body.secret, userId: f.user.id,
+      botId: f.bot.id, exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+      action: 'PLACE_LIVE_ORDER', quoteAmount: '1' })).toBeNull();
+    inspectRead.mockRejectedValueOnce(new Error('test entitlement read failure'));
+    expect((await request(app).post(path).set('Cookie', cookie).send(f.body)).status).toBe(500);
+    expect(await prisma.externalClientGrant.count({ where: { userId: f.user.id } })).toBe(1);
   });
 });

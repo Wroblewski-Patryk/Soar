@@ -8,6 +8,10 @@ import {
   createExternalClientGrant, getExternalClientGrant, GrantInputError,
   listExternalClientGrants, revokeExternalClientGrant,
 } from './externalClientGrants.service';
+import {
+  SubscriptionAssignmentRequiredError,
+  SubscriptionFeatureUnavailableError,
+} from '../subscriptions/subscriptionEntitlements.service';
 
 const router = Router();
 router.use(requireHumanSession);
@@ -29,6 +33,10 @@ const createSchema = z.strictObject({
 const handleError = (res: Parameters<typeof sendError>[0], error: unknown) => {
   if (error instanceof ZodError) return sendError(res, 400, 'Invalid grant request');
   if (error instanceof GrantInputError) return sendError(res, error.status, error.message);
+  if (error instanceof SubscriptionAssignmentRequiredError) return sendError(res, 403, error.message);
+  if (error instanceof SubscriptionFeatureUnavailableError) {
+    return sendError(res, 403, 'live trading is not available on the active subscription plan', error.details);
+  }
   return sendError(res, 500, 'Grant operation failed');
 };
 
