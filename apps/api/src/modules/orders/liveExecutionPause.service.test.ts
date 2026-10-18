@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { spawn } from 'node:child_process';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   readLiveExecutionPause, setLiveExecutionPause, withLiveCreateOrderPermit,
@@ -130,5 +131,44 @@ describe('shared LIVE submission pause', () => {
     await expect(withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false },
       submit, disconnectedDb)).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSE_UNAVAILABLE' });
     expect(submit).not.toHaveBeenCalled();
+  });
+
+  it('shares the persisted pause gate with an independent OS process', async () => {
+    let state = await readLiveExecutionPause(workerA);
+    if (!state.paused) {
+      state = await setLiveExecutionPause({ actorUserId: actorId, paused: true,
+        reason: 'cross-process integration pause', expectedVersion: state.version! }, workerA);
+    }
+    const script = `
+      const { PrismaClient } = require('@prisma/client');
+      const { readLiveExecutionPause, withLiveCreateOrderPermit } =
+        require('./src/modules/orders/liveExecutionPause.service.ts');
+      void (async () => {
+        const db = new PrismaClient();
+        try {
+          const status = await readLiveExecutionPause(db);
+          let deniedCode = null;
+          try {
+            await withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false },
+              async () => 'unexpected-entry', db);
+          } catch (error) { deniedCode = error.code; }
+          const reduceOnly = await withLiveCreateOrderPermit(
+            { marketType: 'swap', reduceOnly: true }, async () => 'allowed-close', db);
+          process.stdout.write(JSON.stringify({ paused: status.paused, version: status.version,
+            deniedCode, reduceOnly }));
+        } finally { await db.$disconnect(); }
+      })().catch((error) => { process.stderr.write(String(error)); process.exitCode = 1; });
+    `;
+    const child = spawn(process.execPath, ['--import', 'tsx', '-e', script], {
+      cwd: process.cwd(), env: process.env, windowsHide: true,
+    });
+    let output = '';
+    let errors = '';
+    child.stdout.on('data', (chunk) => { output += chunk.toString(); });
+    child.stderr.on('data', (chunk) => { errors += chunk.toString(); });
+    const code = await new Promise<number | null>((resolve) => child.on('close', resolve));
+    expect(code, errors).toBe(0);
+    expect(JSON.parse(output)).toEqual({ paused: true, version: state.version,
+      deniedCode: 'LIVE_PRETRADE_PAUSED', reduceOnly: 'allowed-close' });
   });
 });

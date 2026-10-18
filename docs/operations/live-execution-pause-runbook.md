@@ -54,8 +54,9 @@
 ## Acceptance evidence
 
 - Two independent Prisma clients submit while active; an in-flight submission
-  holds pause until it finishes; later entry and Spot submissions are denied;
-  Futures reduce-only is permitted; a fresh client sees the persisted state.
+  holds pause until it finishes. A separate OS process reads the persisted pause,
+  sees entry denied and Futures reduce-only permitted; Spot is denied. A fresh
+  client sees the same version.
 - Missing row and DB outage deny before submission. Anonymous and regular
   users cannot access the admin API. Invalid/stale version cannot overwrite a
   newer decision. The audit log records the reason and version change.
