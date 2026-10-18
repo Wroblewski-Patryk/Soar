@@ -131,6 +131,51 @@ export const finalizeExchangeDcaFillInTransaction = async (
 export const finalizeExchangeDcaFill = (input: ExchangeFillFinalizationInput) =>
   (input.client ?? prisma).$transaction((tx) => finalizeExchangeDcaFillInTransaction(tx, input));
 
+// A completed polling lookup may repair fill-time evidence after the DCA
+// Trade was already committed. Recheck every DCA in this position so a later
+// timed fill cannot erase uncertainty from an older, still unproven fill.
+export const reconcileSettledExchangeDcaContinuityInTransaction = async (
+  tx: Prisma.TransactionClient, input: { userId: string; positionId: string }
+) => {
+  await lockLivePosition(tx, input.userId, input.positionId);
+  const position = await tx.position.findUniqueOrThrow({ where: { id: input.positionId } });
+  if (position.userId !== input.userId || position.status !== 'OPEN' ||
+      position.syncState !== 'IN_SYNC' || position.origin === 'EXCHANGE_SYNC' ||
+      position.continuityState !== 'RECOVERING') return;
+  const dcaTrades = await tx.trade.findMany({ where: {
+    userId: input.userId, positionId: position.id, lifecycleAction: 'DCA',
+    executionMode: 'LIVE',
+  }, select: { orderId: true, quantity: true } });
+  if (dcaTrades.length === 0) return;
+  let latestVenueAt: Date | null = null;
+  let complete = true;
+  for (const trade of dcaTrades) {
+    if (!trade.orderId) { complete = false; break; }
+    const evidence = await resolveSettledFillTime(tx, trade.orderId, trade.quantity);
+    if (!evidence.complete || !evidence.latestVenueAt) { complete = false; break; }
+    if (!latestVenueAt || evidence.latestVenueAt > latestVenueAt) {
+      latestVenueAt = evidence.latestVenueAt;
+    }
+  }
+  if (!complete || !latestVenueAt ||
+      (position.lastDcaFillVenueAt && position.lastDcaFillVenueAt > latestVenueAt)) return;
+  const matches = position.lastAccountTransactionAt != null &&
+    position.lastAccountTransactionAt > latestVenueAt &&
+    confirmedAccountSnapshotMatches({
+      quantity: position.quantity, entryPrice: position.entryPrice,
+      lastAccountSeenAt: position.lastAccountSeenAt,
+      lastAccountQuantity: position.lastAccountQuantity,
+      lastAccountEntryPrice: position.lastAccountEntryPrice,
+    });
+  await tx.position.update({ where: { id: position.id }, data: {
+    lastDcaFillVenueAt: latestVenueAt,
+    lastDcaFillTimeUncertain: false,
+    ...(matches ? {
+      continuityState: 'CONFIRMED', missingSince: null, missingSyncCount: 0,
+    } : {}),
+  } });
+};
+
 type ExchangeCloseFillFinalizationInput = ExchangeFillFinalizationInput & {
   closeReason: PositionCloseReason;
   closeInitiator: PositionCloseInitiator;

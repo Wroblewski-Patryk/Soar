@@ -121,6 +121,7 @@ const adapterLookup = (fx: Awaited<ReturnType<typeof fixture>>,
       symbol: 'BTC/USDT:USDT', side: fx.candidate.side?.toLowerCase(), type: 'market',
       amount: 1, filled: orderState.filled, average: 90, trades: [] })),
     fetchMyTrades: vi.fn(async () => trades),
+    createOrder: vi.fn(),
     close: vi.fn(async () => undefined),
   };
   const connector = new CcxtFuturesConnector({ exchangeId: 'binance',
@@ -252,6 +253,147 @@ describe('explicit LIVE fill recovery', () => {
         continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true });
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
     expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+  });
+
+  it.each(['first', 'last'] as const)(
+    'repairs late venue times and continuity after fee settlement, with first fill %s',
+    async (firstPosition) => {
+      const fx = await fixture('DCA');
+      const firstAt = Date.now() - 3_000;
+      const first = { id: 'late-first', order: fx.venueId,
+        symbol: 'BTC/USDT:USDT', side: 'buy', price: 90, amount: 0.4,
+        fee: { cost: 0.04, currency: 'USDT' } };
+      const second = { id: 'late-second', order: fx.venueId,
+        symbol: 'BTC/USDT:USDT', side: 'buy', price: 90, amount: 0.6,
+        timestamp: firstAt + 500, fee: { cost: 0.06, currency: 'USDT' } };
+      const partial = adapterLookup(fx, [first], { status: 'open', filled: 0.4 });
+      await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: partial.lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+      const partialCandidate = (await findLiveFillCandidatePage()).candidates.find(
+        (item) => item.orderId === fx.intent.id)!;
+      const mixed = adapterLookup(fx, firstPosition === 'first'
+        ? [first, second] : [second, first]);
+      await expect(recoverLiveFillCandidateOnce({ candidate: partialCandidate,
+        lookup: mixed.lookup })).resolves.toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+      expect(await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } }))
+        .toMatchObject({ feePending: false, feeSource: 'EXCHANGE_FILL' });
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id,
+        event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+          eventTime: firstAt + 1_000, transactionTime: firstAt + 1_000,
+          balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+            entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+      });
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .toMatchObject({ continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true });
+      const automation = createDbBackedAutomation(fx);
+      await automation.service.handleTickerEvent(tick);
+      expect(automation.service.getPositionStateSnapshot(fx.position!.id)).toBeNull();
+      // The durable selector must still visit a financially settled DCA with
+      // unresolved time evidence after a process restart.
+      const replayCandidate = (await findLiveFillCandidatePage()).candidates.find(
+        (item) => item.orderId === fx.intent.id)!;
+      expect(replayCandidate).toBeDefined();
+      const complete = adapterLookup(fx, firstPosition === 'first'
+        ? [{ ...first, timestamp: firstAt }, second]
+        : [second, { ...first, timestamp: firstAt }]);
+      await expect(recoverLiveFillCandidateOnce({ candidate: replayCandidate,
+        lookup: complete.lookup })).resolves.toMatchObject({ kind: 'APPLIED' });
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .toMatchObject({ continuityState: 'CONFIRMED', lastDcaFillTimeUncertain: false,
+          lastDcaFillVenueAt: new Date(firstAt + 500) });
+      await automation.service.handleTickerEvent(tick);
+      expect(automation.service.getPositionStateSnapshot(fx.position!.id))
+        .toMatchObject({ quantity: 2, averageEntryPrice: 95, currentAdds: 1 });
+      expect(automation.executeDca).not.toHaveBeenCalled();
+      expect(automation.closeByExitSignal).not.toHaveBeenCalled();
+      expect(await prisma.orderFill.findFirstOrThrow({ where: {
+        orderId: fx.intent.id, exchangeTradeId: first.id,
+      } })).toMatchObject({ venueExecutedAt: new Date(firstAt) });
+      const replay = await recoverLiveFillCandidateOnce({ candidate: replayCandidate,
+        lookup: adapterLookup(fx, firstPosition === 'first'
+          ? [{ ...first, timestamp: firstAt }, second]
+          : [second, { ...first, timestamp: firstAt }]).lookup });
+      expect(replay.kind).toBe('APPLIED');
+      expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+      expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
+        eventType: 'DCA_EXECUTED' } })).toBe(1);
+      expect(partial.client.createOrder).not.toHaveBeenCalled();
+      expect(mixed.client.createOrder).not.toHaveBeenCalled();
+      expect(complete.client.createOrder).not.toHaveBeenCalled();
+    });
+
+  it('keeps conflicting or incomplete late fill times in recovery without writes', async () => {
+    const fx = await fixture('DCA');
+    const firstAt = Date.now() - 3_000;
+    const rows = [
+      { id: 'first', order: fx.venueId, symbol: 'BTC/USDT:USDT', side: 'buy',
+        price: 90, amount: 0.4, timestamp: firstAt,
+        fee: { cost: 0.04, currency: 'USDT' } },
+      { id: 'second', order: fx.venueId, symbol: 'BTC/USDT:USDT', side: 'buy',
+        price: 90, amount: 0.6, fee: { cost: 0.06, currency: 'USDT' } },
+    ];
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: adapterLookup(fx, rows).lookup });
+    const candidate = (await findLiveFillCandidatePage()).candidates.find(
+      (item) => item.orderId === fx.intent.id)!;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: firstAt + 500, transactionTime: firstAt + 500,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    const incomplete = await recoverLiveFillCandidateOnce({ candidate,
+      lookup: adapterLookup(fx, rows).lookup });
+    expect(incomplete.kind).toBe('APPLIED');
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
+    await recoverLiveFillCandidateOnce({ candidate,
+      lookup: adapterLookup(fx, [rows[0],
+        { ...rows[1], timestamp: firstAt + 500 }]).lookup });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
+    const conflict = await recoverLiveFillCandidateOnce({ candidate,
+      lookup: adapterLookup(fx, [
+        { ...rows[0], timestamp: firstAt + 1 },
+        { ...rows[1], timestamp: firstAt + 500 },
+      ]).lookup });
+    expect(conflict).toMatchObject({ kind: 'UNKNOWN', reason: 'LOCAL_FILL_CONFLICT' });
+    expect(await prisma.orderFill.findFirstOrThrow({ where: {
+      orderId: fx.intent.id, exchangeTradeId: 'first',
+    } })).toMatchObject({ venueExecutedAt: new Date(firstAt) });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+  });
+
+  it('does not assign late times to indistinguishable synthetic fills', async () => {
+    const fx = await fixture('DCA');
+    const at = Date.now() - 3_000;
+    const rows = [
+      { order: fx.venueId, symbol: 'BTC/USDT:USDT', side: 'buy',
+        price: 90, amount: 0.5, fee: { cost: 0.05, currency: 'USDT' } },
+      { order: fx.venueId, symbol: 'BTC/USDT:USDT', side: 'buy',
+        price: 90, amount: 0.5, fee: { cost: 0.05, currency: 'USDT' } },
+    ];
+    const initial = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: adapterLookup(fx, rows).lookup });
+    expect(initial.kind).toBe('APPLIED');
+    const candidate = (await findLiveFillCandidatePage()).candidates.find(
+      (item) => item.orderId === fx.intent.id)!;
+    const late = await recoverLiveFillCandidateOnce({ candidate,
+      lookup: adapterLookup(fx, [
+        { ...rows[1], timestamp: at + 500 }, { ...rows[0], timestamp: at },
+      ]).lookup });
+    expect(late).toMatchObject({ kind: 'UNKNOWN', reason: 'LOCAL_FILL_TIME_AMBIGUOUS' });
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id,
+      venueExecutedAt: { not: null } } })).toBe(0);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .continuityState).toBe('RECOVERING');
   });
 
   it.each([['old', 200], ['equal', 500], ['newer', 1_000]] as const)(

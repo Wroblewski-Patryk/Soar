@@ -35,9 +35,11 @@ const needsFillRead = (
   order: Pick<Order, 'status' | 'filledQuantity' | 'feePending' | 'feeSource'>,
   fillCount: number,
   tradeCount: number,
-  fillQuantity: number | null
+  fillQuantity: number | null,
+  timeProofPending: boolean
 ) =>
   order.status === 'PENDING' || order.status === 'OPEN' || order.status === 'PARTIALLY_FILLED' ||
+  (order.status === 'FILLED' && timeProofPending) ||
   (order.status === 'FILLED' && (!Number.isFinite(order.filledQuantity) || order.filledQuantity <= 0)) ||
   (order.filledQuantity > 0 && (
     order.feePending || order.feeSource !== 'EXCHANGE_FILL' || fillCount === 0 ||
@@ -85,14 +87,20 @@ export const findLiveFillCandidatePage = async (input: {
           ] },
         ],
       },
-      include: { _count: { select: { fills: true, trades: true } } },
+      include: { _count: { select: { fills: true, trades: true } },
+        position: { select: { continuityState: true } },
+        trades: { where: { lifecycleAction: 'DCA' }, select: { id: true }, take: 1 },
+        fills: { where: { venueExecutedAt: null }, select: { id: true }, take: 1 } },
       ...(input.orderCursor ? { cursor: { id: input.orderCursor }, skip: 1 } : {}),
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }], take: limit,
     }),
   ]);
   const associatedOrders = await prisma.order.findMany({
     where: { id: { in: intents.map((intent) => intent.id) } },
-    include: { _count: { select: { fills: true, trades: true } } },
+    include: { _count: { select: { fills: true, trades: true } },
+      position: { select: { continuityState: true } },
+      trades: { where: { lifecycleAction: 'DCA' }, select: { id: true }, take: 1 },
+      fills: { where: { venueExecutedAt: null }, select: { id: true }, take: 1 } },
   });
   const orderIntents = await prisma.liveOrderIntent.findMany({
     where: { id: { in: orders.map((order) => order.id) } },
@@ -112,7 +120,9 @@ export const findLiveFillCandidatePage = async (input: {
   for (const intent of intents) {
     const order = associatedById.get(intent.id);
     if (order && !needsFillRead(order, order._count.fills, order._count.trades,
-      fillQuantityByOrder.get(order.id) ?? null)) continue;
+      fillQuantityByOrder.get(order.id) ?? null,
+      order.position?.continuityState === 'RECOVERING' &&
+        order.trades.length > 0 && order.fills.length > 0)) continue;
     const payload = readPayload(intent.payload);
     candidates.push({
       intentId: intent.id, orderId: intent.id, userId: intent.userId,
@@ -129,7 +139,9 @@ export const findLiveFillCandidatePage = async (input: {
   for (const order of orders) {
     if (intentById.has(order.id)) continue;
     if (!needsFillRead(order, order._count.fills, order._count.trades,
-      fillQuantityByOrder.get(order.id) ?? null)) continue;
+      fillQuantityByOrder.get(order.id) ?? null,
+      order.position?.continuityState === 'RECOVERING' &&
+        order.trades.length > 0 && order.fills.length > 0)) continue;
     const intent = orderIntentById.get(order.id);
     const payload = readPayload(intent?.payload ?? null);
     // Legacy local orders lack a durable venue/account link. They are visible

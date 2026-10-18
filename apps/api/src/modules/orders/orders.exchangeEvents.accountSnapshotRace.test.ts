@@ -73,7 +73,8 @@ const createDca = async () => {
   const page = await findLiveFillCandidatePage({ limit: 10 });
   const candidate = page.candidates.find((item) => item.orderId === intent.id);
   if (!candidate) throw new Error('DCA candidate missing from isolated test database');
-  const poll = (executedAt: Date | null = new Date(),
+  const stableVenueAt = new Date();
+  const poll = (executedAt: Date | null = stableVenueAt,
     source: 'fetchMyTrades' | 'fetchOrder' = 'fetchMyTrades') =>
     recoverLiveFillCandidateOnce({ candidate,
     lookup: async () => ({ kind: 'FOUND' as const, candidate,

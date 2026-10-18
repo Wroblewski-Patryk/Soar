@@ -8,6 +8,8 @@ import type { LiveFillCandidate } from './orders.liveFillCandidates.service';
 import { applyLiveExchangeOrderTradeUpdateInTransaction,
   invalidateRuntimePositionStateAfterExchangeClose,
   syncRuntimeDcaStateFromExchangeFill } from './orders.exchangeEvents.service';
+import { reconcileSettledExchangeDcaContinuityInTransaction } from
+  './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 
@@ -251,8 +253,28 @@ export const recoverLiveFillCandidateOnce = async (input: {
             (local.feeCost != null && venue.feeCost != null &&
               !quantityMatches(local.feeCost, venue.feeCost, 1)) ||
             (local.feeCurrency && venue.feeCurrency &&
-              local.feeCurrency !== venue.feeCurrency)) {
+              local.feeCurrency !== venue.feeCurrency) ||
+            (local.venueExecutedAt && hasTrustedFillTime(venue) &&
+              local.venueExecutedAt.getTime() !== validFillTime(venue)!.getTime())) {
           return unknown('LOCAL_FILL_CONFLICT');
+        }
+      }
+      // A later trade lookup can supply venue time for the same persisted fill.
+      // The order lock and the economic/identity checks above make this a
+      // one-way, idempotent repair; a conflicting trusted time fails closed.
+      for (const local of localFills) {
+        const venue = venueFills.get(local.exchangeTradeId)!;
+        if (local.venueExecutedAt == null && hasTrustedFillTime(venue)) {
+          if (local.exchangeTradeId.startsWith('soar-fill-') &&
+              snapshot.fills.filter((fill) =>
+                quantityMatches(fill.quantity, venue.quantity, 1) &&
+                quantityMatches(fill.price, venue.price, 1)).length !== 1) {
+            return unknown('LOCAL_FILL_TIME_AMBIGUOUS');
+          }
+          await tx.orderFill.updateMany({
+            where: { id: local.id, venueExecutedAt: null },
+            data: { venueExecutedAt: validFillTime(venue)! },
+          });
         }
       }
       if (snapshot.fills.length === 0) {
@@ -301,6 +323,12 @@ export const recoverLiveFillCandidateOnce = async (input: {
       if (order.status !== snapshot.finalStatus &&
           !(snapshot.finalStatus === 'PARTIALLY_FILLED' && order.status === 'OPEN')) {
         return unknown('ORDER_STATUS_MISMATCH');
+      }
+      if (candidate.exchange === 'BINANCE' && candidate.marketType === 'FUTURES' &&
+          order.status === 'FILLED' && order.positionId && allFillTimesTrusted) {
+        await reconcileSettledExchangeDcaContinuityInTransaction(tx, {
+          userId: candidate.userId, positionId: order.positionId,
+        });
       }
       await settleDedupeInTransaction(tx, order, candidate, new Date());
       return { result: { kind: 'APPLIED' as const, orderId: order.id,
