@@ -96,7 +96,7 @@ negative.
   ownership, a USDT pair, known venue minimum amount/notional and amount
   precision, and sufficient free wallet USDT before a USDT DCA order is
   submitted. If any of these checks fail, the add is blocked. Venues reporting
-  a contract size other than one are blocked until contract conversion is
+  an unknown contract size or a contract size other than one are blocked until contract conversion is
   represented in the runtime contribution calculation. For imported futures
   positions, the exchange-confirmed margin must agree with the canonical
   average, quantity, and leverage before another add. Quantity-based runtime

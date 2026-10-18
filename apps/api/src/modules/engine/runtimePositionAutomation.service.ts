@@ -141,7 +141,8 @@ export const executeRuntimeDca = async (input: {
     const rules = await (deps.getOrderRules ?? getRuntimeDcaOrderRules)({
       exchange: usdtContext.exchange, marketType: usdtContext.marketType, symbol: input.symbol,
     });
-    assertRuntimeDcaOrderRules({ quantity: dcaQuantity, markPrice: input.markPrice, rules });
+    assertRuntimeDcaOrderRules({ quantity: dcaQuantity, markPrice: input.markPrice,
+      marketType: usdtContext.marketType, rules });
     const exhausted = await (deps.resolveFundsExhausted ?? resolveRuntimeDcaFundsExhausted)({
       userId: input.userId, botId: input.botId, walletId: usdtContext.walletId,
       mode: input.mode, exchange: usdtContext.exchange, marketType: usdtContext.marketType,

@@ -11,6 +11,7 @@ const invalidRules = () => new RuntimeDcaPolicyError({
 export const assertRuntimeDcaOrderRules = (input: {
   quantity: number;
   markPrice: number;
+  marketType: TradeMarket;
   rules: SymbolTradingRules;
 }) => {
   const { quantity, markPrice, rules } = input;
@@ -19,6 +20,7 @@ export const assertRuntimeDcaOrderRules = (input: {
     || rules.amountPrecision < 0
     || rules.minAmount == null || !Number.isFinite(rules.minAmount) || rules.minAmount <= 0
     || rules.minNotional == null || !Number.isFinite(rules.minNotional) || rules.minNotional <= 0
+    || (input.marketType === 'FUTURES' && rules.contractSize == null)
     || (rules.contractSize != null && (!Number.isFinite(rules.contractSize)
       || Math.abs(rules.contractSize - 1) > 1e-12))) {
     throw invalidRules();

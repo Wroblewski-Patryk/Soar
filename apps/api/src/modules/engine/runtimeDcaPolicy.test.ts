@@ -174,6 +174,10 @@ describe('runtime DCA sizing guard', () => {
       getOrderRules: async () => ({ ...validRules, minNotional: 20 }),
       resolveFundsExhausted,
     })).rejects.toMatchObject({ code: 'DCA_ORDER_RULES_INVALID' });
+    await expect(executeRuntimeDca(request, {
+      getOrderRules: async () => ({ ...validRules, contractSize: null }),
+      resolveFundsExhausted,
+    })).rejects.toMatchObject({ code: 'DCA_ORDER_RULES_INVALID' });
     expect(acquire).not.toHaveBeenCalled();
 
     await expect(executeRuntimeDca(request, {
