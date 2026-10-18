@@ -134,6 +134,71 @@ describe('fill-backed BOT account snapshots and polling', () => {
   beforeEach(cleanupDb);
   afterEach(cleanupDb);
 
+  it('remembers an untimed partial stream fill when the final fill has a venue time', async () => {
+    const fixture = await createDca();
+    const finalAt = Date.now() - 1_000;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id,
+      event: fixture.accountEvent(2, finalAt + 500) });
+    const partial = { eventType: 'ORDER_TRADE_UPDATE' as const,
+      marketType: 'FUTURES' as const, eventTime: finalAt - 500,
+      transactionTime: null, symbol: 'BTCUSDT', side: 'BUY',
+      orderType: 'MARKET', orderStatus: 'PARTIALLY_FILLED', executionType: 'TRADE',
+      exchangeOrderId: '12345', clientOrderId: fixture.intent.clientOrderId,
+      averagePrice: 90, cumulativeFilledQuantity: 0.4,
+      lastFilledQuantity: 0.4, lastFilledPrice: 90,
+      fee: 0.04, feeCurrency: 'USDT', exchangeTradeId: 'partial', raw: {},
+    };
+    const final = { ...partial, eventTime: finalAt, transactionTime: finalAt,
+      orderStatus: 'FILLED', cumulativeFilledQuantity: 1,
+      lastFilledQuantity: 0.6, fee: 0.06, exchangeTradeId: 'final' };
+    await applyLiveExchangeUserDataStreamEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id, event: partial });
+    expect(await prisma.orderFill.findFirstOrThrow({ where: {
+      orderId: fixture.intent.id, exchangeTradeId: 'partial',
+    } })).toMatchObject({ venueExecutedAt: null });
+    await applyLiveExchangeUserDataStreamEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id, event: final });
+    const settled = await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } });
+    expect(settled).toMatchObject({ quantity: 2, entryPrice: 95,
+      continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true,
+      lastDcaFillVenueAt: new Date(finalAt) });
+    await applyLiveExchangeUserDataStreamEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id, event: final });
+    expect(await prisma.trade.count({ where: { orderId: fixture.intent.id } })).toBe(1);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } }))
+      .continuityState).toBe('RECOVERING');
+  });
+
+  it('does not treat a missing micro-fill as complete time evidence', async () => {
+    const fixture = await createDca();
+    const firstAt = Date.now() - 2_000;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id,
+      event: fixture.accountEvent(2, firstAt + 1_000) });
+    const partial = { eventType: 'ORDER_TRADE_UPDATE' as const,
+      marketType: 'FUTURES' as const, eventTime: firstAt,
+      transactionTime: firstAt, symbol: 'BTCUSDT', side: 'BUY',
+      orderType: 'MARKET', orderStatus: 'PARTIALLY_FILLED', executionType: 'TRADE',
+      exchangeOrderId: '12345', clientOrderId: fixture.intent.clientOrderId,
+      averagePrice: 90, cumulativeFilledQuantity: 0.9999999999,
+      lastFilledQuantity: 0.9999999999, lastFilledPrice: 90,
+      fee: 0, feeCurrency: 'USDT', exchangeTradeId: 'nearly-all', raw: {},
+    };
+    const final = { ...partial, eventTime: firstAt + 500,
+      transactionTime: firstAt + 500, orderStatus: 'FILLED',
+      cumulativeFilledQuantity: 1, lastFilledQuantity: 1e-10,
+      exchangeTradeId: null };
+    await applyLiveExchangeUserDataStreamEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id, event: partial });
+    await applyLiveExchangeUserDataStreamEvent({ userId: fixture.user.id,
+      sourceApiKeyId: fixture.key.id, event: final });
+    expect(await prisma.orderFill.count({ where: { orderId: fixture.intent.id } })).toBe(1);
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: fixture.position.id } }))
+      .toMatchObject({ quantity: 2, entryPrice: 95,
+        continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true });
+  });
+
   it('keeps RECOVERING when snapshot qty 3 still disagrees after confirmed DCA qty 1', async () => {
     const fixture = await createDca();
     const event = fixture.accountEvent(3, Date.now());

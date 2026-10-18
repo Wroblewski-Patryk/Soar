@@ -21,6 +21,12 @@ class RecoveryUnknown extends Error {
 const unknown = (reason: string): never => { throw new RecoveryUnknown(reason); };
 const positive = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
+const validFillTime = (fill: CcxtFuturesOrderFill) => {
+  const at = fill.executedAt;
+  return at && Number.isFinite(at.getTime()) && at.getTime() > 0 ? at : null;
+};
+const hasTrustedFillTime = (fill: CcxtFuturesOrderFill) =>
+  fill.source === 'fetchMyTrades' && validFillTime(fill) != null;
 const normalizeSymbol = (value: string) => value.split(':')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
 const quantityMatches = (left: number, right: number, count: number) =>
   Math.abs(left - right) <= 16 * Number.EPSILON *
@@ -100,7 +106,8 @@ const prepareSnapshot = (candidate: LiveFillCandidate, order: CcxtFuturesOrderRe
   }
   if (byId.size !== fills.length) return unknown('VENUE_FILL_ID_AMBIGUOUS');
   const ordered = fills.map((fill, index) => ({ ...fill, exchangeTradeId: ids[index] }))
-    .sort((left, right) => (left.executedAt?.getTime() ?? 0) - (right.executedAt?.getTime() ?? 0) ||
+    .sort((left, right) => (validFillTime(left)?.getTime() ?? 0) -
+      (validFillTime(right)?.getTime() ?? 0) ||
       left.exchangeTradeId!.localeCompare(right.exchangeTradeId!));
   return { fills: ordered, filledQuantity: order.filled,
     averagePrice: total > 0 ? notional / total : null,
@@ -252,6 +259,9 @@ export const recoverLiveFillCandidateOnce = async (input: {
         return { result: { kind: 'APPLIED' as const, orderId: order.id,
           status: order.status, fillCount: 0 }, cacheEffect: null };
       }
+      // The final lifecycle write uses the last fill. Its timestamp cannot
+      // prove freshness when any other fill in the settled order lacks one.
+      const allFillTimesTrusted = snapshot.fills.every(hasTrustedFillTime);
       let cumulative = 0;
       let cacheEffect:
         | { kind: 'DCA'; input: Parameters<typeof syncRuntimeDcaStateFromExchangeFill>[0] }
@@ -261,7 +271,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
         cumulative += fill.quantity;
         const last = index === snapshot.fills.length - 1;
         const status = last ? snapshot.finalStatus : 'PARTIALLY_FILLED';
-        const eventAt = fill.executedAt ?? new Date();
+        const eventAt = validFillTime(fill) ?? new Date();
         const event: NormalizedBinanceOrderTradeUpdateEvent = {
           eventType: 'ORDER_TRADE_UPDATE', marketType: candidate.marketType!,
           eventTime: eventAt.getTime(), transactionTime: eventAt.getTime(),
@@ -275,10 +285,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
         };
         const applied = await applyLiveExchangeOrderTradeUpdateInTransaction(tx, {
           userId: candidate.userId, event, sourceExchange: candidate.exchange!, snapshotRecovery: true,
-          fillTimeFromVenue: fill.source === 'fetchMyTrades' &&
-            fill.executedAt != null &&
-            Number.isFinite(fill.executedAt.getTime()) &&
-            fill.executedAt.getTime() > 0,
+          fillTimeFromVenue: allFillTimesTrusted,
         });
         if (applied.status !== 'applied' || applied.orderId !== order.id) {
           return unknown('EVENT_FINALIZATION_REJECTED');

@@ -36,6 +36,24 @@ type ExchangeFillFinalizationInput = {
   client?: PrismaClient;
 };
 
+const resolveSettledFillTime = async (tx: Prisma.TransactionClient,
+  orderId: string, fillQuantity: number) => {
+  const fills = await tx.orderFill.findMany({ where: { orderId },
+    select: { quantity: true, venueExecutedAt: true } });
+  const knownTimes = fills.flatMap((fill) => fill.venueExecutedAt
+    ? [fill.venueExecutedAt] : []);
+  const latestVenueAt = knownTimes.reduce<Date | null>((latest, at) =>
+    !latest || at > latest ? at : latest, null);
+  const totalQuantity = fills.reduce((total, fill) => total + fill.quantity, 0);
+  const quantityDifference = Math.abs(totalQuantity - fillQuantity);
+  const roundingTolerance = 16 * Number.EPSILON *
+    Math.max(1, Math.abs(totalQuantity), Math.abs(fillQuantity)) *
+    Math.max(1, fills.length);
+  const complete = fills.length > 0 && knownTimes.length === fills.length &&
+    quantityDifference <= roundingTolerance;
+  return { latestVenueAt, complete };
+};
+
 export const finalizeExchangeDcaFillInTransaction = async (
   tx: Prisma.TransactionClient, input: ExchangeFillFinalizationInput
 ) => {
@@ -58,13 +76,14 @@ export const finalizeExchangeDcaFillInTransaction = async (
     });
     const hasAccountSnapshot = position.origin !== 'EXCHANGE_SYNC' &&
       position.lastAccountSeenAt != null;
-    const trustedFillAt = input.fillTimeFromVenue ? input.eventAt : null;
+    const settledFillTime = await resolveSettledFillTime(tx, order.id, input.fillQuantity);
+    const trustedFillAt = settledFillTime.latestVenueAt;
     const lastTrustedFillAt = position.lastDcaFillVenueAt &&
       (!trustedFillAt || position.lastDcaFillVenueAt > trustedFillAt)
       ? position.lastDcaFillVenueAt : trustedFillAt;
     const fillTimeUncertain = position.lastDcaFillTimeUncertain ||
       (position.lastExchangeSyncAt != null && position.lastDcaFillVenueAt == null) ||
-      trustedFillAt == null;
+      !settledFillTime.complete || input.fillTimeFromVenue !== true;
     const agreesWithAccount = hasAccountSnapshot && !fillTimeUncertain &&
       lastTrustedFillAt != null &&
       position.lastAccountTransactionAt != null &&
@@ -144,10 +163,16 @@ export const finalizeExchangeCloseFillInTransaction = async (
     : (position.entryPrice - input.fillPrice) * input.fillQuantity;
   const realizedPnl = entryFees != null && order.fee != null && !order.feePending
     ? grossPnl - entryFees - order.fee : null;
+  const settledFillTime = await resolveSettledFillTime(tx, order.id, input.fillQuantity);
+  const hasAccountSnapshot = position.lastAccountSeenAt != null;
   const accountDisagreesWithClose = position.origin !== 'EXCHANGE_SYNC' &&
-    position.lastAccountSeenAt != null &&
-    (position.lastAccountQuantity == null ||
-      !matchesAccountSnapshot(0, position.lastAccountQuantity));
+    (hasAccountSnapshot || input.requiresAccountConfirmation === true) &&
+    !(settledFillTime.complete && input.fillTimeFromVenue === true &&
+      settledFillTime.latestVenueAt != null &&
+      position.lastAccountTransactionAt != null &&
+      position.lastAccountTransactionAt > settledFillTime.latestVenueAt &&
+      position.lastAccountQuantity != null &&
+      matchesAccountSnapshot(0, position.lastAccountQuantity));
   await tx.position.update({
     where: { id: position.id }, data: {
       status: 'CLOSED', closedAt: input.eventAt, syncState: 'ORPHAN_LOCAL',

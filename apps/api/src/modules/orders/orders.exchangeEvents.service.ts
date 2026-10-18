@@ -139,6 +139,7 @@ const ensureOrderFillRecord = async (input: {
   feeCost: number | null;
   feeCurrency: string | null;
   executedAt: Date;
+  venueExecutedAt: Date | null;
   raw: Prisma.InputJsonValue;
 }) => {
   const existing = await input.tx.orderFill.findFirst({
@@ -165,6 +166,7 @@ const ensureOrderFillRecord = async (input: {
       feeCurrency: input.feeCurrency,
       feeRate: null,
       executedAt: input.executedAt,
+      venueExecutedAt: input.venueExecutedAt,
       raw: input.raw,
     },
   });
@@ -410,6 +412,10 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
     ? input.event.lastFilledPrice
     : averageFillPrice;
   const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
+  const eventTimeFromVenue = input.fillTimeFromVenue ??
+    (input.event.transactionTime != null &&
+      Number.isSafeInteger(input.event.transactionTime) &&
+      input.event.transactionTime > 0);
   const eventFee =
     typeof input.event.fee === 'number' && Number.isFinite(input.event.fee)
       ? input.event.fee
@@ -568,6 +574,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
       feeCost: recordableEventFee,
       feeCurrency: input.event.feeCurrency,
       executedAt: eventAt,
+      venueExecutedAt: eventTimeFromVenue ? eventAt : null,
       raw: input.event.raw as Prisma.InputJsonValue,
     });
   }
@@ -678,6 +685,9 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
           userId: input.userId, orderId: updatedOrder.id, positionId: updatedOrder.position.id,
           fillPrice: averageFillPrice, fillQuantity: cumulativeFilledQuantity,
           exchangeTradeId: input.event.exchangeTradeId ?? null, eventAt,
+          fillTimeFromVenue: eventTimeFromVenue,
+          requiresAccountConfirmation: input.event.marketType === 'FUTURES' &&
+            (input.sourceExchange ?? 'BINANCE') === 'BINANCE',
           closeReason: closeAttribution.closeReason,
           closeInitiator: closeAttribution.closeInitiator,
         });
@@ -706,10 +716,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
             userId: input.userId, orderId: updatedOrder.id, positionId: updatedOrder.position.id,
             fillPrice: averageFillPrice, fillQuantity: cumulativeFilledQuantity,
             exchangeTradeId: input.event.exchangeTradeId ?? null, eventAt,
-            fillTimeFromVenue: input.fillTimeFromVenue ??
-              (input.event.transactionTime != null &&
-                Number.isSafeInteger(input.event.transactionTime) &&
-                input.event.transactionTime > 0),
+            fillTimeFromVenue: eventTimeFromVenue,
             requiresAccountConfirmation: input.event.marketType === 'FUTURES' &&
               (input.sourceExchange ?? 'BINANCE') === 'BINANCE',
           });

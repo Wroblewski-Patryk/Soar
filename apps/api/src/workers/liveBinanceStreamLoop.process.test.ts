@@ -494,28 +494,29 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
         status: 'OPEN', quantity: 2, exchangeOrderId: '67890',
         filledQuantity: 0, feePending: true,
       } });
-      const beforeCloseAt = Math.max(Date.now(), afterDcaAt + 1);
-      const beforeCloseAccountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
-        e: 'ACCOUNT_UPDATE', E: beforeCloseAt, T: beforeCloseAt,
+      const closeFillAt = Math.max(Date.now(), afterDcaAt + 1);
+      const afterCloseAt = closeFillAt + 1;
+      const afterCloseAccountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
+        e: 'ACCOUNT_UPDATE', E: afterCloseAt, T: afterCloseAt,
         a: { B: [], P: [{ s: 'BTCUSDT', pa: '0', ep: '0', up: '0', ps: 'LONG' }] },
       });
-      stream.emit('FUTURES', beforeCloseAccountUpdate);
+      stream.emit('FUTURES', afterCloseAccountUpdate);
       await until(async () => (await prisma.position.findUniqueOrThrow({
         where: { id: position.id },
-      })).lastExchangeSeenAt?.getTime() === beforeCloseAt);
+      })).lastExchangeSeenAt?.getTime() === afterCloseAt);
       expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
         .toMatchObject({ status: 'OPEN', syncState: 'IN_SYNC', quantity: 2,
           entryPrice: 95, lastAccountQuantity: 0,
           continuityState: 'RECOVERING' });
       const closeEvent = normalizeBinanceUserDataStreamEvent('FUTURES', {
-        e: 'ORDER_TRADE_UPDATE', E: beforeCloseAt + 1, T: beforeCloseAt + 1, o: {
+        e: 'ORDER_TRADE_UPDATE', E: closeFillAt, T: closeFillAt, o: {
           s: 'BTCUSDT', S: 'SELL', o: 'MARKET', X: 'FILLED', x: 'TRADE',
           i: '67890', c: closeClientOrderId, ap: '110', l: '2', z: '2',
           L: '110', n: '0.2', N: 'USDT', t: 992,
         },
       });
       stream.emit('FUTURES', closeEvent);
-      stream.emit('FUTURES', beforeCloseAccountUpdate);
+      stream.emit('FUTURES', afterCloseAccountUpdate);
       await until(async () => (await prisma.position.findUniqueOrThrow({
         where: { id: position.id },
       })).status === 'CLOSED');

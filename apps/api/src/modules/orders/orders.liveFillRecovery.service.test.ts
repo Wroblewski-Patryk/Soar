@@ -3,6 +3,8 @@ import type { Exchange, TradeMarket } from '@prisma/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import type { LiveFillCandidate } from './orders.liveFillCandidates.service';
+import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
+import type { CcxtExchangeLikeClient } from '../exchange/ccxtFuturesConnector.service';
 import type { CcxtFuturesOrderFill, CcxtFuturesOrderResult } from '../exchange/ccxtFuturesConnector.types';
 import { lookupLiveFillCandidate, type LiveFillLookupResult } from '../exchange/liveFillLookup.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
@@ -107,6 +109,26 @@ const found = (candidate: LiveFillCandidate, apiKeyId: string, venueId: string,
 });
 const useLookup = (result: LiveFillLookupResult) => vi.fn(async () => result);
 
+const adapterLookup = (fx: Awaited<ReturnType<typeof fixture>>,
+  trades: Array<Record<string, unknown>>,
+  orderState: { status: 'open' | 'closed'; filled: number } =
+    { status: 'closed', filled: 1 }) => {
+  const client = {
+    loadMarkets: vi.fn(async () => ({ 'BTC/USDT:USDT': {
+      id: 'BTCUSDT', symbol: 'BTC/USDT:USDT', swap: true,
+    } })),
+    fetchOrder: vi.fn(async () => ({ id: fx.venueId, status: orderState.status,
+      symbol: 'BTC/USDT:USDT', side: fx.candidate.side?.toLowerCase(), type: 'market',
+      amount: 1, filled: orderState.filled, average: 90, trades: [] })),
+    fetchMyTrades: vi.fn(async () => trades),
+    close: vi.fn(async () => undefined),
+  };
+  const connector = new CcxtFuturesConnector({ exchangeId: 'binance',
+    marketType: 'swap' }, async () => client as unknown as CcxtExchangeLikeClient);
+  return { lookup: (candidate: LiveFillCandidate) => lookupLiveFillCandidate(candidate,
+    { createConnector: () => connector }), client };
+};
+
 const createDbBackedAutomation = (fx: Awaited<ReturnType<typeof fixture>>) => {
   const executeDca = vi.fn(async () => ({ feePaid: 0, executed: false }));
   const closeByExitSignal = vi.fn(async () => ({ status: 'submitted' as const }));
@@ -142,6 +164,166 @@ const tick = { type: 'ticker' as const, exchange: 'BINANCE' as const,
   eventTime: Date.now(), lastPrice: 95, priceChangePercent24h: 0 };
 
 describe('explicit LIVE fill recovery', () => {
+  it.each([
+    ['untimed trade first', false], ['timed trade first', true],
+  ] as const)('keeps a mixed-time DCA uncertain from adapter through automation: %s',
+    async (_label, timedFirst) => {
+      const fx = await fixture('DCA');
+      const venueAt = Date.now() - 2_000;
+      const untimed = { id: 'untimed', order: fx.venueId,
+        symbol: 'BTC/USDT:USDT', side: 'buy', price: 90,
+        amount: 0.4, cost: 36, fee: { cost: 0.04, currency: 'USDT' } };
+      const timed = { id: 'timed', order: fx.venueId,
+        symbol: 'BTC/USDT:USDT', side: 'buy', price: 90,
+        amount: 0.6, cost: 54, timestamp: venueAt,
+        fee: { cost: 0.06, currency: 'USDT' } };
+      const rows = timedFirst ? [timed, untimed] : [untimed, timed];
+      const adapter = adapterLookup(fx, rows);
+      const inspected = await adapter.lookup(fx.candidate);
+      expect(inspected.kind).toBe('FOUND');
+      if (inspected.kind !== 'FOUND') throw new Error('adapter lookup failed');
+      expect((inspected.order.fills ?? []).map((fill) => fill.executedAt?.getTime() ?? null))
+        .toEqual(timedFirst ? [venueAt, null] : [null, venueAt]);
+      const matching = { eventType: 'ACCOUNT_UPDATE' as const,
+        marketType: 'FUTURES' as const, eventTime: venueAt + 1_000,
+        transactionTime: venueAt + 1_000, balances: [], positions: [{
+          symbol: 'BTCUSDT', amount: 2, entryPrice: 95,
+          unrealizedPnl: 0, positionSide: 'LONG',
+        }], raw: {} };
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id, event: matching });
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .continuityState).toBe('RECOVERING');
+      const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: adapter.lookup });
+      expect(result).toMatchObject({ kind: 'APPLIED', status: 'FILLED', fillCount: 2 });
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .toMatchObject({ quantity: 2, entryPrice: 95,
+          continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true });
+      const automation = createDbBackedAutomation(fx);
+      await automation.service.handleTickerEvent(tick);
+      expect(automation.executeDca).not.toHaveBeenCalled();
+      expect(automation.closeByExitSignal).not.toHaveBeenCalled();
+      expect(automation.service.getPositionStateSnapshot(fx.position!.id)).toBeNull();
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id, event: { ...matching,
+          eventTime: venueAt + 2_000, transactionTime: venueAt + 2_000 } });
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .continuityState).toBe('RECOVERING');
+      const replay = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: adapterLookup(fx, rows).lookup });
+      expect(replay.kind).toBe('APPLIED');
+      expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+      expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id,
+        eventType: 'DCA_EXECUTED' } })).toBe(1);
+    });
+
+  it('retains an untimed partial polling fill across a later final lookup', async () => {
+    const fx = await fixture('DCA');
+    const venueAt = Date.now() - 2_000;
+    const untimed = { id: 'first', order: fx.venueId,
+      symbol: 'BTC/USDT:USDT', side: 'buy', price: 90, amount: 0.4 };
+    const timed = { id: 'second', order: fx.venueId,
+      symbol: 'BTC/USDT:USDT', side: 'buy', price: 90,
+      amount: 0.6, timestamp: venueAt };
+    const first = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: adapterLookup(fx, [untimed], { status: 'open', filled: 0.4 }).lookup });
+    expect(first).toMatchObject({ kind: 'APPLIED', status: 'PARTIALLY_FILLED' });
+    expect(await prisma.orderFill.findFirstOrThrow({ where: { orderId: fx.intent.id } }))
+      .toMatchObject({ venueExecutedAt: null });
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .quantity).toBe(1);
+    const candidate = (await findLiveFillCandidatePage()).candidates.find(
+      (item) => item.orderId === fx.intent.id)!;
+    const accountAt = venueAt + 1_000;
+    await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+      sourceApiKeyId: fx.key.id,
+      event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+        eventTime: accountAt, transactionTime: accountAt,
+        balances: [], positions: [{ symbol: 'BTCUSDT', amount: 2,
+          entryPrice: 95, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+    });
+    const final = await recoverLiveFillCandidateOnce({ candidate,
+      lookup: adapterLookup(fx, [timed, untimed]).lookup });
+    expect(final).toMatchObject({ kind: 'APPLIED', status: 'FILLED', fillCount: 2 });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+      .toMatchObject({ quantity: 2, entryPrice: 95,
+        continuityState: 'RECOVERING', lastDcaFillTimeUncertain: true });
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
+    expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+  });
+
+  it.each([['old', 200], ['equal', 500], ['newer', 1_000]] as const)(
+    'compares a fully timed DCA against a %s account snapshot',
+    async (_label, offsetMs) => {
+      const fx = await fixture('DCA');
+      const firstAt = Date.now() - 2_000;
+      const rows = [
+        { id: 'first', order: fx.venueId, symbol: 'BTC/USDT:USDT',
+          side: 'buy', price: 90, amount: 0.4, timestamp: firstAt },
+        { id: 'second', order: fx.venueId, symbol: 'BTC/USDT:USDT',
+          side: 'buy', price: 90, amount: 0.6, timestamp: firstAt + 500 },
+      ];
+      const accountAt = firstAt + offsetMs;
+      const event = { eventType: 'ACCOUNT_UPDATE' as const,
+        marketType: 'FUTURES' as const, eventTime: accountAt,
+        transactionTime: accountAt, balances: [], positions: [{
+          symbol: 'BTCUSDT', amount: 2, entryPrice: 95,
+          unrealizedPnl: 0, positionSide: 'LONG',
+        }], raw: {} };
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id, event });
+      const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: adapterLookup(fx, rows).lookup });
+      expect(result).toMatchObject({ kind: 'APPLIED', status: 'FILLED', fillCount: 2 });
+      const position = await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } });
+      expect(position).toMatchObject({ quantity: 2, entryPrice: 95,
+        lastDcaFillVenueAt: new Date(firstAt + 500),
+        lastDcaFillTimeUncertain: false,
+        continuityState: offsetMs > 500 ? 'CONFIRMED' : 'RECOVERING' });
+      if (offsetMs <= 500) {
+        await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+          sourceApiKeyId: fx.key.id, event: { ...event,
+            eventTime: firstAt + 501, transactionTime: firstAt + 501 } });
+        expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+          .continuityState).toBe('CONFIRMED');
+      }
+    });
+
+  it.each([['mixed', false], ['fully timed', true]] as const)(
+    'uses complete fill-time evidence before confirming a zero-snapshot CLOSE: %s',
+    async (_label, allTimed) => {
+      const fx = await fixture('CLOSE');
+      const firstAt = Date.now() - 2_000;
+      const rows = [
+        { id: 'close-first', order: fx.venueId,
+          symbol: 'BTC/USDT:USDT', side: 'sell', price: 110,
+          amount: 0.4, ...(allTimed ? { timestamp: firstAt } : {}) },
+        { id: 'close-last', order: fx.venueId,
+          symbol: 'BTC/USDT:USDT', side: 'sell', price: 110,
+          amount: 0.6, timestamp: firstAt + 500 },
+      ];
+      const accountAt = firstAt + 1_000;
+      await applyLiveExchangeAccountUpdateEvent({ userId: fx.user.id,
+        sourceApiKeyId: fx.key.id,
+        event: { eventType: 'ACCOUNT_UPDATE', marketType: 'FUTURES',
+          eventTime: accountAt, transactionTime: accountAt,
+          balances: [], positions: [{ symbol: 'BTCUSDT', amount: 0,
+            entryPrice: 0, unrealizedPnl: 0, positionSide: 'LONG' }], raw: {} },
+      });
+      const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: adapterLookup(fx, rows).lookup });
+      expect(result).toMatchObject({ kind: 'APPLIED', status: 'FILLED', fillCount: 2 });
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } }))
+        .toMatchObject({ status: 'CLOSED', quantity: 1,
+          continuityState: allTimed ? 'EXTERNAL_CLOSE_CONFIRMED' : 'RECOVERING' });
+      const replay = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: adapterLookup(fx, rows).lookup });
+      expect(replay.kind).toBe('APPLIED');
+      expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
+    });
+
   it('rebases console and automation after a DCA commit crash, then repairs cache on replay', async () => {
     const fx = await fixture('DCA');
     await runtimePositionStateStore.setPositionRuntimeState(fx.position!.id, {

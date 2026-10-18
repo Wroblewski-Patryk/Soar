@@ -1033,6 +1033,7 @@ model OrderFill {
   feeCurrency     String?
   feeRate         Float?
   executedAt      DateTime
+  venueExecutedAt DateTime?
   raw             Json?
 
   createdAt DateTime @default(now())
