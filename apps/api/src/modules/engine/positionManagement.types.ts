@@ -33,7 +33,7 @@ export const TrailingLossConfigSchema = z.object({
 });
 
 // Missing in stored strategy configs means the original quantity-based behavior.
-// The explicit USDT mode is opt-in until PAPER and LIVE are migrated separately.
+// The explicit USDT mode is opt-in in BACKTEST, PAPER and LIVE.
 export const DcaSizingBasisSchema = z.enum(['quantity_v1', 'usdt_contribution_v1']);
 export type DcaSizingBasis = z.infer<typeof DcaSizingBasisSchema>;
 

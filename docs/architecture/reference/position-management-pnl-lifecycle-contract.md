@@ -63,9 +63,9 @@ negative.
   the effective version is `quantity_v1`: multiplier `1` adds the current asset
   quantity. The explicit `quantity_v1` value has the same behavior.
 - The explicit `additional.dcaSizingBasis: "usdt_contribution_v1"` opts the
-  computation engine and both BACKTEST replay paths into USDT contribution
-  sizing. This version is not wired to the strategy form or PAPER/LIVE orders
-  under SOAR-DCA-USDT-001A. Unknown versions fail BACKTEST parsing.
+  computation engine, both BACKTEST replay paths, and PAPER/LIVE runtime into
+  USDT contribution sizing. The strategy form does not yet expose this opt-in.
+  Unknown versions fail parsing or runtime policy validation.
 - For `usdt_contribution_v1`, current book contribution is the sum of confirmed
   fill notionals, represented by `averageEntryPrice * quantity` in the
   position state. The next add has USDT notional `bookContribution * multiplier`
@@ -75,24 +75,38 @@ negative.
   leverage affects required margin and ROI, not the USDT notional multiplier.
   BACKTEST uses its historical DCA probe fill price and reserves
   `addNotional / leverage` as margin.
+- In PAPER/LIVE, SPOT contribution is confirmed quote spent and FUTURES
+  contribution is confirmed USDT margin. With a fixed position leverage, these
+  are `averageEntryPrice * quantity` for SPOT and that notional divided by
+  leverage for FUTURES. The next add uses the current contribution times its
+  multiplier, then converts the required notional at the current execution
+  price. The order fill's actual price and quantity update the canonical
+  position, so the next contribution and ROI derive from the filled average
+  after restart. The DCA count and advanced level indices are recovered from
+  confirmed DCA trades and successful execution dedupe records. If those records
+  cannot be reconciled after restart, runtime DCA stops with
+  `DCA_PROGRESS_UNCONFIRMED`. Trading fees and funding remain separate from
+  contribution.
 - Basic DCA repeats its first configured threshold and multiplier for exactly
   `dcaTimes` executions. Advanced DCA uses each configured threshold and
   multiplier pair once. Each later threshold is evaluated against ROI from the
   updated average entry. The versioned BACKTEST parser rejects incomplete or
   invalid USDT level pairs instead of silently falling back to old sizing.
-- Until PAPER/LIVE have their own USDT order sizing, bot creation, activation,
-  enabled strategy attachment, candle decisions, position automation and direct DCA
-  execution reject `usdt_contribution_v1` before an order can be created. An
-  existing active bot loaded after restart is blocked and emits a runtime
-  `PRETRADE_BLOCKED` reason. Quantity-based runtime DCA retains multiplier
-  limit `2`; larger configured values fail closed rather than being silently
-  interpreted as asset quantity. Direct DCA reads the position and its active
-  bot strategy links, rejects a supplied strategy or bot ID that differs from
-  that canonical owner, and refuses an order if the position or strategy
-  configuration cannot be read. Position automation blocks automatic DCA and
-  protection closes with `PRETRADE_BLOCKED` when strategy configuration is
-  unavailable; the owner's separate manual close path remains available. A
-  full single-symbol BACKTEST replay with
+- PAPER/LIVE require a canonical, in-sync position, matching strategy and bot
+  ownership, a USDT pair, known venue minimum amount/notional and amount
+  precision, and sufficient free wallet USDT before a USDT DCA order is
+  submitted. If any of these checks fail, the add is blocked. Venues reporting
+  a contract size other than one are blocked until contract conversion is
+  represented in the runtime contribution calculation. For imported futures
+  positions, the exchange-confirmed margin must agree with the canonical
+  average, quantity, and leverage before another add. Quantity-based runtime
+  DCA retains multiplier limit `2`; larger configured values fail closed.
+  Direct DCA reads the position and its active bot strategy links, rejects a
+  supplied strategy or bot ID that differs from the canonical owner, and
+  refuses an order if the position or strategy configuration cannot be read.
+  Position automation blocks automatic DCA and protection closes with
+  `PRETRADE_BLOCKED` when strategy configuration is unavailable; the owner's
+  separate manual close path remains available. A full single-symbol BACKTEST replay with
   nonzero modeled fee verifies that fee changes trade cost, not the USDT
   contribution used by the DCA multiplier.
 

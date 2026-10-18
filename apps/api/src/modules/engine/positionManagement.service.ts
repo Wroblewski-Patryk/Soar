@@ -8,6 +8,7 @@ import {
 import { resolvePositionPnlFraction } from './positionPnlSemantics';
 
 const round = (value: number) => Math.round(value * 100_000) / 100_000;
+const roundContributionQuantity = (value: number) => Math.round(value * 1_000_000_000_000) / 1_000_000_000_000;
 
 const isTakeProfitHit = (side: 'LONG' | 'SHORT', currentPrice: number, takeProfitPrice: number) => {
   return side === 'LONG' ? currentPrice >= takeProfitPrice : currentPrice <= takeProfitPrice;
@@ -238,14 +239,15 @@ export const evaluatePositionManagement = (
         (nextState.averageEntryPrice * nextState.quantity + parsedInput.currentPrice * addedQuantity) /
         newQuantity;
 
-      nextState.quantity = round(newQuantity);
-      nextState.averageEntryPrice = round(newAverage);
+      const usdtContribution = parsedInput.dca?.sizingBasis === 'usdt_contribution_v1';
+      nextState.quantity = usdtContribution ? roundContributionQuantity(newQuantity) : round(newQuantity);
+      nextState.averageEntryPrice = usdtContribution ? roundContributionQuantity(newAverage) : round(newAverage);
       executedDcaLevelIndices.add(nextLevelIndex);
       nextState.currentAdds = executedDcaLevelIndices.size;
       nextState.executedDcaLevelIndices = [...executedDcaLevelIndices].sort((left, right) => left - right);
       nextState.lastDcaPrice = parsedInput.currentPrice;
       dcaExecuted = true;
-      dcaAddedQuantity = round(addedQuantity);
+      dcaAddedQuantity = usdtContribution ? roundContributionQuantity(addedQuantity) : round(addedQuantity);
       dcaLevelIndex = nextLevelIndex;
     }
   }

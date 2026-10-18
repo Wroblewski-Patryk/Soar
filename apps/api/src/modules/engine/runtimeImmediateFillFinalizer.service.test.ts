@@ -104,7 +104,10 @@ describe('immediate filled runtime order finalization', () => {
       fillPrice: 90, fillQuantity: 1, feePaid: null, mode: 'LIVE',
     });
     expect(await prisma.trade.findFirstOrThrow({ where: { orderId: order.id } }))
-      .toMatchObject({ lifecycleAction: 'DCA', fee: null, feePending: true });
+      .toMatchObject({ lifecycleAction: 'DCA', price: 90, quantity: 1,
+        fee: null, feePending: true });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ quantity: 2, entryPrice: 95 });
   });
 
   it('settles an imported runtime close with explicit zero entry and exit fees', async () => {

@@ -85,9 +85,11 @@ export type RuntimePositionAutomationDeps = {
     strategyId?: string | null;
     symbol: string;
     positionSide: PositionSide;
+    sizingBasis?: 'quantity_v1' | 'usdt_contribution_v1';
   }) => Promise<{
     currentAdds: number;
     lastDcaPrice?: number;
+    executedDcaLevelIndices?: number[];
   } | null>;
   executeDca: (input: {
     userId: string;

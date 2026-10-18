@@ -48,8 +48,7 @@ describe('runtime position USDT DCA guard', () => {
 
   it.each([
     ['PAPER', 2], ['PAPER', 5], ['LIVE', 2], ['LIVE', 5],
-  ] as const)('blocks existing %s position with multiplier %s across restart', async (mode, multiplier) => {
-    const executeDca = vi.fn(async () => ({ feePaid: 0, executed: true }));
+  ] as const)('executes existing %s USDT position with multiplier %s once across restart', async (mode, multiplier) => {
     const recordRuntimeEvent = vi.fn(async () => undefined);
     const position = {
       id: `pos-usdt-guard-${mode}-${multiplier}`,
@@ -67,6 +66,15 @@ describe('runtime position USDT DCA guard', () => {
         } },
       },
     };
+    let filled = false;
+    const executeDca = vi.fn(async (input: { addedQuantity: number }) => {
+      const nextQuantity = position.quantity + input.addedQuantity;
+      const nextEntryPrice = (position.entryPrice * position.quantity + 0.8 * input.addedQuantity) / nextQuantity;
+      position.quantity = nextQuantity;
+      position.entryPrice = nextEntryPrice;
+      filled = true;
+      return { feePaid: 0, executed: true, nextQuantity, nextEntryPrice };
+    });
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [position]),
       getStrategyConfigById: vi.fn(async () => ({ additional: {
@@ -75,6 +83,10 @@ describe('runtime position USDT DCA guard', () => {
         dcaLevels: [{ percent: -20, multiplier }],
       } })),
       executeDca, recordRuntimeEvent,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      getDurableDcaProgress: vi.fn(async () => ({ currentAdds: filled ? 1 : 0,
+        lastDcaPrice: filled ? 0.8 : undefined,
+        executedDcaLevelIndices: filled ? [0] : [] })),
     };
     const event = { type: 'ticker' as const, exchange: 'BINANCE' as const,
       marketType: 'FUTURES' as const, symbol: 'BTCUSDT', eventTime: 1_000,
@@ -83,11 +95,12 @@ describe('runtime position USDT DCA guard', () => {
     await new RuntimePositionAutomationService(deps).handleTickerEvent(event);
     await new RuntimePositionAutomationService(deps).handleTickerEvent(event);
 
-    expect(executeDca).not.toHaveBeenCalled();
-    expect(recordRuntimeEvent).toHaveBeenCalledTimes(2);
+    expect(executeDca).toHaveBeenCalledTimes(1);
+    expect(executeDca).toHaveBeenCalledWith(expect.objectContaining({
+      mode, dcaLevelIndex: 0, addedQuantity: 1 * multiplier / 0.8,
+    }));
     expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
-      mode, eventType: 'PRETRADE_BLOCKED',
-      payload: expect.objectContaining({ reason: 'USDT_DCA_RUNTIME_UNSUPPORTED' }),
+      mode, eventType: 'DCA_EXECUTED',
     }));
   });
 });

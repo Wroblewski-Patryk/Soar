@@ -38,7 +38,10 @@ import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSy
 import { normalizeSymbols } from '../bots/runtimeSymbolUniverse.service';
 import { listRuntimeAutomationOpenPositionsBySymbol } from './runtimePositionAutomationDefaultPositionDeps';
 import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
-import { assertRuntimeDcaPolicy, assertRuntimeDcaOrderAllowed, resolveRuntimeDcaPolicyBlock, RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT } from './runtimeDcaPolicy';
+import { assertRuntimeDcaPolicy, assertRuntimeDcaOrderAllowed, resolveRuntimeDcaPolicyBlock,
+  RuntimeDcaPolicyError, RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT } from './runtimeDcaPolicy';
+import { assertRuntimeDcaOrderRules, getRuntimeDcaOrderRules } from './runtimeDcaOrderRules';
+import { loadDurableDcaProgress } from './runtimeDurableDcaProgress';
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
   dcaMaxAdds: number;
@@ -111,69 +114,6 @@ const loadCanonicalPositionExecutionState = async (positionId: string) => {
   };
 };
 
-const loadDurableDcaProgress = async (input: {
-  userId: string;
-  positionId: string;
-  botId?: string | null;
-  walletId?: string | null;
-  strategyId?: string | null;
-  symbol: string;
-  positionSide: PositionSide;
-}) => {
-  const entrySide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const scopedLifecycleWhere =
-    input.botId || input.walletId || input.strategyId
-      ? {
-          AND: [
-            {
-              userId: input.userId,
-              symbol: input.symbol,
-              managementMode: 'BOT_MANAGED' as const,
-            },
-            ...(input.botId ? [{ botId: input.botId }] : []),
-            ...(input.walletId ? [{ OR: [{ walletId: input.walletId }, { walletId: null }] }] : []),
-            ...(input.strategyId ? [{ OR: [{ strategyId: input.strategyId }, { strategyId: null }] }] : []),
-          ],
-        }
-      : null;
-  const trades = await prisma.trade.findMany({
-    where: {
-      lifecycleAction: { in: ['OPEN', 'DCA', 'CLOSE'] },
-      OR: [
-        { positionId: input.positionId },
-        ...(scopedLifecycleWhere ? [scopedLifecycleWhere] : []),
-      ],
-    },
-    select: {
-      id: true,
-      lifecycleAction: true,
-      price: true,
-      side: true,
-      executedAt: true,
-    },
-    orderBy: { executedAt: 'asc' },
-  });
-  const dedupedTrades = [...new Map(trades.map((trade) => [trade.id, trade])).values()]
-    .sort((left, right) => left.executedAt.getTime() - right.executedAt.getTime());
-  const latestCloseIndex = dedupedTrades.findLastIndex(
-    (trade) => trade.side !== entrySide && trade.lifecycleAction === 'CLOSE'
-  );
-  const lifecycleTrades = latestCloseIndex >= 0
-    ? dedupedTrades.slice(latestCloseIndex + 1)
-    : dedupedTrades;
-  const entryTrades = lifecycleTrades.filter(
-    (trade) => trade.side === entrySide && (trade.lifecycleAction === 'OPEN' || trade.lifecycleAction === 'DCA')
-  );
-  const entryLegAdds = Math.max(0, entryTrades.length - 1);
-  const dcaTrades = entryTrades.filter((trade) => trade.lifecycleAction === 'DCA');
-  const explicitDcaAdds = dcaTrades.length;
-  const lastDcaTrade = dcaTrades.at(-1);
-  return {
-    currentAdds: Math.max(entryLegAdds, explicitDcaAdds),
-    lastDcaPrice: lastDcaTrade?.price,
-  };
-};
-
 export const executeRuntimeDca = async (input: {
   userId: string;
   botId?: string | null;
@@ -189,10 +129,29 @@ export const executeRuntimeDca = async (input: {
   currentQuantity: number;
   currentEntryPrice: number;
   eventAt?: Date;
-}) => {
+}, deps: { getOrderRules?: typeof getRuntimeDcaOrderRules;
+  resolveFundsExhausted?: typeof resolveRuntimeDcaFundsExhausted } = {}) => {
   const dcaQuantity = Math.max(0, input.addedQuantity);
   if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
-  await assertRuntimeDcaOrderAllowed(input);
+  const usdtContext = await assertRuntimeDcaOrderAllowed(input);
+  if (usdtContext) {
+    if (usdtContext.mode !== input.mode) throw new RuntimeDcaPolicyError({
+      code: 'DCA_CONTRIBUTION_UNCONFIRMED', message: 'DCA mode does not match the canonical wallet',
+    });
+    const rules = await (deps.getOrderRules ?? getRuntimeDcaOrderRules)({
+      exchange: usdtContext.exchange, marketType: usdtContext.marketType, symbol: input.symbol,
+    });
+    assertRuntimeDcaOrderRules({ quantity: dcaQuantity, markPrice: input.markPrice, rules });
+    const exhausted = await (deps.resolveFundsExhausted ?? resolveRuntimeDcaFundsExhausted)({
+      userId: input.userId, botId: input.botId, walletId: usdtContext.walletId,
+      mode: input.mode, exchange: usdtContext.exchange, marketType: usdtContext.marketType,
+      paperStartBalance: usdtContext.paperStartBalance, markPrice: input.markPrice,
+      addedQuantity: dcaQuantity, leverage: usdtContext.leverage, nowMs: Date.now(),
+    });
+    if (exhausted) throw new RuntimeDcaPolicyError({
+      code: 'DCA_FUNDS_EXHAUSTED', message: 'Runtime USDT DCA requires more free USDT than the wallet has',
+    });
+  }
   const dedupeKey = buildDcaExecutionDedupeKey({
     userId: input.userId,
     botId: input.botId,
@@ -238,7 +197,6 @@ export const executeRuntimeDca = async (input: {
   }
 
   const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
   const runtimeSessionId = input.mode === 'LIVE' && input.botId
     ? await runtimeTelemetryService.ensureRuntimeSession({
         userId: input.userId, botId: input.botId, mode: 'LIVE',
@@ -271,10 +229,17 @@ export const executeRuntimeDca = async (input: {
       return { feePaid: 0, executed: false };
     }
 
+    if (usdtContext && input.mode === 'LIVE'
+      && (!isPositiveFiniteNumber(opened.averageFillPrice)
+        || !isPositiveFiniteNumber(opened.filledQuantity))) {
+      throw Object.assign(new Error('Confirmed LIVE DCA fill price and quantity are unavailable'),
+        { code: 'LIVE_EXECUTION_UNKNOWN' });
+    }
     const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
     const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
     const feePending = input.mode === 'LIVE' && (opened.feePending || opened.fee == null || opened.feeSource !== 'EXCHANGE_FILL');
-    const feePaid = input.mode === 'LIVE' ? (feePending ? null : opened.fee) : estimatedFee;
+    const feePaid = input.mode === 'LIVE' ? (feePending ? null : opened.fee)
+      : executedPrice * executedQuantity * resolveRuntimeTakerFeeRate(input.mode);
     const finalized = await finalizeRuntimeDcaFill({
       userId: input.userId, botId: input.botId, walletId: input.walletId,
       strategyId: input.strategyId, positionId: input.positionId,
@@ -443,7 +408,10 @@ export const buildPositionManagementInput = (
       : configuredMaxAdds;
   const dcaStepPercent = Math.abs(toSignedPercent(dcaLevels[0]?.percent, -(fallback.dcaStepPercent)));
   const dcaMultiplier = toPositive(dcaLevels[0]?.multiplier ?? additionalConfig?.dcaMultiplier, 1 + fallback.dcaAddSizeFraction);
-  const dcaAddSizeFraction = Math.max(0.01, Math.min(RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT, dcaMultiplier));
+  const sizingBasis = additionalConfig?.dcaSizingBasis === 'usdt_contribution_v1'
+    ? 'usdt_contribution_v1' as const : 'quantity_v1' as const;
+  const dcaAddSizeFraction = Math.max(0.01, sizingBasis === 'quantity_v1'
+    ? Math.min(RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT, dcaMultiplier) : dcaMultiplier);
   const dcaLevelPercents =
     dcaMode === 'advanced'
       ? configuredDcaLevelPercents
@@ -517,6 +485,7 @@ export const buildPositionManagementInput = (
             maxAdds: dcaMaxAdds,
             stepPercent: Math.max(0.0001, dcaStepPercent),
             addSizeFraction: dcaAddSizeFraction,
+            sizingBasis,
             levelPercents: dcaLevelPercents.length > 0 ? dcaLevelPercents : undefined,
             addSizeFractions: dcaLevelFractions.length > 0 ? dcaLevelFractions : undefined,
           }
@@ -756,7 +725,23 @@ export class RuntimePositionAutomationService {
       strategyId: effectiveStrategyId,
       symbol: position.symbol,
       positionSide: position.side,
+      sizingBasis: input.dca?.sizingBasis,
     });
+    if (input.dca?.sizingBasis === 'usdt_contribution_v1'
+      && (!durableDcaProgress
+        || durableDcaProgress.currentAdds < (persistedState?.currentAdds ?? 0)
+        || (durableDcaProgress.currentAdds > 0
+          && durableDcaProgress.executedDcaLevelIndices?.length !== durableDcaProgress.currentAdds))) {
+      if (position.botId) await this.deps.recordRuntimeEvent?.({
+        userId: position.userId, botId: position.botId, mode,
+        eventType: 'PRETRADE_BLOCKED', level: 'WARN', symbol: position.symbol,
+        strategyId: effectiveStrategyId ?? undefined,
+        message: 'Runtime USDT DCA progress cannot be reconciled with durable fills',
+        payload: { positionId: position.id, reason: 'DCA_PROGRESS_UNCONFIRMED' },
+        eventAt: new Date(event.eventTime),
+      });
+      return;
+    }
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
     const basePreviousState = stateRebasedToCanonical
       ? position.origin === 'BOT' && persistedState
@@ -765,11 +750,14 @@ export class RuntimePositionAutomationService {
         : defaultState
       : persistedState ?? defaultState;
     const previousState =
-      durableDcaProgress && durableDcaProgress.currentAdds > basePreviousState.currentAdds
+      durableDcaProgress && (durableDcaProgress.currentAdds > basePreviousState.currentAdds
+        || (durableDcaProgress.currentAdds === basePreviousState.currentAdds
+          && (durableDcaProgress.executedDcaLevelIndices?.length ?? 0) > 0))
         ? {
             ...basePreviousState,
             currentAdds: durableDcaProgress.currentAdds,
-            executedDcaLevelIndices: undefined,
+            executedDcaLevelIndices: durableDcaProgress.executedDcaLevelIndices
+              ?? basePreviousState.executedDcaLevelIndices,
             lastDcaPrice: durableDcaProgress.lastDcaPrice ?? basePreviousState.lastDcaPrice,
           }
         : basePreviousState;

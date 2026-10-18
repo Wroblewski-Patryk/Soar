@@ -4,10 +4,10 @@ import {
   createMarketGroup, createPayload, createStrategy, registerAndLogin, resetBotsE2eState,
 } from './bots.e2e.shared';
 
-describe('bot USDT DCA runtime guard', () => {
+describe('bot USDT DCA runtime attachment', () => {
   beforeEach(resetBotsE2eState);
 
-  it.each([2, 5])('saves BACKTEST strategy but rejects PAPER bot attachment with multiplier %s', async (multiplier) => {
+  it.each([2, 5])('attaches a PAPER bot with USDT contribution multiplier %s', async (multiplier) => {
     const email = `bots-usdt-dca-${multiplier}@example.com`;
     const agent = await registerAndLogin(email);
     const strategyId = await createStrategy(agent, `USDT DCA ${multiplier}`, {
@@ -22,16 +22,12 @@ describe('bot USDT DCA runtime guard', () => {
       ...createPayload({ strategyId, marketGroupId }), isActive: true,
     });
 
-    expect(createRes.status).toBe(409);
-    expect(createRes.body.error.message).toBe('strategy DCA sizing is not supported by PAPER or LIVE runtime');
-    expect(createRes.body.error.details).toMatchObject({
-      strategyId, reason: 'USDT_DCA_RUNTIME_UNSUPPORTED',
-    });
-    expect(await prisma.bot.count()).toBe(0);
+    expect(createRes.status).toBe(201);
+    expect((await prisma.bot.findUniqueOrThrow({ where: { id: createRes.body.id } })).isActive).toBe(true);
     expect(await prisma.order.count()).toBe(0);
   });
 
-  it.each([2, 5])('rejects activation after an attached strategy changes to USDT multiplier %s', async (multiplier) => {
+  it.each([2, 5])('activates after an attached strategy changes to USDT multiplier %s', async (multiplier) => {
     const email = `bots-usdt-activation-${multiplier}@example.com`;
     const agent = await registerAndLogin(email);
     const strategyId = await createStrategy(agent);
@@ -52,11 +48,8 @@ describe('bot USDT DCA runtime guard', () => {
     expect(strategyUpdateRes.status).toBe(200);
 
     const activateRes = await agent.put(`/dashboard/bots/${botId}`).send({ isActive: true });
-    expect(activateRes.status).toBe(409);
-    expect(activateRes.body.error.details).toMatchObject({
-      strategyId, reason: 'USDT_DCA_RUNTIME_UNSUPPORTED',
-    });
-    expect((await prisma.bot.findUniqueOrThrow({ where: { id: botId } })).isActive).toBe(false);
+    expect(activateRes.status).toBe(200);
+    expect((await prisma.bot.findUniqueOrThrow({ where: { id: botId } })).isActive).toBe(true);
     expect(await prisma.order.count()).toBe(0);
   });
 });

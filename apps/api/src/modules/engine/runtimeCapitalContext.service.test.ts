@@ -503,6 +503,21 @@ describe('runtimeCapitalContext', () => {
     expect(exhaustedHigh).toBe(true);
   });
 
+  it('charges SPOT DCA the full quote amount and fails closed for invalid add amounts', async () => {
+    const deps = buildDeps({ listOpenBotManagedPositions: async () => [] });
+    const base = {
+      userId: 'u-spot-dca-cash', botId: 'b-spot-dca-cash',
+      mode: 'PAPER' as const, exchange: 'BINANCE' as const,
+      marketType: 'SPOT' as const, paperStartBalance: 100,
+      markPrice: 20, addedQuantity: 6, leverage: 10, nowMs: 9_000,
+    };
+    expect(await resolveRuntimeDcaFundsExhausted(base, deps)).toBe(true);
+    expect(await resolveRuntimeDcaFundsExhausted({ ...base, marketType: 'FUTURES' }, deps))
+      .toBe(false);
+    expect(await resolveRuntimeDcaFundsExhausted({ ...base, addedQuantity: Number.NaN }, deps))
+      .toBe(true);
+  });
+
   it('treats PAPER capital as bot-scoped even when a wallet historically had other bot exposure', async () => {
     const listOpenBotManagedPositions = vi.fn(async () => [
       // Exposure from another bot on the same shared wallet

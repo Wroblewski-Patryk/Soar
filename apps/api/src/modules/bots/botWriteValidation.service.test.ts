@@ -37,18 +37,16 @@ describe('assertStrategiesCompatibleWithMarketType', () => {
     })).not.toThrow();
   });
 
-  it.each([2, 5])('blocks USDT contribution multiplier %s before PAPER or LIVE bot activation', (multiplier) => {
+  it.each([2, 5])('accepts explicit USDT contribution multiplier %s for bot attachment', (multiplier) => {
     expect(() => assertStrategiesCompatibleWithMarketType({
       marketType: 'FUTURES',
       strategies: [{
         id: 'strategy-usdt',
-        config: { additional: { dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+        config: { additional: { dcaEnabled: true, dcaMode: 'basic', dcaTimes: 1,
+          dcaSizingBasis: 'usdt_contribution_v1',
           dcaLevels: [{ percent: -20, multiplier }] } },
       }],
-    })).toThrowError(expect.objectContaining({
-      code: 'RUNTIME_DCA_CONFIG_UNSUPPORTED',
-      details: { strategyId: 'strategy-usdt', reason: 'USDT_DCA_RUNTIME_UNSUPPORTED' },
-    }));
+    })).not.toThrow();
   });
 
   it('preserves the quantity multiplier limit while allowing a legacy multiplier of 2', () => {
