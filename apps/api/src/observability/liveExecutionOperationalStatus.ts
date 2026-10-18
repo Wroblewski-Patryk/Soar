@@ -12,6 +12,25 @@ const parse = (raw: string | null): Record<string, unknown> | null => {
 };
 const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value)
   ? value : null;
+const timestamp = (value: unknown) => typeof value === 'number' &&
+  Number.isSafeInteger(value) && value >= 0 ? value : null;
+const ageAt = (value: number | null, now: number) =>
+  value != null && Number.isSafeInteger(now) && now >= value ? now - value : null;
+const discoveryCoverageAt = (value: unknown, now: number) => {
+  const source = record(value);
+  if (!source) return null;
+  const scanStartedAt = timestamp(source.scanStartedAt);
+  const lastFullScanAt = timestamp(source.lastFullScanAt);
+  const complete = source.complete === true;
+  return {
+    complete,
+    scanStartedAt,
+    lastFullScanAt,
+    scanAgeMs: complete ? null : ageAt(scanStartedAt, now),
+    lastFullScanAgeMs: ageAt(lastFullScanAt, now),
+    visitedCount: number(source.visitedCount),
+  };
+};
 
 export type LiveExecutionOperationalStatus = Awaited<ReturnType<typeof readLiveExecutionOperationalStatus>>;
 
@@ -63,15 +82,19 @@ export const readLiveExecutionOperationalStatus = async (options: {
     const recoveryRecent = recoveryUpdatedAt != null && now - recoveryUpdatedAt >= 0 &&
       now - recoveryUpdatedAt <= 90_000;
     const discovery = record(recovery?.cacheRepairDiscovery);
-    const openCoverage = record(discovery?.openPositions);
-    const cacheCoverage = record(discovery?.cacheKeys);
+    const openCoverage = discoveryCoverageAt(discovery?.openPositions, now);
+    const cacheCoverage = discoveryCoverageAt(discovery?.cacheKeys, now);
     const maxCoverageAgeMs = number(discovery?.maxCoverageAgeMs);
-    const openAgeMs = number(openCoverage?.lastFullScanAgeMs);
-    const cacheAgeMs = number(cacheCoverage?.lastFullScanAgeMs);
     const discoveryHealthy = discovery?.complete === true &&
       openCoverage?.complete === true && cacheCoverage?.complete === true &&
-      maxCoverageAgeMs != null && openAgeMs != null && cacheAgeMs != null &&
-      openAgeMs <= maxCoverageAgeMs && cacheAgeMs <= maxCoverageAgeMs;
+      maxCoverageAgeMs != null && maxCoverageAgeMs >= 0 &&
+      openCoverage.scanStartedAt != null && cacheCoverage.scanStartedAt != null &&
+      openCoverage.lastFullScanAt != null && cacheCoverage.lastFullScanAt != null &&
+      openCoverage.scanStartedAt <= openCoverage.lastFullScanAt &&
+      cacheCoverage.scanStartedAt <= cacheCoverage.lastFullScanAt &&
+      openCoverage.lastFullScanAgeMs != null && cacheCoverage.lastFullScanAgeMs != null &&
+      openCoverage.lastFullScanAgeMs <= maxCoverageAgeMs &&
+      cacheCoverage.lastFullScanAgeMs <= maxCoverageAgeMs;
     const recoveryHealthy = recoveryRecent && recovery?.status === 'healthy' && discoveryHealthy;
     return {
       status: streamStatus === 'healthy' && recoveryHealthy ? 'healthy' : 'degraded',
@@ -89,7 +112,8 @@ export const readLiveExecutionOperationalStatus = async (options: {
         cacheRepairPendingCount: recoveryRecent ? number(recovery?.cacheRepairPendingCount) : null,
         oldestCacheRepairAgeMs: recoveryRecent ? number(recovery?.oldestCacheRepairAgeMs) : null,
         cacheRepairDiscovery: {
-          complete: recoveryRecent ? discovery?.complete === true : false,
+          complete: recoveryRecent && discovery?.complete === true &&
+            openCoverage?.complete === true && cacheCoverage?.complete === true,
           maxCoverageAgeMs: recoveryRecent ? maxCoverageAgeMs : null,
           openPositions: recoveryRecent ? openCoverage : null,
           cacheKeys: recoveryRecent ? cacheCoverage : null,

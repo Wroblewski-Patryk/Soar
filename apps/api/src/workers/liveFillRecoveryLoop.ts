@@ -11,7 +11,8 @@ type CursorState = { intentCursor: string | null; orderCursor: string | null;
   intentDone: boolean; orderDone: boolean };
 type RepairScanState = { cursor: string | null; backlog: string[];
   startedAt: number; lastCompletedAt: number | null; visitedCount: number };
-type RepairCoverage = { complete: boolean; scanAgeMs: number | null;
+type RepairCoverage = { complete: boolean; scanStartedAt: number;
+  lastFullScanAt: number | null; scanAgeMs: number | null;
   lastFullScanAgeMs: number | null; visitedCount: number };
 type RecoveryOutcome = Awaited<ReturnType<typeof recoverLiveFillCandidateOnce>>;
 type Dependencies = {
@@ -58,6 +59,8 @@ const parseRepairScan = (raw: string | null): RepairScanState => {
 };
 const coverage = (state: RepairScanState, complete: boolean, now: number): RepairCoverage => ({
   complete,
+  scanStartedAt: state.startedAt,
+  lastFullScanAt: state.lastCompletedAt,
   scanAgeMs: complete ? null : Math.max(0, now - state.startedAt),
   lastFullScanAgeMs: state.lastCompletedAt == null ? null :
     Math.max(0, now - state.lastCompletedAt),

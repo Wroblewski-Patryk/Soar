@@ -72,6 +72,83 @@ class SimulatedStream {
 }
 
 describe('LIVE Binance stream execution worker with local Redis', () => {
+  proofIt('recomputes discovery age at each read from persisted scan timestamps', async () => {
+    const redisUrl = localRedisUrl();
+    const namespace = `soar:live-age-proof:${randomUUID()}`;
+    const streamNamespace = `${namespace}:stream`;
+    const recoveryNamespace = `${namespace}:recovery`;
+    const publishedAt = Date.now();
+    const lastFullScanAt = publishedAt - 179_000;
+    const scan = { complete: true, scanStartedAt: lastFullScanAt,
+      lastFullScanAt, lastFullScanAgeMs: 179_000, scanAgeMs: null, visitedCount: 1 };
+    const snapshot = JSON.stringify({ status: 'healthy', updatedAt: publishedAt,
+      pendingCount: 0, cacheRepairPendingCount: 0,
+      cacheRepairDiscovery: { complete: true, maxCoverageAgeMs: 180_000,
+        openPositions: scan, cacheKeys: scan } });
+    let redis = createClient({ url: redisUrl });
+    redis.on('error', () => undefined);
+    const desired = (scannedAt: number) => JSON.stringify({
+      status: 'ok', accounts: [], scannedAt,
+    });
+    const read = (now: number) => readLiveExecutionOperationalStatus({
+      redisUrl, streamNamespace, recoveryNamespace, now,
+    });
+    try {
+      await redis.connect();
+      await redis.set(`${streamNamespace}:desired`, desired(publishedAt));
+      await redis.set(`${recoveryNamespace}:status`, snapshot);
+      const first = await read(publishedAt);
+      expect(first.status).toBe('healthy');
+      expect(first.recovery.cacheRepairDiscovery.openPositions?.lastFullScanAgeMs).toBe(179_000);
+
+      await redis.set(`${streamNamespace}:desired`, desired(publishedAt + 1_000));
+      const boundary = await read(publishedAt + 1_000);
+      expect(boundary.status).toBe('healthy');
+      expect(boundary.recovery.cacheRepairDiscovery.cacheKeys?.lastFullScanAgeMs).toBe(180_000);
+
+      // A new reader after restart sees the same recovery snapshot 60 seconds
+      // later. Only stream freshness changes; no recovery status is published.
+      await redis.quit();
+      redis = createClient({ url: redisUrl });
+      redis.on('error', () => undefined);
+      await redis.connect();
+      await redis.set(`${streamNamespace}:desired`, desired(publishedAt + 60_000));
+      expect(await redis.get(`${recoveryNamespace}:status`)).toBe(snapshot);
+      const late = await read(publishedAt + 60_000);
+      expect(late.stream.status).toBe('healthy');
+      expect(late.recovery.status).toBe('degraded');
+      expect(late.recovery.cacheRepairDiscovery.openPositions?.lastFullScanAgeMs).toBe(239_000);
+
+      const missing = JSON.parse(snapshot);
+      delete missing.cacheRepairDiscovery.openPositions.lastFullScanAt;
+      await redis.set(`${recoveryNamespace}:status`, JSON.stringify(missing));
+      const absent = await read(publishedAt + 60_000);
+      expect(absent.recovery.status).toBe('degraded');
+      expect(absent.recovery.cacheRepairDiscovery.openPositions?.lastFullScanAgeMs).toBeNull();
+
+      const incomplete = JSON.parse(snapshot);
+      incomplete.cacheRepairDiscovery.complete = false;
+      incomplete.cacheRepairDiscovery.cacheKeys.complete = false;
+      incomplete.cacheRepairDiscovery.cacheKeys.scanStartedAt = publishedAt - 10_000;
+      await redis.set(`${recoveryNamespace}:status`, JSON.stringify(incomplete));
+      const partial = await read(publishedAt + 60_000);
+      expect(partial.recovery.status).toBe('degraded');
+      expect(partial.recovery.cacheRepairDiscovery.cacheKeys?.scanAgeMs).toBe(70_000);
+
+      const future = JSON.parse(snapshot);
+      future.cacheRepairDiscovery.cacheKeys.lastFullScanAt = publishedAt + 60_001;
+      await redis.set(`${recoveryNamespace}:status`, JSON.stringify(future));
+      const clockMismatch = await read(publishedAt + 60_000);
+      expect(clockMismatch.recovery.status).toBe('degraded');
+      expect(clockMismatch.recovery.cacheRepairDiscovery.cacheKeys?.lastFullScanAgeMs).toBeNull();
+    } finally {
+      if (redis.isOpen) {
+        await redis.del([`${streamNamespace}:desired`, `${recoveryNamespace}:status`]);
+        await redis.quit();
+      }
+    }
+  }, 15_000);
+
   proofIt('transfers one subscription to a second OS process after a crash', async () => {
     const redisUrl = localRedisUrl();
     const namespace = `soar:live-stream-proof:${randomUUID()}`;
@@ -235,11 +312,14 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       stream: streamB.asService(), decryptKey: (value) => value, applyEvent });
     try {
       await redis.connect();
+      const coverageAt = Date.now();
       await redis.set(`${recoveryNamespace}:status`, JSON.stringify({
         status: 'healthy', updatedAt: Date.now(), pendingCount: 0, oldestPendingAgeMs: null,
         cacheRepairDiscovery: { complete: true, maxCoverageAgeMs: 180_000,
-          openPositions: { complete: true, lastFullScanAgeMs: 0 },
-          cacheKeys: { complete: true, lastFullScanAgeMs: 0 } },
+          openPositions: { complete: true, scanStartedAt: coverageAt,
+            lastFullScanAt: coverageAt, lastFullScanAgeMs: 0 },
+          cacheKeys: { complete: true, scanStartedAt: coverageAt,
+            lastFullScanAt: coverageAt, lastFullScanAgeMs: 0 } },
         unknownTotal: 0, errorTotal: 0 }), { PX: 60_000 });
       await loopA.runOnce();
       expect(streamA.connects).toEqual(['SPOT', 'FUTURES']);
@@ -257,7 +337,9 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       expect((await readLiveExecutionOperationalStatus({ redisUrl,
         streamNamespace: namespace, recoveryNamespace })).status).toBe('degraded');
       const lateRecovery = JSON.parse(coveredRecovery);
-      lateRecovery.cacheRepairDiscovery.cacheKeys.lastFullScanAgeMs = 180_001;
+      lateRecovery.cacheRepairDiscovery.cacheKeys.lastFullScanAt = Date.now() - 180_001;
+      lateRecovery.cacheRepairDiscovery.cacheKeys.scanStartedAt =
+        lateRecovery.cacheRepairDiscovery.cacheKeys.lastFullScanAt;
       await redis.set(`${recoveryNamespace}:status`, JSON.stringify(lateRecovery), { PX: 60_000 });
       expect((await readLiveExecutionOperationalStatus({ redisUrl,
         streamNamespace: namespace, recoveryNamespace })).status).toBe('degraded');

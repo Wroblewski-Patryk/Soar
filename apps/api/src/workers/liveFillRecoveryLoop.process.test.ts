@@ -200,6 +200,20 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
         return raw != null && JSON.parse(raw).lastCompletedAt != null;
       });
       await until(async () => {
+        const raw = await redis.get(`${namespace}:status`);
+        const discovery = raw ? JSON.parse(raw).cacheRepairDiscovery : null;
+        return discovery?.openPositions?.lastFullScanAt != null &&
+          discovery?.cacheKeys?.lastFullScanAt != null;
+      });
+      const readAt = Date.now() + 1_000;
+      const resumedCoverage = (await readLiveExecutionOperationalStatus({
+        redisUrl, recoveryNamespace: namespace, now: readAt,
+      })).recovery.cacheRepairDiscovery;
+      expect(resumedCoverage.openPositions?.lastFullScanAgeMs).toBe(
+        readAt - resumedCoverage.openPositions!.lastFullScanAt!);
+      expect(resumedCoverage.cacheKeys?.lastFullScanAgeMs).toBe(
+        readAt - resumedCoverage.cacheKeys!.lastFullScanAt!);
+      await until(async () => {
         const raw = await redis.get(`runtime:position-state:${position.id}`);
         return raw != null && JSON.parse(raw).quantity === 2 &&
           await redis.hGet(`${namespace}:pending:data`, intent.id) == null;
