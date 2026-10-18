@@ -1,5 +1,6 @@
 import { Exchange, OrderStatus, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
+import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import {
   CancelOrderDto,
   CloseOrderDto,
@@ -776,6 +777,7 @@ export const openOrder = async (
       submittedAt: now,
       filledAt: orderPersistenceDecision.persistedStatus === 'FILLED' ? now : null,
   };
+  let newlyCreatedLivePositionId: string | null = null;
   const persisted = await createOrderForLiveIntent({
     userId,
     exchangeOrderId,
@@ -788,9 +790,14 @@ export const openOrder = async (
       fillQuantity: orderPersistenceDecision.lifecycleFillQuantity,
       applyFillLifecycle: orderPersistenceDecision.shouldApplyImmediateFillLifecycle,
       fills, now,
+      onNewPositionCreated: (positionId) => { newlyCreatedLivePositionId = positionId; },
     }) : undefined,
   });
   if (persisted.reused) return persisted.order;
+  if (newlyCreatedLivePositionId && canonicalPayload.origin === 'BOT' && canonicalPayload.botId &&
+      !await initializeNewLiveBotPositionState({ userId, positionId: newlyCreatedLivePositionId })) {
+    throw new Error('RUNTIME_STATE_SYNC_PENDING');
+  }
   const order = persisted.order;
 
   const lifecycleResult =

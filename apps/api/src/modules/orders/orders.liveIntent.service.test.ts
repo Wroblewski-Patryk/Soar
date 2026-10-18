@@ -8,6 +8,7 @@ import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.servic
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { finalizeRuntimeDcaFill } from '../engine/runtimeImmediateFillFinalizer.service';
 import { LiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesConnector, type CcxtExchangeLikeClient } from '../exchange/ccxtFuturesConnector.service';
@@ -750,10 +751,14 @@ describe('durable LIVE order intent', () => {
       feeCurrency: 'USDT', exchangeTradeId: 'runtime-open-fill-path-1',
     });
     const previousNodeEnv = process.env.NODE_ENV;
+    let openedPositionId: string | null = null;
     process.env.NODE_ENV = 'development';
     try {
       const order = await openOrder(user.id, payload, { executeLiveOrder });
       expect(order.positionId).toBeTruthy();
+      openedPositionId = order.positionId;
+      expect(await runtimePositionStateStore.getTrustedPositionRuntimeState(order.positionId!))
+        .toMatchObject({ quantity: 1, averageEntryPrice: 100, currentAdds: 0 });
       expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
       expect(await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
         where: { id: dedupe.id },
@@ -768,7 +773,11 @@ describe('durable LIVE order intent', () => {
       expect(replay.id).toBe(order.id);
       expect(executeLiveOrder).toHaveBeenCalledTimes(1);
       expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
+      await runtimePositionStateStore.deletePositionRuntimeState(order.positionId!);
+      await openOrder(user.id, payload, { executeLiveOrder });
+      expect(await runtimePositionStateStore.getTrustedPositionRuntimeState(order.positionId!)).toBeNull();
     } finally {
+      if (openedPositionId) await runtimePositionStateStore.deletePositionRuntimeState(openedPositionId);
       process.env.NODE_ENV = previousNodeEnv;
     }
   });

@@ -11,6 +11,7 @@ import { applyLiveExchangeOrderTradeUpdateInTransaction,
 import { reconcileSettledExchangeDcaContinuityInTransaction } from
   './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
+import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 
 type RecoveryResult =
@@ -338,6 +339,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
       let cacheEffect:
         | { kind: 'DCA'; input: Parameters<typeof syncRuntimeDcaStateFromExchangeFill>[0] }
         | { kind: 'CLOSE'; positionId: string }
+        | { kind: 'OPEN'; positionId: string }
         | null = null;
       for (const [index, fill] of snapshot.fills.entries()) {
         cumulative += fill.quantity;
@@ -366,6 +368,8 @@ export const recoverLiveFillCandidateOnce = async (input: {
           cacheEffect = { kind: 'DCA', input: applied.dcaSync };
         } else if ('closedPositionId' in applied && applied.closedPositionId) {
           cacheEffect = { kind: 'CLOSE', positionId: applied.closedPositionId };
+        } else if ('openedPositionId' in applied && applied.openedPositionId) {
+          cacheEffect = { kind: 'OPEN', positionId: applied.openedPositionId };
         }
         await input.afterEventApplied?.(index);
       }
@@ -391,6 +395,11 @@ export const recoverLiveFillCandidateOnce = async (input: {
     }
     if (committed.cacheEffect?.kind === 'CLOSE' &&
         !await invalidateRuntimePositionStateAfterExchangeClose(committed.cacheEffect.positionId)) {
+      throw new Error('RUNTIME_STATE_SYNC_PENDING');
+    }
+    if (committed.cacheEffect?.kind === 'OPEN' &&
+        !await initializeNewLiveBotPositionState({ userId: candidate.userId,
+          positionId: committed.cacheEffect.positionId })) {
       throw new Error('RUNTIME_STATE_SYNC_PENDING');
     }
     return committed.result;

@@ -217,6 +217,24 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'DCA_EXECUTED' } })).toBe(1);
 
+      // A lost or incomplete tracker must remain visible to both workers even
+      // when the database quantity and average already match the cache.
+      for (const damaged of [null, JSON.stringify({
+        ...recoveredCache, trailingTakeProfitHighPercent: 120 / 95 - 1,
+        trailingTakeProfitActiveLevelIndex: 0,
+      })]) {
+        if (damaged == null) await redis.del(`runtime:position-state:${position.id}`);
+        else await redis.set(`runtime:position-state:${position.id}`, damaged);
+        await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) != null);
+        const observed = await redis.get(`runtime:position-state:${position.id}`);
+        expect(observed).toBe(damaged);
+        expect((await readLiveExecutionOperationalStatus({
+          redisUrl, recoveryNamespace: namespace,
+        })).recovery.cacheRepairPendingCount).toBe(1);
+        await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
+        await until(async () => await redis.zScore(`${namespace}:repair:pending`, position.id) == null);
+      }
+
       const closeId = randomUUID();
       const closeClientId = `soar_${closeId.replace(/-/g, '').slice(0, 22)}`;
       const closeVenueId = `venue-${closeId}`;

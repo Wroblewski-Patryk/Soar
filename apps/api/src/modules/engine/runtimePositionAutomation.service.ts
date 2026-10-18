@@ -10,6 +10,7 @@ import { PositionManagementInput, PositionManagementState } from './positionMana
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
+import { readPositionStateForAutomation } from './runtimePositionAutomationProtectionGuard';
 import {
   buildDcaExecutionDedupeKey,
   runtimeExecutionDedupeService,
@@ -701,7 +702,11 @@ export class RuntimePositionAutomationService {
       trailingAnchorPrice: position.entryPrice,
       lastDcaPrice: undefined,
     } as PositionManagementState;
-    const persistedState = this.positionStates.get(position.id) ?? (await runtimePositionStateStore.getPositionRuntimeState(position.id));
+    const stateRead = await readPositionStateForAutomation({ position, mode, event,
+      strategyId: effectiveStrategyId, memoryState: this.positionStates.get(position.id),
+      recordRuntimeEvent: this.deps.recordRuntimeEvent });
+    if (!stateRead.actionable) return;
+    const persistedState = stateRead.state;
     const durableDcaProgress = await this.deps.getDurableDcaProgress({
       userId: position.userId,
       positionId: position.id,

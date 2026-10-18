@@ -417,6 +417,7 @@ export const applyOrderFillLifecycleInTransaction = async (
     return {
       order: orderWithPosition,
       positionId: createdPosition.id,
+      createdPosition: true as const,
     };
 };
 

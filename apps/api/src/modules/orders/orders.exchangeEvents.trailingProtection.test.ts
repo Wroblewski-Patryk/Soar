@@ -106,9 +106,23 @@ describe('asynchronous DCA fill trailing protection sync', () => {
         nextEntryPrice: 123.0769230769, fillPrice: 200,
         positionSide: 'LONG', leverage: 1,
       })).toBe(false);
-      expect(await runtimePositionStateStore.getPositionRuntimeState(positionId))
-        .toMatchObject({ quantity: 1, averageEntryPrice: 100,
-          trailingTakeProfitHighPercent: 0.51 });
+      expect(await runtimePositionStateStore.getPositionRuntimeState(positionId)).toBeNull();
+    } finally {
+      dedupe.mockRestore();
+      await runtimePositionStateStore.deletePositionRuntimeState(positionId);
+    }
+  });
+
+  it('does not replace a lost tracker with unprotected DCA state', async () => {
+    const positionId = 'async-lost-protection';
+    const dedupe = vi.spyOn(runtimeExecutionDedupeService, 'markSucceededByOrderId')
+      .mockResolvedValue({ commandFingerprint: { dcaLevelIndex: 0 } } as any);
+    try {
+      expect(await syncRuntimeDcaStateFromExchangeFill({
+        orderId: 'async-lost-order', positionId, nextQuantity: 2,
+        nextEntryPrice: 95, fillPrice: 90, positionSide: 'LONG', leverage: 1,
+      })).toBe(false);
+      expect(await runtimePositionStateStore.getPositionRuntimeState(positionId)).toBeNull();
     } finally {
       dedupe.mockRestore();
       await runtimePositionStateStore.deletePositionRuntimeState(positionId);

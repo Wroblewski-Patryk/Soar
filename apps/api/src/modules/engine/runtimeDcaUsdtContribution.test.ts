@@ -2,6 +2,15 @@ import { describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
 
+const seedLiveCache = async (mode: 'PAPER' | 'LIVE', position: {
+  id: string; quantity: number; entryPrice: number;
+}) => {
+  if (mode === 'LIVE') await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+    quantity: position.quantity, averageEntryPrice: position.entryPrice,
+    currentAdds: 0, trailingAnchorPrice: position.entryPrice,
+  });
+};
+
 const runSequence = async (input: {
   mode: 'PAPER' | 'LIVE';
   marketType: 'SPOT' | 'FUTURES';
@@ -66,6 +75,7 @@ const runSequence = async (input: {
     priceChangePercent24h: -30,
   });
 
+  await seedLiveCache(input.mode, position);
   await send(1 - firstThreshold / leverage);
   expect(fills).toHaveLength(1);
   const firstContribution = position.entryPrice * position.quantity / leverage;
@@ -145,6 +155,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
         priceChangePercent24h: side === 'LONG' ? 40 : -40,
       });
       try {
+        await seedLiveCache(mode, position);
         await send(prices[0]);
         expect((await runtimePositionStateStore.getPositionRuntimeState(position.id))
           ?.trailingTakeProfitActiveLevelIndex).toBe(0);
@@ -209,6 +220,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
         priceChangePercent24h: side === 'LONG' ? 40 : -40,
       });
       try {
+        await seedLiveCache(mode, position);
         for (const price of prices.slice(0, 4)) await send(price);
         const protectedState = await runtimePositionStateStore.getPositionRuntimeState(position.id);
         expect(protectedState?.trailingTakeProfitActiveLevelIndex).toBe(1);
@@ -264,9 +276,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
           symbol: 'BTCUSDT', eventTime: Date.now(), lastPrice: 130,
           priceChangePercent24h: 30 });
         expect(closeByExitSignal).not.toHaveBeenCalled();
-        expect(await runtimePositionStateStore.getPositionRuntimeState(position.id))
-          .toMatchObject({ averageEntryPrice: 100,
-            trailingTakeProfitHighPercent: 0.51 });
+        expect(await runtimePositionStateStore.getPositionRuntimeState(position.id)).toBeNull();
       } finally {
         await runtimePositionStateStore.deletePositionRuntimeState(position.id);
       }
@@ -312,6 +322,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
         priceChangePercent24h: side === 'LONG' ? -40 : 40,
       });
       try {
+        await seedLiveCache(mode, position);
         await send(prices[0]);
         expect((await runtimePositionStateStore.getPositionRuntimeState(position.id))
           ?.trailingLossActiveLevelIndex).toBe(0);
@@ -385,6 +396,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
         eventTime: Date.now(), lastPrice: price, priceChangePercent24h: 40,
       });
       try {
+        await seedLiveCache(mode, position);
         await send(prices[0]);
         await send(prices[1]);
         expect((await runtimePositionStateStore.getPositionRuntimeState(position.id))
@@ -460,6 +472,7 @@ describe('runtime confirmed USDT contribution DCA', () => {
       priceChangePercent24h: -30,
     });
 
+    await seedLiveCache(mode, position);
     await send(0.7);
     expect(fills).toHaveLength(1);
     expect(closeByExitSignal).not.toHaveBeenCalled();

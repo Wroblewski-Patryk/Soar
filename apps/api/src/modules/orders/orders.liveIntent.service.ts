@@ -251,6 +251,7 @@ export const materializeLiveOrderInTransaction = async (params: {
   fills: ExchangeOrderFill[];
   now: Date;
   afterPositionWrite?: () => Promise<void>;
+  onNewPositionCreated?: (positionId: string) => void;
 }): Promise<Order> => {
   const { tx, order, userId, payload, fillPrice, fillQuantity, fills, now } = params;
   if (order.status === 'FILLED' && order.botId && order.origin === 'BOT' &&
@@ -263,6 +264,8 @@ export const materializeLiveOrderInTransaction = async (params: {
         userId, orderId: order.id, mode: 'LIVE', fillPrice, fillQuantity, filledAt: now,
       })
     : null;
+  if (lifecycle && 'createdPosition' in lifecycle && lifecycle.createdPosition &&
+      lifecycle.positionId) params.onNewPositionCreated?.(lifecycle.positionId);
   const materializedOrder = lifecycle?.order ?? order;
   if (fills.length > 0) {
     const exchangeTradeIds = resolveLiveFillTradeIds(fills, payload.symbol, payload.side);

@@ -90,4 +90,28 @@ describe('database-backed BOT runtime cache repair', () => {
     expect(f.redis.eval).not.toHaveBeenCalled();
     f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
   });
+
+  it('keeps a lost cache pending after DCA instead of inventing unarmed protection', async () => {
+    const f = fixture();
+    f.setCache(null);
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' });
+    expect(f.readCache()).toBeNull();
+    expect(f.redis.eval).not.toHaveBeenCalled();
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
+
+  it('does not call a matching quantity and average clean when its active TTP is incomplete', async () => {
+    const f = fixture();
+    const incomplete = JSON.stringify({ quantity: 2, averageEntryPrice: 95,
+      currentAdds: 1, trailingAnchorPrice: 120,
+      trailingTakeProfitHighPercent: (120 / 95) - 1,
+      trailingTakeProfitActiveLevelIndex: 0 });
+    f.setCache(incomplete);
+    await expect(repairRuntimePositionCacheOnce({ positionId: f.position.id,
+      redis: f.redis })).resolves.toEqual({ kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' });
+    expect(f.readCache()).toBe(incomplete);
+    expect(f.redis.eval).not.toHaveBeenCalled();
+    f.writes.forEach((write) => expect(write).not.toHaveBeenCalled());
+  });
 });

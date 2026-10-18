@@ -91,6 +91,43 @@ export const parseRuntimePositionState = (value: unknown): PersistedRuntimePosit
   };
 };
 
+// The permissive parser is retained for legacy writes. Readers making LIVE
+// decisions must not normalize a damaged protection tracker into an inactive one.
+export const parseTrustedRuntimePositionState = (value: unknown): PersistedRuntimePositionState | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (typeof raw.quantity !== 'number' || !Number.isFinite(raw.quantity) || raw.quantity <= 0 ||
+      typeof raw.averageEntryPrice !== 'number' || !Number.isFinite(raw.averageEntryPrice) ||
+      raw.averageEntryPrice <= 0 || typeof raw.currentAdds !== 'number' ||
+      !Number.isInteger(raw.currentAdds) || raw.currentAdds < 0) return null;
+  const numericFields = ['trailingAnchorPrice', 'trailingLossLimitPercent',
+    'trailingTakeProfitHighPercent', 'trailingTakeProfitStepPercent', 'lastDcaPrice'] as const;
+  if (numericFields.some((field) => raw[field] === null ||
+      (raw[field] !== undefined &&
+        (typeof raw[field] !== 'number' || !Number.isFinite(raw[field]))))) return null;
+  if (typeof raw.trailingAnchorPrice !== 'number' || raw.trailingAnchorPrice <= 0) return null;
+  if (raw.lastDcaPrice !== undefined && (raw.lastDcaPrice as number) <= 0) return null;
+  if (raw.executedDcaLevelIndices != null &&
+      (!Array.isArray(raw.executedDcaLevelIndices) ||
+        raw.executedDcaLevelIndices.some((index) => typeof index !== 'number' ||
+          !Number.isInteger(index) || index < 0) ||
+        new Set(raw.executedDcaLevelIndices).size !== raw.executedDcaLevelIndices.length)) return null;
+  if (raw.executedDcaLevelIndices === null) return null;
+  const high = raw.trailingTakeProfitHighPercent;
+  const step = raw.trailingTakeProfitStepPercent;
+  if ((high == null) !== (step == null) ||
+      (step != null && (step as number) <= 0)) return null;
+  for (const [indexField, trackerField] of [
+    ['trailingTakeProfitActiveLevelIndex', 'trailingTakeProfitHighPercent'],
+    ['trailingLossActiveLevelIndex', 'trailingLossLimitPercent'],
+  ] as const) {
+    const index = raw[indexField];
+    if (index === null || (index !== undefined && (typeof index !== 'number' || !Number.isInteger(index) ||
+        index < 0 || raw[trackerField] == null))) return null;
+  }
+  return parseRuntimePositionState(value);
+};
+
 const cloneState = (state: PersistedRuntimePositionState): PersistedRuntimePositionState => ({
   quantity: state.quantity,
   averageEntryPrice: state.averageEntryPrice,
@@ -151,7 +188,9 @@ export class RuntimePositionStateStore {
       this.memory.delete(positionId);
       return null;
     }
-    return cloneState(cached.state);
+    const trusted = parseTrustedRuntimePositionState(cached.state);
+    if (!trusted) { this.memory.delete(positionId); return null; }
+    return cloneState(trusted);
   }
 
   private setMemory(positionId: string, state: PersistedRuntimePositionState, now = Date.now()) {
@@ -169,12 +208,31 @@ export class RuntimePositionStateStore {
     try {
       const raw = await redis.get(this.getKey(positionId));
       if (!raw) { this.memory.delete(positionId); return null; }
-      const parsed = parseRuntimePositionState(JSON.parse(raw));
+      const parsed = parseTrustedRuntimePositionState(JSON.parse(raw));
       if (!parsed) { this.memory.delete(positionId); return null; }
       this.setMemory(positionId, parsed, now);
       return cloneState(parsed);
     } catch {
       return this.getMemory(positionId, now);
+    }
+  }
+
+  // LIVE decisions need the shared Redis snapshot. A process-local copy cannot
+  // establish protection after a missing key, malformed value, or Redis failure.
+  async getTrustedPositionRuntimeState(positionId: string): Promise<PersistedRuntimePositionState | null> {
+    if (process.env.NODE_ENV === 'test') return this.getMemory(positionId);
+    const redis = await this.getRedisClient();
+    if (!redis) return null;
+    try {
+      const raw = await redis.get(this.getKey(positionId));
+      if (!raw) { this.memory.delete(positionId); return null; }
+      const parsed = parseTrustedRuntimePositionState(JSON.parse(raw));
+      if (!parsed) { this.memory.delete(positionId); return null; }
+      this.setMemory(positionId, parsed);
+      return cloneState(parsed);
+    } catch {
+      this.memory.delete(positionId);
+      return null;
     }
   }
 
@@ -200,7 +258,7 @@ export class RuntimePositionStateStore {
         if (!positionId) return;
         if (!payload) { this.memory.delete(positionId); return; }
         try {
-          const parsed = parseRuntimePositionState(JSON.parse(payload));
+          const parsed = parseTrustedRuntimePositionState(JSON.parse(payload));
           if (!parsed) { this.memory.delete(positionId); return; }
           this.setMemory(positionId, parsed, now);
           result.set(positionId, cloneState(parsed));
@@ -236,6 +294,25 @@ export class RuntimePositionStateStore {
       return true;
     } catch {
       // Non-blocking: in-memory copy is still available in current process.
+      return false;
+    }
+  }
+
+  async initializeNewPositionRuntimeState(positionId: string, state: PositionManagementState) {
+    const normalized = parseTrustedRuntimePositionState(state);
+    if (!normalized) return false;
+    if (process.env.NODE_ENV === 'test') {
+      if (!this.memory.has(positionId)) this.setMemory(positionId, normalized);
+      return this.getMemory(positionId) != null;
+    }
+    const redis = await this.getRedisClient();
+    if (!redis) return false;
+    try {
+      await redis.set(this.getKey(positionId), JSON.stringify(normalized), {
+        PX: DEFAULT_TTL_MS, NX: true,
+      });
+      return await this.getTrustedPositionRuntimeState(positionId) != null;
+    } catch {
       return false;
     }
   }

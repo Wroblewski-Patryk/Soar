@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import { prisma } from '../../prisma/client';
 import { tryRebasePositionManagementProtection } from './positionManagement.service';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
-import { parseRuntimePositionState } from './runtimePositionState.store';
+import { parseTrustedRuntimePositionState } from './runtimePositionState.store';
 
 type Redis = Pick<ReturnType<typeof createClient>, 'get' | 'eval'>;
 export type CacheRepairResult =
@@ -72,10 +72,15 @@ export const repairRuntimePositionCacheOnce = async (input: {
       !Number.isFinite(position.leverage) || position.leverage < 1) {
     return { kind: 'PENDING', reason: 'CANONICAL_POSITION_UNCONFIRMED' };
   }
+  if (raw == null) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
   let previous = null;
-  try { previous = raw == null ? null : parseRuntimePositionState(JSON.parse(raw)); }
-  catch { /* A malformed cache is replaced only from confirmed database state. */ }
-  if (previous && !hasMaterialCanonicalBasisDrift({ position, state: previous })) {
+  try { previous = parseTrustedRuntimePositionState(JSON.parse(raw)); }
+  catch { /* Keep damaged protection pending for operator repair. */ }
+  if (!previous) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
+  const protection = tryRebasePositionManagementProtection(previous,
+    position.entryPrice, position.side, position.leverage);
+  if (!protection) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
+  if (!hasMaterialCanonicalBasisDrift({ position, state: previous })) {
     return { kind: 'CLEAN' };
   }
   const trades = await prisma.trade.findMany({
@@ -137,19 +142,16 @@ export const repairRuntimePositionCacheOnce = async (input: {
       return { kind: 'PENDING', reason: 'DCA_LEVEL_UNCONFIRMED' };
     }
   }
-  const protection = previous ? tryRebasePositionManagementProtection(previous,
-    position.entryPrice, position.side, position.leverage) : null;
-  if (previous && !protection) return { kind: 'PENDING', reason: 'PROTECTION_UNCONFIRMED' };
   const next = {
     quantity: position.quantity, averageEntryPrice: position.entryPrice,
     currentAdds: trades.length,
     executedDcaLevelIndices: indices.length ? indices : undefined,
-    trailingAnchorPrice: protection?.trailingAnchorPrice ?? position.entryPrice,
-    trailingLossLimitPercent: protection?.trailingLossLimitPercent,
-    trailingLossActiveLevelIndex: protection?.trailingLossActiveLevelIndex,
-    trailingTakeProfitHighPercent: protection?.trailingTakeProfitHighPercent,
-    trailingTakeProfitStepPercent: protection?.trailingTakeProfitStepPercent,
-    trailingTakeProfitActiveLevelIndex: protection?.trailingTakeProfitActiveLevelIndex,
+    trailingAnchorPrice: protection.trailingAnchorPrice,
+    trailingLossLimitPercent: protection.trailingLossLimitPercent,
+    trailingLossActiveLevelIndex: protection.trailingLossActiveLevelIndex,
+    trailingTakeProfitHighPercent: protection.trailingTakeProfitHighPercent,
+    trailingTakeProfitStepPercent: protection.trailingTakeProfitStepPercent,
+    trailingTakeProfitActiveLevelIndex: protection.trailingTakeProfitActiveLevelIndex,
     lastDcaPrice: trades.at(-1)?.price,
   };
   const latest = await prisma.position.findUnique({ where: { id: position.id },
@@ -160,7 +162,7 @@ export const repairRuntimePositionCacheOnce = async (input: {
     return { kind: 'PENDING', reason: 'POSITION_CHANGED' };
   }
   const changed = await input.redis.eval(CAS_CACHE, { keys: [key],
-    arguments: [raw ?? '', JSON.stringify(next), String(CACHE_TTL_MS), raw == null ? '1' : '0'] });
+    arguments: [raw, JSON.stringify(next), String(CACHE_TTL_MS), '0'] });
   return Number(changed) === 1 ? { kind: 'REPAIRED' }
     : { kind: 'PENDING', reason: 'CACHE_CHANGED' };
 };

@@ -31,6 +31,10 @@ const fixture = async (action: 'DCA' | 'CLOSE') => {
     entryPrice: 100, origin: 'BOT', managementMode: 'BOT_MANAGED',
   } });
   positions.push(position.id);
+  await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+    quantity: position.quantity, averageEntryPrice: position.entryPrice,
+    currentAdds: 0, trailingAnchorPrice: position.entryPrice,
+  });
   const order = await prisma.order.create({ data: {
     userId: user.id, botId: bot.id, walletId: wallet.id, positionId: position.id,
     symbol: 'BTCUSDT', side: action === 'DCA' ? 'BUY' : 'SELL',
@@ -149,9 +153,14 @@ describe('full exchange fill handler recovery', () => {
     expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
     expect(await prisma.trade.count({ where: { orderId: order.id, lifecycleAction: 'OPEN' } })).toBe(1);
     expect(await prisma.position.count({ where: { id: updatedOrder.positionId! } })).toBe(1);
+    expect(await runtimePositionStateStore.getPositionRuntimeState(updatedOrder.positionId!))
+      .toMatchObject({ quantity: 1, averageEntryPrice: 90, currentAdds: 0 });
+    await runtimePositionStateStore.deletePositionRuntimeState(updatedOrder.positionId!);
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event });
+    expect(await runtimePositionStateStore.getPositionRuntimeState(updatedOrder.positionId!)).toBeNull();
   });
 
-  it('finishes dedupe after a crash following the database commit without replaying DCA', async () => {
+  it('leaves a lost post-commit protection cache pending without replaying DCA', async () => {
     const { user, position, order, dedupeKey, event } = await fixture('DCA');
     await expect(applyLiveExchangeOrderTradeUpdateEvent({
       userId: user.id, event,
@@ -162,11 +171,13 @@ describe('full exchange fill handler recovery', () => {
     const freshClient = new PrismaClient();
     competingClients.push(freshClient);
     await runtimePositionStateStore.deletePositionRuntimeState(position.id);
-    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event, client: freshClient });
+    await expect(applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id,
+      event, client: freshClient })).rejects.toThrow('RUNTIME_STATE_SYNC_PENDING');
     expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })).quantity).toBe(2);
     expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
     expect(await prisma.trade.count({ where: { orderId: order.id } })).toBe(1);
     expect((await prisma.runtimeExecutionDedupe.findUniqueOrThrow({ where: { dedupeKey } })).status).toBe('SUCCEEDED');
+    expect(await runtimePositionStateStore.getPositionRuntimeState(position.id)).toBeNull();
   });
 
   for (const action of ['DCA', 'CLOSE'] as const) {

@@ -65,6 +65,10 @@ const fixture = async (action: 'OPEN' | 'DCA' | 'CLOSE', withOrder = true,
     symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', quantity: 1,
     entryPrice: 100, origin: 'BOT', managementMode: 'BOT_MANAGED',
   } });
+  if (position) await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+    quantity: position.quantity, averageEntryPrice: position.entryPrice,
+    currentAdds: 0, trailingAnchorPrice: position.entryPrice,
+  });
   const dedupeKey = `v1|${action}|${id}`;
   const intent = await prisma.liveOrderIntent.create({ data: {
     userId: user.id, clientOrderId: `soar_${id.replace(/-/g, '').slice(0, 22)}`,
@@ -815,14 +819,25 @@ describe('explicit LIVE fill recovery', () => {
     expect(await prisma.order.count({ where: { id: fx.intent.id } })).toBe(1);
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
     expect(await prisma.trade.count({ where: { orderId: fx.intent.id, lifecycleAction: 'OPEN' } })).toBe(1);
+    const openedOrder = await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } });
+    expect(await runtimePositionStateStore.getPositionRuntimeState(openedOrder.positionId!))
+      .toMatchObject({ quantity: 1, averageEntryPrice: 100, currentAdds: 0 });
     expect((await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
       where: { dedupeKey: fx.dedupeKey },
     })).status).toBe('SUCCEEDED');
     expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id } })).toBe(1);
     expect(await prisma.botRuntimeSymbolStat.count({ where: { userId: fx.user.id } })).toBe(1);
+    await runtimePositionStateStore.setPositionRuntimeState(openedOrder.positionId!, {
+      quantity: 1, averageEntryPrice: 100, currentAdds: 0,
+      trailingAnchorPrice: 120, trailingTakeProfitHighPercent: 0.2,
+      trailingTakeProfitStepPercent: 0.01,
+    });
     const again = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
       lookup: useLookup(snapshot) });
     expect(again.kind).toBe('APPLIED');
+    expect(await runtimePositionStateStore.getPositionRuntimeState(openedOrder.positionId!))
+      .toMatchObject({ trailingTakeProfitHighPercent: 0.2,
+        trailingTakeProfitStepPercent: 0.01 });
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(2);
     expect(await prisma.trade.count({ where: { orderId: fx.intent.id } })).toBe(1);
     expect(await prisma.botRuntimeEvent.count({ where: { userId: fx.user.id } })).toBe(1);

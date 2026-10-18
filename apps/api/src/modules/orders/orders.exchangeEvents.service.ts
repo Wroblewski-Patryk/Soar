@@ -20,6 +20,7 @@ export { applyLiveExchangeAccountUpdateEvent } from
   './orders.exchangeEvents.accountUpdate.service';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import { tryRebasePositionManagementProtection } from '../engine/positionManagement.service';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
@@ -302,11 +303,11 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
     positionId: input.positionId,
   });
   const previousState =
-    (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
-  const protection = previousState == null ? null
-    : tryRebasePositionManagementProtection(previousState, input.nextEntryPrice,
-        input.positionSide, input.leverage);
-  if (previousState && !protection) return false;
+    (await runtimePositionStateStore.getTrustedPositionRuntimeState(input.positionId)) ?? null;
+  if (!previousState) return false;
+  const protection = tryRebasePositionManagementProtection(previousState, input.nextEntryPrice,
+    input.positionSide, input.leverage);
+  if (!protection) return false;
   const rawLevelIndex = dedupe?.commandFingerprint?.dcaLevelIndex;
   const levelIndex = Number(rawLevelIndex);
   const normalizedLevelIndex = Number.isFinite(levelIndex)
@@ -333,12 +334,12 @@ export const syncRuntimeDcaStateFromExchangeFill = async (input: {
     ),
     executedDcaLevelIndices:
       executedDcaLevelIndices.length > 0 ? executedDcaLevelIndices : undefined,
-    trailingAnchorPrice: protection?.trailingAnchorPrice ?? input.nextEntryPrice,
-    trailingLossLimitPercent: protection?.trailingLossLimitPercent,
-    trailingLossActiveLevelIndex: protection?.trailingLossActiveLevelIndex,
-    trailingTakeProfitHighPercent: protection?.trailingTakeProfitHighPercent,
-    trailingTakeProfitStepPercent: protection?.trailingTakeProfitStepPercent,
-    trailingTakeProfitActiveLevelIndex: protection?.trailingTakeProfitActiveLevelIndex,
+    trailingAnchorPrice: protection.trailingAnchorPrice,
+    trailingLossLimitPercent: protection.trailingLossLimitPercent,
+    trailingLossActiveLevelIndex: protection.trailingLossActiveLevelIndex,
+    trailingTakeProfitHighPercent: protection.trailingTakeProfitHighPercent,
+    trailingTakeProfitStepPercent: protection.trailingTakeProfitStepPercent,
+    trailingTakeProfitActiveLevelIndex: protection.trailingTakeProfitActiveLevelIndex,
     lastDcaPrice: input.fillPrice,
   });
 };
@@ -640,6 +641,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
     where: { orderId: updatedOrder.id, lifecycleAction: { in: ['OPEN', 'DCA', 'CLOSE'] } },
     select: { lifecycleAction: true, price: true },
   });
+  let openedPositionId: string | null = null;
   let dcaSync: {
     orderId: string; positionId: string; nextQuantity: number;
     nextEntryPrice: number; fillPrice: number; positionSide: 'LONG' | 'SHORT';
@@ -779,6 +781,10 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
         fillQuantity: cumulativeFilledQuantity,
         filledAt: eventAt,
       });
+      if (lifecycleResult && 'createdPosition' in lifecycleResult &&
+          lifecycleResult.createdPosition && updatedOrder.origin === 'BOT') {
+        openedPositionId = lifecycleResult.positionId;
+      }
       if (feePendingDecision.shouldKeepFeePending) {
         await tx.order.update({
           where: { id: updatedOrder.id },
@@ -841,6 +847,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
     positionId: updatedOrder.positionId ?? null,
     orderStatus: updatedOrder.status,
     dcaSync,
+    openedPositionId,
     closedPositionId: finalPosition?.status === 'CLOSED' ? updatedOrder.positionId : null,
   };
 };
@@ -858,6 +865,11 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchange
         throw new Error('RUNTIME_STATE_SYNC_PENDING');
       }
     } else {
+      if ('openedPositionId' in processed && processed.openedPositionId &&
+          !await initializeNewLiveBotPositionState({ userId: input.userId,
+            positionId: processed.openedPositionId })) {
+        throw new Error('RUNTIME_STATE_SYNC_PENDING');
+      }
       if ('closedPositionId' in processed && processed.closedPositionId) {
         await invalidateRuntimePositionStateAfterExchangeClose(processed.closedPositionId);
       }
@@ -867,7 +879,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchange
     }
   }
   if ('dcaSync' in processed) {
-    const { dcaSync: _dcaSync, closedPositionId: _closedPositionId, ...result } = processed;
+    const { dcaSync: _dcaSync, openedPositionId: _openedPositionId,
+      closedPositionId: _closedPositionId, ...result } = processed;
     return result;
   }
   return processed;

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { backfillClosedImportedPositionHistory } from '../positions/importedPositionHistoryHydrator.service';
 import {
   applyLiveExchangeAccountUpdateEvent,
@@ -1806,6 +1807,10 @@ describe('orders.exchangeEvents.service', () => {
         leverage: 5,
       },
     });
+    await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+      quantity: position.quantity, averageEntryPrice: position.entryPrice,
+      currentAdds: 0, trailingAnchorPrice: position.entryPrice,
+    });
     const order = await prisma.order.create({
       data: {
         userId: user.id,
@@ -1887,6 +1892,7 @@ describe('orders.exchangeEvents.service', () => {
     });
     expect(fills).toHaveLength(1);
     expect(fills[0]?.feeCost).toBeCloseTo(0.04, 10);
+    await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });
 
   it('applies Binance order-trade update to close an existing LIVE position from a close order', async () => {
