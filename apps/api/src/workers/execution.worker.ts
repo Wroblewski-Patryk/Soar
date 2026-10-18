@@ -5,6 +5,8 @@ import { runtimeSignalLoop } from '../modules/engine/runtimeSignalLoop.service';
 import { runtimeScanLoop } from '../modules/engine/runtimeScanLoop.service';
 import { metricsStore } from '../observability/metrics';
 import { assertDeployedWorkerOwnership } from './workerOwnership';
+import { liveFillRecoveryLoop } from './liveFillRecoveryLoop';
+import { prisma } from '../prisma/client';
 
 assertDeployedWorkerOwnership('execution');
 const runtimeSignalLoopBootstrapIntervalMs = Math.max(
@@ -34,3 +36,19 @@ const runtimeSignalLoopBootstrapTimer = setInterval(() => {
 }, runtimeSignalLoopBootstrapIntervalMs);
 runtimeSignalLoopBootstrapTimer.unref?.();
 runtimeScanLoop.start();
+liveFillRecoveryLoop.start();
+
+let stopping = false;
+const shutdown = async () => {
+  if (stopping) return;
+  stopping = true;
+  clearInterval(runtimeSignalLoopBootstrapTimer);
+  livePositionReconciliationLoop.stop();
+  runtimeScanLoop.stop();
+  await liveFillRecoveryLoop.stop();
+  await runtimeSignalLoop.stop();
+  await prisma.$disconnect();
+  process.exit(0);
+};
+process.on('SIGINT', () => { void shutdown(); });
+process.on('SIGTERM', () => { void shutdown(); });

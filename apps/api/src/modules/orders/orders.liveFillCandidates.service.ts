@@ -54,6 +54,8 @@ export const findLiveFillCandidatePage = async (input: {
   limit?: number;
   intentCursor?: string;
   orderCursor?: string;
+  includeIntents?: boolean;
+  includeOrders?: boolean;
 } = {}): Promise<{
   candidates: LiveFillCandidate[];
   nextIntentCursor: string | null;
@@ -61,11 +63,11 @@ export const findLiveFillCandidatePage = async (input: {
 }> => {
   const limit = Math.min(Math.max(input.limit ?? 100, 1), 200);
   const [intents, orders] = await Promise.all([
-    prisma.liveOrderIntent.findMany({
+    input.includeIntents === false ? Promise.resolve([]) : prisma.liveOrderIntent.findMany({
       ...(input.intentCursor ? { cursor: { id: input.intentCursor }, skip: 1 } : {}),
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }], take: limit,
     }),
-    prisma.order.findMany({
+    input.includeOrders === false ? Promise.resolve([]) : prisma.order.findMany({
       where: {
         origin: { in: ['BOT', 'USER'] },
         AND: [
