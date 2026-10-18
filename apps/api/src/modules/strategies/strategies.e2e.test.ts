@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 
@@ -238,6 +238,10 @@ describe('Strategies CRUD contract', () => {
     { label: 'USDT 0.5', basis: 'usdt_contribution_v1', multiplier: 0.5 },
     { label: 'legacy quantity 2', basis: undefined, multiplier: 2 },
   ])('roundtrips Basic $label with the multiplier only in its level', async ({ basis, multiplier }) => {
+    const { dtoToForm, formToPayload } = await vi.importActual<{
+      dtoToForm: (dto: unknown) => { name: string; additional: Record<string, unknown> };
+      formToPayload: (form: unknown) => Record<string, unknown>;
+    }>('../../../../web/src/features/strategies/utils/StrategyForm.map');
     const agent = await registerAndLogin(`strategies-basic-${multiplier}@example.com`);
     const config = {
       open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
@@ -255,10 +259,35 @@ describe('Strategies CRUD contract', () => {
     expect(read.status).toBe(200);
     expect(read.body.config.additional).toEqual(config.additional);
 
+    const form = dtoToForm(read.body);
+    expect(form.additional.dcaMultiplier).toBe(multiplier);
     const edited = await agent.put(`/dashboard/strategies/${id}`)
-      .send({ ...createStrategyPayload(), config });
+      .send(formToPayload(form));
     expect(edited.status).toBe(200);
-    expect(edited.body.config.additional).toEqual(config.additional);
+    const editedRead = await agent.get(`/dashboard/strategies/${id}`);
+    expect(editedRead.status).toBe(200);
+    expect(editedRead.body.config.additional).toEqual(expect.objectContaining({
+      dcaMultiplier: multiplier,
+      dcaLevels: [{ percent: -5, multiplier }],
+    }));
+    expect(editedRead.body.config.additional.dcaSizingBasis).toBe(basis);
+
+    const cloneForm = dtoToForm(editedRead.body);
+    const cloned = await agent.post('/dashboard/strategies').send(formToPayload({
+      ...cloneForm,
+      name: `Clone ${multiplier}`,
+      additional: {
+        ...cloneForm.additional,
+        dcaSizingBasis: cloneForm.additional.dcaSizingBasis ?? 'quantity_v1',
+      },
+    }));
+    expect(cloned.status).toBe(201);
+    const cloneRead = await agent.get(`/dashboard/strategies/${cloned.body.id}`);
+    expect(cloneRead.status).toBe(200);
+    expect(cloneRead.body.config.additional).toEqual(expect.objectContaining({
+      dcaSizingBasis: basis ?? 'quantity_v1', dcaMultiplier: multiplier,
+      dcaLevels: [{ percent: -5, multiplier }],
+    }));
   });
 
   it('rejects conflicting Basic multipliers on create and edit', async () => {
