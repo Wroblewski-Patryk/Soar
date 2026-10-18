@@ -5,6 +5,7 @@ import { finalizeRuntimeDcaFill } from './runtimeImmediateFillFinalizer.service'
 import { runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { executeRuntimeDca, RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { runtimePositionStateStore } from './runtimePositionState.store';
 import { resolveRuntimeDcaOrderQuantity } from './runtimeDcaOrderRules';
 
 vi.mock('../orders/orders.service', async (importOriginal) => ({
@@ -19,7 +20,11 @@ vi.mock('../positions/runtimeOrderFeeSettlement', async (importOriginal) => ({
   settleRuntimeOrderFee: vi.fn(async () => undefined),
 }));
 
-afterEach(() => {
+const livePositionIds: string[] = [];
+afterEach(async () => {
+  for (const positionId of livePositionIds.splice(0)) {
+    await runtimePositionStateStore.deletePositionRuntimeState(positionId);
+  }
   vi.restoreAllMocks();
   vi.mocked(openOrder).mockReset();
   vi.mocked(finalizeRuntimeDcaFill).mockReset();
@@ -50,6 +55,12 @@ const runIntegratedSequence = async (input: {
       } },
     },
   };
+  if (input.mode === 'LIVE') {
+    await runtimePositionStateStore.setPositionRuntimeState(id, {
+      quantity: leverage, averageEntryPrice: 1, currentAdds: 0, trailingAnchorPrice: 1,
+    });
+    livePositionIds.push(id);
+  }
   const additional = {
     dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1', dcaMode: input.dcaMode,
     dcaTimes: input.dcaMode === 'basic' ? 2 : 1,
