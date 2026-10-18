@@ -15,6 +15,7 @@ import marketStreamRouter from '../modules/market-stream/marketStream.routes';
 import reportsRouter from '../modules/reports/reports.routes';
 import iconsRouter from '../modules/icons/icons.routes';
 import walletsRouter from '../modules/wallets/wallets.routes';
+import externalClientGrantsRouter from '../modules/externalClientGrants/externalClientGrants.routes';
 
 const router = Router();
 router.use(requireAuth);
@@ -26,6 +27,7 @@ router.get('/', (req, res) => {
 // Basic profile routes
 router.use('/profile/basic', basicRouter);
 router.use('/profile/security', securityRouter);
+router.use('/external-client-grants', externalClientGrantsRouter);
 // API Key management routes
 router.use('/profile/apiKeys', apiKeyRouter);
 // Subscription management routs

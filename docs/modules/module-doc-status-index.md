@@ -20,6 +20,7 @@ Status legend:
 | api | users | `apps/api/src/modules/users` | `docs/modules/api-users.md` | Published | DCP-04 |
 | api | engine | `apps/api/src/modules/engine` | `docs/modules/api-engine.md` | Published | DCP-05 |
 | api | exchange | `apps/api/src/modules/exchange` | `docs/modules/api-exchange.md` | Published | DCP-05 |
+| api | externalClientGrants | `apps/api/src/modules/externalClientGrants` | `docs/modules/api-externalClientGrants.md` | Published | SOAR-EXT-GRANT-001A |
 | api | market-data | `apps/api/src/modules/market-data` | `docs/modules/api-market-data.md` | Published | DCP-05 |
 | api | market-stream | `apps/api/src/modules/market-stream` | `docs/modules/api-market-stream.md` | Published | DCP-05 |
 | api | strategies | `apps/api/src/modules/strategies` | `docs/modules/api-strategies.md` | Published | DCP-06 |

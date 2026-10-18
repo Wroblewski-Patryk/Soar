@@ -25,8 +25,9 @@ route does not make it an MCP tool.
 ## Grant Invariants
 
 - A grant must be attributable to a user and a specific external client, have
-  explicit limits, and be revocable. Exact limit fields and values need a
-  separate implementation decision; do not invent unlimited defaults.
+  explicit limits, and be revocable. The local foundation now records a client
+  label, owner, bot, exchange, market type, symbol, one allowed action, maximum
+  quote amount per action and in total, maximum count, expiry, and revocation.
 - Missing, expired, exceeded, or revoked grants fail closed before a domain
   mutation. Revocation must be effective for subsequent actions.
 - The grant does not bypass account ownership, subscription entitlements,
@@ -38,8 +39,10 @@ route does not make it an MCP tool.
 
 ## Acceptance Boundary
 
-This is a target contract. There is no accepted MCP capability, limited-grant,
-revocation, or LIVE client proof in the current documentation. Acceptance needs
+This remains a target contract. `SOAR-EXT-GRANT-001A` now provides a local
+human-cookie-only grant lifecycle, bounded scope, hashed one-time secret, and
+revocation checks. No accepted MCP capability, external domain action, atomic
+allowance spending, deployed revocation, or LIVE client proof exists. Acceptance needs
 tests for denied account/plan/role/key actions, active and revoked grants,
 ownership isolation, LIVE guardrails, audit evidence, and a real external-client
 journey. Ordinary API tests or an endpoint inventory do not close this gate.
@@ -49,5 +52,6 @@ audience and claim. Legacy `cryptosparrow-app` tokens remain compatible with
 ordinary domain routes but cannot mutate account/profile secrets, API keys, or
 administrator state, even when copied into Cookie. This boundary is not a
 delegated grant or proof of human presence: a compromised human session is still
-a compromised credential. A separate scoped, revocable client principal remains
-required before accepting external domain or LIVE access.
+a compromised credential. The new opaque grant secret is a distinct scoped
+credential, but no domain route accepts it yet. The execution boundary remains
+unimplemented and unaccepted.
