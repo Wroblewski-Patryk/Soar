@@ -45,6 +45,16 @@ export const DcaConfigSchema = z.object({
   levelPercents: z.array(z.number().min(-10).max(10)).optional(),
   addSizeFractions: z.array(z.number().positive().max(10)).optional(),
   sizingBasis: DcaSizingBasisSchema.default('quantity_v1'),
+}).superRefine((config, context) => {
+  if (config.sizingBasis !== 'quantity_v1') return;
+  if (config.addSizeFraction > 2) {
+    context.addIssue({ code: 'custom', path: ['addSizeFraction'], message: 'quantity DCA multiplier cannot exceed 2' });
+  }
+  config.addSizeFractions?.forEach((multiplier, index) => {
+    if (multiplier > 2) {
+      context.addIssue({ code: 'custom', path: ['addSizeFractions', index], message: 'quantity DCA multiplier cannot exceed 2' });
+    }
+  });
 });
 
 export const PositionManagementInputSchema = z.object({

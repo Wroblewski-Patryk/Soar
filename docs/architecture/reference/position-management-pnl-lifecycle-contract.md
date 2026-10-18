@@ -80,6 +80,16 @@ negative.
   multiplier pair once. Each later threshold is evaluated against ROI from the
   updated average entry. The versioned BACKTEST parser rejects incomplete or
   invalid USDT level pairs instead of silently falling back to old sizing.
+- Until PAPER/LIVE have their own USDT order sizing, bot creation, activation,
+  enabled strategy attachment, candle decisions, position automation and direct DCA
+  execution reject `usdt_contribution_v1` before an order can be created. An
+  existing active bot loaded after restart is blocked and emits a runtime
+  `PRETRADE_BLOCKED` reason. Quantity-based runtime DCA retains multiplier
+  limit `2`; larger configured values fail closed rather than being silently
+  interpreted as asset quantity. Direct DCA also refuses an order if its
+  strategy configuration cannot be read. A full single-symbol BACKTEST replay with
+  nonzero modeled fee verifies that fee changes trade cost, not the USDT
+  contribution used by the DCA multiplier.
 
 The execution ladder must be deterministic. For normalized strategy evaluation:
 

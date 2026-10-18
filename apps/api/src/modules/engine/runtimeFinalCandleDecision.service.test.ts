@@ -138,6 +138,29 @@ const createContext = (options?: {
 };
 
 describe('runtimeFinalCandleDecision.service', () => {
+  it.each([2, 5])('blocks a restarted active bot with USDT DCA multiplier %s before any signal or order', async (multiplier) => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      botOverrides: { runtimeContext: {
+        ...baseBot.runtimeContext,
+        strategy: { ...baseStrategy, strategyConfig: {
+          ...baseStrategy.strategyConfig,
+          additional: { dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+            dcaLevels: [{ percent: -20, multiplier }] },
+        } },
+      } } as any,
+    });
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED',
+      message: expect.stringContaining('BACKTEST'),
+      payload: expect.objectContaining({ reason: 'USDT_DCA_RUNTIME_UNSUPPORTED' }),
+    }));
+  });
+
   it('records no-trade decision when merged direction is null', async () => {
     const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
       direction: null,

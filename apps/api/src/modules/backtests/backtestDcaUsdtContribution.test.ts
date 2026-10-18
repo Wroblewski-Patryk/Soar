@@ -104,4 +104,21 @@ describe('USDT contribution DCA in historical replay', () => {
       dcaLevels: [{ percent: -20 }],
     } })).toThrow('Invalid USDT DCA level');
   });
+
+  it('keeps DCA USDT contribution on confirmed fill notional when replay charges a nonzero fee', () => {
+    const run = (feeRate: number) => simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT', candles, marketType: 'FUTURES', leverage: 1,
+      marginMode: 'CROSSED', strategyConfig,
+      positionSizing: { mode: 'fixed', fixedQuantity: 1 },
+      fillModelConfig: { feeRate, slippageRate: 0 },
+    });
+    const free = run(0);
+    const charged = run(0.01);
+
+    expect(charged.eventCounts.DCA).toBe(2);
+    expect(charged.trades[0].entryPrice).toBe(free.trades[0].entryPrice);
+    expect(charged.trades[0].quantity).toBe(free.trades[0].quantity);
+    expect(charged.trades[0].entryPrice * charged.trades[0].quantity).toBeCloseTo(9, 3);
+    expect(charged.trades[0].fee).toBeGreaterThan(free.trades[0].fee);
+  });
 });

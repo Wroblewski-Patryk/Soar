@@ -36,4 +36,33 @@ describe('assertStrategiesCompatibleWithMarketType', () => {
       }],
     })).not.toThrow();
   });
+
+  it.each([2, 5])('blocks USDT contribution multiplier %s before PAPER or LIVE bot activation', (multiplier) => {
+    expect(() => assertStrategiesCompatibleWithMarketType({
+      marketType: 'FUTURES',
+      strategies: [{
+        id: 'strategy-usdt',
+        config: { additional: { dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1',
+          dcaLevels: [{ percent: -20, multiplier }] } },
+      }],
+    })).toThrowError(expect.objectContaining({
+      code: 'RUNTIME_DCA_CONFIG_UNSUPPORTED',
+      details: { strategyId: 'strategy-usdt', reason: 'USDT_DCA_RUNTIME_UNSUPPORTED' },
+    }));
+  });
+
+  it('preserves the quantity multiplier limit while allowing a legacy multiplier of 2', () => {
+    const config = (multiplier: number) => ({
+      additional: { dcaEnabled: true, dcaLevels: [{ percent: -20, multiplier }] },
+    });
+    expect(() => assertStrategiesCompatibleWithMarketType({
+      marketType: 'FUTURES', strategies: [{ id: 'legacy', config: config(2) }],
+    })).not.toThrow();
+    expect(() => assertStrategiesCompatibleWithMarketType({
+      marketType: 'FUTURES', strategies: [{ id: 'legacy', config: config(5) }],
+    })).toThrowError(expect.objectContaining({
+      code: 'RUNTIME_DCA_CONFIG_UNSUPPORTED',
+      details: { strategyId: 'legacy', reason: 'DCA_MULTIPLIER_EXCEEDS_RUNTIME_LIMIT', multiplier: 5 },
+    }));
+  });
 });

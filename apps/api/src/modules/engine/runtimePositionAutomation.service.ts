@@ -38,6 +38,7 @@ import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSy
 import { normalizeSymbols } from '../bots/runtimeSymbolUniverse.service';
 import { listRuntimeAutomationOpenPositionsBySymbol } from './runtimePositionAutomationDefaultPositionDeps';
 import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
+import { assertRuntimeDcaPolicy, assertRuntimeDcaOrderAllowed, resolveRuntimeDcaPolicyBlock, RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT } from './runtimeDcaPolicy';
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
   dcaMaxAdds: number;
@@ -191,6 +192,7 @@ export const executeRuntimeDca = async (input: {
 }) => {
   const dcaQuantity = Math.max(0, input.addedQuantity);
   if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
+  await assertRuntimeDcaOrderAllowed(input);
   const dedupeKey = buildDcaExecutionDedupeKey({
     userId: input.userId,
     botId: input.botId,
@@ -382,6 +384,7 @@ export const buildPositionManagementInput = (
   strategyConfig: Record<string, unknown> | null,
   fallback: RuntimeFallbackConfig
 ): PositionManagementInput => {
+  assertRuntimeDcaPolicy(strategyConfig);
   const closeConfig =
     strategyConfig && typeof strategyConfig === 'object'
       ? ((strategyConfig.close as Record<string, unknown> | undefined) ?? undefined)
@@ -440,7 +443,7 @@ export const buildPositionManagementInput = (
       : configuredMaxAdds;
   const dcaStepPercent = Math.abs(toSignedPercent(dcaLevels[0]?.percent, -(fallback.dcaStepPercent)));
   const dcaMultiplier = toPositive(dcaLevels[0]?.multiplier ?? additionalConfig?.dcaMultiplier, 1 + fallback.dcaAddSizeFraction);
-  const dcaAddSizeFraction = Math.max(0.01, Math.min(10, dcaMultiplier));
+  const dcaAddSizeFraction = Math.max(0.01, Math.min(RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT, dcaMultiplier));
   const dcaLevelPercents =
     dcaMode === 'advanced'
       ? configuredDcaLevelPercents
@@ -690,6 +693,25 @@ export class RuntimePositionAutomationService {
 
     const runtimeConfig = getRuntimeConfig();
     const strategyConfig = await this.getStrategyConfig(effectiveStrategyId);
+    const dcaPolicyBlock = resolveRuntimeDcaPolicyBlock(strategyConfig);
+    if (dcaPolicyBlock) {
+      if (position.botId) {
+        await this.deps.recordRuntimeEvent?.({
+          userId: position.userId,
+          botId: position.botId,
+          mode,
+          eventType: 'PRETRADE_BLOCKED',
+          level: 'WARN',
+          symbol: position.symbol,
+          strategyId: effectiveStrategyId ?? undefined,
+          message: dcaPolicyBlock.message,
+          payload: { positionId: position.id, reason: dcaPolicyBlock.code,
+            ...(dcaPolicyBlock.multiplier == null ? {} : { multiplier: dcaPolicyBlock.multiplier }) },
+          eventAt: new Date(event.eventTime),
+        });
+      }
+      return;
+    }
     const lifecyclePrice =
       (await this.deps.resolveLifecyclePrice?.({
         exchange,
