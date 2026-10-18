@@ -413,7 +413,7 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(0);
 
       streamLoop = new LiveBinanceStreamLoop({ redisUrl, namespace,
-        leaseMs: 2_000, maxAccounts: 100 }, {
+        leaseMs: 30_000, maxAccounts: 100 }, {
         listAccounts: async () => eligible.filter((account) => account.userId === user.id),
         stream: stream.asService(), decryptKey: (value) => value,
       });
@@ -434,10 +434,36 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       await streamLoop.runOnce();
       stream.open('FUTURES');
       await streamLoop.runOnce();
+      const accountUpdateAt = Date.now();
+      const accountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
+        e: 'ACCOUNT_UPDATE', E: accountUpdateAt, T: accountUpdateAt,
+        a: { B: [], P: [{ s: 'BTCUSDT', pa: '2', ep: '95', up: '5', ps: 'LONG' }] },
+      });
+      expect(accountUpdate.eventType).toBe('ACCOUNT_UPDATE');
+      stream.emit('FUTURES', accountUpdate);
+      await until(async () => (await prisma.position.findUniqueOrThrow({
+        where: { id: position.id },
+      })).lastExchangeSeenAt?.getTime() === accountUpdateAt);
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+        .toMatchObject({ quantity: 1, entryPrice: 100 });
       const polling = recoveryLoop.runOnce();
       stream.emit('FUTURES', event);
       await polling;
-      await streamLoop.stop();
+      await until(async () => (await prisma.position.findUniqueOrThrow({
+        where: { id: position.id },
+      })).quantity === 2);
+      const afterDcaAt = Math.max(Date.now(), accountUpdateAt + 1);
+      const afterDcaAccountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
+        e: 'ACCOUNT_UPDATE', E: afterDcaAt, T: afterDcaAt,
+        a: { B: [], P: [{ s: 'BTCUSDT', pa: '2', ep: '95', up: '4', ps: 'LONG' }] },
+      });
+      stream.emit('FUTURES', afterDcaAccountUpdate);
+      stream.emit('FUTURES', event);
+      stream.emit('FUTURES', accountUpdate);
+      stream.emit('FUTURES', afterDcaAccountUpdate);
+      await until(async () => (await prisma.position.findUniqueOrThrow({
+        where: { id: position.id },
+      })).lastExchangeSeenAt?.getTime() === afterDcaAt);
       await applyLiveExchangeUserDataStreamEvent({ userId: user.id,
         sourceApiKeyId: key.id, event });
       expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(1);
@@ -445,8 +471,58 @@ describe('LIVE Binance stream execution worker with local Redis', () => {
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'DCA_EXECUTED' } })).toBe(1);
       expect((await prisma.position.findUniqueOrThrow({ where: { id: position.id } })))
-        .toMatchObject({ quantity: 2, entryPrice: 95 });
+        .toMatchObject({ quantity: 2, entryPrice: 95, continuityState: 'CONFIRMED',
+          missingSyncCount: 0 });
       expect(await prisma.order.count({ where: { id: intent.id } })).toBe(1);
+
+      const closeClientOrderId = `soar_${id.replace(/-/g, '').slice(0, 20)}cl`;
+      const closeIntent = await prisma.liveOrderIntent.create({ data: {
+        userId: user.id, clientOrderId: closeClientOrderId, payloadHash: `close-${id}`,
+        exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+        payload: { mode: 'LIVE', origin: 'BOT', botId: bot.id,
+          walletId: wallet.id, positionId: position.id, side: 'SELL',
+          type: 'MARKET', quantity: 2, symbol: 'BTCUSDT', price: 110 },
+      } });
+      const closeOrder = await prisma.order.create({ data: {
+        id: closeIntent.id,
+        userId: user.id, botId: bot.id, walletId: wallet.id, positionId: position.id,
+        origin: 'BOT', symbol: 'BTCUSDT', side: 'SELL', type: 'MARKET',
+        status: 'OPEN', quantity: 2, exchangeOrderId: '67890',
+        filledQuantity: 0, feePending: true,
+      } });
+      const beforeCloseAt = Math.max(Date.now(), afterDcaAt + 1);
+      const beforeCloseAccountUpdate = normalizeBinanceUserDataStreamEvent('FUTURES', {
+        e: 'ACCOUNT_UPDATE', E: beforeCloseAt, T: beforeCloseAt,
+        a: { B: [], P: [{ s: 'BTCUSDT', pa: '0', ep: '0', up: '0', ps: 'LONG' }] },
+      });
+      stream.emit('FUTURES', beforeCloseAccountUpdate);
+      await until(async () => (await prisma.position.findUniqueOrThrow({
+        where: { id: position.id },
+      })).lastExchangeSeenAt?.getTime() === beforeCloseAt);
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+        .toMatchObject({ status: 'OPEN', syncState: 'IN_SYNC', quantity: 2,
+          entryPrice: 95, continuityState: 'RECOVERING' });
+      const closeEvent = normalizeBinanceUserDataStreamEvent('FUTURES', {
+        e: 'ORDER_TRADE_UPDATE', E: beforeCloseAt + 1, T: beforeCloseAt + 1, o: {
+          s: 'BTCUSDT', S: 'SELL', o: 'MARKET', X: 'FILLED', x: 'TRADE',
+          i: '67890', c: closeClientOrderId, ap: '110', l: '2', z: '2',
+          L: '110', n: '0.2', N: 'USDT', t: 992,
+        },
+      });
+      stream.emit('FUTURES', closeEvent);
+      stream.emit('FUTURES', beforeCloseAccountUpdate);
+      await until(async () => (await prisma.position.findUniqueOrThrow({
+        where: { id: position.id },
+      })).status === 'CLOSED');
+      await streamLoop.stop();
+      await applyLiveExchangeUserDataStreamEvent({ userId: user.id,
+        sourceApiKeyId: key.id, event: closeEvent });
+      expect(await prisma.orderFill.count({ where: { orderId: closeOrder.id } })).toBe(1);
+      expect(await prisma.trade.count({ where: { orderId: closeOrder.id } })).toBe(1);
+      expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
+        eventType: 'POSITION_CLOSED' } })).toBe(1);
+      expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+        .toMatchObject({ status: 'CLOSED', quantity: 2, entryPrice: 95 });
     } finally {
       await streamLoop?.stop();
       await recoveryLoop?.stop();

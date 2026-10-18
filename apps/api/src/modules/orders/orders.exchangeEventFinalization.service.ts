@@ -54,7 +54,10 @@ export const finalizeExchangeDcaFillInTransaction = async (
     await tx.position.update({
       where: { id: position.id }, data: {
         quantity: nextQuantity, entryPrice: nextEntryPrice,
-        lastExchangeSeenAt: input.eventAt, lastExchangeSyncAt: input.eventAt,
+        lastExchangeSeenAt: position.lastExchangeSeenAt &&
+          position.lastExchangeSeenAt > input.eventAt
+          ? position.lastExchangeSeenAt : input.eventAt,
+        lastExchangeSyncAt: input.eventAt,
         missingSince: null, missingSyncCount: 0, continuityState: 'CONFIRMED',
       },
     });

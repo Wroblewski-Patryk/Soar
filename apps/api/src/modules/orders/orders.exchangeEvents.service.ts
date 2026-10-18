@@ -15,6 +15,8 @@ import {
   finalizeExchangeDcaFillInTransaction,
 } from './orders.exchangeEventFinalization.service';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
+import { matchesAccountSnapshot, resolveLiveAccountUpdateScope } from
+  './orders.exchangeAccountUpdateScope';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
@@ -279,65 +281,6 @@ const ensureTradeRecord = async (input: {
       executionMode: input.executionMode,
     },
   });
-};
-
-const resolveLiveAccountUpdateScope = async (input: {
-  userId: string;
-  symbol: string;
-  side: 'LONG' | 'SHORT';
-  marketType: 'FUTURES' | 'SPOT';
-  sourceApiKeyId: string | null;
-}) => {
-  if (!input.sourceApiKeyId) {
-    console.warn(
-      `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: missing_source_api_key`
-    );
-    return [];
-  }
-
-  const candidates = await prisma.position.findMany({
-    where: {
-      userId: input.userId,
-      symbol: input.symbol,
-      side: input.side,
-      status: 'OPEN',
-      syncState: 'IN_SYNC',
-      OR: [
-        {
-          wallet: {
-            mode: 'LIVE',
-            exchange: 'BINANCE',
-            marketType: input.marketType,
-            apiKeyId: input.sourceApiKeyId,
-          },
-        },
-        {
-          bot: {
-            mode: 'LIVE',
-            exchange: 'BINANCE',
-            marketType: input.marketType,
-            OR: [
-              { apiKeyId: input.sourceApiKeyId },
-              { wallet: { apiKeyId: input.sourceApiKeyId } },
-            ],
-          },
-        },
-      ],
-    },
-    select: {
-      id: true,
-    },
-    orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
-  });
-
-  if (candidates.length <= 1) {
-    return candidates.map((candidate) => candidate.id);
-  }
-
-  console.warn(
-    `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: ambiguous_live_scope candidates=${candidates.length}`
-  );
-  return [];
 };
 
 export const syncRuntimeDcaStateFromExchangeFill = async (input: {
@@ -919,19 +862,41 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       typeof position.amount === 'number' && Number.isFinite(position.amount)
         ? Math.abs(position.amount)
         : null;
-    const scopedPositionIds = await resolveLiveAccountUpdateScope({
+    const scopedPositions = await resolveLiveAccountUpdateScope({
       userId: input.userId,
       symbol: normalizedSymbol,
       side,
       marketType: input.event.marketType,
       sourceApiKeyId: input.sourceApiKeyId ?? null,
     });
-    if (scopedPositionIds.length === 0) continue;
+    if (scopedPositions.length === 0) continue;
+    const scoped = scopedPositions[0];
+    const freshWhere = { id: scoped.id,
+      OR: [{ lastExchangeSeenAt: null }, { lastExchangeSeenAt: { lt: eventAt } }] };
+    if (scoped.origin !== 'EXCHANGE_SYNC') {
+      // BOT/USER accounting changes only with a matched order fill. An account
+      // snapshot may arrive before that fill or be replayed after a newer fill.
+      const differs = !matchesAccountSnapshot(scoped.quantity, quantity) ||
+        !matchesAccountSnapshot(scoped.entryPrice, position.entryPrice);
+      const result = await prisma.position.updateMany({
+        where: freshWhere,
+        data: {
+          lastExchangeSeenAt: eventAt,
+          ...(differs ? {
+            continuityState: 'RECOVERING',
+            missingSince: scoped.missingSince ?? eventAt,
+            missingSyncCount: { increment: 1 },
+          } : typeof position.unrealizedPnl === 'number' ? {
+            unrealizedPnl: position.unrealizedPnl,
+          } : {}),
+        },
+      });
+      updatedPositions += result.count;
+      continue;
+    }
     if (quantity === 0) {
       const result = await prisma.position.updateMany({
-        where: {
-          id: { in: scopedPositionIds },
-        },
+        where: { id: scoped.id },
         data: {
           syncState: 'DRIFT',
           continuityState: 'RECOVERING',
@@ -946,9 +911,7 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       continue;
     }
     const result = await prisma.position.updateMany({
-      where: {
-        id: { in: scopedPositionIds },
-      },
+      where: { id: scoped.id },
       data: {
         ...(typeof quantity === 'number' ? { quantity } : {}),
         ...(typeof position.entryPrice === 'number' ? { entryPrice: position.entryPrice } : {}),

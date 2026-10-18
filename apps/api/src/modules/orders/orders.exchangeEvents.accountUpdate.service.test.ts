@@ -47,6 +47,53 @@ describe('orders.exchangeEvents.service account updates', () => {
     await cleanupDb();
   });
 
+  it('observes BOT quantity drift without replacing fill-backed accounting or blocking a later fill', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-bot-drift@example.com', password: 'hashed' },
+    });
+    const key = await createLiveApiKey(user.id, 'bot-drift-live-key');
+    const wallet = await prisma.wallet.create({ data: {
+      userId: user.id, name: 'bot-drift-wallet', mode: 'LIVE',
+      exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+      apiKeyId: key.id,
+    } });
+    const bot = await prisma.bot.create({ data: {
+      userId: user.id, name: 'bot-drift-bot', mode: 'LIVE', exchange: 'BINANCE',
+      marketType: 'FUTURES', positionMode: 'ONE_WAY', walletId: wallet.id,
+      apiKeyId: key.id, isActive: true, liveOptIn: true,
+      consentTextVersion: 'v1',
+    } });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, origin: 'BOT',
+      managementMode: 'BOT_MANAGED', syncState: 'IN_SYNC', symbol: 'ETHUSDT',
+      side: 'LONG', status: 'OPEN', quantity: 1, entryPrice: 100,
+      unrealizedPnl: 0,
+    } });
+    const event = { eventType: 'ACCOUNT_UPDATE' as const,
+      marketType: 'FUTURES' as const, eventTime: 5_000, transactionTime: 5_001,
+      balances: [], positions: [{ symbol: 'ETHUSDT', amount: 2,
+        entryPrice: 95, unrealizedPnl: 12, positionSide: 'LONG' as const }], raw: {} };
+
+    await expect(applyLiveExchangeAccountUpdateEvent({ userId: user.id,
+      sourceApiKeyId: key.id, event })).resolves
+      .toEqual({ status: 'applied', updatedPositions: 1 });
+    await expect(applyLiveExchangeAccountUpdateEvent({ userId: user.id,
+      sourceApiKeyId: key.id, event })).resolves
+      .toEqual({ status: 'applied', updatedPositions: 0 });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ quantity: 1, entryPrice: 100, unrealizedPnl: 0,
+        syncState: 'IN_SYNC', continuityState: 'RECOVERING', missingSyncCount: 1,
+        lastExchangeSyncAt: null });
+
+    await applyLiveExchangeAccountUpdateEvent({ userId: user.id,
+      sourceApiKeyId: key.id, event: { ...event, eventTime: 5_002,
+        transactionTime: 5_002, positions: [{ ...event.positions[0],
+          amount: 0, entryPrice: 0, unrealizedPnl: 0 }] } });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ quantity: 1, entryPrice: 100, syncState: 'IN_SYNC',
+        continuityState: 'RECOVERING', missingSyncCount: 2 });
+  });
+
   it('requires source api-key scope before refreshing canonical quantities and pnl', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-account@example.com', password: 'hashed' },
