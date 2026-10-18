@@ -6,6 +6,7 @@ import { runtimeScanLoop } from '../modules/engine/runtimeScanLoop.service';
 import { metricsStore } from '../observability/metrics';
 import { assertDeployedWorkerOwnership } from './workerOwnership';
 import { liveFillRecoveryLoop } from './liveFillRecoveryLoop';
+import { liveBinanceStreamLoop } from './liveBinanceStreamLoop';
 import { prisma } from '../prisma/client';
 
 assertDeployedWorkerOwnership('execution');
@@ -37,6 +38,7 @@ const runtimeSignalLoopBootstrapTimer = setInterval(() => {
 runtimeSignalLoopBootstrapTimer.unref?.();
 runtimeScanLoop.start();
 liveFillRecoveryLoop.start();
+liveBinanceStreamLoop.start();
 
 let stopping = false;
 const shutdown = async () => {
@@ -45,6 +47,7 @@ const shutdown = async () => {
   clearInterval(runtimeSignalLoopBootstrapTimer);
   livePositionReconciliationLoop.stop();
   runtimeScanLoop.stop();
+  await liveBinanceStreamLoop.stop();
   await liveFillRecoveryLoop.stop();
   await runtimeSignalLoop.stop();
   await prisma.$disconnect();

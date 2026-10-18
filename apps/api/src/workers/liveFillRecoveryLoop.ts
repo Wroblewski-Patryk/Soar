@@ -39,9 +39,13 @@ const OWNED_SET = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 redis.call('SET', KEYS[2], ARGV[2]); return 1`;
 const OWNED_PENDING = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 redis.call('HSET', KEYS[2], ARGV[2], ARGV[3]);
-redis.call('ZADD', KEYS[3], ARGV[4], ARGV[2]); return 1`;
+redis.call('ZADD', KEYS[3], ARGV[4], ARGV[2]);
+redis.call('ZADD', KEYS[4], 'NX', ARGV[5], ARGV[2]); return 1`;
 const OWNED_REMOVE = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
-redis.call('HDEL', KEYS[2], ARGV[2]); redis.call('ZREM', KEYS[3], ARGV[2]); return 1`;
+redis.call('HDEL', KEYS[2], ARGV[2]); redis.call('ZREM', KEYS[3], ARGV[2]);
+redis.call('ZREM', KEYS[4], ARGV[2]); return 1`;
+const OWNED_STATUS = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
+redis.call('SET', KEYS[2], ARGV[2], 'PX', ARGV[3]); return 1`;
 const OWNED_RENEW = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
 return redis.call('PEXPIRE', KEYS[1], ARGV[2])`;
 const OWNED_RELEASE = `if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
@@ -141,13 +145,14 @@ export class LiveFillRecoveryLoop {
   private async markPending(redis: RedisClient, token: string, candidate: LiveFillCandidate,
     nextAt = Date.now()) {
     return Number(await redis.eval(OWNED_PENDING, { keys: [this.key('lease'),
-      this.key('pending:data'), this.key('pending:due')],
-      arguments: [token, candidate.orderId, JSON.stringify(candidate), String(nextAt)] })) === 1;
+      this.key('pending:data'), this.key('pending:due'), this.key('pending:created')],
+      arguments: [token, candidate.orderId, JSON.stringify(candidate), String(nextAt),
+        String(Date.now())] })) === 1;
   }
 
   private async clearPending(redis: RedisClient, token: string, orderId: string) {
     return Number(await redis.eval(OWNED_REMOVE, { keys: [this.key('lease'),
-      this.key('pending:data'), this.key('pending:due')],
+      this.key('pending:data'), this.key('pending:due'), this.key('pending:created')],
       arguments: [token, orderId] })) === 1;
   }
 
@@ -163,6 +168,8 @@ export class LiveFillRecoveryLoop {
     const attempt = outcome === 'APPLIED' ? 0 : await redis.incr(attemptKey);
     if (outcome === 'APPLIED') await redis.del(attemptKey);
     else await redis.expire(attemptKey, 86_400);
+    if (outcome !== 'APPLIED') await redis.hIncrBy(this.key('stats'),
+      outcome === 'UNKNOWN' ? 'unknown_total' : 'error_total', 1);
     const base = outcome === 'APPLIED' ? this.appliedCooldownMs :
       reason === 'IDENTITY_CHANGED' || reason === 'ACCOUNT_UNAVAILABLE' ? 300_000 : 60_000;
     const delay = Math.min(3_600_000, base * 2 ** Math.min(attempt, 6));
@@ -227,6 +234,24 @@ export class LiveFillRecoveryLoop {
     return true;
   }
 
+  private async publishStatus(redis: RedisClient, token: string,
+    status: 'healthy' | 'degraded') {
+    const [pendingCount, oldest, stats] = await Promise.all([
+      redis.zCard(this.key('pending:due')),
+      redis.sendCommand(['ZRANGE', this.key('pending:created'), '0', '0', 'WITHSCORES']),
+      redis.hGetAll(this.key('stats')),
+    ]);
+    const oldestScore = Array.isArray(oldest) && oldest.length >= 2 ? Number(oldest[1]) : null;
+    const now = Date.now();
+    const snapshot = { status, updatedAt: now, pendingCount,
+      oldestPendingAgeMs: oldestScore != null && Number.isFinite(oldestScore)
+        ? Math.max(0, now - oldestScore) : null,
+      unknownTotal: Number(stats.unknown_total ?? 0),
+      errorTotal: Number(stats.error_total ?? 0) };
+    await redis.eval(OWNED_STATUS, { keys: [this.key('lease'), this.key('status')],
+      arguments: [token, JSON.stringify(snapshot), '180000'] });
+  }
+
   async runOnce() {
     if (this.stopping) return;
     const redis = await this.client();
@@ -236,6 +261,7 @@ export class LiveFillRecoveryLoop {
     this.log('lease_acquired');
     let lost = false;
     let renewing = false;
+    let cycleFailed = false;
     const renewTimer = setInterval(() => {
       if (renewing || this.stopping) return;
       renewing = true;
@@ -272,8 +298,14 @@ export class LiveFillRecoveryLoop {
         if (!await this.writeCursor(redis, token, cursor)) return;
         if (!result.nextIntentCursor && !result.nextOrderCursor) break;
       }
+    } catch (error) {
+      cycleFailed = true;
+      await redis.hIncrBy(this.key('stats'), 'error_total', 1).catch(() => undefined);
+      throw error;
     } finally {
       clearInterval(renewTimer);
+      await this.publishStatus(redis, token, cycleFailed ? 'degraded' : 'healthy')
+        .catch(() => undefined);
       await redis.eval(OWNED_RELEASE, { keys: [this.key('lease')], arguments: [token] })
         .catch(() => undefined);
     }

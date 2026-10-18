@@ -24,9 +24,11 @@ type BinanceUserDataStreamHttpClient = (input: {
 
 type WebSocketLike = {
   on: (
-    event: 'open' | 'message' | 'close' | 'error',
+    event: 'open' | 'message' | 'close' | 'error' | 'pong',
     listener: (...args: unknown[]) => void
   ) => void;
+  send?: (payload: string) => void;
+  ping?: () => void;
   close: () => void;
 };
 
@@ -37,11 +39,13 @@ type BinanceUserDataStreamConfig = {
   futuresRestBaseUrl?: string;
   spotWebSocketBaseUrl?: string;
   futuresWebSocketBaseUrl?: string;
+  spotWebSocketApiUrl?: string;
 };
 
 export type BinanceUserDataStreamSession = {
   marketType: BinanceUserDataStreamMarketType;
-  listenKey: string;
+  listenKey: string | null;
+  ping: () => void;
   close: () => void;
 };
 
@@ -50,6 +54,7 @@ const defaultHttpClient: BinanceUserDataStreamHttpClient = async (input) =>
     method: input.method,
     headers: input.headers,
     body: input.body,
+    signal: AbortSignal.timeout(10_000),
   }) as Promise<BinanceUserDataStreamHttpResponse>;
 
 const defaultWebSocketFactory: WebSocketFactory = (url) => {
@@ -61,7 +66,8 @@ const defaultConfig: Required<BinanceUserDataStreamConfig> = {
   spotRestBaseUrl: 'https://api.binance.com',
   futuresRestBaseUrl: 'https://fapi.binance.com',
   spotWebSocketBaseUrl: 'wss://stream.binance.com:9443/ws',
-  futuresWebSocketBaseUrl: 'wss://fstream.binance.com/ws',
+  futuresWebSocketBaseUrl: 'wss://fstream.binance.com/private/ws',
+  spotWebSocketApiUrl: 'wss://ws-api.binance.com:443/ws-api/v3',
 };
 
 const resolveListenKeyPath = (marketType: BinanceUserDataStreamMarketType) =>
@@ -233,7 +239,7 @@ export class BinanceUserDataStreamService {
 
     const text = await response.text();
     if (!response.ok) {
-      throw new Error(`Binance listenKey create failed (${response.status}): ${text}`);
+      throw new Error(`Binance listenKey create failed (${response.status})`);
     }
 
     return BinanceListenKeyResponseSchema.parse(parseJsonSafe(text)).listenKey;
@@ -250,15 +256,17 @@ export class BinanceUserDataStreamService {
       method: 'PUT',
       headers: {
         'X-MBX-APIKEY': input.apiKey,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        ...(marketType === 'SPOT' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
       },
-      body: `listenKey=${encodeURIComponent(input.listenKey)}`,
+      body: marketType === 'SPOT' ? `listenKey=${encodeURIComponent(input.listenKey)}` : undefined,
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Binance listenKey keepalive failed (${response.status}): ${text}`);
+      throw new Error(`Binance listenKey keepalive failed (${response.status})`);
     }
+    const raw = parseJsonSafe(await response.text());
+    return raw && typeof raw === 'object' && 'listenKey' in raw &&
+      typeof raw.listenKey === 'string' ? raw.listenKey : input.listenKey;
   }
 
   async closeListenKey(input: {
@@ -272,14 +280,13 @@ export class BinanceUserDataStreamService {
       method: 'DELETE',
       headers: {
         'X-MBX-APIKEY': input.apiKey,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        ...(marketType === 'SPOT' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
       },
-      body: `listenKey=${encodeURIComponent(input.listenKey)}`,
+      body: marketType === 'SPOT' ? `listenKey=${encodeURIComponent(input.listenKey)}` : undefined,
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Binance listenKey close failed (${response.status}): ${text}`);
+      throw new Error(`Binance listenKey close failed (${response.status})`);
     }
   }
 
@@ -290,6 +297,7 @@ export class BinanceUserDataStreamService {
     onOpen?: () => void;
     onClose?: () => void;
     onError?: (error: unknown) => void;
+    onPong?: () => void;
   }): BinanceUserDataStreamSession {
     const marketType = BinanceUserDataStreamMarketTypeSchema.parse(input.marketType);
     const socket = this.webSocketFactory(
@@ -299,6 +307,7 @@ export class BinanceUserDataStreamService {
     socket.on('open', () => input.onOpen?.());
     socket.on('close', () => input.onClose?.());
     socket.on('error', (error) => input.onError?.(error));
+    socket.on('pong', () => input.onPong?.());
     socket.on('message', (payload) => {
       const text =
         typeof payload === 'string'
@@ -317,7 +326,66 @@ export class BinanceUserDataStreamService {
     return {
       marketType,
       listenKey: input.listenKey,
+      ping: () => socket.ping?.(),
       close: () => socket.close(),
     };
   }
+
+  connectSignedSpot(input: {
+    apiKey: string;
+    apiSecret: string;
+    onEvent: (event: NormalizedBinanceUserDataStreamEvent) => void;
+    onOpen?: () => void;
+    onClose?: () => void;
+    onError?: (error: unknown) => void;
+    onPong?: () => void;
+  }): BinanceUserDataStreamSession {
+    const socket = this.webSocketFactory(this.config.spotWebSocketApiUrl);
+    const requestId = randomUUID();
+    let subscriptionId: number | null = null;
+    socket.on('open', () => {
+      try {
+        if (!socket.send) throw new Error('SPOT_WEBSOCKET_SEND_UNAVAILABLE');
+        const params = { apiKey: input.apiKey, timestamp: Date.now() };
+        const payload = Object.entries(params).sort(([left], [right]) => left.localeCompare(right))
+          .map(([key, value]) => `${key}=${value}`).join('&');
+        const signature = createHmac('sha256', input.apiSecret).update(payload).digest('hex');
+        socket.send(JSON.stringify({ id: requestId,
+          method: 'userDataStream.subscribe.signature', params: { ...params, signature } }));
+      } catch {
+        input.onError?.(new Error('SPOT_SUBSCRIBE_SEND_FAILED'));
+        socket.close();
+      }
+    });
+    socket.on('close', () => input.onClose?.());
+    socket.on('error', () => input.onError?.(new Error('SPOT_SOCKET_ERROR')));
+    socket.on('pong', () => input.onPong?.());
+    socket.on('message', (payload) => {
+      const text = typeof payload === 'string' ? payload :
+        Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload);
+      const raw = parseJsonSafe(text);
+      if (!raw || typeof raw !== 'object') {
+        input.onError?.(new Error('SPOT_INVALID_PAYLOAD'));
+        return;
+      }
+      const message = raw as Record<string, unknown>;
+      if (message.id === requestId) {
+        const result = message.result as Record<string, unknown> | null;
+        if (message.status !== 200 || typeof result?.subscriptionId !== 'number') {
+          input.onError?.(new Error('SPOT_SUBSCRIBE_REJECTED'));
+          socket.close();
+          return;
+        }
+        subscriptionId = result.subscriptionId;
+        input.onOpen?.();
+        return;
+      }
+      if (subscriptionId == null || message.subscriptionId !== subscriptionId ||
+          !message.event || typeof message.event !== 'object') return;
+      input.onEvent(normalizeBinanceUserDataStreamEvent('SPOT', message.event));
+    });
+    return { marketType: 'SPOT', listenKey: null,
+      ping: () => socket.ping?.(), close: () => socket.close() };
+  }
 }
+import { createHmac, randomUUID } from 'node:crypto';

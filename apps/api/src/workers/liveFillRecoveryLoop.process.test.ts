@@ -172,6 +172,21 @@ describe('LIVE fill recovery with two worker processes and local Redis', () => {
       expect(await prisma.botRuntimeEvent.count({ where: { userId: user.id,
         eventType: 'DCA_EXECUTED' } })).toBe(1);
 
+      // Model the post-commit Redis-loss gap after fee and fills are complete:
+      // the pending marker disappears while the older BOT runtime cache survives.
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(stale));
+      await redis.hDel(`${namespace}:pending:data`, intent.id);
+      await redis.zRem(`${namespace}:pending:due`, intent.id);
+      await redis.zRem(`${namespace}:pending:created`, intent.id);
+      await pause(1_200);
+      const orphanedCache = JSON.parse((await redis.get(
+        `runtime:position-state:${position.id}`))!);
+      expect(orphanedCache).toMatchObject({ quantity: 1, averageEntryPrice: 100 });
+      expect(selectRuntimeDisplayState({ position: await prisma.position.findUniqueOrThrow({
+        where: { id: position.id } }), runtimeSnapshot: null,
+        persistedState: orphanedCache })).toBeNull();
+      await redis.set(`runtime:position-state:${position.id}`, JSON.stringify(recoveredCache));
+
       const closeId = randomUUID();
       const closeClientId = `soar_${closeId.replace(/-/g, '').slice(0, 22)}`;
       const closeVenueId = `venue-${closeId}`;

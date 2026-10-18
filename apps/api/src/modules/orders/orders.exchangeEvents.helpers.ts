@@ -1,5 +1,16 @@
 import { OrderStatus } from '@prisma/client';
 
+export const mapExchangeOrderStatus = (status: string): OrderStatus => {
+  const normalized = status.trim().toUpperCase();
+  if (normalized.includes('PARTIALLY')) return 'PARTIALLY_FILLED';
+  if (normalized.includes('FILLED')) return 'FILLED';
+  if (normalized.includes('CANCELED') || normalized.includes('CANCELLED')) return 'CANCELED';
+  if (normalized.includes('REJECT')) return 'REJECTED';
+  if (normalized.includes('EXPIRE')) return 'EXPIRED';
+  if (normalized.includes('NEW') || normalized.includes('OPEN')) return 'OPEN';
+  return 'OPEN';
+};
+
 export const isExchangeCloseFillComplete = (input: {
   filledQuantity: number;
   positionQuantity: number;

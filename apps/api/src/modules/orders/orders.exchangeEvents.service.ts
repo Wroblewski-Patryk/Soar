@@ -1,4 +1,4 @@
-import { Exchange, OrderStatus, Prisma, PrismaClient } from '@prisma/client';
+import { Exchange, Prisma, PrismaClient } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import {
@@ -23,6 +23,7 @@ import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from '
 import { writeRuntimeTelemetryFromExchangeFill } from './orders.runtimeTelemetryFromFill';
 import {
   isExchangeCloseFillComplete,
+  mapExchangeOrderStatus,
   resolveExchangeFeePendingDecision,
   resolveExchangeFeeRefreshDecision,
   resolveExchangeOrderFillProgress,
@@ -32,17 +33,6 @@ const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
 const normalizeSymbol = (symbol: string) => symbol.trim().toUpperCase().replace(/[/:]/g, '');
-
-const mapExchangeOrderStatus = (status: string): OrderStatus => {
-  const normalized = status.trim().toUpperCase();
-  if (normalized.includes('PARTIALLY')) return 'PARTIALLY_FILLED';
-  if (normalized.includes('FILLED')) return 'FILLED';
-  if (normalized.includes('CANCELED') || normalized.includes('CANCELLED')) return 'CANCELED';
-  if (normalized.includes('REJECT')) return 'REJECTED';
-  if (normalized.includes('EXPIRE')) return 'EXPIRED';
-  if (normalized.includes('NEW') || normalized.includes('OPEN')) return 'OPEN';
-  return 'OPEN';
-};
 
 const isClosingOrderForPosition = (input: {
   orderSide: 'BUY' | 'SELL';
@@ -404,6 +394,7 @@ export const invalidateRuntimePositionStateAfterExchangeClose = (positionId: str
 type LiveExchangeOrderTradeUpdateInput = {
   userId: string;
   event: NormalizedBinanceOrderTradeUpdateEvent;
+  sourceApiKeyId?: string | null;
   sourceExchange?: Exchange;
   snapshotRecovery?: boolean;
   client?: PrismaClient;
@@ -442,9 +433,15 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     include: {
       position: true,
+      bot: { select: { apiKeyId: true } },
+      wallet: { select: { apiKeyId: true } },
     },
   });
   if (!existingOrder) return { status: 'ignored' as const, reason: 'order_not_found' as const };
+  if (input.sourceApiKeyId &&
+      (existingOrder.bot?.apiKeyId ?? existingOrder.wallet?.apiKeyId) !== input.sourceApiKeyId) {
+    return { status: 'ignored' as const, reason: 'account_mismatch' as const };
+  }
 
   const nextStatus = mapExchangeOrderStatus(input.event.orderStatus);
   const fillProgress = resolveExchangeOrderFillProgress({
@@ -982,6 +979,7 @@ export const applyLiveExchangeUserDataStreamEvent = async (input: {
   if (input.event.eventType === 'ORDER_TRADE_UPDATE') {
     return applyLiveExchangeOrderTradeUpdateEvent({
       userId: input.userId,
+      sourceApiKeyId: input.sourceApiKeyId,
       event: input.event,
     });
   }
