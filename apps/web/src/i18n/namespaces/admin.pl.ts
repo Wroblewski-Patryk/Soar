@@ -7,6 +7,7 @@ export const adminPl = {
     nav: {
       subscriptions: "Subskrypcje",
       users: "Uzytkownicy",
+      liveExecution: "Wykonanie LIVE",
     },
     footer: {
       rights: "Wszelkie prawa zastrzezone.",
@@ -16,6 +17,23 @@ export const adminPl = {
       deniedTitle: "Wymagany dostep admin",
       deniedDescription: "Biezace konto nie jest potwierdzone jako administrator.",
     },
+  },
+  liveExecution: {
+    title: "Sterowanie wykonaniem LIVE",
+    description: "Wspolny stan wstrzymania dla API i workerow. Wznow dopiero, gdy wszystkie instancje wysylajace zlecenia maja nowa wersje.",
+    loading: "Odczytywanie stanu LIVE...",
+    unavailable: "Nie mozna potwierdzic stanu LIVE. Nowe zlecenia sa blokowane.",
+    paused: "Wysylanie zlecen LIVE wstrzymane",
+    active: "Wysylanie zlecen LIVE aktywne",
+    reasonLabel: "Powod",
+    versionLabel: "Wersja",
+    changedLabel: "Czas zmiany",
+    refresh: "Odswiez stan",
+    scope: "Wstrzymanie blokuje nowe wejscia i DCA. Zamkniecia Futures z reduce-only pozostaja dostepne. Zamkniecia Spot sa blokowane. Rozliczanie wczesniejszych filli i intencji trwa nadal.",
+    reasonInput: "Powod zmiany (co najmniej 10 znakow)",
+    pause: "Wstrzymaj LIVE",
+    resume: "Wznow LIVE",
+    updateError: "Nie udalo sie potwierdzic zmiany. Odswiez wspolny stan przed ponowna proba.",
   },
   users: {
     loadError: "Nie udalo sie pobrac listy uzytkownikow.",

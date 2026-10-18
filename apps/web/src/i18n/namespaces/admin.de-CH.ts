@@ -6,7 +6,8 @@ export const adminDeCh = {
   "layout": {
     "nav": {
       "subscriptions": "Abonnements",
-      "users": "Benutzer"
+      "users": "Benutzer",
+      "liveExecution": "LIVE-Ausfuehrung"
     },
     "footer": {
       "rights": "Alle Rechte vorbehalten."
@@ -16,6 +17,23 @@ export const adminDeCh = {
       "deniedTitle": "Admin-Zugriff erforderlich",
       "deniedDescription": "Das aktuelle Konto ist nicht als Administrator bestaetigt."
     }
+  },
+  "liveExecution": {
+    "title": "LIVE-Ausfuehrung steuern",
+    "description": "Gemeinsamer Pausenstatus fuer API und Worker. Erst fortsetzen, wenn alle LIVE-Sender aktualisiert sind.",
+    "loading": "LIVE-Status wird geladen...",
+    "unavailable": "LIVE-Status ist nicht pruefbar. Neue Orders werden blockiert.",
+    "paused": "LIVE-Orders pausiert",
+    "active": "LIVE-Orders aktiv",
+    "reasonLabel": "Grund",
+    "versionLabel": "Version",
+    "changedLabel": "Geaendert am",
+    "refresh": "Status aktualisieren",
+    "scope": "Die Pause blockiert neue Einstiege und DCA. Futures-Schliessungen mit reduce-only bleiben erlaubt. Spot-Schliessungen sind blockiert. Bestehende Fills und Intents werden weiter abgeglichen.",
+    "reasonInput": "Grund der Aenderung (mindestens 10 Zeichen)",
+    "pause": "LIVE pausieren",
+    "resume": "LIVE fortsetzen",
+    "updateError": "Aenderung konnte nicht bestaetigt werden. Status vor erneutem Versuch aktualisieren."
   },
   "users": {
     "loadError": "Benutzer konnten nicht geladen werden.",

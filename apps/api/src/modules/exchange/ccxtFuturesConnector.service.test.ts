@@ -1,4 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
+
+// Connector normalization tests use a fake venue; the shared DB gate has its own tests.
+vi.mock('../orders/liveExecutionPause.service', () => ({
+  withLiveCreateOrderPermit: async <T,>(_input: unknown, submit: () => Promise<T>) => submit(),
+}));
 import {
   CcxtClientFactory,
   CcxtExchangeLikeClient,
@@ -75,6 +80,19 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
 });
 
 describe('CcxtFuturesConnector scaffold', () => {
+  it('consults the final LIVE permit before createOrder', async () => {
+    const client = createMockClient();
+    const permit = vi.fn(async () => { throw new Error('blocked by shared pause'); });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client), permit
+    );
+    await expect(connector.placeOrder({ symbol: 'BTCUSDT', side: 'sell', type: 'market',
+      amount: 0.1, reduceOnly: true })).rejects.toThrow('blocked by shared pause');
+    expect(permit).toHaveBeenCalledWith({ marketType: 'swap', reduceOnly: true }, expect.any(Function));
+    expect(client.createOrder).not.toHaveBeenCalled();
+  });
+
   it.each([
     ['spot', 'SPOT'], ['swap', 'FUTURES'],
   ] as const)('passes a bounded Gate %s closed-order page to CCXT', async (marketType, contractType) => {

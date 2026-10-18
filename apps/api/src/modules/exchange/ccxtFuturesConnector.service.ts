@@ -6,6 +6,7 @@ import type {
   CcxtWalletCashflowLike,
 } from './ccxtFuturesConnector.client';
 import { normalizeCcxtFundingRatePoint, normalizeCcxtOpenInterestPoint, normalizeCcxtOrderBookPoint, normalizeCcxtPublicCandle } from './ccxtPublicMarketDataNormalizer';
+import { withLiveCreateOrderPermit } from '../orders/liveExecutionPause.service';
 import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicFundingRatePoint, CcxtPublicOpenInterestPoint, CcxtPublicOrderBookPoint, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
 export type { CcxtExchangeLikeClient } from './ccxtFuturesConnector.client';
@@ -35,7 +36,8 @@ export class CcxtFuturesConnector {
 
   constructor(
     config: CcxtFuturesConnectorConfig,
-    private readonly clientFactory: CcxtClientFactory = defaultCcxtClientFactory
+    private readonly clientFactory: CcxtClientFactory = defaultCcxtClientFactory,
+    private readonly createOrderPermit: typeof withLiveCreateOrderPermit = withLiveCreateOrderPermit,
   ) {
     this.config = CcxtFuturesConnectorConfigSchema.parse(config);
   }
@@ -344,14 +346,13 @@ export class CcxtFuturesConnector {
     }
 
     const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
-    const order = await client.createOrder(
-      exchangeSymbol,
-      request.type,
-      request.side,
-      request.amount,
-      request.price,
-      params
-    );
+    const order = await this.createOrderPermit({
+      marketType: this.config.marketType === 'spot' || this.config.marketType === 'SPOT'
+        ? 'spot' : this.config.marketType === 'swap' ? 'swap' : 'future',
+      reduceOnly: request.reduceOnly === true,
+    }, () => client.createOrder(
+      exchangeSymbol, request.type, request.side, request.amount, request.price, params
+    ));
 
     const fills = this.normalizeOrderFills(order, request.symbol, 'createOrder');
 
@@ -621,6 +622,7 @@ export class CcxtFuturesConnector {
       secret: this.config.secret,
       password: this.config.password,
       enableRateLimit: this.config.enableRateLimit,
+      timeout: 30_000,
       options: {
         defaultType: this.config.marketType,
       },

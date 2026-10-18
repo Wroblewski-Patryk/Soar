@@ -68,6 +68,8 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   it('classifies retryable error classes with normalization', () => {
     expect(isRuntimeExecutionRetryableErrorClass('TimeoutError')).toBe(true);
     expect(isRuntimeExecutionRetryableErrorClass('fetch error')).toBe(true);
+    expect(isRuntimeExecutionRetryableErrorClass('live_pretrade_paused')).toBe(true);
+    expect(isRuntimeExecutionRetryableErrorClass('live_pretrade_pause_unavailable')).toBe(true);
     expect(isRuntimeExecutionRetryableErrorClass('ValidationError')).toBe(false);
   });
 
@@ -450,6 +452,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
 
   it('treats stale pending DCA as non-blocking for pending-submitted close guard', async () => {
     const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findFirst').mockResolvedValue(null);
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findMany').mockResolvedValue([] as never);
     const orderLookupSpy = vi.spyOn(prisma.order, 'findFirst');
 
@@ -457,6 +460,21 @@ describe('runtimeExecutionDedupe retryability gate', () => {
 
     expect(result).toBe(false);
     expect(orderLookupSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps a LIVE DCA with unknown venue outcome from closing on guessed quantity', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    const unknownSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'findFirst')
+      .mockResolvedValue({ id: 'unknown-dca' } as never);
+    const pendingSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'findMany');
+    expect(await service.hasPendingSubmittedDcaForPosition('pos-unknown')).toBe(true);
+    expect(unknownSpy).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({
+        commandType: 'DCA', errorClass: 'live_execution_unknown',
+        commandFingerprint: { path: ['positionId'], equals: 'pos-unknown' },
+      }),
+    }));
+    expect(pendingSpy).not.toHaveBeenCalled();
   });
 
   it('marks succeeded by order id only for filled synced orders', async () => {

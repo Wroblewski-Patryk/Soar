@@ -1331,6 +1331,17 @@ model Log {
   @@index([occurredAt])
 }
 
+// One shared control row for every API and execution worker instance.
+// A missing row is interpreted as paused by the submission gate.
+model LiveExecutionControl {
+  id              String   @id
+  paused          Boolean  @default(true)
+  reason          String
+  version         Int      @default(1)
+  changedByUserId String?
+  changedAt       DateTime @default(now())
+}
+
 enum LogLevel {
   DEBUG
   INFO

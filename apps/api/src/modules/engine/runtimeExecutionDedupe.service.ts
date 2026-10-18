@@ -72,12 +72,18 @@ const retryableErrorClasses = parseRetryableErrorClasses(
     'prisma_client_unknown_request_error',
     'prisma_client_rust_panic_error',
     'live_execution_unknown',
+    'live_pretrade_paused',
+    'live_pretrade_pause_unavailable',
   ]
 );
 
 export const isRuntimeExecutionRetryableErrorClass = (errorClass?: string | null) => {
   if (!errorClass) return false;
-  return retryableErrorClasses.has(normalizeErrorClass(errorClass));
+  const normalized = normalizeErrorClass(errorClass);
+  // Pause and shared-store outage happen before venue submission. Resuming
+  // must not strand their durable dedupe key, regardless of env overrides.
+  return normalized === 'live_pretrade_paused' ||
+    normalized === 'live_pretrade_pause_unavailable' || retryableErrorClasses.has(normalized);
 };
 
 const recordDedupeMetric = (input: {
@@ -258,6 +264,18 @@ type MarkFailedInput = {
 
 export class RuntimeExecutionDedupeService {
   async hasPendingSubmittedDcaForPosition(positionId: string) {
+    // An exchange outcome that is still unknown can add exposure later, even
+    // when the local order has not materialized. Never close on a guessed size.
+    const unknown = await prisma.runtimeExecutionDedupe.findFirst({
+      where: {
+        commandType: 'DCA',
+        status: { in: ['FAILED', 'PENDING'] },
+        errorClass: 'live_execution_unknown',
+        commandFingerprint: { path: ['positionId'], equals: positionId },
+      },
+      select: { id: true },
+    });
+    if (unknown) return true;
     const staleThreshold = new Date(Date.now() - pendingStaleMs);
     const pending = await prisma.runtimeExecutionDedupe.findMany({
       where: {

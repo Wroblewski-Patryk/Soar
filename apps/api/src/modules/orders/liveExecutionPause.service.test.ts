@@ -1,0 +1,134 @@
+import { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+  readLiveExecutionPause, setLiveExecutionPause, withLiveCreateOrderPermit,
+} from './liveExecutionPause.service';
+
+const assertTestDatabase = () => {
+  const url = new URL(process.env.DATABASE_URL ?? '');
+  if (!decodeURIComponent(url.pathname).endsWith('_test')) {
+    throw new Error('LIVE pause integration test requires an isolated _test database');
+  }
+};
+
+describe('shared LIVE submission pause', () => {
+  const workerA = new PrismaClient();
+  const workerB = new PrismaClient();
+  let actorId = '';
+  let original: Awaited<ReturnType<typeof workerA.liveExecutionControl.findUnique>>;
+
+  beforeAll(async () => {
+    assertTestDatabase();
+    await Promise.all([workerA.$connect(), workerB.$connect()]);
+    original = await workerA.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    expect(original).not.toBeNull();
+    const actor = await workerA.user.create({ data: {
+      email: `live-pause-test-${Date.now()}@example.com`, password: 'test-only', role: 'ADMIN',
+    } });
+    actorId = actor.id;
+  });
+
+  afterAll(async () => {
+    if (original) {
+      await workerA.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock(1701300739)) AS acquired`;
+        await tx.liveExecutionControl.update({ where: { id: 'global' }, data: {
+          paused: original!.paused, reason: original!.reason, version: original!.version,
+          changedAt: original!.changedAt, changedByUserId: original!.changedByUserId,
+        } });
+      });
+    }
+    if (actorId) {
+      await workerA.log.deleteMany({ where: { userId: actorId } });
+      await workerA.user.delete({ where: { id: actorId } });
+    }
+    await Promise.all([workerA.$disconnect(), workerB.$disconnect()]);
+  });
+
+  it('applies to two workers, survives a fresh reader, and orders pause after in-flight submission', async () => {
+    let state = await readLiveExecutionPause(workerA);
+    if (state.paused) {
+      state = await setLiveExecutionPause({ actorUserId: actorId, paused: false,
+        reason: 'integration test active state', expectedVersion: state.version! }, workerA);
+    }
+
+    const sent = await Promise.all([
+      withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false }, async () => 'worker-a', workerA),
+      withLiveCreateOrderPermit({ marketType: 'future', reduceOnly: false }, async () => 'worker-b', workerB),
+    ]);
+    expect(sent).toEqual(['worker-a', 'worker-b']);
+
+    let release!: () => void;
+    let started!: () => void;
+    const insideSubmit = new Promise<void>((resolve) => { started = resolve; });
+    const holdSubmission = new Promise<void>((resolve) => { release = resolve; });
+    const inFlight = withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false }, async () => {
+      started();
+      await holdSubmission;
+      return 'in-flight-before-pause';
+    }, workerA);
+    await insideSubmit;
+
+    let pauseSettled = false;
+    const pausing = setLiveExecutionPause({ actorUserId: actorId, paused: true,
+      reason: 'integration test pause race', expectedVersion: state.version! }, workerB)
+      .finally(() => { pauseSettled = true; });
+    let waiting = 0;
+    for (let attempt = 0; attempt < 100; attempt += 1) {
+      const locks = await workerA.$queryRaw<Array<{ waiting: number }>>`
+        SELECT COUNT(*)::integer AS waiting FROM pg_locks
+        WHERE locktype = 'advisory' AND granted = false AND objid = 1701300739`;
+      waiting = locks[0]?.waiting ?? 0;
+      if (waiting > 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    expect(waiting).toBeGreaterThan(0);
+    expect(pauseSettled).toBe(false);
+    release();
+    expect(await inFlight).toBe('in-flight-before-pause');
+    const paused = await pausing;
+    expect(paused.paused).toBe(true);
+    expect(paused.version).toBe(state.version! + 1);
+    await expect(setLiveExecutionPause({ actorUserId: actorId, paused: false,
+      reason: 'stale operator decision rejected', expectedVersion: state.version! }, workerA))
+      .rejects.toMatchObject({ code: 'LIVE_PAUSE_VERSION_CONFLICT' });
+
+    await expect(withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false },
+      async () => 'must-not-send', workerA)).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSED' });
+    await expect(withLiveCreateOrderPermit({ marketType: 'spot', reduceOnly: false },
+      async () => 'must-not-send', workerB)).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSED' });
+    expect(await withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: true },
+      async () => 'reduce-only', workerB)).toBe('reduce-only');
+
+    const restartedReader = new PrismaClient();
+    try {
+      expect(await readLiveExecutionPause(restartedReader)).toMatchObject({
+        available: true, paused: true, version: paused.version,
+      });
+    } finally {
+      await restartedReader.$disconnect();
+    }
+    expect(await workerA.log.findFirst({ where: { userId: actorId, action: 'LIVE_PAUSED' },
+      select: { metadata: true } })).toMatchObject({
+      metadata: { reason: 'integration test pause race', nextVersion: paused.version },
+    });
+  });
+
+  it('fails closed before submission when the control row or database is unavailable', async () => {
+    const submit = vi.fn(async () => 'must-not-send');
+    const missingRowDb = {
+      $transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({
+        $queryRaw: async () => [{ locked: 1 }],
+        liveExecutionControl: { findUnique: async () => null },
+      }),
+    } as unknown as PrismaClient;
+    await expect(withLiveCreateOrderPermit({ marketType: 'future', reduceOnly: true },
+      submit, missingRowDb)).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSE_UNAVAILABLE' });
+    const disconnectedDb = {
+      $transaction: async () => { throw new Error('connection unavailable'); },
+    } as unknown as PrismaClient;
+    await expect(withLiveCreateOrderPermit({ marketType: 'swap', reduceOnly: false },
+      submit, disconnectedDb)).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSE_UNAVAILABLE' });
+    expect(submit).not.toHaveBeenCalled();
+  });
+});

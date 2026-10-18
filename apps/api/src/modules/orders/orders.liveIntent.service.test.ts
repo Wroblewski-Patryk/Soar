@@ -15,6 +15,8 @@ import { CcxtFuturesConnector, type CcxtExchangeLikeClient } from '../exchange/c
 import { reconcileLiveOrderFee } from '../exchange/liveFeeReconciliation.service';
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 
+const testCreateOrderPermit = async <T,>(_input: unknown, submit: () => Promise<T>) => submit();
+
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
@@ -258,7 +260,7 @@ describe('durable LIVE order intent', () => {
     } as unknown as CcxtExchangeLikeClient;
     const connector = new CcxtFuturesConnector(
       { exchangeId: 'binanceusdm', marketType: 'future' },
-      vi.fn().mockResolvedValue(client)
+      vi.fn().mockResolvedValue(client), testCreateOrderPermit
     );
     const adapter = new LiveOrderAdapter(connector);
     const executeLiveOrder = vi.fn(async () => {
@@ -319,7 +321,7 @@ describe('durable LIVE order intent', () => {
     } as unknown as CcxtExchangeLikeClient;
     const connector = new CcxtFuturesConnector(
       { exchangeId: 'binanceusdm', marketType: 'future' },
-      vi.fn().mockResolvedValue(client)
+      vi.fn().mockResolvedValue(client), testCreateOrderPermit
     );
     const adapter = new LiveOrderAdapter(connector);
     const executeLiveOrder = vi.fn(async () => {
@@ -400,7 +402,7 @@ describe('durable LIVE order intent', () => {
     } as unknown as CcxtExchangeLikeClient;
     const connector = new CcxtFuturesConnector(
       { exchangeId: 'binanceusdm', marketType: 'future' },
-      vi.fn().mockResolvedValue(client)
+      vi.fn().mockResolvedValue(client), testCreateOrderPermit
     );
     const adapter = new LiveOrderAdapter(connector);
     const fill = {

@@ -487,7 +487,10 @@ const defaultRuntimeExecutionDedupeGateway: RuntimeExecutionDedupeGateway = {
 };
 
 const resolveErrorClass = (error: unknown) => {
-  if ((error as { code?: unknown } | null)?.code === 'LIVE_EXECUTION_UNKNOWN') return 'live_execution_unknown';
+  const code = (error as { code?: unknown } | null)?.code;
+  if (code === 'LIVE_EXECUTION_UNKNOWN') return 'live_execution_unknown';
+  if (code === 'LIVE_PRETRADE_PAUSED') return 'live_pretrade_paused';
+  if (code === 'LIVE_PRETRADE_PAUSE_UNAVAILABLE') return 'live_pretrade_pause_unavailable';
   if (error instanceof Error && error.name) return error.name;
   return 'runtime_execution_error';
 };

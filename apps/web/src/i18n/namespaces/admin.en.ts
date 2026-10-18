@@ -7,6 +7,7 @@ export const adminEn = {
     nav: {
       subscriptions: "Subscriptions",
       users: "Users",
+      liveExecution: "LIVE execution",
     },
     footer: {
       rights: "All rights reserved.",
@@ -16,6 +17,23 @@ export const adminEn = {
       deniedTitle: "Admin access required",
       deniedDescription: "Your current account is not confirmed as an administrator.",
     },
+  },
+  liveExecution: {
+    title: "LIVE execution control",
+    description: "Shared pause state for every API and worker instance. Resume only after all LIVE writers run the gated release.",
+    loading: "Loading LIVE control...",
+    unavailable: "LIVE control cannot be verified. New submissions fail closed.",
+    paused: "LIVE submissions paused",
+    active: "LIVE submissions active",
+    reasonLabel: "Reason",
+    versionLabel: "Version",
+    changedLabel: "Changed at",
+    refresh: "Refresh status",
+    scope: "Pause blocks new entries and DCA. Venue-enforced reduce-only Futures closes remain allowed. Spot closes are blocked while paused. Existing fills and intents continue reconciliation.",
+    reasonInput: "Reason for change (at least 10 characters)",
+    pause: "Pause LIVE submissions",
+    resume: "Resume LIVE submissions",
+    updateError: "Could not verify the change. Refresh the shared state before trying again.",
   },
   users: {
     loadError: "Could not load users.",

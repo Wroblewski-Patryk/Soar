@@ -69,6 +69,7 @@ export type RuntimeManagedPosition = Pick<
 };
 
 export type RuntimePositionAutomationDeps = {
+  readLiveExecutionPause: () => Promise<{ available: boolean; paused: boolean }>;
   listOpenPositionsBySymbol: (
     symbol: string
   ) => Promise<RuntimeManagedPosition[]>;

@@ -58,6 +58,9 @@ export default function AdminLayoutShell({ children }: { children: ReactNode }) 
             <Link href="/admin/users" className="btn btn-ghost btn-sm">
               {t("admin.layout.nav.users")}
             </Link>
+            <Link href="/admin/live-execution" className="btn btn-ghost btn-sm">
+              {t("admin.layout.nav.liveExecution")}
+            </Link>
           </nav>
         </div>
       </header>

@@ -7,6 +7,7 @@ export const adminPt = {
     nav: {
       subscriptions: "Subscricoes",
       users: "Utilizadores",
+      liveExecution: "Execucao LIVE",
     },
     footer: {
       rights: "Todos os direitos reservados.",
@@ -16,6 +17,23 @@ export const adminPt = {
       deniedTitle: "Acesso admin necessario",
       deniedDescription: "A conta atual nao esta confirmada como administradora.",
     },
+  },
+  liveExecution: {
+    title: "Controlo da execucao LIVE",
+    description: "Pausa partilhada por todas as instancias API e workers. Retome apenas depois de atualizar todos os emissores LIVE.",
+    loading: "A carregar controlo LIVE...",
+    unavailable: "Nao e possivel verificar o controlo LIVE. Novas ordens estao bloqueadas.",
+    paused: "Envio LIVE em pausa",
+    active: "Envio LIVE ativo",
+    reasonLabel: "Motivo",
+    versionLabel: "Versao",
+    changedLabel: "Alterado em",
+    refresh: "Atualizar estado",
+    scope: "A pausa bloqueia entradas e DCA. Fechos Futures reduce-only continuam permitidos. Fechos Spot ficam bloqueados. A reconciliacao de fills e intents continua.",
+    reasonInput: "Motivo da alteracao (minimo 10 caracteres)",
+    pause: "Pausar envios LIVE",
+    resume: "Retomar envios LIVE",
+    updateError: "Nao foi possivel confirmar a alteracao. Atualize o estado antes de tentar de novo.",
   },
   users: {
     loadError: "Nao foi possivel carregar utilizadores.",

@@ -51,6 +51,16 @@ disabled, exhausted, inapplicable to the current PnL direction, or explicitly
 classified as unaffordable according to the strategy policy, close management
 continues normally.
 
+An operator-activated global LIVE pause is an explicit exception to DCA-first
+ordering. Runtime skips new LIVE DCA proposals while paused and evaluates the
+existing position's TP/SL/TTP/TSL from its last confirmed, canonical quantity
+and entry basis. Only a venue-enforced `reduceOnly` Futures close may be sent;
+Spot closes are held because Spot has no `reduceOnly` guarantee. A pause that
+commits between DCA evaluation and its final submission gate causes the same
+unfilled state to be re-evaluated for a protective close. Unknown or submitted
+DCA outcomes still require reconciliation before any close. PAPER and BACKTEST
+keep normal DCA-first ordering.
+
 ## DCA Lanes
 
 DCA levels are evaluated from current PnL/ROI percent and may be positive or
