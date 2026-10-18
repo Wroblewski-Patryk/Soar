@@ -67,6 +67,18 @@ const validateDcaConfig = (config: unknown) => {
   if (basis != null && basis !== 'quantity_v1' && basis !== 'usdt_contribution_v1') {
     throw strategyErrors.invalidCloseConfig({ field: 'additional.dcaSizingBasis', rule: 'invalid_dca_sizing_basis' });
   }
+  if (additional.dcaEnabled === true && additional.dcaMode !== 'advanced' &&
+    additional.dcaMultiplier != null && Array.isArray(additional.dcaLevels)) {
+    const firstLevel = asRecord(additional.dcaLevels[0]);
+    const levelMultiplier = firstLevel?.multiplier == null ? null : toFiniteNumber(firstLevel.multiplier);
+    const topLevelMultiplier = toFiniteNumber(additional.dcaMultiplier);
+    if (levelMultiplier != null && (topLevelMultiplier == null || topLevelMultiplier !== levelMultiplier)) {
+      throw strategyErrors.invalidCloseConfig({
+        field: 'additional.dcaMultiplier', rule: 'conflicting_basic_dca_multiplier',
+        levelMultiplier,
+      });
+    }
+  }
   const closeMode = typeof close?.mode === 'string' ? close.mode.trim().toLowerCase() : 'basic';
   if (additional.dcaEnabled === true && basis !== 'usdt_contribution_v1' && closeMode === 'basic') {
     const rawLevels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];

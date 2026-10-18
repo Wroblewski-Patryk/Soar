@@ -16,7 +16,9 @@ type StrategyDtoLike = StrategyDto & {
   config?: {
     open?: OpenConditions;
     close?: CloseConditions;
-    additional?: AdditionalState;
+    additional?: Partial<Omit<AdditionalState, "dcaLevels">> & {
+      dcaLevels?: Array<Partial<AdditionalState["dcaLevels"][number]>>;
+    };
   };
 };
 
@@ -48,6 +50,29 @@ const defaultAdditional: AdditionalState = {
   orderLifetime: 1,
   orderUnit: "h",
   marginMode: "CROSSED",
+};
+
+const hydrateAdditional = (saved?: NonNullable<StrategyDtoLike["config"]>["additional"]): AdditionalState => {
+  const rawLevels = saved?.dcaLevels ?? [];
+  const mode = saved?.dcaMode ?? defaultAdditional.dcaMode;
+  const dcaLevels = rawLevels.map((level, index) => {
+    // Runtime reads the Basic level first and uses the top-level multiplier only if the level omits it.
+    const percent = Number(level.percent);
+    const multiplier = Number(level.multiplier ?? (mode === "basic" ? saved?.dcaMultiplier : undefined));
+    if (!Number.isFinite(percent) || percent === 0 || !Number.isFinite(multiplier) || multiplier <= 0) {
+      throw new Error(`DCA level ${index + 1} has no valid threshold and multiplier`);
+    }
+    return { ...level, percent, multiplier };
+  });
+  const hydratedLevels = ensureDcaLevelClientIds(dcaLevels);
+  return {
+    ...defaultAdditional,
+    ...saved,
+    dcaLevels: hydratedLevels,
+    dcaMultiplier: mode === "basic" && hydratedLevels[0]
+      ? hydratedLevels[0].multiplier
+      : saved?.dcaMultiplier ?? defaultAdditional.dcaMultiplier,
+  };
 };
 
 const sanitizeTrailingTakeProfitThresholds = (thresholds: CloseConditions["ttp"]) =>
@@ -116,32 +141,20 @@ export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   walletRisk: s.walletRisk ?? 1,
   openConditions: s.config?.open ?? { direction: "both", indicatorsLong: [], indicatorsShort: [] },
   closeConditions: sanitizeCloseConditions(s.config?.close),
-  additional: {
-    ...defaultAdditional,
-    ...(s.config?.additional ?? {}),
-    dcaLevels: ensureDcaLevelClientIds(s.config?.additional?.dcaLevels),
-  },
+  additional: hydrateAdditional(s.config?.additional),
 });
 
 // form -> PATCH/POST payload
 export const formToPayload = (f: StrategyFormState) => {
   const close = sanitizeCloseConditionsForPayload(f.closeConditions);
-  const normalizedBasicLevel = {
-    percent:
-      Number.isFinite(f.additional.dcaLevels[0]?.percent) && Number(f.additional.dcaLevels[0].percent) !== 0
-        ? Number(f.additional.dcaLevels[0].percent)
-        : -1,
-    multiplier:
-      Number.isFinite(f.additional.dcaMultiplier) && Number(f.additional.dcaMultiplier) > 0
-        ? Number(f.additional.dcaMultiplier)
-        : 1,
-  };
-  const normalizedAdvancedLevels = f.additional.dcaLevels
-    .map((level) => ({
-      percent: Number(level.percent),
-      multiplier: Number(level.multiplier),
-    }))
-    .filter((level) => Number.isFinite(level.percent) && level.percent !== 0 && Number.isFinite(level.multiplier) && level.multiplier > 0);
+  const primaryLevel = f.additional.dcaLevels[0];
+  const normalizedBasicLevel = primaryLevel
+    ? { percent: Number(primaryLevel.percent), multiplier: Number(primaryLevel.multiplier) }
+    : null;
+  const normalizedAdvancedLevels = f.additional.dcaLevels.map((level) => ({
+    percent: Number(level.percent),
+    multiplier: Number(level.multiplier),
+  }));
 
   const additional = !f.additional.dcaEnabled
     ? {
@@ -151,8 +164,9 @@ export const formToPayload = (f: StrategyFormState) => {
     : f.additional.dcaMode === "basic"
       ? {
           ...f.additional,
-          dcaTimes: Math.max(1, Math.floor(Number(f.additional.dcaTimes) || 1)),
-          dcaLevels: [normalizedBasicLevel],
+          dcaTimes: f.additional.dcaTimes,
+          dcaMultiplier: normalizedBasicLevel?.multiplier ?? f.additional.dcaMultiplier,
+          dcaLevels: normalizedBasicLevel ? [normalizedBasicLevel] : [],
         }
       : {
           ...f.additional,

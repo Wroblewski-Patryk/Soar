@@ -18,7 +18,8 @@ import {
 import { createDcaLevel } from "../../utils/strategyThresholdItems";
 import { SortableThresholdListEditor } from "./SortableThresholdListEditor";
 
-const getPrimaryDcaLevel = (levels: DcaLevel[]): DcaLevel => levels[0] ?? createDcaLevel();
+const getPrimaryDcaLevel = (levels: DcaLevel[], multiplier: number): DcaLevel =>
+  levels[0] ?? createDcaLevel({ multiplier });
 const integerInputProps = numericInputProps(strategyNumericContracts.integer);
 const decimalInputProps = numericInputProps(strategyNumericContracts.decimal2);
 
@@ -74,18 +75,22 @@ export function Additional({ data, setData }: AdditionalProps) {
 
   const setPrimaryDcaLevel = (changes: Partial<DcaLevel>) =>
     setData((prev) => {
-      const current = getPrimaryDcaLevel(prev.dcaLevels);
+      const current = getPrimaryDcaLevel(prev.dcaLevels, prev.dcaMultiplier);
       const next = { ...current, ...changes };
       const rest = prev.dcaLevels.slice(1);
-      return { ...prev, dcaLevels: [next, ...rest] };
+      return {
+        ...prev,
+        dcaLevels: [next, ...rest],
+        ...(changes.multiplier === undefined ? {} : { dcaMultiplier: changes.multiplier }),
+      };
     });
 
-  const primaryLevel = getPrimaryDcaLevel(data.dcaLevels);
+  const primaryLevel = getPrimaryDcaLevel(data.dcaLevels, data.dcaMultiplier);
   const isUsdtBasis = data.dcaSizingBasis === "usdt_contribution_v1";
   const plannedLevels = data.dcaMode === "basic"
-    ? Array.from({ length: Math.min(10, Math.max(0, data.dcaTimes)) }, () => ({
+    ? Array.from({ length: data.dcaLevels.length > 0 ? Math.min(10, Math.max(0, data.dcaTimes)) : 0 }, () => ({
         percent: primaryLevel.percent,
-        multiplier: data.dcaMultiplier,
+        multiplier: primaryLevel.multiplier,
       }))
     : data.dcaLevels;
   let contribution = 1;
@@ -296,11 +301,10 @@ export function Additional({ data, setData }: AdditionalProps) {
                     max={isUsdtBasis ? 10 : undefined}
                     step={Number(decimalInputProps.step)}
                     inputMode={decimalInputProps.inputMode}
-                    value={data.dcaMultiplier}
+                    value={primaryLevel.multiplier}
                     onChange={(value) => {
                       const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
                       if (parsed == null) return;
-                      patch({ dcaMultiplier: parsed });
                       setPrimaryDcaLevel({ multiplier: parsed });
                     }}
                   />

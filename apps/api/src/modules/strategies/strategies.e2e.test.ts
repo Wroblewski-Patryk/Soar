@@ -234,6 +234,64 @@ describe('Strategies CRUD contract', () => {
     expect(updateRes.body.config.additional).toEqual(editedConfig.additional);
   });
 
+  it.each([
+    { label: 'USDT 0.5', basis: 'usdt_contribution_v1', multiplier: 0.5 },
+    { label: 'legacy quantity 2', basis: undefined, multiplier: 2 },
+  ])('roundtrips Basic $label with the multiplier only in its level', async ({ basis, multiplier }) => {
+    const agent = await registerAndLogin(`strategies-basic-${multiplier}@example.com`);
+    const config = {
+      open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+      close: { mode: 'basic', tp: 10, sl: 10, ttp: [], tsl: [] },
+      additional: {
+        dcaEnabled: true, dcaMode: 'basic', dcaTimes: 2,
+        ...(basis ? { dcaSizingBasis: basis } : {}),
+        dcaLevels: [{ percent: -5, multiplier }],
+      },
+    };
+    const created = await agent.post('/dashboard/strategies').send({ ...createStrategyPayload(), config });
+    expect(created.status).toBe(201);
+    const id = created.body.id as string;
+    const read = await agent.get(`/dashboard/strategies/${id}`);
+    expect(read.status).toBe(200);
+    expect(read.body.config.additional).toEqual(config.additional);
+
+    const edited = await agent.put(`/dashboard/strategies/${id}`)
+      .send({ ...createStrategyPayload(), config });
+    expect(edited.status).toBe(200);
+    expect(edited.body.config.additional).toEqual(config.additional);
+  });
+
+  it('rejects conflicting Basic multipliers on create and edit', async () => {
+    const agent = await registerAndLogin('strategies-basic-multiplier-conflict@example.com');
+    const config = {
+      close: { mode: 'basic', tp: 10, sl: 10 },
+      additional: {
+        dcaEnabled: true, dcaSizingBasis: 'usdt_contribution_v1', dcaMode: 'basic',
+        dcaTimes: 1, dcaMultiplier: 1, dcaLevels: [{ percent: -5, multiplier: 0.5 }],
+      },
+    };
+    const response = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(),
+      config,
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error.details).toEqual(expect.objectContaining({
+      field: 'additional.dcaMultiplier', rule: 'conflicting_basic_dca_multiplier',
+    }));
+
+    const validConfig = { ...config,
+      additional: { ...config.additional, dcaMultiplier: 0.5 } };
+    const created = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(), config: validConfig,
+    });
+    expect(created.status).toBe(201);
+    const update = await agent.put(`/dashboard/strategies/${created.body.id}`)
+      .send({ ...createStrategyPayload(), config });
+    expect(update.status).toBe(400);
+    const read = await agent.get(`/dashboard/strategies/${created.body.id}`);
+    expect(read.body.config.additional.dcaMultiplier).toBe(0.5);
+  });
+
   it('rejects TSL levels that do not use negative start and positive step', async () => {
     const agent = await registerAndLogin('strategies-invalid-close-create@example.com');
 

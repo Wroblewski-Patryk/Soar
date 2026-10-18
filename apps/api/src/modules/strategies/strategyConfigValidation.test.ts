@@ -33,6 +33,23 @@ const captureValidationError = (config: unknown) => {
 };
 
 describe('validateStrategyConfig', () => {
+  it('rejects conflicting Basic multiplier representations for both sizing versions', () => {
+    for (const basis of [undefined, 'quantity_v1', 'usdt_contribution_v1']) {
+      const error = captureValidationError(basicConfig({
+        additional: {
+          dcaEnabled: true, dcaMode: 'basic', dcaTimes: 2,
+          ...(basis ? { dcaSizingBasis: basis } : {}),
+          dcaMultiplier: 1,
+          dcaLevels: [{ percent: -5, multiplier: 2 }],
+        },
+      }));
+      expect(error.details).toEqual(expect.objectContaining({
+        field: 'additional.dcaMultiplier', rule: 'conflicting_basic_dca_multiplier',
+        levelMultiplier: 2,
+      }));
+    }
+  });
+
   it('accepts signed DCA levels in basic TP/SL mode', () => {
     expect(() => validateStrategyConfig(basicConfig())).not.toThrow();
   });

@@ -59,6 +59,12 @@ negative.
 - Positive DCA levels execute as PnL moves upward.
 - Negative DCA levels execute as PnL moves downward.
 - Each level has an execution threshold and a size multiplier.
+- For Basic DCA, `dcaLevels[0].multiplier` is authoritative when present;
+  `additional.dcaMultiplier` is a fallback only when the stored level omits a
+  multiplier. The strategy builder mirrors the authoritative value into both
+  fields on save and clone. The strategy API rejects new or edited Basic
+  configs whose two supplied values conflict. An incomplete saved level is
+  not assigned a default multiplier by the builder.
 - In existing configurations and snapshots without `additional.dcaSizingBasis`,
   the effective version is `quantity_v1`: multiplier `1` adds the current asset
   quantity. The explicit `quantity_v1` value has the same behavior.

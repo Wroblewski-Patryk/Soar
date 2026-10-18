@@ -19,8 +19,11 @@ describe('USDT DCA form validation', () => {
   it('rejects invalid levels and multipliers before submit', () => {
     expect(hasInvalidUsdtDcaConfig(additional({ dcaLevels: [{ percent: 0, multiplier: 2 }] }))).toBe(true);
     expect(hasInvalidUsdtDcaConfig(additional({ dcaMode: 'advanced', dcaLevels: [{ percent: -2, multiplier: 11 }] }))).toBe(true);
-    expect(hasInvalidUsdtDcaConfig(additional({ dcaMultiplier: 11 }))).toBe(true);
     expect(hasInvalidUsdtDcaConfig(additional({ dcaTimes: 11 }))).toBe(true);
+  });
+
+  it('validates the Basic level instead of a stale top-level multiplier alias', () => {
+    expect(hasInvalidUsdtDcaConfig(additional({ dcaMultiplier: 11 }))).toBe(false);
   });
 
   it('does not reinterpret an unversioned legacy ladder', () => {
