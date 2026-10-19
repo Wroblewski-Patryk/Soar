@@ -9,8 +9,9 @@ const logger = createModuleLogger('rate-limit');
 type RateLimitOptions = {
   windowMs: number;
   max: number;
-  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange';
+  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange' | 'read_grant';
   bucketId?: string;
+  requireSharedStore?: boolean;
 };
 
 type Bucket = {
@@ -49,6 +50,15 @@ const resolveRateLimitSubject = (
 
   if (keyScope === 'user') {
     return userId ? `user:${userId}` : `ip:${ip}`;
+  }
+
+  if (keyScope === 'read_grant') {
+    const secret = /^Bearer (soar_read_[A-Za-z0-9_-]{43})$/i.exec(
+      req.headers.authorization ?? ''
+    )?.[1];
+    return secret
+      ? `read-grant:${createHash('sha256').update(secret).digest('hex')}`
+      : `ip:${ip}`;
   }
 
   const exchange = normalizeToken(body.exchange) || normalizeToken(query.exchange) || 'unknown';
@@ -115,8 +125,11 @@ let getRedisClientOverride: (() => Promise<RedisClient | null>) | null = null;
 const resolveRedisClient = () =>
   getRedisClientOverride ? getRedisClientOverride() : getRedisClient();
 
-export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId }: RateLimitOptions) => {
+export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId,
+  requireSharedStore = false }: RateLimitOptions) => {
   const buckets = new Map<string, Bucket>();
+  const canFallback = () => process.env.NODE_ENV === 'test' ||
+    (!requireSharedStore && shouldAllowInMemoryFallback());
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (
@@ -157,7 +170,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId }
 
         return next();
       } catch (error) {
-        if (!shouldAllowInMemoryFallback()) {
+        if (!canFallback()) {
           logger.error('redis_eval_failed_denied', { error });
           res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
           return sendError(res, 503, 'Rate limit temporarily unavailable');
@@ -165,7 +178,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId }
 
         logger.error('redis_eval_failed_fallback', { error });
       }
-    } else if (!shouldAllowInMemoryFallback()) {
+    } else if (!canFallback()) {
       res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
       return sendError(res, 503, 'Rate limit temporarily unavailable');
     }

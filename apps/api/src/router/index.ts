@@ -17,12 +17,14 @@ import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 import { workerHeartbeatClient, type WorkerHeartbeatName } from '../workers/workerHeartbeat';
 import { readLiveExecutionOperationalStatus } from '../observability/liveExecutionOperationalStatus';
 import externalClientGrantSelfStatusRouter from '../modules/externalClientGrants/externalClientGrantSelfStatus.routes';
+import externalClientBotStatusRouter from '../modules/externalClientGrants/externalClientBotStatus.routes';
 
 const router = Router();
 
 router.use('/auth', applyNoStoreHeaders, authRoutes);
 router.use('/dashboard', applyNoStoreHeaders, dashboardRoutes);
 router.use('/external-client/grants', applyNoStoreHeaders, externalClientGrantSelfStatusRouter);
+router.use('/external-client/bots', applyNoStoreHeaders, externalClientBotStatusRouter);
 router.use('/admin', applyNoStoreHeaders, adminRoutes);
 
 router.get('/', (_req, res) => {

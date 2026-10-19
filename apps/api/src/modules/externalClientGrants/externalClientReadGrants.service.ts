@@ -6,7 +6,8 @@ import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscripti
 import { GrantInputError } from './externalClientGrants.service';
 
 export const EXTERNAL_CLIENT_READ_GRANT_SECRET_PATTERN = /^soar_read_[A-Za-z0-9_-]{43}$/;
-const hashSecret = (secret: string) => createHash('sha256').update(secret, 'utf8').digest('hex');
+export const hashExternalClientReadGrantSecret = (secret: string) =>
+  createHash('sha256').update(secret, 'utf8').digest('hex');
 
 const publicReadGrantSelect = {
   id: true, botId: true, clientLabel: true, action: true,
@@ -45,7 +46,7 @@ export const createExternalClientReadGrant = async (userId: string, input: Creat
     const created = await tx.externalClientReadGrant.create({
       data: {
         userId, botId: bot.id, clientLabel: input.clientLabel,
-        secretHash: hashSecret(secret), action: ExternalClientReadAction.READ_BOT_STATUS,
+        secretHash: hashExternalClientReadGrantSecret(secret), action: ExternalClientReadAction.READ_BOT_STATUS,
         expiresAt,
       },
       select: publicReadGrantSelect,

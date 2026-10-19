@@ -107,6 +107,21 @@ describe('rate limit identity resolution', () => {
 });
 
 describe('rate limit degradation policy', () => {
+  it('keeps a shared-store-only public grant limit closed when local fallback is enabled', async () => {
+    process.env.NODE_ENV = 'production';
+    process.env.RATE_LIMIT_ALLOW_LOCAL_FALLBACK = 'true';
+    __rateLimitInternals.setGetRedisClientForTests(async () => null);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 60,
+      keyScope: 'read_grant', requireSharedStore: true });
+    const req = makeRequest({ headers: { authorization: `Bearer soar_read_${'A'.repeat(43)}` } });
+    const response = makeResponse();
+    const next = vi.fn();
+    await limiter(req, response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(response.__headers.get('X-RateLimit-Degraded')).toBe('redis_unavailable');
+  });
+
   it('fails closed in production when redis is unavailable', async () => {
     process.env.NODE_ENV = 'production';
     process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
