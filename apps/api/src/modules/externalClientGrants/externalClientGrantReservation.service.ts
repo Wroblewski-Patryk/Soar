@@ -715,7 +715,12 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
     const admitted = one('EXTERNAL_CLIENT_GRANT_ADMITTED');
     const started = one('EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED');
     const reconciled = one('EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED');
-    const finalized = one('EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED');
+    const finalizedRows = audits.filter((audit) =>
+      audit.action === 'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED');
+    if (finalizedRows.length !== (marker ? 0 : 1)) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
+    const finalized = finalizedRows.length === 1 ? mockAuditMetadata(finalizedRows[0].metadata) : null;
     const markerId = admitted?.markerId;
     if (typeof markerId !== 'string' || admitted?.intentId !== intent.id ||
         admitted?.grantId !== grant.id || admitted?.clientOrderId !== command.clientOrderId ||

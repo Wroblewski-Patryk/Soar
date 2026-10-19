@@ -173,6 +173,9 @@ UNKNOWN, missing fills, tampered fingerprints, and ambiguous local Orders
 leave the marker and fail closed for pause/revoke. No TTL or automatic cleanup
 is added. Recovery from a real venue still requires authoritative lookup and
 a separately proven LIVE execution permit.
+An existing marker requires zero finalization audit rows; a retry without a
+marker requires exactly one row with matching metadata. Duplicate or malformed
+finalization audits are ambiguous and fail closed.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
