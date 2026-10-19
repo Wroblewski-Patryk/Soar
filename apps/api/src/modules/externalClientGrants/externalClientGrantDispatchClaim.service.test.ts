@@ -113,6 +113,19 @@ describe('001T durable dispatch claim foundation', () => {
       }
       expect(await prisma.liveCreateOrderSubmission.update({ where: { id: oldMarker.id },
         data: complete })).toMatchObject(complete);
+      await prisma.liveCreateOrderSubmission.delete({ where: { id: oldMarker.id } });
+      const insert = { grantId: f.grant.id, reservationId: f.bound.reservation.id,
+        intentId: intent.id, exchangeId: 'BINANCE', clientOrderId: f.bound.reservation.clientOrderId,
+        symbol: 'BTCUSDT', marketType: 'future', reduceOnly: false, ...complete };
+      for (const missing of [
+        { dispatchCommandHash: null },
+        { dispatchIntentHash: null },
+        { dispatchCommandHash: null, dispatchIntentHash: null },
+      ]) {
+        await expect(prisma.liveCreateOrderSubmission.create({ data: { ...insert, ...missing } }))
+          .rejects.toThrow('LiveCreateOrderSubmission_dispatch_claim_complete_check');
+      }
+      expect(await prisma.liveCreateOrderSubmission.create({ data: insert })).toMatchObject(insert);
     });
   });
 
