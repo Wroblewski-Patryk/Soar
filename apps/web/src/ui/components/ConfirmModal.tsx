@@ -29,6 +29,8 @@ export default function ConfirmModal({
   const { t } = useOptionalI18n();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
   const descriptionId = useId();
   const resolvedConfirmLabel = confirmLabel ?? t('public.sharedUi.confirmLabel');
@@ -38,19 +40,46 @@ export default function ConfirmModal({
     if (!open) return;
     const dialog = dialogRef.current;
     if (!dialog) return;
-    const previousFocus = document.activeElement;
+    if (!previousFocusRef.current && document.activeElement instanceof HTMLElement) {
+      previousFocusRef.current = document.activeElement;
+    }
 
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else dialog.setAttribute('open', '');
     cancelRef.current?.focus();
-    const focusFrame = requestAnimationFrame(() => cancelRef.current?.focus());
+    const focusTimer = window.setTimeout(() => {
+      const active = document.activeElement;
+      if (dialog.open && active !== cancelRef.current && active !== confirmRef.current) {
+        cancelRef.current?.focus();
+      }
+    }, 50);
+    const trapTab = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !dialog.open) return;
+      event.preventDefault();
+      const buttons = [cancelRef.current, confirmRef.current].filter(
+        (button): button is HTMLButtonElement => Boolean(button && !button.disabled)
+      );
+      if (buttons.length === 0) {
+        dialog.focus();
+        return;
+      }
+      const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+      const next = event.shiftKey
+        ? buttons[current < 0 ? buttons.length - 1 : (current - 1 + buttons.length) % buttons.length]
+        : buttons[(current + 1) % buttons.length];
+      next.focus();
+    };
+    document.addEventListener('keydown', trapTab, true);
 
     return () => {
-      cancelAnimationFrame(focusFrame);
+      window.clearTimeout(focusTimer);
+      document.removeEventListener('keydown', trapTab, true);
       if (typeof dialog.close === 'function' && dialog.open) dialog.close();
       else dialog.removeAttribute('open');
       queueMicrotask(() => {
-        if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+        if (dialog.isConnected && dialog.open) return;
+        if (previousFocusRef.current?.isConnected) previousFocusRef.current.focus();
+        previousFocusRef.current = null;
       });
     };
   }, [open]);
@@ -61,6 +90,7 @@ export default function ConfirmModal({
     <dialog
       ref={dialogRef}
       className='modal'
+      tabIndex={-1}
       aria-modal='true'
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
@@ -77,6 +107,7 @@ export default function ConfirmModal({
             {resolvedCancelLabel}
           </button>
           <button
+            ref={confirmRef}
             type='button'
             className={`btn ${confirmVariant === 'error' ? 'btn-error' : 'btn-primary'}`}
             onClick={onConfirm}
@@ -88,16 +119,8 @@ export default function ConfirmModal({
       </div>
       <div
         className='modal-backdrop'
-        role='button'
-        aria-label={t('public.a11y.closeModal')}
-        tabIndex={0}
+        aria-hidden='true'
         onClick={() => { if (!pending) onCancel(); }}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            if (!pending) onCancel();
-          }
-        }}
       />
     </dialog>
   );
