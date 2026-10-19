@@ -88,8 +88,9 @@ held. No entry match yields `NO_TRADE`/HOLD and does not emit `EXIT`; a separate
 strategy `EXIT` signal is not required. Normal closes follow configured
 `TP`/`SL` (simple) or `TTP`/`TSL`
 (advanced) lifecycle rules and DCA ordering; manual, liquidation, and other
-risk closes remain possible. This is the current product requirement, while
-legacy no-match evaluator behavior remains an open implementation gap in the
+risk closes remain possible. The shared evaluator applies this rule to legacy
+no-match `EXIT` settings in local code; acceptance evidence and the remaining
+operator-surface gap are tracked in the
 [strategy evaluation parity contract](./reference/strategy-evaluation-parity-contract.md).
 
 ## Signal Merge

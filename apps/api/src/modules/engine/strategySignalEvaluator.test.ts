@@ -84,11 +84,16 @@ describe('strategySignalEvaluator', () => {
     expect(direction).toBeNull();
   });
 
-  it('supports explicit EXIT on no-match via open.noMatchAction', () => {
+  it.each([
+    ['open.noMatchAction', { open: { noMatchAction: 'EXIT' } }],
+    ['open.exitOnNoSignal', { open: { exitOnNoSignal: true } }],
+    ['openConditions.exitOnNoSignal', { openConditions: { exitOnNoSignal: true } }],
+  ] as const)('treats saved %s as HOLD when neither entry rule matches', (_name, legacy) => {
+    const [key, block] = Object.entries(legacy)[0];
     const rules = parseStrategySignalRules({
-      open: {
+      [key]: {
+        ...block,
         direction: 'both',
-        noMatchAction: 'EXIT',
         indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 10_000, params: { period: 1 } }],
         indicatorsShort: [{ name: 'MOMENTUM', condition: '<', value: -10_000, params: { period: 1 } }],
       },
@@ -96,9 +101,7 @@ describe('strategySignalEvaluator', () => {
 
     expect(rules).not.toBeNull();
     if (!rules) return;
-
-    const direction = evaluateStrategySignalAtIndex(rules, candles, 2, new Map());
-    expect(direction).toBe('EXIT');
+    expect(evaluateStrategySignalAtIndex(rules, candles, 2, new Map())).toBeNull();
   });
 
   it('normalizes constant operand and evaluates comparator rules', () => {

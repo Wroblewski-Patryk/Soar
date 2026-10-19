@@ -93,6 +93,34 @@ const trailingDirectionConfig = (side: 'LONG' | 'SHORT') => ({
 });
 
 describe('USDT contribution DCA in historical replay', () => {
+  it('holds legacy no-match EXIT through DCA until basic SL in both replay paths', () => {
+    const config = {
+      ...strategyConfig,
+      openConditions: {
+        direction: 'long',
+        noMatchAction: 'EXIT',
+        indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+        indicatorsShort: [],
+      },
+      close: { mode: 'basic', tp: 99, sl: 7 },
+      additional: {
+        ...strategyConfig.additional,
+        dcaTimes: 1,
+        dcaLevels: [{ percent: -2, multiplier: 1 }],
+      },
+    };
+
+    for (const result of replayBothTrailingPaths([100, 101, 101, 98, 97, 90], config)) {
+      expect(result.eventCounts.ENTRY).toBe(1);
+      expect(result.eventCounts.DCA).toBe(1);
+      expect(result.eventCounts.SL).toBe(1);
+      expect(result.events.filter((event) => event.type === 'DCA').map((event) => event.price))
+        .toEqual([98]);
+      expect(result.events.find((event) => event.type === 'SL')?.price).toBe(90);
+      expect(result.decisionTrace.some((entry) => entry.signal === 'EXIT')).toBe(false);
+    }
+  });
+
   it.each([
     ['LONG', [99, 100, 100, 126, 151, 149, 125], [99, 100, 100, 49, 57, 76, 63]],
     ['SHORT', [101, 100, 100, 74, 49, 51, 75], [101, 100, 100, 151, 143, 124, 137]],

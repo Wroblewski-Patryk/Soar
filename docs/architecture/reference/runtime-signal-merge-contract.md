@@ -1,7 +1,7 @@
 # Runtime Signal Merge Contract (Post-V1 BOTMULTI)
 
-Status: canonical merge target, updated for the 2026-10-17 product rule.
-Current no-match-to-`EXIT` evaluator behavior remains an implementation gap.
+Status: canonical merge target, updated for the 2026-10-19 local evaluator fix.
+Deployed cross-mode acceptance remains pending.
 
 ## Purpose
 Define deterministic action resolution when multiple strategies attached to one

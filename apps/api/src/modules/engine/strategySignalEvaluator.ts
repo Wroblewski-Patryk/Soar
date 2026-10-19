@@ -484,6 +484,5 @@ export const evaluateStrategySignalAtIndex = (
 
   if (longMatched && !shortMatched) return 'LONG';
   if (shortMatched && !longMatched) return 'SHORT';
-  if (!longMatched && !shortMatched) return rules.noMatchAction === 'EXIT' ? 'EXIT' : null;
   return null;
 };

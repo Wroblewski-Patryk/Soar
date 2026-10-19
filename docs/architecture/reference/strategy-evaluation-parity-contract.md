@@ -1,8 +1,8 @@
 # Strategy Evaluation Parity Contract (V1)
 
-Status: current-version behavioral contract, corrected 2026-10-17. The legacy
-no-match `EXIT` evaluator option and tests are an implementation gap; this
-document is not evidence that the fix or cross-mode parity has shipped.
+Status: current-version behavioral contract, corrected 2026-10-19. The shared
+evaluator now treats legacy no-match `EXIT` settings as HOLD in local code and
+targeted tests. This document does not establish deployed or whole-journey parity.
 
 ## Purpose
 Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAPER`, and `LIVE`.
@@ -49,9 +49,16 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
    handled by the lifecycle manager.
 
 Legacy `open.noMatchAction = EXIT` and `open.exitOnNoSignal = true` do not
-constitute separate exit conditions under this contract. The current evaluator
-can still emit `EXIT` for those fields, so strategy validation, stored-config
-handling, runtime/backtest traces, and tests require repair before acceptance.
+constitute separate exit conditions under this contract. The shared evaluator
+accepts stored configurations with these fields but returns no signal when
+neither entry side matches. `openConditions` follows the same rule. Explicit
+`EXIT` votes from a separate valid source remain part of the merge contract.
+Stored fields remain accepted, and operator condition summaries still display
+`No-match action: EXIT`; UI/API migration and truthful presentation need a
+separate ticket.
+Local targeted tests cover evaluator, runtime PAPER/LIVE decisions, and both
+backtest replay paths; deployed behavior and the full lifecycle journey remain
+unverified.
 
 ## Mode Parity Requirements
 - Strategy evaluator implementation must be shared and imported by both:
