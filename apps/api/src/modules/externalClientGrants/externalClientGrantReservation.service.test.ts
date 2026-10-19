@@ -14,6 +14,7 @@ import {
   bindExternalClientGrantReservationIntent, reconcileSubmittedExternalClientGrantReservation,
   prepareBoundExternalClientGrantAdapterSeam,
   executeBoundExternalClientGrantMock,
+  finalizeBoundExternalClientGrantMockOrphan,
   refundUnsentExternalClientGrantReservation, reserveExternalClientGrantOrder,
   withFreshBoundExternalClientGrantSubmitPermit,
   type GrantLimitCommand,
@@ -134,7 +135,7 @@ const settleWithin = async <T>(task: Promise<T>, milliseconds: number): Promise<
 };
 
 const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission' |
-  'mock-crash-after-submit-enter',
+  'mock-crash-after-submit-enter' | 'mock-crash-after-reconcile',
   reservationId: string, secret: string) => {
   const worker = spawn(process.execPath, ['--import', 'tsx',
     'src/modules/externalClientGrants/externalClientGrantReservation.processProof.worker.ts'], {
@@ -235,6 +236,9 @@ describe('external client grant atomic reservation', () => {
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: bound.reservation.id },
       })).state).toBe('SUBMISSION_UNCERTAIN');
+      await expect(finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_ORPHAN_UNKNOWN' });
       expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
       expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
         usedQuoteAmount: new Prisma.Decimal(50) });
@@ -310,6 +314,114 @@ describe('external client grant atomic reservation', () => {
     }
   }, 30_000);
 
+  it('finalizes one exact mock orphan after a process crashes post-reconcile', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      await prisma.user.update({ where: { id: f.user.id }, data: { role: 'ADMIN' } });
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      const bound = await bind(f);
+      const worker = startAdmissionWorker('mock-crash-after-reconcile', bound.reservation.id, f.secret);
+      expect(await settleWithin(worker.completion, 15_000)).toBe(77);
+      expect(worker.errors()).toBe('');
+      expect(worker.output()).toContain('RECONCILED_WITH_MARKER');
+      expect(await prisma.order.findUniqueOrThrow({ where: { id: bound.intentId } }))
+        .toMatchObject({ status: 'FILLED', filledQuantity: 0.5 });
+      expect(await prisma.orderFill.count({ where: { orderId: bound.intentId } })).toBe(1);
+      expect(await prisma.position.count({ where: { userId: f.user.id, status: 'OPEN' } })).toBe(1);
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: bound.reservation.id },
+      })).state).toBe('SUBMITTED');
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Pause before mock orphan proof', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+      const originalIntent = await prisma.liveOrderIntent.findUniqueOrThrow({
+        where: { id: bound.intentId }, select: { payloadHash: true },
+      });
+      await prisma.liveOrderIntent.update({ where: { id: bound.intentId },
+        data: { payloadHash: 'tampered-orphan-fingerprint' } });
+      await expect(finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_ORPHAN_UNKNOWN' });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      await prisma.liveOrderIntent.update({ where: { id: bound.intentId },
+        data: { payloadHash: originalIntent.payloadHash } });
+      const first = await finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      });
+      expect(first).toMatchObject({ orderId: bound.intentId, finalized: true, reused: false });
+      expect(JSON.stringify(first)).not.toContain(f.secret);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+      expect((await revokeExternalClientGrant(f.user.id, f.grant.id)).revokedAt).toBeTruthy();
+      const second = await finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      });
+      expect(second).toMatchObject({ markerId: first.markerId, orderId: bound.intentId,
+        finalized: true, reused: true });
+      expect(await prisma.log.count({ where: { entityId: bound.reservation.id,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED' } })).toBe(1);
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
+        usedQuoteAmount: new Prisma.Decimal(50) });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
+  it('keeps an ambiguous reconciled mock marker when no certain fill exists', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      await prisma.user.update({ where: { id: f.user.id }, data: { role: 'ADMIN' } });
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      const bound = await bind(f);
+      await expect(executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'UNKNOWN',
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      await prisma.order.create({ data: {
+        id: bound.intentId, userId: f.user.id, botId: f.bot.id,
+        walletId: f.wallet!.id, strategyId: f.strategy!.id,
+        symbol: f.command.symbol, side: f.command.side, type: f.command.type,
+        quantity: Number(f.command.quantity), price: Number(f.command.limitPrice),
+        exchangeOrderId: `mock-binance-${bound.reservation.clientOrderId}`,
+        status: 'FILLED', filledQuantity: Number(f.command.quantity),
+        averageFillPrice: Number(f.command.limitPrice), filledAt: new Date(), origin: 'USER',
+      } });
+      expect((await reconcileSubmittedExternalClientGrantReservation(bound.reservation.id)).state)
+        .toBe('SUBMITTED');
+      await expect(finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_ORPHAN_UNKNOWN' });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Pause with ambiguous mock evidence', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
+        usedQuoteAmount: new Prisma.Decimal(50) });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
   it('survives a mock submit process crash with one marker and lookup-only retry', async () => {
     const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
@@ -324,6 +436,9 @@ describe('external client grant atomic reservation', () => {
       expect(await settleWithin(worker.completion, 15_000)).toBe(76);
       expect(worker.errors()).toBe('');
       expect(worker.output()).toContain('MOCK_ENTERED');
+      await expect(finalizeBoundExternalClientGrantMockOrphan({
+        reservationId: bound.reservation.id, secret: f.secret,
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_ORPHAN_UNKNOWN' });
       expect(await executeBoundExternalClientGrantMock({
         reservationId: bound.reservation.id, secret: f.secret, scenario: 'CERTAIN_FILL',
       })).toMatchObject({ reused: true,

@@ -583,6 +583,9 @@ export async function executeBoundExternalClientGrantMock(
   if (reconciled.state !== 'SUBMITTED' || reconciled.proofRef !== order.id) {
     return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   }
+  if (request.data.scenario === 'HOLD_AFTER_RECONCILE') {
+    await new Promise<void>((resolve) => setTimeout(resolve, 10_000));
+  }
   const cleared = await prisma.liveCreateOrderSubmission.deleteMany({ where: {
     id: admitted.markerId, grantId: reservation.grantId,
     reservationId: reservation.id, intentId: intent.id,
@@ -591,6 +594,164 @@ export async function executeBoundExternalClientGrantMock(
   return { reservationId: reservation.id, intentId: intent.id,
     clientOrderId: command.clientOrderId, orderId: order.id,
     submitted: true, dispatchEnabled: false } as const;
+}
+
+const mockFinalizeSchema = z.strictObject({ reservationId: z.uuid(), secret: z.string() });
+const mockAuditMetadata = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown> : null;
+const exactMockNumber = (value: number | null, expected: Prisma.Decimal.Value) =>
+  value != null && Number.isFinite(value) && new Prisma.Decimal(value.toString()).eq(expected);
+
+// Only a fully durable fixed-mock result can retire an orphaned blocker.
+// The grant row and shared pause key serialize this readback and marker delete
+// with human revoke and pause. No transport or adapter is called on recovery.
+export async function finalizeBoundExternalClientGrantMockOrphan(
+  input: z.input<typeof mockFinalizeSchema>,
+) {
+  if (arguments.length !== 1 || !input || typeof input !== 'object' || Array.isArray(input) ||
+      Object.getPrototypeOf(input) !== Object.prototype) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  const fields = Object.getOwnPropertyDescriptors(input);
+  if (Reflect.ownKeys(fields).some((key) => typeof key !== 'string' ||
+      !['reservationId', 'secret'].includes(key) ||
+      !('value' in fields[key]) || typeof fields[key].value === 'function')) {
+    return deny('DELEGATED_MOCK_INVALID_INPUT');
+  }
+  const request = mockFinalizeSchema.safeParse(input);
+  if (!request.success) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  let databaseName = '';
+  try { databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname); } catch { /* fail closed */ }
+  if (process.env.NODE_ENV !== 'test' || !databaseName.endsWith('_test')) {
+    return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
+  }
+  if (!secretPattern.test(request.data.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
+  return prisma.$transaction(async (tx) => {
+    const found = await tx.externalClientGrantReservation.findUnique({
+      where: { id: request.data.reservationId }, select: { grantId: true },
+    });
+    if (!found) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    const grant = await lockGrant(tx, found.grantId);
+    await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock_shared(${LIVE_EXECUTION_PAUSE_LOCK_KEY})) AS acquired`;
+    if (grant.secretHash !== secretHash(request.data.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
+    const reservation = await tx.externalClientGrantReservation.findUniqueOrThrow({
+      where: { id: request.data.reservationId },
+    });
+    const command = canonicalize(reservation.command);
+    if (reservation.grantId !== grant.id || reservation.commandHash !== fingerprint(command) ||
+        reservation.clientOrderId !== command.clientOrderId ||
+        reservation.state !== 'SUBMITTED' || !reservation.dispatchStartedAt ||
+        !reservation.resolvedAt || reservation.proofType !== 'DURABLE_ORDER' ||
+        grant.userId !== command.userId || grant.botId !== command.botId ||
+        grant.exchange !== command.exchange || grant.marketType !== command.marketType ||
+        grant.symbol !== command.symbol || grant.action !== command.action ||
+        grant.usedActions < 1 || grant.usedQuoteAmount.lt(reservation.quoteAmount) ||
+        (command.exchange !== 'BINANCE' && command.exchange !== 'GATEIO') ||
+        command.marketType !== 'FUTURES' || command.symbol !== 'BTCUSDT' ||
+        !reservation.quoteAmount.eq(new Prisma.Decimal(command.quantity).mul(command.limitPrice))) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
+    const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: command.clientOrderId } });
+    const payload = intent?.payload;
+    if (!intent || !intentMatchesCommandAndScope(intent, command) ||
+        !await hasAtomicIntentBinding(tx, reservation.id, intent.id) ||
+        !payload || typeof payload !== 'object' || Array.isArray(payload) ||
+        Object.keys(payload).some((key) => !['botId', 'walletId', 'strategyId', 'positionId',
+          'symbol', 'side', 'type', 'quantity', 'price', 'reduceOnly', 'mode', 'riskAck',
+          'clientOrderId'].includes(key)) ||
+        (payload as Record<string, unknown>).mode !== 'LIVE' ||
+        (payload as Record<string, unknown>).riskAck !== true ||
+        (payload as Record<string, unknown>).clientOrderId !== command.clientOrderId ||
+        intent.payloadHash !== fingerprintLiveOrderIntentPayload(command.userId, {
+          id: command.botId, exchange: command.exchange, marketType: command.marketType,
+          positionMode: 'ONE_WAY', apiKeyId: null, walletId: command.walletId,
+        }, payload as LiveOrderPayload)) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    const marker = await tx.liveCreateOrderSubmission.findUnique({ where: { reservationId: reservation.id } });
+    const order = await tx.order.findUnique({ where: { id: intent.id } });
+    const expectedExchangeId = `mock-${command.exchange.toLowerCase()}-${command.clientOrderId}`;
+    if (!order || reservation.proofRef !== order.id || order.userId !== command.userId ||
+        order.botId !== command.botId || order.walletId !== command.walletId ||
+        order.strategyId !== command.strategyId || !order.positionId ||
+        (command.positionId != null && order.positionId !== command.positionId) ||
+        order.origin !== 'USER' || order.status !== 'FILLED' || !order.filledAt ||
+        order.symbol !== command.symbol || order.side !== command.side || order.type !== command.type ||
+        order.exchangeOrderId !== expectedExchangeId ||
+        !exactMockNumber(order.quantity, command.quantity) ||
+        !exactMockNumber(order.filledQuantity, command.quantity) ||
+        !exactMockNumber(order.price, command.limitPrice) ||
+        !exactMockNumber(order.averageFillPrice, command.limitPrice)) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
+    const fills = await tx.orderFill.findMany({ where: { orderId: order.id } });
+    const fill = fills[0];
+    const position = await tx.position.findUnique({ where: { id: order.positionId } });
+    if (marker && (fills.length !== 1 || !fill || fill.userId !== command.userId ||
+        fill.botId !== command.botId || fill.strategyId !== command.strategyId ||
+        fill.positionId !== order.positionId || fill.symbol !== command.symbol ||
+        fill.side !== command.side ||
+        fill.exchangeTradeId !== `mock-fill-${command.clientOrderId}` ||
+        !exactMockNumber(fill.quantity, command.quantity) ||
+        !exactMockNumber(fill.price, command.limitPrice) ||
+        !exactMockNumber(fill.notional, reservation.quoteAmount) ||
+        fill.feeCost !== 0.05 || fill.feeRate !== 0.001 || fill.feeCurrency !== 'USDT' ||
+        fill.executedAt.getTime() !== 0 || mockAuditMetadata(fill.raw)?.mock !== true ||
+        !position || position.userId !== command.userId || position.botId !== command.botId ||
+        position.walletId !== command.walletId || position.strategyId !== command.strategyId ||
+        position.symbol !== command.symbol || position.side !== (command.side === 'BUY' ? 'LONG' : 'SHORT') ||
+        position.status !== 'OPEN' || !Number.isFinite(position.quantity) ||
+        new Prisma.Decimal(position.quantity.toString()).lt(command.quantity))) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
+    const audits = await tx.log.findMany({ where: {
+      entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+      action: { in: ['EXTERNAL_CLIENT_GRANT_ADMITTED',
+        'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED',
+        'EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED',
+        'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED'] },
+    }, select: { action: true, metadata: true } });
+    const one = (action: string) => {
+      const matching = audits.filter((audit) => audit.action === action);
+      return matching.length === 1 ? mockAuditMetadata(matching[0].metadata) : null;
+    };
+    const admitted = one('EXTERNAL_CLIENT_GRANT_ADMITTED');
+    const started = one('EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED');
+    const reconciled = one('EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED');
+    const finalized = one('EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED');
+    const markerId = admitted?.markerId;
+    if (typeof markerId !== 'string' || admitted?.intentId !== intent.id ||
+        admitted?.grantId !== grant.id || admitted?.clientOrderId !== command.clientOrderId ||
+        !['CERTAIN_FILL', 'DELAYED_FILL', 'HOLD_AFTER_RECONCILE'].includes(String(started?.scenario)) ||
+        started?.clientOrderId !== command.clientOrderId ||
+        reconciled?.grantId !== grant.id || reconciled?.orderId !== order.id ||
+        reconciled?.clientOrderId !== command.clientOrderId) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
+    if (!marker) {
+      if (finalized?.grantId !== grant.id || finalized?.intentId !== intent.id ||
+          finalized?.markerId !== markerId || finalized?.orderId !== order.id ||
+          finalized?.clientOrderId !== command.clientOrderId) {
+        return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+      }
+      return { reservationId: reservation.id, intentId: intent.id, orderId: order.id,
+        markerId, reused: true, finalized: true } as const;
+    }
+    const expectedMarketType = command.exchange === 'BINANCE' ? 'future' : 'swap';
+    if (grant.revokedAt || finalized || marker.id !== markerId || marker.grantId !== grant.id ||
+        marker.reservationId !== reservation.id || marker.intentId !== intent.id ||
+        marker.clientOrderId !== command.clientOrderId || marker.exchangeId !== command.exchange ||
+        marker.symbol !== command.symbol || marker.marketType !== expectedMarketType ||
+        marker.reduceOnly !== command.reduceOnly) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    await tx.liveCreateOrderSubmission.delete({ where: { id: marker.id } });
+    await tx.log.create({ data: {
+      userId: command.userId, botId: command.botId, source: 'external_client_grant',
+      actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED', level: 'INFO',
+      message: 'Fixed mock orphan marker finalized from durable Order and reservation',
+      entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+      metadata: { grantId: grant.id, markerId: marker.id, intentId: intent.id,
+        orderId: order.id, clientOrderId: command.clientOrderId },
+    } });
+    return { reservationId: reservation.id, intentId: intent.id, orderId: order.id,
+      markerId: marker.id, reused: false, finalized: true } as const;
+  }, { ...transactionOptions, isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 }
 
 // Fail closed: an interactive Prisma transaction can time out and release its

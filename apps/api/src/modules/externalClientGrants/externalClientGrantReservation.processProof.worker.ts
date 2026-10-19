@@ -22,6 +22,28 @@ process.stdin.on('data', (chunk: string) => {
     try {
       const request = JSON.parse(input.slice(0, input.indexOf('\n')));
       process.stdout.write('STARTED\n');
+      if (request.operation === 'mock-crash-after-reconcile') {
+        const execution = executeBoundExternalClientGrantMock({
+          reservationId: request.reservationId, secret: request.secret,
+          scenario: 'HOLD_AFTER_RECONCILE',
+        });
+        let durable = false;
+        for (let attempt = 0; attempt < 150; attempt += 1) {
+          const reservation = await db.externalClientGrantReservation.findUnique({
+            where: { id: request.reservationId },
+          });
+          const marker = await db.liveCreateOrderSubmission.findUnique({
+            where: { reservationId: request.reservationId }, select: { id: true },
+          });
+          if (reservation?.state === 'SUBMITTED' && reservation.proofType === 'DURABLE_ORDER' &&
+              reservation.proofRef && marker) { durable = true; break; }
+          await new Promise<void>((resolve) => setTimeout(resolve, 50));
+        }
+        if (!durable) throw new Error('Mock Order and reservation did not reconcile before marker clear');
+        process.stdout.write('RECONCILED_WITH_MARKER\n', () => process.exit(77));
+        await execution;
+        return;
+      }
       if (request.operation === 'mock-crash-after-submit-enter') {
         const execution = executeBoundExternalClientGrantMock({
           reservationId: request.reservationId, secret: request.secret,

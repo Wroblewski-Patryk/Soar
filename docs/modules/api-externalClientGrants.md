@@ -156,9 +156,23 @@ steps succeed. Allowance is charged once at reservation. An UNKNOWN scenario,
 inconsistent fill, or process crash leaves `SUBMISSION_UNCERTAIN`
 and the marker; a retry returns lookup identity without another mock submit.
 Tests cover Binance and Gate.io mocked fills, transport-time pause/revoke,
-UNKNOWN, invalid input/fill, and a worker-process crash. Recovery of an orphaned marker after
-authoritative external lookup remains a separate task. Domain risk checks
+UNKNOWN, invalid input/fill, and a worker-process crash. Domain risk checks
 are point-in-time and require a stronger execution permit for real LIVE.
+
+`SOAR-EXT-GRANT-001H/MOCK-ORPHAN-FINALIZE` adds only `_test` recovery for the
+fixed mock. A worker can stop in the controlled window after durable Order,
+fill, position, and `SUBMITTED` reservation but before marker deletion. The
+finalizer takes the grant row and shared pause lock, then reads the command
+fingerprint, grant/intent/marker links, stored intent payload fingerprint,
+deterministic mock Order/fill and linked position, allowance state, and
+admission/transport/reconciliation audits in one serializable transaction.
+It deletes that exact marker with a finalization audit only when every check
+agrees. Repeating finalization reads back that audit and returns the same
+result without changing allowance or calling the transport. Early crashes,
+UNKNOWN, missing fills, tampered fingerprints, and ambiguous local Orders
+leave the marker and fail closed for pause/revoke. No TTL or automatic cleanup
+is added. Recovery from a real venue still requires authoritative lookup and
+a separately proven LIVE execution permit.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
