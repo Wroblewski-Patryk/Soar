@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { Exchange, Order, Prisma } from '@prisma/client';
+import { Exchange, LiveOrderIntent, Order, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { isAppErrorLike } from '../../lib/errors';
 import type { ExchangeOrderFill } from '../exchange/exchangeData.types';
@@ -88,33 +88,43 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   userId: string;
   bot: LiveBotContext;
   payload: LiveOrderPayload;
+  tx?: Prisma.TransactionClient;
 }): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
+  const db = params.tx ?? prisma;
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
   const payloadHash = liveIntentPayloadHash(userId, bot, payload);
   let createdIntent = false;
-  let intent;
-  try {
-    intent = await prisma.liveOrderIntent.create({
-      data: {
-        userId,
-        clientOrderId: payload.clientOrderId,
-        payloadHash,
-        payload: JSON.parse(JSON.stringify(payload)) as Prisma.InputJsonValue,
-        exchange: bot.exchange,
-        marketType: bot.marketType,
-        symbol: payload.symbol.toUpperCase(),
-      },
-    });
-    createdIntent = true;
-  } catch (error) {
-    if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002') {
-      throw error;
+  let intent: LiveOrderIntent | null;
+  const data = {
+    userId,
+    clientOrderId: payload.clientOrderId,
+    payloadHash,
+    payload: JSON.parse(JSON.stringify(payload)) as Prisma.InputJsonValue,
+    exchange: bot.exchange,
+    marketType: bot.marketType,
+    symbol: payload.symbol.toUpperCase(),
+  };
+  if (params.tx) {
+    // A unique-key exception aborts a PostgreSQL transaction. ON CONFLICT DO
+    // NOTHING lets the caller safely compare an existing human intent in-place.
+    const inserted = await db.liveOrderIntent.createMany({ data: [data], skipDuplicates: true });
+    createdIntent = inserted.count === 1;
+    intent = await db.liveOrderIntent.findUnique({ where: { clientOrderId: payload.clientOrderId } });
+    if (!intent) throw orderErrors.liveIntentConflict();
+  } else {
+    try {
+      intent = await prisma.liveOrderIntent.create({ data });
+      createdIntent = true;
+    } catch (error) {
+      if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002') {
+        throw error;
+      }
+      intent = await prisma.liveOrderIntent.findUnique({
+        where: { clientOrderId: payload.clientOrderId },
+      });
+      if (!intent) throw error;
     }
-    intent = await prisma.liveOrderIntent.findUnique({
-      where: { clientOrderId: payload.clientOrderId },
-    });
-    if (!intent) throw error;
   }
   const originalPayload = intent.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
     ? intent.payload as unknown as LiveOrderPayload
@@ -133,7 +143,7 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   if (intent.userId !== userId || (intent.payloadHash !== payloadHash && !runtimeVolatileOnly)) {
     throw orderErrors.liveIntentConflict();
   }
-  const existingOrder = await prisma.order.findUnique({ where: { id: intent.id } });
+  const existingOrder = await db.order.findUnique({ where: { id: intent.id } });
   return {
     intentId: intent.id, clientOrderId: intent.clientOrderId,
     payload: retryPayload, created: createdIntent, existingOrder,

@@ -8,7 +8,8 @@ import { persistOrReuseLiveOrderIntent } from '../orders/orders.liveIntent.servi
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant } from './externalClientGrants.service';
 import {
-  beginExternalClientGrantSubmission, reconcileSubmittedExternalClientGrantReservation,
+  beginBoundExternalClientGrantSubmission, beginExternalClientGrantSubmission,
+  bindExternalClientGrantReservationIntent, reconcileSubmittedExternalClientGrantReservation,
   refundUnsentExternalClientGrantReservation, reserveExternalClientGrantOrder,
   type GrantLimitCommand,
 } from './externalClientGrantReservation.service';
@@ -75,6 +76,9 @@ const fixture = async (
 
 const reserve = (f: Awaited<ReturnType<typeof fixture>>, command = f.command, db?: PrismaClient) =>
   reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret, command }, { db, getSymbolRules: rules });
+const bind = (f: Awaited<ReturnType<typeof fixture>>, command = f.command, db?: PrismaClient) =>
+  bindExternalClientGrantReservationIntent({ grantId: f.grant.id, secret: f.secret, command },
+    { db, getSymbolRules: rules });
 const counters = async (id: string) => prisma.externalClientGrant.findUniqueOrThrow({
   where: { id }, select: { usedActions: true, usedQuoteAmount: true },
 });
@@ -86,6 +90,176 @@ const createMatchingIntent = async (f: Awaited<ReturnType<typeof fixture>>, comm
   } });
 
 describe('external client grant atomic reservation', () => {
+  it('binds final client ID, allowance, intent, and audit in one commit without submit', async () => {
+    const f = await fixture(undefined, 'GATEIO');
+    const command = { ...f.command, clientOrderId: 'gate-client-1' };
+    const first = await bind(f, command);
+    expect(first).toMatchObject({ reused: false, reservation: { state: 'RESERVED' } });
+    expect(first.intentId).toBeTruthy();
+    expect(first.reservation.clientOrderId).toMatch(/^soar_[A-Za-z0-9_-]{22}$/);
+    expect((await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: first.intentId } })).clientOrderId)
+      .toBe(first.reservation.clientOrderId);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+    const retry = await bind(f, command);
+    expect(retry).toMatchObject({ reused: true, intentId: first.intentId,
+      reservation: { id: first.reservation.id } });
+    await expect(bind(f, { ...command, limitPrice: '101' }))
+      .rejects.toMatchObject({ code: 'CLIENT_ORDER_COMMAND_CONFLICT' });
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(1);
+  });
+
+  it('recovers a committed binding after its process exits before begin', async () => {
+    const f = await fixture();
+    const worker = spawn(process.execPath, ['--import', 'tsx',
+      'src/modules/externalClientGrants/externalClientGrantReservation.processProof.worker.ts'], {
+      cwd: process.cwd(), env: process.env, windowsHide: true,
+    });
+    let output = '';
+    let errors = '';
+    worker.stdout.on('data', (chunk) => { output += chunk.toString(); });
+    worker.stderr.on('data', (chunk) => { errors += chunk.toString(); });
+    worker.stdin.end(`${JSON.stringify({ operation: 'crash-after-bind',
+      grantId: f.grant.id, secret: f.secret, command: f.command })}\n`);
+    const exitCode = await new Promise<number | null>((resolve) => worker.on('close', resolve));
+    expect({ exitCode, errors }).toEqual({ exitCode: 74, errors: '' });
+    const boundLine = output.split('\n').find((line) => line.startsWith('BOUND '));
+    expect(boundLine).toBeTruthy();
+    const bound = JSON.parse(boundLine!.slice(6)) as { reservationId: string; intentId: string };
+    const restarted = new PrismaClient();
+    try {
+      const retry = await bind(f, f.command, restarted);
+      expect(retry).toMatchObject({ reused: true, intentId: bound.intentId,
+        reservation: { id: bound.reservationId, state: 'RESERVED' } });
+    } finally { await restarted.$disconnect(); }
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(1);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+  });
+
+  it('rolls back allowance and audit when a human client ID already owns the intent', async () => {
+    const f = await fixture();
+    await prisma.liveOrderIntent.create({ data: {
+      userId: f.user.id, clientOrderId: f.command.clientOrderId, payloadHash: 'human-intent',
+      exchange: f.command.exchange, marketType: f.command.marketType, symbol: f.command.symbol,
+    } });
+    await expect(bind(f)).rejects.toMatchObject({ code: 'CLIENT_ORDER_ID_ALREADY_USED' });
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
+    expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(0);
+  });
+
+  it('denies a human intent that wins the ID race while a bound worker waits', async () => {
+    const f = await fixture();
+    let release!: () => void;
+    let acquired!: () => void;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    const locked = new Promise<void>((resolve) => { acquired = resolve; });
+    const holder = prisma.$transaction(async (tx) => {
+      await tx.$queryRaw(Prisma.sql`SELECT "id" FROM "ExternalClientGrant" WHERE "id" = ${f.grant.id} FOR UPDATE`);
+      acquired();
+      await held;
+    }, { timeout: 30_000 });
+    await locked;
+    const worker = spawn(process.execPath, ['--import', 'tsx',
+      'src/modules/externalClientGrants/externalClientGrantReservation.processProof.worker.ts'], {
+      cwd: process.cwd(), env: process.env, windowsHide: true,
+    });
+    let output = '';
+    let errors = '';
+    let started!: () => void;
+    const workerStarted = new Promise<void>((resolve) => { started = resolve; });
+    worker.stdout.on('data', (chunk) => {
+      output += chunk.toString();
+      if (output.includes('STARTED\n')) started();
+    });
+    worker.stderr.on('data', (chunk) => { errors += chunk.toString(); });
+    const completion = new Promise<number | null>((resolve) => worker.on('close', resolve));
+    worker.stdin.end(`${JSON.stringify({ operation: 'bind', grantId: f.grant.id,
+      secret: f.secret, command: f.command })}\n`);
+    try {
+      await workerStarted;
+      await prisma.liveOrderIntent.create({ data: {
+        userId: f.user.id, clientOrderId: f.command.clientOrderId,
+        payloadHash: 'human-race-winner', exchange: f.command.exchange,
+        marketType: f.command.marketType, symbol: f.command.symbol,
+      } });
+    } finally { release(); }
+    await holder;
+    const exitCode = await completion;
+    expect({ exitCode, errors }).toEqual({ exitCode: 0, errors: '' });
+    expect(output).toContain('"error":"CLIENT_ORDER_ID_ALREADY_USED"');
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
+    expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(0);
+  }, 30_000);
+
+  it('denies a paused or revoked bound dispatch and preserves the charged uncertain state', async () => {
+    const f = await fixture();
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const bound = await bind(f);
+      const begin = () => beginBoundExternalClientGrantSubmission({
+        reservationId: bound.reservation.id, secret: f.secret,
+      });
+      await prisma.liveExecutionControl.delete({ where: { id: 'global' } });
+      await expect(begin()).rejects.toMatchObject({ code: 'LIVE_PAUSE_UNAVAILABLE' });
+      await prisma.liveExecutionControl.create({
+        data: { id: 'global', paused: false, reason: 'test available', version: 1 },
+      });
+      await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: { paused: true } });
+      await expect(begin()).rejects.toMatchObject({ code: 'LIVE_PRETRADE_PAUSED' });
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: bound.reservation.id },
+      })).state).toBe('RESERVED');
+      await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: { paused: false } });
+      await prisma.externalClientGrant.update({ where: { id: f.grant.id }, data: { revokedAt: new Date() } });
+      await expect(begin()).rejects.toMatchObject({ code: 'GRANT_SCOPE_UNAVAILABLE' });
+      await prisma.externalClientGrant.update({ where: { id: f.grant.id },
+        data: { revokedAt: null, expiresAt: new Date(0) } });
+      await expect(begin()).rejects.toMatchObject({ code: 'GRANT_SCOPE_UNAVAILABLE' });
+      await prisma.externalClientGrant.update({ where: { id: f.grant.id },
+        data: { expiresAt: new Date(Date.now() + 60_000) } });
+      await prisma.userSubscription.updateMany({ where: { userId: f.user.id, status: 'ACTIVE' },
+        data: { status: 'CANCELED' } });
+      await expect(begin()).rejects.toMatchObject({ name: 'SubscriptionAssignmentRequiredError' });
+      await setActiveSubscriptionForUser(prisma, {
+        userId: f.user.id, planCode: 'ADVANCED', source: 'ADMIN_OVERRIDE', autoRenew: false,
+      });
+      const assignment = await prisma.botMarketGroup.create({ data: {
+        userId: f.user.id, botId: f.bot.id, symbolGroupId: f.group.id,
+        lifecycleStatus: 'PAUSED', isEnabled: true,
+      } });
+      await expect(begin()).rejects.toMatchObject({ code: 'GRANT_BOT_SCOPE_UNAVAILABLE' });
+      await prisma.botMarketGroup.update({ where: { id: assignment.id }, data: { lifecycleStatus: 'ACTIVE' } });
+      expect((await begin()).state).toBe('SUBMISSION_UNCERTAIN');
+      await expect(begin()).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
+      await expect(refundUnsentExternalClientGrantReservation(bound.reservation.id))
+        .rejects.toMatchObject({ code: 'NO_AUTHORITATIVE_NO_SUBMIT_PROOF' });
+      await expect(reconcileSubmittedExternalClientGrantReservation(bound.reservation.id))
+        .rejects.toMatchObject({ code: 'SUBMISSION_EVIDENCE_UNAVAILABLE' });
+      await prisma.order.create({ data: {
+        id: bound.intentId, userId: f.user.id, botId: f.bot.id,
+        symbol: f.command.symbol, side: f.command.side, type: f.command.type,
+        quantity: Number(f.command.quantity), price: Number(f.command.limitPrice),
+        exchangeOrderId: 'mock-venue-identity',
+      } });
+      expect((await reconcileSubmittedExternalClientGrantReservation(bound.reservation.id)).state)
+        .toBe('SUBMITTED');
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  });
+
   it('accepts the separated durable intent after reservation without any venue submit', async () => {
     const f = await fixture();
     const reserved = await reserve(f);
@@ -99,6 +273,10 @@ describe('external client grant atomic reservation', () => {
     };
     const prepared = await persistOrReuseLiveOrderIntent({ userId: f.user.id, bot: f.bot, payload });
     expect(prepared).toMatchObject({ created: true, clientOrderId: reserved.reservation.clientOrderId });
+    await expect(bind(f)).rejects.toMatchObject({ code: 'RESERVATION_INTENT_UNAVAILABLE' });
+    await expect(beginBoundExternalClientGrantSubmission({
+      reservationId: reserved.reservation.id, secret: f.secret,
+    })).rejects.toMatchObject({ code: 'RESERVATION_INTENT_UNAVAILABLE' });
     expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
     expect((await beginExternalClientGrantSubmission({
       reservationId: reserved.reservation.id, secret: f.secret,
@@ -393,11 +571,13 @@ describe('external client grant atomic reservation', () => {
         }) as Prisma.TransactionClient), options as { maxWait: number; timeout: number }),
     } as unknown as PrismaClient;
     await expect(reserve(f, f.command, faultDb)).rejects.toThrow('test audit write failure');
+    await expect(bind(f, f.command, faultDb)).rejects.toThrow('test audit write failure');
     expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
     expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
   });
 
-  it('serializes distinct IDs across two OS processes on the grant row', async () => {
+  it('serializes bound intents across two OS processes on the grant row', async () => {
     const f = await fixture();
     let release!: () => void;
     let locked!: () => void;
@@ -424,8 +604,9 @@ describe('external client grant atomic reservation', () => {
         if (output.includes('STARTED\n')) started();
       });
       child.stderr.on('data', (chunk) => { errors += chunk.toString(); });
-      child.stdin.end(`${JSON.stringify({ grantId: f.grant.id, secret: f.secret, command })}\n`);
-      const completed = new Promise<{ reused?: boolean; id?: string; error?: string }>((resolve, reject) => {
+      child.stdin.end(`${JSON.stringify({ operation: 'bind', grantId: f.grant.id,
+        secret: f.secret, command })}\n`);
+      const completed = new Promise<{ reused?: boolean; id?: string; intentId?: string; error?: string }>((resolve, reject) => {
         child.on('close', (code) => {
           if (code !== 0) return reject(new Error(`child exit ${code}: ${errors}`));
           const result = output.split('\n').find((line) => line.startsWith('RESULT '));
@@ -443,7 +624,9 @@ describe('external client grant atomic reservation', () => {
     await holder;
     const results = await Promise.all([first.completed, second.completed]);
     expect(results.filter((item) => item.id)).toHaveLength(1);
+    expect(results.filter((item) => item.intentId)).toHaveLength(1);
     expect(results.filter((item) => item.error)).toEqual([{ error: 'GRANT_PREVIOUS_OPERATION_UNRESOLVED' }]);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(1);
     expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
   }, 30_000);
 });

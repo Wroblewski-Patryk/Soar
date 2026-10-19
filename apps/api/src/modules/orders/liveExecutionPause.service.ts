@@ -5,7 +5,8 @@ import { orderErrors } from './orders.errors';
 
 const CONTROL_ID = 'global';
 // One PostgreSQL advisory key across all API and worker processes.
-const LOCK_KEY = 1701300739;
+export const LIVE_EXECUTION_PAUSE_LOCK_KEY = 1701300739;
+const LOCK_KEY = LIVE_EXECUTION_PAUSE_LOCK_KEY;
 
 export type LiveExecutionPauseStatus = {
   available: boolean;

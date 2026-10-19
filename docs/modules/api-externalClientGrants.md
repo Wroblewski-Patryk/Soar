@@ -84,12 +84,20 @@ in the human wrapper, including after a crash before submit. Gate.io ID canonica
 is available before reservation through `resolveLiveClientOrderId`. The human order
 path continues to use the same wrapper and order materialization.
 
-No delegated executor calls this seam yet, and grant reservation plus intent
-persistence are not one transaction. The next integration must coordinate the
-final ID with existing human order entry; reserve allowance, persist a matching
-intent, and recheck grant authority and global LIVE pause at the last submit
-boundary. It must hold the relevant locks through `createOrder`, then materialize
-the Order and reconcile the reservation. A revoke, expiry, plan/group change, or
-pause between preparation and submit must deny without another submit; an existing
-intent or `UNKNOWN` must stay lookup-only and must not be refunded. None of those
-end-to-end guarantees, a public route, or venue/deployed proof is claimed by 001D.
+`SOAR-EXT-GRANT-001D2` adds `bindExternalClientGrantReservationIntent`. It derives
+the final venue client ID once and commits the grant reservation, matching
+`LiveOrderIntent`, counters, and audit in one PostgreSQL transaction. A human
+intent with the same ID, an unbound legacy reservation, or a changed command
+cannot be adopted as a bound retry. The audit stores the bound intent ID as
+durable proof; a rollback leaves no new reservation, intent, counter, or audit.
+Exact retry returns the same bound rows without another charge.
+
+`beginBoundExternalClientGrantSubmission` checks that binding, current grant
+authority, and the shared global LIVE pause control in one transaction before
+committing `SUBMISSION_UNCERTAIN`. The pause advisory lock ends at that commit.
+There is still no delegated adapter call or Order write. The next ticket must
+recheck authority and hold the shared pause permit through `createOrder`, then
+materialize the Order and reconcile the reservation. A revoke, expiry, plan/group
+change, or pause between preparation and submit must deny without another submit;
+an existing intent or `UNKNOWN` must stay lookup-only and must not be refunded.
+No external HTTP/MCP route, real venue submit, or deployed proof is claimed.

@@ -2,9 +2,12 @@ import { createHash } from 'node:crypto';
 import { Exchange, ExternalClientGrant, LiveOrderIntent, Prisma, PrismaClient, TradeMarket } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../prisma/client';
+import { isAppErrorLike } from '../../lib/errors';
 import { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
+import { persistOrReuseLiveOrderIntent, resolveLiveClientOrderId } from '../orders/orders.liveIntent.service';
+import { LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 
 type DbClient = PrismaClient;
@@ -131,7 +134,66 @@ const assertCurrentScope = async (
 };
 
 const transactionOptions = { maxWait: 10_000, timeout: 20_000 };
-type Deps = { db?: DbClient; getSymbolRules?: SymbolRulesReader };
+type Deps = { db?: DbClient; getSymbolRules?: SymbolRulesReader; bindIntent?: true };
+
+const representableNumber = (value: string) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || !new Prisma.Decimal(numeric.toString()).eq(value)) {
+    return deny('INTENT_AMOUNT_NOT_REPRESENTABLE');
+  }
+  return numeric;
+};
+
+const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
+  const bot = await tx.bot.findFirst({ where: { id: command.botId, userId: command.userId },
+    select: { id: true, exchange: true, marketType: true, positionMode: true,
+      apiKeyId: true, walletId: true } });
+  if (!bot || bot.exchange !== command.exchange || bot.marketType !== command.marketType) {
+    return deny('GRANT_BOT_SCOPE_UNAVAILABLE');
+  }
+  const payload = {
+    botId: command.botId, walletId: command.walletId ?? undefined,
+    strategyId: command.strategyId ?? undefined, positionId: command.positionId,
+    symbol: command.symbol, side: command.side, type: command.type,
+    quantity: representableNumber(command.quantity), price: representableNumber(command.limitPrice),
+    reduceOnly: command.reduceOnly, mode: 'LIVE' as const, riskAck: true,
+    clientOrderId: command.clientOrderId,
+  };
+  let prepared;
+  try {
+    prepared = await persistOrReuseLiveOrderIntent({ userId: command.userId, bot, payload, tx });
+  } catch (error) {
+    if (isAppErrorLike(error) && error.code === 'LIVE_INTENT_CONFLICT') {
+      return deny('CLIENT_ORDER_ID_ALREADY_USED');
+    }
+    throw error;
+  }
+  if (!prepared.created || prepared.existingOrder || prepared.clientOrderId !== command.clientOrderId ||
+      !intentMatchesCommand(prepared.payload, command)) return deny('CLIENT_ORDER_ID_ALREADY_USED');
+  return prepared.intentId;
+};
+
+const hasAtomicIntentBinding = async (tx: Tx, reservationId: string, intentId: string) => {
+  const audit = await tx.log.findFirst({ where: {
+    entityType: 'ExternalClientGrantReservation', entityId: reservationId,
+    action: 'EXTERNAL_CLIENT_GRANT_RESERVED',
+  }, select: { metadata: true } });
+  const metadata = audit?.metadata;
+  return metadata && typeof metadata === 'object' && !Array.isArray(metadata) &&
+    (metadata as Record<string, unknown>).boundIntentId === intentId;
+};
+
+// No submit capability is exposed. The final venue ID is used for both rows.
+export const bindExternalClientGrantReservationIntent = async (
+  input: { grantId: string; secret: string; command: unknown }, deps: Omit<Deps, 'bindIntent'> = {},
+) => {
+  const parsed = canonicalize(input.command);
+  const command = { ...parsed,
+    clientOrderId: resolveLiveClientOrderId(parsed.clientOrderId, parsed.exchange) };
+  const bound = await reserveExternalClientGrantOrder({ ...input, command }, { ...deps, bindIntent: true });
+  if (!bound.intentId) return deny('RESERVATION_INTENT_UNAVAILABLE');
+  return { ...bound, intentId: bound.intentId };
+};
 
 export const reserveExternalClientGrantOrder = async (
   input: { grantId: string; secret: string; command: unknown }, deps: Deps = {},
@@ -162,6 +224,15 @@ export const reserveExternalClientGrantOrder = async (
       if (existing.grantId !== grant.id || existing.commandHash !== commandHash) {
         return deny('CLIENT_ORDER_COMMAND_CONFLICT');
       }
+      if (deps.bindIntent) {
+        if (existing.state === 'NOT_SUBMITTED') return deny('RESERVATION_NOT_DISPATCHABLE');
+        const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: command.clientOrderId } });
+        if (!intent || !intentMatchesCommandAndScope(intent, command) ||
+            !await hasAtomicIntentBinding(tx, existing.id, intent.id)) {
+          return deny('RESERVATION_INTENT_UNAVAILABLE');
+        }
+        return { reused: true, reservation: existing, intentId: intent.id };
+      }
       return { reused: true, reservation: existing };
     }
     const priorIntent = await tx.liveOrderIntent.findUnique({
@@ -183,6 +254,7 @@ export const reserveExternalClientGrantOrder = async (
       data: { grantId: grant.id, clientOrderId: command.clientOrderId, commandHash,
         command: command as Prisma.InputJsonValue, quoteAmount },
     });
+    const intentId = deps.bindIntent ? await bindNewIntent(tx, command) : undefined;
     await tx.externalClientGrant.update({
       where: { id: grant.id },
       data: { usedActions: { increment: 1 }, usedQuoteAmount: { increment: quoteAmount } },
@@ -192,16 +264,18 @@ export const reserveExternalClientGrantOrder = async (
       actor: 'EXTERNAL_CLIENT', action: 'EXTERNAL_CLIENT_GRANT_RESERVED', level: 'INFO',
       message: 'External client allowance reserved', entityType: 'ExternalClientGrantReservation',
       entityId: reservation.id, metadata: { grantId: grant.id, clientOrderId: command.clientOrderId,
-        commandHash, quoteAmount: quoteAmount.toFixed(8), currencyProof: marketProof.currencyProof },
+        commandHash, quoteAmount: quoteAmount.toFixed(8), currencyProof: marketProof.currencyProof,
+        ...(intentId ? { boundIntentId: intentId } : {}) },
     } });
-    return { reused: false, reservation };
+    return { reused: false, reservation, intentId };
   }, transactionOptions);
 };
 
 // Commit this state before any future network submit. A crash after commit is
 // deliberately uncertain and retry must use venue lookup, never another submit.
 export const beginExternalClientGrantSubmission = async (
-  input: { reservationId: string; secret: string }, db: DbClient = prisma,
+  input: { reservationId: string; secret: string; requireLivePauseCheck?: boolean;
+    requireBoundIntent?: boolean }, db: DbClient = prisma,
 ) => db.$transaction(async (tx) => {
   const found = await tx.externalClientGrantReservation.findUnique({ where: { id: input.reservationId } });
   if (!found) return deny('RESERVATION_UNAVAILABLE');
@@ -212,6 +286,18 @@ export const beginExternalClientGrantSubmission = async (
   await assertCurrentScope(tx, grant, input.secret, command);
   const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: current.clientOrderId } });
   if (!intent || !intentMatchesCommandAndScope(intent, command)) return deny('SUBMISSION_INTENT_UNAVAILABLE');
+  if (input.requireBoundIntent && !await hasAtomicIntentBinding(tx, current.id, intent.id)) {
+    return deny('RESERVATION_INTENT_UNAVAILABLE');
+  }
+  if (input.requireLivePauseCheck) {
+    // Same advisory key as the existing pause writer and createOrder permit.
+    // This is a transactional point-in-time gate; the later executor must
+    // still hold the shared permit through the actual venue submit.
+    await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock_shared(${LIVE_EXECUTION_PAUSE_LOCK_KEY})) AS acquired`;
+    const control = await tx.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    if (!control) return deny('LIVE_PAUSE_UNAVAILABLE');
+    if (control.paused) return deny('LIVE_PRETRADE_PAUSED');
+  }
   const updated = await tx.externalClientGrantReservation.update({
     where: { id: current.id }, data: { state: 'SUBMISSION_UNCERTAIN', dispatchStartedAt: new Date() },
   });
@@ -224,6 +310,13 @@ export const beginExternalClientGrantSubmission = async (
   } });
   return updated;
 }, transactionOptions);
+
+// No adapter is called here. A future executor must acquire the shared LIVE
+// pause permit and recheck grant authority immediately before createOrder.
+export const beginBoundExternalClientGrantSubmission = (
+  input: { reservationId: string; secret: string }, db: DbClient = prisma,
+) => beginExternalClientGrantSubmission({ ...input, requireLivePauseCheck: true,
+  requireBoundIntent: true }, db);
 
 // The only automated refund proof is a locally held pre-dispatch reservation
 // with no durable LiveOrderIntent. UNKNOWN/timeouts never qualify.

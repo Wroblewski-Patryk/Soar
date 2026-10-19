@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import {
-  beginExternalClientGrantSubmission, reserveExternalClientGrantOrder,
+  beginExternalClientGrantSubmission, bindExternalClientGrantReservationIntent,
+  reserveExternalClientGrantOrder,
 } from './externalClientGrantReservation.service';
 
 const db = new PrismaClient();
@@ -23,14 +24,28 @@ process.stdin.on('data', (chunk: string) => {
         process.stdout.write('BEGUN\n', () => process.exit(73));
         await new Promise<never>(() => {});
       }
-      const result = await reserveExternalClientGrantOrder(request, {
+      if (request.operation === 'crash-after-bind') {
+        const bound = await bindExternalClientGrantReservationIntent(request, {
+          db, getSymbolRules: async () => ({
+            minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
+            quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
+          }),
+        });
+        process.stdout.write(`BOUND ${JSON.stringify({ reservationId: bound.reservation.id,
+          intentId: bound.intentId })}\n`, () => process.exit(74));
+        await new Promise<never>(() => {});
+      }
+      const reserve = request.operation === 'bind'
+        ? bindExternalClientGrantReservationIntent : reserveExternalClientGrantOrder;
+      const result = await reserve(request, {
         db,
         getSymbolRules: async () => ({
           minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
           quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
         }),
       });
-      process.stdout.write(`RESULT ${JSON.stringify({ reused: result.reused, id: result.reservation.id })}\n`);
+      process.stdout.write(`RESULT ${JSON.stringify({ reused: result.reused, id: result.reservation.id,
+        intentId: result.intentId })}\n`);
     } catch (error) {
       process.stdout.write(`RESULT ${JSON.stringify({ error: (error as { code?: string }).code ?? 'UNAVAILABLE' })}\n`);
     } finally {
