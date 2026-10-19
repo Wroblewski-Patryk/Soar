@@ -41,8 +41,10 @@ route does not make it an MCP tool.
 
 This remains a target contract. `SOAR-EXT-GRANT-001A` now provides a local
 human-cookie-only grant lifecycle, bounded scope, hashed one-time secret, and
-revocation checks. No accepted MCP capability, external domain action, atomic
-allowance spending, deployed revocation, or LIVE client proof exists. Acceptance needs
+revocation checks. `SOAR-EXT-GRANT-001B` adds a local transactional allowance
+reservation and unresolved-operation state. No accepted MCP capability, external
+domain action, allowance-to-order integration, deployed revocation, or LIVE client
+proof exists. Acceptance needs
 tests for denied account/plan/role/key actions, active and revoked grants,
 ownership isolation, LIVE guardrails, audit evidence, and a real external-client
 journey. Ordinary API tests or an endpoint inventory do not close this gate.

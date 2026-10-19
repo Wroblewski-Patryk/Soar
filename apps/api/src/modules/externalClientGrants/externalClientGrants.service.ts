@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { Exchange, ExternalClientAction, Prisma, TradeMarket } from '@prisma/client';
+import { Exchange, ExternalClientAction, Prisma, PrismaClient, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { comparePassword } from '../../utils/hash';
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
@@ -32,33 +32,36 @@ const publicGrantSelect = {
   createdAt: true,
 } as const;
 
-const containsAssignedSymbol = (bot: {
-  symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket } } | null;
+export const isAssignedGrantSymbol = (bot: {
+  symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket; baseCurrency: string } } | null;
   botMarketGroups: Array<{
     isEnabled: boolean;
     lifecycleStatus: string;
-    symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket } };
+    symbolGroup: { symbols: string[]; marketUniverse: { exchange: Exchange; marketType: TradeMarket; baseCurrency: string } };
   }>;
-}, symbol: string, exchange: Exchange, marketType: TradeMarket) => {
+}, symbol: string, exchange: Exchange, marketType: TradeMarket, quoteCurrency?: string) => {
   const groups = bot.botMarketGroups.length > 0
     ? bot.botMarketGroups
         .filter((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
         .map((group) => group.symbolGroup)
     : bot.symbolGroup ? [bot.symbolGroup] : [];
   return groups.some((group) => group.marketUniverse.exchange === exchange &&
-    group.marketUniverse.marketType === marketType && group.symbols.includes(symbol));
+    group.marketUniverse.marketType === marketType && group.symbols.includes(symbol) &&
+    (!quoteCurrency || group.marketUniverse.baseCurrency.trim().toUpperCase() === quoteCurrency));
 };
 
-const ownedBotScope = (userId: string, botId: string) => prisma.bot.findFirst({
+type DbClient = PrismaClient | Prisma.TransactionClient;
+
+export const getOwnedGrantBotScope = (userId: string, botId: string, db: DbClient = prisma) => db.bot.findFirst({
   where: { id: botId, userId },
   select: {
     id: true, userId: true, exchange: true, marketType: true, mode: true,
     isActive: true, liveOptIn: true,
-    symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true } } } },
+    symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
     botMarketGroups: {
       select: {
         isEnabled: true, lifecycleStatus: true,
-        symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true } } } },
+        symbolGroup: { select: { symbols: true, marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
       },
     },
   },
@@ -94,11 +97,11 @@ export const createExternalClientGrant = async (userId: string, input: CreateGra
   }
   await assertSubscriptionAllowsLiveTrading(userId);
 
-  const bot = await ownedBotScope(userId, input.botId);
+  const bot = await getOwnedGrantBotScope(userId, input.botId);
   if (!bot) throw new GrantInputError('Bot not found', 404);
   if (bot.mode !== 'LIVE' || bot.exchange !== input.exchange || bot.marketType !== input.marketType ||
       !supportsExchangeExecutionCapability(input.exchange, input.marketType, 'LIVE_ORDER_SUBMIT') ||
-      !containsAssignedSymbol(bot, input.symbol, input.exchange, input.marketType)) {
+      !isAssignedGrantSymbol(bot, input.symbol, input.exchange, input.marketType)) {
     throw new GrantInputError('Bot scope does not match grant');
   }
 
@@ -189,11 +192,11 @@ export const inspectExternalClientGrant = async (input: {
         amount.gt(grant.maxActionQuoteAmount) ||
         grant.usedQuoteAmount.plus(amount).gt(grant.maxTotalQuoteAmount)) return null;
 
-    const bot = await ownedBotScope(grant.userId, grant.botId);
+    const bot = await getOwnedGrantBotScope(grant.userId, grant.botId);
     if (!bot || bot.mode !== 'LIVE' || !bot.isActive || !bot.liveOptIn ||
         bot.exchange !== grant.exchange || bot.marketType !== grant.marketType ||
         !supportsExchangeExecutionCapability(grant.exchange, grant.marketType, 'LIVE_ORDER_SUBMIT') ||
-        !containsAssignedSymbol(bot, grant.symbol, grant.exchange, grant.marketType)) return null;
+        !isAssignedGrantSymbol(bot, grant.symbol, grant.exchange, grant.marketType)) return null;
     await assertSubscriptionAllowsLiveTrading(grant.userId);
     return { grantId: grant.id, userId: grant.userId, botId: grant.botId };
   } catch {

@@ -43,6 +43,7 @@ export type ExchangeSymbolRules = {
   minQuantity: number | null;
   minNotional: number | null;
   quantityStep: number | null;
+  priceStep?: number | null;
   contractSize: number | null;
 };
 
@@ -91,6 +92,7 @@ const parseFilterRules = (filters: unknown) => {
       minQuantity: null as number | null,
       minNotional: null as number | null,
       quantityStep: null as number | null,
+      priceStep: null as number | null,
       contractSize: null as number | null,
     };
   }
@@ -98,6 +100,7 @@ const parseFilterRules = (filters: unknown) => {
   const minQtyCandidates: Array<number | null> = [];
   const minNotionalCandidates: Array<number | null> = [];
   const quantityStepCandidates: Array<number | null> = [];
+  const priceStepCandidates: Array<number | null> = [];
 
   for (const rawFilter of filters) {
     if (!rawFilter || typeof rawFilter !== 'object') continue;
@@ -107,6 +110,10 @@ const parseFilterRules = (filters: unknown) => {
     if (filterType === 'LOT_SIZE' || filterType === 'MARKET_LOT_SIZE') {
       minQtyCandidates.push(asPositiveNumber(filter.minQty));
       quantityStepCandidates.push(asPositiveNumber(filter.stepSize));
+    }
+
+    if (filterType === 'PRICE_FILTER') {
+      priceStepCandidates.push(asPositiveNumber(filter.tickSize));
     }
 
     if (filterType === 'MIN_NOTIONAL' || filterType === 'NOTIONAL') {
@@ -119,6 +126,7 @@ const parseFilterRules = (filters: unknown) => {
     minQuantity: pickMaxPositive(minQtyCandidates),
     minNotional: pickMaxPositive(minNotionalCandidates),
     quantityStep: pickMaxPositive(quantityStepCandidates),
+    priceStep: pickMaxPositive(priceStepCandidates),
   };
 };
 
@@ -138,6 +146,7 @@ const toSymbolRules = (market: CcxtMarket): ExchangeSymbolRules => {
     minQuantity,
     minNotional,
     quantityStep,
+    priceStep: filterRules.priceStep,
     contractSize: asPositiveNumber(market.contractSize),
   };
 };

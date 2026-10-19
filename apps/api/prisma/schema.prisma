@@ -1356,6 +1356,7 @@ model ExternalClientGrant {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   bot  Bot  @relation(fields: [botId], references: [id], onDelete: Cascade)
+  reservations ExternalClientGrantReservation[]
 
   @@index([userId, createdAt])
   @@index([botId])
@@ -1364,6 +1365,35 @@ model ExternalClientGrant {
 
 enum ExternalClientAction {
   PLACE_LIVE_ORDER
+}
+
+// Durable pre-submit allowance. No external route consumes this record yet.
+model ExternalClientGrantReservation {
+  id                String                         @id @default(uuid())
+  grantId           String
+  clientOrderId     String                         @unique
+  commandHash       String
+  command           Json
+  quoteAmount       Decimal                        @db.Decimal(20, 8)
+  state             ExternalClientReservationState @default(RESERVED)
+  dispatchStartedAt DateTime?
+  resolvedAt        DateTime?
+  proofType         String?
+  proofRef          String?
+  createdAt         DateTime                       @default(now())
+  updatedAt         DateTime                       @updatedAt
+
+  grant ExternalClientGrant @relation(fields: [grantId], references: [id], onDelete: Cascade)
+
+  @@index([grantId, state])
+  @@index([grantId, createdAt])
+}
+
+enum ExternalClientReservationState {
+  RESERVED
+  SUBMISSION_UNCERTAIN
+  SUBMITTED
+  NOT_SUBMITTED
 }
 
 // One shared control row for every API and execution worker instance.

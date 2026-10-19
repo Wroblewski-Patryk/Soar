@@ -22,6 +22,7 @@ describe('exchangeSymbolRules.service', () => {
         info: {
           filters: [
             { filterType: 'LOT_SIZE', minQty: '0.001', stepSize: '0.001' },
+            { filterType: 'PRICE_FILTER', tickSize: '0.01' },
             { filterType: 'NOTIONAL', minNotional: '10' },
           ],
         },
@@ -45,6 +46,7 @@ describe('exchangeSymbolRules.service', () => {
       minQuantity: 0.001,
       minNotional: 10,
       quantityStep: 0.001,
+      priceStep: 0.01,
       contractSize: null,
     });
   });
@@ -146,6 +148,7 @@ describe('exchangeSymbolRules.service', () => {
       minQuantity: 0.0001,
       minNotional: 1,
       quantityStep: null,
+      priceStep: null,
       contractSize: null,
     });
   });

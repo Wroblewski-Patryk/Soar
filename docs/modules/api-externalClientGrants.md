@@ -2,10 +2,10 @@
 
 ## Status and scope
 
-`SOAR-EXT-GRANT-001A` adds the grant lifecycle foundation. It does not expose MCP,
-external-client domain execution, or LIVE order submission. A grant secret is not
-accepted by any HTTP route. Internal scope inspection is read-only; later execution
-work must add an atomic allowance reservation together with domain intent creation.
+`SOAR-EXT-GRANT-001A/B` adds grant lifecycle and a callable, durable allowance
+reservation service. It does not expose MCP, external-client domain execution,
+or LIVE order submission. A grant secret is not accepted by any HTTP route.
+The reservation is not yet connected to the domain `createOrder` path.
 
 ## Human-only routes
 
@@ -39,3 +39,43 @@ The internal inspection service fails closed on malformed tokens, wrong owner,
 bot, exchange, market type, symbol or action; a disabled/non-opted-in bot;
 exceeded single, total or count limit; expiry; and revocation. Inspection does
 not spend allowance and cannot authorize an order by itself.
+
+## Atomic reservation and recovery (001B)
+
+`reserveExternalClientGrantOrder` accepts the final venue `clientOrderId` and a
+strict canonical LIMIT command. The service derives its SHA-256 command fingerprint
+itself. It rejects `riskAck`, caller-supplied nominal, missing market metadata, and
+quantity or price outside trusted market steps. For this stage only, it supports USDT quote
+symbols and uses the server's exchange symbol rules. Futures nominal is
+`quantity × limitPrice × contractSize`; Spot uses multiplier 1. The result is
+rounded **up** to 8 decimal places. Missing Futures contract size or trusted
+lot/price step fails closed. This is requested LIMIT nominal;
+future execution must still apply venue precision, risk, and actual-fill controls.
+
+The PostgreSQL transaction locks the grant row, rechecks the secret, current LIVE
+plan, bot consent/activation, active group, exact action/scope, expiry, revocation,
+single nominal, total nominal, count, and unresolved operation. The reservation,
+used counters, and audit event commit together before any future submit. A global
+unique `clientOrderId` matches the existing `LiveOrderIntent` identity rule; a
+partial unique index permits at most one unresolved reservation per grant. An
+identical ID and command returns the stored row without another charge. A changed
+command conflicts. Database or audit write failure rolls back all three writes.
+
+| State | Meaning | Next step |
+| --- | --- | --- |
+| `RESERVED` | Allowance committed; no submit begun. | Persist a matching `LiveOrderIntent`, then begin submission; or refund only if no intent exists. |
+| `SUBMISSION_UNCERTAIN` | Dispatch gate committed; a submit may have happened. | Lookup-only recovery. No retry submit or automatic refund. |
+| `SUBMITTED` | Matching durable intent and local Order with exchange identity found. | Allowance remains spent. |
+| `NOT_SUBMITTED` | Pre-dispatch abort proved by `RESERVED` state and absent intent under lock. | Allowance refunded once; client ID remains terminal. |
+
+`beginExternalClientGrantSubmission` requires a matching durable `LiveOrderIntent`
+and rechecks current grant authority under the same lock before setting uncertainty.
+`reconcileSubmittedExternalClientGrantReservation` needs a matching intent payload
+and Order with an exchange order identity; absent or conflicting evidence stays
+uncertain. A timeout, `UNKNOWN`, or venue `not found` is never refund evidence.
+The current `executeDurableLiveOrder` couples intent creation with submit, so a
+future integration must split that boundary and wire this sequence before any
+external-client createOrder can be accepted. Existing human order entry does not
+lock this reservation row; a future external route must coordinate final client
+IDs with that path before sharing them. No production, venue, or deployed
+execution proof is claimed here.
