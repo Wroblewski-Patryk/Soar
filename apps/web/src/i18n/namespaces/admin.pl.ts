@@ -34,6 +34,7 @@ export const adminPl = {
     pause: "Wstrzymaj LIVE",
     resume: "Wznow LIVE",
     updateError: "Nie udalo sie potwierdzic zmiany. Odswiez wspolny stan przed ponowna proba.",
+    submissionInFlight: "Ta proba NIE wlaczyla pauzy LIVE: trwa lub pozostaje nierozliczone wyslanie zlecenia. Zatrzymaj procesy wysylajace zlecenia LIVE na poziomie platformy i rozlicz clientOrderId oraz intent zgodnie z runbookiem pauzy LIVE. Nie ponawiaj automatycznie ani nie usuwaj automatycznie markera.",
   },
   users: {
     loadError: "Nie udalo sie pobrac listy uzytkownikow.",

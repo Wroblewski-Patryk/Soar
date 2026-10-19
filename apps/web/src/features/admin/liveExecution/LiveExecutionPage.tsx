@@ -1,5 +1,6 @@
 "use client";
 
+import { isAxiosError } from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 import {
@@ -45,8 +46,11 @@ export default function LiveExecutionPage() {
       }
       setStatus(confirmed);
       setReason("");
-    } catch {
-      setError(t("admin.liveExecution.updateError"));
+    } catch (error) {
+      const submissionInFlight = paused && isAxiosError(error) &&
+        error.response?.data?.error?.details?.code === "LIVE_PAUSE_SUBMISSION_IN_FLIGHT";
+      setError(t(submissionInFlight
+        ? "admin.liveExecution.submissionInFlight" : "admin.liveExecution.updateError"));
       try { setStatus(await getLiveExecutionPause()); } catch { setStatus(null); }
     } finally {
       setSaving(false);

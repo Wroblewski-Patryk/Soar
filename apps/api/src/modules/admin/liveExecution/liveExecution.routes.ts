@@ -24,7 +24,11 @@ router.put('/', async (req, res) => {
     const status = await setLiveExecutionPause({ actorUserId: req.user.id, ...payload });
     return res.json(status);
   } catch (error) {
-    if (isAppErrorLike(error)) return sendError(res, error.status, error.message);
+    if (isAppErrorLike(error)) {
+      const details = error.code === 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT'
+        ? { code: error.code } : undefined;
+      return sendError(res, error.status, error.message, details);
+    }
     return sendValidationError(res, error);
   }
 });

@@ -53,4 +53,50 @@ describe('admin LIVE pause API authority', () => {
     const after = await admin.get('/admin/live-execution');
     expect(after.body.version).toBe(status.body.version);
   });
+
+  it('returns a safe in-flight code and leaves the shared pause state unchanged', async () => {
+    expect(decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname).endsWith('_test')).toBe(true);
+    const admin = await createAgent('ADMIN');
+    const original = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+    await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock(1701300739)) AS acquired`;
+      await tx.liveExecutionControl.update({ where: { id: 'global' }, data: { paused: false } });
+    });
+    let markerId: string | null = null;
+    const clientOrderId = `private-test-client-order-${Date.now()}`;
+    try {
+      const marker = await prisma.liveCreateOrderSubmission.create({ data: {
+        exchangeId: 'test-venue', clientOrderId, symbol: 'BTCUSDT',
+        marketType: 'future', reduceOnly: false,
+      } });
+      markerId = marker.id;
+      const before = await admin.get('/admin/live-execution');
+      expect(before.status).toBe(200);
+      expect(before.body).toMatchObject({ available: true, paused: false, version: original.version });
+
+      const denied = await admin.put('/admin/live-execution').send({
+        paused: true, reason: 'test in-flight refusal remains active', expectedVersion: before.body.version,
+      });
+      expect(denied.status).toBe(503);
+      expect(denied.body).toMatchObject({ error: { details: { code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' } } });
+      expect(JSON.stringify(denied.body)).not.toContain(clientOrderId);
+      expect(JSON.stringify(denied.body)).not.toContain(marker.id);
+
+      const after = await admin.get('/admin/live-execution');
+      expect(after.status).toBe(200);
+      expect(after.body).toMatchObject({ available: true, paused: false, version: before.body.version });
+    } finally {
+      try {
+        if (markerId) await prisma.liveCreateOrderSubmission.delete({ where: { id: markerId } });
+      } finally {
+        await prisma.$transaction(async (tx) => {
+          await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock(1701300739)) AS acquired`;
+          await tx.liveExecutionControl.update({ where: { id: 'global' }, data: {
+            paused: original.paused, reason: original.reason, version: original.version,
+            changedAt: original.changedAt, changedByUserId: original.changedByUserId,
+          } });
+        });
+      }
+    }
+  });
 });

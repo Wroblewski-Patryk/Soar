@@ -33,7 +33,8 @@ export const adminDeCh = {
     "reasonInput": "Grund der Aenderung (mindestens 10 Zeichen)",
     "pause": "LIVE pausieren",
     "resume": "LIVE fortsetzen",
-    "updateError": "Aenderung konnte nicht bestaetigt werden. Status vor erneutem Versuch aktualisieren."
+    "updateError": "Aenderung konnte nicht bestaetigt werden. Status vor erneutem Versuch aktualisieren.",
+    "submissionInFlight": "Dieser Versuch hat die LIVE-Pause NICHT aktiviert: Eine Order-Uebermittlung laeuft noch oder ist nicht abgeglichen. Stoppen Sie LIVE-Order-Writer auf Plattformebene und gleichen Sie clientOrderId und Intent gemaess dem LIVE-Pause-Runbook ab. Keine automatische Wiederholung und keine automatische Bereinigung des Submission-Markers."
   },
   "users": {
     "loadError": "Benutzer konnten nicht geladen werden.",

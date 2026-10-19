@@ -34,6 +34,7 @@ export const adminEn = {
     pause: "Pause LIVE submissions",
     resume: "Resume LIVE submissions",
     updateError: "Could not verify the change. Refresh the shared state before trying again.",
+    submissionInFlight: "This request did NOT activate the LIVE pause: an order submission is in flight or unresolved. Stop LIVE writers at the platform level and reconcile its clientOrderId and intent using the LIVE pause runbook. Do not automatically retry or clean up the submission marker.",
   },
   users: {
     loadError: "Could not load users.",

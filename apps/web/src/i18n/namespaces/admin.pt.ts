@@ -34,6 +34,7 @@ export const adminPt = {
     pause: "Pausar envios LIVE",
     resume: "Retomar envios LIVE",
     updateError: "Nao foi possivel confirmar a alteracao. Atualize o estado antes de tentar de novo.",
+    submissionInFlight: "Esta tentativa NAO ativou a pausa LIVE: uma ordem ainda esta em envio ou por reconciliar. Pare os processos que enviam ordens LIVE ao nivel da plataforma e reconcilie o clientOrderId e o intent conforme o runbook da pausa LIVE. Nao repita nem remova automaticamente o marcador da submissao.",
   },
   users: {
     loadError: "Nao foi possivel carregar utilizadores.",
