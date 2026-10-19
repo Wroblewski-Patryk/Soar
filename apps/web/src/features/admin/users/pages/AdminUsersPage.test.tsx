@@ -113,6 +113,7 @@ describe("AdminUsersPage", () => {
     getAdminUsersMock.mockReset();
     updateAdminUserMock.mockReset();
     getAdminSubscriptionPlansMock.mockReset();
+    window.localStorage.clear();
   });
 
   it("loads users and updates role", async () => {
@@ -204,6 +205,25 @@ describe("AdminUsersPage", () => {
     renderWithI18n();
 
     expect(await screen.findByText("Could not load users.")).toBeInTheDocument();
+  });
+
+  it.each([
+    ['en', 'Toggle role for user@example.com', 'Confirm', 'Could not update role for user@example.com.'],
+    ['pl', 'Przelacz role dla user@example.com', 'Potwierdz', 'Nie udalo sie zaktualizowac roli dla user@example.com.'],
+  ])('shows the %s role update error after the confirmation', async (locale, roleButton, confirmButton, message) => {
+    window.localStorage.setItem('cryptosparrow-locale', locale);
+    getAdminUsersMock.mockResolvedValue({
+      users: [baseUser],
+      meta: { page: 1, pageSize: 100, total: 1, totalPages: 1 },
+    });
+    getAdminSubscriptionPlansMock.mockResolvedValue([freePlan, advancedPlan]);
+    updateAdminUserMock.mockRejectedValue(new Error('request failed'));
+
+    renderWithI18n();
+    fireEvent.click(await screen.findByRole('button', { name: roleButton }));
+    fireEvent.click(screen.getByRole('button', { name: confirmButton }));
+    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(screen.getByText('USER', { selector: 'span.badge' })).toBeInTheDocument();
   });
 
   it("reaches and updates a user on the second page, then resets pagination when filtering", async () => {

@@ -228,21 +228,21 @@ export default function AdminUsersPage() {
         </button>
       </div>
 
-      <form className="mb-4 grid gap-3 rounded-box border border-base-300/70 p-3 md:grid-cols-[2fr_1fr_auto]" onSubmit={onApplyFilters}>
-        <label className="form-control">
+      <form className="mb-4 grid gap-3 rounded-box border border-base-300/70 p-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto]" onSubmit={onApplyFilters}>
+        <label className="flex min-w-0 flex-col gap-1">
           <span className="label-text">{labels.searchLabel}</span>
           <input
-            className="input input-bordered"
+            className="input input-bordered w-full"
             value={searchDraft}
             onChange={(event) => setSearchDraft(event.target.value)}
             placeholder={labels.searchPlaceholder}
           />
         </label>
 
-        <label className="form-control">
+        <label className="flex min-w-0 flex-col gap-1">
           <span className="label-text">{labels.roleLabel}</span>
           <select
-            className="select select-bordered"
+            className="select select-bordered w-full"
             value={roleFilter}
             onChange={(event) => {
               setPage(1);

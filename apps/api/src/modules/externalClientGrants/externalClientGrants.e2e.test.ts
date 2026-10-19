@@ -70,6 +70,11 @@ describe('external client grant foundation', () => {
       const created = await request(app).post(path).set('Cookie', `token=${f.humanToken}`).send(f.body);
       expect(created.status).toBe(201);
       expect(created.body.secret).toMatch(/^soar_ext_[A-Za-z0-9_-]{43}$/);
+      const grantBearer = `Bearer ${created.body.secret}`;
+      expect((await request(app).get('/admin/users').set('Authorization', grantBearer)).status).toBe(401);
+      expect((await request(app).patch(`/admin/users/${f.user.id}`).set('Authorization', grantBearer)
+        .send({ role: role === 'USER' ? 'ADMIN' : 'USER' })).status).toBe(401);
+      expect((await prisma.user.findUniqueOrThrow({ where: { id: f.user.id } })).role).toBe(role);
     }
   });
 

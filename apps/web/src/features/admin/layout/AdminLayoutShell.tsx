@@ -49,9 +49,9 @@ export default function AdminLayoutShell({ children }: { children: ReactNode }) 
   return (
     <div className="min-h-screen bg-base-100 text-base-content flex flex-col">
       <header className="sticky top-0 z-40 border-b border-base-300/60 bg-base-100/80 backdrop-blur">
-        <div className="navbar max-w-7xl mx-auto px-4 min-h-16">
+        <div className="navbar max-w-7xl mx-auto px-4 min-h-16 flex-wrap gap-x-3 gap-y-1">
           <AppLogoLink href="/" className="text-lg text-base-content" />
-          <nav className="ml-auto flex items-center gap-2">
+          <nav className="flex w-full flex-wrap items-center gap-1 pb-2 sm:ml-auto sm:w-auto sm:gap-2 sm:pb-0">
             <Link href="/admin/subscriptions" className="btn btn-ghost btn-sm">
               {t("admin.layout.nav.subscriptions")}
             </Link>

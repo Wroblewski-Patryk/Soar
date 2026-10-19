@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useId, useRef } from 'react';
 import { useOptionalI18n } from '@/i18n/useOptionalI18n';
 
 type ConfirmModalProps = {
@@ -26,18 +27,53 @@ export default function ConfirmModal({
   onCancel,
 }: ConfirmModalProps) {
   const { t } = useOptionalI18n();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
   const resolvedConfirmLabel = confirmLabel ?? t('public.sharedUi.confirmLabel');
   const resolvedCancelLabel = cancelLabel ?? t('public.sharedUi.cancelLabel');
+
+  useEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousFocus = document.activeElement;
+
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    cancelRef.current?.focus();
+    const focusFrame = requestAnimationFrame(() => cancelRef.current?.focus());
+
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+      else dialog.removeAttribute('open');
+      queueMicrotask(() => {
+        if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+      });
+    };
+  }, [open]);
 
   if (!open) return null;
 
   return (
-    <dialog className='modal modal-open' aria-modal='true' role='dialog'>
+    <dialog
+      ref={dialogRef}
+      className='modal'
+      aria-modal='true'
+      aria-labelledby={titleId}
+      aria-describedby={description ? descriptionId : undefined}
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!pending) onCancel();
+      }}
+    >
       <div className='modal-box'>
-        <h3 className='font-bold text-lg mb-2'>{title}</h3>
-        {description ? <p className='mb-4 text-sm opacity-80'>{description}</p> : null}
+        <h3 id={titleId} className='font-bold text-lg mb-2'>{title}</h3>
+        {description ? <p id={descriptionId} className='mb-4 text-sm opacity-80'>{description}</p> : null}
         <div className='modal-action'>
-          <button type='button' className='btn' onClick={onCancel} disabled={pending}>
+          <button ref={cancelRef} type='button' className='btn' onClick={onCancel} disabled={pending}>
             {resolvedCancelLabel}
           </button>
           <button
@@ -55,8 +91,13 @@ export default function ConfirmModal({
         role='button'
         aria-label={t('public.a11y.closeModal')}
         tabIndex={0}
-        onClick={onCancel}
-        onKeyDown={() => onCancel()}
+        onClick={() => { if (!pending) onCancel(); }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            if (!pending) onCancel();
+          }
+        }}
       />
     </dialog>
   );
