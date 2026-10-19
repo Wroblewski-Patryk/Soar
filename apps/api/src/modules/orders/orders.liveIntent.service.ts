@@ -46,7 +46,7 @@ type LiveOrderOperation = (params: {
   payload: LiveOrderPayload;
 }) => Promise<LiveExecutionResult>;
 
-const resolveLiveClientOrderId = (input: string | null | undefined, exchange: Exchange) => {
+export const resolveLiveClientOrderId = (input: string | null | undefined, exchange: Exchange) => {
   const source = input?.trim() || `soar_${randomBytes(16).toString('base64url')}`;
   // Gate's text field allows 28 bytes after t-. Hash the existing 29-byte
   // runtime ID deterministically so restart/retry uses the same venue ID.
@@ -74,16 +74,21 @@ const liveIntentPayloadHash = (userId: string, bot: LiveBotContext, payload: Liv
     reduceOnly: payload.reduceOnly ?? false,
   })).digest('hex');
 
-export const executeDurableLiveOrder = async (params: {
+export type PreparedLiveOrderIntent = {
+  intentId: string;
+  clientOrderId: string;
+  payload: LiveOrderPayload;
+  created: boolean;
+  existingOrder: Order | null;
+};
+
+// Durable boundary before any venue call. A retry of an existing client ID is
+// lookup-only even if this process never reached submit after the first write.
+export const persistOrReuseLiveOrderIntent = async (params: {
   userId: string;
   bot: LiveBotContext;
   payload: LiveOrderPayload;
-  execute: LiveOrderOperation;
-  lookup: LiveOrderOperation;
-}): Promise<
-  | { existingOrder: Order; intentId?: never; liveResult?: never; payload?: never }
-  | { existingOrder?: never; intentId: string; liveResult: LiveExecutionResult; payload: LiveOrderPayload }
-> => {
+}): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
   const payloadHash = liveIntentPayloadHash(userId, bot, payload);
@@ -129,25 +134,43 @@ export const executeDurableLiveOrder = async (params: {
     throw orderErrors.liveIntentConflict();
   }
   const existingOrder = await prisma.order.findUnique({ where: { id: intent.id } });
-  if (existingOrder) return { existingOrder };
+  return {
+    intentId: intent.id, clientOrderId: intent.clientOrderId,
+    payload: retryPayload, created: createdIntent, existingOrder,
+  };
+};
+
+export const executeDurableLiveOrder = async (params: {
+  userId: string;
+  bot: LiveBotContext;
+  payload: LiveOrderPayload;
+  execute: LiveOrderOperation;
+  lookup: LiveOrderOperation;
+}): Promise<
+  | { existingOrder: Order; intentId?: never; liveResult?: never; payload?: never }
+  | { existingOrder?: never; intentId: string; liveResult: LiveExecutionResult; payload: LiveOrderPayload }
+> => {
+  const { userId, bot, payload } = params;
+  const prepared = await persistOrReuseLiveOrderIntent({ userId, bot, payload });
+  if (prepared.existingOrder) return { existingOrder: prepared.existingOrder };
 
   let liveResult: LiveExecutionResult;
-  if (createdIntent) {
+  if (prepared.created) {
     try {
-      liveResult = await params.execute({ userId, bot, payload: retryPayload });
+      liveResult = await params.execute({ userId, bot, payload: prepared.payload });
       if (!liveResult.exchangeOrderId) throw new Error('Exchange returned no order identity');
     } catch (error) {
       if (isAppErrorLike(error) && error.code.startsWith('LIVE_PRETRADE_')) {
-        await prisma.liveOrderIntent.delete({ where: { id: intent.id } });
+        await prisma.liveOrderIntent.delete({ where: { id: prepared.intentId } });
         throw error;
       }
       try {
-        liveResult = await params.lookup({ userId, bot, payload: retryPayload });
+        liveResult = await params.lookup({ userId, bot, payload: prepared.payload });
         if (!liveResult.exchangeOrderId) throw new Error('Exchange lookup returned no order identity');
       } catch {
         throw orderErrors.liveExecutionUnknown({
-          orderId: intent.id,
-          clientOrderId: intent.clientOrderId,
+          orderId: prepared.intentId,
+          clientOrderId: prepared.clientOrderId,
         });
       }
     }
@@ -155,16 +178,16 @@ export const executeDurableLiveOrder = async (params: {
     // An existing intent may have been sent before a crash. A lookup is the
     // only permitted recovery action, even when the venue says not found.
     try {
-      liveResult = await params.lookup({ userId, bot, payload: retryPayload });
+      liveResult = await params.lookup({ userId, bot, payload: prepared.payload });
       if (!liveResult.exchangeOrderId) throw new Error('Exchange lookup returned no order identity');
     } catch {
       throw orderErrors.liveExecutionUnknown({
-        orderId: intent.id,
-        clientOrderId: intent.clientOrderId,
+        orderId: prepared.intentId,
+        clientOrderId: prepared.clientOrderId,
       });
     }
   }
-  return { intentId: intent.id, liveResult, payload: retryPayload };
+  return { intentId: prepared.intentId, liveResult, payload: prepared.payload };
 };
 
 export const createOrderForLiveIntent = async (params: {

@@ -77,9 +77,19 @@ and rechecks current grant authority under the same lock before setting uncertai
 `reconcileSubmittedExternalClientGrantReservation` needs a matching intent payload
 and Order with an exchange order identity; absent or conflicting evidence stays
 uncertain. A timeout, `UNKNOWN`, or venue `not found` is never refund evidence.
-The current `executeDurableLiveOrder` couples intent creation with submit, so a
-future integration must split that boundary and wire this sequence before any
-external-client createOrder can be accepted. Existing human order entry does not
-lock this reservation row; a future external route must coordinate final client
-IDs with that path before sharing them. No production, venue, or deployed
-execution proof is claimed here.
+`SOAR-EXT-GRANT-001D` extracts `persistOrReuseLiveOrderIntent` from
+`executeDurableLiveOrder`. The former persists or checks the final venue client ID
+and fingerprint without contacting the venue. An existing intent remains lookup-only
+in the human wrapper, including after a crash before submit. Gate.io ID canonicalization
+is available before reservation through `resolveLiveClientOrderId`. The human order
+path continues to use the same wrapper and order materialization.
+
+No delegated executor calls this seam yet, and grant reservation plus intent
+persistence are not one transaction. The next integration must coordinate the
+final ID with existing human order entry; reserve allowance, persist a matching
+intent, and recheck grant authority and global LIVE pause at the last submit
+boundary. It must hold the relevant locks through `createOrder`, then materialize
+the Order and reconcile the reservation. A revoke, expiry, plan/group change, or
+pause between preparation and submit must deny without another submit; an existing
+intent or `UNKNOWN` must stay lookup-only and must not be refunded. None of those
+end-to-end guarantees, a public route, or venue/deployed proof is claimed by 001D.

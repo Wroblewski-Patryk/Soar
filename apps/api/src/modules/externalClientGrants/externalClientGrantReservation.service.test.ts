@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
 import { __resetExchangeSymbolRulesCacheForTests, getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
+import { persistOrReuseLiveOrderIntent } from '../orders/orders.liveIntent.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant } from './externalClientGrants.service';
 import {
@@ -85,6 +86,29 @@ const createMatchingIntent = async (f: Awaited<ReturnType<typeof fixture>>, comm
   } });
 
 describe('external client grant atomic reservation', () => {
+  it('accepts the separated durable intent after reservation without any venue submit', async () => {
+    const f = await fixture();
+    const reserved = await reserve(f);
+    const payload = {
+      botId: f.bot.id, walletId: f.command.walletId ?? undefined,
+      strategyId: f.command.strategyId ?? undefined, positionId: f.command.positionId,
+      symbol: f.command.symbol, side: f.command.side, type: f.command.type,
+      quantity: Number(f.command.quantity), price: Number(f.command.limitPrice),
+      reduceOnly: f.command.reduceOnly, mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: f.command.clientOrderId,
+    };
+    const prepared = await persistOrReuseLiveOrderIntent({ userId: f.user.id, bot: f.bot, payload });
+    expect(prepared).toMatchObject({ created: true, clientOrderId: reserved.reservation.clientOrderId });
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+    expect((await beginExternalClientGrantSubmission({
+      reservationId: reserved.reservation.id, secret: f.secret,
+    })).state).toBe('SUBMISSION_UNCERTAIN');
+    expect((await persistOrReuseLiveOrderIntent({ userId: f.user.id, bot: f.bot,
+      payload: { ...payload } })).created).toBe(false);
+    expect((await reserve(f)).reservation.id).toBe(reserved.reservation.id);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+  });
+
   it('persists one allowance, reuses an exact retry, and conflicts on a changed command', async () => {
     const f = await fixture();
     const first = await reserve(f);

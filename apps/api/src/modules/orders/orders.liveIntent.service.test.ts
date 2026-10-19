@@ -2,7 +2,10 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
 import { openOrder } from './orders.service';
-import { createOrderForLiveIntent, materializeLiveOrderInTransaction } from './orders.liveIntent.service';
+import {
+  createOrderForLiveIntent, executeDurableLiveOrder, materializeLiveOrderInTransaction,
+  persistOrReuseLiveOrderIntent, resolveLiveClientOrderId,
+} from './orders.liveIntent.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
@@ -142,6 +145,39 @@ describe('durable LIVE order intent', () => {
   beforeEach(async () => {
     await cleanupDb();
     await allowLive();
+  });
+
+  it('persists the final intent before any submit and makes an existing ID lookup-only', async () => {
+    expect(decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname).endsWith('_test')).toBe(true);
+    const user = await createEntitledUser({
+      data: { email: 'live-intent-seam@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Intent seam bot', strategyName: 'Intent seam strategy', symbol: 'BTCUSDT',
+    });
+    const payload = { botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'LIMIT' as const, quantity: 0.5, price: 100, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: 'soar_intent_seam_1' };
+    const first = await persistOrReuseLiveOrderIntent({ userId: user.id, bot, payload });
+    expect(first).toMatchObject({ created: true, clientOrderId: payload.clientOrderId,
+      existingOrder: null });
+    expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+    expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
+    const retried = await persistOrReuseLiveOrderIntent({ userId: user.id, bot,
+      payload: { ...payload } });
+    expect(retried).toMatchObject({ created: false, intentId: first.intentId });
+    await expect(persistOrReuseLiveOrderIntent({ userId: user.id, bot,
+      payload: { ...payload, price: 101 } })).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveIntentConflict });
+    const execute = vi.fn().mockResolvedValue({ exchangeOrderId: 'must-not-submit', status: 'OPEN' });
+    const lookup = vi.fn().mockRejectedValue(new Error('venue unavailable'));
+    await expect(executeDurableLiveOrder({ userId: user.id, bot, payload: { ...payload },
+      execute, lookup })).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+    expect(execute).not.toHaveBeenCalled();
+    expect(lookup).toHaveBeenCalledTimes(1);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+    expect(resolveLiveClientOrderId('delegated-fixed-1', 'GATEIO'))
+      .toBe(resolveLiveClientOrderId('delegated-fixed-1', 'GATEIO'));
+    expect(resolveLiveClientOrderId('delegated-fixed-1', 'GATEIO')).toMatch(/^soar_[A-Za-z0-9_-]{22}$/);
   });
 
   it('reselects unresolved intent and partial LIVE order from the database after a fresh read', async () => {
