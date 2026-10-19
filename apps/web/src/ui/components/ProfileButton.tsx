@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { MouseEvent } from 'react';
 import { useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { LuKey, LuLogOut, LuSettings, LuSubscript, LuUser } from 'react-icons/lu';
+import { LuKey, LuLogOut, LuSettings, LuShieldCheck, LuSubscript, LuUser } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 import { useI18n } from '../../i18n/I18nProvider';
 import { useDetailsDropdown } from '../hooks/useDetailsDropdown';
@@ -32,12 +32,13 @@ export default function ProfileButton({ mobile = false, onNavigate }: ProfileBut
     subscription: t('dashboard.profileMenu.subscription'),
     security: t('dashboard.profileMenu.security'),
     api: t('dashboard.profileMenu.api'),
+    externalGrants: t('dashboard.profileMenu.externalGrants'),
     logout: t('dashboard.profileMenu.logout'),
     openMenu: t('dashboard.profileMenu.openMenu'),
   } as const;
 
   const handleProfileSectionNavigation = (
-    section: 'basic' | 'api' | 'subscription' | 'security',
+    section: 'basic' | 'api' | 'grants' | 'subscription' | 'security',
     event?: MouseEvent<HTMLElement>
   ) => {
     onNavigate?.();
@@ -105,6 +106,13 @@ export default function ProfileButton({ mobile = false, onNavigate }: ProfileBut
             </Link>
           </li>
           <li>
+            <Link href="/dashboard/profile#grants" onClick={(event) => handleProfileSectionNavigation('grants', event)}
+              className={getHeaderDropdownLinkClass(false)}>
+              <LuShieldCheck className="h-4 w-4" aria-hidden />
+              {copy.externalGrants}
+            </Link>
+          </li>
+          <li>
             <Link
               href="/dashboard/profile#security"
               onClick={(event) => handleProfileSectionNavigation('security', event)}
@@ -166,6 +174,13 @@ export default function ProfileButton({ mobile = false, onNavigate }: ProfileBut
           >
             <LuSubscript className="h-4 w-4" aria-hidden />
             {copy.subscription}
+          </Link>
+        </li>
+        <li>
+          <Link href="/dashboard/profile#grants" onClick={(event) => handleProfileSectionNavigation('grants', event)}
+            className={getHeaderDropdownLinkClass(false)}>
+            <LuShieldCheck className="h-4 w-4" aria-hidden />
+            {copy.externalGrants}
           </Link>
         </li>
         <li>

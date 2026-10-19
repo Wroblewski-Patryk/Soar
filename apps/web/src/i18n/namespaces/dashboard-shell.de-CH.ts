@@ -23,6 +23,7 @@ export const dashboardShellDeCh = {
     "createBacktest": "Backtest erstellen",
     "botsList": "Bots-Liste",
     "createBot": "Bot erstellen",
+    "externalGrants": "Freigaben für externe Clients",
     "menu": "Men?"
   },
   "common": {
@@ -51,6 +52,7 @@ export const dashboardShellDeCh = {
     "subscription": "Abonnement",
     "security": "Sicherheit",
     "api": "Integrationen und API-Schlüssel",
+    "externalGrants": "Freigaben für externe Clients",
     "logout": "Abmelden",
     "openMenu": "Kontomenü öffnen"
   },
@@ -62,6 +64,7 @@ export const dashboardShellDeCh = {
     "tabs": {
       "basic": "Benutzerprofil",
       "api": "Integrationen und API-Schlüssel",
+      "externalGrants": "Freigaben für externe Clients",
       "subscription": "Abonnement",
       "security": "Sicherheit"
     }

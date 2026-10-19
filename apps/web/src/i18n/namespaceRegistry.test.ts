@@ -88,6 +88,7 @@ describe("namespaceRegistry", () => {
     expect(resolveNamespacesForRoute("/dashboard/profile")).toEqual([
       "public",
       "dashboardShell",
+      "dashboardGrants",
       "auth",
     ]);
   });

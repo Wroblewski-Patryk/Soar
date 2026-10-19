@@ -1,7 +1,7 @@
 'use client';
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { LuKey, LuList, LuSettings, LuSubscript, LuUser, LuUserRound } from "react-icons/lu";
+import { LuKey, LuList, LuSettings, LuShieldCheck, LuSubscript, LuUser, LuUserRound } from "react-icons/lu";
 import { useI18n } from "../../../i18n/I18nProvider";
 
 import BasicForm from "../components/BasicForm";
@@ -9,10 +9,11 @@ import Subscription from "../components/Subscription";
 import Security from "../components/Security";
 import { PageTitle } from "@/ui/layout/dashboard/PageTitle";
 import ExchangeConnectionsView from "../../exchanges/components/ExchangeConnectionsView";
+import ExternalClientGrantsPanel from "../../external-client-grants/ExternalClientGrantsPanel";
 import Tabs from "@/ui/components/Tabs";
 import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "@/ui/components/tabContentFrame";
 
-type ProfileTabKey = "basic" | "api" | "subscription" | "security";
+type ProfileTabKey = "basic" | "api" | "grants" | "subscription" | "security";
 
 export default function ProfilePage() {
   const { t } = useI18n();
@@ -21,6 +22,7 @@ export default function ProfilePage() {
   const tabs: { label: string; key: ProfileTabKey; hash: string; icon: ReactNode }[] = [
     { label: profilePageText("tabs.basic"), key: "basic", hash: "basic", icon: <LuUser className="h-4 w-4" aria-hidden /> },
     { label: profilePageText("tabs.api"), key: "api", hash: "api", icon: <LuKey className="h-4 w-4" aria-hidden /> },
+    { label: profilePageText("tabs.externalGrants"), key: "grants", hash: "grants", icon: <LuShieldCheck className="h-4 w-4" aria-hidden /> },
     {
       label: profilePageText("tabs.subscription"),
       key: "subscription",
@@ -59,6 +61,7 @@ export default function ProfilePage() {
           <div className={`${TAB_CONTENT_INNER_CLASS} p-4`}>
             {activeTab === "basic" && <BasicForm />}
             {activeTab === "api" && <ExchangeConnectionsView />}
+            {activeTab === "grants" && <ExternalClientGrantsPanel />}
             {activeTab === "subscription" && <Subscription />}
             {activeTab === "security" && <Security />}
           </div>

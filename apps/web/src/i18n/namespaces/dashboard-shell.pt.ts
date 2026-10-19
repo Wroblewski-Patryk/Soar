@@ -23,6 +23,7 @@
     "createBacktest": "Criar backtest",
     "botsList": "Lista de bots",
     "createBot": "Criar bot",
+    "externalGrants": "Autorizações de clientes externos",
     "menu": "Menu"
   },
   "common": {
@@ -51,6 +52,7 @@
     "subscription": "Subscricao",
     "security": "Seguranca",
     "api": "Integracoes e chaves API",
+    "externalGrants": "Autorizações de clientes externos",
     "logout": "Terminar sessao",
     "openMenu": "Abrir menu da conta"
   },
@@ -62,6 +64,7 @@
     "tabs": {
       "basic": "Perfil de utilizador",
       "api": "Integracoes e chaves API",
+      "externalGrants": "Autorizações de clientes externos",
       "subscription": "Subscricao",
       "security": "Seguranca"
     }

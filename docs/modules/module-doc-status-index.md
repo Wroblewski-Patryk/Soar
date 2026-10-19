@@ -44,6 +44,7 @@ Status legend:
 |---|---|---|---|---|---|
 | web | admin | `apps/web/src/features/admin` | `docs/modules/web-admin.md` | Published | DCP-08 |
 | web | auth | `apps/web/src/features/auth` | `docs/modules/web-auth.md` | Published | DCP-08 |
+| web | external-client-grants | `apps/web/src/features/external-client-grants` | `docs/modules/web-external-client-grants.md` | Published | SOAR-EXT-GRANT-001C/WEB-GRANT |
 | web | profile | `apps/web/src/features/profile` | `docs/modules/web-profile.md` | Published | DCP-08 |
 | web | dashboard-home | `apps/web/src/features/dashboard-home` | `docs/modules/web-dashboard-home.md` | Published | DCP-08 |
 | web | bots | `apps/web/src/features/bots` | `docs/modules/web-bots.md` | Published | DCP-09 |

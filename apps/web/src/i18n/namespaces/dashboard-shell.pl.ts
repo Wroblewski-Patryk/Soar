@@ -23,6 +23,7 @@ export const dashboardShellPl = {
     "createBacktest": "Nowy backtest",
     "botsList": "Lista botow",
     "createBot": "Dodaj bota",
+    "externalGrants": "Granty klientów zewnętrznych",
     "menu": "Menu"
   },
   "common": {
@@ -51,6 +52,7 @@ export const dashboardShellPl = {
     "subscription": "Subskrypcja",
     "security": "Bezpieczenstwo",
     "api": "Integracje i API keys",
+    "externalGrants": "Granty klientów zewnętrznych",
     "logout": "Wyloguj",
     "openMenu": "Otworz menu konta"
   },
@@ -62,6 +64,7 @@ export const dashboardShellPl = {
     "tabs": {
       "basic": "Profil uzytkownika",
       "api": "Integracje i API keys",
+      "externalGrants": "Granty klientów zewnętrznych",
       "subscription": "Subskrypcja",
       "security": "Bezpieczenstwo"
     }

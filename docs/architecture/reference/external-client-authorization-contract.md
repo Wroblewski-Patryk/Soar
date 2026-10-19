@@ -49,6 +49,16 @@ tests for denied account/plan/role/key actions, active and revoked grants,
 ownership isolation, LIVE guardrails, audit evidence, and a real external-client
 journey. Ordinary API tests or an endpoint inventory do not close this gate.
 
+`SOAR-EXT-GRANT-001C/WEB-GRANT` adds a human-session Web panel under Profile.
+It creates grants with password confirmation, shows the opaque secret only in
+the create response until the owner closes that view, lists the exact scope and
+limits without the secret, and requires an explicit revoke confirmation. The
+panel reads current plan and active bot market-group context to display
+revoked, expired, exhausted, plan-unavailable, scope-unavailable, and
+unverified states. The API remains authoritative for every grant check. Local
+UI tests and an isolated signed-in browser readback do not establish an
+external-client execution path or production acceptance.
+
 The local API now distinguishes newly issued human browser sessions by a signed
 audience and claim. Legacy `cryptosparrow-app` tokens remain compatible with
 ordinary domain routes but cannot mutate account/profile secrets, API keys, or
