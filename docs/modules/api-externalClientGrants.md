@@ -34,8 +34,8 @@ bot/exchange/market/symbol/action scope, limits, usage, and expiry. It omits
 owner/account data, client label, secret/hash, and exchange keys. Responses use
 no-store headers. A fixed, IP-scoped 30/minute bucket covers all requested grant
 IDs and fails closed if Redis is unavailable in production. Request logging
-omits this route's client-supplied path and query text and redacts grant-secret-shaped
-values on other paths.
+uses only the declared route pattern and never records a client-supplied path or
+query. Requests denied before a route is reached and unknown routes log `[UNMATCHED]`.
 The route has no domain action, CCXT call, or MCP tool.
 
 Local 001L proof used a fresh `soar_ext_grant_001l_accept_d7c2_test` database
