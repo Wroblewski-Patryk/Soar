@@ -7,7 +7,8 @@ import { setLiveExecutionPause } from '../orders/liveExecutionPause.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant, revokeExternalClientGrant } from './externalClientGrants.service';
 import { claimBoundExternalClientGrantDispatch } from './externalClientGrantDispatchClaim.service';
-import { bindExternalClientGrantReservationIntent, withFreshBoundExternalClientGrantSubmitPermit,
+import { admitBoundExternalClientGrantSubmission, bindExternalClientGrantReservationIntent,
+  withFreshBoundExternalClientGrantSubmitPermit,
   type GrantLimitCommand } from './externalClientGrantReservation.service';
 
 const dedicatedDb = (() => {
@@ -85,6 +86,36 @@ afterEach(async () => {
 });
 
 describe('001T durable dispatch claim foundation', () => {
+  it.skipIf(!dedicatedDb)('rejects every partial hash claim but accepts old and complete markers', async () => {
+    await withUnpausedControl(async () => {
+      const f = await fixture();
+      const input = { reservationId: f.bound.reservation.id, secret: f.secret };
+      const admitted = await admitBoundExternalClientGrantSubmission(input, { getSymbolRules: rules });
+      const oldMarker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+        where: { id: admitted.markerId } });
+      expect(oldMarker).toMatchObject({ dispatchClaimedAt: null,
+        dispatchCommandHash: null, dispatchIntentHash: null });
+      const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: f.bound.intentId } });
+      const complete = { dispatchClaimedAt: new Date(), dispatchBotId: f.bot.id,
+        dispatchCommandHash: f.bound.reservation.commandHash,
+        dispatchIntentHash: intent.payloadHash, dispatchApiKeyId: f.key.id,
+        dispatchApiKeyUpdatedAt: f.key.updatedAt };
+      for (const missing of [
+        { dispatchCommandHash: null },
+        { dispatchIntentHash: null },
+        { dispatchCommandHash: null, dispatchIntentHash: null },
+      ]) {
+        await expect(prisma.liveCreateOrderSubmission.update({ where: { id: oldMarker.id },
+          data: { ...complete, ...missing } }))
+          .rejects.toThrow('LiveCreateOrderSubmission_dispatch_claim_complete_check');
+        expect(await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { id: oldMarker.id } }))
+          .toMatchObject({ dispatchClaimedAt: null, dispatchCommandHash: null, dispatchIntentHash: null });
+      }
+      expect(await prisma.liveCreateOrderSubmission.update({ where: { id: oldMarker.id },
+        data: complete })).toMatchObject(complete);
+    });
+  });
+
   it.skipIf(!dedicatedDb)('commits exactly one claim and blocks pause/revoke without enabling submit', async () => {
     await withUnpausedControl(async () => {
       const f = await fixture();

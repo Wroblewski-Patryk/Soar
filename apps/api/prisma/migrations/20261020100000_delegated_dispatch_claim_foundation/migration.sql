@@ -18,7 +18,9 @@ ALTER TABLE "LiveCreateOrderSubmission"
     ("grantId" IS NOT NULL AND "reservationId" IS NOT NULL AND "intentId" IS NOT NULL
       AND "exchangeId" IS NOT NULL AND "clientOrderId" IS NOT NULL AND "symbol" IS NOT NULL
       AND "dispatchClaimedAt" IS NOT NULL AND "dispatchBotId" IS NOT NULL
+      AND "dispatchCommandHash" IS NOT NULL
       AND "dispatchCommandHash" ~ '^[a-f0-9]{64}$'
+      AND "dispatchIntentHash" IS NOT NULL
       AND "dispatchIntentHash" ~ '^[a-f0-9]{64}$'
       AND "dispatchApiKeyId" IS NOT NULL AND "dispatchApiKeyUpdatedAt" IS NOT NULL)
   );
