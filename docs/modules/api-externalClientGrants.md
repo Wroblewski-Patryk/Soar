@@ -4,8 +4,9 @@
 
 `SOAR-EXT-GRANT-001A/B` adds grant lifecycle and a callable, durable allowance
 reservation service. `001L` adds one external-client, read-only self-status GET.
-There is no MCP capability, external-client domain execution, or LIVE order
-submission. The reservation is not connected to the domain `createOrder` path.
+The local stdio MCP package calls only that GET. There is no external-client
+domain execution or delegated LIVE order submission. The reservation is not
+connected to the domain `createOrder` path.
 
 ## Human-only routes
 
@@ -36,7 +37,8 @@ no-store headers. A fixed, IP-scoped 30/minute bucket covers all requested grant
 IDs and fails closed if Redis is unavailable in production. Request logging
 uses only the declared route pattern and never records a client-supplied path or
 query. Requests denied before a route is reached and unknown routes log `[UNMATCHED]`.
-The route has no domain action, CCXT call, or MCP tool.
+The route has no domain action or CCXT call. The local MCP package wraps this
+GET as its sole read-only tool; the HTTP route remains the authority.
 
 Local 001L proof used a fresh `soar_ext_grant_001l_accept_d7c2_test` database
 with 73 applied migrations. The two grant HTTP suites plus rate-limit and

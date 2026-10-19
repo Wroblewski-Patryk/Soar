@@ -59,6 +59,12 @@ Status legend:
 | web | icons | `apps/web/src/features/icons` | `docs/modules/web-icons.md` | Published | DCP-09 |
 | web | shared | `apps/web/src/features/shared` | `docs/modules/web-shared.md` | Published | V1CLOSEOUT-07 |
 
+## Local MCP Package (`apps/mcp`)
+
+| Layer | Module | Source Path | Target Deep-Dive File | Status | Planned Task |
+|---|---|---|---|---|---|
+| mcp | grant-status | `apps/mcp/src` | `docs/modules/mcp-grant-status.md` | Published | SOAR-MCP-001A/READ-ONLY-GRANT-STATUS |
+
 ## Governance Notes
 - Use `docs/modules/module-deep-dive-template.md` for every new deep-dive file listed above.
 - When module inventory changes, this index must be updated in the same task as the code change.

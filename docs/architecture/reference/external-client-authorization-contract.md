@@ -43,9 +43,9 @@ This remains a target contract. `SOAR-EXT-GRANT-001A` now provides a local
 human-cookie-only grant lifecycle, bounded scope, hashed one-time secret, and
 revocation checks. `SOAR-EXT-GRANT-001B/001D2` adds a local transactional allowance
 reservation, matching durable intent binding, and unresolved-operation state.
-No accepted MCP capability, external domain action, delegated order submission,
-deployed revocation, or LIVE client
-proof exists. Acceptance needs
+The local stdio MCP package now exposes only the 001L self-status GET as a
+read-only tool. No external domain action, delegated order submission,
+deployed revocation, or LIVE client proof exists. Acceptance needs
 tests for denied account/plan/role/key actions, active and revoked grants,
 ownership isolation, LIVE guardrails, audit evidence, and a real external-client
 journey. Ordinary API tests or an endpoint inventory do not close this gate.

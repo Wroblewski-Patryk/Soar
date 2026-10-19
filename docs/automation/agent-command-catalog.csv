@@ -1,2 +1,3 @@
 Command,Type,Purpose,Safety class,Requires approval,Required capability,Evidence,Owner,Notes
 npm test,shell,Run tests,safe_read,no,,Command output,Engineering,Example only.
+get_own_grant_status,mcp,Read configured Soar grant status,safe_read,no,active scoped external-client grant,001L HTTP response,Engineering,One local stdio tool; no arguments or domain action.
