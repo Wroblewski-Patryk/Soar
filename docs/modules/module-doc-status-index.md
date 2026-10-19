@@ -63,7 +63,7 @@ Status legend:
 
 | Layer | Module | Source Path | Target Deep-Dive File | Status | Planned Task |
 |---|---|---|---|---|---|
-| mcp | grant-status | `apps/mcp/src` | `docs/modules/mcp-grant-status.md` | Published | SOAR-MCP-001A/READ-ONLY-GRANT-STATUS |
+| mcp | grant-status | `apps/mcp/src` | `docs/modules/mcp-grant-status.md` | Published | SOAR-MCP-001A/READ-ONLY-GRANT-STATUS; SOAR-MCP-001C/READ-BOT-STATUS-TOOL |
 
 ## Governance Notes
 - Use `docs/modules/module-deep-dive-template.md` for every new deep-dive file listed above.

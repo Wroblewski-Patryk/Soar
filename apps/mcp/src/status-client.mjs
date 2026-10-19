@@ -6,6 +6,8 @@ const TRUSTED_API_ORIGINS = new Set([
 ]);
 const GRANT_ID = /^[A-Za-z0-9_-]{1,128}$/;
 const GRANT_SECRET = /^soar_ext_[A-Za-z0-9_-]{43}$/;
+const BOT_ID = /^[A-Za-z0-9_-]{1,128}$/;
+const BOT_READ_SECRET = /^soar_read_[A-Za-z0-9_-]{43}$/;
 const grantSchema = z.object({
   id: z.string(),
   status: z.enum(['ACTIVE', 'EXHAUSTED']),
@@ -28,6 +30,13 @@ const grantSchema = z.object({
   expiresAt: z.iso.datetime({ offset: true }),
 }).strict();
 const responseSchema = z.object({ grant: grantSchema }).strict();
+const botResponseSchema = z.object({
+  bot: z.object({
+    id: z.string(),
+    mode: z.enum(['PAPER', 'LIVE']),
+    isActive: z.boolean(),
+  }).strict(),
+}).strict();
 
 export const DEFAULT_API_ORIGIN = 'https://api.soar.luckysparrow.ch';
 
@@ -71,6 +80,37 @@ export function createGrantStatusReader({
     } catch {
       // Never forward a fetch exception, URL, response body, or credential.
       throw new Error('Grant status unavailable');
+    }
+  };
+}
+
+export function createBotStatusReader({
+  origin = DEFAULT_API_ORIGIN,
+  botId,
+  secret,
+  fetchImpl = fetch,
+  testOnlyAllowLoopback = false,
+}) {
+  return async () => {
+    if (!isTrustedOrigin(origin, testOnlyAllowLoopback) ||
+        !BOT_ID.test(botId ?? '') || !BOT_READ_SECRET.test(secret ?? '')) {
+      throw new Error('Bot status unavailable');
+    }
+    const url = `${origin}/external-client/bots/${encodeURIComponent(botId)}/status`;
+    try {
+      const response = await fetchImpl(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${secret}`, Accept: 'application/json' },
+        redirect: 'error',
+        cache: 'no-store',
+        signal: AbortSignal.timeout(5000),
+      });
+      if (response.status !== 200) throw new Error('Denied');
+      const parsed = botResponseSchema.safeParse(await response.json());
+      if (!parsed.success || parsed.data.bot.id !== botId) throw new Error('Denied');
+      return parsed.data.bot;
+    } catch {
+      throw new Error('Bot status unavailable');
     }
   };
 }

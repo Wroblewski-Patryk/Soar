@@ -70,8 +70,9 @@ mechanism uses the same 30/minute per-IP Redis bucket as grant self-status and e
 at most 60/minute per read-grant secret across IPs, without a lifetime read quota;
 the latter is a conservative value
 for owner confirmation before release. Redis failure denies in production.
-The route performs no domain, audit, subscription-catalog, or CCXT write and
-does not expose an MCP tool.
+The route performs no domain, audit, subscription-catalog, or CCXT write.
+The later local `SOAR-MCP-001C` client exposes its bounded read through
+`get_own_bot_status` with one process-configured bot and read-grant secret.
 
 Local `001P` proof used the fresh `soar_ext_grant_001p_6ed6cff2_test`
 database with all migrations. The bot-status HTTP suite, existing grant
