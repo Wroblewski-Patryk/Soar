@@ -1,26 +1,26 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 887,
-    "covered": 887,
+    "total": 890,
+    "covered": 890,
     "missing": 0
   },
   "categories": {
     "apiRoutes": {
-      "total": 26,
-      "covered": 26,
+      "total": 27,
+      "covered": 27,
       "missing": 0,
       "missingSamples": []
     },
     "apiServices": {
-      "total": 135,
-      "covered": 135,
+      "total": 136,
+      "covered": 136,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 238,
-      "covered": 238,
+      "total": 239,
+      "covered": 239,
       "missing": 0,
       "missingSamples": []
     },
