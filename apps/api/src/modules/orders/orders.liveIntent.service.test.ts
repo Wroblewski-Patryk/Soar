@@ -9,7 +9,7 @@ import {
 } from './orders.liveIntent.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
-import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, SUBSCRIPTION_PLAN_SEED } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
@@ -21,7 +21,97 @@ import { reconcileLiveOrderFee } from '../exchange/liveFeeReconciliation.service
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 
 const testCreateOrderPermit = async <T,>(_input: unknown, submit: () => Promise<T>) => submit();
-let originalFreeEntitlements: Prisma.InputJsonValue | undefined;
+
+type FreePlanStore = {
+  read: () => Promise<{ entitlements: unknown } | null>;
+  ensure: () => Promise<void>;
+  write: (entitlements: Prisma.InputJsonValue) => Promise<void>;
+};
+
+const createLiveEntitlementFixture = (store: FreePlanStore) => {
+  let originalFreeEntitlements: Prisma.InputJsonValue | undefined;
+
+  return {
+    allowLive: async () => {
+      if (originalFreeEntitlements === undefined) {
+        const existing = await store.read();
+        await store.ensure();
+        const baseline = existing ?? await store.read();
+        if (!baseline) throw new Error('FREE plan missing after catalog setup');
+        // A newly seeded FREE plan may be shared by later tests, so keep it and restore its defaults.
+        originalFreeEntitlements = structuredClone(baseline.entitlements) as Prisma.InputJsonValue;
+      }
+      const freePlan = await store.read();
+      if (!freePlan) throw new Error('FREE plan missing before LIVE test');
+      const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
+      await store.write({
+        ...entitlements,
+        features: { ...entitlements.features, liveTrading: true },
+      });
+    },
+    restore: async () => {
+      if (originalFreeEntitlements !== undefined) {
+        await store.write(originalFreeEntitlements);
+      }
+    },
+  };
+};
+
+const liveEntitlementFixture = createLiveEntitlementFixture({
+  read: () => prisma.subscriptionPlan.findUnique({
+    where: { code: 'FREE' }, select: { entitlements: true },
+  }),
+  ensure: () => ensureSubscriptionCatalog(prisma),
+  write: async (entitlements) => {
+    await prisma.subscriptionPlan.update({
+      where: { code: 'FREE' }, data: { entitlements },
+    });
+  },
+});
+
+describe('LIVE entitlement fixture isolation', () => {
+  const defaults = SubscriptionEntitlementsSchema.parse(
+    SUBSCRIPTION_PLAN_SEED.find((plan) => plan.code === 'FREE')?.entitlements,
+  );
+
+  it('restores exact pre-seed custom entitlements even after a failed test', async () => {
+    const custom = {
+      ...defaults,
+      limits: { ...defaults.limits, maxBotsTotal: 7 },
+      fixtureMarker: { preserve: 'original JSON' },
+    };
+    let row: { entitlements: unknown } | null = { entitlements: custom };
+    const fixture = createLiveEntitlementFixture({
+      read: async () => row,
+      ensure: async () => { row = { entitlements: defaults }; },
+      write: async (entitlements) => { row = { entitlements: structuredClone(entitlements) }; },
+    });
+
+    await expect((async () => {
+      try {
+        await fixture.allowLive();
+        expect(SubscriptionEntitlementsSchema.parse(row?.entitlements).features.liveTrading).toBe(true);
+        throw new Error('simulated test failure');
+      } finally {
+        await fixture.restore();
+      }
+    })()).rejects.toThrow('simulated test failure');
+    expect(row?.entitlements).toEqual(custom);
+  });
+
+  it('keeps a newly seeded FREE plan and restores its default entitlements', async () => {
+    let row: { entitlements: unknown } | null = null;
+    const fixture = createLiveEntitlementFixture({
+      read: async () => row,
+      ensure: async () => { row = { entitlements: defaults }; },
+      write: async (entitlements) => { row = { entitlements: structuredClone(entitlements) }; },
+    });
+
+    await fixture.allowLive();
+    await fixture.restore();
+    expect(row).toEqual({ entitlements: defaults });
+  });
+});
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -124,41 +214,17 @@ const createLiveScopedBotContext = async (params: {
   return { bot, strategy, wallet, universe, symbolGroup };
 };
 
-const allowLive = async () => {
-  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
-  const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
-    where: { code: 'FREE' },
-    select: { entitlements: true },
-  });
-  originalFreeEntitlements ??= freePlan.entitlements as Prisma.InputJsonValue;
-  const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
-  await prisma.subscriptionPlan.update({
-    where: { code: 'FREE' },
-    data: {
-      entitlements: {
-        ...entitlements,
-        features: { ...entitlements.features, liveTrading: true },
-      },
-    },
-  });
-};
-
 describe('durable LIVE order intent', () => {
   afterAll(async () => {
     try {
       await cleanupDb();
     } finally {
-      if (originalFreeEntitlements !== undefined) {
-        await prisma.subscriptionPlan.update({
-          where: { code: 'FREE' },
-          data: { entitlements: originalFreeEntitlements },
-        });
-      }
+      await liveEntitlementFixture.restore();
     }
   });
   beforeEach(async () => {
     await cleanupDb();
-    await allowLive();
+    await liveEntitlementFixture.allowLive();
   });
 
   it('persists the final intent before any submit and makes an existing ID lookup-only', async () => {
