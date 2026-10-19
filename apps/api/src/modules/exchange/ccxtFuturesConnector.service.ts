@@ -350,6 +350,9 @@ export class CcxtFuturesConnector {
       marketType: this.config.marketType === 'spot' || this.config.marketType === 'SPOT'
         ? 'spot' : this.config.marketType === 'swap' ? 'swap' : 'future',
       reduceOnly: request.reduceOnly === true,
+      exchangeId: this.config.exchangeId,
+      clientOrderId: request.clientOrderId,
+      symbol: request.symbol,
     }, () => client.createOrder(
       exchangeSymbol, request.type, request.side, request.amount, request.price, params
     ));

@@ -1407,6 +1407,20 @@ model LiveExecutionControl {
   changedAt       DateTime @default(now())
 }
 
+// Committed before CCXT createOrder starts. A surviving row makes pause fail
+// closed when a process dies or its submit cannot be proven complete.
+model LiveCreateOrderSubmission {
+  id            String   @id @default(uuid())
+  exchangeId    String?
+  clientOrderId String?
+  symbol        String?
+  marketType    String
+  reduceOnly    Boolean
+  startedAt     DateTime @default(now())
+
+  @@index([startedAt])
+}
+
 enum LogLevel {
   DEBUG
   INFO

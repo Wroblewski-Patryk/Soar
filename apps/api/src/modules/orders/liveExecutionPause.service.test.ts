@@ -46,7 +46,7 @@ describe('shared LIVE submission pause', () => {
     await Promise.all([workerA.$disconnect(), workerB.$disconnect()]);
   });
 
-  it('applies to two workers, survives a fresh reader, and orders pause after in-flight submission', async () => {
+  it('applies to two workers, survives a fresh reader, and refuses pause during in-flight submission', async () => {
     let state = await readLiveExecutionPause(workerA);
     if (state.paused) {
       state = await setLiveExecutionPause({ actorUserId: actorId, paused: false,
@@ -70,24 +70,13 @@ describe('shared LIVE submission pause', () => {
     }, workerA);
     await insideSubmit;
 
-    let pauseSettled = false;
-    const pausing = setLiveExecutionPause({ actorUserId: actorId, paused: true,
-      reason: 'integration test pause race', expectedVersion: state.version! }, workerB)
-      .finally(() => { pauseSettled = true; });
-    let waiting = 0;
-    for (let attempt = 0; attempt < 100; attempt += 1) {
-      const locks = await workerA.$queryRaw<Array<{ waiting: number }>>`
-        SELECT COUNT(*)::integer AS waiting FROM pg_locks
-        WHERE locktype = 'advisory' AND granted = false AND objid = 1701300739`;
-      waiting = locks[0]?.waiting ?? 0;
-      if (waiting > 0) break;
-      await new Promise((resolve) => setTimeout(resolve, 20));
-    }
-    expect(waiting).toBeGreaterThan(0);
-    expect(pauseSettled).toBe(false);
+    await expect(setLiveExecutionPause({ actorUserId: actorId, paused: true,
+      reason: 'integration test pause race', expectedVersion: state.version! }, workerB))
+      .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
     release();
     expect(await inFlight).toBe('in-flight-before-pause');
-    const paused = await pausing;
+    const paused = await setLiveExecutionPause({ actorUserId: actorId, paused: true,
+      reason: 'integration test pause race', expectedVersion: state.version! }, workerB);
     expect(paused.paused).toBe(true);
     expect(paused.version).toBe(state.version! + 1);
     await expect(setLiveExecutionPause({ actorUserId: actorId, paused: false,
@@ -113,6 +102,102 @@ describe('shared LIVE submission pause', () => {
       select: { metadata: true } })).toMatchObject({
       metadata: { reason: 'integration test pause race', nextVersion: paused.version },
     });
+  });
+
+  it.each([['binance', false], ['gateio', true]] as const)(
+    'keeps %s connector createOrder protected after admission transaction timeout, across processes',
+    async (exchangeId, rejectAfterRelease) => {
+      let state = await readLiveExecutionPause(workerA);
+      if (state.paused) {
+        state = await setLiveExecutionPause({ actorUserId: actorId, paused: false,
+          reason: 'cross-process slow submit setup', expectedVersion: state.version! }, workerA);
+      }
+      const script = `
+        const { CcxtFuturesConnector } = require('./src/modules/exchange/ccxtFuturesConnector.service.ts');
+        const { prisma } = require('./src/prisma/client.ts');
+        void (async () => {
+          const client = {
+            loadMarkets: async () => ({}),
+            createOrder: async (symbol, type, side, amount, price, params) => {
+              process.stdout.write('STARTED\\n');
+              await new Promise((resolve) => {
+                process.once('message', (value) => {
+                  if (value === 'RELEASE') { process.disconnect?.(); resolve(); }
+                });
+              });
+              if (${rejectAfterRelease}) throw new Error('mock venue timeout');
+              return { id: 'mock-order', symbol, type, side, amount, price, status: 'open' };
+            },
+          };
+          const connector = new CcxtFuturesConnector(
+            { exchangeId: ${JSON.stringify(exchangeId)}, marketType: 'swap' },
+            async () => client,
+          );
+          try {
+            try {
+              const order = await connector.placeOrder({ symbol: 'BTCUSDT', side: 'buy',
+                type: 'market', amount: 0.1, clientOrderId: 'pause-test-${exchangeId}' });
+              process.stdout.write('DONE:' + order.id + '\\n');
+            } catch (error) { process.stdout.write('ERROR:' + error.message + '\\n'); }
+          } finally { await prisma.$disconnect(); }
+        })().catch((error) => { process.stderr.write(String(error)); process.exitCode = 1; });
+      `;
+      const child = spawn(process.execPath, ['--import', 'tsx', '-e', script], {
+        cwd: process.cwd(), env: process.env, windowsHide: true,
+        stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
+      });
+      let output = '';
+      let errors = '';
+      child.stdout!.on('data', (chunk) => { output += chunk.toString(); });
+      child.stderr!.on('data', (chunk) => { errors += chunk.toString(); });
+      try {
+        for (let attempt = 0; attempt < 100 && !output.includes('STARTED'); attempt += 1) {
+          if (child.exitCode !== null) throw new Error(errors || 'Connector child exited');
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        }
+        expect(output, errors).toContain('STARTED');
+        expect(await workerA.liveCreateOrderSubmission.findFirst({ where: {
+          exchangeId, clientOrderId: `pause-test-${exchangeId}`,
+        } })).toMatchObject({ marketType: 'swap', reduceOnly: false, symbol: 'BTCUSDT' });
+        await new Promise((resolve) => setTimeout(resolve, 2_200));
+        await expect(setLiveExecutionPause({ actorUserId: actorId, paused: true,
+          reason: 'slow connector submit must not confirm pause', expectedVersion: state.version! }, workerB))
+          .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+        expect((await readLiveExecutionPause(workerB)).paused).toBe(false);
+        child.send('RELEASE');
+        const code = await new Promise<number | null>((resolve) => child.on('close', resolve));
+        expect(code, errors).toBe(0);
+        expect(output).toContain(rejectAfterRelease ? 'ERROR:mock venue timeout' : 'DONE:mock-order');
+        const paused = await setLiveExecutionPause({ actorUserId: actorId, paused: true,
+          reason: 'completed connector submit permits pause', expectedVersion: state.version! }, workerB);
+        expect(paused.paused).toBe(true);
+      } finally {
+        if (child.exitCode === null) child.kill();
+      }
+    }, 15_000,
+  );
+
+  it('fails closed on a surviving submission row until explicit reconciliation clears it', async () => {
+    let state = await readLiveExecutionPause(workerA);
+    if (state.paused) {
+      state = await setLiveExecutionPause({ actorUserId: actorId, paused: false,
+        reason: 'surviving marker test setup', expectedVersion: state.version! }, workerA);
+    }
+    const marker = await workerA.liveCreateOrderSubmission.create({ data: {
+      exchangeId: 'binanceusdm', clientOrderId: 'orphan-test-id',
+      symbol: 'BTCUSDT', marketType: 'future', reduceOnly: false,
+    } });
+    try {
+      await expect(setLiveExecutionPause({ actorUserId: actorId, paused: true,
+        reason: 'surviving marker must deny pause', expectedVersion: state.version! }, workerB))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      expect((await readLiveExecutionPause(workerA)).version).toBe(state.version);
+    } finally {
+      await workerA.liveCreateOrderSubmission.delete({ where: { id: marker.id } });
+    }
+    expect((await setLiveExecutionPause({ actorUserId: actorId, paused: true,
+      reason: 'surviving marker reconciled in test', expectedVersion: state.version! }, workerB)).paused)
+      .toBe(true);
   });
 
   it('fails closed before submission when the control row or database is unavailable', async () => {

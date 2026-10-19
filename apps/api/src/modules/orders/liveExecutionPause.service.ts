@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { randomUUID } from 'node:crypto';
 import { prisma } from '../../prisma/client';
 import { DomainError, isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
@@ -67,6 +68,10 @@ export const setLiveExecutionPause = async (input: {
       if (current.paused === input.paused) {
         throw new DomainError('LIVE_PAUSE_UNCHANGED', 'LIVE pause state is already set', { status: 409 });
       }
+      if (input.paused && await tx.liveCreateOrderSubmission.findFirst({ select: { id: true } })) {
+        throw new DomainError('LIVE_PAUSE_SUBMISSION_IN_FLIGHT',
+          'A LIVE createOrder is still in flight or requires reconciliation', { status: 503 });
+      }
       const next = await tx.liveExecutionControl.update({
         where: { id: CONTROL_ID },
         data: {
@@ -100,7 +105,7 @@ export const setLiveExecutionPause = async (input: {
   }
 };
 
-/** Acquire the shared pause key in a caller-owned transaction held through submit. */
+/** Admit and record a submit under the shared pause key before calling the venue. */
 export const assertLiveCreateOrderPermittedInTransaction = async (
   input: { marketType: 'spot' | 'swap' | 'future'; reduceOnly: boolean },
   tx: Prisma.TransactionClient,
@@ -113,21 +118,33 @@ export const assertLiveCreateOrderPermittedInTransaction = async (
   }
 };
 
-/** Hold a shared DB lock through createOrder. Pause/resume takes the exclusive lock. */
+// This transaction commits before createOrder and cannot expire during a slow
+// venue call. The durable row remains until that call's promise settles.
+export const LIVE_CREATE_ORDER_ADMISSION_TIMEOUT_MS = 2_000;
+
 export const withLiveCreateOrderPermit = async <T>(
-  input: { marketType: 'spot' | 'swap' | 'future'; reduceOnly: boolean },
+  input: { marketType: 'spot' | 'swap' | 'future'; reduceOnly: boolean;
+    exchangeId?: string; clientOrderId?: string; symbol?: string },
   submit: () => Promise<T>,
   db: PrismaClient = prisma,
 ): Promise<T> => {
-  let submitStarted = false;
+  const submissionId = randomUUID();
   try {
-    return await db.$transaction(async (tx: Prisma.TransactionClient) => {
+    await db.$transaction(async (tx: Prisma.TransactionClient) => {
       await assertLiveCreateOrderPermittedInTransaction(input, tx);
-      submitStarted = true;
-      return submit();
-    }, { maxWait: 10_000, timeout: 120_000 });
+      await tx.liveCreateOrderSubmission.create({ data: {
+        id: submissionId, exchangeId: input.exchangeId, clientOrderId: input.clientOrderId,
+        symbol: input.symbol, marketType: input.marketType, reduceOnly: input.reduceOnly,
+      } });
+    }, { maxWait: 10_000, timeout: LIVE_CREATE_ORDER_ADMISSION_TIMEOUT_MS });
   } catch (error) {
-    if (submitStarted || isAppErrorLike(error)) throw error;
+    if (isAppErrorLike(error)) throw error;
     throw orderErrors.livePretradePauseUnavailable();
+  }
+  try {
+    return await submit();
+  } finally {
+    // A failed delete leaves a durable blocker; never expire it by time alone.
+    await db.liveCreateOrderSubmission.delete({ where: { id: submissionId } });
   }
 };

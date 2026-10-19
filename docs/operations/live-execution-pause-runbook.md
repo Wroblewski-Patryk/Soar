@@ -9,11 +9,14 @@
   `/admin/live-execution` or the admin panel. Every change requires a reason
   and the last read version. State change and `Log` audit row commit together;
   the panel reads back the committed version.
-- Each connector checks the control under a shared transaction advisory lock
-  immediately before CCXT `createOrder`. Pause/resume uses the exclusive lock.
-  Pause therefore completes after already-started submissions leave the gate;
-  all later submissions see the new state. The venue may report an in-flight
-  order after pause commits; its durable intent and fills must still reconcile.
+- Each connector checks the control and commits a `LiveCreateOrderSubmission`
+  row under a shared advisory lock before CCXT `createOrder`. Pause/resume uses
+  the exclusive lock. Pause returns `LIVE_PAUSE_SUBMISSION_IN_FLIGHT` while any
+  row remains and does not claim success. The row is deleted only after the
+  `createOrder` promise settles. A failed cleanup or process crash leaves the
+  row in place and blocks a successful pause. Stop LIVE writers at the platform
+  level, reconcile the named client order against the venue and intent, and
+  confirm no local submit remains in flight before any controlled row cleanup.
 - A pre-submission pause denial marks runtime OPEN/DCA/CLOSE dedupe as retryable.
   The same key can execute after resume, while an unknown venue outcome remains
   blocked for reconciliation and is never treated as a safe pause denial.
@@ -23,9 +26,11 @@
   fills, intents, cancellation, and reconciliation continue. PAPER/BACKTEST are
   unaffected. A database outage blocks even reduce-only submissions until
   shared state can be verified.
-- The CCXT request timeout is 30 seconds; the permit transaction timeout is
-  120 seconds. A timeout after a request begins is an unknown exchange outcome
-  and must follow the existing intent lookup path, never a blind resubmit.
+- The CCXT request timeout is 30 seconds; the short admission transaction
+  timeout is 2 seconds and ends before `createOrder` begins. A timeout after a
+  request begins is an unknown exchange outcome and must follow the existing
+  intent lookup path, never a blind resubmit. Never delete a surviving
+  submission row based only on its age; obtain completion or cancellation proof.
 - This checkout has no MCP LIVE-order implementation. A later API/MCP transport
   must use the same guarded connector and cannot introduce a second venue path.
 
@@ -54,7 +59,7 @@
 ## Acceptance evidence
 
 - Two independent Prisma clients submit while active; an in-flight submission
-  holds pause until it finishes. A separate OS process reads the persisted pause,
+  causes pause to fail closed until it finishes. A separate OS process reads the persisted pause,
   sees entry denied and Futures reduce-only permitted; Spot is denied. A fresh
   client sees the same version.
 - Missing row and DB outage deny before submission. Anonymous and regular

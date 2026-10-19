@@ -89,7 +89,10 @@ describe('CcxtFuturesConnector scaffold', () => {
     );
     await expect(connector.placeOrder({ symbol: 'BTCUSDT', side: 'sell', type: 'market',
       amount: 0.1, reduceOnly: true })).rejects.toThrow('blocked by shared pause');
-    expect(permit).toHaveBeenCalledWith({ marketType: 'swap', reduceOnly: true }, expect.any(Function));
+    expect(permit).toHaveBeenCalledWith({
+      marketType: 'swap', reduceOnly: true, exchangeId: 'gateio',
+      clientOrderId: undefined, symbol: 'BTCUSDT',
+    }, expect.any(Function));
     expect(client.createOrder).not.toHaveBeenCalled();
   });
 
