@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import {
   admitBoundExternalClientGrantSubmission, beginExternalClientGrantSubmission,
   bindExternalClientGrantReservationIntent,
+  executeBoundExternalClientGrantMock,
   reserveExternalClientGrantOrder,
 } from './externalClientGrantReservation.service';
 
@@ -21,6 +22,15 @@ process.stdin.on('data', (chunk: string) => {
     try {
       const request = JSON.parse(input.slice(0, input.indexOf('\n')));
       process.stdout.write('STARTED\n');
+      if (request.operation === 'mock-crash-after-submit-enter') {
+        await executeBoundExternalClientGrantMock(request, { getSymbolRules: rules,
+          submit: async () => {
+            process.stdout.write('MOCK_ENTERED\n', () => process.exit(76));
+            return await new Promise<never>(() => {});
+          },
+        });
+        return;
+      }
       if (request.operation === 'admit' || request.operation === 'crash-after-admission') {
         const admitted = await admitBoundExternalClientGrantSubmission(request, { db, getSymbolRules: rules });
         if (request.operation === 'crash-after-admission') {

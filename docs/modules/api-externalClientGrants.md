@@ -123,8 +123,8 @@ even after the first reservation reaches `SUBMITTED`. A unique database index
 allows at most one marker per grant. If pause or revoke commits first,
 admission fails before creating a marker. Existing human markers retain null
 delegated links.
-No callback or adapter consumes the admission result, so this stage cannot
-start a delegated order. Market metadata and plan/group checks are current
+At the 001E stage no callback or adapter consumed the admission result.
+Market metadata and plan/group checks are current
 point-in-time gates, not locks held through a future venue call. The marker
 requires explicit authoritative reconciliation before it may be cleared;
 there is no automatic timeout cleanup.
@@ -141,18 +141,26 @@ market fetch, allowance charge, or submit. The result explicitly has
 `dispatchEnabled: false` and contains no grant secret. The previous
 `DELEGATED_SUBMIT_PERMIT_DISABLED` callback remains closed.
 
-The next small ticket must add a test-database-only mock executor using this
-preparation, retain the marker while the mock call is active, materialize a
-certain result through the existing Order/fill path, reconcile the reservation,
-and clear the marker only after authoritative completion. An `UNKNOWN` result
-or crash must leave the marker and use lookup-only recovery. This preparation
-does not call an adapter, create an Order, or reconcile a reservation; domain
-risk checks are point-in-time and must be repeated or protected at execution.
+`SOAR-EXT-GRANT-001G/MOCK-EXECUTION` adds an internal executor restricted at
+runtime to `NODE_ENV=test` and a database whose name ends exactly `_test`.
+It calls only an injected mock callback after 001F preparation and committed
+admission. The callback receives the canonical LIMIT command without the grant
+secret. The durable marker stays throughout the callback and local persistence.
+For a certain, complete mock fill with a `mock-` exchange identity, it uses the
+same Order/fill/position materialization as human `openOrder`, reconciles the
+reservation from that Order, and clears the matching marker only after both
+steps succeed. Allowance is charged once at reservation. A callback exception,
+lost response, invalid fill, or process crash leaves `SUBMISSION_UNCERTAIN`
+and the marker; a retry returns lookup identity without another mock submit.
+Tests cover Binance and Gate.io mocked fills, callback-time pause/revoke,
+UNKNOWN, and a worker-process crash. Recovery of an orphaned marker after
+authoritative external lookup remains a separate task. Domain risk checks
+are point-in-time and require a stronger execution permit for real LIVE.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing
 domain risk, fill, Order, and lookup-only recovery path. A Promise race or abort
 signal without confirmed adapter termination does not satisfy that requirement.
-There is still no delegated adapter call, Order materialization, automatic
-reconciliation, external HTTP/MCP route, real venue submit, or deployed proof.
+There is still no delegated real adapter call, external HTTP/MCP route, real
+venue submit, or deployed proof. The mock executor is not LIVE readiness.

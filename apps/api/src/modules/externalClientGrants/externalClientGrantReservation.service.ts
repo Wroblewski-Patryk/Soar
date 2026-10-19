@@ -7,8 +7,8 @@ import { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service'
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import { fingerprintLiveOrderIntentPayload, persistOrReuseLiveOrderIntent, resolveLiveClientOrderId,
-  type LiveOrderPayload } from '../orders/orders.liveIntent.service';
-import { prepareOpenOrderRiskContext } from '../orders/orders.service';
+  type LiveExecutionResult, type LiveOrderPayload } from '../orders/orders.liveIntent.service';
+import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '../orders/orders.service';
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 
@@ -481,6 +481,84 @@ export const prepareBoundExternalClientGrantAdapterSeam = async (
     { ...deps, expectedIntentPayloadHash: intent.payloadHash });
   return { ...admitted, clientOrderId: command.clientOrderId,
     domainRiskChecked: true, dispatchEnabled: false } as const;
+};
+
+// Test-database-only proof of the delegated lifecycle. Admission commits the
+// blocker before submit; all uncertain outcomes keep it for lookup/recovery.
+// No HTTP/MCP route or real exchange boundary calls this function.
+export const executeBoundExternalClientGrantMock = async (
+  input: { reservationId: string; secret: string },
+  deps: { submit: (command: Pick<GrantLimitCommand, 'exchange' | 'marketType' | 'symbol' |
+    'side' | 'type' | 'quantity' | 'limitPrice' | 'reduceOnly' | 'clientOrderId'>) => Promise<LiveExecutionResult>;
+    getSymbolRules?: SymbolRulesReader },
+) => {
+  let databaseName = '';
+  try { databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname); } catch { /* fail closed */ }
+  if (process.env.NODE_ENV !== 'test' || !databaseName.endsWith('_test')) {
+    return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
+  }
+  const admitted = await prepareBoundExternalClientGrantAdapterSeam(input,
+    { getSymbolRules: deps.getSymbolRules });
+  if (admitted.reused) return { ...admitted, orderId: null } as const;
+
+  const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+    where: { id: admitted.reservationId },
+  });
+  const command = canonicalize(reservation.command);
+  const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: admitted.intentId } });
+  if (reservation.state !== 'SUBMISSION_UNCERTAIN' ||
+      reservation.clientOrderId !== command.clientOrderId ||
+      intent.clientOrderId !== command.clientOrderId ||
+      !intentMatchesCommandAndScope(intent, command)) return deny('RESERVATION_INTENT_UNAVAILABLE');
+  const payload = intent.payload as LiveOrderPayload;
+  const prepared = await prepareOpenOrderRiskContext(command.userId, payload);
+  if (!prepared.liveBot ||
+      fingerprintLiveOrderIntentPayload(command.userId, prepared.liveBot, prepared.canonicalPayload) !==
+        intent.payloadHash) return deny('DELEGATED_DOMAIN_COMMAND_MISMATCH');
+
+  let result: LiveExecutionResult;
+  try {
+    result = await deps.submit({ exchange: command.exchange, marketType: command.marketType,
+      symbol: command.symbol, side: command.side, type: command.type,
+      quantity: command.quantity, limitPrice: command.limitPrice, reduceOnly: command.reduceOnly,
+      clientOrderId: command.clientOrderId });
+  } catch {
+    return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  }
+  const fills = result.fills ?? [];
+  const fillQuantity = fills.reduce((total, fill) => total.add(fill.quantity), new Prisma.Decimal(0));
+  if (result.status !== 'FILLED' || !result.exchangeOrderId?.startsWith('mock-') ||
+      !Number.isFinite(result.exchangeFilledQuantity) ||
+      !new Prisma.Decimal(result.exchangeFilledQuantity!).eq(command.quantity) ||
+      !Number.isFinite(result.exchangeAverageFillPrice) ||
+      result.exchangeAverageFillPrice! <= 0 || fills.length === 0 ||
+      !fillQuantity.eq(command.quantity) || fills.some((fill) =>
+        fill.symbol !== command.symbol || fill.side !== command.side ||
+        (fill.exchangeOrderId != null && fill.exchangeOrderId !== result.exchangeOrderId) ||
+        !Number.isFinite(fill.quantity) || fill.quantity <= 0 ||
+        !Number.isFinite(fill.price) || fill.price <= 0 ||
+        !Number.isFinite(fill.notional) || fill.notional <= 0)) {
+    return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  }
+  const order = await materializeAdmittedMockLiveOrder({ userId: command.userId,
+    bot: prepared.liveBot, payload: prepared.canonicalPayload,
+    intentId: intent.id, liveResult: result });
+  if (order.id !== intent.id || order.status !== 'FILLED' || !order.positionId ||
+      !new Prisma.Decimal(order.filledQuantity.toString()).eq(command.quantity)) {
+    return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  }
+  const reconciled = await reconcileSubmittedExternalClientGrantReservation(reservation.id);
+  if (reconciled.state !== 'SUBMITTED' || reconciled.proofRef !== order.id) {
+    return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  }
+  const cleared = await prisma.liveCreateOrderSubmission.deleteMany({ where: {
+    id: admitted.markerId, grantId: reservation.grantId,
+    reservationId: reservation.id, intentId: intent.id,
+  } });
+  if (cleared.count !== 1) return deny('DELEGATED_MOCK_MARKER_CLEAR_UNCONFIRMED');
+  return { reservationId: reservation.id, intentId: intent.id,
+    clientOrderId: command.clientOrderId, orderId: order.id,
+    submitted: true, dispatchEnabled: false } as const;
 };
 
 // Fail closed: an interactive Prisma transaction can time out and release its

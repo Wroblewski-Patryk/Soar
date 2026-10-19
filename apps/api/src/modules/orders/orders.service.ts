@@ -48,7 +48,9 @@ import {
   buildLegacyImportedExternalPositionSymbolPrefix,
 } from '../positions/livePositionReconciliation.helpers';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
+import { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
+export { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
 
 type OpenOrderInput = LiveOrderPayload;
 
@@ -236,75 +238,6 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
       strategyId: manualStrategyContext?.strategyId ?? undefined,
     } as OpenOrderInput,
     botContext,
-  };
-};
-
-export const resolvePersistedLiveOrderFill = (input: {
-  requestedQuantity: number;
-  liveStatus: 'OPEN' | 'FILLED';
-  exchangeFilledQuantity: number | null;
-}) => {
-  const requestedQuantity = Math.max(0, Number(input.requestedQuantity));
-  const exchangeFilledQuantity =
-    typeof input.exchangeFilledQuantity === 'number' && Number.isFinite(input.exchangeFilledQuantity)
-      ? Math.max(0, input.exchangeFilledQuantity)
-      : null;
-  if (input.liveStatus !== 'FILLED') {
-    return {
-      status: 'OPEN' as OrderStatus,
-      filledQuantity: exchangeFilledQuantity ?? 0,
-      complete: false,
-    };
-  }
-  if (exchangeFilledQuantity == null) {
-    return {
-      status: 'OPEN' as OrderStatus,
-      filledQuantity: 0,
-      complete: false,
-    };
-  }
-
-  const cappedFilledQuantity = Math.min(requestedQuantity, exchangeFilledQuantity);
-  const tolerance = Math.max(1e-9, requestedQuantity * 1e-8);
-  const complete = cappedFilledQuantity + tolerance >= requestedQuantity;
-  return {
-    status: complete ? ('FILLED' as OrderStatus) : ('PARTIALLY_FILLED' as OrderStatus),
-    filledQuantity: cappedFilledQuantity,
-    complete,
-  };
-};
-
-export const resolveOpenOrderPersistenceDecision = (input: {
-  mode: OpenOrderInput['mode'];
-  requestedQuantity: number;
-  status: 'OPEN' | 'FILLED';
-  fillPriceResolved: boolean;
-  liveFillResolution?: ReturnType<typeof resolvePersistedLiveOrderFill> | null;
-}) => {
-  const shouldApplyImmediateFillLifecycle =
-    input.mode === 'PAPER'
-      ? input.status === 'FILLED' && input.fillPriceResolved
-      : input.liveFillResolution?.complete === true && input.fillPriceResolved;
-  const persistedStatus: OrderStatus =
-    input.mode === 'LIVE'
-      ? (input.liveFillResolution?.status ?? 'OPEN')
-      : shouldApplyImmediateFillLifecycle
-        ? 'FILLED'
-        : 'OPEN';
-
-  return {
-    persistedStatus,
-    persistedFilledQuantity:
-      input.mode === 'LIVE'
-        ? (input.liveFillResolution?.filledQuantity ?? 0)
-        : persistedStatus === 'FILLED'
-          ? input.requestedQuantity
-          : 0,
-    shouldApplyImmediateFillLifecycle,
-    lifecycleFillQuantity:
-      input.mode === 'LIVE'
-        ? (input.liveFillResolution?.filledQuantity ?? input.requestedQuantity)
-        : input.requestedQuantity,
   };
 };
 
@@ -645,12 +578,16 @@ export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenO
   return { canonicalPayload, liveBot };
 };
 
-export const openOrder = async (
+type AdmittedMockLiveResult = { intentId: string; liveResult: LiveExecutionResult };
+
+const persistPreparedOpenOrder = async (
   userId: string,
-  payload: OpenOrderInput,
-  deps: OpenOrderDeps = defaultOpenOrderDeps
+  initialPayload: OpenOrderInput,
+  liveBot: LiveBotContext | null,
+  deps: OpenOrderDeps,
+  admittedMock?: AdmittedMockLiveResult,
 ) => {
-  let { canonicalPayload, liveBot } = await prepareOpenOrderRiskContext(userId, payload);
+  let canonicalPayload = initialPayload;
 
   const now = new Date();
   let exchangeOrderId: string | null = null;
@@ -666,21 +603,27 @@ export const openOrder = async (
   let exchangeAverageFillPrice: number | null = null;
   let liveIntentId: string | null = null;
 
-  if (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
+  if (admittedMock || (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test')) {
     if (!liveBot) {
       throw orderErrors.liveBotNotFound();
     }
-    const durable = await executeDurableLiveOrder({
-      userId,
-      bot: liveBot,
-      payload: canonicalPayload,
-      execute: deps.executeLiveOrder,
-      lookup: deps.lookupLiveOrder ?? lookupLiveOrderOnExchange,
-    });
-    if (durable.existingOrder) return durable.existingOrder;
-    canonicalPayload = durable.payload;
-    liveIntentId = durable.intentId;
-    const liveResult = durable.liveResult;
+    let liveResult: LiveExecutionResult;
+    if (admittedMock) {
+      liveIntentId = admittedMock.intentId;
+      liveResult = admittedMock.liveResult;
+    } else {
+      const durable = await executeDurableLiveOrder({
+        userId,
+        bot: liveBot,
+        payload: canonicalPayload,
+        execute: deps.executeLiveOrder,
+        lookup: deps.lookupLiveOrder ?? lookupLiveOrderOnExchange,
+      });
+      if (durable.existingOrder) return durable.existingOrder;
+      canonicalPayload = durable.payload;
+      liveIntentId = durable.intentId;
+      liveResult = durable.liveResult;
+    }
     exchangeOrderId = liveResult.exchangeOrderId;
     status = liveResult.status;
     exchangeTradeId = liveResult.exchangeTradeId ?? null;
@@ -841,6 +784,34 @@ export const openOrder = async (
   });
 
   return orderAfterLifecycle;
+};
+
+export const openOrder = async (
+  userId: string,
+  payload: OpenOrderInput,
+  deps: OpenOrderDeps = defaultOpenOrderDeps
+) => {
+  const prepared = await prepareOpenOrderRiskContext(userId, payload);
+  return persistPreparedOpenOrder(userId, prepared.canonicalPayload, prepared.liveBot, deps);
+};
+
+// Only the internal _test executor supplies this already admitted result. The
+// common persistence path above still owns Order/fill/position materialization.
+export const materializeAdmittedMockLiveOrder = async (input: {
+  userId: string; bot: LiveBotContext; payload: LiveOrderPayload;
+  intentId: string; liveResult: LiveExecutionResult;
+}) => {
+  let databaseName = '';
+  try { databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname); } catch { /* fail closed */ }
+  if (process.env.NODE_ENV !== 'test' || !databaseName.endsWith('_test') ||
+      input.payload.mode !== 'LIVE' ||
+      !input.liveResult.exchangeOrderId || input.liveResult.status !== 'FILLED') {
+    throw orderErrors.liveExecutionUnknown({
+      orderId: input.intentId, clientOrderId: input.payload.clientOrderId ?? '',
+    });
+  }
+  return persistPreparedOpenOrder(input.userId, input.payload, input.bot,
+    defaultOpenOrderDeps, { intentId: input.intentId, liveResult: input.liveResult });
 };
 
 export const cancelOrder = async (

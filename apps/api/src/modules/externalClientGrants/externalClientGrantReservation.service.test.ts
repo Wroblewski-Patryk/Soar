@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { Exchange, Prisma, PrismaClient, TradeMarket } from '@prisma/client';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
 import { __resetExchangeSymbolRulesCacheForTests, getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
@@ -13,6 +13,7 @@ import {
   beginExternalClientGrantSubmission,
   bindExternalClientGrantReservationIntent, reconcileSubmittedExternalClientGrantReservation,
   prepareBoundExternalClientGrantAdapterSeam,
+  executeBoundExternalClientGrantMock,
   refundUnsentExternalClientGrantReservation, reserveExternalClientGrantOrder,
   withFreshBoundExternalClientGrantSubmitPermit,
   type GrantLimitCommand,
@@ -30,7 +31,9 @@ const assertTestDb = () => {
 afterEach(async () => {
   for (const userId of users.splice(0)) {
     await prisma.liveCreateOrderSubmission.deleteMany({ where: { grant: { userId } } });
+    await prisma.orderFill.deleteMany({ where: { userId } });
     await prisma.order.deleteMany({ where: { userId } });
+    await prisma.position.deleteMany({ where: { userId } });
     await prisma.liveOrderIntent.deleteMany({ where: { userId } });
     await prisma.log.deleteMany({ where: { userId } });
     await prisma.externalClientGrant.deleteMany({ where: { userId } });
@@ -103,6 +106,19 @@ const admit = (f: Awaited<ReturnType<typeof fixture>>, reservationId: string, db
 const counters = async (id: string) => prisma.externalClientGrant.findUniqueOrThrow({
   where: { id }, select: { usedActions: true, usedQuoteAmount: true },
 });
+const certainMockFill = (command: Pick<GrantLimitCommand, 'exchange' | 'symbol' | 'side' |
+  'quantity' | 'limitPrice' | 'clientOrderId'>) => {
+  const exchangeOrderId = `mock-${command.exchange.toLowerCase()}-${command.clientOrderId}`;
+  const quantity = Number(command.quantity);
+  const price = Number(command.limitPrice);
+  return { exchangeOrderId, status: 'FILLED' as const,
+    exchangeFilledQuantity: quantity, exchangeAverageFillPrice: price,
+    fills: [{ exchangeTradeId: `mock-fill-${command.clientOrderId}`, exchangeOrderId,
+      symbol: command.symbol, side: command.side, price, quantity,
+      notional: price * quantity, feeCost: 0.05, feeCurrency: 'USDT', feeRate: 0.001,
+      executedAt: new Date(), source: 'createOrder' as const, raw: { mock: true } }],
+  };
+};
 const createMatchingIntent = async (f: Awaited<ReturnType<typeof fixture>>, command = f.command) =>
   prisma.liveOrderIntent.create({ data: {
     userId: f.user.id, clientOrderId: command.clientOrderId, payloadHash: 'test-hash',
@@ -119,7 +135,8 @@ const settleWithin = async <T>(task: Promise<T>, milliseconds: number): Promise<
   } finally { if (timer) clearTimeout(timer); }
 };
 
-const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission',
+const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission' |
+  'mock-crash-after-submit-enter',
   reservationId: string, secret: string) => {
   const worker = spawn(process.execPath, ['--import', 'tsx',
     'src/modules/externalClientGrants/externalClientGrantReservation.processProof.worker.ts'], {
@@ -140,6 +157,165 @@ const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission',
 };
 
 describe('external client grant atomic reservation', () => {
+  for (const exchange of ['BINANCE', 'GATEIO'] as const) {
+    it(`materializes one certain ${exchange} mock fill and reconciles without a second charge`, async () => {
+      const f = await fixture(undefined, exchange, 'FUTURES', true);
+      const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+      try {
+        await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+          create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+          update: { paused: false, reason: 'test available' } });
+        const bound = await bind(f);
+        const submit = vi.fn(async (command: Parameters<typeof certainMockFill>[0]) => certainMockFill(command));
+        const result = await executeBoundExternalClientGrantMock({
+          reservationId: bound.reservation.id, secret: f.secret,
+        }, { getSymbolRules: rules, submit });
+        expect(submit).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ orderId: bound.intentId, submitted: true,
+          dispatchEnabled: false });
+        expect(JSON.stringify(result)).not.toContain(f.secret);
+        expect(JSON.stringify(submit.mock.calls[0]?.[0])).not.toContain(f.secret);
+        expect(await prisma.order.findUniqueOrThrow({ where: { id: bound.intentId } }))
+          .toMatchObject({ status: 'FILLED', filledQuantity: 0.5,
+            exchangeOrderId: `mock-${exchange.toLowerCase()}-${bound.reservation.clientOrderId}` });
+        expect(await prisma.orderFill.count({ where: { orderId: bound.intentId } })).toBe(1);
+        expect(await prisma.position.count({ where: { userId: f.user.id, status: 'OPEN' } })).toBe(1);
+        expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({
+          where: { id: bound.reservation.id },
+        })).toMatchObject({ state: 'SUBMITTED', proofType: 'DURABLE_ORDER', proofRef: bound.intentId });
+        expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+        expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
+          usedQuoteAmount: new Prisma.Decimal(50) });
+        await expect(executeBoundExternalClientGrantMock({
+          reservationId: bound.reservation.id, secret: f.secret,
+        }, { getSymbolRules: rules, submit })).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
+        expect(submit).toHaveBeenCalledTimes(1);
+      } finally {
+        if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+          paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+          changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+        } });
+        else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+      }
+    });
+  }
+
+  it('keeps the marker on an unknown mock result and retries without a second submit', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const bound = await bind(f);
+      const submit = vi.fn(async () => { throw new Error('mock response lost'); });
+      await expect(executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { getSymbolRules: rules, submit }))
+        .rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      const retry = await executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { getSymbolRules: async () => { throw new Error('retry refreshed market'); }, submit });
+      expect(retry).toMatchObject({ reused: true, lookupOnly: true, orderId: null });
+      expect(submit).toHaveBeenCalledTimes(1);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: bound.reservation.id },
+      })).state).toBe('SUBMISSION_UNCERTAIN');
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
+        usedQuoteAmount: new Prisma.Decimal(50) });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  });
+
+  it('blocks pause and revoke throughout the mock callback, then releases the marker', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    const otherDb = new PrismaClient();
+    let entered!: () => void;
+    let release!: () => void;
+    const callbackEntered = new Promise<void>((resolve) => { entered = resolve; });
+    const callbackHeld = new Promise<void>((resolve) => { release = resolve; });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      await prisma.user.update({ where: { id: f.user.id }, data: { role: 'ADMIN' } });
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      const bound = await bind(f);
+      const execution = executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { getSymbolRules: rules, submit: async (command) => {
+        entered();
+        await callbackHeld;
+        return certainMockFill(command);
+      } });
+      await settleWithin(callbackEntered, 10_000);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Pause during delegated mock callback', expectedVersion: control.version }, otherDb))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id, otherDb))
+        .rejects.toMatchObject({ status: 409 });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      release();
+      expect(await settleWithin(execution, 10_000)).toMatchObject({ orderId: bound.intentId });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+    } finally {
+      release();
+      await otherDb.$disconnect();
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
+  it('survives a mock submit process crash with one marker and lookup-only retry', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      await prisma.user.update({ where: { id: f.user.id }, data: { role: 'ADMIN' } });
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      const bound = await bind(f);
+      const worker = startAdmissionWorker('mock-crash-after-submit-enter', bound.reservation.id, f.secret);
+      expect(await settleWithin(worker.completion, 15_000)).toBe(76);
+      expect(worker.errors()).toBe('');
+      expect(worker.output()).toContain('MOCK_ENTERED');
+      const submit = vi.fn(async (command: Parameters<typeof certainMockFill>[0]) => certainMockFill(command));
+      expect(await executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { getSymbolRules: rules, submit })).toMatchObject({ reused: true,
+        lookupOnly: true, orderId: null });
+      expect(submit).not.toHaveBeenCalled();
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: bound.reservation.id },
+      })).state).toBe('SUBMISSION_UNCERTAIN');
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Pause after delegated mock crash', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
   it('denies delegated preparation when the shared LIVE domain risk gate fails', async () => {
     const f = await fixture();
     const bound = await bind(f);
