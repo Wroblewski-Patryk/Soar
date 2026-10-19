@@ -217,6 +217,58 @@ describe('fixed mock orphan finalization audit cardinality', () => {
 });
 
 describe('fixed mock result lookup after process death', () => {
+  it('reconciles concurrent lookups while the original executor holds after journaling', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture();
+      const reservationId = f.bound.reservation.id;
+      const clientOrderId = f.bound.reservation.clientOrderId;
+      const original = executeBoundExternalClientGrantMock({ reservationId, secret: f.secret,
+        scenario: 'HOLD_AFTER_RESULT_JOURNAL' }).then(
+        (value) => ({ status: 'fulfilled' as const, value }),
+        (error: unknown) => ({ status: 'rejected' as const, error }),
+      );
+      let marker = null as Awaited<ReturnType<typeof prisma.liveCreateOrderSubmission.findUnique>>;
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        marker = await prisma.liveCreateOrderSubmission.findUnique({ where: { reservationId } });
+        if (marker?.mockResultHash) break;
+        await new Promise<void>((resolve) => setTimeout(resolve, 50));
+      }
+      expect(marker?.mockResultHash).toMatch(/^[a-f0-9]{64}$/);
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      const lookups = await Promise.allSettled([
+        recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }),
+        recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }),
+      ]);
+      const originalOutcome = await original;
+      expect(lookups.map((item) => item.status === 'fulfilled' ? 'ok'
+        : (item.reason as { code?: string }).code)).toEqual(['ok', 'ok']);
+      expect(originalOutcome.status === 'fulfilled' ? 'ok'
+        : (originalOutcome.error as { code?: string }).code)
+        .toMatch(/^(ok|DELEGATED_MOCK_OUTCOME_UNKNOWN)$/);
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { reservationId } })).toBe(0);
+      expect(await recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }))
+        .toMatchObject({ finalized: true, reused: true, orderId: f.bound.intentId });
+      expect(await prisma.log.count({ where: { entityId: reservationId,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED' } })).toBe(1);
+      expect(await prisma.log.count({ where: { entityId: reservationId,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(1);
+      expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
   it('rejects a nonrepresentable mock notional before admission', async () => {
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
     try {

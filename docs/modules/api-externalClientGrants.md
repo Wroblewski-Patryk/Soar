@@ -196,6 +196,16 @@ Tests on a dedicated
 pause/revoke blocking, one fill, and unchanged allowance usage. This remains
 local mock proof, not delegated LIVE authority.
 
+`SOAR-EXT-GRANT-001J/MOCK-JOURNAL-RACE-PROOF` covers two concurrent
+lookup-only recoveries while the original fixed-mock executor is held after
+the journal commit. A serializable finalization can return PostgreSQL `P2034`
+after another finalizer wins. The internal finalizer now retries that conflict
+up to three times with a fresh transaction and readback. It never retries the
+transport or allowance writer. The isolated race test requires one Order, one
+fill, one finalization audit, one mock transport start, one allowance charge,
+and a reusable finalized lookup after the marker is removed. Missing or
+conflicting journal proof still keeps the marker and returns UNKNOWN.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

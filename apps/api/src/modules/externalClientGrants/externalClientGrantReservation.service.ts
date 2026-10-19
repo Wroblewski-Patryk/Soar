@@ -12,7 +12,8 @@ import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '.
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
-import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable } from './externalClientGrantMockResult';
+import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable,
+  retryMockFinalizationConflict } from './externalClientGrantMockResult';
 
 type DbClient = PrismaClient;
 type Tx = Prisma.TransactionClient;
@@ -753,7 +754,7 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
     return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
   }
   if (!secretPattern.test(request.data.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
-  return prisma.$transaction(async (tx) => {
+  return retryMockFinalizationConflict(() => prisma.$transaction(async (tx) => {
     const found = await tx.externalClientGrantReservation.findUnique({
       where: { id: request.data.reservationId }, select: { grantId: true },
     });
@@ -891,7 +892,7 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
     } });
     return { reservationId: reservation.id, intentId: intent.id, orderId: order.id,
       markerId: marker.id, reused: false, finalized: true } as const;
-  }, { ...transactionOptions, isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  }, { ...transactionOptions, isolationLevel: Prisma.TransactionIsolationLevel.Serializable }));
 }
 
 // Fail closed: an interactive Prisma transaction can time out and release its

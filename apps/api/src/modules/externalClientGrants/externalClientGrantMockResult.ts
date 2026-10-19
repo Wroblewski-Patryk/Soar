@@ -30,6 +30,17 @@ export const mockNotionalRepresentable = (scope: Scope) => {
 export const hashMockResult = (snapshot: Snapshot) =>
   createHash('sha256').update(JSON.stringify(snapshot), 'utf8').digest('hex');
 
+// Internal retry for a serializable, lookup-only transaction. Each attempt
+// starts a fresh readback; no mock transport or allowance writer is retried.
+export const retryMockFinalizationConflict = async <T>(operation: () => Promise<T>): Promise<T> => {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try { return await operation(); } catch (error) {
+      if ((error as { code?: unknown })?.code !== 'P2034' || attempt === 2) throw error;
+    }
+  }
+  throw new Error('Mock finalization retry exhausted');
+};
+
 // The snapshot contains the actual returned result. Expected fixed values only
 // validate its identity; they cannot stand in for a missing durable snapshot.
 export const decodeMockResult = (value: unknown, scope: Scope):
