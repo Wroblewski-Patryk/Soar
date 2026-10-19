@@ -188,7 +188,8 @@ keeps the marker. Test-only recovery looks up the reservation by its unique
 marker, and audit, then uses the existing Order/fill/position and reservation
 reconciliation path. It calls no transport or venue adapter. The existing
 orphan finalizer checks the completed records before deleting the marker;
-repeat lookup reads the finalization audit. Process-death tests on a dedicated
+normal success uses that finalizer too, and repeat lookup reads its audit.
+The fixed transport computes fill notional with decimal arithmetic. Tests on a dedicated
 `_test` database cover both sides of the result commit, tampered result hash,
 pause/revoke blocking, one fill, and unchanged allowance usage. This remains
 local mock proof, not delegated LIVE authority.

@@ -573,8 +573,7 @@ export async function executeBoundExternalClientGrantMock(
         !Number.isFinite(fill.notional) || fill.notional <= 0)) {
     return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   }
-  const captured = captureMockResult(result, command);
-  if (!captured) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  const captured = captureMockResult(result, command) ?? deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   await prisma.$transaction(async (tx) => {
     const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
       SELECT "id" FROM "LiveCreateOrderSubmission" WHERE "id" = ${admitted.markerId} FOR UPDATE
@@ -602,6 +601,11 @@ export async function executeBoundExternalClientGrantMock(
   if (request.data.scenario === 'HOLD_AFTER_RESULT_JOURNAL') {
     await new Promise<void>((resolve) => setTimeout(resolve, 10_000));
   }
+  const readback = await prisma.liveCreateOrderSubmission.findUnique({ where: { id: admitted.markerId } });
+  const recorded = decodeMockResult(readback?.mockResult, command);
+  if (!readback?.mockResultRecordedAt || !recorded ||
+      readback.mockResultHash !== hashMockResult(captured.snapshot) ||
+      readback.mockResultHash !== hashMockResult(recorded.snapshot)) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   const order = await materializeAdmittedMockLiveOrder({ userId: command.userId,
     bot: prepared.liveBot, payload: prepared.canonicalPayload,
     intentId: intent.id, liveResult: result });
@@ -616,11 +620,11 @@ export async function executeBoundExternalClientGrantMock(
   if (request.data.scenario === 'HOLD_AFTER_RECONCILE') {
     await new Promise<void>((resolve) => setTimeout(resolve, 10_000));
   }
-  const cleared = await prisma.liveCreateOrderSubmission.deleteMany({ where: {
-    id: admitted.markerId, grantId: reservation.grantId,
-    reservationId: reservation.id, intentId: intent.id,
-  } });
-  if (cleared.count !== 1) return deny('DELEGATED_MOCK_MARKER_CLEAR_UNCONFIRMED');
+  const finalized = await finalizeBoundExternalClientGrantMockOrphan({ reservationId: reservation.id,
+    secret: request.data.secret });
+  if (finalized.orderId !== order.id || finalized.markerId !== admitted.markerId) {
+    return deny('DELEGATED_MOCK_MARKER_CLEAR_UNCONFIRMED');
+  }
   return { reservationId: reservation.id, intentId: intent.id,
     clientOrderId: command.clientOrderId, orderId: order.id,
     submitted: true, dispatchEnabled: false } as const;

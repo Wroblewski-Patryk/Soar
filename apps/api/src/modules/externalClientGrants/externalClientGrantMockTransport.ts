@@ -1,4 +1,5 @@
 // Fixed, local test transport. No caller code, exchange adapter, CCXT, or I/O.
+import { Prisma } from '@prisma/client';
 export const delegatedMockScenarios = [
   'CERTAIN_FILL', 'DELAYED_FILL', 'UNKNOWN', 'INVALID_FILL',
   'HOLD_AFTER_RESULT_JOURNAL', 'HOLD_AFTER_RECONCILE',
@@ -23,7 +24,8 @@ export const runDelegatedMockTransport = async (input: {
     exchangeFilledQuantity: quantity, exchangeAverageFillPrice: price,
     fills: [{ exchangeTradeId: `mock-fill-${input.clientOrderId}`, exchangeOrderId,
       symbol: input.symbol, side: input.side, price, quantity: fillQuantity,
-      notional: price * fillQuantity, feeCost: 0.05, feeCurrency: 'USDT', feeRate: 0.001,
+      notional: new Prisma.Decimal(input.limitPrice).mul(fillQuantity.toString()).toNumber(),
+      feeCost: 0.05, feeCurrency: 'USDT', feeRate: 0.001,
       executedAt: new Date(0), source: 'createOrder' as const, raw: { mock: true } }],
   };
 };

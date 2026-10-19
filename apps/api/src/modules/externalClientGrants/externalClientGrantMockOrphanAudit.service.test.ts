@@ -7,14 +7,15 @@ import { setLiveExecutionPause } from '../orders/liveExecutionPause.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant, revokeExternalClientGrant } from './externalClientGrants.service';
 import { bindExternalClientGrantReservationIntent, finalizeBoundExternalClientGrantMockOrphan,
-  recoverBoundExternalClientGrantMockResult, type GrantLimitCommand } from './externalClientGrantReservation.service';
+  executeBoundExternalClientGrantMock, recoverBoundExternalClientGrantMockResult,
+  type GrantLimitCommand } from './externalClientGrantReservation.service';
 
 let testUserId: string | null = null;
 const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
   priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT', settleCurrency: 'USDT',
   isContract: true, isLinear: true, isInverse: false });
 
-const fixture = async () => {
+const fixture = async (amounts: Partial<Pick<GrantLimitCommand, 'quantity' | 'limitPrice'>> = {}) => {
   if (!decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname).endsWith('_test')) {
     throw new Error('Mock orphan audit tests require an isolated _test database');
   }
@@ -58,7 +59,8 @@ const fixture = async () => {
     userId: user.id, botId: bot.id, exchange: 'BINANCE', marketType: 'FUTURES',
     symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
     clientOrderId: `soar_${crypto.randomUUID().replace(/-/g, '').slice(0, 22)}`,
-    side: 'BUY', type: 'LIMIT', quantity: '0.5', limitPrice: '100', reduceOnly: false,
+    side: 'BUY', type: 'LIMIT', quantity: amounts.quantity ?? '0.5',
+    limitPrice: amounts.limitPrice ?? '100', reduceOnly: false,
     walletId: wallet.id, strategyId: strategy.id, positionId: null,
   };
   const bound = await bindExternalClientGrantReservationIntent({
@@ -213,6 +215,69 @@ describe('fixed mock orphan finalization audit cardinality', () => {
 });
 
 describe('fixed mock result lookup after process death', () => {
+  it('reads back a normal success and preserves decimal notional', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture({ quantity: '0.006', limitPrice: '333.33' });
+      const reservationId = f.bound.reservation.id;
+      const clientOrderId = f.bound.reservation.clientOrderId;
+      expect(0.006 * 333.33).not.toBe(1.99998);
+      await expect(executeBoundExternalClientGrantMock({ reservationId, secret: f.secret }))
+        .resolves.toMatchObject({ submitted: true, orderId: f.bound.intentId });
+      const lookup = await recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret });
+      expect(lookup).toMatchObject({ finalized: true, reused: true,
+        orderId: f.bound.intentId, lookupOnly: true });
+      const fill = await prisma.orderFill.findFirstOrThrow({ where: { orderId: f.bound.intentId } });
+      expect(fill.notional).toBe(1.99998);
+      expect(await prisma.log.count({ where: { entityId: reservationId,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(1);
+      expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal('1.99998') });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
+  it('keeps the original executor from materializing a changed journal', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture();
+      const reservationId = f.bound.reservation.id;
+      const execution = executeBoundExternalClientGrantMock({ reservationId,
+        secret: f.secret, scenario: 'HOLD_AFTER_RESULT_JOURNAL' });
+      let marker = null as Awaited<ReturnType<typeof prisma.liveCreateOrderSubmission.findUnique>>;
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        marker = await prisma.liveCreateOrderSubmission.findUnique({ where: { reservationId } });
+        if (marker?.mockResultHash) break;
+        await new Promise<void>((resolve) => setTimeout(resolve, 50));
+      }
+      expect(marker?.mockResultHash).toMatch(/^[a-f0-9]{64}$/);
+      await prisma.liveCreateOrderSubmission.update({ where: { id: marker!.id },
+        data: { mockResultHash: '0'.repeat(64) } });
+      await expect(execution).rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { reservationId } })).toBe(1);
+      expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({ where: { id: reservationId } }))
+        .toMatchObject({ state: 'SUBMISSION_UNCERTAIN' });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
   it('keeps UNKNOWN and the marker when the transport never recorded a result', async () => {
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
     try {
