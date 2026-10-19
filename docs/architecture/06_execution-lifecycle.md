@@ -66,14 +66,15 @@ deterministically.
 
 ## Close Authority
 The current product requires an open position to remain open when entry
-conditions stop matching. Closing requires a separate exit signal or an
-applicable risk/lifecycle rule. A missing entry signal cannot be promoted to
-`EXIT`. The handling of explicit strategy exit signals must be reconciled with
-the current trace-only implementation before claiming this behavior verified.
+conditions stop matching. A missing entry signal cannot be promoted to
+`EXIT`, and a separate strategy `EXIT` signal is not required. Normal closes
+follow configured `TP`/`SL` (simple) or `TTP`/`TSL` (advanced) lifecycle rules
+and DCA ordering; manual, liquidation, and other risk closes remain possible.
+Legacy no-match settings and parity across modes still require verification.
 
-Implementation note: direct strategy `EXIT` has been trace-only. That behavior
-does not by itself fulfill the required separate-exit close path. Any close
-still goes through the lifecycle manager.
+Implementation note: direct strategy `EXIT` has been trace-only. This is a code
+behavior, not a required product close path or proof of lifecycle parity. Any
+close still goes through the lifecycle manager.
 
 Canonical close authority is lifecycle-based:
 - `TP`

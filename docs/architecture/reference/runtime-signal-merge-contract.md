@@ -50,10 +50,12 @@ Order is always deterministic:
 4. If still tied, lower lexical `marketGroupStrategyLinkId` wins.
 
 ## Safety Overrides
-- `EXIT` can close existing position even when directional vote indicates opposite action.
+- An explicit `EXIT` proposal may win the merge, but it does not bypass the
+  lifecycle manager or make a separate strategy exit signal mandatory.
 - `NO_TRADE` is valid and preferred when certainty is insufficient.
-- An existing position is held when entry signals disappear; a close still
-  requires an independent exit signal or an applicable risk/lifecycle rule.
+- An existing position is held when entry signals disappear; normal closes
+  follow configured DCA and `TP`/`SL` or `TTP`/`TSL` lifecycle rules, with
+  applicable manual, liquidation, and other risk closures.
 - Runtime must never "guess" by random selection.
 
 ## Audit Requirements

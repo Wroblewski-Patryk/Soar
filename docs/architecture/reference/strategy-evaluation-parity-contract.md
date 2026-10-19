@@ -42,10 +42,11 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
    - `SHORT` when short set matches and long does not,
    - `NO_TRADE`/HOLD when neither side matches,
    - `NO_TRADE` when both sides match or input is insufficient.
-5. An open position remains open when entry conditions cease to match. `EXIT`
-   requires a separate explicit exit signal, or the lifecycle may close under
-   an applicable risk rule. Exit authority and position ownership still pass
-   through the lifecycle manager.
+5. An open position remains open when entry conditions cease to match. No
+   entry match is not `EXIT`, and a separate strategy `EXIT` signal is not
+   required. Configured DCA and `TP`/`SL` (simple) or `TTP`/`TSL` (advanced)
+   govern normal closes, with manual, liquidation, and other risk closures
+   handled by the lifecycle manager.
 
 Legacy `open.noMatchAction = EXIT` and `open.exitOnNoSignal = true` do not
 constitute separate exit conditions under this contract. The current evaluator
@@ -75,8 +76,9 @@ handling, runtime/backtest traces, and tests require repair before acceptance.
   - runtime signal loop tests,
   - parity regression (`paper/live decision equivalence` at minimum).
 - Include a position-open sequence in which entry conditions cease to match:
-  no close command or false `EXIT` trace may result. Prove separately that an
-  explicit exit signal or risk rule can close through the approved lifecycle.
+  no close command or false `EXIT` trace may result. Prove separately that
+  configured DCA and `TP`/`SL` or `TTP`/`TSL` rules close through the approved
+  lifecycle, including the applicable risk and manual-close cases.
 - Required mismatch diagnostics payload (for reports/logs):
   - `mode`, `symbol`, `timeframe`, `candleIndex`, `strategyId`,
   - expected vs actual direction,

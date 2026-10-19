@@ -2,13 +2,14 @@
 type: product_contract
 status: canonical
 area: product
-last_updated: 2026-10-17
+last_updated: 2026-10-19
 ---
 
 # Current Version Product Contract
 
 This document owns the **required behavior and scope** of the current Soar
-delivery. It records the owner's product decisions of 2026-10-17. It does not
+delivery. It records the owner's product decisions of 2026-10-17 and the
+subsequent position-lifecycle clarification. It does not
 certify that the code, deployment, or every user journey meets them.
 
 Use the numbered architecture documents and their reference contracts for
@@ -25,7 +26,7 @@ claim that a requirement works. Older MVP/V1 plans and the dated sections of
 | Bot market scope | A bot has exactly one active market group at a time. Stored or historical groups do not authorize concurrent active groups. |
 | Languages | English and Polish are the supported current-version languages. Other locale code or experiments do not establish a supported language. |
 | Backtest recovery | After a worker failure, an unfinished backtest resumes automatically. Recovery must not create a second run, duplicate execution, trades, or report for the same run. If safe recovery cannot be established, show an explicit failure or degraded state rather than apparent progress. |
-| Entry and position lifecycle | Loss of an entry signal means no new entry. An already open position remains open until a **separate exit signal** or an applicable risk/lifecycle rule closes it. Absence of an entry signal is never itself `EXIT`. This rule applies consistently to BACKTEST, PAPER, and LIVE. |
+| Entry and position lifecycle | Loss of an entry signal means no new entry and never itself `EXIT`. An already open position remains open until its configured lifecycle closes it through `TP`/`SL` (simple) or `TTP`/`TSL` (advanced), or a valid manual, liquidation, or other risk close. DCA ordering remains part of that lifecycle; if a reached DCA cannot be funded and `SL` is breached, `SL` closes the position and insufficient funds is reported. A separate strategy `EXIT` signal is not required. This rule applies consistently to BACKTEST, PAPER, and LIVE. |
 | Plans and roles | Account registration alone grants no plan entitlement. A human administrator assigns a user's plan and changes account roles manually in the Soar administrator panel. Plan-gated access fails closed until assignment. Users do not buy or change plans through in-app checkout. External clients cannot assign plans or change roles. |
 | External domain actions | An external client may perform user-domain actions, including LIVE, only under a previously granted, limited, revocable authorization. A separate confirmation is not required for every LIVE transaction within that authorization. Every action remains subject to Soar's user ownership, entitlement, exchange, risk, consent, and audit controls. Missing, expired, exceeded, or revoked authorization fails closed. |
 | Account and secrets boundary | External clients cannot change account data, roles, or plans; change passwords; add exchange API keys; or receive secrets for manual entry. Password changes and exchange-key entry remain manual user actions in Soar. A backend endpoint used by the administrator panel is not thereby an external-client capability. |
@@ -58,7 +59,7 @@ operational report is not part of the public repository.
 | Manual plan assignment | Local code leaves registration without a plan and removes the profile checkout route. A new signed human-session audience guards plan/role writes; legacy Bearer tokens cannot gain that authority by moving into Cookie. Focused API tests cover the boundary, while independent browser/deployed acceptance remains pending. Existing subscription and payment history requires a separate data review before migration. |
 | Binance and Gate.io PAPER/LIVE | Exchange contracts and selected local flows exist. Verify each market type and operation against the [exchange capability matrix](../architecture/reference/exchange-access-ownership-matrix.md), then prove relevant deployed and exchange-side journeys. |
 | Backtest recovery | BT-001/001b has local evidence for token-fenced ownership and atomic result writes, including a passing two-process, same-version worker proof with Redis and an isolated test database. An older worker does not honor the token: deployment must stop old workers before starting new ones. Production recovery, migrations, and the user-visible status journey remain unverified; the local proof is not whole-product acceptance. |
-| Entry-signal loss and position HOLD | Default evaluator behavior holds, but legacy no-match settings can still emit `EXIT`. Tests, traces, and explicit-exit lifecycle behavior need correction and parity proof. |
+| Entry-signal loss and position lifecycle | Default evaluator behavior holds, but legacy no-match settings can still emit `EXIT`. Correct those settings and prove that loss of an entry signal holds an open position while configured DCA and `TP`/`SL` or `TTP`/`TSL` rules govern normal closes across BACKTEST, PAPER, and LIVE. Focused local tests and fresh deployed or exchange evidence must be assessed separately. |
 | EN/PL and one active market group | Existing contracts and local tests are useful implementation evidence; full current-version journey proof remains part of acceptance. |
 
 Only fresh evidence for the applicable environment may change an acceptance
