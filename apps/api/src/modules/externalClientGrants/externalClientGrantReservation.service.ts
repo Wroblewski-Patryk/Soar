@@ -321,7 +321,8 @@ export const beginBoundExternalClientGrantSubmission = (
 // This is the single-use internal dispatch boundary. The uncertain state is
 // committed before entering the callback; a retry can only look up the venue.
 // The callback is deliberately not wired to an exchange until Order
-// materialization and recovery share the existing domain execution path.
+// materialization, recovery, and a bounded/cancelable venue call share the
+// existing domain execution path. The DB lock ends at transaction timeout.
 export const withFreshBoundExternalClientGrantSubmitPermit = async <T>(
   input: { reservationId: string; secret: string },
   submit: (bound: { command: GrantLimitCommand; intentId: string }) => Promise<T>,

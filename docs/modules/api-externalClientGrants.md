@@ -107,7 +107,10 @@ blocked while paused, including reduce-only Futures commands. A callback
 timeout or crash leaves the reservation uncertain and the allowance spent; a
 retry cannot invoke the callback again and must use venue lookup. The bot/group
 and plan checks are point-in-time checks before the callback; this permit does
-not hold locks on those records through it.
+not hold locks on those records through it. The lock lifetime is bounded by the
+120-second database transaction timeout. A future real adapter integration must
+prove its submit deadline and cancellation behavior before relying on this
+permit for an in-flight venue request.
 
 There is still no delegated adapter call, Order materialization, or automatic
 reconciliation. The next ticket must connect this boundary to the existing
