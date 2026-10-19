@@ -19,7 +19,7 @@ global trusted-origin middleware applies to state-changing cookie requests.
 | POST | `/dashboard/external-client-grants` | Create with current password; response contains the opaque secret once. |
 | GET | `/dashboard/external-client-grants` | List up to 100 owned grants without secret or hash. |
 | GET | `/dashboard/external-client-grants/:id` | Read one owned grant without secret or hash. |
-| POST | `/dashboard/external-client-grants/:id/revoke` | Revoke immediately; repeated calls are idempotent. |
+| POST | `/dashboard/external-client-grants/:id/revoke` | Revoke under the grant row lock; repeated calls are idempotent. An unresolved delegated submission marker returns 409 until explicit reconciliation. |
 
 Create input requires `clientLabel`, owned `botId`, exact `exchange`, `marketType`,
 `symbol`, `action=PLACE_LIVE_ORDER`, decimal-string `maxActionQuoteAmount` and
@@ -108,6 +108,26 @@ and proves the disabled seam never starts a submit. The separated
 `beginBoundExternalClientGrantSubmission` remains a durable point-in-time gate,
 not authority to call an exchange adapter. Existing uncertain reservations stay
 lookup-only and cannot be automatically refunded.
+
+`SOAR-EXT-GRANT-001E/DURABLE-ADMISSION` records a delegated admission in one
+transaction. It locks the grant row, rechecks the bound command, intent, audit,
+secret, current grant/bot/group/plan/expiry and trusted market nominal, then
+acquires the shared global pause key and rechecks scope. It commits a
+`LiveCreateOrderSubmission` marker linked by database foreign keys to the grant,
+reservation, and intent, the reservation's `SUBMISSION_UNCERTAIN` transition,
+and an audit event together. The marker has no TTL. A process restart or exact
+retry returns only the existing marker identity as `lookupOnly`; it does not
+spend allowance again or authorize a second submit. A marker blocks the global
+pause, human grant revoke, and a second allowance reservation for that grant,
+even after the first reservation reaches `SUBMITTED`. A unique database index
+allows at most one marker per grant. If pause or revoke commits first,
+admission fails before creating a marker. Existing human markers retain null
+delegated links.
+No callback or adapter consumes the admission result, so this stage cannot
+start a delegated order. Market metadata and plan/group checks are current
+point-in-time gates, not locks held through a future venue call. The marker
+requires explicit authoritative reconciliation before it may be cleared;
+there is no automatic timeout cleanup.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has

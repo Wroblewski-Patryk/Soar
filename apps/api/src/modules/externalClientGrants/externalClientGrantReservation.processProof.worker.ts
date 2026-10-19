@@ -1,8 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import {
-  beginExternalClientGrantSubmission, bindExternalClientGrantReservationIntent,
+  admitBoundExternalClientGrantSubmission, beginExternalClientGrantSubmission,
+  bindExternalClientGrantReservationIntent,
   reserveExternalClientGrantOrder,
 } from './externalClientGrantReservation.service';
+
+const rules = async () => ({
+  minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
+  quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
+});
 
 const db = new PrismaClient();
 let input = '';
@@ -15,6 +21,15 @@ process.stdin.on('data', (chunk: string) => {
     try {
       const request = JSON.parse(input.slice(0, input.indexOf('\n')));
       process.stdout.write('STARTED\n');
+      if (request.operation === 'admit' || request.operation === 'crash-after-admission') {
+        const admitted = await admitBoundExternalClientGrantSubmission(request, { db, getSymbolRules: rules });
+        if (request.operation === 'crash-after-admission') {
+          process.stdout.write(`ADMITTED ${JSON.stringify(admitted)}\n`, () => process.exit(75));
+          await new Promise<never>(() => {});
+        }
+        process.stdout.write(`RESULT ${JSON.stringify(admitted)}\n`);
+        return;
+      }
       if (request.operation === 'crash-after-begin') {
         await beginExternalClientGrantSubmission({
           reservationId: request.reservationId, secret: request.secret,
@@ -26,10 +41,7 @@ process.stdin.on('data', (chunk: string) => {
       }
       if (request.operation === 'crash-after-bind') {
         const bound = await bindExternalClientGrantReservationIntent(request, {
-          db, getSymbolRules: async () => ({
-            minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
-            quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
-          }),
+          db, getSymbolRules: rules,
         });
         process.stdout.write(`BOUND ${JSON.stringify({ reservationId: bound.reservation.id,
           intentId: bound.intentId })}\n`, () => process.exit(74));
@@ -38,11 +50,7 @@ process.stdin.on('data', (chunk: string) => {
       const reserve = request.operation === 'bind'
         ? bindExternalClientGrantReservationIntent : reserveExternalClientGrantOrder;
       const result = await reserve(request, {
-        db,
-        getSymbolRules: async () => ({
-          minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
-          quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
-        }),
+        db, getSymbolRules: rules,
       });
       process.stdout.write(`RESULT ${JSON.stringify({ reused: result.reused, id: result.reservation.id,
         intentId: result.intentId })}\n`);

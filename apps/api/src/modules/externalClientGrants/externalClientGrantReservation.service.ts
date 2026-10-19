@@ -7,7 +7,7 @@ import { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service'
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import { persistOrReuseLiveOrderIntent, resolveLiveClientOrderId } from '../orders/orders.liveIntent.service';
-import { LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
+import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 
 type DbClient = PrismaClient;
@@ -235,6 +235,9 @@ export const reserveExternalClientGrantOrder = async (
       }
       return { reused: true, reservation: existing };
     }
+    if (await tx.liveCreateOrderSubmission.findUnique({ where: { grantId: grant.id }, select: { id: true } })) {
+      return deny('GRANT_PREVIOUS_OPERATION_UNRESOLVED');
+    }
     const priorIntent = await tx.liveOrderIntent.findUnique({
       where: { clientOrderId: command.clientOrderId }, select: { id: true },
     });
@@ -311,12 +314,95 @@ export const beginExternalClientGrantSubmission = async (
   return updated;
 }, transactionOptions);
 
-// No adapter is called here. A future executor must acquire the shared LIVE
-// pause permit and recheck grant authority immediately before createOrder.
+// Legacy point-in-time gate only. It writes no durable pause marker and must
+// never authorize an adapter call; new preparation uses atomic admission below.
 export const beginBoundExternalClientGrantSubmission = (
   input: { reservationId: string; secret: string }, db: DbClient = prisma,
 ) => beginExternalClientGrantSubmission({ ...input, requireLivePauseCheck: true,
   requireBoundIntent: true }, db);
+
+// Admission is a durable record, not a callback permit. No adapter consumes
+// this return value. The marker and uncertain reservation commit together;
+// a crash or retry leaves them lookup-only until explicit venue reconciliation.
+export const admitBoundExternalClientGrantSubmission = async (
+  input: { reservationId: string; secret: string },
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader } = {},
+) => {
+  const db = deps.db ?? prisma;
+  if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
+  const preflight = await db.externalClientGrantReservation.findUnique({
+    where: { id: input.reservationId }, select: { grantId: true, command: true, state: true },
+  });
+  if (!preflight) return deny('RESERVATION_UNAVAILABLE');
+  const preflightGrant = await db.externalClientGrant.findUnique({
+    where: { id: preflight.grantId }, select: { secretHash: true },
+  });
+  if (!preflightGrant || preflightGrant.secretHash !== secretHash(input.secret)) {
+    return deny('GRANT_SCOPE_UNAVAILABLE');
+  }
+  const marketProof = preflight.state === 'RESERVED'
+    ? await resolveQuoteAmount(canonicalize(preflight.command), deps.getSymbolRules ?? getExchangeSymbolRules)
+    : null;
+  return db.$transaction(async (tx) => {
+    const found = await tx.externalClientGrantReservation.findUnique({ where: { id: input.reservationId } });
+    if (!found) return deny('RESERVATION_UNAVAILABLE');
+    const grant = await lockGrant(tx, found.grantId);
+    const current = await tx.externalClientGrantReservation.findUnique({ where: { id: found.id } });
+    if (!current) return deny('RESERVATION_UNAVAILABLE');
+    const command = canonicalize(current.command);
+    if (!secretPattern.test(input.secret) || grant.secretHash !== secretHash(input.secret)) {
+      return deny('GRANT_SCOPE_UNAVAILABLE');
+    }
+    if (current.clientOrderId !== command.clientOrderId || current.commandHash !== fingerprint(command)) {
+      return deny('RESERVATION_COMMAND_UNAVAILABLE');
+    }
+    const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: current.clientOrderId } });
+    if (!intent || !intentMatchesCommandAndScope(intent, command) ||
+        !await hasAtomicIntentBinding(tx, current.id, intent.id)) {
+      return deny('RESERVATION_INTENT_UNAVAILABLE');
+    }
+    if (current.state === 'SUBMISSION_UNCERTAIN') {
+      const marker = await tx.liveCreateOrderSubmission.findUnique({ where: { reservationId: current.id } });
+      if (!marker || marker.grantId !== grant.id || marker.intentId !== intent.id ||
+          marker.clientOrderId !== command.clientOrderId) return deny('RESERVATION_NOT_DISPATCHABLE');
+      return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
+        reused: true, lookupOnly: true } as const;
+    }
+    if (current.state !== 'RESERVED' || current.dispatchStartedAt) return deny('RESERVATION_NOT_DISPATCHABLE');
+    if (await tx.liveCreateOrderSubmission.findUnique({ where: { grantId: grant.id }, select: { id: true } })) {
+      return deny('GRANT_PREVIOUS_OPERATION_UNRESOLVED');
+    }
+    if (await tx.order.findUnique({ where: { id: intent.id }, select: { id: true } })) {
+      return deny('RESERVATION_NOT_DISPATCHABLE');
+    }
+    await assertCurrentScope(tx, grant, input.secret, command);
+    if (!marketProof || !marketProof.amount.eq(current.quoteAmount)) return deny('MARKET_EVIDENCE_CHANGED');
+    // Grant row first, then the same shared key used by the global pause writer.
+    // Delegated admission is blocked while paused even for reduce-only exits.
+    const marketType = command.marketType === 'SPOT' ? 'spot'
+      : command.exchange === 'BINANCE' ? 'future' : 'swap';
+    await assertLiveCreateOrderPermittedInTransaction({ marketType, reduceOnly: false }, tx);
+    await assertCurrentScope(tx, grant, input.secret, command);
+    const marker = await tx.liveCreateOrderSubmission.create({ data: {
+      grantId: grant.id, reservationId: current.id, intentId: intent.id,
+      exchangeId: command.exchange, clientOrderId: command.clientOrderId,
+      symbol: command.symbol, marketType, reduceOnly: command.reduceOnly,
+    } });
+    await tx.externalClientGrantReservation.update({ where: { id: current.id }, data: {
+      state: 'SUBMISSION_UNCERTAIN', dispatchStartedAt: new Date(),
+    } });
+    await tx.log.create({ data: {
+      userId: grant.userId, botId: grant.botId, source: 'external_client_grant',
+      actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_ADMITTED', level: 'WARN',
+      message: 'Delegated admission recorded; submit remains disabled and recovery is lookup only',
+      entityType: 'ExternalClientGrantReservation', entityId: current.id,
+      metadata: { grantId: grant.id, intentId: intent.id, markerId: marker.id,
+        clientOrderId: command.clientOrderId },
+    } });
+    return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
+      reused: false, lookupOnly: true } as const;
+  }, transactionOptions);
+};
 
 // Fail closed: an interactive Prisma transaction can time out and release its
 // locks while an awaited callback is still running. Until a venue call has a

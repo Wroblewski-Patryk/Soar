@@ -144,12 +144,24 @@ export const listExternalClientGrants = (userId: string) => prisma.externalClien
 export const getExternalClientGrant = (userId: string, grantId: string) =>
   prisma.externalClientGrant.findFirst({ where: { id: grantId, userId }, select: publicGrantSelect });
 
-export const revokeExternalClientGrant = async (userId: string, grantId: string) =>
-  prisma.$transaction(async (tx) => {
+export const revokeExternalClientGrant = async (userId: string, grantId: string, db: PrismaClient = prisma) =>
+  db.$transaction(async (tx) => {
+    // Admission takes the same grant row first, then the shared pause key.
+    const locked = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT "id" FROM "ExternalClientGrant"
+      WHERE "id" = ${grantId} AND "userId" = ${userId} FOR UPDATE
+    `);
+    if (locked.length !== 1) throw new GrantInputError('Grant not found', 404);
     const existing = await tx.externalClientGrant.findFirst({
       where: { id: grantId, userId }, select: { id: true, botId: true, revokedAt: true },
     });
     if (!existing) throw new GrantInputError('Grant not found', 404);
+    if (existing.revokedAt) return tx.externalClientGrant.findUniqueOrThrow({
+      where: { id: grantId }, select: publicGrantSelect,
+    });
+    if (await tx.liveCreateOrderSubmission.findFirst({ where: { grantId }, select: { id: true } })) {
+      throw new GrantInputError('Grant submission in flight or unresolved', 409);
+    }
     const changed = await tx.externalClientGrant.updateMany({
       where: { id: grantId, userId, revokedAt: null }, data: { revokedAt: new Date() },
     });

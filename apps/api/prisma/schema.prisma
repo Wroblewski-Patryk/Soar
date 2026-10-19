@@ -958,6 +958,7 @@ model LiveOrderIntent {
   createdAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
+  delegatedSubmission LiveCreateOrderSubmission?
 
   @@index([userId, createdAt])
 }
@@ -1357,6 +1358,7 @@ model ExternalClientGrant {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   bot  Bot  @relation(fields: [botId], references: [id], onDelete: Cascade)
   reservations ExternalClientGrantReservation[]
+  liveSubmission LiveCreateOrderSubmission?
 
   @@index([userId, createdAt])
   @@index([botId])
@@ -1384,6 +1386,7 @@ model ExternalClientGrantReservation {
   updatedAt         DateTime                       @updatedAt
 
   grant ExternalClientGrant @relation(fields: [grantId], references: [id], onDelete: Cascade)
+  liveSubmission LiveCreateOrderSubmission?
 
   @@index([grantId, state])
   @@index([grantId, createdAt])
@@ -1407,8 +1410,9 @@ model LiveExecutionControl {
   changedAt       DateTime @default(now())
 }
 
-// Committed before CCXT createOrder starts. A surviving row makes pause fail
-// closed when a process dies or its submit cannot be proven complete.
+// Human submits commit this before CCXT createOrder. Delegated admission also
+// writes a linked row, but no delegated callback is wired. A surviving row
+// makes pause fail closed until the submit is proven complete.
 model LiveCreateOrderSubmission {
   id            String   @id @default(uuid())
   exchangeId    String?
@@ -1416,7 +1420,14 @@ model LiveCreateOrderSubmission {
   symbol        String?
   marketType    String
   reduceOnly    Boolean
+  grantId       String?  @unique
+  reservationId String?  @unique
+  intentId      String?  @unique
   startedAt     DateTime @default(now())
+
+  grant       ExternalClientGrant?            @relation(fields: [grantId], references: [id], onDelete: Restrict)
+  reservation ExternalClientGrantReservation? @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  intent      LiveOrderIntent?                 @relation(fields: [intentId], references: [id], onDelete: Restrict)
 
   @@index([startedAt])
 }
