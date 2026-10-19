@@ -5,7 +5,7 @@ import { prisma } from '../../prisma/client';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
 import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore } from './runtimeTickerStore';
-import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -72,6 +72,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       where: { email },
       select: { id: true },
     });
+    await ensureSubscriptionCatalog(prisma);
     await setActiveSubscriptionForUser(prisma, {
       userId: user.id,
       planCode: 'PROFESSIONAL',
@@ -236,7 +237,20 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     );
     expect(runtimeSignal?.direction).toBe('LONG');
 
-    await emitFinalCandle(3, 50000);
+    const ledgerWhere = { botId, symbol: 'BTCUSDT' };
+    const readLedgerCounts = async () => ({
+      orders: await prisma.order.count({ where: ledgerWhere }),
+      trades: await prisma.trade.count({ where: ledgerWhere }),
+      fills: await prisma.orderFill.count({ where: ledgerWhere }),
+    });
+    const countsAfterEntry = await readLedgerCounts();
+
+    // RSI loses its entry vote, but this price is still above the configured SL.
+    await emitFinalCandle(3, 64100);
+    const heldPosition = await prisma.position.findUnique({ where: { id: openedPosition!.id } });
+    expect(heldPosition?.status).toBe('OPEN');
+    expect(heldPosition?.closeReason).toBeNull();
+    expect(await readLedgerCounts()).toEqual(countsAfterEntry);
     expect(await prisma.signal.count({ where: { botId, symbol: 'BTCUSDT', direction: 'EXIT' } }))
       .toBe(0);
 
@@ -262,6 +276,9 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       (value) => value?.status === 'CLOSED'
     );
     expect(closedPosition?.status).toBe('CLOSED');
+    expect(closedPosition?.closeReason).toBe('SL');
+    expect(await prisma.order.count({ where: { ...ledgerWhere, closeReason: 'SL' } })).toBe(1);
+    expect(await prisma.trade.count({ where: { ...ledgerWhere, closeReason: 'SL' } })).toBe(1);
 
     const runtimeSession = await pollUntil(
       () =>
