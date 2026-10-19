@@ -11,6 +11,12 @@ import { bindExternalClientGrantReservationIntent, finalizeBoundExternalClientGr
   type GrantLimitCommand } from './externalClientGrantReservation.service';
 
 let testUserId: string | null = null;
+const retryExhaustionDb = (() => {
+  try {
+    const databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname);
+    return databaseName.startsWith('/soar_ext_grant_001k_') && databaseName.endsWith('_test');
+  } catch { return false; }
+})();
 const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
   priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT', settleCurrency: 'USDT',
   isContract: true, isLinear: true, isInverse: false });
@@ -132,6 +138,79 @@ afterEach(async () => {
 });
 
 describe('fixed mock orphan finalization audit cardinality', () => {
+  it.skipIf(!retryExhaustionDb)('retains durable proof and blocks pause/revoke after three P2034 finalization conflicts', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture();
+      const reservationId = f.bound.reservation.id;
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      await crashAfterReconcile(reservationId, f.secret);
+      const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { reservationId } });
+      expect(marker.mockResult).toBeTruthy();
+      expect(marker.mockResultHash).toMatch(/^[a-f0-9]{64}$/);
+      expect(marker.mockResultRecordedAt).not.toBeNull();
+      expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({ where: { id: reservationId } }))
+        .toMatchObject({ state: 'SUBMITTED', proofType: 'DURABLE_ORDER', proofRef: f.bound.intentId });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.position.count({ where: { userId: f.user.id } })).toBe(1);
+
+      // The sequence is nontransactional: each aborted DELETE still records one attempt.
+      // This trigger exists only in the dedicated 001K database and is removed below.
+      try {
+        await prisma.$executeRawUnsafe('CREATE SEQUENCE mock_retry_exhaustion_seq START 1');
+        await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_retry_exhaustion() RETURNS trigger
+          LANGUAGE plpgsql AS $$ BEGIN
+            PERFORM nextval('mock_retry_exhaustion_seq');
+            RAISE EXCEPTION USING ERRCODE = '40001', MESSAGE = 'forced retry exhaustion';
+            RETURN OLD;
+          END $$`);
+        await prisma.$executeRawUnsafe(`CREATE TRIGGER mock_retry_exhaustion_trigger
+          BEFORE DELETE ON "LiveCreateOrderSubmission"
+          FOR EACH ROW EXECUTE FUNCTION mock_retry_exhaustion()`);
+
+        await expect(finalizeBoundExternalClientGrantMockOrphan({ reservationId, secret: f.secret }))
+          .rejects.toMatchObject({ code: 'P2034' });
+        const attempts = await prisma.$queryRawUnsafe<Array<{ last_value: bigint }>>(
+          'SELECT last_value FROM mock_retry_exhaustion_seq');
+        expect(attempts[0].last_value).toBe(3n);
+        expect(await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { reservationId } }))
+          .toMatchObject({ id: marker.id, mockResultHash: marker.mockResultHash });
+        expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({ where: { id: reservationId } }))
+          .toMatchObject({ state: 'SUBMITTED', proofType: 'DURABLE_ORDER', proofRef: f.bound.intentId });
+        expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+        expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(1);
+        expect(await prisma.position.count({ where: { userId: f.user.id } })).toBe(1);
+        expect(await prisma.log.count({ where: { entityId: reservationId,
+          action: 'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED' } })).toBe(0);
+        expect(await prisma.log.count({ where: { entityId: reservationId,
+          action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(1);
+        expect(await prisma.log.count({ where: { entityId: reservationId,
+          action: 'EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED' } })).toBe(1);
+        expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+          .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+        await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+          reason: 'Finalization retry exhausted', expectedVersion: control.version }))
+          .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+        await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+          .rejects.toMatchObject({ status: 409 });
+      } finally {
+        await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_retry_exhaustion_trigger ON "LiveCreateOrderSubmission"');
+        await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_retry_exhaustion()');
+        await prisma.$executeRawUnsafe('DROP SEQUENCE IF EXISTS mock_retry_exhaustion_seq');
+      }
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
   it('retains the marker on malformed and duplicated finalization audits', async () => {
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
     try {

@@ -206,6 +206,17 @@ fill, one finalization audit, one mock transport start, one allowance charge,
 and a reusable finalized lookup after the marker is removed. Missing or
 conflicting journal proof still keeps the marker and returns UNKNOWN.
 
+`SOAR-EXT-GRANT-001K/RETRY-EXHAUSTION-FAIL-CLOSED` exercises three consecutive
+PostgreSQL `P2034` conflicts at the finalizer's marker DELETE on a fresh,
+dedicated `_test` database. A test-only trigger raises SQLSTATE `40001`; a
+nontransactional sequence proves that all three serializable attempts ran.
+The trigger and sequence are removed by the test. The fixed mock result journal,
+Order, fill, position, and `SUBMITTED` reservation with `DURABLE_ORDER` proof
+were committed before finalization, so failed finalization cannot roll them
+back. After retry exhaustion the marker remains, no finalization audit is
+committed, pause and grant revocation stay blocked, and transport and allowance
+counts remain one. This is local fixed-mock evidence only.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing
