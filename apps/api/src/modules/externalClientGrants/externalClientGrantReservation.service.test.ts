@@ -12,6 +12,7 @@ import {
   admitBoundExternalClientGrantSubmission, beginBoundExternalClientGrantSubmission,
   beginExternalClientGrantSubmission,
   bindExternalClientGrantReservationIntent, reconcileSubmittedExternalClientGrantReservation,
+  prepareBoundExternalClientGrantAdapterSeam,
   refundUnsentExternalClientGrantReservation, reserveExternalClientGrantOrder,
   withFreshBoundExternalClientGrantSubmitPermit,
   type GrantLimitCommand,
@@ -37,6 +38,8 @@ afterEach(async () => {
     await prisma.bot.deleteMany({ where: { userId } });
     await prisma.symbolGroup.deleteMany({ where: { userId } });
     await prisma.marketUniverse.deleteMany({ where: { userId } });
+    await prisma.strategy.deleteMany({ where: { userId } });
+    await prisma.wallet.deleteMany({ where: { userId } });
     await prisma.userSubscription.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { id: userId } });
   }
@@ -45,6 +48,7 @@ afterEach(async () => {
 const fixture = async (
   limits = { maxActionQuoteAmount: '50', maxTotalQuoteAmount: '100', maxActions: 2 },
   exchange: Exchange = 'BINANCE', marketType: TradeMarket = 'FUTURES',
+  domainReady = false,
 ) => {
   assertTestDb();
   const user = await prisma.user.create({ data: {
@@ -57,13 +61,24 @@ const fixture = async (
   });
   const universe = await prisma.marketUniverse.create({ data: {
     userId: user.id, name: 'Reservation universe', exchange, marketType, baseCurrency: 'USDT',
+    ...(domainReady ? { whitelist: ['BTCUSDT'] } : {}),
   } });
   const group = await prisma.symbolGroup.create({ data: {
     userId: user.id, marketUniverseId: universe.id, name: 'BTC', symbols: ['BTCUSDT'],
   } });
+  const strategy = domainReady ? await prisma.strategy.create({ data: {
+    userId: user.id, name: 'Delegated seam strategy', interval: '5m', leverage: 5,
+    walletRisk: 1, config: { additional: { orderType: 'LIMIT', marginMode: 'ISOLATED' } },
+  } }) : null;
+  const wallet = domainReady ? await prisma.wallet.create({ data: {
+    userId: user.id, name: 'Delegated seam wallet', mode: 'LIVE', exchange, marketType,
+    baseCurrency: 'USDT',
+  } }) : null;
   const bot = await prisma.bot.create({ data: {
     userId: user.id, name: 'Reservation bot', mode: 'LIVE', exchange, marketType,
     isActive: true, liveOptIn: true, symbolGroupId: group.id,
+    ...(domainReady ? { consentTextVersion: 'mvp-v1', strategyId: strategy!.id,
+      walletId: wallet!.id } : {}),
   } });
   const { grant, secret } = await createExternalClientGrant(user.id, {
     botId: bot.id, clientLabel: 'Test external client', exchange, marketType,
@@ -73,9 +88,9 @@ const fixture = async (
     userId: user.id, botId: bot.id, exchange, marketType,
     symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER', clientOrderId: `soar_${crypto.randomUUID().replace(/-/g, '').slice(0, 22)}`,
     side: 'BUY', type: 'LIMIT', quantity: '0.5', limitPrice: '100', reduceOnly: false,
-    walletId: null, strategyId: null, positionId: null,
+    walletId: wallet?.id ?? null, strategyId: strategy?.id ?? null, positionId: null,
   };
-  return { user, bot, group, grant, secret, command };
+  return { user, bot, group, strategy, wallet, grant, secret, command };
 };
 
 const reserve = (f: Awaited<ReturnType<typeof fixture>>, command = f.command, db?: PrismaClient) =>
@@ -125,6 +140,78 @@ const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission',
 };
 
 describe('external client grant atomic reservation', () => {
+  it('denies delegated preparation when the shared LIVE domain risk gate fails', async () => {
+    const f = await fixture();
+    const bound = await bind(f);
+    await expect(prepareBoundExternalClientGrantAdapterSeam({
+      reservationId: bound.reservation.id, secret: f.secret,
+    }, { getSymbolRules: rules })).rejects.toMatchObject({ code: 'LIVE_BOT_OPT_IN_REQUIRED' });
+    expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+      where: { id: bound.reservation.id },
+    })).state).toBe('RESERVED');
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+  });
+
+  it('binds domain risk and intent fingerprint to admission without a dispatch capability', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    const restarted = new PrismaClient();
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const bound = await bind(f);
+      const prepared = await prepareBoundExternalClientGrantAdapterSeam({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { getSymbolRules: rules });
+      expect(prepared).toMatchObject({ reused: false, lookupOnly: true,
+        domainRiskChecked: true, dispatchEnabled: false, intentId: bound.intentId,
+        clientOrderId: bound.reservation.clientOrderId });
+      expect(JSON.stringify(prepared)).not.toContain(f.secret);
+      expect(await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+        where: { id: prepared.markerId },
+      })).toMatchObject({ grantId: f.grant.id, reservationId: bound.reservation.id,
+        intentId: bound.intentId });
+      const retry = await prepareBoundExternalClientGrantAdapterSeam({
+        reservationId: bound.reservation.id, secret: f.secret,
+      }, { db: restarted, getSymbolRules: async () => { throw new Error('retry must not refresh market'); } });
+      expect(retry).toMatchObject({ markerId: prepared.markerId, reused: true,
+        lookupOnly: true, domainRiskChecked: false, dispatchEnabled: false });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1,
+        usedQuoteAmount: new Prisma.Decimal(50) });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      await expect(refundUnsentExternalClientGrantReservation(bound.reservation.id))
+        .rejects.toMatchObject({ code: 'NO_AUTHORITATIVE_NO_SUBMIT_PROOF' });
+      const audit = await prisma.log.findFirst({ where: { userId: f.user.id,
+        action: 'EXTERNAL_CLIENT_GRANT_ADMITTED' }, select: { metadata: true } });
+      expect(JSON.stringify(audit)).not.toContain(f.secret);
+    } finally {
+      await restarted.$disconnect();
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  });
+
+  it('rejects an intent fingerprint mismatch before admission or mock dispatch', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const bound = await bind(f);
+    await prisma.liveOrderIntent.update({ where: { id: bound.intentId },
+      data: { payloadHash: 'tampered-fingerprint' } });
+    await expect(prepareBoundExternalClientGrantAdapterSeam({
+      reservationId: bound.reservation.id, secret: f.secret,
+    }, { getSymbolRules: rules })).rejects.toMatchObject({ code: 'DELEGATED_DOMAIN_COMMAND_MISMATCH' });
+    expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+      where: { id: bound.reservation.id },
+    })).state).toBe('RESERVED');
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+  });
+
   it('commits a bound marker and uncertain reservation across process exit; retry is lookup-only', async () => {
     const f = await fixture();
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });

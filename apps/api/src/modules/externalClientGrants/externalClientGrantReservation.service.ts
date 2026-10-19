@@ -6,7 +6,9 @@ import { isAppErrorLike } from '../../lib/errors';
 import { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
-import { persistOrReuseLiveOrderIntent, resolveLiveClientOrderId } from '../orders/orders.liveIntent.service';
+import { fingerprintLiveOrderIntentPayload, persistOrReuseLiveOrderIntent, resolveLiveClientOrderId,
+  type LiveOrderPayload } from '../orders/orders.liveIntent.service';
+import { prepareOpenOrderRiskContext } from '../orders/orders.service';
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 
@@ -173,8 +175,8 @@ const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
   return prepared.intentId;
 };
 
-const hasAtomicIntentBinding = async (tx: Tx, reservationId: string, intentId: string) => {
-  const audit = await tx.log.findFirst({ where: {
+const hasAtomicIntentBinding = async (db: DbClient | Tx, reservationId: string, intentId: string) => {
+  const audit = await db.log.findFirst({ where: {
     entityType: 'ExternalClientGrantReservation', entityId: reservationId,
     action: 'EXTERNAL_CLIENT_GRANT_RESERVED',
   }, select: { metadata: true } });
@@ -326,7 +328,8 @@ export const beginBoundExternalClientGrantSubmission = (
 // a crash or retry leaves them lookup-only until explicit venue reconciliation.
 export const admitBoundExternalClientGrantSubmission = async (
   input: { reservationId: string; secret: string },
-  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader } = {},
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader;
+    expectedIntentPayloadHash?: string } = {},
 ) => {
   const db = deps.db ?? prisma;
   if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
@@ -359,6 +362,14 @@ export const admitBoundExternalClientGrantSubmission = async (
     const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: current.clientOrderId } });
     if (!intent || !intentMatchesCommandAndScope(intent, command) ||
         !await hasAtomicIntentBinding(tx, current.id, intent.id)) {
+      return deny('RESERVATION_INTENT_UNAVAILABLE');
+    }
+    const intentPayload = intent.payload;
+    if (!intentPayload || typeof intentPayload !== 'object' || Array.isArray(intentPayload) ||
+        (intentPayload as Record<string, unknown>).mode !== 'LIVE' ||
+        (intentPayload as Record<string, unknown>).riskAck !== true ||
+        (intentPayload as Record<string, unknown>).clientOrderId !== command.clientOrderId ||
+        (deps.expectedIntentPayloadHash && intent.payloadHash !== deps.expectedIntentPayloadHash)) {
       return deny('RESERVATION_INTENT_UNAVAILABLE');
     }
     if (current.state === 'SUBMISSION_UNCERTAIN') {
@@ -402,6 +413,74 @@ export const admitBoundExternalClientGrantSubmission = async (
     return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
       reused: false, lookupOnly: true } as const;
   }, transactionOptions);
+};
+
+// The adapter seam shares the domain preflight and the durable admission, but
+// returns no submit capability. In particular, an existing intent/marker is
+// lookup-only after a crash or UNKNOWN outcome.
+export const prepareBoundExternalClientGrantAdapterSeam = async (
+  input: { reservationId: string; secret: string },
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader } = {},
+) => {
+  const db = deps.db ?? prisma;
+  if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
+  const reservation = await db.externalClientGrantReservation.findUnique({
+    where: { id: input.reservationId },
+  });
+  if (!reservation) return deny('RESERVATION_UNAVAILABLE');
+  const grant = await db.externalClientGrant.findUnique({
+    where: { id: reservation.grantId }, select: { secretHash: true },
+  });
+  if (!grant || grant.secretHash !== secretHash(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
+  const command = canonicalize(reservation.command);
+  if (reservation.clientOrderId !== command.clientOrderId ||
+      reservation.commandHash !== fingerprint(command)) return deny('RESERVATION_COMMAND_UNAVAILABLE');
+  const intent = await db.liveOrderIntent.findUnique({ where: { clientOrderId: command.clientOrderId } });
+  if (!intent || !intentMatchesCommandAndScope(intent, command) ||
+      !await hasAtomicIntentBinding(db, reservation.id, intent.id)) return deny('RESERVATION_INTENT_UNAVAILABLE');
+  if (reservation.state === 'SUBMISSION_UNCERTAIN') {
+    const recovered = await admitBoundExternalClientGrantSubmission(input, deps);
+    return { ...recovered, clientOrderId: command.clientOrderId,
+      domainRiskChecked: false, dispatchEnabled: false } as const;
+  }
+  if (reservation.state !== 'RESERVED' || reservation.dispatchStartedAt) {
+    return deny('RESERVATION_NOT_DISPATCHABLE');
+  }
+  const rawPayload = intent.payload;
+  if (!rawPayload || typeof rawPayload !== 'object' || Array.isArray(rawPayload) ||
+      (rawPayload as Record<string, unknown>).mode !== 'LIVE' ||
+      (rawPayload as Record<string, unknown>).riskAck !== true ||
+      (rawPayload as Record<string, unknown>).clientOrderId !== command.clientOrderId) {
+    return deny('RESERVATION_INTENT_UNAVAILABLE');
+  }
+  const payload: LiveOrderPayload = {
+    botId: command.botId, walletId: command.walletId ?? undefined,
+    strategyId: command.strategyId ?? undefined, positionId: command.positionId,
+    symbol: command.symbol, side: command.side, type: command.type,
+    quantity: representableNumber(command.quantity), price: representableNumber(command.limitPrice),
+    reduceOnly: command.reduceOnly, mode: 'LIVE', riskAck: true,
+    clientOrderId: command.clientOrderId,
+  };
+  const prepared = await prepareOpenOrderRiskContext(command.userId, payload);
+  const canonical = prepared.canonicalPayload;
+  const bot = prepared.liveBot;
+  if (!bot || bot.exchange !== command.exchange || bot.marketType !== command.marketType ||
+      canonical.mode !== 'LIVE' || canonical.botId !== command.botId ||
+      (canonical.walletId ?? null) !== command.walletId ||
+      (canonical.strategyId ?? null) !== command.strategyId ||
+      (canonical.positionId ?? null) !== command.positionId ||
+      canonical.clientOrderId !== command.clientOrderId ||
+      canonical.symbol !== command.symbol || canonical.side !== command.side ||
+      canonical.type !== command.type || (canonical.reduceOnly ?? false) !== command.reduceOnly ||
+      !new Prisma.Decimal(canonical.quantity.toString()).eq(command.quantity) ||
+      canonical.price == null || !new Prisma.Decimal(canonical.price.toString()).eq(command.limitPrice) ||
+      intent.payloadHash !== fingerprintLiveOrderIntentPayload(command.userId, bot, canonical)) {
+    return deny('DELEGATED_DOMAIN_COMMAND_MISMATCH');
+  }
+  const admitted = await admitBoundExternalClientGrantSubmission(input,
+    { ...deps, expectedIntentPayloadHash: intent.payloadHash });
+  return { ...admitted, clientOrderId: command.clientOrderId,
+    domainRiskChecked: true, dispatchEnabled: false } as const;
 };
 
 // Fail closed: an interactive Prisma transaction can time out and release its

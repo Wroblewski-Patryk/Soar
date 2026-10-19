@@ -129,6 +129,26 @@ point-in-time gates, not locks held through a future venue call. The marker
 requires explicit authoritative reconciliation before it may be cleared;
 there is no automatic timeout cleanup.
 
+`SOAR-EXT-GRANT-001F/DELEGATED-DISPATCH-MOCK` adds the internal
+`prepareBoundExternalClientGrantAdapterSeam`. It runs the same read-only
+bot/consent/strategy/position-conflict/plan gate used by human `openOrder`
+before calling durable admission. It requires the domain's canonical payload
+to match the reserved LIMIT command and the stored `LiveOrderIntent` payload
+fingerprint. A mismatch leaves the reservation `RESERVED` with no marker or
+Order; the already bound allowance and intent remain durable. A retry of an
+uncertain admission returns only lookup identity, without another risk pass,
+market fetch, allowance charge, or submit. The result explicitly has
+`dispatchEnabled: false` and contains no grant secret. The previous
+`DELEGATED_SUBMIT_PERMIT_DISABLED` callback remains closed.
+
+The next small ticket must add a test-database-only mock executor using this
+preparation, retain the marker while the mock call is active, materialize a
+certain result through the existing Order/fill path, reconcile the reservation,
+and clear the marker only after authoritative completion. An `UNKNOWN` result
+or crash must leave the marker and use lookup-only recovery. This preparation
+does not call an adapter, create an Order, or reconcile a reservation; domain
+risk checks are point-in-time and must be repeated or protected at execution.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

@@ -57,7 +57,7 @@ export const resolveLiveClientOrderId = (input: string | null | undefined, excha
     : source;
 };
 
-const liveIntentPayloadHash = (userId: string, bot: LiveBotContext, payload: LiveOrderPayload) =>
+export const fingerprintLiveOrderIntentPayload = (userId: string, bot: LiveBotContext, payload: LiveOrderPayload) =>
   createHash('sha256').update(JSON.stringify({
     userId,
     botId: payload.botId ?? null,
@@ -93,7 +93,7 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
-  const payloadHash = liveIntentPayloadHash(userId, bot, payload);
+  const payloadHash = fingerprintLiveOrderIntentPayload(userId, bot, payload);
   let createdIntent = false;
   let intent: LiveOrderIntent | null;
   const data = {
@@ -137,7 +137,7 @@ export const persistOrReuseLiveOrderIntent = async (params: {
     } : {}),
   } : payload;
   const runtimeVolatileOnly = originalPayload?.origin === 'BOT' && payload.origin === 'BOT' &&
-    liveIntentPayloadHash(userId, bot, {
+    fingerprintLiveOrderIntentPayload(userId, bot, {
       ...payload, quantity: originalPayload.quantity, price: originalPayload.price,
     }) === intent.payloadHash;
   if (intent.userId !== userId || (intent.payloadHash !== payloadHash && !runtimeVolatileOnly)) {

@@ -629,12 +629,10 @@ const resolveExchangeCancelContext = (order: {
   };
 };
 
-export const openOrder = async (
-  userId: string,
-  payload: OpenOrderInput,
-  deps: OpenOrderDeps = defaultOpenOrderDeps
-) => {
-  let { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
+// Shared read-only domain gate for human orders and delegated preparation.
+// Its checks must run before a delegated admission; they are not submit authority.
+export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenOrderInput) => {
+  const { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
   await assertNoImplicitReverseOpenConflict({
     userId,
     payload: canonicalPayload,
@@ -644,6 +642,15 @@ export const openOrder = async (
   if (canonicalPayload.mode === 'LIVE') {
     await assertSubscriptionAllowsLiveTrading(userId);
   }
+  return { canonicalPayload, liveBot };
+};
+
+export const openOrder = async (
+  userId: string,
+  payload: OpenOrderInput,
+  deps: OpenOrderDeps = defaultOpenOrderDeps
+) => {
+  let { canonicalPayload, liveBot } = await prepareOpenOrderRiskContext(userId, payload);
 
   const now = new Date();
   let exchangeOrderId: string | null = null;
