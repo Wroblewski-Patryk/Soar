@@ -1,26 +1,26 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 877,
-    "covered": 877,
+    "total": 887,
+    "covered": 887,
     "missing": 0
   },
   "categories": {
     "apiRoutes": {
-      "total": 24,
-      "covered": 24,
+      "total": 26,
+      "covered": 26,
       "missing": 0,
       "missingSamples": []
     },
     "apiServices": {
-      "total": 133,
-      "covered": 133,
+      "total": 135,
+      "covered": 135,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 236,
-      "covered": 236,
+      "total": 238,
+      "covered": 238,
       "missing": 0,
       "missingSamples": []
     },
@@ -43,14 +43,14 @@
       "missingSamples": []
     },
     "webTests": {
-      "total": 156,
-      "covered": 156,
+      "total": 158,
+      "covered": 158,
       "missing": 0,
       "missingSamples": []
     },
     "moduleDocs": {
-      "total": 47,
-      "covered": 47,
+      "total": 48,
+      "covered": 48,
       "missing": 0,
       "missingSamples": []
     },
@@ -61,8 +61,8 @@
       "missingSamples": []
     },
     "configAndPipelines": {
-      "total": 11,
-      "covered": 11,
+      "total": 12,
+      "covered": 12,
       "missing": 0,
       "missingSamples": []
     }

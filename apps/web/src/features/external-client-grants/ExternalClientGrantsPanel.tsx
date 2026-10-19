@@ -10,6 +10,7 @@ import type { ProfileSubscriptionResponse } from "@/features/profile/types/subsc
 import { listMarketUniverses } from "@/features/markets/services/markets.service";
 import type { MarketUniverse } from "@/features/markets/types/marketUniverse.type";
 import { activeGrantSymbols, decimalUnits, getGrantStatus, subscriptionAllowsGrant } from "./grantStatus";
+import ReadBotStatusGrants from "./ReadBotStatusGrants";
 import {
   createExternalClientGrant, listExternalClientGrants, revokeExternalClientGrant,
   type ExternalClientGrant,
@@ -34,6 +35,7 @@ export default function ExternalClientGrantsPanel() {
   const [formError, setFormError] = useState("");
   const [actionError, setActionError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [readExclusive, setReadExclusive] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const [issued, setIssued] = useState<{ secret: string; grant: ExternalClientGrant } | null>(null);
@@ -174,7 +176,7 @@ export default function ExternalClientGrantsPanel() {
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormError("");
-    if (!selectedBot || !selectedGraph || !symbols.includes(symbol) || !canCreate) {
+    if (!selectedBot || !selectedGraph || !symbols.includes(symbol) || !canCreate || readExclusive) {
       setFormError(copy("scopeError"));
       return;
     }
@@ -251,6 +253,8 @@ export default function ExternalClientGrantsPanel() {
         <p className="mt-1">{copy("boundary")}</p>
       </div>
 
+      <ReadBotStatusGrants blocked={saving || Boolean(issued)} onExclusiveChange={setReadExclusive} />
+
       {issued ? (
         <section role="dialog" aria-modal="true" aria-label={copy("secretTitle")}
           ref={secretDialogRef} tabIndex={-1}
@@ -291,7 +295,7 @@ export default function ExternalClientGrantsPanel() {
           <p className="text-sm text-warning">{copy("noEligibleBots")}</p> : null}
         {!loading && !loadError ? (
           <form onSubmit={(event) => void handleCreate(event)} className="space-y-4">
-            <fieldset disabled={!canCreate || saving || Boolean(issued)} className="space-y-4">
+            <fieldset disabled={!canCreate || saving || Boolean(issued) || readExclusive} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="form-control block text-sm font-medium">
                   <span>{copy("clientLabel")}</span>
@@ -354,7 +358,7 @@ export default function ExternalClientGrantsPanel() {
               </label>
               <p className="text-xs opacity-70">{copy("passwordHint")}</p>
               {formError ? <p role="alert" className="text-sm text-error">{formError}</p> : null}
-              <button ref={createButtonRef} type="submit" className="btn btn-primary" disabled={!canCreate || saving || Boolean(issued)}>
+              <button ref={createButtonRef} type="submit" className="btn btn-primary" disabled={!canCreate || saving || Boolean(issued) || readExclusive}>
                 {saving ? copy("creating") : copy("create")}
               </button>
             </fieldset>
@@ -365,7 +369,7 @@ export default function ExternalClientGrantsPanel() {
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-lg font-semibold">{copy("listTitle")}</h3>
-          <button type="button" className="btn btn-outline btn-sm" onClick={() => void load()} disabled={loading || saving}>
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => void load()} disabled={loading || saving || readExclusive}>
             {copy("refresh")}
           </button>
         </div>
@@ -407,13 +411,13 @@ export default function ExternalClientGrantsPanel() {
                       <div className="space-y-2">
                         <p className="text-sm">{copy("revokeConfirm")}</p>
                         <div className="flex flex-wrap gap-2">
-                          <button type="button" className="btn btn-error btn-sm" disabled={revokingId === grant.id}
+                          <button type="button" className="btn btn-error btn-sm" disabled={revokingId === grant.id || readExclusive}
                             onClick={() => void handleRevoke(grant.id)}>{revokingId === grant.id ? copy("revoking") : copy("confirmRevoke")}</button>
-                          <button type="button" className="btn btn-outline btn-sm" disabled={revokingId === grant.id}
+                          <button type="button" className="btn btn-outline btn-sm" disabled={revokingId === grant.id || readExclusive}
                             onClick={() => setConfirmRevokeId(null)}>{copy("cancel")}</button>
                         </div>
                       </div>
-                    ) : <button type="button" className="btn btn-outline btn-error btn-sm"
+                    ) : <button type="button" className="btn btn-outline btn-error btn-sm" disabled={readExclusive}
                       onClick={() => setConfirmRevokeId(grant.id)}>{copy("revoke")}</button>}
                   </div>
                 ) : null}

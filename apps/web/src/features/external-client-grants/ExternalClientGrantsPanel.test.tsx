@@ -4,6 +4,8 @@ import { I18nProvider } from "@/i18n/I18nProvider";
 import ExternalClientGrantsPanel from "./ExternalClientGrantsPanel";
 
 const listGrants = vi.hoisted(() => vi.fn());
+const listReadGrants = vi.hoisted(() => vi.fn());
+const createReadGrant = vi.hoisted(() => vi.fn());
 const createGrant = vi.hoisted(() => vi.fn());
 const revokeGrant = vi.hoisted(() => vi.fn());
 const listBots = vi.hoisted(() => vi.fn());
@@ -15,6 +17,10 @@ vi.mock("./grants.api", () => ({
   listExternalClientGrants: listGrants,
   createExternalClientGrant: createGrant,
   revokeExternalClientGrant: revokeGrant,
+}));
+vi.mock("./readGrants.api", () => ({
+  listExternalClientReadGrants: listReadGrants,
+  createExternalClientReadGrant: createReadGrant,
 }));
 vi.mock("@/features/bots/services/bots.service", () => ({ listBots, getBotRuntimeGraph: getGraph }));
 vi.mock("@/features/profile/services/subscription.service", () => ({ getProfileSubscription: getSubscription }));
@@ -31,6 +37,11 @@ beforeEach(() => {
   window.localStorage.setItem("cryptosparrow-locale", "en");
   window.history.pushState({}, "", "/dashboard/profile");
   listGrants.mockResolvedValue([]);
+  listReadGrants.mockResolvedValue([]);
+  createReadGrant.mockResolvedValue({ grant: {
+    id: "read-1", botId: "bot-1", clientLabel: "Reader", action: "READ_BOT_STATUS",
+    expiresAt: "2030-01-01T00:00:00.000Z", revokedAt: null, createdAt: "2026-10-19T00:00:00.000Z",
+  }, secret: "soar_read_once" });
   listBots.mockResolvedValue([{ id: "bot-1", name: "LIVE bot", mode: "LIVE", isActive: true, liveOptIn: true,
     exchange: "BINANCE", marketType: "FUTURES",
     symbolGroup: { id: "group-1", symbols: ["BTCUSDT"], marketUniverse: { exchange: "BINANCE", marketType: "FUTURES" } } }]);
@@ -91,6 +102,8 @@ describe("external client grants panel", () => {
     render(<I18nProvider><ExternalClientGrantsPanel /></I18nProvider>);
     expect(await screen.findByText("Local client")).toBeInTheDocument();
     expect(screen.queryByText("soar_ext_once_only")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Place LIVE order").length).toBeGreaterThan(0);
+    expect(screen.queryByText("Read bot status only · no orders")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Revoke grant" }));
     expect(revokeGrant).not.toHaveBeenCalled();
@@ -144,5 +157,20 @@ describe("external client grants panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Refresh status" }));
     expect(await screen.findByText("Status unverified")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Create grant" })).not.toBeInTheDocument();
+  });
+
+  it("keeps the two secret creation flows mutually exclusive", async () => {
+    render(<I18nProvider><ExternalClientGrantsPanel /></I18nProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Set up read-only grant" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Create read-only grant" })).toBeEnabled());
+    fireEvent.change(screen.getByLabelText("Read-only client label"), { target: { value: "Reader" } });
+    fireEvent.change(screen.getByLabelText("Bot to read"), { target: { value: "bot-1" } });
+    fireEvent.change(screen.getByLabelText("Confirm read grant with your account password"), { target: { value: "OwnerPassword" } });
+    fireEvent.click(screen.getByRole("button", { name: "Create read-only grant" }));
+    expect(await screen.findByRole("dialog", { name: "Save this read-only secret now" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Create grant" })).toBeDisabled();
+    expect(createGrant).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "I saved it — close" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Create grant" })).toBeEnabled());
   });
 });
