@@ -189,7 +189,9 @@ marker, and audit, then uses the existing Order/fill/position and reservation
 reconciliation path. It calls no transport or venue adapter. The existing
 orphan finalizer checks the completed records before deleting the marker;
 normal success uses that finalizer too, and repeat lookup reads its audit.
-The fixed transport computes fill notional with decimal arithmetic. Tests on a dedicated
+The fixed transport computes fill notional with decimal arithmetic and rejects
+amounts that cannot round-trip through its numeric fill field before admission.
+Tests on a dedicated
 `_test` database cover both sides of the result commit, tampered result hash,
 pause/revoke blocking, one fill, and unchanged allowance usage. This remains
 local mock proof, not delegated LIVE authority.

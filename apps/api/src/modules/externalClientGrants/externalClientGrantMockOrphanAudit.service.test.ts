@@ -15,7 +15,8 @@ const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0
   priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT', settleCurrency: 'USDT',
   isContract: true, isLinear: true, isInverse: false });
 
-const fixture = async (amounts: Partial<Pick<GrantLimitCommand, 'quantity' | 'limitPrice'>> = {}) => {
+const fixture = async (amounts: Partial<Pick<GrantLimitCommand, 'quantity' | 'limitPrice'>> &
+  { grantLimit?: string } = {}) => {
   if (!decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname).endsWith('_test')) {
     throw new Error('Mock orphan audit tests require an isolated _test database');
   }
@@ -52,7 +53,8 @@ const fixture = async (amounts: Partial<Pick<GrantLimitCommand, 'quantity' | 'li
   const { grant, secret } = await createExternalClientGrant(user.id, {
     botId: bot.id, clientLabel: 'Mock orphan audit', exchange: 'BINANCE',
     marketType: 'FUTURES', symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
-    maxActionQuoteAmount: '50', maxTotalQuoteAmount: '100', maxActions: 2,
+    maxActionQuoteAmount: amounts.grantLimit ?? '50',
+    maxTotalQuoteAmount: amounts.grantLimit ?? '100', maxActions: 2,
     ttlSeconds: 3600, password: 'GrantTest1234',
   });
   const command: GrantLimitCommand = {
@@ -215,6 +217,32 @@ describe('fixed mock orphan finalization audit cardinality', () => {
 });
 
 describe('fixed mock result lookup after process death', () => {
+  it('rejects a nonrepresentable mock notional before admission', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture({ quantity: '999999999.999', limitPrice: '999.99',
+        grantLimit: '999999999999.99' });
+      const reservationId = f.bound.reservation.id;
+      await expect(executeBoundExternalClientGrantMock({ reservationId, secret: f.secret }))
+        .rejects.toMatchObject({ code: 'DELEGATED_MOCK_NOTIONAL_NOT_REPRESENTABLE' });
+      expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({ where: { id: reservationId } }))
+        .toMatchObject({ state: 'RESERVED', dispatchStartedAt: null });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { reservationId } })).toBe(0);
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await prisma.log.count({ where: { entityId: reservationId,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(0);
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
   it('reads back a normal success and preserves decimal notional', async () => {
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
     try {

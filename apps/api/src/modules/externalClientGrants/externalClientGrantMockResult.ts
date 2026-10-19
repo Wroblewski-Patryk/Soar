@@ -22,6 +22,10 @@ type Snapshot = z.infer<typeof resultSchema>;
 type Scope = { clientOrderId: string; exchange: string;
   symbol: string; side: 'BUY' | 'SELL'; quantity: string; limitPrice: string };
 const eq = (actual: number, expected: string) => new Prisma.Decimal(actual.toString()).eq(expected);
+export const mockNotionalRepresentable = (scope: Scope) => {
+  const exact = new Prisma.Decimal(scope.quantity).mul(scope.limitPrice);
+  return new Prisma.Decimal(exact.toNumber().toString()).eq(exact);
+};
 
 export const hashMockResult = (snapshot: Snapshot) =>
   createHash('sha256').update(JSON.stringify(snapshot), 'utf8').digest('hex');

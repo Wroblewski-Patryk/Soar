@@ -12,7 +12,7 @@ import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '.
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
-import { captureMockResult, decodeMockResult, hashMockResult } from './externalClientGrantMockResult';
+import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable } from './externalClientGrantMockResult';
 
 type DbClient = PrismaClient;
 type Tx = Prisma.TransactionClient;
@@ -422,7 +422,7 @@ export const admitBoundExternalClientGrantSubmission = async (
 // lookup-only after a crash or UNKNOWN outcome.
 export const prepareBoundExternalClientGrantAdapterSeam = async (
   input: { reservationId: string; secret: string },
-  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader } = {},
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader; requireMockNotionalRepresentable?: true } = {},
 ) => {
   const db = deps.db ?? prisma;
   if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
@@ -437,6 +437,7 @@ export const prepareBoundExternalClientGrantAdapterSeam = async (
   const command = canonicalize(reservation.command);
   if (reservation.clientOrderId !== command.clientOrderId ||
       reservation.commandHash !== fingerprint(command)) return deny('RESERVATION_COMMAND_UNAVAILABLE');
+  if (deps.requireMockNotionalRepresentable && reservation.state === 'RESERVED' && !mockNotionalRepresentable(command)) return deny('DELEGATED_MOCK_NOTIONAL_NOT_REPRESENTABLE');
   const intent = await db.liveOrderIntent.findUnique({ where: { clientOrderId: command.clientOrderId } });
   if (!intent || !intentMatchesCommandAndScope(intent, command) ||
       !await hasAtomicIntentBinding(db, reservation.id, intent.id)) return deny('RESERVATION_INTENT_UNAVAILABLE');
@@ -520,7 +521,7 @@ export async function executeBoundExternalClientGrantMock(
     return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
   }
   const admitted = await prepareBoundExternalClientGrantAdapterSeam(request.data,
-    { getSymbolRules: fixedMockSymbolRules });
+    { getSymbolRules: fixedMockSymbolRules, requireMockNotionalRepresentable: true });
   if (admitted.reused) return { ...admitted, orderId: null } as const;
 
   const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
@@ -622,9 +623,7 @@ export async function executeBoundExternalClientGrantMock(
   }
   const finalized = await finalizeBoundExternalClientGrantMockOrphan({ reservationId: reservation.id,
     secret: request.data.secret });
-  if (finalized.orderId !== order.id || finalized.markerId !== admitted.markerId) {
-    return deny('DELEGATED_MOCK_MARKER_CLEAR_UNCONFIRMED');
-  }
+  if (finalized.orderId !== order.id || finalized.markerId !== admitted.markerId) return deny('DELEGATED_MOCK_MARKER_CLEAR_UNCONFIRMED');
   return { reservationId: reservation.id, intentId: intent.id,
     clientOrderId: command.clientOrderId, orderId: order.id,
     submitted: true, dispatchEnabled: false } as const;
