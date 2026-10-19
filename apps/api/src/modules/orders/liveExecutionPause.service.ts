@@ -100,6 +100,19 @@ export const setLiveExecutionPause = async (input: {
   }
 };
 
+/** Acquire the shared pause key in a caller-owned transaction held through submit. */
+export const assertLiveCreateOrderPermittedInTransaction = async (
+  input: { marketType: 'spot' | 'swap' | 'future'; reduceOnly: boolean },
+  tx: Prisma.TransactionClient,
+) => {
+  await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock_shared(${LOCK_KEY})) AS acquired`;
+  const control = await tx.liveExecutionControl.findUnique({ where: { id: CONTROL_ID } });
+  if (!control) throw orderErrors.livePretradePauseUnavailable();
+  if (control.paused && !(input.reduceOnly && input.marketType !== 'spot')) {
+    throw orderErrors.livePretradePaused();
+  }
+};
+
 /** Hold a shared DB lock through createOrder. Pause/resume takes the exclusive lock. */
 export const withLiveCreateOrderPermit = async <T>(
   input: { marketType: 'spot' | 'swap' | 'future'; reduceOnly: boolean },
@@ -109,12 +122,7 @@ export const withLiveCreateOrderPermit = async <T>(
   let submitStarted = false;
   try {
     return await db.$transaction(async (tx: Prisma.TransactionClient) => {
-      await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock_shared(${LOCK_KEY})) AS acquired`;
-      const control = await tx.liveExecutionControl.findUnique({ where: { id: CONTROL_ID } });
-      if (!control) throw orderErrors.livePretradePauseUnavailable();
-      if (control.paused && !(input.reduceOnly && input.marketType !== 'spot')) {
-        throw orderErrors.livePretradePaused();
-      }
+      await assertLiveCreateOrderPermittedInTransaction(input, tx);
       submitStarted = true;
       return submit();
     }, { maxWait: 10_000, timeout: 120_000 });

@@ -95,9 +95,22 @@ Exact retry returns the same bound rows without another charge.
 `beginBoundExternalClientGrantSubmission` checks that binding, current grant
 authority, and the shared global LIVE pause control in one transaction before
 committing `SUBMISSION_UNCERTAIN`. The pause advisory lock ends at that commit.
-There is still no delegated adapter call or Order write. The next ticket must
-recheck authority and hold the shared pause permit through `createOrder`, then
-materialize the Order and reconcile the reservation. A revoke, expiry, plan/group
-change, or pause between preparation and submit must deny without another submit;
-an existing intent or `UNKNOWN` must stay lookup-only and must not be refunded.
-No external HTTP/MCP route, real venue submit, or deployed proof is claimed.
+
+`SOAR-EXT-GRANT-001D3` adds an internal, single-use
+`withFreshBoundExternalClientGrantSubmitPermit` boundary for a mock submit
+callback. It first commits `SUBMISSION_UNCERTAIN`, then locks the grant row and
+shared global LIVE pause key in that order, rechecks the bound command, intent,
+audit, grant authority, bot/group, plan, expiry, and absence of a local Order,
+and holds both locks through the callback. A revoke or global pause that starts
+while the callback runs waits for it to finish. Delegated submissions are
+blocked while paused, including reduce-only Futures commands. A callback
+timeout or crash leaves the reservation uncertain and the allowance spent; a
+retry cannot invoke the callback again and must use venue lookup. The bot/group
+and plan checks are point-in-time checks before the callback; this permit does
+not hold locks on those records through it.
+
+There is still no delegated adapter call, Order materialization, or automatic
+reconciliation. The next ticket must connect this boundary to the existing
+domain risk, exchange, fill, Order, and lookup-only recovery path before any
+delegated LIVE submission. No external HTTP/MCP route, real venue submit, or
+deployed proof is claimed.

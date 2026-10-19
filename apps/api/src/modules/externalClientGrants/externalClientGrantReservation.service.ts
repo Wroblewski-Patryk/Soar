@@ -7,7 +7,7 @@ import { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service'
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import { persistOrReuseLiveOrderIntent, resolveLiveClientOrderId } from '../orders/orders.liveIntent.service';
-import { LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
+import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 
 type DbClient = PrismaClient;
@@ -317,6 +317,46 @@ export const beginBoundExternalClientGrantSubmission = (
   input: { reservationId: string; secret: string }, db: DbClient = prisma,
 ) => beginExternalClientGrantSubmission({ ...input, requireLivePauseCheck: true,
   requireBoundIntent: true }, db);
+
+// This is the single-use internal dispatch boundary. The uncertain state is
+// committed before entering the callback; a retry can only look up the venue.
+// The callback is deliberately not wired to an exchange until Order
+// materialization and recovery share the existing domain execution path.
+export const withFreshBoundExternalClientGrantSubmitPermit = async <T>(
+  input: { reservationId: string; secret: string },
+  submit: (bound: { command: GrantLimitCommand; intentId: string }) => Promise<T>,
+  db: DbClient = prisma,
+): Promise<T> => {
+  await beginBoundExternalClientGrantSubmission(input, db);
+  return db.$transaction(async (tx) => {
+    const found = await tx.externalClientGrantReservation.findUnique({ where: { id: input.reservationId } });
+    if (!found) return deny('RESERVATION_UNAVAILABLE');
+    const grant = await lockGrant(tx, found.grantId);
+    const current = await tx.externalClientGrantReservation.findUnique({ where: { id: found.id } });
+    if (!current || current.state !== 'SUBMISSION_UNCERTAIN' || !current.dispatchStartedAt) {
+      return deny('RESERVATION_NOT_DISPATCHABLE');
+    }
+    const command = canonicalize(current.command);
+    if (current.clientOrderId !== command.clientOrderId || current.commandHash !== fingerprint(command)) {
+      return deny('RESERVATION_COMMAND_UNAVAILABLE');
+    }
+    const intent = await tx.liveOrderIntent.findUnique({ where: { clientOrderId: current.clientOrderId } });
+    if (!intent || !intentMatchesCommandAndScope(intent, command) ||
+        !await hasAtomicIntentBinding(tx, current.id, intent.id)) {
+      return deny('RESERVATION_INTENT_UNAVAILABLE');
+    }
+    const existingOrder = await tx.order.findUnique({ where: { id: intent.id }, select: { id: true } });
+    if (existingOrder) return deny('RESERVATION_NOT_DISPATCHABLE');
+    await assertCurrentScope(tx, grant, input.secret, command);
+    // Lock order is grant row, then shared pause key, matching beginBound.
+    // Delegated submissions are always blocked while paused, including exits.
+    await assertLiveCreateOrderPermittedInTransaction({
+      marketType: command.marketType === 'SPOT' ? 'spot' : 'swap', reduceOnly: false,
+    }, tx);
+    await assertCurrentScope(tx, grant, input.secret, command);
+    return submit({ command, intentId: intent.id });
+  }, { maxWait: 10_000, timeout: 120_000 });
+};
 
 // The only automated refund proof is a locally held pre-dispatch reservation
 // with no durable LiveOrderIntent. UNKNOWN/timeouts never qualify.
