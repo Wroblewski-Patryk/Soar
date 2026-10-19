@@ -57,13 +57,24 @@ const fingerprint = (command: GrantLimitCommand) =>
   createHash('sha256').update(JSON.stringify(command), 'utf8').digest('hex');
 const secretHash = (secret: string) => createHash('sha256').update(secret, 'utf8').digest('hex');
 const secretPattern = /^soar_ext_[A-Za-z0-9_-]{43}$/;
+// Existing grant limit columns are denominated in USDT and have no currency field.
+const grantNominalCurrency = 'USDT';
 
 const resolveQuoteAmount = async (command: GrantLimitCommand, reader: SymbolRulesReader) => {
-  // The existing grant limits have no quote-currency column. This stage only
-  // reserves USDT-denominated LIMIT orders with trusted market lot metadata.
-  if (!command.symbol.endsWith('USDT')) return deny('UNSUPPORTED_QUOTE_CURRENCY');
-  const rules = await reader({ exchange: command.exchange, marketType: command.marketType, symbol: command.symbol });
-  if (!rules || typeof rules.quantityStep !== 'number' || !Number.isFinite(rules.quantityStep) ||
+  const rules = await reader({ exchange: command.exchange, marketType: command.marketType,
+    symbol: command.symbol, requireCurrentMetadata: true });
+  // Symbol spelling and the locally configured market universe are scope
+  // checks, not evidence of the venue's quote or settlement currency.
+  if (!rules || rules.quoteCurrency !== grantNominalCurrency ||
+      (command.marketType === 'FUTURES' &&
+        (rules.settleCurrency !== grantNominalCurrency || rules.isContract !== true ||
+          rules.isLinear !== true || rules.isInverse === true)) ||
+      (command.marketType === 'SPOT' &&
+        (rules.isContract === true || rules.isLinear === true || rules.isInverse === true ||
+          (rules.settleCurrency != null && rules.settleCurrency !== grantNominalCurrency)))) {
+    return deny('UNVERIFIED_MARKET_CURRENCY');
+  }
+  if (typeof rules.quantityStep !== 'number' || !Number.isFinite(rules.quantityStep) ||
       rules.quantityStep <= 0 || typeof rules.priceStep !== 'number' ||
       !Number.isFinite(rules.priceStep) || rules.priceStep <= 0) return deny('UNVERIFIED_MARKET_PRECISION');
   const multiplier = command.marketType === 'SPOT' ? 1 : rules.contractSize;
@@ -82,7 +93,11 @@ const resolveQuoteAmount = async (command: GrantLimitCommand, reader: SymbolRule
       exact.lt(rules.minNotional.toString())) return deny('BELOW_MIN_NOTIONAL');
   const roundedUp = exact.toDecimalPlaces(8, Prisma.Decimal.ROUND_CEIL);
   if (roundedUp.lte(0) || roundedUp.gte('1000000000000')) return deny('INVALID_QUOTE_NOTIONAL');
-  return roundedUp;
+  return { amount: roundedUp, currencyProof: {
+    quote: rules.quoteCurrency,
+    settle: command.marketType === 'FUTURES' ? rules.settleCurrency : null,
+    contract: command.marketType === 'FUTURES',
+  } };
 };
 
 const lockGrant = async (tx: Tx, grantId: string) => {
@@ -109,7 +124,7 @@ const assertCurrentScope = async (
   const bot = await getOwnedGrantBotScope(grant.userId, grant.botId, tx);
   if (!bot || bot.mode !== 'LIVE' || !bot.isActive || !bot.liveOptIn ||
       bot.exchange !== grant.exchange || bot.marketType !== grant.marketType ||
-      !isAssignedGrantSymbol(bot, grant.symbol, grant.exchange, grant.marketType, 'USDT')) {
+      !isAssignedGrantSymbol(bot, grant.symbol, grant.exchange, grant.marketType, grantNominalCurrency)) {
     return deny('GRANT_BOT_SCOPE_UNAVAILABLE');
   }
   await assertSubscriptionAllowsLiveTrading(grant.userId, tx);
@@ -136,7 +151,7 @@ export const reserveExternalClientGrantOrder = async (
   const preexisting = await db.externalClientGrantReservation.findUnique({
     where: { clientOrderId: command.clientOrderId }, select: { id: true },
   });
-  const quoteAmount = preexisting ? null : await resolveQuoteAmount(command, deps.getSymbolRules ?? getExchangeSymbolRules);
+  const marketProof = preexisting ? null : await resolveQuoteAmount(command, deps.getSymbolRules ?? getExchangeSymbolRules);
   return db.$transaction(async (tx) => {
     const grant = await lockGrant(tx, input.grantId);
     await assertCurrentScope(tx, grant, input.secret, command);
@@ -153,7 +168,8 @@ export const reserveExternalClientGrantOrder = async (
       where: { clientOrderId: command.clientOrderId }, select: { id: true },
     });
     if (priorIntent) return deny('CLIENT_ORDER_ID_ALREADY_USED');
-    if (!quoteAmount) return deny('MARKET_EVIDENCE_UNAVAILABLE');
+    if (!marketProof) return deny('MARKET_EVIDENCE_UNAVAILABLE');
+    const quoteAmount = marketProof.amount;
     const unresolved = await tx.externalClientGrantReservation.findFirst({
       where: { grantId: grant.id, state: { in: ['RESERVED', 'SUBMISSION_UNCERTAIN'] } },
       select: { id: true },
@@ -176,7 +192,7 @@ export const reserveExternalClientGrantOrder = async (
       actor: 'EXTERNAL_CLIENT', action: 'EXTERNAL_CLIENT_GRANT_RESERVED', level: 'INFO',
       message: 'External client allowance reserved', entityType: 'ExternalClientGrantReservation',
       entityId: reservation.id, metadata: { grantId: grant.id, clientOrderId: command.clientOrderId,
-        commandHash, quoteAmount: quoteAmount.toFixed(8) },
+        commandHash, quoteAmount: quoteAmount.toFixed(8), currencyProof: marketProof.currencyProof },
     } });
     return { reused: false, reservation };
   }, transactionOptions);

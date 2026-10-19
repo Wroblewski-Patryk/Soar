@@ -1,8 +1,9 @@
 import { spawn } from 'node:child_process';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Exchange, Prisma, PrismaClient, TradeMarket } from '@prisma/client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
+import { __resetExchangeSymbolRulesCacheForTests, getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant } from './externalClientGrants.service';
 import {
@@ -12,7 +13,8 @@ import {
 } from './externalClientGrantReservation.service';
 
 const users: string[] = [];
-const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1 });
+const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01,
+  contractSize: 1, quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false });
 const assertTestDb = () => {
   if (!decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname).endsWith('_test')) {
     throw new Error('Reservation tests require an isolated _test database');
@@ -34,7 +36,10 @@ afterEach(async () => {
   }
 });
 
-const fixture = async (limits = { maxActionQuoteAmount: '50', maxTotalQuoteAmount: '100', maxActions: 2 }) => {
+const fixture = async (
+  limits = { maxActionQuoteAmount: '50', maxTotalQuoteAmount: '100', maxActions: 2 },
+  exchange: Exchange = 'BINANCE', marketType: TradeMarket = 'FUTURES',
+) => {
   assertTestDb();
   const user = await prisma.user.create({ data: {
     email: `reservation-${crypto.randomUUID()}@example.com`, password: await hashPassword('GrantTest1234'),
@@ -45,21 +50,21 @@ const fixture = async (limits = { maxActionQuoteAmount: '50', maxTotalQuoteAmoun
     userId: user.id, planCode: 'ADVANCED', source: 'ADMIN_OVERRIDE', autoRenew: false,
   });
   const universe = await prisma.marketUniverse.create({ data: {
-    userId: user.id, name: 'Reservation universe', exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
+    userId: user.id, name: 'Reservation universe', exchange, marketType, baseCurrency: 'USDT',
   } });
   const group = await prisma.symbolGroup.create({ data: {
     userId: user.id, marketUniverseId: universe.id, name: 'BTC', symbols: ['BTCUSDT'],
   } });
   const bot = await prisma.bot.create({ data: {
-    userId: user.id, name: 'Reservation bot', mode: 'LIVE', exchange: 'BINANCE', marketType: 'FUTURES',
+    userId: user.id, name: 'Reservation bot', mode: 'LIVE', exchange, marketType,
     isActive: true, liveOptIn: true, symbolGroupId: group.id,
   } });
   const { grant, secret } = await createExternalClientGrant(user.id, {
-    botId: bot.id, clientLabel: 'Test external client', exchange: 'BINANCE', marketType: 'FUTURES',
+    botId: bot.id, clientLabel: 'Test external client', exchange, marketType,
     symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER', ...limits, ttlSeconds: 3600, password: 'GrantTest1234',
   });
   const command: GrantLimitCommand = {
-    userId: user.id, botId: bot.id, exchange: 'BINANCE', marketType: 'FUTURES',
+    userId: user.id, botId: bot.id, exchange, marketType,
     symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER', clientOrderId: `soar_${crypto.randomUUID().replace(/-/g, '').slice(0, 22)}`,
     side: 'BUY', type: 'LIMIT', quantity: '0.5', limitPrice: '100', reduceOnly: false,
     walletId: null, strategyId: null, positionId: null,
@@ -232,13 +237,103 @@ describe('external client grant atomic reservation', () => {
       .rejects.toMatchObject({ code: 'GRANT_LIMIT_EXCEEDED' });
     await expect(reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret, command: f.command }, {
       getSymbolRules: async () => null,
+    })).rejects.toMatchObject({ code: 'UNVERIFIED_MARKET_CURRENCY' });
+    await expect(reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret, command: f.command }, {
+      getSymbolRules: async () => ({ ...await rules(), quantityStep: null }),
     })).rejects.toMatchObject({ code: 'UNVERIFIED_MARKET_PRECISION' });
     await expect(reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret, command: f.command }, {
-      getSymbolRules: async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: null }),
+      getSymbolRules: async () => ({ ...await rules(), contractSize: null }),
     })).rejects.toMatchObject({ code: 'UNVERIFIED_CONTRACT_SIZE' });
     await createMatchingIntent(f);
     await expect(reserve(f)).rejects.toMatchObject({ code: 'CLIENT_ORDER_ID_ALREADY_USED' });
     expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+  });
+
+  it('takes Gate Futures currency and contract proof from raw venue metadata before any allowance write', async () => {
+    const f = await fixture(undefined, 'GATEIO');
+    const rawMarket = (overrides: Record<string, unknown> = {}) => ({
+      id: 'BTC_USDT', symbol: 'BTC/USDT:USDT', active: true,
+      quote: 'USDT', settle: 'USDT', contract: true, linear: true, inverse: false,
+      contractSize: 1,
+      info: { filters: [
+        { filterType: 'LOT_SIZE', minQty: '0.001', stepSize: '0.001' },
+        { filterType: 'PRICE_FILTER', tickSize: '0.01' },
+      ] },
+      ...overrides,
+    });
+    const attempt = (market: ReturnType<typeof rawMarket>, clientOrderId: string) => {
+      __resetExchangeSymbolRulesCacheForTests();
+      return reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret,
+        command: { ...f.command, clientOrderId } }, {
+        getSymbolRules: (input) => getExchangeSymbolRules(input, {
+          nowMs: () => 1_000,
+          loadMarketMap: async () => ({ BTC_USDT: market }),
+        }),
+      });
+    };
+    for (const [name, overrides] of [
+      ['missing-quote', { quote: undefined }],
+      ['wrong-quote', { quote: 'USD' }],
+      ['missing-settle', { settle: undefined }],
+      ['wrong-settle', { settle: 'USD' }],
+      ['not-contract', { contract: false }],
+      ['inverse', { linear: false, inverse: true }],
+    ] as const) {
+      await expect(attempt(rawMarket(overrides), name)).rejects.toMatchObject({
+        code: 'UNVERIFIED_MARKET_CURRENCY',
+      });
+      expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
+      expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(0);
+    }
+    __resetExchangeSymbolRulesCacheForTests();
+    await expect(reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret,
+      command: { ...f.command, clientOrderId: 'ambiguous_gate_market' } }, {
+      getSymbolRules: (input) => getExchangeSymbolRules(input, {
+        nowMs: () => 1_000,
+        loadMarketMap: async () => ({
+          first: rawMarket(),
+          second: rawMarket({ id: 'BTCUSDT', quote: 'USD', settle: 'USD' }),
+        }),
+      }),
+    })).rejects.toMatchObject({ code: 'UNVERIFIED_MARKET_CURRENCY' });
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
+    expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(0);
+    const valid = await attempt(rawMarket(), 'valid_gate_contract');
+    expect(valid.reservation.quoteAmount.toString()).toBe('50');
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    const audit = await prisma.log.findFirstOrThrow({
+      where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' },
+    });
+    expect(audit.metadata).toMatchObject({ currencyProof: { quote: 'USDT', settle: 'USDT', contract: true } });
+  });
+
+  it('takes Spot quote currency from raw venue metadata without symbol inference', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'SPOT');
+    const attempt = (quote: string | undefined, clientOrderId: string) => {
+      __resetExchangeSymbolRulesCacheForTests();
+      return reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret,
+        command: { ...f.command, clientOrderId } }, {
+        getSymbolRules: (input) => getExchangeSymbolRules(input, {
+          nowMs: () => 1_000,
+          loadMarketMap: async () => ({ BTCUSDT: {
+            id: 'BTCUSDT', symbol: 'BTC/USDT', active: true, quote, contract: false,
+            info: { filters: [
+              { filterType: 'LOT_SIZE', minQty: '0.001', stepSize: '0.001' },
+              { filterType: 'PRICE_FILTER', tickSize: '0.01' },
+            ] },
+          } }),
+        }),
+      });
+    };
+    for (const [quote, clientOrderId] of [[undefined, 'spot_missing_quote'], ['USD', 'spot_wrong_quote']] as const) {
+      await expect(attempt(quote, clientOrderId)).rejects.toMatchObject({ code: 'UNVERIFIED_MARKET_CURRENCY' });
+    }
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 0, usedQuoteAmount: new Prisma.Decimal(0) });
+    expect(await prisma.log.count({ where: { userId: f.user.id, action: 'EXTERNAL_CLIENT_GRANT_RESERVED' } })).toBe(0);
+    expect((await attempt('USDT', 'spot_valid_quote')).reservation.quoteAmount.toString()).toBe('50');
   });
 
   it('uses trusted Futures contract size and rounds the reserved quote upward', async () => {
@@ -247,14 +342,14 @@ describe('external client grant atomic reservation', () => {
       command: { ...f.command, quantity: '0.05' }, quoteAmount: '0.01' } as {
         grantId: string; secret: string; command: unknown;
       }, {
-      getSymbolRules: async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 10 }),
+      getSymbolRules: async () => ({ ...await rules(), contractSize: 10 }),
     });
     expect(result.reservation.quoteAmount.toString()).toBe('50');
     expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
     await refundUnsentExternalClientGrantReservation(result.reservation.id);
     const tiny = await reserveExternalClientGrantOrder({ grantId: f.grant.id, secret: f.secret,
       command: { ...f.command, clientOrderId: 'round_up_tiny', quantity: '0.001', limitPrice: '0.00000001' } }, {
-      getSymbolRules: async () => ({ minQuantity: 0.001, minNotional: null, quantityStep: 0.001, priceStep: 0.00000001, contractSize: 1 }),
+      getSymbolRules: async () => ({ ...await rules(), minNotional: null, priceStep: 0.00000001 }),
     });
     expect(tiny.reservation.quoteAmount.toFixed(8)).toBe('0.00000001');
   });

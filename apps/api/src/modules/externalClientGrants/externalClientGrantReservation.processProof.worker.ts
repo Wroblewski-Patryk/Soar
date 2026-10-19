@@ -27,6 +27,7 @@ process.stdin.on('data', (chunk: string) => {
         db,
         getSymbolRules: async () => ({
           minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
+          quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false,
         }),
       });
       process.stdout.write(`RESULT ${JSON.stringify({ reused: result.reused, id: result.reservation.id })}\n`);

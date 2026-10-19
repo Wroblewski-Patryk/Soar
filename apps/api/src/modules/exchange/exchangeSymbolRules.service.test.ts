@@ -15,6 +15,7 @@ describe('exchangeSymbolRules.service', () => {
         id: 'BTCUSDT',
         symbol: 'BTC/USDT:USDT',
         active: true,
+        quote: 'USDT', settle: 'USDT', contract: true, linear: true, inverse: false,
         limits: {
           amount: { min: 0.001 },
           cost: { min: 5 },
@@ -48,6 +49,11 @@ describe('exchangeSymbolRules.service', () => {
       quantityStep: 0.001,
       priceStep: 0.01,
       contractSize: null,
+      quoteCurrency: 'USDT',
+      settleCurrency: 'USDT',
+      isContract: true,
+      isLinear: true,
+      isInverse: false,
     });
   });
 
@@ -120,6 +126,7 @@ describe('exchangeSymbolRules.service', () => {
         id: 'BTC_USDT',
         symbol: 'BTC/USDT:USDT',
         active: true,
+        quote: 'USDT', settle: 'USDT', contract: true, linear: true, inverse: false,
         limits: {
           amount: { min: 0.0001 },
           cost: { min: 1 },
@@ -150,6 +157,38 @@ describe('exchangeSymbolRules.service', () => {
       quantityStep: null,
       priceStep: null,
       contractSize: null,
+      quoteCurrency: 'USDT',
+      settleCurrency: 'USDT',
+      isContract: true,
+      isLinear: true,
+      isInverse: false,
     });
+  });
+
+  it('rejects two raw markets that collapse to one venue symbol', async () => {
+    const rules = await getExchangeSymbolRules({
+      exchange: 'GATEIO', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    }, {
+      nowMs: () => 1_000,
+      loadMarketMap: async () => ({
+        first: { id: 'BTC_USDT', quote: 'USDT', settle: 'USDT', contract: true },
+        second: { id: 'BTCUSDT', quote: 'USD', settle: 'USD', contract: true },
+      }),
+    });
+    expect(rules).toBeNull();
+  });
+
+  it('does not return an expired currency proof after market refresh fails', async () => {
+    let now = 1_000;
+    const loadMarketMap = vi.fn()
+      .mockResolvedValueOnce({ BTC_USDT: { id: 'BTC_USDT', quote: 'USDT', settle: 'USDT' } })
+      .mockRejectedValueOnce(new Error('market unavailable'));
+    const deps = { nowMs: () => now, loadMarketMap };
+    const input = { exchange: 'GATEIO' as const, marketType: 'FUTURES' as const,
+      symbol: 'BTCUSDT', requireCurrentMetadata: true };
+    expect((await getExchangeSymbolRules(input, deps))?.quoteCurrency).toBe('USDT');
+    now += 700_000;
+    expect(await getExchangeSymbolRules(input, deps)).toBeNull();
+    expect(loadMarketMap).toHaveBeenCalledTimes(2);
   });
 });

@@ -45,8 +45,12 @@ not spend allowance and cannot authorize an order by itself.
 `reserveExternalClientGrantOrder` accepts the final venue `clientOrderId` and a
 strict canonical LIMIT command. The service derives its SHA-256 command fingerprint
 itself. It rejects `riskAck`, caller-supplied nominal, missing market metadata, and
-quantity or price outside trusted market steps. For this stage only, it supports USDT quote
-symbols and uses the server's exchange symbol rules. Futures nominal is
+quantity or price outside trusted market steps. Grant limits are currently in USDT:
+the market reader must confirm `quote=USDT` from exchange metadata. Futures also
+requires `settle=USDT`, a linear contract, and a verified contract size. Spot uses
+the exchange `quote` field. Symbol spelling and the local market universe do not
+prove currency. Missing, contradictory, duplicate, or expired market evidence
+fails closed before any reservation, counter, or audit write. Futures nominal is
 `quantity × limitPrice × contractSize`; Spot uses multiplier 1. The result is
 rounded **up** to 8 decimal places. Missing Futures contract size or trusted
 lot/price step fails closed. This is requested LIMIT nominal;
