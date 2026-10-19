@@ -7,7 +7,7 @@ import { setLiveExecutionPause } from '../orders/liveExecutionPause.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant, revokeExternalClientGrant } from './externalClientGrants.service';
 import { bindExternalClientGrantReservationIntent, finalizeBoundExternalClientGrantMockOrphan,
-  type GrantLimitCommand } from './externalClientGrantReservation.service';
+  recoverBoundExternalClientGrantMockResult, type GrantLimitCommand } from './externalClientGrantReservation.service';
 
 let testUserId: string | null = null;
 const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
@@ -81,6 +81,23 @@ const crashAfterReconcile = async (reservationId: string, secret: string) => {
   expect(exitCode).toBe(77);
   expect(errors).toBe('');
   expect(output).toContain('RECONCILED_WITH_MARKER');
+};
+
+const crashAtMockWindow = async (operation: string, reservationId: string, secret: string,
+  expectedCode: number, expectedOutput: string) => {
+  const worker = spawn(process.execPath, ['--import', 'tsx',
+    'src/modules/externalClientGrants/externalClientGrantReservation.processProof.worker.ts'], {
+    cwd: process.cwd(), env: process.env, windowsHide: true,
+  });
+  let output = '';
+  let errors = '';
+  worker.stdout.on('data', (chunk) => { output += chunk.toString(); });
+  worker.stderr.on('data', (chunk) => { errors += chunk.toString(); });
+  worker.stdin.end(`${JSON.stringify({ operation, reservationId, secret })}\n`);
+  const exitCode = await new Promise<number | null>((resolve) => worker.on('close', resolve));
+  expect(exitCode).toBe(expectedCode);
+  expect(errors).toBe('');
+  expect(output).toContain(expectedOutput);
 };
 
 const auditData = (userId: string, botId: string, reservationId: string) => ({
@@ -185,6 +202,93 @@ describe('fixed mock orphan finalization audit cardinality', () => {
         action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(1);
       expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
         .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+});
+
+describe('fixed mock result lookup after process death', () => {
+  it('keeps UNKNOWN and the marker when the transport never recorded a result', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture();
+      const reservationId = f.bound.reservation.id;
+      const clientOrderId = f.bound.reservation.clientOrderId;
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      await crashAtMockWindow('mock-crash-after-submit-enter', reservationId, f.secret, 76, 'MOCK_ENTERED');
+      expect(await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { reservationId } }))
+        .toMatchObject({ mockResult: null, mockResultHash: null });
+      await expect(recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }))
+        .rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Unproven mock outcome', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  }, 30_000);
+
+  it('recovers one durable fill without a second transport or allowance charge', async () => {
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const f = await fixture();
+      const reservationId = f.bound.reservation.id;
+      const clientOrderId = f.bound.reservation.clientOrderId;
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      await crashAtMockWindow('mock-crash-after-result-journal', reservationId,
+        f.secret, 78, 'RESULT_JOURNALED');
+      const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { reservationId } });
+      expect(marker.mockResult).toBeTruthy();
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Journaled result awaits Order', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+      await prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+        data: { mockResultHash: '0'.repeat(64) } });
+      await expect(recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }))
+        .rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      await prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+        data: { mockResultHash: marker.mockResultHash } });
+      const recovered = await recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret });
+      expect(recovered).toMatchObject({ finalized: true, reused: false,
+        orderId: f.bound.intentId, lookupOnly: true, dispatchEnabled: false });
+      expect(await recoverBoundExternalClientGrantMockResult({ clientOrderId, secret: f.secret }))
+        .toMatchObject({ finalized: true, reused: true, orderId: f.bound.intentId });
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(1);
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+      expect(await prisma.externalClientGrantReservation.findUniqueOrThrow({ where: { id: reservationId } }))
+        .toMatchObject({ state: 'SUBMITTED', proofType: 'DURABLE_ORDER', proofRef: f.bound.intentId });
+      expect(await prisma.log.count({ where: { entityId: reservationId,
+        action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED' } })).toBe(1);
+      expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Recovered mock result', expectedVersion: control.version })).resolves.toBeTruthy();
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id)).resolves.toBeTruthy();
     } finally {
       if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
         paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,

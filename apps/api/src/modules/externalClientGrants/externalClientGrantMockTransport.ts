@@ -1,6 +1,7 @@
 // Fixed, local test transport. No caller code, exchange adapter, CCXT, or I/O.
 export const delegatedMockScenarios = [
-  'CERTAIN_FILL', 'DELAYED_FILL', 'UNKNOWN', 'INVALID_FILL', 'HOLD_AFTER_RECONCILE',
+  'CERTAIN_FILL', 'DELAYED_FILL', 'UNKNOWN', 'INVALID_FILL',
+  'HOLD_AFTER_RESULT_JOURNAL', 'HOLD_AFTER_RECONCILE',
 ] as const;
 export type DelegatedMockScenario = typeof delegatedMockScenarios[number];
 

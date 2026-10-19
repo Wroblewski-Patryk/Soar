@@ -154,7 +154,7 @@ same Order/fill/position materialization as human `openOrder`, reconciles the
 reservation from that Order, and clears the matching marker only after both
 steps succeed. Allowance is charged once at reservation. An UNKNOWN scenario,
 inconsistent fill, or process crash leaves `SUBMISSION_UNCERTAIN`
-and the marker; a retry returns lookup identity without another mock submit.
+and the marker; a retry never invokes another mock submit.
 Tests cover Binance and Gate.io mocked fills, transport-time pause/revoke,
 UNKNOWN, invalid input/fill, and a worker-process crash. Domain risk checks
 are point-in-time and require a stronger execution permit for real LIVE.
@@ -176,6 +176,22 @@ a separately proven LIVE execution permit.
 An existing marker requires zero finalization audit rows; a retry without a
 marker requires exactly one row with matching metadata. Duplicate or malformed
 finalization audits are ambiguous and fail closed.
+
+`SOAR-EXT-GRANT-001I/MOCK-UNKNOWN-LOOKUP` covers the crash after the fixed
+mock returns but before `Order` persistence. Previously the marker and
+transport-start audit recorded only the client ID and scenario; neither was
+proof that a result existed. The executor now commits the returned, validated
+fill to the unique linked marker with a hash and result audit before it writes
+the Order. A missing, partial, or conflicting snapshot remains UNKNOWN and
+keeps the marker. Test-only recovery looks up the reservation by its unique
+`clientOrderId`, validates the stored result against the grant, intent, command,
+marker, and audit, then uses the existing Order/fill/position and reservation
+reconciliation path. It calls no transport or venue adapter. The existing
+orphan finalizer checks the completed records before deleting the marker;
+repeat lookup reads the finalization audit. Process-death tests on a dedicated
+`_test` database cover both sides of the result commit, tampered result hash,
+pause/revoke blocking, one fill, and unchanged allowance usage. This remains
+local mock proof, not delegated LIVE authority.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has

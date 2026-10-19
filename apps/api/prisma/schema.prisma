@@ -1424,6 +1424,9 @@ model LiveCreateOrderSubmission {
   reservationId String?  @unique
   intentId      String?  @unique
   startedAt     DateTime @default(now())
+  mockResult           Json?
+  mockResultHash       String?
+  mockResultRecordedAt DateTime?
 
   grant       ExternalClientGrant?            @relation(fields: [grantId], references: [id], onDelete: Restrict)
   reservation ExternalClientGrantReservation? @relation(fields: [reservationId], references: [id], onDelete: Restrict)

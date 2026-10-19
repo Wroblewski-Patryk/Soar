@@ -44,6 +44,27 @@ process.stdin.on('data', (chunk: string) => {
         await execution;
         return;
       }
+      if (request.operation === 'mock-crash-after-result-journal') {
+        const execution = executeBoundExternalClientGrantMock({
+          reservationId: request.reservationId, secret: request.secret,
+          scenario: 'HOLD_AFTER_RESULT_JOURNAL',
+        });
+        let recorded = false;
+        for (let attempt = 0; attempt < 150; attempt += 1) {
+          const marker = await db.liveCreateOrderSubmission.findUnique({
+            where: { reservationId: request.reservationId },
+          });
+          if (marker?.mockResult && marker.mockResultHash && marker.mockResultRecordedAt) {
+            recorded = true;
+            break;
+          }
+          await new Promise<void>((resolve) => setTimeout(resolve, 50));
+        }
+        if (!recorded) throw new Error('Fixed mock result was not durably recorded');
+        process.stdout.write('RESULT_JOURNALED\n', () => process.exit(78));
+        await execution;
+        return;
+      }
       if (request.operation === 'mock-crash-after-submit-enter') {
         const execution = executeBoundExternalClientGrantMock({
           reservationId: request.reservationId, secret: request.secret,

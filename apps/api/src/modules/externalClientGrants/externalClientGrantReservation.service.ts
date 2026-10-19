@@ -12,6 +12,7 @@ import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '.
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
+import { captureMockResult, decodeMockResult, hashMockResult } from './externalClientGrantMockResult';
 
 type DbClient = PrismaClient;
 type Tx = Prisma.TransactionClient;
@@ -572,6 +573,35 @@ export async function executeBoundExternalClientGrantMock(
         !Number.isFinite(fill.notional) || fill.notional <= 0)) {
     return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   }
+  const captured = captureMockResult(result, command);
+  if (!captured) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  await prisma.$transaction(async (tx) => {
+    const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT "id" FROM "LiveCreateOrderSubmission" WHERE "id" = ${admitted.markerId} FOR UPDATE
+    `);
+    const marker = rows.length === 1
+      ? await tx.liveCreateOrderSubmission.findUnique({ where: { id: admitted.markerId } }) : null;
+    const current = await tx.externalClientGrantReservation.findUnique({ where: { id: reservation.id } });
+    if (!marker || marker.mockResult || marker.grantId !== reservation.grantId ||
+        marker.reservationId !== reservation.id || marker.intentId !== intent.id ||
+        marker.clientOrderId !== command.clientOrderId ||
+        current?.state !== 'SUBMISSION_UNCERTAIN') return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    const hash = hashMockResult(captured.snapshot);
+    await tx.liveCreateOrderSubmission.update({ where: { id: marker.id }, data: {
+      mockResult: captured.snapshot, mockResultHash: hash, mockResultRecordedAt: new Date(),
+    } });
+    await tx.log.create({ data: {
+      userId: command.userId, botId: command.botId, source: 'external_client_grant',
+      actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_MOCK_RESULT_RECORDED', level: 'INFO',
+      message: 'Fixed mock result durably recorded before Order materialization',
+      entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+      metadata: { grantId: reservation.grantId, markerId: marker.id,
+        intentId: intent.id, clientOrderId: command.clientOrderId, resultHash: hash },
+    } });
+  }, transactionOptions);
+  if (request.data.scenario === 'HOLD_AFTER_RESULT_JOURNAL') {
+    await new Promise<void>((resolve) => setTimeout(resolve, 10_000));
+  }
   const order = await materializeAdmittedMockLiveOrder({ userId: command.userId,
     bot: prepared.liveBot, payload: prepared.canonicalPayload,
     intentId: intent.id, liveResult: result });
@@ -597,6 +627,101 @@ export async function executeBoundExternalClientGrantMock(
 }
 
 const mockFinalizeSchema = z.strictObject({ reservationId: z.uuid(), secret: z.string() });
+const mockLookupSchema = z.strictObject({
+  clientOrderId: z.string().regex(/^[A-Za-z0-9_-]{1,36}$/), secret: z.string(),
+});
+// A retry reads the actual committed result by the unique venue client ID.
+// Missing, partial, or conflicting evidence leaves the marker in place.
+export async function recoverBoundExternalClientGrantMockResult(
+  input: z.input<typeof mockLookupSchema>,
+) {
+  if (arguments.length !== 1 || !input || typeof input !== 'object' || Array.isArray(input) ||
+      Object.getPrototypeOf(input) !== Object.prototype) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  const fields = Object.getOwnPropertyDescriptors(input);
+  if (Reflect.ownKeys(fields).some((key) => typeof key !== 'string' ||
+      !['clientOrderId', 'secret'].includes(key) || !('value' in fields[key]) ||
+      typeof fields[key].value === 'function')) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  const request = mockLookupSchema.safeParse(input);
+  if (!request.success) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  let databaseName = '';
+  try { databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname); } catch { /* fail closed */ }
+  if (process.env.NODE_ENV !== 'test' || !databaseName.endsWith('_test')) {
+    return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
+  }
+  const reservation = await prisma.externalClientGrantReservation.findUnique({
+    where: { clientOrderId: request.data.clientOrderId },
+  });
+  if (!reservation || !secretPattern.test(request.data.secret)) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  const grant = await prisma.externalClientGrant.findUnique({ where: { id: reservation.grantId } });
+  const command = canonicalize(reservation.command);
+  if (!grant || grant.secretHash !== secretHash(request.data.secret) ||
+      reservation.commandHash !== fingerprint(command) ||
+      reservation.clientOrderId !== command.clientOrderId ||
+      grant.revokedAt || grant.userId !== command.userId || grant.botId !== command.botId ||
+      grant.exchange !== command.exchange || grant.marketType !== command.marketType ||
+      grant.symbol !== command.symbol || grant.action !== command.action ||
+      grant.usedActions < 1 || grant.usedQuoteAmount.lt(reservation.quoteAmount) ||
+      !reservation.quoteAmount.eq(new Prisma.Decimal(command.quantity).mul(command.limitPrice)) ||
+      !reservation.dispatchStartedAt || !['SUBMISSION_UNCERTAIN', 'SUBMITTED'].includes(reservation.state)) {
+    return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  }
+  const marker = await prisma.liveCreateOrderSubmission.findUnique({
+    where: { reservationId: reservation.id },
+  });
+  const intent = await prisma.liveOrderIntent.findUnique({ where: { clientOrderId: command.clientOrderId } });
+  if (!intent || !intentMatchesCommandAndScope(intent, command)) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  const audits = await prisma.log.findMany({ where: {
+    entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+    action: 'EXTERNAL_CLIENT_GRANT_MOCK_RESULT_RECORDED',
+  } });
+  const audit = audits.length === 1 ? mockAuditMetadata(audits[0].metadata) : null;
+  if (!audit || audit.grantId !== grant.id || audit.intentId !== intent.id ||
+      audit.clientOrderId !== command.clientOrderId) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  if (!marker && reservation.state === 'SUBMITTED') {
+    const finalized = await finalizeBoundExternalClientGrantMockOrphan({
+      reservationId: reservation.id, secret: request.data.secret,
+    });
+    if (finalized.markerId !== audit.markerId) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    return { ...finalized, clientOrderId: command.clientOrderId,
+      lookupOnly: true, dispatchEnabled: false } as const;
+  }
+  const decoded = decodeMockResult(marker?.mockResult, command);
+  if (!marker || marker.grantId !== grant.id || marker.intentId !== intent.id ||
+      marker.clientOrderId !== command.clientOrderId || !marker.mockResultRecordedAt ||
+      marker.exchangeId !== command.exchange || marker.symbol !== command.symbol ||
+      marker.marketType !== (command.exchange === 'BINANCE' ? 'future' : 'swap') ||
+      marker.reduceOnly !== command.reduceOnly ||
+      !decoded || marker.mockResultHash !== hashMockResult(decoded.snapshot) ||
+      audit.markerId !== marker.id ||
+      audit.resultHash !== marker.mockResultHash) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+  if (reservation.state === 'SUBMISSION_UNCERTAIN') {
+    const bound = await prepareBoundExternalClientGrantAdapterSeam({
+      reservationId: reservation.id, secret: request.data.secret,
+    }, { getSymbolRules: fixedMockSymbolRules });
+    if (!bound.reused || bound.markerId !== marker.id) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    const prepared = await prepareOpenOrderRiskContext(command.userId, intent.payload as LiveOrderPayload);
+    if (!prepared.liveBot ||
+        fingerprintLiveOrderIntentPayload(command.userId, prepared.liveBot, prepared.canonicalPayload) !==
+          intent.payloadHash) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    const order = await materializeAdmittedMockLiveOrder({ userId: command.userId,
+      bot: prepared.liveBot, payload: prepared.canonicalPayload,
+      intentId: intent.id, liveResult: decoded.result });
+    if (order.id !== intent.id || order.status !== 'FILLED' || !order.positionId ||
+        order.exchangeOrderId !== decoded.result.exchangeOrderId ||
+        !new Prisma.Decimal(order.filledQuantity.toString()).eq(command.quantity)) {
+      return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    }
+    const reconciled = await reconcileSubmittedExternalClientGrantReservation(reservation.id);
+    if (reconciled.state !== 'SUBMITTED' || reconciled.proofRef !== order.id) {
+      return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    }
+  }
+  const finalized = await finalizeBoundExternalClientGrantMockOrphan({
+    reservationId: reservation.id, secret: request.data.secret,
+  });
+  return { ...finalized, clientOrderId: command.clientOrderId,
+    lookupOnly: true, dispatchEnabled: false } as const;
+}
 const mockAuditMetadata = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value)
     ? value as Record<string, unknown> : null;
@@ -724,7 +849,8 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
     const markerId = admitted?.markerId;
     if (typeof markerId !== 'string' || admitted?.intentId !== intent.id ||
         admitted?.grantId !== grant.id || admitted?.clientOrderId !== command.clientOrderId ||
-        !['CERTAIN_FILL', 'DELAYED_FILL', 'HOLD_AFTER_RECONCILE'].includes(String(started?.scenario)) ||
+        !['CERTAIN_FILL', 'DELAYED_FILL', 'HOLD_AFTER_RECONCILE',
+          'HOLD_AFTER_RESULT_JOURNAL'].includes(String(started?.scenario)) ||
         started?.clientOrderId !== command.clientOrderId ||
         reconciled?.grantId !== grant.id || reconciled?.orderId !== order.id ||
         reconciled?.clientOrderId !== command.clientOrderId) {
@@ -745,6 +871,12 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         marker.clientOrderId !== command.clientOrderId || marker.exchangeId !== command.exchange ||
         marker.symbol !== command.symbol || marker.marketType !== expectedMarketType ||
         marker.reduceOnly !== command.reduceOnly) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    const stored = decodeMockResult(marker.mockResult, command);
+    if ((marker.mockResult || marker.mockResultHash || marker.mockResultRecordedAt) &&
+        (!stored || !marker.mockResultHash || !marker.mockResultRecordedAt ||
+          hashMockResult(stored.snapshot) !== marker.mockResultHash)) {
+      return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    }
     await tx.liveCreateOrderSubmission.delete({ where: { id: marker.id } });
     await tx.log.create({ data: {
       userId: command.userId, botId: command.botId, source: 'external_client_grant',
