@@ -93,7 +93,11 @@ export type CancelLiveExchangeOrderResult = {
 type AuthenticatedConnectorLike = {
   fetchOrderByClientOrderId?: (input: { symbol: string; clientOrderId: string }) => Promise<{
     id: string;
+    clientOrderId?: string;
     status?: string;
+    symbol?: string;
+    side?: string;
+    amount?: number;
     filled?: number;
     average?: number;
     fills?: CcxtFuturesOrderFill[];
@@ -129,6 +133,10 @@ type AuthenticatedConnectorLike = {
     status?: string;
   }>;
 };
+
+type LiveLookupOrder = Awaited<ReturnType<
+  NonNullable<AuthenticatedConnectorLike['fetchOrderByClientOrderId']>
+>>;
 
 type ExchangeAdapterBoundaryDeps = {
   createAuthenticatedConnector: (params: SupportedExchangeReadCredentials) => AuthenticatedConnectorLike;
@@ -215,7 +223,28 @@ const mapLiveOrderStatus = (
     // reconciliation; persisting either as OPEN would hide the uncertainty.
     throw orderErrors.liveExecutionFailed();
   }
-  return 'OPEN' as const;
+  throw orderErrors.liveExecutionFailed();
+};
+
+const normalizeLiveLookupSymbol = (symbol: string) =>
+  symbol.split(':')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+const assertLiveLookupIdentity = (
+  order: LiveLookupOrder,
+  expected: SubmitLiveExchangeOrderInput['order']
+) => {
+  const amountMatches = typeof order.amount === 'number' && Number.isFinite(order.amount) &&
+    order.amount > 0 && Number.isFinite(expected.quantity) && expected.quantity > 0 &&
+    Math.abs(order.amount - expected.quantity) <= 16 * Number.EPSILON *
+      Math.max(Math.abs(order.amount), Math.abs(expected.quantity));
+  if (typeof order.id !== 'string' || !order.id.trim() ||
+      !expected.clientOrderId || order.clientOrderId !== expected.clientOrderId ||
+      typeof order.symbol !== 'string' || !order.symbol.trim() ||
+      normalizeLiveLookupSymbol(order.symbol) !== normalizeLiveLookupSymbol(expected.symbol) ||
+      typeof order.side !== 'string' || order.side.toUpperCase() !== expected.side ||
+      !amountMatches) {
+    throw orderErrors.liveExecutionFailed();
+  }
 };
 
 const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();
@@ -540,7 +569,8 @@ export const lookupLiveOrderThroughBoundary = async (
       symbol: params.order.symbol.toUpperCase(),
       clientOrderId: params.order.clientOrderId,
     });
-    if (!order.id) throw orderErrors.liveExecutionFailed();
+    assertLiveLookupIdentity(order, params.order);
+    const status = mapLiveOrderStatus(order.status, params.order.type);
     const fee = await reconcileLiveOrderFee(connector as unknown as CcxtFuturesConnector, {
       symbol: params.order.symbol,
       exchangeOrderId: order.id,
@@ -549,7 +579,7 @@ export const lookupLiveOrderThroughBoundary = async (
     });
     return {
       exchangeOrderId: order.id,
-      status: mapLiveOrderStatus(order.status, params.order.type),
+      status,
       exchangeFilledQuantity: order.filled,
       exchangeAverageFillPrice: order.average,
       fee: fee.fee,

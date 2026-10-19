@@ -90,6 +90,7 @@ export type CcxtFuturesOpenOrder = {
 
 export type CcxtFuturesOrderResult = {
   id: string;
+  clientOrderId?: string;
   status?: string;
   symbol?: string;
   side?: string;

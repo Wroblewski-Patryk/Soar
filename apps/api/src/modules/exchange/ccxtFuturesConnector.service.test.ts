@@ -145,24 +145,32 @@ describe('CcxtFuturesConnector scaffold', () => {
     ['gateio', 'spot', 'soar_order_1'],
   ] as const)('submits and looks up %s %s using the same venue client ID', async (exchangeId, marketType, submittedId) => {
     const client = createMockClient();
+    const exchangeSymbol = marketType === 'spot' ? 'BTC/USDT' : 'BTC/USDT:USDT';
+    client.fetchOrder = vi.fn().mockResolvedValue({
+      id: 'order-1', status: 'open', symbol: exchangeSymbol, side: 'buy', amount: 1,
+      ...(exchangeId === 'gateio'
+        ? { info: { text: 't-soar_order_1' } }
+        : { clientOrderId: 'soar_order_1' }),
+    });
     const connector = new CcxtFuturesConnector(
       { exchangeId, marketType },
       vi.fn().mockResolvedValue(client)
     );
     await connector.placeOrder({
-      symbol: 'BTC/USDT:USDT', side: 'buy', type: 'limit', amount: 1, price: 100,
+      symbol: exchangeSymbol, side: 'buy', type: 'limit', amount: 1, price: 100,
       clientOrderId: 'soar_order_1',
     });
     expect(client.createOrder).toHaveBeenCalledWith(
-      'BTC/USDT:USDT', 'limit', 'buy', 1, 100,
+      exchangeSymbol, 'limit', 'buy', 1, 100,
       expect.objectContaining({ clientOrderId: submittedId })
     );
     const recovered = await connector.fetchOrderByClientOrderId({
-      symbol: 'BTC/USDT:USDT', clientOrderId: 'soar_order_1',
+      symbol: exchangeSymbol, clientOrderId: 'soar_order_1',
     });
     expect(recovered.id).toBe('order-1');
+    expect(recovered.clientOrderId).toBe('soar_order_1');
     expect(client.fetchOrder).toHaveBeenCalledWith(
-      '', 'BTC/USDT:USDT', { clientOrderId: 'soar_order_1' }
+      '', exchangeSymbol, { clientOrderId: 'soar_order_1' }
     );
   });
 
@@ -170,6 +178,7 @@ describe('CcxtFuturesConnector scaffold', () => {
     const client = createMockClient();
     client.fetchOrder = vi.fn().mockResolvedValue({
       id: 'unexpected-order', clientOrderId: 'different-client-id', status: 'open',
+      symbol: 'BTC/USDT', side: 'buy', amount: 1,
     });
     const connector = new CcxtFuturesConnector(
       { exchangeId: 'binance', marketType: 'spot' },
@@ -178,6 +187,32 @@ describe('CcxtFuturesConnector scaffold', () => {
     await expect(connector.fetchOrderByClientOrderId({
       symbol: 'BTC/USDT', clientOrderId: 'soar_order_1',
     })).rejects.toThrow('different client order identity');
+  });
+
+  it('rejects a lookup result without a returned client ID', async () => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchOrderByClientOrderId({
+      symbol: 'BTC/USDT:USDT', clientOrderId: 'soar_order_1',
+    })).rejects.toThrow('client order identity');
+  });
+
+  it('rejects a lookup result from a different futures settlement', async () => {
+    const client = createMockClient();
+    client.fetchOrder = vi.fn().mockResolvedValue({
+      id: '12345', clientOrderId: 'soar_order_1', status: 'open',
+      symbol: 'BTC/USDT:USD', side: 'buy', amount: 1,
+    });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm', marketType: 'future' },
+      vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchOrderByClientOrderId({
+      symbol: 'BTC/USDT:USDT', clientOrderId: 'soar_order_1',
+    })).rejects.toThrow('different symbol');
   });
 
   it('connects and loads markets in sandbox mode', async () => {

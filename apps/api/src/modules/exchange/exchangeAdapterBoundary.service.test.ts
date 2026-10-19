@@ -7,6 +7,7 @@ import {
   fetchSupportedExchangePositionsRaw,
   fetchSupportedExchangeTradeHistoryRaw,
   fetchSupportedExchangeWalletCashflowHistoryRaw,
+  lookupLiveOrderThroughBoundary,
   submitLiveOrderThroughBoundary,
 } from './exchangeAdapterBoundary.service';
 import {
@@ -64,6 +65,81 @@ const createConnector = () => ({
 });
 
 describe('exchangeAdapterBoundary.service', () => {
+  it.each([
+    ['BINANCE', 'SPOT', 'BTC/USDT'],
+    ['BINANCE', 'FUTURES', 'BTC/USDT:USDT'],
+    ['GATEIO', 'SPOT', 'BTC/USDT'],
+    ['GATEIO', 'FUTURES', 'BTC/USDT:USDT'],
+  ] as const)('confirms only a complete %s %s LIVE lookup identity and explicit status',
+    async (exchange, marketType, venueSymbol) => {
+      type LookupSnapshot = {
+        id: string;
+        clientOrderId?: string;
+        symbol?: string;
+        side?: string;
+        amount?: number;
+        status?: string;
+        filled?: number;
+      };
+      const valid: LookupSnapshot = {
+        id: '12345', clientOrderId: 'soar_lookup_1', symbol: venueSymbol,
+        side: 'buy', amount: 0.1, status: 'open', filled: 0,
+      };
+      const fetchOrderByClientOrderId = vi.fn(async (): Promise<LookupSnapshot> => valid);
+      const placeOrder = vi.fn();
+      const connector = {
+        ...createConnector(), fetchOrderByClientOrderId, placeOrder,
+        fetchOrderWithFills: vi.fn(async () => ({ order: valid, fills: [] })),
+        fetchTradesForOrder: vi.fn(async () => []),
+      };
+      const params = {
+        userId: 'user-lookup',
+        bot: {
+          exchange, marketType, positionMode: 'ONE_WAY' as const,
+          apiKeyId: 'api-key-lookup', walletId: 'wallet-lookup',
+        },
+        order: {
+          symbol: 'BTCUSDT', side: 'BUY' as const, type: 'LIMIT' as const,
+          quantity: 0.1, price: 100_000, clientOrderId: 'soar_lookup_1',
+        },
+        targetLeverage: marketType === 'FUTURES' ? 2 : null,
+      };
+      const deps = {
+        createAuthenticatedConnector: vi.fn(() => connector),
+        resolveLiveExecutionApiKey: vi.fn(async () => ({
+          id: 'api-key-lookup', exchange, apiKey: 'enc-key', apiSecret: 'enc-secret',
+        })),
+      };
+
+      await expect(lookupLiveOrderThroughBoundary(params, deps)).resolves.toMatchObject({
+        exchangeOrderId: '12345', status: 'OPEN', exchangeFilledQuantity: 0,
+      });
+      expect(fetchOrderByClientOrderId).toHaveBeenCalledWith({
+        symbol: 'BTCUSDT', clientOrderId: 'soar_lookup_1',
+      });
+
+      const invalid: Array<[string, LookupSnapshot]> = [
+        ['missing status', { ...valid, status: undefined }],
+        ['terminal status', { ...valid, status: 'canceled' }],
+        ['missing client ID', { ...valid, clientOrderId: undefined }],
+        ['mismatched client ID', { ...valid, clientOrderId: 'other' }],
+        ['missing symbol', { ...valid, symbol: undefined }],
+        ['mismatched symbol', { ...valid, symbol: 'ETH/USDT' }],
+        ['missing side', { ...valid, side: undefined }],
+        ['mismatched side', { ...valid, side: 'sell' }],
+        ['missing amount', { ...valid, amount: undefined }],
+        ['mismatched amount', { ...valid, amount: 0.2 }],
+        ['missing venue order ID', { ...valid, id: '' }],
+      ];
+      for (const [caseName, snapshot] of invalid) {
+        fetchOrderByClientOrderId.mockResolvedValueOnce(snapshot);
+        await expect(lookupLiveOrderThroughBoundary(params, deps), caseName)
+          .rejects.toMatchObject({ code: 'LIVE_EXECUTION_FAILED' });
+      }
+      expect(placeOrder).not.toHaveBeenCalled();
+      expect(connector.disconnect).toHaveBeenCalledTimes(invalid.length + 1);
+    });
+
   it('reads Binance positions and open orders through one feature-facing boundary', async () => {
     const connector = createConnector();
     const createAuthenticatedConnector = vi.fn(() => connector);

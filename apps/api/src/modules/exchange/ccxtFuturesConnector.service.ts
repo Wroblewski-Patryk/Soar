@@ -417,15 +417,21 @@ export class CcxtFuturesConnector {
     // CCXT maps clientOrderId to Binance origClientOrderId and Gate text.
     const order = await client.fetchOrder('', exchangeSymbol, { clientOrderId: input.clientOrderId });
     if (!order.id) throw new Error('Exchange lookup returned no order identity');
+    const returnedSymbol = this.readString(order.symbol);
+    const normalizedReturnedSymbol = returnedSymbol ? this.normalizeSymbolKey(returnedSymbol) : null;
+    if (!normalizedReturnedSymbol ||
+        normalizedReturnedSymbol !== this.normalizeSymbolKey(exchangeSymbol)) {
+      throw new Error('Exchange lookup returned a different symbol');
+    }
     const returnedClientId =
       this.readString(order.clientOrderId) ??
       this.readString(order.info?.clientOrderId) ??
       this.readString(order.info?.text);
-    if (returnedClientId && returnedClientId.replace(/^t-/, '') !== input.clientOrderId) {
-      throw new Error('Exchange lookup returned a different client order identity');
+    if (!returnedClientId || returnedClientId.replace(/^t-/, '') !== input.clientOrderId) {
+      throw new Error('Exchange lookup returned a missing or different client order identity');
     }
     const fills = this.normalizeOrderFills(order, input.symbol, 'fetchOrder');
-    return this.normalizeOrderResult(order, fills);
+    return { ...this.normalizeOrderResult(order, fills), clientOrderId: input.clientOrderId };
   }
 
   // Gate's finished Spot orders cannot be fetched by their custom text ID.
