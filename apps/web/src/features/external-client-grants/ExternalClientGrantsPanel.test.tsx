@@ -73,11 +73,13 @@ describe("external client grants panel", () => {
       action: "PLACE_LIVE_ORDER", maxActions: 2, ttlSeconds: 3600, password: "OwnerPassword",
     })));
     expect(screen.getByTestId("grant-secret")).toHaveTextContent("soar_ext_once_only");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Copy secret" })).toHaveFocus());
     expect(screen.getByLabelText("Confirm with your account password")).toHaveValue("");
     fireEvent.click(screen.getByRole("button", { name: "Copy secret" }));
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("soar_ext_once_only"));
     fireEvent.click(screen.getByRole("button", { name: "I saved it — close" }));
     expect(screen.queryByText("soar_ext_once_only")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Create grant" })).toHaveFocus());
     expect(screen.getByText("Local client")).toBeInTheDocument();
     const storedValues = (storage: Storage) => Array.from({ length: storage.length }, (_, index) =>
       storage.getItem(storage.key(index) ?? ""));
@@ -95,6 +97,34 @@ describe("external client grants panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Confirm revoke" }));
     await waitFor(() => expect(revokeGrant).toHaveBeenCalledWith("grant-1"));
     expect(await screen.findByText("Revoked")).toBeInTheDocument();
+  });
+
+  it("keeps Tab and Shift+Tab inside the secret dialog and restores focus after Escape", async () => {
+    render(<I18nProvider><ExternalClientGrantsPanel /></I18nProvider>);
+    await screen.findByRole("button", { name: "Create grant" });
+    fireEvent.change(screen.getByLabelText("External client label"), { target: { value: "Local client" } });
+    fireEvent.change(screen.getByLabelText("Bot"), { target: { value: "bot-1" } });
+    fireEvent.change(screen.getByLabelText("Maximum per action (USDT)"), { target: { value: "50.00" } });
+    fireEvent.change(screen.getByLabelText("Maximum total (USDT)"), { target: { value: "100.00" } });
+    fireEvent.change(screen.getByLabelText("Confirm with your account password"), { target: { value: "OwnerPassword" } });
+    fireEvent.click(screen.getByRole("button", { name: "Create grant" }));
+
+    const copyButton = await screen.findByRole("button", { name: "Copy secret" });
+    const closeButton = screen.getByRole("button", { name: "I saved it — close" });
+    expect(copyButton).toHaveFocus();
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(closeButton).toHaveFocus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(copyButton).toHaveFocus();
+    screen.getByRole("dialog", { name: "Save this secret now" }).focus();
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(closeButton).toHaveFocus();
+    screen.getByRole("button", { name: "Refresh status" }).focus();
+    expect(copyButton).toHaveFocus();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog", { name: "Save this secret now" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Create grant" })).toHaveFocus();
   });
 
   it("shows plan loss and disables creation while retaining the grant list", async () => {

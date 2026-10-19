@@ -23,7 +23,7 @@ This module lets a signed-in human owner create, list, inspect, and revoke exter
 ## 4. Runtime Flows
 1. Load grants, then bot/subscription/market-universe context and per-bot graphs. Missing context disables creation and displays an unverified or unavailable status instead of inferring authority.
 2. Select an active, opted-in LIVE bot and an active symbol from any assigned active market group whose universe matches the bot venue and market type. Enter limits, TTL, label, and current password. The API validates again before issuing a grant.
-3. Show the newly issued secret once. Closing the view clears component state; later list reads cannot retrieve it.
+3. Show the newly issued secret once. Focus enters the panel, Tab and Shift+Tab remain inside, Escape or the close button clears component state, and focus returns to Create grant. Later list reads cannot retrieve the secret.
 4. List records with scope, remaining context, and current display status. Revocation requires a second explicit click and updates the row from the API response.
 
 ## 5. API and UI Integration

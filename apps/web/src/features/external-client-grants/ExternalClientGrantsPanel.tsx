@@ -1,7 +1,7 @@
 "use client";
 
 import { isAxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { listBots, getBotRuntimeGraph } from "@/features/bots/services/bots.service";
 import type { Bot, BotRuntimeGraph } from "@/features/bots/types/bot.type";
@@ -47,6 +47,64 @@ export default function ExternalClientGrantsPanel() {
   const [maxActions, setMaxActions] = useState("1");
   const [ttlMinutes, setTtlMinutes] = useState("60");
   const [password, setPassword] = useState("");
+  const secretDialogRef = useRef<HTMLElement>(null);
+  const createButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLButtonElement | null>(null);
+
+  const closeSecret = useCallback(() => {
+    setIssued(null);
+    setCopied(false);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!issued) {
+      restoreFocusRef.current?.focus();
+      restoreFocusRef.current = null;
+      return;
+    }
+
+    const dialog = secretDialogRef.current;
+    if (!dialog) return;
+    const focusable = () => Array.from(dialog.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ));
+    focusable()[0]?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        closeSecret();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const controls = focusable();
+      if (controls.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      const activeIndex = controls.indexOf(document.activeElement as HTMLElement);
+      if (event.shiftKey && activeIndex <= 0) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (activeIndex === -1 || activeIndex === controls.length - 1)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    const onFocusIn = (event: FocusEvent) => {
+      if (!dialog.contains(event.target as Node)) focusable()[0]?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("focusin", onFocusIn, true);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("focusin", onFocusIn, true);
+    };
+  }, [issued, closeSecret]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -150,6 +208,7 @@ export default function ExternalClientGrantsPanel() {
       setPassword("");
       setGrants((current) => [result.grant, ...current]);
       setCopied(false);
+      restoreFocusRef.current = createButtonRef.current;
       setIssued({ secret: result.secret, grant: result.grant });
       setClientLabel("");
       setMaxActionQuoteAmount("");
@@ -194,6 +253,7 @@ export default function ExternalClientGrantsPanel() {
 
       {issued ? (
         <section role="dialog" aria-modal="true" aria-label={copy("secretTitle")}
+          ref={secretDialogRef} tabIndex={-1}
           className="rounded-box border-2 border-primary bg-base-100 p-4 sm:p-5 space-y-3" data-testid="grant-secret-panel">
           <h3 className="text-lg font-semibold">{copy("secretTitle")}</h3>
           <p className="text-sm">{copy("secretWarning")}</p>
@@ -205,7 +265,7 @@ export default function ExternalClientGrantsPanel() {
             <button type="button" className="btn btn-primary btn-sm" onClick={() => void copySecret()}>
               {copied ? copy("copied") : copy("copySecret")}
             </button>
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => { setIssued(null); setCopied(false); }}>
+            <button type="button" className="btn btn-outline btn-sm" onClick={closeSecret}>
               {copy("closeSecret")}
             </button>
           </div>
@@ -294,7 +354,7 @@ export default function ExternalClientGrantsPanel() {
               </label>
               <p className="text-xs opacity-70">{copy("passwordHint")}</p>
               {formError ? <p role="alert" className="text-sm text-error">{formError}</p> : null}
-              <button type="submit" className="btn btn-primary" disabled={!canCreate || saving || Boolean(issued)}>
+              <button ref={createButtonRef} type="submit" className="btn btn-primary" disabled={!canCreate || saving || Boolean(issued)}>
                 {saving ? copy("creating") : copy("create")}
               </button>
             </fieldset>
