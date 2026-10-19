@@ -53,9 +53,10 @@ constitute separate exit conditions under this contract. The shared evaluator
 accepts stored configurations with these fields but returns no signal when
 neither entry side matches. `openConditions` follows the same rule. Explicit
 `EXIT` votes from a separate valid source remain part of the merge contract.
-Stored fields remain accepted, and operator condition summaries still display
-`No-match action: EXIT`; UI/API migration and truthful presentation need a
-separate ticket.
+Stored fields remain accepted. The local runtime symbol-stats readmodel leaves
+the condition summary unset for an `EXIT` event because the entry configuration
+cannot establish whether it came from a separate strategy signal or position
+protection. UI/API migration of the stored legacy option remains separate.
 Local targeted tests cover evaluator, runtime PAPER/LIVE decisions, and both
 backtest replay paths; deployed behavior and the full lifecycle journey remain
 unverified.

@@ -89,8 +89,8 @@ strategy `EXIT` signal is not required. Normal closes follow configured
 `TP`/`SL` (simple) or `TTP`/`TSL`
 (advanced) lifecycle rules and DCA ordering; manual, liquidation, and other
 risk closes remain possible. The shared evaluator applies this rule to legacy
-no-match `EXIT` settings in local code; acceptance evidence and the remaining
-operator-surface gap are tracked in the
+no-match `EXIT` settings in local code, and the runtime condition summary does
+not attribute an `EXIT` event to those settings. Acceptance evidence is tracked in the
 [strategy evaluation parity contract](./reference/strategy-evaluation-parity-contract.md).
 
 ## Signal Merge
