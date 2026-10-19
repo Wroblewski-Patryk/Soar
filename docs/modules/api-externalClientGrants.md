@@ -6,9 +6,14 @@
 reservation service. `001L` adds one external-client, read-only self-status GET.
 `001N2` adds a separate, explicitly issued `READ_BOT_STATUS` grant foundation.
 `001P` adds one external-client GET for persisted bot configuration status.
-The local stdio MCP package calls only the 001L grant self-status GET; it has no
-bot-status tool. There is no delegated LIVE order submission. The reservation
-is not connected to the domain `createOrder` path.
+The local stdio MCP package exposes `get_own_grant_status` for the 001L GET and
+`get_own_bot_status` for the 001P GET. The first uses a process-configured
+`soar_ext_` order-grant secret; the second uses a separate process-configured
+`soar_read_` read-grant secret for one bot. Both are sent as Bearer credentials;
+tool arguments cannot select a URL, bot ID, or secret. This is local MCP
+functionality, not Codex or Claude host integration or deployment proof. There
+is no delegated LIVE order submission. The reservation is not connected to the
+domain `createOrder` path.
 
 ## Human-only routes
 
