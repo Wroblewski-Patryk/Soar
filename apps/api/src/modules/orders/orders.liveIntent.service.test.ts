@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
 import { openOrder } from './orders.service';
@@ -20,6 +21,7 @@ import { reconcileLiveOrderFee } from '../exchange/liveFeeReconciliation.service
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 
 const testCreateOrderPermit = async <T,>(_input: unknown, submit: () => Promise<T>) => submit();
+let originalFreeEntitlements: Prisma.InputJsonValue | undefined;
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -128,6 +130,7 @@ const allowLive = async () => {
     where: { code: 'FREE' },
     select: { entitlements: true },
   });
+  originalFreeEntitlements ??= freePlan.entitlements as Prisma.InputJsonValue;
   const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
   await prisma.subscriptionPlan.update({
     where: { code: 'FREE' },
@@ -141,7 +144,18 @@ const allowLive = async () => {
 };
 
 describe('durable LIVE order intent', () => {
-  afterAll(async () => { await cleanupDb(); });
+  afterAll(async () => {
+    try {
+      await cleanupDb();
+    } finally {
+      if (originalFreeEntitlements !== undefined) {
+        await prisma.subscriptionPlan.update({
+          where: { code: 'FREE' },
+          data: { entitlements: originalFreeEntitlements },
+        });
+      }
+    }
+  });
   beforeEach(async () => {
     await cleanupDb();
     await allowLive();
