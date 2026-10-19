@@ -56,7 +56,6 @@ export const createMockOrdersHttpApp = () => {
   if (!isIsolatedTest()) return app;
 
   app.use((_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
-  app.use(express.json({ limit: '2kb', strict: true }));
   const ipLimiter = createRateLimiter({ windowMs: 60_000, max: 30, keyScope: 'ip',
     bucketId: 'test-only-external-mock-orders-ip', requireSharedStore: true,
     sharedStoreTimeoutMs: 1000, forceSharedStoreInTest: true });
@@ -64,7 +63,10 @@ export const createMockOrdersHttpApp = () => {
     bucketId: 'test-only-external-mock-orders-grant', requireSharedStore: true,
     sharedStoreTimeoutMs: 1000, forceSharedStoreInTest: true });
 
+  // Both keys come from headers/socket metadata, so malformed JSON is charged
+  // or denied by the shared store before the body parser can return 400.
   app.post('/external-client/grants/:grantId/mock-orders', ipLimiter, grantLimiter,
+    express.json({ limit: '2kb', strict: true }),
     async (req, res) => {
       const authorization = req.headers.authorization;
       const count = req.rawHeaders.filter((header: string) =>

@@ -165,17 +165,21 @@ it('uses shared IP and hashed grant limits and denies when the store is unavaila
   const target = path(crypto.randomUUID());
   for (let attempt = 0; attempt < 10; attempt += 1) {
     expect((await request(mockApp).post(target)
-      .set('Authorization', `Bearer ${secret}`).send({})).status).toBe(400);
+      .set('Authorization', `Bearer ${secret}`)
+      .set('Content-Type', 'application/json').send('{invalid')).status).toBe(400);
   }
   expect((await request(mockApp).post(target)
-    .set('Authorization', `Bearer ${secret}`).send({})).status).toBe(429);
+    .set('Authorization', `Bearer ${secret}`)
+    .set('Content-Type', 'application/json').send('{invalid')).status).toBe(429);
+  expect(counts.size).toBeGreaterThan(0);
   expect([...counts.keys()].some((key) => key.includes(secret))).toBe(false);
   __rateLimitInternals.setGetRedisClientForTests(async () => null);
   expect((await request(mockApp).post(target)
-    .set('Authorization', `Bearer ${secret}`).send({})).status).toBe(503);
+    .set('Authorization', `Bearer ${secret}`)
+    .set('Content-Type', 'application/json').send('{invalid')).status).toBe(503);
 });
 
-it('denies invalid bodies without a configured isolated shared store', async () => {
+it('denies malformed JSON without a configured isolated shared store', async () => {
   const previous = process.env.TEST_REDIS_URL;
   delete process.env.TEST_REDIS_URL;
   __rateLimitInternals.setGetRedisClientForTests(null);
@@ -183,7 +187,7 @@ it('denies invalid bodies without a configured isolated shared store', async () 
     const response = await request(createMockOrdersHttpApp())
       .post(path(crypto.randomUUID()))
       .set('Authorization', `Bearer soar_ext_${'G'.repeat(43)}`)
-      .send({});
+      .set('Content-Type', 'application/json').send('{invalid');
     expect(response.status).toBe(503);
     expect(response.headers['x-ratelimit-degraded']).toBe('redis_unavailable');
   } finally {
@@ -367,25 +371,28 @@ it('serializes concurrent identical HTTP submissions without duplicate mock tran
 it.skipIf(!process.env.TEST_REDIS_URL || !process.env.TEST_REDIS_CONTAINER)(
   'enforces both buckets with real isolated Redis and fails closed through stop and restart', async () => {
     const container = process.env.TEST_REDIS_CONTAINER ?? '';
-    if (!/^soar-ext-001r2-redis-[a-z0-9]+$/.test(container)) {
-      throw new Error('Real Redis test requires its dedicated 001R2 container');
+    if (!/^soar-ext-001r[23]-redis-[a-z0-9]+$/.test(container)) {
+      throw new Error('Real Redis test requires a dedicated 001R container');
     }
     __rateLimitInternals.setGetRedisClientForTests(null);
     const mockApp = createMockOrdersHttpApp();
     mockApp.set('trust proxy', true);
     const target = path(crypto.randomUUID());
-    const invalid = {};
+    const invalid = '{invalid';
     const ipPrefix = `10.${Math.floor(Math.random() * 254) + 1}.${
       Math.floor(Math.random() * 254) + 1}`;
     const testSecret = () => `soar_ext_${crypto.randomUUID().replace(/-/g, '')}${
       crypto.randomUUID().replace(/-/g, '').slice(0, 11)}`;
     const send = (ip: string, secret: string) => request(mockApp).post(target)
-      .set('X-Forwarded-For', ip).set('Authorization', `Bearer ${secret}`).send(invalid);
+      .set('X-Forwarded-For', ip).set('Authorization', `Bearer ${secret}`)
+      .set('Content-Type', 'application/json').send(invalid);
     const secret = testSecret();
     for (let index = 0; index < 10; index += 1) {
       expect((await send(`${ipPrefix}.1`, secret)).status).toBe(400);
     }
     expect((await send(`${ipPrefix}.1`, secret)).status).toBe(429);
+    expect(Number(execFileSync('docker', ['exec', container, 'redis-cli', 'DBSIZE'],
+      { encoding: 'utf8' }).trim())).toBeGreaterThan(0);
     for (let index = 0; index < 30; index += 1) {
       expect((await send(`${ipPrefix}.2`, testSecret())).status).toBe(400);
     }
