@@ -5,6 +5,7 @@ import {
   executeBoundExternalClientGrantMock,
   reserveExternalClientGrantOrder,
 } from './externalClientGrantReservation.service';
+import { claimBoundExternalClientGrantDispatch } from './externalClientGrantDispatchClaim.service';
 
 const rules = async () => ({
   minQuantity: 0.001, minNotional: 1, quantityStep: 0.001, priceStep: 0.01, contractSize: 1,
@@ -91,6 +92,15 @@ process.stdin.on('data', (chunk: string) => {
           await new Promise<never>(() => {});
         }
         process.stdout.write(`RESULT ${JSON.stringify(admitted)}\n`);
+        return;
+      }
+      if (request.operation === 'claim' || request.operation === 'crash-after-claim') {
+        const claimed = await claimBoundExternalClientGrantDispatch(request, { db, getSymbolRules: rules });
+        if (request.operation === 'crash-after-claim') {
+          process.stdout.write(`CLAIMED ${JSON.stringify(claimed)}\n`, () => process.exit(79));
+          await new Promise<never>(() => {});
+        }
+        process.stdout.write(`RESULT ${JSON.stringify(claimed)}\n`);
         return;
       }
       if (request.operation === 'crash-after-begin') {

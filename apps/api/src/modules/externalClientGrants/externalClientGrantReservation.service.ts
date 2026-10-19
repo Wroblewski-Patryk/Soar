@@ -12,17 +12,15 @@ import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '.
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
+import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
+import { deny, hasAtomicIntentBinding, representableNumber } from './externalClientGrantReservation.helpers';
+export { GrantReservationError } from './externalClientGrantReservation.helpers';
 import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable,
   retryMockFinalizationConflict } from './externalClientGrantMockResult';
 
 type DbClient = PrismaClient;
 type Tx = Prisma.TransactionClient;
 type SymbolRulesReader = typeof getExchangeSymbolRules;
-
-export class GrantReservationError extends Error {
-  constructor(readonly code: string) { super(code); }
-}
-const deny = (code: string): never => { throw new GrantReservationError(code); };
 
 // Only a canonical LIMIT command is accepted. riskAck and caller-supplied notional
 // are intentionally absent. Future adapters must pass the final venue client ID.
@@ -141,14 +139,6 @@ const assertCurrentScope = async (
 const transactionOptions = { maxWait: 10_000, timeout: 20_000 };
 type Deps = { db?: DbClient; getSymbolRules?: SymbolRulesReader; bindIntent?: true };
 
-const representableNumber = (value: string) => {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric) || !new Prisma.Decimal(numeric.toString()).eq(value)) {
-    return deny('INTENT_AMOUNT_NOT_REPRESENTABLE');
-  }
-  return numeric;
-};
-
 const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
   const bot = await tx.bot.findFirst({ where: { id: command.botId, userId: command.userId },
     select: { id: true, exchange: true, marketType: true, positionMode: true,
@@ -178,15 +168,6 @@ const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
   return prepared.intentId;
 };
 
-const hasAtomicIntentBinding = async (db: DbClient | Tx, reservationId: string, intentId: string) => {
-  const audit = await db.log.findFirst({ where: {
-    entityType: 'ExternalClientGrantReservation', entityId: reservationId,
-    action: 'EXTERNAL_CLIENT_GRANT_RESERVED',
-  }, select: { metadata: true } });
-  const metadata = audit?.metadata;
-  return metadata && typeof metadata === 'object' && !Array.isArray(metadata) &&
-    (metadata as Record<string, unknown>).boundIntentId === intentId;
-};
 
 // No submit capability is exposed. The final venue ID is used for both rows.
 export const bindExternalClientGrantReservationIntent = async (
@@ -329,10 +310,11 @@ export const beginBoundExternalClientGrantSubmission = (
 // Admission is a durable record, not a callback permit. No adapter consumes
 // this return value. The marker and uncertain reservation commit together;
 // a crash or retry leaves them lookup-only until explicit venue reconciliation.
-export const admitBoundExternalClientGrantSubmission = async (
+export const admitBoundExternalClientGrantSubmissionInternal = async (
   input: { reservationId: string; secret: string },
   deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader;
     expectedIntentPayloadHash?: string } = {},
+  claimDispatch = false,
 ) => {
   const db = deps.db ?? prisma;
   if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
@@ -380,7 +362,7 @@ export const admitBoundExternalClientGrantSubmission = async (
       if (!marker || marker.grantId !== grant.id || marker.intentId !== intent.id ||
           marker.clientOrderId !== command.clientOrderId) return deny('RESERVATION_NOT_DISPATCHABLE');
       return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
-        reused: true, lookupOnly: true } as const;
+        reused: true, lookupOnly: true, ...(claimDispatch ? { claimed: false } : {}) } as const;
     }
     if (current.state !== 'RESERVED' || current.dispatchStartedAt) return deny('RESERVATION_NOT_DISPATCHABLE');
     if (await tx.liveCreateOrderSubmission.findUnique({ where: { grantId: grant.id }, select: { id: true } })) {
@@ -397,26 +379,38 @@ export const admitBoundExternalClientGrantSubmission = async (
       : command.exchange === 'BINANCE' ? 'future' : 'swap';
     await assertLiveCreateOrderPermittedInTransaction({ marketType, reduceOnly: false }, tx);
     await assertCurrentScope(tx, grant, input.secret, command);
+    const claimKey = claimDispatch ? await resolveDispatchClaimKey(tx, command) : null;
+    if (claimDispatch && !claimKey) return deny('DISPATCH_ACCOUNT_UNAVAILABLE');
     const marker = await tx.liveCreateOrderSubmission.create({ data: {
       grantId: grant.id, reservationId: current.id, intentId: intent.id,
       exchangeId: command.exchange, clientOrderId: command.clientOrderId,
       symbol: command.symbol, marketType, reduceOnly: command.reduceOnly,
+      ...(claimKey ? { dispatchClaimedAt: new Date(), dispatchBotId: command.botId,
+        dispatchCommandHash: current.commandHash, dispatchIntentHash: intent.payloadHash,
+        dispatchApiKeyId: claimKey.id, dispatchApiKeyUpdatedAt: claimKey.updatedAt } : {}),
     } });
     await tx.externalClientGrantReservation.update({ where: { id: current.id }, data: {
       state: 'SUBMISSION_UNCERTAIN', dispatchStartedAt: new Date(),
     } });
     await tx.log.create({ data: {
       userId: grant.userId, botId: grant.botId, source: 'external_client_grant',
-      actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_ADMITTED', level: 'WARN',
+      actor: 'SYSTEM', action: claimKey ? 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED'
+        : 'EXTERNAL_CLIENT_GRANT_ADMITTED', level: 'WARN',
       message: 'Delegated admission recorded; submit remains disabled and recovery is lookup only',
       entityType: 'ExternalClientGrantReservation', entityId: current.id,
       metadata: { grantId: grant.id, intentId: intent.id, markerId: marker.id,
         clientOrderId: command.clientOrderId },
     } });
     return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
-      reused: false, lookupOnly: true } as const;
+      reused: false, lookupOnly: true, ...(claimDispatch ? { claimed: !!claimKey } : {}) } as const;
   }, transactionOptions);
 };
+
+export const admitBoundExternalClientGrantSubmission = (
+  input: { reservationId: string; secret: string },
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader;
+    expectedIntentPayloadHash?: string } = {},
+) => admitBoundExternalClientGrantSubmissionInternal(input, deps);
 
 // The adapter seam shares the domain preflight and the durable admission, but
 // returns no submit capability. In particular, an existing intent/marker is

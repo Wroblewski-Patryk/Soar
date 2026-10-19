@@ -319,6 +319,25 @@ back. After retry exhaustion the marker remains, no finalization audit is
 committed, pause and grant revocation stay blocked, and transport and allowance
 counts remain one. This is local fixed-mock evidence only.
 
+`SOAR-EXT-GRANT-001T/DURABLE-DISPATCH-CLAIM-FOUNDATION` adds an internal,
+non-dispatching claim to the linked submission marker. A new claim takes the
+grant row and shared pause lock, rechecks the bound reservation, intent, grant
+scope, market evidence, and selected API-key identity, then commits the marker
+and `SUBMISSION_UNCERTAIN` reservation together. The marker snapshots bot ID,
+command and intent hashes, API-key ID and key update time; it stores no key or
+secret. Existing uncertain markers, including older admissions without claim
+fields, remain lookup-only. The unique grant, reservation, and intent links
+allow only one committed claim, and a lost commit response or restart cannot
+mint another. A failed transaction leaves `RESERVED` and the prior allowance
+charge; a committed claim keeps the marker and blocks pause/revoke. The claim
+does not provide a submit callback or token: `DELEGATED_SUBMIT_PERMIT_DISABLED`
+still rejects before any CCXT `createOrder`. Future real dispatch must recheck
+the captured key identity and version and prove transport termination before
+marker release. Local `_test` proof is not venue, deployment, or LIVE evidence.
+On a fresh `soar_ext_grant_001t_e1b7c91a_test` database, the 001T claim tests
+passed 3/3 and the existing reservation regression passed 37/37; the test
+database was removed after the run.
+
 `SOAR-EXT-GRANT-001R/TEST-ONLY-HTTP-MOCK` provides a separate HTTP test app at
 `apps/api/test-only/mockOrdersHttpApp.ts`. It is outside the production TypeScript
 build, excluded from the Docker context, and never imported by the production

@@ -1454,6 +1454,12 @@ model LiveCreateOrderSubmission {
   mockResult           Json?
   mockResultHash       String?
   mockResultRecordedAt DateTime?
+  dispatchClaimedAt       DateTime?
+  dispatchBotId           String?
+  dispatchCommandHash     String?
+  dispatchIntentHash      String?
+  dispatchApiKeyId        String?
+  dispatchApiKeyUpdatedAt DateTime?
 
   grant       ExternalClientGrant?            @relation(fields: [grantId], references: [id], onDelete: Restrict)
   reservation ExternalClientGrantReservation? @relation(fields: [reservationId], references: [id], onDelete: Restrict)
