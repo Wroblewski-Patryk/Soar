@@ -66,5 +66,8 @@ ordinary domain routes but cannot mutate account/profile secrets, API keys, or
 administrator state, even when copied into Cookie. This boundary is not a
 delegated grant or proof of human presence: a compromised human session is still
 a compromised credential. The new opaque grant secret is a distinct scoped
-credential, but no domain route accepts it yet. The execution boundary remains
+credential. `001L` accepts it only as an Authorization Bearer credential for a
+read-only self-status GET. That route checks the exact grant ID, current
+owner/bot scope, entitlement, expiry, and revocation without changing state.
+No domain action accepts the secret yet. The execution boundary remains
 unimplemented and unaccepted.

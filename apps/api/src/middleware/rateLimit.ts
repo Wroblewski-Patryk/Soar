@@ -10,6 +10,7 @@ type RateLimitOptions = {
   windowMs: number;
   max: number;
   keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange';
+  bucketId?: string;
 };
 
 type Bucket = {
@@ -60,8 +61,9 @@ const resolveRateLimitSubject = (
 
 const rateLimitKey = (
   req: Request,
-  keyScope: NonNullable<RateLimitOptions['keyScope']>
-) => `${req.method}:${req.baseUrl}${req.path}:${resolveRateLimitSubject(req, keyScope)}`;
+  keyScope: NonNullable<RateLimitOptions['keyScope']>,
+  bucketId?: string,
+) => `${req.method}:${bucketId ?? `${req.baseUrl}${req.path}`}:${resolveRateLimitSubject(req, keyScope)}`;
 
 type RedisClient = ReturnType<typeof createClient>;
 let redisClientPromise: Promise<RedisClient | null> | null = null;
@@ -113,7 +115,7 @@ let getRedisClientOverride: (() => Promise<RedisClient | null>) | null = null;
 const resolveRedisClient = () =>
   getRedisClientOverride ? getRedisClientOverride() : getRedisClient();
 
-export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimitOptions) => {
+export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId }: RateLimitOptions) => {
   const buckets = new Map<string, Bucket>();
 
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -125,7 +127,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
     }
 
     const redis = await resolveRedisClient();
-    const key = `rate_limit:${rateLimitKey(req, keyScope)}`;
+    const key = `rate_limit:${rateLimitKey(req, keyScope, bucketId)}`;
 
     if (redis) {
       try {

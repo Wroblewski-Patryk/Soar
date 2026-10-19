@@ -72,6 +72,21 @@ describe('rate limit identity resolution', () => {
     expect(secondRes.status).toHaveBeenCalledWith(429);
   });
 
+  it('uses one named IP bucket across changing grant IDs', async () => {
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    __rateLimitInternals.setGetRedisClientForTests(async () => null);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 1, keyScope: 'ip',
+      bucketId: 'external-client-grant-self-status' });
+    const first = makeRequest({ baseUrl: '/external-client/grants', path: '/one/status' });
+    const second = makeRequest({ baseUrl: '/external-client/grants', path: '/two/status' });
+    const next = vi.fn();
+    await limiter(first, makeResponse(), next);
+    const response = makeResponse();
+    await limiter(second, response, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).toHaveBeenCalledWith(429);
+  });
+
   it('uses user id for authenticated dashboard requests', () => {
     const req = makeRequest({
       user: { id: 'user-123', email: 'u@test.com', role: 'USER' },

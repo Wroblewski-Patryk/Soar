@@ -3,9 +3,9 @@
 ## Status and scope
 
 `SOAR-EXT-GRANT-001A/B` adds grant lifecycle and a callable, durable allowance
-reservation service. It does not expose MCP, external-client domain execution,
-or LIVE order submission. A grant secret is not accepted by any HTTP route.
-The reservation is not yet connected to the domain `createOrder` path.
+reservation service. `001L` adds one external-client, read-only self-status GET.
+There is no MCP capability, external-client domain execution, or LIVE order
+submission. The reservation is not connected to the domain `createOrder` path.
 
 ## Human-only routes
 
@@ -20,6 +20,31 @@ global trusted-origin middleware applies to state-changing cookie requests.
 | GET | `/dashboard/external-client-grants` | List up to 100 owned grants without secret or hash. |
 | GET | `/dashboard/external-client-grants/:id` | Read one owned grant without secret or hash. |
 | POST | `/dashboard/external-client-grants/:id/revoke` | Revoke under the grant row lock; repeated calls are idempotent. An unresolved delegated submission marker returns 409 until explicit reconciliation. |
+
+## External-client self-status route (001L)
+
+`GET /external-client/grants/:id/status` accepts exactly one
+`Authorization: Bearer <opaque grant secret>` header. It does not accept a cookie,
+human or legacy JWT, query credential, or request body. A valid secret must hash
+to that exact grant ID. Missing, invalid, foreign-ID, revoked, expired, planless,
+or scope-unavailable grants receive the same 401 response. Database failure
+returns a generic 503. The GET never creates a grant, reservation, audit, or
+subscription catalog entry. It returns only `id`, `ACTIVE` or `EXHAUSTED` status,
+bot/exchange/market/symbol/action scope, limits, usage, and expiry. It omits
+owner/account data, client label, secret/hash, and exchange keys. Responses use
+no-store headers. A fixed, IP-scoped 30/minute bucket covers all requested grant
+IDs and fails closed if Redis is unavailable in production. Request logging
+omits this route's client-supplied path and query text and redacts grant-secret-shaped
+values on other paths.
+The route has no domain action, CCXT call, or MCP tool.
+
+Local 001L proof used a fresh `soar_ext_grant_001l_accept_d7c2_test` database
+with 73 applied migrations. The two grant HTTP suites plus rate-limit and
+request-logger suites passed (18/18); API typecheck, repository guardrails,
+strict architecture drift (880/880), docs parity, and API endpoint parity passed.
+The HTTP tests read back zero leftover test users, grants, and reservations.
+These results do not establish deployed behavior or an accepted external-client
+domain-action journey.
 
 Create input requires `clientLabel`, owned `botId`, exact `exchange`, `marketType`,
 `symbol`, `action=PLACE_LIVE_ORDER`, decimal-string `maxActionQuoteAmount` and
@@ -222,5 +247,5 @@ that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing
 domain risk, fill, Order, and lookup-only recovery path. A Promise race or abort
 signal without confirmed adapter termination does not satisfy that requirement.
-There is still no delegated real adapter call, external HTTP/MCP route, real
+There is still no delegated real adapter call, external domain-action HTTP/MCP route, real
 venue submit, or deployed proof. The mock executor is not LIVE readiness.

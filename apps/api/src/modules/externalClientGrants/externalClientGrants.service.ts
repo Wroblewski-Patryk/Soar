@@ -5,8 +5,9 @@ import { comparePassword } from '../../utils/hash';
 import { supportsExchangeExecutionCapability } from '../exchange/exchangeExecutionCapabilityContract.service';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 
-const SECRET_PATTERN = /^soar_ext_[A-Za-z0-9_-]{43}$/;
-const hashSecret = (secret: string) => createHash('sha256').update(secret, 'utf8').digest('hex');
+export const EXTERNAL_CLIENT_GRANT_SECRET_PATTERN = /^soar_ext_[A-Za-z0-9_-]{43}$/;
+export const hashExternalClientGrantSecret = (secret: string) =>
+  createHash('sha256').update(secret, 'utf8').digest('hex');
 
 export class GrantInputError extends Error {
   constructor(message: string, readonly status: number = 400) {
@@ -112,7 +113,7 @@ export const createExternalClientGrant = async (userId: string, input: CreateGra
   }
 
   const secret = `soar_ext_${randomBytes(32).toString('base64url')}`;
-  const secretHash = hashSecret(secret);
+  const secretHash = hashExternalClientGrantSecret(secret);
   const expiresAt = new Date(Date.now() + input.ttlSeconds * 1000);
   const grant = await prisma.$transaction(async (tx) => {
     const created = await tx.externalClientGrant.create({
@@ -190,11 +191,11 @@ export const inspectExternalClientGrant = async (input: {
   action: ExternalClientAction;
   quoteAmount: string;
 }) => {
-  if (!SECRET_PATTERN.test(input.secret)) return null;
+  if (!EXTERNAL_CLIENT_GRANT_SECRET_PATTERN.test(input.secret)) return null;
   try {
     const amount = parseAmount(input.quoteAmount);
     const grant = await prisma.externalClientGrant.findUnique({
-      where: { secretHash: hashSecret(input.secret) },
+      where: { secretHash: hashExternalClientGrantSecret(input.secret) },
     });
     if (!grant || grant.userId !== input.userId || grant.botId !== input.botId ||
         grant.exchange !== input.exchange || grant.marketType !== input.marketType ||
