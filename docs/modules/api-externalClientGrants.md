@@ -319,6 +319,22 @@ back. After retry exhaustion the marker remains, no finalization audit is
 committed, pause and grant revocation stay blocked, and transport and allowance
 counts remain one. This is local fixed-mock evidence only.
 
+`SOAR-EXT-GRANT-001R/TEST-ONLY-HTTP-MOCK` provides a separate HTTP test app at
+`apps/api/test-only/mockOrdersHttpApp.ts`. It is outside the production TypeScript
+build, excluded from the Docker context, and never imported by the production
+router. The test app mounts `POST /external-client/grants/:grantId/mock-orders`
+only with `NODE_ENV=test` and a PostgreSQL database name ending `_test`; the
+production API returns 404. It accepts exactly one `soar_ext_` Bearer grant and
+strict `{clientOrderId,side,quantity,limitPrice}` JSON, derives owner, bot,
+market, and domain context from the grant, and uses the existing atomic binding,
+risk preflight, admission marker, fixed `CERTAIN_FILL` transport, and lookup-only
+recovery. It does not accept a scenario or call CCXT. A separate hashed
+order-grant rate-limit key and IP bucket use bounded shared-store waits.
+Successful output contains only mock state, client ID, and proven local Order ID;
+unknown outcomes retain the marker and return reconciliation-required state.
+This is an isolated local protocol harness, not a production domain route,
+delegated LIVE permit, Codex/Claude integration, or exchange proof.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

@@ -9,7 +9,7 @@ const logger = createModuleLogger('rate-limit');
 type RateLimitOptions = {
   windowMs: number;
   max: number;
-  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange' | 'read_grant';
+  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange' | 'read_grant' | 'order_grant';
   bucketId?: string;
   requireSharedStore?: boolean;
   sharedStoreTimeoutMs?: number;
@@ -59,6 +59,14 @@ const resolveRateLimitSubject = (
     )?.[1];
     return secret
       ? `read-grant:${createHash('sha256').update(secret).digest('hex')}`
+      : `ip:${ip}`;
+  }
+  if (keyScope === 'order_grant') {
+    const secret = /^Bearer (soar_ext_[A-Za-z0-9_-]{43})$/i.exec(
+      req.headers.authorization ?? ''
+    )?.[1];
+    return secret
+      ? `order-grant:${createHash('sha256').update(secret).digest('hex')}`
       : `ip:${ip}`;
   }
 
@@ -144,8 +152,8 @@ const resolveRedisClient = () =>
 export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId,
   requireSharedStore = false, sharedStoreTimeoutMs }: RateLimitOptions) => {
   const buckets = new Map<string, Bucket>();
-  const canFallback = () => process.env.NODE_ENV === 'test' ||
-    (!requireSharedStore && shouldAllowInMemoryFallback());
+  const canFallback = () => !requireSharedStore &&
+    (process.env.NODE_ENV === 'test' || shouldAllowInMemoryFallback());
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (

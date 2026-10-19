@@ -104,6 +104,31 @@ describe('rate limit identity resolution', () => {
     expect(subject).toContain('user:user-999:exchange:binance:key:hash:');
     expect(subject.endsWith('hash:abc123-secret-key')).toBe(false);
   });
+  it('keys external order requests by a hash of their order grant secret', () => {
+    const first = __rateLimitInternals.resolveRateLimitSubject(makeRequest({
+      headers: { authorization: `Bearer soar_ext_${'A'.repeat(43)}` },
+    }), 'order_grant');
+    const second = __rateLimitInternals.resolveRateLimitSubject(makeRequest({
+      headers: { authorization: `Bearer soar_ext_${'B'.repeat(43)}` },
+    }), 'order_grant');
+    expect(first).toMatch(/^order-grant:[a-f0-9]{64}$/);
+    expect(first).not.toBe(second);
+    expect(__rateLimitInternals.resolveRateLimitSubject(makeRequest(), 'order_grant'))
+      .toBe('ip:127.0.0.1');
+  });
+  it('keeps order-grant shared-store limits closed in enabled test mode', async () => {
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    __rateLimitInternals.setGetRedisClientForTests(async () => null);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 10,
+      keyScope: 'order_grant', requireSharedStore: true, sharedStoreTimeoutMs: 25 });
+    const response = makeResponse();
+    const next = vi.fn();
+    await limiter(makeRequest({ headers: {
+      authorization: `Bearer soar_ext_${'A'.repeat(43)}`,
+    } }), response, next);
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(next).not.toHaveBeenCalled();
+  });
 });
 
 describe('rate limit degradation policy', () => {
