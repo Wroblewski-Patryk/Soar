@@ -53,6 +53,7 @@ model User {
   walletCashflowEvents     WalletCashflowEvent[]
   logs                     Log[]
   externalClientGrants     ExternalClientGrant[]
+  externalClientReadGrants ExternalClientReadGrant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -342,6 +343,7 @@ model Bot {
   signals                  Signal[]
   logs                     Log[]
   externalClientGrants     ExternalClientGrant[]
+  externalClientReadGrants ExternalClientReadGrant[]
 
   @@index([userId])
   @@index([apiKeyId])
@@ -1367,6 +1369,31 @@ model ExternalClientGrant {
 
 enum ExternalClientAction {
   PLACE_LIVE_ORDER
+}
+
+// Explicit bot-scoped read authority. No order allowance or domain read route yet.
+model ExternalClientReadGrant {
+  id          String                   @id @default(uuid())
+  userId      String
+  botId       String
+  clientLabel String
+  secretHash  String                   @unique
+  action      ExternalClientReadAction
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bot  Bot  @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([botId])
+  @@index([expiresAt])
+}
+
+enum ExternalClientReadAction {
+  READ_BOT_STATUS
 }
 
 // Durable pre-submit allowance. No external route consumes this record yet.

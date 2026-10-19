@@ -4,9 +4,10 @@
 
 `SOAR-EXT-GRANT-001A/B` adds grant lifecycle and a callable, durable allowance
 reservation service. `001L` adds one external-client, read-only self-status GET.
+`001N2` adds a separate, explicitly issued `READ_BOT_STATUS` grant foundation.
 The local stdio MCP package calls only that GET. There is no external-client
-domain execution or delegated LIVE order submission. The reservation is not
-connected to the domain `createOrder` path.
+bot-status domain read, delegated LIVE order submission, or new MCP tool. The
+reservation is not connected to the domain `createOrder` path.
 
 ## Human-only routes
 
@@ -21,6 +22,35 @@ global trusted-origin middleware applies to state-changing cookie requests.
 | GET | `/dashboard/external-client-grants` | List up to 100 owned grants without secret or hash. |
 | GET | `/dashboard/external-client-grants/:id` | Read one owned grant without secret or hash. |
 | POST | `/dashboard/external-client-grants/:id/revoke` | Revoke under the grant row lock; repeated calls are idempotent. An unresolved delegated submission marker returns 409 until explicit reconciliation. |
+
+`001N2` adds four separate human-only routes under
+`/dashboard/external-client-read-grants` with the same signed human cookie,
+current-password confirmation for create, user-scoped rate limits, and a
+60-second to 7-day expiry window:
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| POST | `/dashboard/external-client-read-grants` | Requires explicit `READ_BOT_STATUS`, one owned `botId`, client label, TTL, current password, and the same active LIVE-trading plan entitlement used to issue order grants. Returns a distinct `soar_read_` secret once. |
+| GET | `/dashboard/external-client-read-grants` | Lists up to 100 owned read grants without secret or hash. |
+| GET | `/dashboard/external-client-read-grants/:id` | Reads one owned read grant without secret or hash. |
+| POST | `/dashboard/external-client-read-grants/:id/revoke` | Immediately marks the read grant revoked; repeat calls are idempotent. |
+
+The read grant stores no symbol, exchange, quote amount, reservation, or lifetime
+read count. It may name an owned PAPER or LIVE bot, regardless of current bot
+mode. The existing `PLACE_LIVE_ORDER` table and secret format do not acquire
+read authority; either action is rejected by the other create route. No route
+accepts the read secret for bot status yet. A later bot-status reader must check
+the exact bot, current owner and entitlement, expiry, and revocation on every
+request, with a 60/minute rate limit per grant plus IP. The current 001L
+grant-self-status route and its 30/minute IP limit are unchanged.
+
+Local `001N2` proof used a fresh `soar_ext_grant_001n2_8b07c543_test`
+database. After the earlier migrations, a pre-existing `PLACE_LIVE_ORDER`
+record was inserted; the new migration preserved its action, symbol, quote
+limits, count, and label, and left the order-action enum unchanged. The three
+new read-grant HTTP tests and nine existing order-grant HTTP tests passed.
+API typecheck, repository guardrails, and API endpoint documentation parity
+passed. The temporary database was removed. This is local API evidence only.
 
 ## External-client self-status route (001L)
 
