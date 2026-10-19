@@ -96,24 +96,23 @@ Exact retry returns the same bound rows without another charge.
 authority, and the shared global LIVE pause control in one transaction before
 committing `SUBMISSION_UNCERTAIN`. The pause advisory lock ends at that commit.
 
-`SOAR-EXT-GRANT-001D3` adds an internal, single-use
-`withFreshBoundExternalClientGrantSubmitPermit` boundary for a mock submit
-callback. It first commits `SUBMISSION_UNCERTAIN`, then locks the grant row and
-shared global LIVE pause key in that order, rechecks the bound command, intent,
-audit, grant authority, bot/group, plan, expiry, and absence of a local Order,
-and holds both locks through the callback. A revoke or global pause that starts
-while the callback runs waits for it to finish. Delegated submissions are
-blocked while paused, including reduce-only Futures commands. A callback
-timeout or crash leaves the reservation uncertain and the allowance spent; a
-retry cannot invoke the callback again and must use venue lookup. The bot/group
-and plan checks are point-in-time checks before the callback; this permit does
-not hold locks on those records through it. The lock lifetime is bounded by the
-120-second database transaction timeout. A future real adapter integration must
-prove its submit deadline and cancellation behavior before relying on this
-permit for an in-flight venue request.
+`SOAR-EXT-GRANT-001D3/TIMEOUT-ABORT` disables the internal
+`withFreshBoundExternalClientGrantSubmitPermit` callback seam. It always returns
+`DELEGATED_SUBMIT_PERMIT_DISABLED` before `beginBound`, so a rejected attempt
+neither invokes a callback nor advances the reservation to uncertainty. The
+earlier implementation held grant and pause locks in an interactive Prisma
+transaction, but a transaction timeout can release both locks while its awaited
+callback still runs. A concurrent revoke and pause can then commit before that
+callback finishes. The `_test` regression reproduces this with a no-op callback
+and proves the disabled seam never starts a submit. The separated
+`beginBoundExternalClientGrantSubmission` remains a durable point-in-time gate,
+not authority to call an exchange adapter. Existing uncertain reservations stay
+lookup-only and cannot be automatically refunded.
 
-There is still no delegated adapter call, Order materialization, or automatic
-reconciliation. The next ticket must connect this boundary to the existing
-domain risk, exchange, fill, Order, and lookup-only recovery path before any
-delegated LIVE submission. No external HTTP/MCP route, real venue submit, or
-deployed proof is claimed.
+Before any delegated LIVE submit, the next ticket must provide a lock lifetime
+that covers the entire venue call, enforce a deadline, confirm that the call has
+ended or been canceled before releasing authority, and integrate the existing
+domain risk, fill, Order, and lookup-only recovery path. A Promise race or abort
+signal without confirmed adapter termination does not satisfy that requirement.
+There is still no delegated adapter call, Order materialization, automatic
+reconciliation, external HTTP/MCP route, real venue submit, or deployed proof.

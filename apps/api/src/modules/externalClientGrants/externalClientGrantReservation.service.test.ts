@@ -5,7 +5,7 @@ import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
 import { __resetExchangeSymbolRulesCacheForTests, getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
 import { persistOrReuseLiveOrderIntent } from '../orders/orders.liveIntent.service';
-import { setLiveExecutionPause } from '../orders/liveExecutionPause.service';
+import { LIVE_EXECUTION_PAUSE_LOCK_KEY, setLiveExecutionPause } from '../orders/liveExecutionPause.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant } from './externalClientGrants.service';
 import {
@@ -91,23 +91,19 @@ const createMatchingIntent = async (f: Awaited<ReturnType<typeof fixture>>, comm
     marketType: 'FUTURES', symbol: 'BTCUSDT',
   } });
 
-const waitForLockWait = async (sqlFragment: string) => {
-  const deadline = Date.now() + 10_000;
-  while (Date.now() < deadline) {
-    const rows = await prisma.$queryRaw<Array<{ waiting: bigint }>>(Prisma.sql`
-      SELECT count(*) AS waiting FROM pg_stat_activity
-      WHERE pid <> pg_backend_pid() AND wait_event_type = 'Lock'
-        AND query LIKE ${`%${sqlFragment}%`}
-    `);
-    if (rows[0]?.waiting > 0n) return;
-    await new Promise((resolve) => setTimeout(resolve, 25));
-  }
-  throw new Error(`Expected a blocked database operation containing ${sqlFragment}`);
+const settleWithin = async <T>(task: Promise<T>, milliseconds: number): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([task, new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Database operation did not settle')), milliseconds);
+    })]);
+  } finally { if (timer) clearTimeout(timer); }
 };
 
 describe('external client grant atomic reservation', () => {
-  it('holds grant and pause locks through one mock submit while revoke and pause wait', async () => {
+  it('disables delegated submit when Prisma timeout can release locks before a callback settles', async () => {
     const f = await fixture();
+    const holderDb = new PrismaClient();
     const revokeDb = new PrismaClient();
     const pauseDb = new PrismaClient();
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
@@ -115,6 +111,7 @@ describe('external client grant atomic reservation', () => {
     let entered!: () => void;
     const held = new Promise<void>((resolve) => { release = resolve; });
     const callbackEntered = new Promise<void>((resolve) => { entered = resolve; });
+    let unsafeOutcome: Promise<{ status: 'fulfilled' } | { status: 'rejected'; error: unknown }> | undefined;
     let mutations: Promise<unknown>[] = [];
     try {
       await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
@@ -123,85 +120,76 @@ describe('external client grant atomic reservation', () => {
       await prisma.user.update({ where: { id: f.user.id }, data: { role: 'ADMIN' } });
       const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
       const bound = await bind(f);
-      let submits = 0;
-      const dispatch = withFreshBoundExternalClientGrantSubmitPermit({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, async ({ command, intentId }) => {
-        submits += 1;
-        expect(command.clientOrderId).toBe(bound.reservation.clientOrderId);
-        expect(intentId).toBe(bound.intentId);
+      let callbackActive = false;
+      // Reproduce the unsafe pattern without any adapter or network call.
+      unsafeOutcome = holderDb.$transaction(async (tx) => {
+        await tx.$queryRaw(Prisma.sql`SELECT "id" FROM "ExternalClientGrant"
+          WHERE "id" = ${f.grant.id} FOR UPDATE`);
+        await tx.$queryRaw`SELECT 1 AS locked FROM
+          (SELECT pg_advisory_xact_lock_shared(${LIVE_EXECUTION_PAUSE_LOCK_KEY})) AS acquired`;
+        callbackActive = true;
         entered();
         await held;
-        return 'mock-accepted';
-      });
-      await callbackEntered;
+        callbackActive = false;
+      }, { maxWait: 10_000, timeout: 400 }).then(
+        () => ({ status: 'fulfilled' as const }),
+        (error: unknown) => ({ status: 'rejected' as const, error }),
+      );
+      await settleWithin(callbackEntered, 5_000);
       let revoked = false;
       let paused = false;
-      const mutationErrors: unknown[] = [];
       const revoke = revokeDb.externalClientGrant.update({ where: { id: f.grant.id },
-        data: { revokedAt: new Date() } }).then(() => { revoked = true; },
-        (error) => { mutationErrors.push(error); });
+        data: { revokedAt: new Date() } }).then(() => { revoked = true; });
       const pause = setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
         reason: 'Concurrency permit test', expectedVersion: control.version }, pauseDb)
-        .then(() => { paused = true; }, (error) => { mutationErrors.push(error); });
+        .then(() => { paused = true; });
       mutations = [revoke, pause];
-      try {
-        await Promise.all([waitForLockWait('ExternalClientGrant'), waitForLockWait('pg_advisory_xact_lock(')]);
-        expect({ revoked, paused, submits }).toEqual({ revoked: false, paused: false, submits: 1 });
-      } finally { release(); }
-      expect(await dispatch).toBe('mock-accepted');
-      await Promise.all([revoke, pause]);
-      expect(mutationErrors).toEqual([]);
+      await settleWithin(Promise.all(mutations), 5_000);
+      // Both authority changes committed while the old callback still ran.
       expect({ revoked, paused }).toEqual({ revoked: true, paused: true });
+      expect(callbackActive).toBe(true);
+      let submits = 0;
       await expect(withFreshBoundExternalClientGrantSubmitPermit({
         reservationId: bound.reservation.id, secret: f.secret,
-      }, async () => { submits += 1; })).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
-      expect(submits).toBe(1);
+      }, async () => { submits += 1; })).rejects.toMatchObject({ code: 'DELEGATED_SUBMIT_PERMIT_DISABLED' });
+      expect(submits).toBe(0);
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: bound.reservation.id },
-      })).state).toBe('SUBMISSION_UNCERTAIN');
+      })).state).toBe('RESERVED');
       expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      release();
+      const outcome = await unsafeOutcome;
+      expect(outcome.status).toBe('rejected');
+      if (outcome.status === 'rejected') expect(outcome.error).toMatchObject({ code: 'P2028' });
     } finally {
       release();
       await Promise.allSettled(mutations);
-      await Promise.all([revokeDb.$disconnect(), pauseDb.$disconnect()]);
+      if (unsafeOutcome) await unsafeOutcome;
+      await Promise.all([holderDb.$disconnect(), revokeDb.$disconnect(), pauseDb.$disconnect()]);
       if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
         paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
         changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
       } });
       else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
     }
-  }, 30_000);
+  }, 20_000);
 
-  it('keeps a timeout uncertain and denies another mock submit or refund', async () => {
+  it('rejects the callback before consuming dispatch state or creating an Order', async () => {
     const f = await fixture();
-    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
-    try {
-      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
-        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
-        update: { paused: false, reason: 'test available' } });
-      const bound = await bind(f);
-      let submits = 0;
-      const submit = () => withFreshBoundExternalClientGrantSubmitPermit({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, async () => { submits += 1; throw new Error('UNKNOWN'); });
-      await expect(submit()).rejects.toThrow('UNKNOWN');
-      await expect(submit()).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
-      await expect(refundUnsentExternalClientGrantReservation(bound.reservation.id))
-        .rejects.toMatchObject({ code: 'NO_AUTHORITATIVE_NO_SUBMIT_PROOF' });
-      expect(submits).toBe(1);
-      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
-        where: { id: bound.reservation.id },
-      })).state).toBe('SUBMISSION_UNCERTAIN');
-      expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
-      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
-    } finally {
-      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
-        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
-        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
-      } });
-      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
-    }
+    const bound = await bind(f);
+    let submits = 0;
+    await expect(withFreshBoundExternalClientGrantSubmitPermit({
+      reservationId: bound.reservation.id, secret: f.secret,
+    }, async () => { submits += 1; throw new Error('UNKNOWN'); }))
+      .rejects.toMatchObject({ code: 'DELEGATED_SUBMIT_PERMIT_DISABLED' });
+    expect(submits).toBe(0);
+    expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+      where: { id: bound.reservation.id },
+    })).state).toBe('RESERVED');
+    expect(await prisma.log.count({ where: { userId: f.user.id,
+      action: 'EXTERNAL_CLIENT_GRANT_SUBMISSION_STARTED' } })).toBe(0);
+    expect(await counters(f.grant.id)).toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
   });
 
   it('does not enter the mock callback after another process crashes at the durable begin', async () => {
@@ -228,7 +216,7 @@ describe('external client grant atomic reservation', () => {
       let submits = 0;
       await expect(withFreshBoundExternalClientGrantSubmitPermit({
         reservationId: bound.reservation.id, secret: f.secret,
-      }, async () => { submits += 1; })).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
+      }, async () => { submits += 1; })).rejects.toMatchObject({ code: 'DELEGATED_SUBMIT_PERMIT_DISABLED' });
       expect(submits).toBe(0);
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: bound.reservation.id },
