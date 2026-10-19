@@ -5,10 +5,13 @@ import { EXTERNAL_CLIENT_READ_GRANT_SECRET_PATTERN } from './externalClientReadG
 import { readExternalClientBotStatus } from './externalClientBotStatus.service';
 
 const router = Router();
+const redisTimeoutMs = 1000;
 const ipLimiter = createRateLimiter({ windowMs: 60_000, max: 30, keyScope: 'ip',
-  bucketId: 'external-client-grant-self-status', requireSharedStore: true });
+  bucketId: 'external-client-grant-self-status', requireSharedStore: true,
+  sharedStoreTimeoutMs: redisTimeoutMs });
 const grantLimiter = createRateLimiter({ windowMs: 60_000, max: 60, keyScope: 'read_grant',
-  bucketId: 'external-client-bot-status-grant', requireSharedStore: true });
+  bucketId: 'external-client-bot-status-grant', requireSharedStore: true,
+  sharedStoreTimeoutMs: redisTimeoutMs });
 const unauthorized = (res: Parameters<typeof sendError>[0]) =>
   sendError(res, 401, 'Grant unavailable');
 

@@ -107,6 +107,46 @@ describe('rate limit identity resolution', () => {
 });
 
 describe('rate limit degradation policy', () => {
+  it('times out a pending shared-store connection, then accepts its recovery', async () => {
+    process.env.NODE_ENV = 'test';
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    let release!: (client: any) => void;
+    const pending = new Promise<any>((resolve) => { release = resolve; });
+    __rateLimitInternals.setGetRedisClientForTests(() => pending);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 60,
+      keyScope: 'read_grant', requireSharedStore: true, sharedStoreTimeoutMs: 25 });
+    const req = makeRequest({ headers: { authorization: `Bearer soar_read_${'A'.repeat(43)}` } });
+    const response = makeResponse();
+    const next = vi.fn();
+    const startedAt = Date.now();
+    await limiter(req, response, next);
+    expect(Date.now() - startedAt).toBeLessThan(1000);
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(next).not.toHaveBeenCalled();
+    release({ eval: async () => [1, 60_000] });
+    await limiter(req, makeResponse(), next);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it('times out a pending shared-store eval without falling back to memory', async () => {
+    process.env.NODE_ENV = 'test';
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    const client = { eval: vi.fn()
+      .mockImplementationOnce(() => new Promise(() => {}))
+      .mockResolvedValue([1, 60_000]) } as any;
+    __rateLimitInternals.setGetRedisClientForTests(async () => client);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 60,
+      keyScope: 'read_grant', requireSharedStore: true, sharedStoreTimeoutMs: 25 });
+    const req = makeRequest({ headers: { authorization: `Bearer soar_read_${'B'.repeat(43)}` } });
+    const response = makeResponse();
+    const next = vi.fn();
+    await limiter(req, response, next);
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(next).not.toHaveBeenCalled();
+    await limiter(req, makeResponse(), next);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
   it('keeps a shared-store-only public grant limit closed when local fallback is enabled', async () => {
     process.env.NODE_ENV = 'production';
     process.env.RATE_LIMIT_ALLOW_LOCAL_FALLBACK = 'true';

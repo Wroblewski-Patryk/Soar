@@ -186,4 +186,25 @@ describe('external client bot configuration status', () => {
       app.set('trust proxy', previousTrustProxy);
     }
   }, 45_000);
+
+  it('returns bounded 503 while Redis connect hangs and reads again after recovery', async () => {
+    const f = await fixture();
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    let release!: (client: any) => void;
+    const pending = new Promise<any>((resolve) => { release = resolve; });
+    __rateLimitInternals.setGetRedisClientForTests(() => pending);
+    const startedAt = Date.now();
+    const unavailable = await request(app).get(path(f.bot.id))
+      .set('Authorization', `Bearer ${f.secret}`);
+    expect(unavailable.status).toBe(503);
+    expect(unavailable.headers['x-ratelimit-degraded']).toBe('redis_unavailable');
+    expect(Date.now() - startedAt).toBeLessThan(3000);
+    expect(JSON.stringify(unavailable.body)).not.toContain(f.secret);
+
+    release({ eval: async () => [1, 60_000] });
+    const recovered = await request(app).get(path(f.bot.id))
+      .set('Authorization', `Bearer ${f.secret}`);
+    expect(recovered.status).toBe(200);
+    expect(recovered.body).toEqual({ bot: { id: f.bot.id, mode: 'PAPER', isActive: true } });
+  });
 });

@@ -82,6 +82,15 @@ test compared bot, grant, subscription, audit, plan, Order, and Position state
 before and after the call. This is local proof only; the 60/minute per-grant
 policy still needs owner confirmation before release.
 
+`001P3` bounds each Redis connection wait and `eval` for the bot-status IP and
+grant limiters to 1 second. A timeout returns 503 without using an in-memory
+counter; a delayed Redis command may still consume quota later, conservatively.
+Deterministic pending-connect and pending-eval tests prove bounded refusal and
+recovery on a later request. HTTP recovery and the existing grant self-status
+regression passed on a fresh `soar_ext_grant_001p3_460a4023_test` database
+(18/18). The test database was removed. A real Redis restart remains for the
+independent exact-SHA acceptance check.
+
 ## External-client self-status route (001L)
 
 `GET /external-client/grants/:id/status` accepts exactly one
