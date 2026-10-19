@@ -11,6 +11,7 @@ import { fingerprintLiveOrderIntentPayload, persistOrReuseLiveOrderIntent, resol
 import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '../orders/orders.service';
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
+import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
 
 type DbClient = PrismaClient;
 type Tx = Prisma.TransactionClient;
@@ -483,22 +484,42 @@ export const prepareBoundExternalClientGrantAdapterSeam = async (
     domainRiskChecked: true, dispatchEnabled: false } as const;
 };
 
-// Test-database-only proof of the delegated lifecycle. Admission commits the
-// blocker before submit; all uncertain outcomes keep it for lookup/recovery.
-// No HTTP/MCP route or real exchange boundary calls this function.
-export const executeBoundExternalClientGrantMock = async (
-  input: { reservationId: string; secret: string },
-  deps: { submit: (command: Pick<GrantLimitCommand, 'exchange' | 'marketType' | 'symbol' |
-    'side' | 'type' | 'quantity' | 'limitPrice' | 'reduceOnly' | 'clientOrderId'>) => Promise<LiveExecutionResult>;
-    getSymbolRules?: SymbolRulesReader },
-) => {
+const mockRequestSchema = z.strictObject({
+  reservationId: z.uuid(), secret: z.string(),
+  scenario: z.enum(delegatedMockScenarios).default('CERTAIN_FILL'),
+});
+const fixedMockSymbolRules: SymbolRulesReader = async (scope) => {
+  if ((scope.exchange !== 'BINANCE' && scope.exchange !== 'GATEIO') ||
+      scope.marketType !== 'FUTURES' || scope.symbol !== 'BTCUSDT') {
+    return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
+  }
+  return { minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
+    priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT',
+    settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false };
+};
+
+// Test-database-only proof of the delegated lifecycle. It accepts plain data
+// only and calls a fixed local transport; no caller-supplied function can run.
+export async function executeBoundExternalClientGrantMock(
+  input: z.input<typeof mockRequestSchema>,
+) {
+  if (arguments.length !== 1 || !input || typeof input !== 'object' || Array.isArray(input) ||
+      Object.getPrototypeOf(input) !== Object.prototype) return deny('DELEGATED_MOCK_INVALID_INPUT');
+  const fields = Object.getOwnPropertyDescriptors(input);
+  if (Reflect.ownKeys(fields).some((key) => typeof key !== 'string' ||
+      !['reservationId', 'secret', 'scenario'].includes(key) ||
+      !('value' in fields[key]) || typeof fields[key].value === 'function')) {
+    return deny('DELEGATED_MOCK_INVALID_INPUT');
+  }
+  const request = mockRequestSchema.safeParse(input);
+  if (!request.success) return deny('DELEGATED_MOCK_INVALID_INPUT');
   let databaseName = '';
   try { databaseName = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').pathname); } catch { /* fail closed */ }
   if (process.env.NODE_ENV !== 'test' || !databaseName.endsWith('_test')) {
     return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
   }
-  const admitted = await prepareBoundExternalClientGrantAdapterSeam(input,
-    { getSymbolRules: deps.getSymbolRules });
+  const admitted = await prepareBoundExternalClientGrantAdapterSeam(request.data,
+    { getSymbolRules: fixedMockSymbolRules });
   if (admitted.reused) return { ...admitted, orderId: null } as const;
 
   const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
@@ -515,13 +536,24 @@ export const executeBoundExternalClientGrantMock = async (
   if (!prepared.liveBot ||
       fingerprintLiveOrderIntentPayload(command.userId, prepared.liveBot, prepared.canonicalPayload) !==
         intent.payloadHash) return deny('DELEGATED_DOMAIN_COMMAND_MISMATCH');
+  if ((command.exchange !== 'BINANCE' && command.exchange !== 'GATEIO') ||
+      command.marketType !== 'FUTURES' || command.symbol !== 'BTCUSDT') {
+    return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
+  }
 
+  await prisma.log.create({ data: {
+    userId: command.userId, botId: command.botId, source: 'external_client_grant',
+    actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED', level: 'INFO',
+    message: 'Fixed delegated mock transport entered',
+    entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+    metadata: { scenario: request.data.scenario, clientOrderId: command.clientOrderId },
+  } });
   let result: LiveExecutionResult;
   try {
-    result = await deps.submit({ exchange: command.exchange, marketType: command.marketType,
-      symbol: command.symbol, side: command.side, type: command.type,
-      quantity: command.quantity, limitPrice: command.limitPrice, reduceOnly: command.reduceOnly,
-      clientOrderId: command.clientOrderId });
+    result = await runDelegatedMockTransport({ exchange: command.exchange,
+      symbol: command.symbol, side: command.side,
+      quantity: command.quantity, limitPrice: command.limitPrice,
+      clientOrderId: command.clientOrderId, scenario: request.data.scenario });
   } catch {
     return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
   }
@@ -559,7 +591,7 @@ export const executeBoundExternalClientGrantMock = async (
   return { reservationId: reservation.id, intentId: intent.id,
     clientOrderId: command.clientOrderId, orderId: order.id,
     submitted: true, dispatchEnabled: false } as const;
-};
+}
 
 // Fail closed: an interactive Prisma transaction can time out and release its
 // locks while an awaited callback is still running. Until a venue call has a

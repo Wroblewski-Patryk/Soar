@@ -23,12 +23,22 @@ process.stdin.on('data', (chunk: string) => {
       const request = JSON.parse(input.slice(0, input.indexOf('\n')));
       process.stdout.write('STARTED\n');
       if (request.operation === 'mock-crash-after-submit-enter') {
-        await executeBoundExternalClientGrantMock(request, { getSymbolRules: rules,
-          submit: async () => {
-            process.stdout.write('MOCK_ENTERED\n', () => process.exit(76));
-            return await new Promise<never>(() => {});
-          },
+        const execution = executeBoundExternalClientGrantMock({
+          reservationId: request.reservationId, secret: request.secret,
+          scenario: 'DELAYED_FILL',
         });
+        let started = false;
+        for (let attempt = 0; attempt < 100; attempt += 1) {
+          const audit = await db.log.findFirst({ where: {
+            entityType: 'ExternalClientGrantReservation', entityId: request.reservationId,
+            action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED',
+          }, select: { id: true } });
+          if (audit) { started = true; break; }
+          await new Promise<void>((resolve) => setTimeout(resolve, 50));
+        }
+        if (!started) throw new Error('Mock transport did not start');
+        process.stdout.write('MOCK_ENTERED\n', () => process.exit(76));
+        await execution;
         return;
       }
       if (request.operation === 'admit' || request.operation === 'crash-after-admission') {

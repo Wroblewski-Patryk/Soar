@@ -143,17 +143,20 @@ market fetch, allowance charge, or submit. The result explicitly has
 
 `SOAR-EXT-GRANT-001G/MOCK-EXECUTION` adds an internal executor restricted at
 runtime to `NODE_ENV=test` and a database whose name ends exactly `_test`.
-It calls only an injected mock callback after 001F preparation and committed
-admission. The callback receives the canonical LIMIT command without the grant
-secret. The durable marker stays throughout the callback and local persistence.
+It accepts only plain data (`reservationId`, `secret`, and a fixed scenario);
+unknown, functional, accessor, or extra-argument inputs are rejected before
+admission. The local transport has no exchange adapter, CCXT, network, or
+caller-supplied callback. It supports a certain fill, a fixed delayed fill,
+UNKNOWN, and an inconsistent fill for negative proof. The durable marker stays
+throughout the transport delay and local persistence.
 For a certain, complete mock fill with a `mock-` exchange identity, it uses the
 same Order/fill/position materialization as human `openOrder`, reconciles the
 reservation from that Order, and clears the matching marker only after both
-steps succeed. Allowance is charged once at reservation. A callback exception,
-lost response, invalid fill, or process crash leaves `SUBMISSION_UNCERTAIN`
+steps succeed. Allowance is charged once at reservation. An UNKNOWN scenario,
+inconsistent fill, or process crash leaves `SUBMISSION_UNCERTAIN`
 and the marker; a retry returns lookup identity without another mock submit.
-Tests cover Binance and Gate.io mocked fills, callback-time pause/revoke,
-UNKNOWN, and a worker-process crash. Recovery of an orphaned marker after
+Tests cover Binance and Gate.io mocked fills, transport-time pause/revoke,
+UNKNOWN, invalid input/fill, and a worker-process crash. Recovery of an orphaned marker after
 authoritative external lookup remains a separate task. Domain risk checks
 are point-in-time and require a stronger execution permit for real LIVE.
 

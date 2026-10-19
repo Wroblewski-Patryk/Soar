@@ -106,18 +106,16 @@ const admit = (f: Awaited<ReturnType<typeof fixture>>, reservationId: string, db
 const counters = async (id: string) => prisma.externalClientGrant.findUniqueOrThrow({
   where: { id }, select: { usedActions: true, usedQuoteAmount: true },
 });
-const certainMockFill = (command: Pick<GrantLimitCommand, 'exchange' | 'symbol' | 'side' |
-  'quantity' | 'limitPrice' | 'clientOrderId'>) => {
-  const exchangeOrderId = `mock-${command.exchange.toLowerCase()}-${command.clientOrderId}`;
-  const quantity = Number(command.quantity);
-  const price = Number(command.limitPrice);
-  return { exchangeOrderId, status: 'FILLED' as const,
-    exchangeFilledQuantity: quantity, exchangeAverageFillPrice: price,
-    fills: [{ exchangeTradeId: `mock-fill-${command.clientOrderId}`, exchangeOrderId,
-      symbol: command.symbol, side: command.side, price, quantity,
-      notional: price * quantity, feeCost: 0.05, feeCurrency: 'USDT', feeRate: 0.001,
-      executedAt: new Date(), source: 'createOrder' as const, raw: { mock: true } }],
-  };
+const mockTransportStarts = (reservationId: string) => prisma.log.count({ where: {
+  entityType: 'ExternalClientGrantReservation', entityId: reservationId,
+  action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED',
+} });
+const waitForMockTransportStart = async (reservationId: string) => {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (await mockTransportStarts(reservationId)) return;
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
+  }
+  throw new Error('Fixed mock transport did not start');
 };
 const createMatchingIntent = async (f: Awaited<ReturnType<typeof fixture>>, command = f.command) =>
   prisma.liveOrderIntent.create({ data: {
@@ -157,6 +155,22 @@ const startAdmissionWorker = (operation: 'admit' | 'crash-after-admission' |
 };
 
 describe('external client grant atomic reservation', () => {
+  it('rejects caller functions and extra arguments before mock admission', async () => {
+    const called = vi.fn();
+    const request = { reservationId: crypto.randomUUID(), secret: 'invalid',
+      scenario: 'CERTAIN_FILL' as const };
+    await expect(executeBoundExternalClientGrantMock({ ...request, submit: called } as typeof request))
+      .rejects.toMatchObject({ code: 'DELEGATED_MOCK_INVALID_INPUT' });
+    await expect(Reflect.apply(executeBoundExternalClientGrantMock, null,
+      [request, { submit: called }]))
+      .rejects.toMatchObject({ code: 'DELEGATED_MOCK_INVALID_INPUT' });
+    const getterInput = { ...request };
+    Object.defineProperty(getterInput, 'getSymbolRules', { enumerable: true, get: called });
+    await expect(executeBoundExternalClientGrantMock(getterInput))
+      .rejects.toMatchObject({ code: 'DELEGATED_MOCK_INVALID_INPUT' });
+    expect(called).not.toHaveBeenCalled();
+  });
+
   for (const exchange of ['BINANCE', 'GATEIO'] as const) {
     it(`materializes one certain ${exchange} mock fill and reconciles without a second charge`, async () => {
       const f = await fixture(undefined, exchange, 'FUTURES', true);
@@ -166,15 +180,14 @@ describe('external client grant atomic reservation', () => {
           create: { id: 'global', paused: false, reason: 'test available', version: 1 },
           update: { paused: false, reason: 'test available' } });
         const bound = await bind(f);
-        const submit = vi.fn(async (command: Parameters<typeof certainMockFill>[0]) => certainMockFill(command));
         const result = await executeBoundExternalClientGrantMock({
           reservationId: bound.reservation.id, secret: f.secret,
-        }, { getSymbolRules: rules, submit });
-        expect(submit).toHaveBeenCalledTimes(1);
+          scenario: 'CERTAIN_FILL',
+        });
         expect(result).toMatchObject({ orderId: bound.intentId, submitted: true,
           dispatchEnabled: false });
         expect(JSON.stringify(result)).not.toContain(f.secret);
-        expect(JSON.stringify(submit.mock.calls[0]?.[0])).not.toContain(f.secret);
+        expect(await mockTransportStarts(bound.reservation.id)).toBe(1);
         expect(await prisma.order.findUniqueOrThrow({ where: { id: bound.intentId } }))
           .toMatchObject({ status: 'FILLED', filledQuantity: 0.5,
             exchangeOrderId: `mock-${exchange.toLowerCase()}-${bound.reservation.clientOrderId}` });
@@ -188,8 +201,9 @@ describe('external client grant atomic reservation', () => {
           usedQuoteAmount: new Prisma.Decimal(50) });
         await expect(executeBoundExternalClientGrantMock({
           reservationId: bound.reservation.id, secret: f.secret,
-        }, { getSymbolRules: rules, submit })).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
-        expect(submit).toHaveBeenCalledTimes(1);
+          scenario: 'CERTAIN_FILL',
+        })).rejects.toMatchObject({ code: 'RESERVATION_NOT_DISPATCHABLE' });
+        expect(await mockTransportStarts(bound.reservation.id)).toBe(1);
       } finally {
         if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
           paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
@@ -208,16 +222,15 @@ describe('external client grant atomic reservation', () => {
         create: { id: 'global', paused: false, reason: 'test available', version: 1 },
         update: { paused: false, reason: 'test available' } });
       const bound = await bind(f);
-      const submit = vi.fn(async () => { throw new Error('mock response lost'); });
       await expect(executeBoundExternalClientGrantMock({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, { getSymbolRules: rules, submit }))
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'UNKNOWN',
+      }))
         .rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
       const retry = await executeBoundExternalClientGrantMock({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, { getSymbolRules: async () => { throw new Error('retry refreshed market'); }, submit });
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'CERTAIN_FILL',
+      });
       expect(retry).toMatchObject({ reused: true, lookupOnly: true, orderId: null });
-      expect(submit).toHaveBeenCalledTimes(1);
+      expect(await mockTransportStarts(bound.reservation.id)).toBe(1);
       expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: bound.reservation.id },
@@ -234,14 +247,39 @@ describe('external client grant atomic reservation', () => {
     }
   });
 
-  it('blocks pause and revoke throughout the mock callback, then releases the marker', async () => {
+  it('rejects an inconsistent fixed mock fill and keeps the unresolved marker', async () => {
+    const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
+    const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
+    try {
+      await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
+        create: { id: 'global', paused: false, reason: 'test available', version: 1 },
+        update: { paused: false, reason: 'test available' } });
+      const bound = await bind(f);
+      await expect(executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'INVALID_FILL',
+      })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+      expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: bound.reservation.id },
+      })).state).toBe('SUBMISSION_UNCERTAIN');
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'CERTAIN_FILL',
+      })).toMatchObject({ lookupOnly: true, reused: true, orderId: null });
+      expect(await mockTransportStarts(bound.reservation.id)).toBe(1);
+    } finally {
+      if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
+        paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
+        changedAt: originalControl.changedAt, changedByUserId: originalControl.changedByUserId,
+      } });
+      else await prisma.liveExecutionControl.deleteMany({ where: { id: 'global' } });
+    }
+  });
+
+  it('blocks pause and revoke throughout the fixed delayed transport, then releases the marker', async () => {
     const f = await fixture(undefined, 'BINANCE', 'FUTURES', true);
     const originalControl = await prisma.liveExecutionControl.findUnique({ where: { id: 'global' } });
     const otherDb = new PrismaClient();
-    let entered!: () => void;
-    let release!: () => void;
-    const callbackEntered = new Promise<void>((resolve) => { entered = resolve; });
-    const callbackHeld = new Promise<void>((resolve) => { release = resolve; });
     try {
       await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
         create: { id: 'global', paused: false, reason: 'test available', version: 1 },
@@ -250,13 +288,9 @@ describe('external client grant atomic reservation', () => {
       const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
       const bound = await bind(f);
       const execution = executeBoundExternalClientGrantMock({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, { getSymbolRules: rules, submit: async (command) => {
-        entered();
-        await callbackHeld;
-        return certainMockFill(command);
-      } });
-      await settleWithin(callbackEntered, 10_000);
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'DELAYED_FILL',
+      });
+      await settleWithin(waitForMockTransportStart(bound.reservation.id), 10_000);
       expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
       await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
         reason: 'Pause during delegated mock callback', expectedVersion: control.version }, otherDb))
@@ -264,11 +298,9 @@ describe('external client grant atomic reservation', () => {
       await expect(revokeExternalClientGrant(f.user.id, f.grant.id, otherDb))
         .rejects.toMatchObject({ status: 409 });
       expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
-      release();
       expect(await settleWithin(execution, 10_000)).toMatchObject({ orderId: bound.intentId });
       expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
     } finally {
-      release();
       await otherDb.$disconnect();
       if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' }, data: {
         paused: originalControl.paused, reason: originalControl.reason, version: originalControl.version,
@@ -292,12 +324,11 @@ describe('external client grant atomic reservation', () => {
       expect(await settleWithin(worker.completion, 15_000)).toBe(76);
       expect(worker.errors()).toBe('');
       expect(worker.output()).toContain('MOCK_ENTERED');
-      const submit = vi.fn(async (command: Parameters<typeof certainMockFill>[0]) => certainMockFill(command));
       expect(await executeBoundExternalClientGrantMock({
-        reservationId: bound.reservation.id, secret: f.secret,
-      }, { getSymbolRules: rules, submit })).toMatchObject({ reused: true,
+        reservationId: bound.reservation.id, secret: f.secret, scenario: 'CERTAIN_FILL',
+      })).toMatchObject({ reused: true,
         lookupOnly: true, orderId: null });
-      expect(submit).not.toHaveBeenCalled();
+      expect(await mockTransportStarts(bound.reservation.id)).toBe(1);
       expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(1);
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: bound.reservation.id },
