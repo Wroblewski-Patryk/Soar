@@ -2,23 +2,23 @@
 id: SOAR-PROMPT-AI-RED-TEAM
 name: "AI Red Team prompt"
 type: prompt
-status: verified_local
+status: deprecated
 layer: agent-system
 module: agents
 feature: ai-assistant-foundation
 risk_level: critical
-completion_percent: 90
-last_verified_at: 2026-05-24
-verification_status: verified_local
-tags: [soar-map, prompt, agent-system, verified_local]
+completion_percent: 0
+last_verified_at: 2026-10-19
+verification_status: deprecated
+tags: [soar-map, prompt, agent-system, deprecated]
 ---
 
 # AI Red Team prompt
 
 | Field | Value |
 | --- | --- |
-| Description | Prompt surface for AI red-team review and protocol enforcement. |
-| File path | .codex/agents/ai-red-team-agent.md |
+| Description | Historical AI red-team prompt record; the prompt file is absent from the current checkout. |
+| File path | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | Related files | AI_TESTING_PROTOCOL.md |
 | Parent | [[SOAR-AGENT-AI-RED-TEAM]] |
 | Children |  |
@@ -30,11 +30,11 @@ tags: [soar-map, prompt, agent-system, verified_local]
 | Tests related | [[SOAR-TEST-AI-PROTOCOL-HARNESS]] |
 | Docs related | [[SOAR-DOC-AI-TESTING-PROTOCOL]] |
 | Agent related | [[SOAR-AGENT-AI-RED-TEAM]] |
-| Notes | Prompt record tied to AI testing protocol. |
+| Notes | Former .codex/agents/ai-red-team-agent.md was removed in 0960b0979; no executable current prompt is claimed. |
 
 ## Relations
 
-- drives -> [[SOAR-AGENT-AI-RED-TEAM]] (verified_local)
+- drives -> [[SOAR-AGENT-AI-RED-TEAM]] (deprecated)
 
 ## Evidence Rule
 

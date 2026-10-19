@@ -2,24 +2,24 @@
 id: SOAR-AGENT-COORDINATOR
 name: "Coordinator agent workflow"
 type: agent
-status: in_progress
+status: deprecated
 layer: agent-system
 module: agents
 feature: architecture-map
-risk_level: 35
-completion_percent: 2026-05-24
-last_verified_at: implemented_not_verified
-verification_status: Subagent delegation was not used because current tool policy requires explicit user request.
-tags: [soar-map, agent, agent-system, in_progress]
+risk_level: medium
+completion_percent: 0
+last_verified_at: 2026-10-19
+verification_status: deprecated
+tags: [soar-map, agent, agent-system, deprecated]
 ---
 
 # Coordinator agent workflow
 
 | Field | Value |
 | --- | --- |
-| Description | Coordinator-owned workflow that must inspect graph chains before local feature status claims. |
-| File path | AGENTS.md |
-| Related files | .agents/core/operating-system.md, docs/architecture/architecture-evidence-graph-system.md |
+| Description | Historical coordinator workflow; repository agent instruction files were removed from the current checkout. |
+| File path | history/tasks/agent-operating-system-task-2026-05-07.md |
+| Related files | docs/architecture/architecture-evidence-graph-system.md |
 | Parent | [[SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH]] |
 | Children |  |
 | Depends on | [[SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM]] |
@@ -29,8 +29,8 @@ tags: [soar-map, agent, agent-system, in_progress]
 | Database related |  |
 | Tests related |  |
 | Docs related |  |
-| Agent related | [[medium]] |
-| Notes |  |
+| Agent related |  |
+| Notes | Former AGENTS.md and .agents/core/operating-system.md were removed in 0960b0979; retained as a historical graph node, not current agent policy. |
 
 ## Relations
 

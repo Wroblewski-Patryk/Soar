@@ -2,23 +2,23 @@
 id: SOAR-AGENT-AI-RED-TEAM
 name: "AI Red Team agent"
 type: agent
-status: verified_local
+status: deprecated
 layer: agent-system
 module: agents
 feature: ai-assistant-foundation
 risk_level: critical
-completion_percent: 90
-last_verified_at: 2026-05-24
-verification_status: verified_local
-tags: [soar-map, agent, agent-system, verified_local]
+completion_percent: 0
+last_verified_at: 2026-10-19
+verification_status: deprecated
+tags: [soar-map, agent, agent-system, deprecated]
 ---
 
 # AI Red Team agent
 
 | Field | Value |
 | --- | --- |
-| Description | Codex AI red-team agent prompt for AI behavior security and abuse-case review. |
-| File path | .codex/agents/ai-red-team-agent.md |
+| Description | Historical AI red-team agent; its prompt file is absent from the current checkout. |
+| File path | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | Related files | AI_TESTING_PROTOCOL.md |
 | Parent | [[SOAR-FEATURE-AI-ASSISTANT-FOUNDATION]] |
 | Children |  |
@@ -30,13 +30,13 @@ tags: [soar-map, agent, agent-system, verified_local]
 | Tests related | [[SOAR-TEST-AI-PROTOCOL-HARNESS]] |
 | Docs related | [[SOAR-DOC-AI-TESTING-PROTOCOL]] |
 | Agent related | [[SOAR-AGENT-COORDINATOR]] |
-| Notes | Agent record for AI adversarial review boundary. |
+| Notes | Former .codex/agents/ai-red-team-agent.md was removed in 0960b0979; this record preserves historical graph links and does not claim an active agent. |
 
 ## Relations
 
-- enforces -> [[SOAR-DOC-AI-TESTING-PROTOCOL]] (verified_local)
-- drives <- [[SOAR-PROMPT-AI-RED-TEAM]] (verified_local)
-- governed_by <- [[SOAR-FEATURE-AI-ASSISTANT-FOUNDATION]] (verified_local)
+- enforces -> [[SOAR-DOC-AI-TESTING-PROTOCOL]] (deprecated)
+- drives <- [[SOAR-PROMPT-AI-RED-TEAM]] (deprecated)
+- governed_by <- [[SOAR-FEATURE-AI-ASSISTANT-FOUNDATION]] (deprecated)
 
 ## Evidence Rule
 
