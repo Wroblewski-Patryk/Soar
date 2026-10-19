@@ -330,6 +330,10 @@ market, and domain context from the grant, and uses the existing atomic binding,
 risk preflight, admission marker, fixed `CERTAIN_FILL` transport, and lookup-only
 recovery. It does not accept a scenario or call CCXT. A separate hashed
 order-grant rate-limit key and IP bucket use bounded shared-store waits.
+The test app enforces those limits even without `RATE_LIMIT_ENABLE_TEST_MODE`;
+it requires an explicit loopback `TEST_REDIS_URL` for an isolated Redis and
+returns bounded 503 when that store is absent or unavailable. Invalid JSON
+requests still consume both buckets, so they cannot bypass the limits.
 Successful output contains only mock state, client ID, and proven local Order ID;
 unknown outcomes retain the marker and return reconciliation-required state.
 This is an isolated local protocol harness, not a production domain route,

@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { execFileSync } from 'node:child_process';
 import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
 import { Prisma } from '@prisma/client';
 import { app as productionApp } from '../src/index';
@@ -17,6 +18,15 @@ import { createMockOrdersHttpApp } from './mockOrdersHttpApp';
 
 const users: string[] = [];
 let originalControl: Awaited<ReturnType<typeof prisma.liveExecutionControl.findUnique>>;
+const sharedCounts = new Map<string, number>();
+const sharedClient = { eval: async (_script: string, input: { keys: string[] }) => {
+  const key = input.keys[0];
+  const count = (sharedCounts.get(key) ?? 0) + 1;
+  sharedCounts.set(key, count);
+  return [count, 60_000];
+} } as any;
+const useSharedTestStore = () =>
+  __rateLimitInternals.setGetRedisClientForTests(async () => sharedClient);
 const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
   priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT', settleCurrency: 'USDT',
   isContract: true, isLinear: true, isInverse: false });
@@ -33,12 +43,16 @@ beforeAll(async () => {
   await prisma.liveExecutionControl.upsert({ where: { id: 'global' },
     create: { id: 'global', paused: false, reason: 'test available', version: 1 },
     update: { paused: false, reason: 'test available' } });
+  useSharedTestStore();
 });
 
 afterEach(async () => {
   vi.restoreAllMocks();
   delete process.env.RATE_LIMIT_ENABLE_TEST_MODE;
+  await __rateLimitInternals.closeRedisClientForTests();
   __rateLimitInternals.resetForTests();
+  sharedCounts.clear();
+  useSharedTestStore();
   for (const userId of users.splice(0)) {
     await prisma.liveCreateOrderSubmission.deleteMany({ where: { grant: { userId } } });
     await prisma.orderFill.deleteMany({ where: { userId } });
@@ -60,6 +74,8 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+  await __rateLimitInternals.closeRedisClientForTests();
+  __rateLimitInternals.resetForTests();
   if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' },
     data: { paused: originalControl.paused, reason: originalControl.reason,
       version: originalControl.version, changedAt: originalControl.changedAt,
@@ -135,7 +151,6 @@ it('keeps the test-only route out of production app and unsafe configurations', 
 });
 
 it('uses shared IP and hashed grant limits and denies when the store is unavailable', async () => {
-  process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
   const counts = new Map<string, number>();
   __rateLimitInternals.setGetRedisClientForTests(async () => ({
     eval: async (_script: string, input: { keys: string[] }) => {
@@ -158,6 +173,23 @@ it('uses shared IP and hashed grant limits and denies when the store is unavaila
   __rateLimitInternals.setGetRedisClientForTests(async () => null);
   expect((await request(mockApp).post(target)
     .set('Authorization', `Bearer ${secret}`).send({})).status).toBe(503);
+});
+
+it('denies invalid bodies without a configured isolated shared store', async () => {
+  const previous = process.env.TEST_REDIS_URL;
+  delete process.env.TEST_REDIS_URL;
+  __rateLimitInternals.setGetRedisClientForTests(null);
+  try {
+    const response = await request(createMockOrdersHttpApp())
+      .post(path(crypto.randomUUID()))
+      .set('Authorization', `Bearer soar_ext_${'G'.repeat(43)}`)
+      .send({});
+    expect(response.status).toBe(503);
+    expect(response.headers['x-ratelimit-degraded']).toBe('redis_unavailable');
+  } finally {
+    if (previous === undefined) delete process.env.TEST_REDIS_URL;
+    else process.env.TEST_REDIS_URL = previous;
+  }
 });
 
 it('accepts one bounded mock order and exact retry without a second transport or charge', async () => {
@@ -331,3 +363,51 @@ it('serializes concurrent identical HTTP submissions without duplicate mock tran
   expect(changed.status).toBe(409);
   expect(await transportStarts(reservation.id)).toBe(1);
 });
+
+it.skipIf(!process.env.TEST_REDIS_URL || !process.env.TEST_REDIS_CONTAINER)(
+  'enforces both buckets with real isolated Redis and fails closed through stop and restart', async () => {
+    const container = process.env.TEST_REDIS_CONTAINER ?? '';
+    if (!/^soar-ext-001r2-redis-[a-z0-9]+$/.test(container)) {
+      throw new Error('Real Redis test requires its dedicated 001R2 container');
+    }
+    __rateLimitInternals.setGetRedisClientForTests(null);
+    const mockApp = createMockOrdersHttpApp();
+    mockApp.set('trust proxy', true);
+    const target = path(crypto.randomUUID());
+    const invalid = {};
+    const ipPrefix = `10.${Math.floor(Math.random() * 254) + 1}.${
+      Math.floor(Math.random() * 254) + 1}`;
+    const testSecret = () => `soar_ext_${crypto.randomUUID().replace(/-/g, '')}${
+      crypto.randomUUID().replace(/-/g, '').slice(0, 11)}`;
+    const send = (ip: string, secret: string) => request(mockApp).post(target)
+      .set('X-Forwarded-For', ip).set('Authorization', `Bearer ${secret}`).send(invalid);
+    const secret = testSecret();
+    for (let index = 0; index < 10; index += 1) {
+      expect((await send(`${ipPrefix}.1`, secret)).status).toBe(400);
+    }
+    expect((await send(`${ipPrefix}.1`, secret)).status).toBe(429);
+    for (let index = 0; index < 30; index += 1) {
+      expect((await send(`${ipPrefix}.2`, testSecret())).status).toBe(400);
+    }
+    expect((await send(`${ipPrefix}.2`, testSecret())).status).toBe(429);
+
+    execFileSync('docker', ['stop', container], { stdio: 'pipe' });
+    let unavailable;
+    let unavailableMs = 0;
+    const startedAt = Date.now();
+    try {
+      unavailable = await send(`${ipPrefix}.3`, testSecret());
+      unavailableMs = Date.now() - startedAt;
+    } finally {
+      execFileSync('docker', ['start', container], { stdio: 'pipe' });
+    }
+    expect(unavailable?.status).toBe(503);
+    expect(unavailableMs).toBeLessThan(3_000);
+    expect(JSON.stringify(unavailable?.body)).not.toContain(secret);
+    let recoveredStatus = 503;
+    for (let attempt = 0; attempt < 40 && recoveredStatus === 503; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      recoveredStatus = (await send(`${ipPrefix}.4`, testSecret())).status;
+    }
+    expect(recoveredStatus).toBe(400);
+  }, 45_000);

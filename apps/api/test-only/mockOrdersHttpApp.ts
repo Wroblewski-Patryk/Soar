@@ -59,10 +59,10 @@ export const createMockOrdersHttpApp = () => {
   app.use(express.json({ limit: '2kb', strict: true }));
   const ipLimiter = createRateLimiter({ windowMs: 60_000, max: 30, keyScope: 'ip',
     bucketId: 'test-only-external-mock-orders-ip', requireSharedStore: true,
-    sharedStoreTimeoutMs: 1000 });
+    sharedStoreTimeoutMs: 1000, forceSharedStoreInTest: true });
   const grantLimiter = createRateLimiter({ windowMs: 60_000, max: 10, keyScope: 'order_grant',
     bucketId: 'test-only-external-mock-orders-grant', requireSharedStore: true,
-    sharedStoreTimeoutMs: 1000 });
+    sharedStoreTimeoutMs: 1000, forceSharedStoreInTest: true });
 
   app.post('/external-client/grants/:grantId/mock-orders', ipLimiter, grantLimiter,
     async (req, res) => {

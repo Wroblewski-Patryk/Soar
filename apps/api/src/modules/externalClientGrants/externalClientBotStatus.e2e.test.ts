@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import request from 'supertest';
+import { createClient } from 'redis';
 import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { __rateLimitInternals } from '../../middleware/rateLimit';
@@ -162,28 +163,41 @@ describe('external client bot configuration status', () => {
   it('limits each IP to 30/min and the same grant across IPs to 60/min', async () => {
     const f = await fixture();
     process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
-    __rateLimitInternals.setGetRedisClientForTests(async () => null);
+    const counts = new Map<string, number>();
+    const localSharedClient = { eval: async (_script: string, input: { keys: string[] }) => {
+      const key = input.keys[0];
+      const count = (counts.get(key) ?? 0) + 1;
+      counts.set(key, count);
+      return [count, 60_000];
+    } } as any;
+    const redis = process.env.TEST_REDIS_URL
+      ? createClient({ url: process.env.TEST_REDIS_URL }) : null;
+    if (redis) await redis.connect();
+    __rateLimitInternals.setGetRedisClientForTests(async () => redis ?? localSharedClient);
     const previousTrustProxy = app.get('trust proxy');
     app.set('trust proxy', true);
+    const ipPrefix = `10.${Math.floor(Math.random() * 254) + 1}.${
+      Math.floor(Math.random() * 254) + 1}`;
     try {
       for (let index = 0; index < 30; index += 1) {
         const response = await request(app).get(path(f.bot.id))
-          .set('X-Forwarded-For', '10.1.0.1').set('Authorization', `Bearer ${f.secret}`);
+          .set('X-Forwarded-For', `${ipPrefix}.1`).set('Authorization', `Bearer ${f.secret}`);
         expect(response.status).toBe(200);
       }
       expect((await request(app).get(path(f.bot.id))
-        .set('X-Forwarded-For', '10.1.0.1')
+        .set('X-Forwarded-For', `${ipPrefix}.1`)
         .set('Authorization', `Bearer ${f.secret}`)).status).toBe(429);
       for (let index = 30; index < 60; index += 1) {
         const response = await request(app).get(path(f.bot.id))
-          .set('X-Forwarded-For', '10.1.0.2').set('Authorization', `Bearer ${f.secret}`);
+          .set('X-Forwarded-For', `${ipPrefix}.2`).set('Authorization', `Bearer ${f.secret}`);
         expect(response.status).toBe(200);
       }
       expect((await request(app).get(path(f.bot.id))
-        .set('X-Forwarded-For', '10.1.0.3')
+        .set('X-Forwarded-For', `${ipPrefix}.3`)
         .set('Authorization', `Bearer ${f.secret}`)).status).toBe(429);
     } finally {
       app.set('trust proxy', previousTrustProxy);
+      if (redis?.isOpen) await redis.quit();
     }
   }, 45_000);
 
