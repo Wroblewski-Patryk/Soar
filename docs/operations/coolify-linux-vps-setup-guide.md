@@ -211,6 +211,10 @@ Before changing Coolify Dockerfiles, service commands, worker ownership,
 runtime env wiring, or deploy smoke scripts, run the local Docker app stack from
 the repository root:
 
+Set `SOURCE_COMMIT` in `.env.docker` to the exact lowercase 40-character
+`git rev-parse HEAD` value before the build. The API and four worker images
+reject missing or malformed values and label the accepted value as their revision.
+
 ```bash
 pnpm run docker:app:config
 pnpm run docker:app:build

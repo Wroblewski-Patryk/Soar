@@ -22,6 +22,8 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+      args:
+        SOURCE_COMMIT: "${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
     image: cryptosparrow/api:local
     restart: unless-stopped
     mem_limit: 2g
@@ -50,6 +52,8 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile.worker.market-data
+      args:
+        SOURCE_COMMIT: "${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
     image: cryptosparrow/workers-market-data:local
     restart: unless-stopped
     mem_limit: 768m
@@ -60,6 +64,8 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile.worker.market-stream
+      args:
+        SOURCE_COMMIT: "${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
     image: cryptosparrow/workers-market-stream:local
     restart: unless-stopped
     mem_limit: 768m
@@ -70,6 +76,8 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile.worker.backtest
+      args:
+        SOURCE_COMMIT: "${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
     image: cryptosparrow/workers-backtest:local
     restart: unless-stopped
     mem_limit: 768m
@@ -80,6 +88,8 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile.worker.execution
+      args:
+        SOURCE_COMMIT: "${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
     image: cryptosparrow/workers-execution:local
     restart: unless-stopped
     mem_limit: 768m

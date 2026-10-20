@@ -34,6 +34,7 @@ cp .env.vps.example .env.vps
 
 Then set at minimum:
 - `NODE_ENV=production`
+- `SOURCE_COMMIT=<exact lowercase 40-character git SHA of this checkout>`
 - `JWT_SECRET=<strong-secret>`
 - `API_KEY_ENCRYPTION_KEYS=<versioned-keys>`
 - `API_KEY_ENCRYPTION_ACTIVE_VERSION=<active-version>`
@@ -45,6 +46,11 @@ If using external managed DB/Redis:
 
 If using local infra profile:
 - keep defaults or override with local values.
+
+Compose passes `SOURCE_COMMIT` to the API and all four worker builds. An absent,
+empty, placeholder, or malformed SHA blocks those builds. Verify the checkout
+and SHA together before building; the image label is the supplied commit, not
+an independent proof that the checkout matches it.
 
 ## Variant A: Full stack on one VPS (with local postgres/redis)
 
