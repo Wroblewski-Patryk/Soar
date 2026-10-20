@@ -412,8 +412,11 @@ replicas. Empty arrays deliberately fail. Keep the filled snapshot outside the
 repository.
 
 The script reports `PASS_INVENTORY_ONLY` or failure codes and fails closed when
-Docker access is unavailable, the container set changes during the read, an
-extra replica appears, or a container cannot be attributed. The Coolify
+Docker access is unavailable, the container set or running state changes during
+the read, an extra replica appears, or an active container cannot be attributed
+to a declared resource. On a shared VPS, an active unrelated infrastructure
+container also blocks this strict gate; investigate its ownership rather than
+guessing that it is safe to ignore. The Coolify
 resource list is still operator supplied; `inventoryComplete: true` is never
 sufficient by itself. If its completeness cannot be established or legacy
 labels leave ownership uncertain, the result is FAIL.

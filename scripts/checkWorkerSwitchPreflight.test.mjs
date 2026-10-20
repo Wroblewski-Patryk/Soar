@@ -63,10 +63,13 @@ const inspectRow = (container) => [
   container.legacyApplicationId ?? '',
 ].join('\t');
 
-const mockDocker = (containers, { afterIds, runningIds, unavailable = false } = {}) => {
+const mockDocker = (containers, {
+  afterIds, runningIds, finalRunningIds, unavailable = false, failFinalRunning = false,
+} = {}) => {
   const ids = containers.map((container) => container.id);
   const active = runningIds ?? containers.filter((container) => container.running).map((container) => container.id);
   let allCalls = 0;
+  let runningCalls = 0;
   return (args) => {
     if (unavailable) return { status: 1, stdout: '', stderr: 'private daemon error' };
     if (args[0] === 'ps' && args[1] === '-aq') {
@@ -74,7 +77,12 @@ const mockDocker = (containers, { afterIds, runningIds, unavailable = false } = 
       return { status: 0, stdout: `${(allCalls === 1 ? ids : afterIds ?? ids).join('\n')}\n` };
     }
     if (args[0] === 'ps' && args[1] === '-q') {
-      return { status: 0, stdout: `${active.join('\n')}\n` };
+      runningCalls += 1;
+      if (runningCalls === 2 && failFinalRunning) {
+        return { status: 1, stdout: '', stderr: 'private daemon error' };
+      }
+      const current = runningCalls === 2 ? finalRunningIds ?? active : active;
+      return { status: 0, stdout: `${current.join('\n')}\n` };
     }
     if (args[0] === 'inspect' && args[2] === INSPECT_FORMAT) {
       return { status: 0, stdout: `${containers.map(inspectRow).join('\n')}\n` };
@@ -148,12 +156,27 @@ test('Docker read error, changing container set, or changing running state block
   const runningChanged = readLive(containers, { runningIds: [...containers.filter((item) => item.running).map((item) => item.id), containers[3].id] });
   assert.ok(runningChanged.issues.includes('DOCKER_INVENTORY_CHANGED'));
 
+  const finalReadFailed = readLive(containers, { failFinalRunning: true });
+  assert.deepEqual(finalReadFailed, { status: 'FAIL', issues: ['DOCKER_READ_UNAVAILABLE'] });
+
   let reads = 0;
   const slow = readWorkerSwitchDockerInventory({
     runDocker: mockDocker(containers),
     now: () => reads++ === 0 ? nowMs : nowMs + 31_000,
   });
   assert.ok(slow.issues.includes('DOCKER_READ_STALE'));
+});
+
+test('worker starting after the first running read and final ID list blocks', () => {
+  const value = snapshot();
+  const containers = liveContainers(value);
+  const firstRunningIds = containers.filter((item) => item.running).map((item) => item.id);
+  const live = readLive(containers, {
+    runningIds: firstRunningIds,
+    finalRunningIds: [...firstRunningIds, containers[3].id],
+  });
+  assert.deepEqual(live, { status: 'FAIL', issues: ['DOCKER_INVENTORY_CHANGED'] });
+  assert.equal(evaluate(value, live).status, 'FAIL');
 });
 
 test('unlabeled Soar container and passive resource running worker fail attribution', () => {
@@ -178,6 +201,19 @@ test('renamed unlabeled replica using the old worker image fails attribution', (
   });
   const result = evaluate(value, readLive(containers));
   assert.ok(result.issues.includes('UNASSIGNED_SOAR_CONTAINER'));
+});
+
+test('active container with no recognized labels, name, or image blocks', () => {
+  const value = snapshot();
+  const containers = liveContainers(value);
+  containers.push({
+    id: 'c'.repeat(64), name: 'other-process', running: true, pid: 777,
+    imageId: `sha256:${'c'.repeat(64)}`, imageRef: 'generic:latest',
+  });
+  const result = evaluate(value, readLive(containers));
+  assert.equal(result.status, 'FAIL');
+  assert.ok(result.issues.includes('ACTIVE_CONTAINER_UNATTRIBUTED'));
+  assert.doesNotMatch(formatWorkerSwitchPreflight(result), /PASS_INVENTORY_ONLY/);
 });
 
 test('missing live Docker inventory and missing candidate SHA cannot produce PASS', () => {

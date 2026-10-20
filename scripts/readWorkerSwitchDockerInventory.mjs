@@ -74,17 +74,22 @@ export const readWorkerSwitchDockerInventory = ({
     return { status: 'FAIL', issues: ['DOCKER_INVENTORY_CHANGED'] };
   }
 
-  // A second list catches containers created during inspect; the running list
-  // catches an old container that starts after its inspect row was read.
+  // Read running state again after the final complete-ID list. A worker can
+  // start between an earlier running read and that final list without changing
+  // the list of container IDs.
   const runningRaw = execute(['ps', '-q', '--no-trunc']);
   const afterRaw = execute(['ps', '-aq', '--no-trunc']);
-  if (runningRaw === null || afterRaw === null) {
+  const finalRunningRaw = execute(['ps', '-q', '--no-trunc']);
+  if (runningRaw === null || afterRaw === null || finalRunningRaw === null) {
     return { status: 'FAIL', issues: ['DOCKER_READ_UNAVAILABLE'] };
   }
   const running = lines(runningRaw);
   const after = lines(afterRaw);
+  const finalRunning = lines(finalRunningRaw);
   if (!sameIds(before, after) || running.some((id) => !before.includes(id)) ||
-      containers.some((container) => container.running !== running.includes(container.id))) {
+      finalRunning.some((id) => !before.includes(id)) ||
+      containers.some((container) => container.running !== running.includes(container.id) ||
+        container.running !== finalRunning.includes(container.id))) {
     return { status: 'FAIL', issues: ['DOCKER_INVENTORY_CHANGED'] };
   }
   if (now() - startedAt > MAX_READ_MS) {

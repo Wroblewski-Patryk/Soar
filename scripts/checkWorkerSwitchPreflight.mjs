@@ -88,6 +88,7 @@ const validateLiveInventory = ({ snapshot, liveInventory, oldByResource, passive
       }
       continue;
     }
+    if (container.running) fail('ACTIVE_CONTAINER_UNATTRIBUTED');
     if (sameProject || looksLikeSoar || (owner && !container.projectName)) {
       fail('UNASSIGNED_SOAR_CONTAINER');
     }
