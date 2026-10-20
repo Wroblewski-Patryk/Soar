@@ -76,7 +76,7 @@ try {
     results.push(result);
     if (result.exitCode !== 0) throw new Error(`${id} failed; see ${result.log}`);
   }
-  const trackedClean = await run('source.tracked-clean', 'git', ['diff', '--exit-code']);
+  const trackedClean = await run('source.tracked-clean', 'node', ['scripts/checkTrackedClean.mjs']);
   results.push(trackedClean);
   if (trackedClean.exitCode !== 0) throw new Error('Checks changed tracked source files');
 } catch (error) {
