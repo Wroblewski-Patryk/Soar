@@ -22,6 +22,8 @@ RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
 
 FROM node:20-bookworm-slim AS runtime
+ARG SOURCE_COMMIT
+LABEL org.opencontainers.image.revision="${SOURCE_COMMIT}"
 ENV NODE_ENV=production
 ENV NODE_OPTIONS="--max-old-space-size=768"
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*

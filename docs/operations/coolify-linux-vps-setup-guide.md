@@ -276,38 +276,140 @@ Required Coolify setup:
 6. Confirm `API_KEY_ENCRYPTION_KEYS` and
    `API_KEY_ENCRYPTION_ACTIVE_VERSION` match current production. Do not rotate
    encryption keys during this topology migration.
-7. Keep the old six Applications present until the stack passes smoke and the
-   release owner accepts cutover.
+7. Keep the old six Application resources registered for rollback until the
+   stack passes smoke and the release owner accepts cutover. Their worker
+   processes must not overlap the new stack workers.
 
 Cutover order:
 1. Freeze normal deploy promotion.
 2. Record current stable SHA and current Coolify resource list.
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
-4. Deploy the new stack without deleting old resources.
-5. Confirm API health:
+4. Prepare the candidate API image from the selected exact Git SHA **without
+   starting any candidate process**. Read the resolved source SHA from the
+   Coolify build/deployment record and the `org.opencontainers.image.revision`
+   label plus immutable image ID from the built image. A `SOURCE_COMMIT` tag or
+   web build-info alone is not image provenance. If Coolify cannot separate
+   build from start or cannot pin the verified image for the later start, stop:
+   this cutover path is NO-GO until an approved immutable-image path exists.
+5. Stop the old four worker Applications. If the old API can consume work inline
+   or its ownership is unknown, stop the old API too. Wait for every old worker
+   container to report `Running=false` and `Pid=0`; do not merely request a
+   stop. Keep the old Applications registered and do not delete their data.
+6. Capture a fresh, complete, no-secret Coolify/VPS inventory and run the
+   [worker switch preflight](#worker-switch-preflight) **before** starting the
+   new stack. A FAIL, missing old resource, unknown container state, stale
+   snapshot, missing source revision, or image mismatch blocks the start.
+7. Start the new stack from the verified immutable candidate image. Do not
+   rebuild from a moving branch between preflight and start. If the deployment
+   mechanism rebuilds or changes the image ID, stop acceptance and investigate.
+8. Confirm API health:
    - stack `api` is healthy through the container liveness `/health` check;
    - public `https://api.soar.luckysparrow.ch/health` returns `200`;
    - public `https://api.soar.luckysparrow.ch/ready` returns `200`.
-6. Confirm Web health:
+9. Confirm Web health:
    - stack `web` is healthy;
    - public `https://soar.luckysparrow.ch/` returns `200`;
    - `https://soar.luckysparrow.ch/api/build-info` reports the expected
      `SOURCE_COMMIT`.
-7. Confirm worker state:
+10. Confirm worker state:
    - all four worker containers are running;
+    - the running API and all four workers have the preflight image ID and
+      revision label; no old worker container is running;
    - no crash-loop or restart storm is visible in stack logs;
    - worker readiness/runtime freshness proof passes.
-8. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
+11. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
    candidate.
-9. Only after the stack is accepted, stop or detach domains from the old six
-   Applications. Do not delete them until at least one stable monitoring window
-   is captured.
+12. Only after the stack is accepted, detach old API/Web domains if needed.
+    Leave old worker Applications stopped. Do not delete old resources until at
+    least one stable monitoring window is captured.
+
+### Worker switch preflight
+
+Run this only after the candidate image is built and the old workers have
+stopped, immediately before the candidate starts. The script reads a local JSON
+snapshot; it does not contact Docker, Coolify, Redis, or the database. The
+operator must collect the snapshot through authorized read-only Coolify and VPS
+access. Record no environment dump, credential, user data, or backtest ID.
+
+```bash
+docker ps -a --no-trunc --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}'
+docker inspect --format '{{.Id}} {{.State.Running}} {{.State.Pid}} {{.Image}}' <each-old-container-id>
+docker image inspect --format '{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}' <candidate-api-image>
+docker compose -f docker-compose.coolify.yml config --images
+pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha>
+```
+
+The snapshot has `schemaVersion: 1`, a UTC `capturedAt` no more than five
+minutes old, `inventoryComplete: true`, and
+`inventorySource: "coolify-and-docker-readback"`. `oldApplications` must contain
+exactly one resource entry each for `api`, `workers-market-data`,
+`workers-market-stream`, `workers-backtest`, and `workers-execution`, with all
+their container IDs and `running`/`pid` readbacks. A running old API also needs
+`workerMode: "split"` and `ownership` with `marketData`, `marketStream`,
+`backtest`, and `execution` all set to `worker`; otherwise stop it. The
+`provenance` object needs `coolifyResourceId`, `coolifyDeploymentId`, the
+Coolify-resolved source `coolifyResolvedSha`, the built `apiImageId`, its
+`apiImageRevision` label, and `plannedImageIds` for the API and four workers.
+All SHA fields must equal the exact candidate SHA, and every planned image ID
+must equal the candidate API image ID. Obtain the Coolify-resolved revision
+from the control plane's actual source/build readback, independently of the
+operator-entered `SOURCE_COMMIT`. Do not mark `inventoryComplete` until every
+old Soar worker resource and container on the host is accounted for.
+
+The snapshot structure is:
+
+```json
+{
+  "schemaVersion": 1,
+  "capturedAt": "<current UTC ISO time>",
+  "inventoryComplete": true,
+  "inventorySource": "coolify-and-docker-readback",
+  "provenance": {
+    "coolifyResourceId": "<candidate stack resource ID>",
+    "coolifyDeploymentId": "<candidate build record ID>",
+    "coolifyResolvedSha": "<40-character source SHA from Coolify>",
+    "apiImageId": "sha256:<64-character image ID>",
+    "apiImageRevision": "<40-character OCI revision label>",
+    "plannedImageIds": {
+      "api": "sha256:<same image ID>",
+      "workers-market-data": "sha256:<same image ID>",
+      "workers-market-stream": "sha256:<same image ID>",
+      "workers-backtest": "sha256:<same image ID>",
+      "workers-execution": "sha256:<same image ID>"
+    }
+  },
+  "oldApplications": [
+    { "role": "api", "resourceId": "<old API resource>", "containers": [
+      { "id": "<64-character container ID>", "running": false, "pid": 0 }
+    ] },
+    { "role": "workers-market-data", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-market-stream", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-backtest", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-execution", "resourceId": "<old resource>", "containers": [] }
+  ]
+}
+```
+
+Replace every placeholder from live readbacks; each worker's `containers`
+array must contain every old container, including stopped replicas. Empty
+arrays in this shape deliberately fail. A running old API needs the additional
+`workerMode` and `ownership` fields described above; the shown stopped API does
+not. Keep the filled snapshot outside the repository.
+
+The script reports only PASS or failure codes and fails closed on missing or
+unknown evidence. Its PASS validates the supplied readback, not a live host;
+repeat collection if the snapshot expires or container state changes. The
+post-start image-ID and Web build-info checks remain separate acceptance gates.
+Public `/health`, `/ready`, and worker heartbeats do not prove that old code
+has stopped or that a backtest moved from `PENDING` to a terminal state.
 
 Rollback from stack cutover:
-- routing/app failure: reattach domains or route traffic back to the old
-  `soar-api` and `soar-web` Applications, then stop the stack app services;
-- worker-only failure: stop the stack workers and restart the old worker
-  Applications if their SHA is compatible with the current schema;
+- routing/app failure: stop the stack workers and verify they exited before
+  restoring any old process that can consume work; then reattach domains or
+  route traffic back to schema-compatible old API/Web Applications;
+- worker-only failure: stop the stack workers, verify they exited, and restart
+  the old worker Applications only if their SHA is compatible with the current
+  schema; never overlap old and new worker versions;
 - schema/migration failure: do not run destructive ad hoc rollback; use only a
   schema-compatible app rollback or the approved backup/restore path.
 

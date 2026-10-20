@@ -42,10 +42,11 @@ If web/api are healthy and issue is isolated to workers:
 If the new Soar Service Stack fails after domain cutover:
 - keep the old six Applications available until at least one stable monitoring
   window proves the stack;
-- for API/Web routing failures, reattach domains or traffic routing to the old
-  `soar-api` and `soar-web` Applications;
-- for worker-only failures, stop the stack worker containers and restart the
-  old worker Applications only when their SHA is schema-compatible;
+- for API/Web routing failures, stop stack workers and verify they exited
+  before restoring the old `soar-api` and `soar-web` Applications or routes;
+- for worker-only failures, stop the stack worker containers, verify each has
+  exited, and restart the old worker Applications only when their SHA is
+  schema-compatible; never run mixed old/new worker versions together;
 - for migration/schema failures, do not destroy or roll back schema ad hoc;
   return only to a schema-compatible application version or use the approved
   backup/restore drill path.

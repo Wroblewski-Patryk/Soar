@@ -37,8 +37,10 @@ Stage cleanup checklist:
 
 ## Manual Coolify Chain Contract
 1. Operator selects the intended repository SHA in Coolify.
-2. Operator deploys the production web, API, and worker services in the
-   approved service order.
+2. Operator follows the stop-before-start worker switch and fail-closed
+   preflight in `docs/operations/coolify-linux-vps-setup-guide.md` before any
+   candidate worker starts. A one-click build-and-start path that cannot pause
+   for this gate is not an approved mixed-version cutover.
 3. Proof: wait until `https://soar.luckysparrow.ch/api/build-info` exposes the
    promoted SHA before runtime freshness and release gates run.
 4. If post-deploy checks fail, operator rolls back in Coolify to the previous

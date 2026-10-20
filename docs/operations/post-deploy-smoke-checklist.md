@@ -18,6 +18,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - Worker services are running.
 - For the Coolify Service Stack topology, API and Web stack healthchecks are
   green and all four worker containers are running after the API liveness gate.
+  The pre-start worker-switch preflight must have passed from a fresh read-only
+  inventory; post-start inspect must match its candidate API image ID and full
+  revision label for API and all four workers, with old workers still stopped.
   The API container healthcheck is `/health`; `/ready` remains a separate
   release-readiness smoke item. Web/workers may depend only on API
   `service_started`, so this checklist is the acceptance gate for dependency
