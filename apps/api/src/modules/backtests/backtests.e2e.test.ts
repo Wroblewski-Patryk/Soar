@@ -7,6 +7,7 @@ import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { backtestRunQueue } from './backtests.service';
+import { deleteOwnedBacktestRunCascade } from './backtests.repository';
 
 vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../exchange/exchangePublicMarketData.service')>();
@@ -184,6 +185,7 @@ describe('Backtests runs contract', () => {
     await prisma.marketCandleCache.deleteMany();
     // Backtest worker updates run/report asynchronously, so cleanup is retried to avoid FK races in tests.
     for (let attempt = 0; attempt < 3; attempt += 1) {
+      await prisma.backtestContribution.deleteMany();
       await prisma.backtestReport.deleteMany();
       await prisma.backtestTrade.deleteMany();
       try {
@@ -543,10 +545,11 @@ describe('Backtests runs contract', () => {
     const ownerEmail = 'backtests-delete-owner@example.com';
     const agent = await registerAndLogin(ownerEmail);
     const userId = await getUserIdByEmail(ownerEmail);
-
-    const createRes = await agent.post('/dashboard/backtests/runs').send(createPayload());
-    expect(createRes.status).toBe(201);
-    const runId = createRes.body.id as string;
+    const run = await prisma.backtestRun.create({ data: {
+      userId, name: 'Delete completed run', symbol: 'BTCUSDT', timeframe: '1h',
+      status: 'COMPLETED', finishedAt: new Date(),
+    } });
+    const runId = run.id;
 
     await prisma.backtestTrade.create({
       data: {
@@ -582,6 +585,38 @@ describe('Backtests runs contract', () => {
         netPnl: 1,
       },
     });
+    await prisma.backtestContribution.createMany({ data: [
+      { userId, backtestRunId: runId, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 0, kind: 'ENTRY', levelIndex: null,
+        triggerPercent: null, multiplier: null, price: 1, quantity: 1,
+        contributionUsdt: 1, timestamp: new Date('2026-01-01T00:00:00.000Z'), candleIndex: 1 },
+      { userId, backtestRunId: runId, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 1, kind: 'DCA', levelIndex: 0,
+        triggerPercent: -30.5, multiplier: 2, price: 0.6949, quantity: 2 / 0.6949,
+        contributionUsdt: 2, timestamp: new Date('2026-01-01T01:00:00.000Z'), candleIndex: 2 },
+      { userId, backtestRunId: runId, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 2, kind: 'DCA', levelIndex: 1,
+        triggerPercent: -30.5, multiplier: 2, price: 0.5375, quantity: 6 / 0.5375,
+        contributionUsdt: 6, timestamp: new Date('2026-01-01T02:00:00.000Z'), candleIndex: 3 },
+    ] });
+    const otherEmail = 'backtests-delete-other@example.com';
+    const otherAgent = await registerAndLogin(otherEmail);
+    const otherUserId = await getUserIdByEmail(otherEmail);
+    const otherRun = await prisma.backtestRun.create({ data: {
+      userId: otherUserId, name: 'Other run', symbol: 'BTCUSDT', timeframe: '1h',
+      status: 'COMPLETED', finishedAt: new Date(),
+    } });
+    await prisma.backtestContribution.create({ data: {
+      userId: otherUserId, backtestRunId: otherRun.id, symbol: 'BTCUSDT', side: 'LONG',
+      tradeSequence: 1, addSequence: 0, kind: 'ENTRY', levelIndex: null,
+      triggerPercent: null, multiplier: null, price: 1, quantity: 1,
+      contributionUsdt: 1, timestamp: new Date('2026-01-01T00:00:00.000Z'), candleIndex: 1,
+    } });
+
+    expect((await otherAgent.delete(`/dashboard/backtests/runs/${runId}`)).status).toBe(404);
+    await deleteOwnedBacktestRunCascade(otherUserId, runId);
+    expect(await prisma.backtestRun.findUnique({ where: { id: runId } })).not.toBeNull();
+    expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(3);
 
     const deleteRes = await agent.delete(`/dashboard/backtests/runs/${runId}`);
     expect(deleteRes.status).toBe(204);
@@ -589,6 +624,11 @@ describe('Backtests runs contract', () => {
     const getDeletedRes = await agent.get(`/dashboard/backtests/runs/${runId}`);
     expect(getDeletedRes.status).toBe(404);
     expect(getDeletedRes.body.error.message).toBe('Not found');
+    expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(0);
+    expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
+    expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(0);
+    expect(await prisma.backtestRun.findUnique({ where: { id: otherRun.id } })).not.toBeNull();
+    expect(await prisma.backtestContribution.count({ where: { backtestRunId: otherRun.id } })).toBe(1);
   });
 
   it('enforces ownership isolation and strategy ownership at create time', async () => {

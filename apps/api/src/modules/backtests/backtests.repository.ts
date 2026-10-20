@@ -179,6 +179,9 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await prisma.$transaction([
+        prisma.backtestContribution.deleteMany({
+          where: { userId, backtestRunId: runId },
+        }),
         prisma.backtestReport.deleteMany({
           where: {
             userId,
@@ -191,8 +194,8 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
             backtestRunId: runId,
           },
         }),
-        prisma.backtestRun.delete({
-          where: { id: runId },
+        prisma.backtestRun.deleteMany({
+          where: { id: runId, userId },
         }),
       ]);
       return;
