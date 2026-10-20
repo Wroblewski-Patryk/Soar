@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { Exchange, TradeMarket } from '@prisma/client';
+import type { Exchange, PrismaClient, TradeMarket } from '@prisma/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import type { LiveFillCandidate } from './orders.liveFillCandidates.service';
@@ -1011,6 +1011,30 @@ describe('explicit LIVE fill recovery', () => {
     const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup });
     expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
     expect(lookup).toHaveBeenCalledOnce();
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(1);
+  });
+
+  it('keeps a partial legacy-shaped binding UNKNOWN inside finalization', async () => {
+    const fx = await fixture('DCA');
+    const tx = {
+      liveOrderIntent: { findUnique: vi.fn(async () => ({ ...fx.intent,
+        apiKeyId: fx.key.id, apiKeyCredentialVersion: null })) },
+      $queryRaw: vi.fn(async () => []),
+      order: { findUnique: vi.fn() },
+      bot: { findFirst: vi.fn() },
+      wallet: { findFirst: vi.fn() },
+      apiKey: { findFirst: vi.fn() },
+    };
+    const client = { $transaction: (operation: (db: typeof tx) => Promise<unknown>) =>
+      operation(tx) } as unknown as PrismaClient;
+    const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate, client,
+      lookup: useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1,
+        [fill(fx.venueId, 'partial-pair-fill', 1, 0.1)])) });
+    expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
+    expect(tx.bot.findFirst).not.toHaveBeenCalled();
+    expect(tx.apiKey.findFirst).not.toHaveBeenCalled();
+    expect(tx.order.findUnique).not.toHaveBeenCalled();
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
     expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(1);
   });

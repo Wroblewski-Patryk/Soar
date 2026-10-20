@@ -100,6 +100,12 @@ export const resolveLiveFillCredentials = async (
       intent.symbol !== candidate.symbol || intent.createdAt.getTime() !== candidate.createdAt.getTime()) {
     return { kind: 'UNKNOWN', reason: 'IDENTITY_CHANGED' };
   }
+  if ((intent.apiKeyId == null) !== (intent.apiKeyCredentialVersion == null) ||
+      (intent.apiKeyCredentialVersion != null &&
+        (!Number.isInteger(intent.apiKeyCredentialVersion) || intent.apiKeyCredentialVersion <= 0))) {
+    return { kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' };
+  }
+  const boundCredential = intent.apiKeyId != null;
   const localOrder = await db.order.findUnique({ where: { id: candidate.orderId },
     select: { userId: true, exchangeOrderId: true, symbol: true } });
   if ((candidate.exchangeOrderId != null &&
@@ -135,7 +141,6 @@ export const resolveLiveFillCredentials = async (
     apiKeyId = wallet.apiKeyId;
   }
   if (!apiKeyId) return { kind: 'UNKNOWN', reason: 'IDENTITY_MISSING' };
-  const boundCredential = intent.apiKeyId != null && intent.apiKeyCredentialVersion != null;
   if (boundCredential && apiKeyId !== intent.apiKeyId) {
     return { kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' };
   }

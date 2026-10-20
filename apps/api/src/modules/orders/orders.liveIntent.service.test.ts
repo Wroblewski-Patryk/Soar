@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
@@ -229,6 +230,36 @@ describe('durable LIVE order intent', () => {
   beforeEach(async () => {
     await cleanupDb();
     await liveEntitlementFixture.allowLive();
+  });
+
+  it('rejects partial credential pairs on direct SQL insert and update', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'partial-live-intent@example.com', password: 'hashed',
+    } });
+    const legacy = await prisma.liveOrderIntent.create({ data: {
+      userId: user.id, clientOrderId: 'soar_legacy_pair', payloadHash: 'legacy',
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    await expect(prisma.$executeRaw`
+      INSERT INTO "LiveOrderIntent" ("id", "userId", "clientOrderId", "payloadHash",
+        "exchange", "marketType", "symbol", "apiKeyId")
+      VALUES (${randomUUID()}, ${user.id}, 'soar_partial_id', 'partial',
+        'BINANCE'::"Exchange", 'FUTURES'::"TradeMarket", 'BTCUSDT', 'key-1')
+    `).rejects.toThrow(/LiveOrderIntent_credential_binding_pair_check/);
+    await expect(prisma.$executeRaw`
+      INSERT INTO "LiveOrderIntent" ("id", "userId", "clientOrderId", "payloadHash",
+        "exchange", "marketType", "symbol", "apiKeyCredentialVersion")
+      VALUES (${randomUUID()}, ${user.id}, 'soar_partial_version', 'partial',
+        'BINANCE'::"Exchange", 'FUTURES'::"TradeMarket", 'BTCUSDT', 1)
+    `).rejects.toThrow(/LiveOrderIntent_credential_binding_pair_check/);
+    await expect(prisma.$executeRaw`
+      UPDATE "LiveOrderIntent" SET "apiKeyId" = 'key-1' WHERE "id" = ${legacy.id}
+    `).rejects.toThrow(/LiveOrderIntent credential binding is immutable/);
+    await expect(prisma.$executeRaw`
+      UPDATE "LiveOrderIntent" SET "apiKeyCredentialVersion" = 1 WHERE "id" = ${legacy.id}
+    `).rejects.toThrow(/LiveOrderIntent credential binding is immutable/);
+    expect(await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: legacy.id } }))
+      .toMatchObject({ apiKeyId: null, apiKeyCredentialVersion: null });
   });
 
   it('persists the selected credential generation before submit and keeps retry lookup-only', async () => {

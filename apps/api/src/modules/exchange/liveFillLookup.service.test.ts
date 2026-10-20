@@ -96,6 +96,27 @@ describe('read-only LIVE fill lookup', () => {
     expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ['missing version', 'key-1', null],
+    ['missing key ID', null, 1],
+  ] as const)('rejects a partial intent binding with %s before account selection',
+    async (_case, apiKeyId, apiKeyCredentialVersion) => {
+      current.exchange = 'BINANCE'; current.marketType = 'FUTURES';
+      db.liveOrderIntent.findUnique.mockResolvedValueOnce({
+        id: 'intent-1', userId: 'user-1', clientOrderId: 'soar_abc',
+        exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT', createdAt,
+        payload: { botId: 'bot-1', walletId: null },
+        apiKeyId, apiKeyCredentialVersion,
+      });
+      const read = connector();
+      expect(await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'),
+        deps(read))).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' });
+      expect(db.order.findUnique).not.toHaveBeenCalled();
+      expect(db.bot.findFirst).not.toHaveBeenCalled();
+      expect(db.apiKey.findFirst).not.toHaveBeenCalled();
+      expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
+    });
+
   it('retains the timestamp rule for a legacy unbound intent', async () => {
     current.exchange = 'BINANCE'; current.marketType = 'FUTURES';
     db.apiKey.findFirst.mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
