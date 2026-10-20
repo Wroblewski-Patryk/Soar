@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readWorkerSwitchDockerInventory } from './readWorkerSwitchDockerInventory.mjs';
 import { readWorkerSwitchSourceBinding } from './readWorkerSwitchSourceBinding.mjs';
+import { readWorkerSwitchBuildMetadata, readWorkerSwitchBuildRecord } from './readWorkerSwitchBuildRecord.mjs';
 
 const FULL_SHA = /^[0-9a-f]{40}$/i;
 const IMAGE_ID = /^sha256:[0-9a-f]{64}$/i;
@@ -104,7 +105,7 @@ const validateLiveInventory = ({ snapshot, liveInventory, oldByResource, passive
 };
 
 export const evaluateWorkerSwitchPreflight = ({
-  snapshot, expectedSha, liveInventory, sourceBinding, nowMs = Date.now(),
+  snapshot, expectedSha, liveInventory, sourceBinding, buildRecord, nowMs = Date.now(),
 }) => {
   const issues = [];
   const fail = (code) => issues.push(code);
@@ -117,6 +118,13 @@ export const evaluateWorkerSwitchPreflight = ({
         normalizedSha(sourceBinding.sourceCommit) !== normalizedSha(expectedSha)) {
       fail('SOURCE_COMMIT_HEAD_MISMATCH');
     }
+  }
+  if (buildRecord?.status !== 'PASS') {
+    fail(buildRecord?.issues?.[0] ?? 'BUILD_RECORD_REQUIRED');
+  } else if (normalizedSha(buildRecord.sourceSha) !== normalizedSha(expectedSha) ||
+      buildRecord.imageRef !== sourceBinding?.pinnedImageRef ||
+      normalizedSha(buildRecord.imageId) !== normalizedSha(sourceBinding?.imageId)) {
+    fail('BUILD_RECORD_BINDING_MISMATCH');
   }
   if (!hasOnlyKeys(snapshot, [
     'schemaVersion', 'capturedAt', 'inventoryComplete', 'inventorySource',
@@ -172,6 +180,12 @@ export const evaluateWorkerSwitchPreflight = ({
       if (normalizedSha(sourceBinding.revisionLabel) !== normalizedSha(provenance.apiImageRevision)) {
         fail('CANDIDATE_SHA_MISMATCH');
       }
+    }
+    if (buildRecord?.status === 'PASS' &&
+        (buildRecord.imageRef !== provenance.apiImageRef ||
+         normalizedSha(buildRecord.imageId) !== normalizedSha(provenance.apiImageId) ||
+         normalizedSha(buildRecord.sourceSha) !== normalizedSha(provenance.coolifyResolvedSha))) {
+      fail('BUILD_RECORD_BINDING_MISMATCH');
     }
   }
 
@@ -249,8 +263,12 @@ const runCli = () => {
   };
   const snapshotPath = readValue('--snapshot');
   const expectedSha = readValue('--expected-sha');
-  if (!snapshotPath || !expectedSha || args.length !== 4) {
-    process.stderr.write('[ops:worker-switch:preflight] FAIL USAGE: --snapshot <json> --expected-sha <full-sha>\n');
+  const metadataPath = readValue('--build-metadata');
+  const composeEnvFile = readValue('--compose-env-file');
+  if (!snapshotPath || !expectedSha || !metadataPath ||
+      (args.length !== 6 && args.length !== 8) ||
+      (args.length === 8 && !composeEnvFile)) {
+    process.stderr.write('[ops:worker-switch:preflight] FAIL USAGE: --snapshot <json> --expected-sha <full-sha> --build-metadata <json> [--compose-env-file <path>]\n');
     process.exitCode = 1;
     return;
   }
@@ -263,8 +281,13 @@ const runCli = () => {
     return;
   }
   const sourceBinding = readWorkerSwitchSourceBinding();
+  const buildRecord = readWorkerSwitchBuildRecord({
+    metadata: readWorkerSwitchBuildMetadata(path.resolve(metadataPath)),
+    sourceBinding, expectedSha, imageRef: process.env.API_STACK_IMAGE,
+    composeEnvFile: composeEnvFile || undefined,
+  });
   const liveInventory = readWorkerSwitchDockerInventory();
-  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha, liveInventory, sourceBinding });
+  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha, liveInventory, sourceBinding, buildRecord });
   process.stdout.write(`${formatWorkerSwitchPreflight(result)}\n`);
   if (result.status !== 'PASS') process.exitCode = 1;
 };

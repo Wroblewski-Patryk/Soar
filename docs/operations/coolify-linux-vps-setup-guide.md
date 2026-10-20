@@ -285,17 +285,15 @@ Cutover order:
 2. Record current stable SHA and current Coolify resource list.
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
 4. Prepare the candidate API image from the selected exact Git SHA **without
-   starting any candidate process**. Read the resolved source SHA from the
-   Coolify build/deployment record and the `org.opencontainers.image.revision`
-   label plus immutable image ID from the built image. The label is copied from
-   the build ARG and does **not** prove image contents. Verify the source
-   checkout is clean and its actual `git rev-parse HEAD` equals `SOURCE_COMMIT`;
-   require `API_STACK_IMAGE` to be an immutable `sha256:<image ID>` or
-   `repository@sha256:<digest>` reference. Both Compose files otherwise fall
-   back to a mutable `soar-api-stack:${SOURCE_COMMIT}` tag, which fails preflight.
-   A `SOURCE_COMMIT` tag, label, or web build-info alone is not provenance. If
-   Coolify cannot separate build from start or pin that image for the later
-   start, this cutover path is NO-GO.
+   starting any candidate process**, using the isolated Buildx path below.
+   Preserve its builder-generated metadata file. It must bind the resolved Git
+   source SHA, Buildx build ID and OCI index digest. The revision label is copied
+   from the build ARG and is only a consistency check. Both Compose files now
+   require `API_STACK_IMAGE=repository@sha256:<OCI index digest>` and have no API
+   build stanza; a missing image reference fails configuration. A tag, label or
+   web build-info alone is not provenance. Confirm separately that the actual
+   Coolify start consumes this digest without rebuilding it, or this cutover is
+   NO-GO.
 5. Stop the old four worker Applications and old API. This conservative cutover
    does not rely on an unverified claim that the old API has no inline worker.
    Wait for every old worker and API container to report `Running=false` and
@@ -305,13 +303,15 @@ Cutover order:
    [worker switch preflight](#worker-switch-preflight) **before** starting the
    new stack on the target VPS with the same resolved `SOURCE_COMMIT` and
    `API_STACK_IMAGE` values intended for Compose. It checks local Git HEAD and
-   clean status, inspects the pinned image ID, and cross-checks the snapshot
-   against a live, read-only enumeration of all Docker containers. A FAIL,
+   clean status, builder metadata, the pinned OCI index/platform/config digests,
+   the API image ID and the rendered image references of all five roles in both
+   Compose files. It also cross-checks the snapshot against a live, read-only
+   enumeration of all Docker containers. A FAIL,
    missing or additional Soar container, unknown state, stale snapshot, source
    mismatch, or image mismatch blocks the start. Its local procedural PASS is
-   not production provenance: require a separate authoritative build record
-   binding Coolify's resolved source SHA, deployment ID, and built image ID.
-   If that readback is unavailable or does not bind all three, **NO-GO**.
+   not deployed proof: separately bind the actual Coolify resource/deployment
+   ID and running image digest to the Buildx record. If that readback is
+   unavailable or does not match, **NO-GO**.
 7. Start the new stack from the verified immutable candidate image. Do not
    rebuild from a moving branch between preflight and start. If the deployment
    mechanism rebuilds or changes the image ID, stop acceptance and investigate.
@@ -338,15 +338,47 @@ Cutover order:
 
 ### Worker switch preflight
 
+Build the runtime image from a full, immutable Git commit in an isolated
+registry/builder first. This is a **build**, never a production deploy. Use a
+registry and repository authorized for candidate images; do not put credentials
+in the metadata file or repository. The example uses a shell on the isolated
+builder, with `SOURCE_COMMIT` set to the exact pushed Git SHA and `CANDIDATE_TAG`
+set to a temporary registry tag. Preserve the generated metadata alongside the
+candidate release evidence, outside the source tree:
+
+```bash
+docker buildx build --platform linux/amd64 --target runtime \
+  --provenance=mode=min --metadata-file "$BUILD_METADATA" \
+  --build-arg "SOURCE_COMMIT=$SOURCE_COMMIT" \
+  -f apps/api/Dockerfile -t "$CANDIDATE_TAG" --push \
+  "https://github.com/Wroblewski-Patryk/Soar.git#$SOURCE_COMMIT"
+# Read containerimage.digest from BUILD_METADATA, then pin the registry digest.
+API_STACK_IMAGE="${CANDIDATE_TAG%:*}@$(node -p \
+  "require(process.argv[1])['containerimage.digest']" "$BUILD_METADATA")"
+docker pull "$API_STACK_IMAGE"
+pnpm run ops:worker-switch:build-record -- \
+  --build-metadata "$BUILD_METADATA" --expected-sha "$SOURCE_COMMIT"
+```
+
+The metadata must describe `target=runtime`; a base-stage probe does not pass.
+The validator checks the builder's resolved Git digest and source material,
+Buildx build ID, OCI index digest, unique `linux/amd64` manifest, its config
+digest and the locally resolved image/label. When Docker retains a local build
+reference, that ID must also match. The OCI index digest,
+platform manifest digest and config digest are different identities. This local
+record can still be edited by a party with file access; protect its custody and
+obtain an independent production readback before GO.
+
 Run this only after the candidate image is built and the old workers **and old
 API** have stopped, immediately before the candidate starts. The script reads
 the operator's Coolify resource snapshot and independently calls `docker ps`
 and a field-limited `docker inspect` on **all** containers on the target VPS.
-It also reads Git HEAD and clean status in this checkout and inspects only the
-ID and revision label of the immutable `API_STACK_IMAGE` reference. Export
+It also reads Git HEAD and clean status in this checkout, the Buildx metadata,
+OCI manifests, rendered Compose image references, and the ID and revision label
+of the immutable `API_STACK_IMAGE` reference. Export
 `SOURCE_COMMIT` and `API_STACK_IMAGE` from the same resolved build/start plan
 before running it; missing values, a mutable tag, or a dirty checkout fail.
-It reads no Docker environment variables and performs no Docker mutation. It
+It reads no container environment values and performs no Docker mutation. It
 does not contact Coolify, Redis, or the database; the operator must obtain the
 Coolify resource list through authorized read-only access. Do not put an
 environment dump, credential, user data, or backtest ID in the snapshot.
@@ -354,10 +386,13 @@ environment dump, credential, user data, or backtest ID in the snapshot.
 ```bash
 git rev-parse HEAD
 git status --porcelain=v1 --untracked-files=all
-docker image inspect --format '{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}' "$API_STACK_IMAGE"
 docker compose -f docker-compose.coolify.yml config --images
-pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha>
+pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha> --build-metadata "$BUILD_METADATA"
 ```
+
+If Compose needs an explicit environment file, pass `--compose-env-file <path>`
+to the preflight; the validator parses the rendered configuration in memory and
+never prints its environment section. Run only in an authorized environment.
 
 The snapshot has `schemaVersion: 1`, a UTC `capturedAt` no more than five
 minutes old, `inventoryComplete: true`, `coolifyProjectName` matching the
@@ -375,12 +410,12 @@ Coolify-resolved source `coolifyResolvedSha`, pinned `apiImageRef`, the built
 `apiImageRevision` label, and `plannedImageIds` for the API and four workers.
 All SHA fields must equal the exact candidate SHA, and every planned image ID
 must equal the candidate API image ID. The preflight compares `apiImageRef` to
-the local `API_STACK_IMAGE` and resolves that reference to an image ID using
-Docker, but this still does not establish which Git tree Coolify built. Obtain
-the Coolify-resolved revision from the control plane's actual source/build
-readback, independently of the operator-entered `SOURCE_COMMIT`. Do not mark
-`inventoryComplete` until every
-old Soar worker resource and container on the host is accounted for.
+the local `API_STACK_IMAGE`, its resolved image ID and the independent Buildx
+metadata. The pasted Compose Service has no Git source. Do not infer source
+provenance from an operator-entered `coolifyResolvedSha`; verify the actual
+Coolify deployment and running image against the pinned digest before GO. Do not
+mark `inventoryComplete` until every old Soar worker resource and container on
+the host is accounted for.
 Use Coolify resource UUIDs, not numeric database IDs, for `resourceId`; use the
 exact `coolify.projectName` label for `coolifyProjectName`. If the host or
 resource labels cannot establish that mapping, the preflight must fail.

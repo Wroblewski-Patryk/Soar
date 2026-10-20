@@ -116,8 +116,9 @@ const readBinding = ({
     return { status: 0, stdout: `${inspectedImageId}\t${revisionLabel}\n` };
   },
 });
-const evaluate = (value, liveInventory, sourceBinding = readBinding()) => evaluateWorkerSwitchPreflight({
-  snapshot: value, expectedSha: sha, liveInventory, sourceBinding, nowMs,
+const buildRecord = () => ({ status: 'PASS', issues: [], sourceSha: sha, imageRef: pinnedRef, imageId: image });
+const evaluate = (value, liveInventory, sourceBinding = readBinding(), record = buildRecord()) => evaluateWorkerSwitchPreflight({
+  snapshot: value, expectedSha: sha, liveInventory, sourceBinding, buildRecord: record, nowMs,
 });
 
 test('complete fresh Docker/Coolify inventory passes with every old process stopped', () => {
@@ -130,8 +131,7 @@ test('complete fresh Docker/Coolify inventory passes with every old process stop
 
 test('exact clean SHA and pinned image ID pass the local procedural gate', () => {
   const value = snapshot();
-  value.provenance.apiImageRef = image;
-  const binding = readBinding({ imageRef: image });
+  const binding = readBinding();
   assert.equal(binding.status, 'PASS');
   assert.deepEqual(evaluate(value, readLive(liveContainers(value)), binding), {
     status: 'PASS', issues: [],
@@ -287,6 +287,13 @@ test('missing live Docker inventory and missing candidate SHA cannot produce PAS
   assert.ok(evaluate(value).issues.includes('LIVE_DOCKER_REQUIRED'));
   assert.ok(evaluateWorkerSwitchPreflight({ snapshot: value, expectedSha: sha, nowMs })
     .issues.includes('LOCAL_SOURCE_BINDING_REQUIRED'));
+  assert.ok(evaluateWorkerSwitchPreflight({
+    snapshot: value, expectedSha: sha, sourceBinding: readBinding(), nowMs,
+  }).issues.includes('BUILD_RECORD_REQUIRED'));
+  const wrongRecord = buildRecord();
+  wrongRecord.imageId = `sha256:${'e'.repeat(64)}`;
+  assert.ok(evaluate(value, readLive(liveContainers(value)), readBinding(), wrongRecord)
+    .issues.includes('BUILD_RECORD_BINDING_MISMATCH'));
   delete value.provenance.apiImageRevision;
   const result = evaluate(value, readLive(liveContainers(value)));
   assert.ok(result.issues.includes('CANDIDATE_PROVENANCE_MISSING'));
