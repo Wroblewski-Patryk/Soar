@@ -3,6 +3,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { existsSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { PrismaClient } from '@prisma/client';
 import { createClient } from 'redis';
 import { describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
@@ -28,6 +29,7 @@ type ProofProcess = {
 
 const startProofProcess = (
   role: string, queueName: string, runIds: string[], releaseFile?: string,
+  databaseUrl?: string,
 ): ProofProcess => {
   const child = spawn(process.execPath, [
     '--import', 'tsx',
@@ -41,6 +43,7 @@ const startProofProcess = (
       SOAR_BT_PROOF_QUEUE: queueName,
       SOAR_BT_PROOF_RUN_IDS: runIds.join(','),
       ...(releaseFile ? { SOAR_BT_PROOF_RELEASE_FILE: releaseFile } : {}),
+      ...(databaseUrl ? { DATABASE_URL: databaseUrl } : {}),
       REDIS_URL: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
     },
     stdio: ['pipe', 'pipe', 'pipe'],
@@ -71,6 +74,29 @@ const startProofProcess = (
 
 const runtimeIt = process.env.RUN_BACKTEST_PROCESS_PROOF === '1' ? it : it.skip;
 
+type WaitingReportBackend = {
+  pid: number;
+  datname: string | null;
+  application_name: string;
+  query: string;
+};
+
+const isOwnedTerminalWaiter = (
+  waiter: WaitingReportBackend, databaseName: string, applicationName: string,
+) => waiter.datname === databaseName && waiter.application_name === applicationName &&
+  waiter.query.includes('BacktestReport');
+
+const requireOneOwnedTerminalWaiter = (
+  waiters: WaitingReportBackend[], databaseName: string, applicationName: string,
+) => {
+  const owned = waiters.filter((waiter) =>
+    isOwnedTerminalWaiter(waiter, databaseName, applicationName));
+  if (owned.length !== 1) {
+    throw new Error(`Expected exactly one owned 007F report backend; found ${owned.length}`);
+  }
+  return owned[0];
+};
+
 const positionCycleConfig = {
   openConditions: { direction: 'long', noMatchAction: 'EXIT',
     indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
@@ -82,6 +108,18 @@ const positionCycleConfig = {
 };
 
 describe('real backtest worker process proof', () => {
+  it('selects only the owned terminal backend and fails closed on missing or ambiguous identity', () => {
+    const own = { pid: 101, datname: 'soar_007f_test',
+      application_name: 'soar-007f-owned', query: 'INSERT INTO "BacktestReport"' };
+    const foreign = { ...own, pid: 102, application_name: 'soar-007f-foreign' };
+    expect(requireOneOwnedTerminalWaiter([foreign, own], own.datname, own.application_name))
+      .toEqual(own);
+    expect(() => requireOneOwnedTerminalWaiter([foreign], own.datname, own.application_name))
+      .toThrow('found 0');
+    expect(() => requireOneOwnedTerminalWaiter([own, { ...own, pid: 103 }],
+      own.datname, own.application_name)).toThrow('found 2');
+  });
+
   runtimeIt('recovers a crashed owner and an interrupted acknowledgement with one result', async () => {
     const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
     if (!databaseName.endsWith('_test')) throw new Error('Refusing to mutate a non-test database');
@@ -544,6 +582,10 @@ describe('real backtest worker process proof', () => {
     const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
     if (!databaseName.endsWith('_test')) throw new Error('Refusing to mutate a non-test database');
     const queueName = `backtest-uncommitted-007-${randomUUID()}`;
+    const workerApplicationName = `soar-007f-worker-${randomUUID()}`;
+    const foreignApplicationName = `soar-007f-foreign-${randomUUID()}`;
+    const workerDatabaseUrl = new URL(process.env.DATABASE_URL ?? '');
+    workerDatabaseUrl.searchParams.set('application_name', workerApplicationName);
     const user = await prisma.user.create({
       data: { email: `bt-uncommitted-${randomUUID()}@example.test`, password: 'test-only' },
     });
@@ -570,16 +612,41 @@ describe('real backtest worker process proof', () => {
       backend: 'redis', queueName,
       redisUrl: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
     });
+    const waitingReportQueries = () => prisma.$queryRaw<WaitingReportBackend[]>`
+      SELECT activity.pid, activity.datname, activity.application_name, activity.query
+      FROM pg_locks AS lock
+      JOIN pg_stat_activity AS activity ON activity.pid = lock.pid
+      WHERE lock.locktype = 'advisory'
+        AND lock.classid = 7007::oid AND lock.objid = 15::oid
+        AND NOT lock.granted`;
     let releaseLock: () => void = () => {};
     let lockHolder: Promise<void> | null = null;
+    let foreignWaiter: Promise<void> | null = null;
     try {
       await redis.connect();
+      const identityClient = new PrismaClient({
+        datasources: { db: { url: workerDatabaseUrl.toString() } },
+      });
+      try {
+        const identity = await identityClient.$queryRaw<Array<{
+          datname: string; application_name: string;
+        }>>`SELECT current_database() AS datname,
+                  current_setting('application_name') AS application_name`;
+        expect(identity).toEqual([{
+          datname: databaseName, application_name: workerApplicationName,
+        }]);
+      } finally {
+        await identityClient.$disconnect();
+      }
       // This trigger exists only in the isolated _test database. Its AFTER phase
       // runs after the report row write, while the terminal transaction is open.
+      // If a blocked backend survives its client, releasing the lock raises
+      // rather than allowing an unowned terminal commit.
       await prisma.$executeRaw`
         CREATE FUNCTION soar_007f_report_gate() RETURNS trigger LANGUAGE plpgsql AS $$
         BEGIN
           PERFORM pg_advisory_xact_lock(7007, 15);
+          RAISE EXCEPTION '007F terminal barrier must not commit';
           RETURN NEW;
         END;
         $$`;
@@ -601,19 +668,29 @@ describe('real backtest worker process proof', () => {
       await producer.enqueue(run.id);
       await producer.stopWorker();
 
-      const first = startProofProcess('position-cycle-ack-hold', queueName, [run.id]);
+      const first = startProofProcess('position-cycle-ack-hold', queueName, [run.id],
+        undefined, workerDatabaseUrl.toString());
       processes.push(first);
-      const waitingReportQueries = () => prisma.$queryRaw<Array<{ pid: number; query: string }>>`
-        SELECT activity.pid, activity.query
-        FROM pg_locks AS lock
-        JOIN pg_stat_activity AS activity ON activity.pid = lock.pid
-        WHERE lock.locktype = 'advisory'
-          AND lock.classid = 7007::oid AND lock.objid = 15::oid
-          AND NOT lock.granted`;
-      await waitUntil(async () => (await waitingReportQueries()).length === 1);
+      await waitUntil(async () => (await waitingReportQueries()).some((waiter) =>
+        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName)));
+      const ownedBackend = requireOneOwnedTerminalWaiter(await waitingReportQueries(),
+        databaseName, workerApplicationName);
+      const blockedBackendPid = ownedBackend.pid;
+      foreignWaiter = prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT set_config('application_name', ${foreignApplicationName}, true)`;
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(7007, 15)::text /* BacktestReport */`;
+      }, { timeout: 120_000 });
+      void foreignWaiter.catch(() => undefined);
+      await waitUntil(async () => (await waitingReportQueries()).some((waiter) =>
+        waiter.datname === databaseName && waiter.application_name === foreignApplicationName &&
+        waiter.query.includes('BacktestReport')));
       const waiting = await waitingReportQueries();
-      expect(waiting[0].query).toContain('BacktestReport');
-      const blockedBackendPid = waiting[0].pid;
+      const foreignBackend = waiting.find((waiter) =>
+        waiter.datname === databaseName && waiter.application_name === foreignApplicationName &&
+        waiter.query.includes('BacktestReport'));
+      expect(foreignBackend).toBeDefined();
+      expect(requireOneOwnedTerminalWaiter(waiting, databaseName, workerApplicationName).pid)
+        .toBe(blockedBackendPid);
       expect(first.lines.filter((line) => line === 'JOB_INVOKED')).toHaveLength(1);
       expect(first.lines.filter((line) => line === 'SIMULATE')).toHaveLength(1);
       expect(first.lines).not.toContain('COMMITTED_BEFORE_ACK');
@@ -634,14 +711,36 @@ describe('real backtest worker process proof', () => {
       const firstClosed = new Promise((resolve) => first.child.once('close', resolve));
       first.child.kill();
       await firstClosed;
-      // A backend blocked on an advisory lock can outlive a dead client until
-      // the lock is released. Terminate only that identified _test backend.
-      if ((await waitingReportQueries()).some((entry) => entry.pid === blockedBackendPid)) {
-        const terminated = await prisma.$queryRaw<Array<{ terminated: boolean }>>`
-          SELECT pg_terminate_backend(${blockedBackendPid}::int) AS terminated`;
-        expect(terminated[0].terminated).toBe(true);
+      // A blocked backend can outlive a dead client. Recheck the exact database,
+      // per-worker application name, PID and lock before terminating it.
+      const ownedAfterKill = (await waitingReportQueries()).filter((waiter) =>
+        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName));
+      if (ownedAfterKill.length > 1) {
+        throw new Error('Ambiguous 007F worker backend after process death');
       }
-      await waitUntil(async () => (await waitingReportQueries()).length === 0);
+      if (ownedAfterKill.length === 1) {
+        expect(requireOneOwnedTerminalWaiter(ownedAfterKill,
+          databaseName, workerApplicationName).pid).toBe(blockedBackendPid);
+        const terminated = await prisma.$queryRaw<Array<{ terminated: boolean }>>`
+          SELECT pg_terminate_backend(${blockedBackendPid}::int) AS terminated
+          WHERE EXISTS (
+            SELECT 1 FROM pg_stat_activity AS activity
+            JOIN pg_locks AS lock ON lock.pid = activity.pid
+            WHERE activity.pid = ${blockedBackendPid}::int
+              AND activity.datname = ${databaseName}
+              AND activity.application_name = ${workerApplicationName}
+              AND activity.query LIKE '%BacktestReport%'
+              AND lock.locktype = 'advisory'
+              AND lock.classid = 7007::oid AND lock.objid = 15::oid
+              AND NOT lock.granted
+          )`;
+        if (terminated.length > 0) expect(terminated[0].terminated).toBe(true);
+      }
+      await waitUntil(async () => !(await waitingReportQueries()).some((waiter) =>
+        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName)));
+      expect((await waitingReportQueries()).some((waiter) =>
+        waiter.pid === foreignBackend!.pid && waiter.application_name === foreignApplicationName))
+        .toBe(true);
       const rolledBackRun = await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } });
       expect(rolledBackRun).toEqual(blockedRun);
       expect(await prisma.backtestTrade.count({ where: { backtestRunId: run.id } })).toBe(0);
@@ -652,6 +751,8 @@ describe('real backtest worker process proof', () => {
       releaseLock();
       await lockHolder;
       lockHolder = null;
+      await foreignWaiter;
+      foreignWaiter = null;
       await prisma.$executeRaw`DROP TRIGGER soar_007f_report_gate ON "BacktestReport"`;
       await prisma.$executeRaw`DROP FUNCTION soar_007f_report_gate()`;
 
@@ -745,8 +846,19 @@ describe('real backtest worker process proof', () => {
       }
       releaseLock();
       if (lockHolder) await lockHolder.catch(() => undefined);
+      if (foreignWaiter) await foreignWaiter.catch(() => undefined);
+      await waitUntil(async () => !(await waitingReportQueries()).some((waiter) =>
+        waiter.datname === databaseName));
       await prisma.$executeRaw`DROP TRIGGER IF EXISTS soar_007f_report_gate ON "BacktestReport"`;
       await prisma.$executeRaw`DROP FUNCTION IF EXISTS soar_007f_report_gate()`;
+      const barrierObjects = await prisma.$queryRaw<Array<{
+        triggers: number; functions: number;
+      }>>`
+        SELECT (SELECT COUNT(*)::int FROM pg_trigger
+                  WHERE tgname = 'soar_007f_report_gate') AS triggers,
+               (SELECT COUNT(*)::int FROM pg_proc
+                  WHERE proname = 'soar_007f_report_gate') AS functions`;
+      expect(barrierObjects).toEqual([{ triggers: 0, functions: 0 }]);
       if (existsSync(releaseFile)) unlinkSync(releaseFile);
       await producer.stopWorker();
       if (redis.isOpen) {
