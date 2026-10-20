@@ -12,7 +12,8 @@ import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from
   '../src/modules/subscriptions/subscriptions.service';
 import { createExternalClientGrant, revokeExternalClientGrant } from
   '../src/modules/externalClientGrants/externalClientGrants.service';
-import { admitBoundExternalClientGrantSubmission, bindExternalClientGrantReservationIntent } from
+import { admitBoundExternalClientGrantSubmission, bindExternalClientGrantReservationIntent,
+  executeBoundExternalClientGrantMock, type GrantLimitCommand } from
   '../src/modules/externalClientGrants/externalClientGrantReservation.service';
 import { createMockOrdersHttpApp } from './mockOrdersHttpApp';
 
@@ -66,6 +67,7 @@ afterEach(async () => {
     await prisma.marketUniverse.deleteMany({ where: { userId } });
     await prisma.strategy.deleteMany({ where: { userId } });
     await prisma.wallet.deleteMany({ where: { userId } });
+    await prisma.apiKey.deleteMany({ where: { userId } });
     await prisma.userSubscription.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { id: userId } });
   }
@@ -108,11 +110,15 @@ const fixture = async () => {
     userId: user.id, name: 'HTTP mock wallet', mode: 'LIVE', exchange: 'BINANCE',
     marketType: 'FUTURES', baseCurrency: 'USDT',
   } });
+  const key = await prisma.apiKey.create({ data: {
+    userId: user.id, label: 'HTTP mock key', exchange: 'BINANCE',
+    apiKey: 'test-only-key', apiSecret: 'test-only-secret',
+  } });
   const bot = await prisma.bot.create({ data: {
     userId: user.id, name: 'HTTP mock bot', mode: 'LIVE', exchange: 'BINANCE',
     marketType: 'FUTURES', isActive: true, liveOptIn: true,
     consentTextVersion: 'mvp-v1', symbolGroupId: group.id,
-    strategyId: strategy.id, walletId: wallet.id,
+    strategyId: strategy.id, walletId: wallet.id, apiKeyId: key.id,
   } });
   const { grant, secret } = await createExternalClientGrant(user.id, {
     botId: bot.id, clientLabel: 'HTTP mock client', exchange: 'BINANCE',
@@ -120,7 +126,7 @@ const fixture = async () => {
     maxActionQuoteAmount: '50', maxTotalQuoteAmount: '100', maxActions: 2,
     ttlSeconds: 3600, password: 'GrantTest1234',
   });
-  return { user, bot, strategy, wallet, grant, secret };
+  return { user, bot, strategy, wallet, key, grant, secret };
 };
 
 const transportStarts = (reservationId: string) => prisma.log.count({ where: {
@@ -220,6 +226,14 @@ it('accepts one bounded mock order and exact retry without a second transport or
     where: { clientOrderId: input.clientOrderId },
   });
   expect(reservation).toMatchObject({ state: 'SUBMITTED', proofType: 'DURABLE_ORDER' });
+  const claimAudits = await prisma.log.findMany({ where: {
+    entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
+    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED',
+  } });
+  expect(claimAudits).toHaveLength(1);
+  expect(claimAudits[0].metadata).toMatchObject({ grantId: f.grant.id,
+    intentId: first.body.orderId, markerId: expect.any(String),
+    clientOrderId: input.clientOrderId });
   expect(await transportStarts(reservation.id)).toBe(1);
   expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
   expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(1);
@@ -230,6 +244,95 @@ it('accepts one bounded mock order and exact retry without a second transport or
   expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
   expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
     .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+});
+
+it('keeps the committed claim lookup-only when the transport-start audit fails', async () => {
+  const f = await fixture();
+  const input = body();
+  try {
+    await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_001v_abort_start() RETURNS trigger
+      LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION USING ERRCODE = '40001',
+      MESSAGE = 'forced pre-transport failure'; RETURN NEW; END $$`);
+    await prisma.$executeRawUnsafe(`CREATE TRIGGER mock_001v_abort_start_trigger
+      BEFORE INSERT ON "Log" FOR EACH ROW
+      WHEN (NEW."action" = 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED')
+      EXECUTE FUNCTION mock_001v_abort_start()`);
+    const failed = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+      .set('Authorization', `Bearer ${f.secret}`).send(input);
+    expect(failed.status).toBe(503);
+  } finally {
+    await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001v_abort_start_trigger ON "Log"');
+    await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001v_abort_start()');
+  }
+  const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+    where: { clientOrderId: input.clientOrderId } });
+  const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+    where: { reservationId: reservation.id } });
+  const intent = await prisma.liveOrderIntent.findUniqueOrThrow({
+    where: { clientOrderId: input.clientOrderId } });
+  expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
+  expect(marker).toMatchObject({ grantId: f.grant.id, intentId: intent.id,
+    dispatchBotId: f.bot.id, dispatchCommandHash: reservation.commandHash,
+    dispatchIntentHash: intent.payloadHash, dispatchApiKeyId: f.key.id,
+    dispatchApiKeyUpdatedAt: f.key.updatedAt });
+  expect(await transportStarts(reservation.id)).toBe(0);
+  expect(await prisma.log.count({ where: { entityId: reservation.id,
+    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
+  const retry = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+    .set('Authorization', `Bearer ${f.secret}`).send(input);
+  expect(retry.status).toBe(202);
+  expect(retry.body).toEqual({ execution: 'MOCK', clientOrderId: input.clientOrderId,
+    state: 'RECONCILIATION_REQUIRED' });
+  expect(await transportStarts(reservation.id)).toBe(0);
+  expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+    .usedActions).toBe(1);
+  const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+  await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+    reason: 'Claim persists after audit failure', expectedVersion: control.version }))
+    .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+  await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+    .rejects.toMatchObject({ status: 409 });
+});
+
+it('denies transport when the selected key version changes after the claim', async () => {
+  const f = await fixture();
+  const input = body();
+  try {
+    await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_001v_rotate_claim_key() RETURNS trigger
+      LANGUAGE plpgsql AS $$ BEGIN
+        UPDATE "ApiKey" SET "updatedAt" = "updatedAt" + interval '1 second'
+        WHERE "id" = (SELECT "dispatchApiKeyId" FROM "LiveCreateOrderSubmission"
+          WHERE "id" = NEW."metadata"->>'markerId');
+        RETURN NEW; END $$`);
+    await prisma.$executeRawUnsafe(`CREATE TRIGGER mock_001v_rotate_claim_key_trigger
+      AFTER INSERT ON "Log" FOR EACH ROW
+      WHEN (NEW."action" = 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED')
+      EXECUTE FUNCTION mock_001v_rotate_claim_key()`);
+    const first = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+      .set('Authorization', `Bearer ${f.secret}`).send(input);
+    expect(first.status).toBe(202);
+    expect(first.body.state).toBe('RECONCILIATION_REQUIRED');
+  } finally {
+    await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001v_rotate_claim_key_trigger ON "Log"');
+    await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001v_rotate_claim_key()');
+  }
+  const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+    where: { clientOrderId: input.clientOrderId } });
+  const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+    where: { reservationId: reservation.id } });
+  const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
+  expect(marker.dispatchApiKeyId).toBe(key.id);
+  expect(marker.dispatchApiKeyUpdatedAt?.getTime()).not.toBe(key.updatedAt.getTime());
+  expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
+  expect(await transportStarts(reservation.id)).toBe(0);
+  expect(await prisma.log.count({ where: { entityId: reservation.id,
+    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
+  const retry = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+    .set('Authorization', `Bearer ${f.secret}`).send(input);
+  expect(retry.status).toBe(202);
+  expect(await transportStarts(reservation.id)).toBe(0);
+  expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+    .usedActions).toBe(1);
 });
 
 it('fails closed on credential, scope, command, and entitlement changes before transport', async () => {
@@ -292,6 +395,49 @@ it('denies revoked, expired, and paused grants before mock transport', async () 
     where: { grantId: paused.grant.id },
   });
   for (const reservation of reservations) expect(await transportStarts(reservation.id)).toBe(0);
+});
+
+it('denies changed reservation hash, scope, and key before claiming mock transport', async () => {
+  const cases = [
+    { name: 'hash', code: 'RESERVATION_COMMAND_UNAVAILABLE' },
+    { name: 'scope', code: 'GRANT_SCOPE_UNAVAILABLE' },
+    { name: 'key', code: 'DISPATCH_ACCOUNT_UNAVAILABLE' },
+  ] as const;
+  for (const testCase of cases) {
+    const f = await fixture();
+    const input = body();
+    const command: GrantLimitCommand = {
+      userId: f.user.id, botId: f.bot.id, exchange: 'BINANCE', marketType: 'FUTURES',
+      symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER', clientOrderId: input.clientOrderId,
+      side: input.side, type: 'LIMIT', quantity: input.quantity,
+      limitPrice: input.limitPrice, reduceOnly: false, walletId: f.wallet.id,
+      strategyId: f.strategy.id, positionId: null,
+    };
+    const bound = await bindExternalClientGrantReservationIntent({
+      grantId: f.grant.id, secret: f.secret, command,
+    }, { getSymbolRules: rules });
+    if (testCase.name === 'hash') await prisma.externalClientGrantReservation.update({
+      where: { id: bound.reservation.id }, data: { commandHash: 'a'.repeat(64) },
+    });
+    if (testCase.name === 'scope') await prisma.externalClientGrant.update({
+      where: { id: f.grant.id }, data: { symbol: 'ETHUSDT' },
+    });
+    if (testCase.name === 'key') await prisma.apiKey.update({
+      where: { id: f.key.id }, data: { exchange: 'BYBIT' },
+    });
+    await expect(executeBoundExternalClientGrantMock({
+      reservationId: bound.reservation.id, secret: f.secret,
+    }), testCase.name).rejects.toMatchObject({ code: testCase.code });
+    expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+      where: { id: bound.reservation.id },
+    })).state).toBe('RESERVED');
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: f.grant.id } })).toBe(0);
+    expect(await transportStarts(bound.reservation.id)).toBe(0);
+    expect(await prisma.log.count({ where: { entityId: bound.reservation.id,
+      action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(0);
+    expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+      .usedActions).toBe(1);
+  }
 });
 
 it('keeps a preexisting uncertain marker lookup-only through HTTP retry and blocks pause/revoke', async () => {
@@ -357,6 +503,8 @@ it('serializes concurrent identical HTTP submissions without duplicate mock tran
     where: { clientOrderId: input.clientOrderId },
   });
   expect(await transportStarts(reservation.id)).toBe(1);
+  expect(await prisma.log.count({ where: { entityId: reservation.id,
+    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
   expect(await prisma.externalClientGrantReservation.count({ where: { grantId: f.grant.id } })).toBe(1);
   expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(1);
   expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);

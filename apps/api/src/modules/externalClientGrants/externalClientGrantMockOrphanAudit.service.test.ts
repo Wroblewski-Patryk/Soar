@@ -50,11 +50,15 @@ const fixture = async (amounts: Partial<Pick<GrantLimitCommand, 'quantity' | 'li
     userId: user.id, name: 'Mock orphan audit wallet', mode: 'LIVE',
     exchange: 'BINANCE', marketType: 'FUTURES', baseCurrency: 'USDT',
   } });
+  const key = await prisma.apiKey.create({ data: {
+    userId: user.id, label: 'Mock orphan key', exchange: 'BINANCE',
+    apiKey: 'test-only-key', apiSecret: 'test-only-secret',
+  } });
   const bot = await prisma.bot.create({ data: {
     userId: user.id, name: 'Mock orphan audit bot', mode: 'LIVE',
     exchange: 'BINANCE', marketType: 'FUTURES', isActive: true, liveOptIn: true,
     consentTextVersion: 'mvp-v1', symbolGroupId: group.id,
-    strategyId: strategy.id, walletId: wallet.id,
+    strategyId: strategy.id, walletId: wallet.id, apiKeyId: key.id,
   } });
   const { grant, secret } = await createExternalClientGrant(user.id, {
     botId: bot.id, clientLabel: 'Mock orphan audit', exchange: 'BINANCE',
@@ -133,6 +137,7 @@ afterEach(async () => {
   await prisma.marketUniverse.deleteMany({ where: { userId } });
   await prisma.strategy.deleteMany({ where: { userId } });
   await prisma.wallet.deleteMany({ where: { userId } });
+  await prisma.apiKey.deleteMany({ where: { userId } });
   await prisma.userSubscription.deleteMany({ where: { userId } });
   await prisma.user.delete({ where: { id: userId } });
 });
@@ -222,6 +227,18 @@ describe('fixed mock orphan finalization audit cardinality', () => {
       const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
       await crashAfterReconcile(reservationId, f.secret);
       const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({ where: { reservationId } });
+      const claimAudit = await prisma.log.findFirstOrThrow({ where: {
+        entityId: reservationId, action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED',
+      } });
+      const duplicateClaim = await prisma.log.create({ data: {
+        userId: f.user.id, botId: f.bot.id, source: 'external_client_grant',
+        actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED', level: 'WARN',
+        message: 'Injected duplicate claim audit', entityType: 'ExternalClientGrantReservation',
+        entityId: reservationId, metadata: claimAudit.metadata as Prisma.InputJsonValue,
+      } });
+      await expect(finalizeBoundExternalClientGrantMockOrphan({ reservationId, secret: f.secret }))
+        .rejects.toMatchObject({ code: 'DELEGATED_MOCK_ORPHAN_UNKNOWN' });
+      await prisma.log.delete({ where: { id: duplicateClaim.id } });
       await prisma.log.create({ data: { ...auditData(f.user.id, f.bot.id, reservationId),
         metadata: { invalid: true } } });
       await expect(finalizeBoundExternalClientGrantMockOrphan({ reservationId, secret: f.secret }))

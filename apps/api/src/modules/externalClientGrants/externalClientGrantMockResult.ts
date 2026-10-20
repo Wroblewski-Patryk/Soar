@@ -35,7 +35,9 @@ export const hashMockResult = (snapshot: Snapshot) =>
 export const retryMockFinalizationConflict = async <T>(operation: () => Promise<T>): Promise<T> => {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try { return await operation(); } catch (error) {
-      if ((error as { code?: unknown })?.code !== 'P2034' || attempt === 2) throw error;
+      const failure = error as { code?: unknown; meta?: { code?: unknown } };
+      if ((failure?.code !== 'P2034' &&
+          !(failure?.code === 'P2010' && failure.meta?.code === '40001')) || attempt === 2) throw error;
     }
   }
   throw new Error('Mock finalization retry exhausted');

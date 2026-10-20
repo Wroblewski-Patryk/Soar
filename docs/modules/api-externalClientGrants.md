@@ -372,6 +372,21 @@ unknown outcomes retain the marker and return reconciliation-required state.
 This is an isolated local protocol harness, not a production domain route,
 delegated LIVE permit, Codex/Claude integration, or exchange proof.
 
+`SOAR-EXT-GRANT-001V/CLAIMED-MOCK-TRANSPORT-SEAM` makes every fixed mock
+transport enter through the durable dispatch claim. The claim commits the
+reservation's `SUBMISSION_UNCERTAIN` state and snapshots the bound intent,
+command, bot, API-key identity, and key update time before transport. A second
+transaction verifies those rows under the grant, pause, and linked-row locks
+while recording the single mock transport-start audit. Retries after a claim,
+including a failure before that audit, remain lookup-only with the allowance
+spent and marker intact. The fixed-result finalizer accepts either historical
+`ADMITTED` or new `DISPATCH_CLAIMED` evidence and rechecks a claimed marker
+before clearing it. Its bounded lookup-only retry also recognizes PostgreSQL
+serialization code `40001` returned through Prisma `P2010`. A changed key
+version after claim blocks transport and leaves reconciliation required. This
+is `_test` synthetic evidence only; no delegated LIVE permit or venue call is
+enabled.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

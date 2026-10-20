@@ -1,5 +1,16 @@
 // Fixed, local test transport. No caller code, exchange adapter, CCXT, or I/O.
 import { Prisma } from '@prisma/client';
+import type { getExchangeSymbolRules } from '../exchange/exchangeSymbolRules.service';
+import { deny } from './externalClientGrantReservation.helpers';
+export const fixedMockSymbolRules: typeof getExchangeSymbolRules = async (scope) => {
+  if ((scope.exchange !== 'BINANCE' && scope.exchange !== 'GATEIO') ||
+      scope.marketType !== 'FUTURES' || scope.symbol !== 'BTCUSDT') {
+    return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
+  }
+  return { minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
+    priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT',
+    settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false };
+};
 export const delegatedMockScenarios = [
   'CERTAIN_FILL', 'DELAYED_FILL', 'UNKNOWN', 'INVALID_FILL',
   'HOLD_AFTER_RESULT_JOURNAL', 'HOLD_AFTER_RECONCILE',

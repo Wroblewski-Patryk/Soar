@@ -133,7 +133,8 @@ export const createMockOrdersHttpApp = () => {
           return readExisting();
         } catch (error) {
           if (error instanceof GrantReservationError &&
-              error.code === 'DELEGATED_MOCK_OUTCOME_UNKNOWN') return readExisting();
+              ['DELEGATED_MOCK_OUTCOME_UNKNOWN', 'DISPATCH_CLAIM_UNVERIFIED']
+                .includes(error.code)) return readExisting();
           throw error;
         }
       } catch (error) {

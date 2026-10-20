@@ -11,7 +11,8 @@ import { fingerprintLiveOrderIntentPayload, persistOrReuseLiveOrderIntent, resol
 import { materializeAdmittedMockLiveOrder, prepareOpenOrderRiskContext } from '../orders/orders.service';
 import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
-import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
+import { delegatedMockScenarios, fixedMockSymbolRules,
+  runDelegatedMockTransport } from './externalClientGrantMockTransport';
 import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
 import { intentMatchesCommand, intentMatchesCommandAndScope,
   verifyDispatchClaimInTransaction } from './externalClientGrantDispatchClaimProof';
@@ -433,7 +434,8 @@ export const admitBoundExternalClientGrantSubmission = (
 // lookup-only after a crash or UNKNOWN outcome.
 export const prepareBoundExternalClientGrantAdapterSeam = async (
   input: { reservationId: string; secret: string },
-  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader; requireMockNotionalRepresentable?: true } = {},
+  deps: { db?: DbClient; getSymbolRules?: SymbolRulesReader;
+    requireMockNotionalRepresentable?: true; claimDispatch?: true } = {},
 ) => {
   const db = deps.db ?? prisma;
   if (!secretPattern.test(input.secret)) return deny('GRANT_SCOPE_UNAVAILABLE');
@@ -453,7 +455,8 @@ export const prepareBoundExternalClientGrantAdapterSeam = async (
   if (!intent || !intentMatchesCommandAndScope(intent, command) ||
       !await hasAtomicIntentBinding(db, reservation.id, intent.id)) return deny('RESERVATION_INTENT_UNAVAILABLE');
   if (reservation.state === 'SUBMISSION_UNCERTAIN') {
-    const recovered = await admitBoundExternalClientGrantSubmission(input, deps);
+    const recovered = await admitBoundExternalClientGrantSubmissionInternal(input, deps,
+      deps.claimDispatch === true);
     return { ...recovered, clientOrderId: command.clientOrderId,
       domainRiskChecked: false, dispatchEnabled: false } as const;
   }
@@ -491,8 +494,8 @@ export const prepareBoundExternalClientGrantAdapterSeam = async (
       intent.payloadHash !== fingerprintLiveOrderIntentPayload(command.userId, bot, canonical)) {
     return deny('DELEGATED_DOMAIN_COMMAND_MISMATCH');
   }
-  const admitted = await admitBoundExternalClientGrantSubmission(input,
-    { ...deps, expectedIntentPayloadHash: intent.payloadHash });
+  const admitted = await admitBoundExternalClientGrantSubmissionInternal(input,
+    { ...deps, expectedIntentPayloadHash: intent.payloadHash }, deps.claimDispatch === true);
   return { ...admitted, clientOrderId: command.clientOrderId,
     domainRiskChecked: true, dispatchEnabled: false } as const;
 };
@@ -501,16 +504,6 @@ const mockRequestSchema = z.strictObject({
   reservationId: z.uuid(), secret: z.string(),
   scenario: z.enum(delegatedMockScenarios).default('CERTAIN_FILL'),
 });
-const fixedMockSymbolRules: SymbolRulesReader = async (scope) => {
-  if ((scope.exchange !== 'BINANCE' && scope.exchange !== 'GATEIO') ||
-      scope.marketType !== 'FUTURES' || scope.symbol !== 'BTCUSDT') {
-    return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
-  }
-  return { minQuantity: 0.001, minNotional: 1, quantityStep: 0.001,
-    priceStep: 0.01, contractSize: 1, quoteCurrency: 'USDT',
-    settleCurrency: 'USDT', isContract: true, isLinear: true, isInverse: false };
-};
-
 // Test-database-only proof of the delegated lifecycle. It accepts plain data
 // only and calls a fixed local transport; no caller-supplied function can run.
 export async function executeBoundExternalClientGrantMock(
@@ -532,8 +525,12 @@ export async function executeBoundExternalClientGrantMock(
     return deny('DELEGATED_MOCK_TEST_DATABASE_REQUIRED');
   }
   const admitted = await prepareBoundExternalClientGrantAdapterSeam(request.data,
-    { getSymbolRules: fixedMockSymbolRules, requireMockNotionalRepresentable: true });
+    { getSymbolRules: fixedMockSymbolRules, requireMockNotionalRepresentable: true,
+      claimDispatch: true });
   if (admitted.reused) return { ...admitted, orderId: null } as const;
+  if (admitted.claimStatus !== 'VERIFIED' || !admitted.claimed) {
+    return deny('DISPATCH_CLAIM_UNVERIFIED');
+  }
 
   const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
     where: { id: admitted.reservationId },
@@ -554,13 +551,19 @@ export async function executeBoundExternalClientGrantMock(
     return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
   }
 
-  await prisma.log.create({ data: {
+  await prisma.$transaction(async (tx) => {
+    const proof = await verifyDispatchClaimInTransaction(tx, {
+      grantId: reservation.grantId, reservationId: reservation.id, command,
+    });
+    if (!proof.verified || proof.markerId !== admitted.markerId) return deny('DISPATCH_CLAIM_UNVERIFIED');
+    await tx.log.create({ data: {
     userId: command.userId, botId: command.botId, source: 'external_client_grant',
     actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED', level: 'INFO',
     message: 'Fixed delegated mock transport entered',
     entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
     metadata: { scenario: request.data.scenario, clientOrderId: command.clientOrderId },
-  } });
+    } });
+  }, transactionOptions);
   let result: LiveExecutionResult;
   try {
     result = await runDelegatedMockTransport({ exchange: command.exchange,
@@ -712,7 +715,10 @@ export async function recoverBoundExternalClientGrantMockResult(
     const bound = await prepareBoundExternalClientGrantAdapterSeam({
       reservationId: reservation.id, secret: request.data.secret,
     }, { getSymbolRules: fixedMockSymbolRules });
-    if (!bound.reused || bound.markerId !== marker.id) return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    if (!bound.reused || bound.markerId !== marker.id ||
+        (marker.dispatchClaimedAt && bound.claimStatus !== 'VERIFIED')) {
+      return deny('DELEGATED_MOCK_OUTCOME_UNKNOWN');
+    }
     const prepared = await prepareOpenOrderRiskContext(command.userId, intent.payload as LiveOrderPayload);
     if (!prepared.liveBot ||
         fingerprintLiveOrderIntentPayload(command.userId, prepared.liveBot, prepared.canonicalPayload) !==
@@ -842,7 +848,7 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
     }
     const audits = await tx.log.findMany({ where: {
       entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
-      action: { in: ['EXTERNAL_CLIENT_GRANT_ADMITTED',
+      action: { in: ['EXTERNAL_CLIENT_GRANT_ADMITTED', 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED',
         'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED',
         'EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED',
         'EXTERNAL_CLIENT_GRANT_MOCK_ORPHAN_FINALIZED'] },
@@ -852,6 +858,10 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
       return matching.length === 1 ? mockAuditMetadata(matching[0].metadata) : null;
     };
     const admitted = one('EXTERNAL_CLIENT_GRANT_ADMITTED');
+    const claimed = one('EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED');
+    const admissionCount = audits.filter((audit) => ['EXTERNAL_CLIENT_GRANT_ADMITTED', 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED'].includes(audit.action)).length;
+    if (admissionCount !== 1 || (admitted === null) === (claimed === null)) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
+    const admission = claimed ?? admitted;
     const started = one('EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED');
     const reconciled = one('EXTERNAL_CLIENT_GRANT_SUBMITTED_RECONCILED');
     const finalizedRows = audits.filter((audit) =>
@@ -860,9 +870,9 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
       return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
     }
     const finalized = finalizedRows.length === 1 ? mockAuditMetadata(finalizedRows[0].metadata) : null;
-    const markerId = admitted?.markerId;
-    if (typeof markerId !== 'string' || admitted?.intentId !== intent.id ||
-        admitted?.grantId !== grant.id || admitted?.clientOrderId !== command.clientOrderId ||
+    const markerId = admission?.markerId;
+    if (typeof markerId !== 'string' || admission?.intentId !== intent.id ||
+        admission?.grantId !== grant.id || admission?.clientOrderId !== command.clientOrderId ||
         !['CERTAIN_FILL', 'DELAYED_FILL', 'HOLD_AFTER_RECONCILE',
           'HOLD_AFTER_RESULT_JOURNAL'].includes(String(started?.scenario)) ||
         started?.clientOrderId !== command.clientOrderId ||
@@ -880,6 +890,9 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         markerId, reused: true, finalized: true } as const;
     }
     const expectedMarketType = command.exchange === 'BINANCE' ? 'future' : 'swap';
+    if (claimed && !(await verifyDispatchClaimInTransaction(tx, {
+      grantId: grant.id, reservationId: reservation.id, command, allowSubmitted: true,
+    })).verified) return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
     if (grant.revokedAt || finalized || marker.id !== markerId || marker.grantId !== grant.id ||
         marker.reservationId !== reservation.id || marker.intentId !== intent.id ||
         marker.clientOrderId !== command.clientOrderId || marker.exchangeId !== command.exchange ||

@@ -7,7 +7,8 @@ import { hasAtomicIntentBinding } from './externalClientGrantReservation.helpers
 import type { GrantLimitCommand } from './externalClientGrantReservation.service';
 
 type Tx = Prisma.TransactionClient;
-type Input = { grantId: string; reservationId: string; command: GrantLimitCommand };
+type Input = { grantId: string; reservationId: string; command: GrantLimitCommand;
+  allowSubmitted?: true };
 
 const lock = async (tx: Tx, table: 'ExternalClientGrantReservation' | 'LiveOrderIntent' |
   'LiveCreateOrderSubmission', column: 'id' | 'clientOrderId' | 'reservationId', value: string) => {
@@ -67,10 +68,12 @@ export const verifyDispatchClaimInTransaction = async (tx: Tx, input: Input) => 
   const marketType = command.marketType === 'SPOT' ? 'spot'
     : command.exchange === 'BINANCE' ? 'future' : 'swap';
   const commandHash = createHash('sha256').update(JSON.stringify(command), 'utf8').digest('hex');
-  if (!intent || reservation.state !== 'SUBMISSION_UNCERTAIN' || !reservation.dispatchStartedAt ||
+  if (!intent || (reservation.state !== 'SUBMISSION_UNCERTAIN' &&
+      !(input.allowSubmitted && reservation.state === 'SUBMITTED')) || !reservation.dispatchStartedAt ||
       reservation.grantId !== grant.id || reservation.clientOrderId !== command.clientOrderId ||
       reservation.commandHash !== commandHash ||
-      grant.revokedAt || grant.expiresAt <= new Date() || grant.userId !== command.userId ||
+      grant.revokedAt || (!input.allowSubmitted && grant.expiresAt <= new Date()) ||
+      grant.userId !== command.userId ||
       grant.botId !== command.botId || grant.exchange !== command.exchange ||
       grant.marketType !== command.marketType || grant.symbol !== command.symbol ||
       grant.action !== command.action || marker.grantId !== grant.id ||
