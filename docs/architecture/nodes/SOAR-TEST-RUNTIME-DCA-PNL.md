@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified]
 | --- | --- |
 | Description | Regression proving exchange PnL threshold truth for DCA automation. |
 | File path | apps/api/src/modules/engine/runtimePositionAutomation.exchangePnl.test.ts |
-| Related files | apps/api/src/modules/engine/positionManagement.service.test.ts |
+| Related files | apps/api/src/modules/engine/positionManagement.service.test.ts, apps/api/src/modules/engine/runtimePaperBasicDcaPersistence.e2e.test.ts |
 | Parent | [[SOAR-FEATURE-RUNTIME-DCA-PNL]] |
 | Children |  |
 | Depends on | [[SOAR-FEATURE-RUNTIME-DCA-PNL]] |
