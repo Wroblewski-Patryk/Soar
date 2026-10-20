@@ -48,7 +48,11 @@ For promoted SHA:
 2. `pnpm --filter api exec prisma migrate deploy`,
 3. API/web/workers post-deploy gates.
 
-If migration or health fails, trigger rollback playbook and mark candidate blocked.
+If migration or health fails, mark the candidate blocked and follow the
+[rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes).
+For Service Stack cutover after any new process starts, mode D is required before
+an old API or worker starts; if the start history is unknown, use mode D or
+STOP/NO-GO.
 
 ## Backward-Compatible Release Pattern
 Recommended two-phase schema evolution:

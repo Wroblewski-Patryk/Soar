@@ -43,7 +43,10 @@ Deploy `<PROJECT_NAME>` from `<GIT_SHA>` to `<ENVIRONMENT>` and return with veri
 
 ## Failure Handling Contract
 1. If migration fails, stop rollout and report blocker.
-2. If web/api unhealthy after deploy, trigger rollback path.
+2. If web/api is unhealthy after deploy, block release acceptance and follow the
+   [rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes).
+   After any new Service Stack process starts, mode D must pass before any old
+   API or worker starts; never trigger an automatic restore around that gate.
 3. If only session/cookie issues appear, apply auth hardening playbook before rollback decision.
 4. Always include exact failing endpoint/status in report.
 

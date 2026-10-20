@@ -17,8 +17,10 @@ restoration task.
 2. CI builds/tests candidate SHA through normal repository checks.
 3. Operator triggers production deployment for the selected SHA.
 4. PROD post-deploy gates run.
-5. If PROD gates fail, the operator rolls services back in Coolify to the
-   previous stable release.
+5. If PROD gates fail, the operator follows the
+   [rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes)
+   before Coolify restores a previous stable release. After any new Service
+   Stack process starts, mode D applies even before domain cutover.
 
 ## Production Promotion Entry Point
 - Tool: Coolify/manual operator deployment for the selected SHA.
@@ -57,7 +59,11 @@ After immutable SHA promotion:
 Rollback is triggered when any required PROD post-deploy gate fails.
 
 Rollback behavior:
-1. Revert to previous stable deployment artifact/tag for affected services.
+1. For a Service Stack cutover, apply
+   [mode D stop-before-start](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   after any new process starts or when start history is uncertain. Only a
+   proven never-started candidate may use mode A. Then restore a compatible
+   previous artifact/tag; unpassed gates mean STOP/NO-GO.
 2. Keep failed SHA and gate failure details in incident evidence.
 3. Mark candidate as `ROLLBACK_REQUIRED` and block re-promotion until a new
    eligible SHA is validated.

@@ -24,7 +24,9 @@ GitHub Actions setup.
 For each target service/app in Coolify:
 1. Open service -> Deployments/Webhooks.
 2. Keep only production service deployment controls active.
-3. Keep rollback to previous stable deployment available in Coolify.
+3. Keep rollback to previous stable deployment available in Coolify, subject to
+   the [Service Stack mode D gate](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   once any new stack process has started.
 4. Keep webhook URLs out of the repository. If webhooks are used manually, they
    remain operator-held secrets and are not wired through GitHub Actions.
 
@@ -43,8 +45,13 @@ Stage cleanup checklist:
    for this gate is not an approved mixed-version cutover.
 3. Proof: wait until `https://soar.luckysparrow.ch/api/build-info` exposes the
    promoted SHA before runtime freshness and release gates run.
-4. If post-deploy checks fail, operator rolls back in Coolify to the previous
-   stable release.
+4. If checks fail after **any** new stack process starts, even before domain
+   cutover, the operator follows
+   [mode D stop-before-start](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   before Coolify may start an old API or worker. If complete history and host
+   readback prove that no new process ever started, mode A may be considered;
+   uncertainty means mode D or STOP/NO-GO. A one-click restore is not an
+   exception.
 
 ## Payload Contract (Webhook Body)
 If manual webhooks are used outside the repository, include metadata where the

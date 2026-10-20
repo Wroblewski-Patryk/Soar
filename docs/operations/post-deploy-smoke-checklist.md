@@ -94,7 +94,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 ## Pass/Fail Rules
 - **PASS**: all required smoke items succeed.
 - **FAIL**: any required item fails -> rollout marked degraded; trigger the
-  incident/rollback decision path. For Service Stack cutover, follow the
+  incident/rollback decision path. After any Service Stack process starts,
+  including before domain cutover, follow mode D in the
   [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
   before restoring old API or workers.
 

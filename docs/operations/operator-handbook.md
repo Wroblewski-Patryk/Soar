@@ -51,7 +51,10 @@ It complements:
    - apply kill switch if trading safety is uncertain,
    - stop affected worker pools when queue pressure is unstable.
 4. Recover service:
-   - rollback if needed,
+   - if rollback is needed, use the
+     [rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes);
+     after any new Coolify Service Stack process starts, mode D is required
+     before an old API or worker starts, even before domain cutover,
    - verify `/ready` and `/alerts`,
    - confirm no orphan live actions.
 5. Publish post-incident note:

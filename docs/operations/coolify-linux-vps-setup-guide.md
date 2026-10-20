@@ -430,18 +430,25 @@ has stopped or that a backtest moved from `PENDING` to a terminal state.
 
 ### Rollback from stack cutover
 
-This order applies to routing, API, worker-only, and schema failures. The old
-API may still consume work inline, so a worker-only rollback cannot leave the
-new API running. The operator performs these steps; a failed gate does not
-trigger an automatic destructive rollback.
+From the first start of **any** new stack process (including Web, before domain
+cutover), every rollback to an old API or worker follows mode D below. A
+complete Coolify deployment history and host readback may establish that no new
+stack process has ever started in this cutover; only then may the operator use
+the schema-compatible app-version mode A after resolving in-flight and
+`UNKNOWN` work. Missing or uncertain start history
+requires mode D, and missing mode D evidence is **STOP/NO-GO**, never a reason
+to fall back to mode A or a one-click restore. This order applies to routing,
+API, worker-only, and schema failures. The old API may still consume work inline.
+The operator performs these steps; a failed gate does not trigger an automatic
+destructive rollback.
 
-1. **Stop new API and workers.** Freeze promotion, then request stop of the new
-   stack `api`, `workers-market-data`, `workers-market-stream`,
+1. **Stop all new stack processes.** Freeze promotion, then request stop of the
+   new `api`, `web`, `workers-market-data`, `workers-market-stream`,
    `workers-backtest`, and `workers-execution`. Keep Postgres, Redis/AOF, and
-   evidence intact. Prevent automatic restart or redeploy of these five new
-   consumers during rollback. Do not start any old API or worker yet.
-2. **Verify new consumers stopped.** On the target host, enumerate every
-   container for the new `api`, `workers-market-data`,
+   evidence intact. Prevent automatic restart or redeploy of these six new
+   processes during rollback. Do not start any old API or worker yet.
+2. **Verify all new processes stopped.** On the target host, enumerate every
+   container for the new `api`, `web`, `workers-market-data`,
    `workers-market-stream`, `workers-backtest`, and `workers-execution` resources,
    including replicas. Read back `Running=false` and `Pid=0` for each container;
    also check for unassigned Soar consumers. A missing resource, active process,
@@ -464,7 +471,7 @@ trigger an automatic destructive rollback.
    **STOP/NO-GO**. Then restore the old Web route if needed. Confirm the old
    consumers' exact SHA and worker ownership, queue
    readiness, one terminal result for any recovered backtest, and no duplicate
-   effects. Keep the new API and workers stopped throughout this check.
+   effects. Keep all six new stack processes stopped throughout this check.
 
 Run `pnpm run ops:worker-switch:rollback-order:test` to check the documented
 stop-before-start sequence. This static check does not prove target-host state.
@@ -561,9 +568,10 @@ Note:
 ## Rollback Baseline
 
 If post-deploy health fails:
-1. For Service Stack cutover, follow the
+1. After any new Service Stack process starts, or if its start history is
+   uncertain, follow mode D in the
    [rollback stop-before-start sequence](#rollback-from-stack-cutover) before
-   starting any old API or worker.
+   starting any old API or worker, even before domain cutover.
 2. Use a previous stable, schema-compatible release; preserve DB/Redis state.
 3. Re-validate `/health`, `/ready`, worker readiness, and queue outcomes.
 4. Log the incident, rollback decision, and exact SHAs.

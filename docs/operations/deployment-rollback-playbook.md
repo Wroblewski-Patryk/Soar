@@ -22,33 +22,48 @@ Execute rollback when any required condition occurs:
 
 ## Rollback Modes
 
-### A) App Version Rollback (preferred)
+For a Coolify Service Stack cutover, select the mode from process-start evidence,
+not domain routing or whether API/Web health is green. If **any** new stack
+process has started, or a complete deployment-history and host readback cannot
+prove none ever started, mode D is mandatory before starting any old API or
+worker. If its stop/readback, in-flight/`UNKNOWN`, or schema gates cannot pass,
+the old consumers remain stopped (**STOP/NO-GO**); do not substitute modes A–C.
+
+### A) App Version Rollback (Service Stack: proven pre-start only)
 Use previous stable deployment artifact/tag for:
 - `api`,
 - `web`,
 - `workers` (same compatible set).
+
+For a Service Stack cutover, mode A is allowed only when complete Coolify
+deployment history plus host readback prove **no new stack process ever started**
+in this cutover. Confirm schema compatibility and require in-flight/`UNKNOWN`
+work to be absent or reconciled before starting an old consumer. Otherwise use
+mode D or STOP/NO-GO.
 
 ### B) Environment Rollback
 If issue is configuration-only:
 - restore previous env variable set,
 - redeploy unchanged stable app artifact.
 
+Mode B cannot bypass mode D after any new Service Stack process starts.
+
 ### C) Worker-Only Rollback
 If web/api are healthy and issue is isolated to workers:
 - rollback/restart worker services only,
 - keep web/api online.
 
-For a Coolify Service Stack cutover, do not use this fast path: the new API may
-consume work inline. Follow the stop-before-start sequence in mode D instead.
+For a Coolify Service Stack cutover, do not use this fast path after any new
+process starts: the new API may consume work inline. Follow mode D instead.
 
 ### D) Coolify Service Stack Cutover Rollback
-If the new Soar Service Stack fails after domain cutover:
+If any new Soar Service Stack process has started, before or after domain cutover:
 - keep the old six Applications available until at least one stable monitoring
   window proves the stack;
 - for every failure mode, follow the canonical
   [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover):
-  stop **new API and all four new workers**, then read back `Running=false` and
-  `Pid=0` for every replica before starting any old API or worker;
+  stop **new API, Web, and all four new workers**, then read back `Running=false`
+  and `Pid=0` for every replica before starting any old API or worker;
 - unknown/active container state, unresolved in-flight work or `UNKNOWN` order
   outcome, or unproven schema compatibility means **STOP/NO-GO**; preserve state
   for an operator decision rather than automatically replaying or restoring;
@@ -59,14 +74,18 @@ The stack migration must not include production Postgres/Redis data movement
 unless a separate data migration plan and restore proof are approved.
 
 ## Rollback Entry Point
-- Tool: Coolify/manual operator rollback to the previous stable deployment.
+- Tool: Coolify/manual operator rollback to the previous stable deployment,
+  subject to mode selection and mode D gates above. A one-click restore must
+  not start old consumers before those gates pass.
 - Trigger: failed production deployment or failed required post-deploy gate.
 - GitHub Actions is not used for production rollback in the active setup.
 
 ## Standard Rollback Procedure
 1. Freeze promotion pipeline for affected environment.
-2. Identify last known stable release reference (tag/artifact/SHA).
-3. Execute rollback mode (A/B/C/D), including its stop-before-start gates.
+2. Identify last known stable release reference (tag/artifact/SHA), active
+   topology, and evidence of whether any new stack process ever started.
+3. Execute the eligible rollback mode. If start history is positive or unknown,
+   complete mode D before starting old API/workers; do not choose A–C instead.
 4. Re-run required post-rollback checks:
    - API `/health` + `/ready`,
    - web root + auth smoke,

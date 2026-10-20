@@ -82,7 +82,11 @@ After deployment, required post-deploy verification includes:
 - G5 Workers,
 - G7 Runtime freshness + cache/stream.
 
-If any required post-deploy gate fails -> automatic rollback policy applies.
+If any required post-deploy gate fails, block release acceptance and start an
+operator rollback decision through the
+[rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes).
+After any new Service Stack process starts, mode D must pass before any old API
+or worker starts; an automatic restore cannot bypass this gate.
 
 ## Evidence Contract
 Each gate run must produce machine-readable output:

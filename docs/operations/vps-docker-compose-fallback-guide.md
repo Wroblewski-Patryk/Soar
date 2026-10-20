@@ -115,6 +115,14 @@ Do not merge workers into API process in production.
 
 ## Rollback (compose fallback)
 
+If this fallback would restore an old API or worker after **any** new Coolify
+Service Stack process has started, or if that start history is uncertain, first
+complete [mode D stop-before-start](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover).
+This `up -d --build` path cannot bypass the new-process exit, in-flight/`UNKNOWN`,
+and schema gates. Only a proven never-started stack may use the simpler
+app-version rollback path, after resolving in-flight/`UNKNOWN` work and proving
+schema compatibility.
+
 1. Checkout previous stable commit.
 2. Rebuild and restart:
 

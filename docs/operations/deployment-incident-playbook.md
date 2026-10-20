@@ -62,12 +62,14 @@ Provide a deterministic response flow when deployment promotion is blocked or wh
 1. Mark incident `PROD_FAILED`.
 2. Identify the active topology and read back actual process state; do not infer
    a completed rollback from a workflow status or health endpoint.
-3. For Coolify Service Stack cutover, follow the
+3. After any Coolify Service Stack process starts, including before domain
+   cutover, follow mode D in the
    [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
    before starting any old API or worker. Unknown process state, unresolved
    in-flight/`UNKNOWN` work, or unproven schema compatibility is STOP/NO-GO;
    obtain an operator recovery decision. Do not trigger automatic destructive
-   rollback or replay.
+   rollback or replay. Mode A requires proof that no new process ever started;
+   uncertain history requires mode D or STOP/NO-GO.
 4. For other topologies, use the controlled
    [rollback playbook](deployment-rollback-playbook.md).
 5. Validate post-rollback stability:

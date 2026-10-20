@@ -4,11 +4,15 @@ import fs from 'node:fs';
 
 const read = (relativePath) => fs.readFileSync(new URL(`../${relativePath}`, import.meta.url), 'utf8');
 const titles = [
-  'Stop new API and workers.',
-  'Verify new consumers stopped.',
+  'Stop all new stack processes.',
+  'Verify all new processes stopped.',
   'Resolve in-flight and unknown work.',
   'Confirm rollback compatibility.',
   'Restore old applications.',
+];
+const processNames = [
+  'api', 'web', 'workers-market-data', 'workers-market-stream',
+  'workers-backtest', 'workers-execution',
 ];
 
 const rollbackSection = (document) => {
@@ -29,11 +33,7 @@ const checkOrder = (section) => {
       break;
     }
   }
-  const fiveConsumers = [
-    '`api`', '`workers-market-data`', '`workers-market-stream`',
-    '`workers-backtest`', '`workers-execution`',
-  ];
-  if (fiveConsumers.some((name) => !steps[1].includes(name)) ||
+  if (processNames.some((name) => !steps[1].includes(`\`${name}\``)) ||
       !steps[1].includes('Running=false') || !steps[1].includes('Pid=0') ||
       !steps[1].includes('STOP/NO-GO')) {
     issues.push('EXIT_READBACK_MISSING');
@@ -55,23 +55,57 @@ const checkOrder = (section) => {
   return issues;
 };
 
+// A fixture-level procedural model, never proof of actual Coolify/Docker state.
+const assessMode = ({ mode, anyNewStarted, noStartProof, readbacks,
+  inventoryComplete, unresolvedInFlight, unknownOutcome, schemaCompatible }) => {
+  if (unresolvedInFlight !== false || unknownOutcome !== false ||
+      schemaCompatible !== true) return 'NO_GO';
+  if (mode === 'A') {
+    return anyNewStarted === false && noStartProof === true ? 'PROCEDURAL_ALLOW' : 'NO_GO';
+  }
+  if (mode !== 'D' || inventoryComplete !== true ||
+      processNames.some((name) => readbacks?.[name]?.running !== false ||
+        readbacks?.[name]?.pid !== 0)) return 'NO_GO';
+  return 'PROCEDURAL_ALLOW';
+};
+
 test('canonical rollback documents stop and exit readback before old startup', () => {
   const canonical = read('docs/operations/coolify-linux-vps-setup-guide.md');
   const playbook = read('docs/operations/deployment-rollback-playbook.md');
   const smoke = read('docs/operations/post-deploy-smoke-checklist.md');
   const incident = read('docs/operations/deployment-incident-playbook.md');
   const local = read('docs/operations/v1-local-rollback-checklist.md');
+  const trigger = read('docs/operations/coolify-trigger-wiring.md');
+  const promotion = read('docs/operations/dev-stage-prod-promotion-contract.md');
+  const v1Ops = read('docs/operations/v1-ops-runbook.md');
+  const operator = read('docs/operations/operator-handbook.md');
+  const fallback = read('docs/operations/vps-docker-compose-fallback-guide.md');
+  const readiness = read('docs/operations/deployment-readiness-gates.md');
+  const migration = read('docs/operations/deployment-migration-strategy.md');
+  const agent = read('docs/operations/agent-deployment-skill-template.md');
+  const runtime = read('docs/operations/runtime-incident-triage-matrix.md');
+  const release = read('docs/operations/v1-release-gate-runbook.md');
   assert.deepEqual(checkOrder(rollbackSection(canonical)), []);
-  assert.match(playbook, /coolify-linux-vps-setup-guide\.md#rollback-from-stack-cutover/);
-  assert.match(smoke, /coolify-linux-vps-setup-guide\.md#rollback-from-stack-cutover/);
-  assert.match(incident, /coolify-linux-vps-setup-guide\.md#rollback-from-stack-cutover/);
-  assert.match(local, /coolify-linux-vps-setup-guide\.md#rollback-from-stack-cutover/);
-  assert.match(playbook, /do not use this fast path/);
+  assert.match(rollbackSection(canonical), /first start of \*\*any\*\* new stack process/);
+  assert.match(rollbackSection(canonical), /before domain\s+cutover/);
+  for (const document of [playbook, smoke, incident, local, trigger, promotion, v1Ops, fallback]) {
+    assert.match(document, /coolify-linux-vps-setup-guide\.md#rollback-from-stack-cutover/);
+  }
+  assert.match(operator, /deployment-rollback-playbook\.md#rollback-modes/);
+  for (const document of [readiness, migration, agent]) {
+    assert.match(document, /deployment-rollback-playbook\.md#rollback-modes/);
+  }
+  for (const document of [runtime, release]) {
+    assert.match(document, /deployment-rollback-playbook\.md/);
+  }
+  assert.match(playbook, /no new stack process ever started/);
+  assert.match(playbook, /before or after domain cutover/);
+  assert.match(trigger, /A one-click restore is not an\s+exception/);
 });
 
 test('restoring old API before new process exit fails the static gate', () => {
   const good = rollbackSection(read('docs/operations/coolify-linux-vps-setup-guide.md'));
-  const verifyAt = good.indexOf('2. **Verify new consumers stopped.**');
+  const verifyAt = good.indexOf('2. **Verify all new processes stopped.**');
   const reconcileAt = good.indexOf('3. **Resolve in-flight and unknown work.**');
   const restoreAt = good.indexOf('5. **Restore old applications.**');
   const afterStepsAt = good.indexOf('\nRun `pnpm run', restoreAt);
@@ -85,5 +119,35 @@ test('restoring old API before new process exit fails the static gate', () => {
 test('missing exit readback or UNKNOWN decision fails the static gate', () => {
   const good = rollbackSection(read('docs/operations/coolify-linux-vps-setup-guide.md'));
   assert.ok(checkOrder(good.replace('Running=false', 'stopped')).includes('EXIT_READBACK_MISSING'));
-  assert.ok(checkOrder(good.replace('`UNKNOWN`', 'unconfirmed')).includes('IN_FLIGHT_DECISION_MISSING'));
+  const missingUnknown = good.replace(/(3\. \*\*Resolve[\s\S]*?)`UNKNOWN`/, '$1unconfirmed');
+  assert.ok(checkOrder(missingUnknown).includes('IN_FLIGHT_DECISION_MISSING'));
+});
+
+test('mode A refuses a partial stack start; mode D allows a fully verified plan', () => {
+  const safe = {
+    anyNewStarted: true,
+    noStartProof: false,
+    readbacks: Object.fromEntries(processNames.map((name) =>
+      [name, { running: false, pid: 0 }])),
+    inventoryComplete: true,
+    unresolvedInFlight: false,
+    unknownOutcome: false,
+    schemaCompatible: true,
+  };
+  for (const mode of ['A', 'B', 'C']) {
+    assert.equal(assessMode({ ...safe, mode }), 'NO_GO');
+  }
+  assert.equal(assessMode({ ...safe, mode: 'D' }), 'PROCEDURAL_ALLOW');
+  assert.equal(assessMode({ ...safe, mode: 'D', readbacks: {
+    ...safe.readbacks, api: { running: true, pid: 777 },
+  } }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', unknownOutcome: true }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', unresolvedInFlight: true }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', schemaCompatible: false }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', inventoryComplete: false }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', unresolvedInFlight: null }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'D', unknownOutcome: null }), 'NO_GO');
+  assert.equal(assessMode({ ...safe, mode: 'A', anyNewStarted: false, noStartProof: true }),
+    'PROCEDURAL_ALLOW');
+  assert.equal(assessMode({ ...safe, mode: 'A', anyNewStarted: null }), 'NO_GO');
 });
