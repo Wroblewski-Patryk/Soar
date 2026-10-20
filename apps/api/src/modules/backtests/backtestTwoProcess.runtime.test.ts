@@ -3,6 +3,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { existsSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { PrismaClient } from '@prisma/client';
 import { createClient } from 'redis';
 import { describe, expect, it } from 'vitest';
@@ -81,14 +82,54 @@ type WaitingReportBackend = {
   query: string;
 };
 
+type TerminalCrashProbe = WaitingReportBackend & {
+  query_start: Date | null;
+  observed_at: Date;
+  wait_event_type: string | null;
+  wait_event: string | null;
+  state: string;
+};
+
+const TERMINAL_LOCK_TIMEOUT_MS = 10_000;
+const CRASH_BOUNDARY_MARGIN_MS = 1_000;
+
+const requireCrashBeforeDbTimeout = (probe: TerminalCrashProbe, elapsedMs: number) => {
+  if (probe.state !== 'active' || probe.wait_event_type !== 'Lock' ||
+      probe.wait_event !== 'advisory' ||
+      !probe.query_start || !Number.isFinite(elapsedMs) || elapsedMs < 0) {
+    throw new Error('007F crash probe lacks an active advisory waiter or valid clock');
+  }
+  const queryStartMs = probe.query_start.getTime();
+  const observedAtMs = probe.observed_at.getTime();
+  if (!Number.isFinite(queryStartMs) || !Number.isFinite(observedAtMs) ||
+      observedAtMs < queryStartMs) {
+    throw new Error('007F crash probe has an invalid database time order');
+  }
+  // The trigger starts lock_timeout after the report SQL query_start. Using
+  // query_start therefore gives an earlier, conservative timeout deadline.
+  const remainingAtDbReadMs = queryStartMs + TERMINAL_LOCK_TIMEOUT_MS - observedAtMs;
+  if (remainingAtDbReadMs <= elapsedMs + CRASH_BOUNDARY_MARGIN_MS) {
+    throw new Error('007F DB timeout could precede the worker crash');
+  }
+};
+
+const requireDbCloseBeforeTimeout = (probe: TerminalCrashProbe, dbAfterCloseAt: Date) => {
+  if (!probe.query_start || !Number.isFinite(dbAfterCloseAt.getTime()) ||
+      dbAfterCloseAt.getTime() < probe.observed_at.getTime() ||
+      dbAfterCloseAt.getTime() + CRASH_BOUNDARY_MARGIN_MS >=
+        probe.query_start.getTime() + TERMINAL_LOCK_TIMEOUT_MS) {
+    throw new Error('007F database timeout could precede confirmed worker close');
+  }
+};
+
 const isOwnedTerminalWaiter = (
   waiter: WaitingReportBackend, databaseName: string, applicationName: string,
 ) => waiter.datname === databaseName && waiter.application_name === applicationName &&
   waiter.query.includes('BacktestReport');
 
-const requireOneOwnedTerminalWaiter = (
-  waiters: WaitingReportBackend[], databaseName: string, applicationName: string,
-) => {
+const requireOneOwnedTerminalWaiter = <T extends WaitingReportBackend>(
+  waiters: T[], databaseName: string, applicationName: string,
+): T => {
   const owned = waiters.filter((waiter) =>
     isOwnedTerminalWaiter(waiter, databaseName, applicationName));
   if (owned.length !== 1) {
@@ -185,6 +226,27 @@ describe('real backtest worker process proof', () => {
       .toThrow('found 0');
     expect(() => requireOneOwnedTerminalWaiter([own, { ...own, pid: 103 }],
       own.datname, own.application_name)).toThrow('found 2');
+  });
+
+  it('rejects terminal crash evidence when PostgreSQL can time out before worker death', () => {
+    const queryStart = new Date('2026-10-21T00:00:00.000Z');
+    const probe: TerminalCrashProbe = {
+      pid: 101, datname: 'soar_007f3_test', application_name: 'soar-007f-owned',
+      query: 'INSERT INTO "BacktestReport"', query_start: queryStart,
+      observed_at: new Date(queryStart.getTime() + 5_000),
+      wait_event_type: 'Lock', wait_event: 'advisory', state: 'active',
+    };
+    expect(() => requireCrashBeforeDbTimeout(probe, 500)).not.toThrow();
+    expect(() => requireCrashBeforeDbTimeout({ ...probe,
+      observed_at: new Date(queryStart.getTime() + TERMINAL_LOCK_TIMEOUT_MS + 1),
+    }, 0)).toThrow('DB timeout could precede');
+    expect(() => requireCrashBeforeDbTimeout(probe, 4_500))
+      .toThrow('DB timeout could precede');
+    expect(() => requireCrashBeforeDbTimeout({ ...probe, wait_event: null }, 0))
+      .toThrow('lacks an active advisory waiter');
+    expect(() => requireDbCloseBeforeTimeout(probe,
+      new Date(queryStart.getTime() + TERMINAL_LOCK_TIMEOUT_MS + 1)))
+      .toThrow('timeout could precede confirmed worker close');
   });
 
   runtimeIt('recovers a crashed owner and an interrupted acknowledgement with one result', async () => {
@@ -733,11 +795,13 @@ describe('real backtest worker process proof', () => {
       });
       try {
         const identity = await identityClient.$queryRaw<Array<{
-          datname: string; application_name: string;
+          datname: string; application_name: string; statement_timeout: string;
         }>>`SELECT current_database() AS datname,
-                  current_setting('application_name') AS application_name`;
+                  current_setting('application_name') AS application_name,
+                  current_setting('statement_timeout') AS statement_timeout`;
         expect(identity).toEqual([{
           datname: databaseName, application_name: workerApplicationName,
+          statement_timeout: '0',
         }]);
       } finally {
         await identityClient.$disconnect();
@@ -759,6 +823,11 @@ describe('real backtest worker process proof', () => {
         CREATE TRIGGER soar_007f_report_gate
         AFTER INSERT OR UPDATE ON "BacktestReport"
         FOR EACH ROW EXECUTE FUNCTION soar_007f_report_gate()`;
+      const barrierDefinition = await prisma.$queryRaw<Array<{ prosrc: string }>>`
+        SELECT prosrc FROM pg_proc WHERE proname = 'soar_007f_report_gate'`;
+      expect(barrierDefinition).toHaveLength(1);
+      expect(barrierDefinition[0].prosrc)
+        .toContain("set_config('lock_timeout', '10s', true)");
       let signalLockHeld: () => void = () => {};
       const lockHeld = new Promise<void>((resolve) => { signalLockHeld = resolve; });
       const releaseLockPromise = new Promise<void>((resolve) => { releaseLock = resolve; });
@@ -814,8 +883,29 @@ describe('real backtest worker process proof', () => {
       expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
 
       const firstClosed = new Promise((resolve) => first.child.once('close', resolve));
-      first.child.kill();
+      // This fresh waiter read is the last DB/Redis operation before kill().
+      // Bound both the signal and observed Node close before the earliest DB timeout.
+      const probeStartedAt = performance.now();
+      const crashProbeRows = await prisma.$queryRaw<TerminalCrashProbe[]>`
+        SELECT activity.pid, activity.datname, activity.application_name, activity.query,
+               activity.query_start, activity.state, activity.wait_event_type,
+               activity.wait_event, clock_timestamp() AS observed_at
+        FROM pg_locks AS lock
+        JOIN pg_stat_activity AS activity ON activity.pid = lock.pid
+        WHERE lock.locktype = 'advisory'
+          AND lock.classid = 7007::oid AND lock.objid = 15::oid
+          AND NOT lock.granted`;
+      const crashProbe = requireOneOwnedTerminalWaiter(crashProbeRows,
+        databaseName, workerApplicationName);
+      expect(crashProbe.pid).toBe(blockedBackendPid);
+      requireCrashBeforeDbTimeout(crashProbe, performance.now() - probeStartedAt);
+      const killAccepted = first.child.kill();
       await firstClosed;
+      if (!killAccepted) throw new Error('007F worker was not killed at the crash boundary');
+      requireCrashBeforeDbTimeout(crashProbe, performance.now() - probeStartedAt);
+      const afterCloseClock = await prisma.$queryRaw<Array<{ observed_at: Date }>>`
+        SELECT clock_timestamp() AS observed_at`;
+      requireDbCloseBeforeTimeout(crashProbe, afterCloseClock[0].observed_at);
       // The trigger's transaction-local lock timeout aborts the orphaned transaction.
       // No PostgreSQL backend PID is targeted: PID reuse cannot affect this proof.
       await waitUntil(async () => !(await waitingReportQueries()).some((waiter) =>
