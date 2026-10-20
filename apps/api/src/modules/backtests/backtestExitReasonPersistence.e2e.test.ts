@@ -56,6 +56,12 @@ describe('durable BACKTEST basic exit reason', () => {
           contextSnapshot: { strategy: { id: strategy.id, walletRisk: 10, config } } },
       } });
       try {
+        if (reason === 'SL') {
+          await prisma.backtestRun.update({ where: { id: run.id }, data: {
+            status: 'RUNNING', executionToken: 'expired-worker',
+            executionLeaseExpiresAt: new Date(Date.now() - 60_000),
+          } });
+        }
         const candles = candlesFor(prices);
         const deps = {
           findBacktestRunById: (id: string) => prisma.backtestRun.findUnique({ where: { id } }),
@@ -72,22 +78,50 @@ describe('durable BACKTEST basic exit reason', () => {
           maxDrawdownFromPnlSeries: () => 0,
         };
         await createClaimedBacktestRunJob(deps)(run.id);
+        const firstContributions = await prisma.backtestContribution.findMany({
+          where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+        });
         await createClaimedBacktestRunJob(deps)(run.id);
         const storedRun = await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } });
         const trades = await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } });
         const reports = await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } });
+        const contributions = await prisma.backtestContribution.findMany({
+          where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+        });
         expect(storedRun.status).toBe('COMPLETED');
         expect(trades).toHaveLength(1);
         expect(reports).toHaveLength(1);
+        expect(contributions).toEqual(firstContributions);
+        expect(contributions).toHaveLength(dcaCount + 1);
         const metrics = reports[0].metrics as { lifecycleEventCounts: Record<string, number>;
+          positionContributionCount: number; entryContributionUsdtTotal: number;
+          dcaContributionUsdtTotal: number; positionContributionUsdtTotal: number;
           runLifecycle: { reportReady: boolean } };
         expect(metrics.runLifecycle.reportReady).toBe(true);
         expect(metrics.lifecycleEventCounts).toMatchObject({ ENTRY: 1, DCA: dcaCount,
           EXIT: 0, [reason]: 1 });
         expect(reports[0].totalTrades).toBe(1);
         expect(trades[0].entryPrice * trades[0].quantity).toBeCloseTo(quote, 2);
+        expect(metrics.positionContributionCount).toBe(dcaCount + 1);
+        expect(metrics.entryContributionUsdtTotal).toBeCloseTo(1, 6);
+        expect(metrics.dcaContributionUsdtTotal).toBeCloseTo(quote - 1, 6);
+        expect(metrics.positionContributionUsdtTotal).toBeCloseTo(quote, 6);
+        expect(contributions.reduce((sum, fill) => sum + fill.contributionUsdt, 0))
+          .toBeCloseTo(metrics.positionContributionUsdtTotal, 6);
+        if (reason === 'SL') {
+          expect(contributions.map((fill) => [fill.kind, fill.addSequence,
+            fill.levelIndex, fill.triggerPercent, fill.multiplier, fill.price]))
+            .toEqual([
+              ['ENTRY', 0, null, null, null, 1],
+              ['DCA', 1, 0, -30.5, 2, 0.6949],
+              ['DCA', 2, 1, -30.5, 2, 0.5375],
+            ]);
+          contributions.forEach((fill, index) => expect(fill.contributionUsdt)
+            .toBeCloseTo([1, 2, 6][index], 6));
+        }
         expect(trades[0].exitReason).toBe(reason);
       } finally {
+        await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
         await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
         await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
         await prisma.backtestRun.delete({ where: { id: run.id } });

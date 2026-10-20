@@ -295,6 +295,17 @@ describe('USDT contribution DCA in historical replay', () => {
     expect(first.events.filter((event) => event.type === 'DCA').map((event) => event.price))
       .toEqual([0.6949, 0.5375]);
     expect(first.trades[0].entryPrice * first.trades[0].quantity).toBeCloseTo(9, 3);
+    const fills = first.events.filter((event) => event.contribution);
+    expect(fills.map((event) => [event.type, event.contribution?.addSequence,
+      event.contribution?.levelIndex, event.contribution?.triggerPercent,
+      event.contribution?.multiplier, event.price]))
+      .toEqual([
+        ['ENTRY', 0, null, null, null, 1],
+        ['DCA', 1, 0, -30.5, 2, 0.6949],
+        ['DCA', 2, 1, -30.5, 2, 0.5375],
+      ]);
+    fills.forEach((event, index) => expect(event.contribution?.contributionUsdt)
+      .toBeCloseTo([1, 2, 6][index], 6));
     expect(restarted.trades).toEqual(first.trades);
     expect(restarted.events).toEqual(first.events);
   });
@@ -310,6 +321,10 @@ describe('USDT contribution DCA in historical replay', () => {
 
     expect(symbol.eventCounts.DCA).toBe(2);
     expect(symbol.trades[0].entryPrice * symbol.trades[0].quantity).toBeCloseTo(9, 3);
+    const fills = symbol.events.filter((event) => event.contribution);
+    expect(fills.map((event) => event.contribution?.addSequence)).toEqual([0, 1, 2]);
+    fills.forEach((event, index) => expect(event.contribution?.contributionUsdt)
+      .toBeCloseTo([1, 2, 6][index], 6));
   });
 
   it('keeps advanced level pairs and executes 1 then 0.5 times current USDT contribution in both paths', () => {
@@ -329,6 +344,11 @@ describe('USDT contribution DCA in historical replay', () => {
     for (const result of [single, portfolio]) {
       expect(result.eventCounts.DCA).toBe(2);
       expect(result.trades[0].entryPrice * result.trades[0].quantity).toBeCloseTo(3, 3);
+      const adds = result.events.filter((event) => event.type === 'DCA');
+      expect(adds.map((event) => [event.contribution?.levelIndex,
+        event.contribution?.triggerPercent, event.contribution?.multiplier]))
+        .toEqual([[0, -20, 1], [1, -30, 0.5]]);
+      adds.forEach((event) => expect(event.contribution?.contributionUsdt).toBeCloseTo(1, 6));
     }
   });
 

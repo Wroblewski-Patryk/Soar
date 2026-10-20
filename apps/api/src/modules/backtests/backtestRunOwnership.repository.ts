@@ -106,6 +106,7 @@ export const commitClaimedBacktestRun = async (input: {
   status: Extract<BacktestStatus, 'COMPLETED' | 'FAILED'>;
   seedConfig: Prisma.InputJsonValue;
   trades: Prisma.BacktestTradeCreateManyInput[];
+  contributions: Prisma.BacktestContributionCreateManyInput[];
   report: ClaimedBacktestReport;
 }) => prisma.$transaction(async (tx) => {
   const result = await tx.backtestRun.updateMany({
@@ -125,6 +126,12 @@ export const commitClaimedBacktestRun = async (input: {
   });
   if (input.trades.length > 0) {
     await tx.backtestTrade.createMany({ data: input.trades });
+  }
+  await tx.backtestContribution.deleteMany({
+    where: { userId: input.userId, backtestRunId: input.runId },
+  });
+  if (input.contributions.length > 0) {
+    await tx.backtestContribution.createMany({ data: input.contributions });
   }
   await tx.backtestReport.upsert({
     where: { backtestRunId: input.runId },

@@ -6,6 +6,7 @@ import {
   BacktestSupplementalSeries,
 } from './backtestDataGateway';
 import type { BacktestStrategyLinkSnapshot } from './backtestPortfolioSimulation.service';
+import type { ReplayEventDraft } from './backtestReplayCore';
 import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
 import {
   requiresAnyDerivativeInput,
@@ -84,6 +85,7 @@ type SimulationPerSymbol = {
   trades: SimulationTrade[];
   liquidations: number;
   eventCounts: LifecycleEventCounts;
+  events: ReplayEventDraft[];
   decisionTrace: SimulationTrace[];
   dcaFundsExhaustedCount?: number;
   dcaFundsExhaustedSamples?: Array<{
@@ -129,6 +131,24 @@ export type CreateTradeInput = {
   fee: number;
   exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
   liquidated: boolean;
+};
+
+export type CreateContributionInput = {
+  userId: string;
+  backtestRunId: string;
+  symbol: string;
+  side: PositionSide;
+  tradeSequence: number;
+  addSequence: number;
+  kind: 'ENTRY' | 'DCA';
+  levelIndex: number | null;
+  triggerPercent: number | null;
+  multiplier: number | null;
+  price: number;
+  quantity: number;
+  contributionUsdt: number;
+  timestamp: Date;
+  candleIndex: number;
 };
 
 export type BacktestRunJobDeps = {
@@ -178,6 +198,7 @@ export type BacktestRunJobDeps = {
     initialBalance: number;
   }) => SimulationResult;
   createBacktestTrades: (trades: CreateTradeInput[]) => Promise<unknown>;
+  createBacktestContributions: (contributions: CreateContributionInput[]) => Promise<unknown>;
   deleteBacktestTradesForRun: (userId: string, runId: string) => Promise<unknown>;
   countWinningBacktestTrades: (userId: string, runId: string) => Promise<number>;
   countLosingBacktestTrades: (userId: string, runId: string) => Promise<number>;
@@ -365,6 +386,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     await deps.deleteBacktestTradesForRun(run.userId, run.id);
 
     const pnlSeries: number[] = [];
+    const contributions: CreateContributionInput[] = [];
     const lifecycleEventCounts = emptyLifecycleEventCounts();
     const strategy = run.strategyId
       ? await deps.findOwnedStrategySignalConfig(run.userId, run.strategyId)
@@ -580,6 +602,30 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           for (const [key, value] of Object.entries(symbolSimulation.eventCounts)) {
             lifecycleEventCounts[key as keyof LifecycleEventCounts] += value;
           }
+          if (symbolSimulation.events.filter((event) => event.type === 'DCA').length !==
+              symbolSimulation.eventCounts.DCA) {
+            throw new Error('Confirmed BACKTEST DCA events are incomplete');
+          }
+          for (const event of symbolSimulation.events) {
+            if (event.type !== 'ENTRY' && event.type !== 'DCA') continue;
+            const fill = event.contribution;
+            if (!fill || !Number.isFinite(fill.quantity) || fill.quantity <= 0 ||
+                !Number.isFinite(fill.contributionUsdt) || fill.contributionUsdt <= 0 ||
+                (event.type === 'DCA' && (fill.levelIndex === null ||
+                  fill.triggerPercent === null || fill.multiplier === null))) {
+              throw new Error('Confirmed BACKTEST contribution is incomplete');
+            }
+            contributions.push({
+              userId: run.userId, backtestRunId: run.id,
+              symbol: event.symbol, side: event.side,
+              tradeSequence: event.tradeSequence, addSequence: fill.addSequence,
+              kind: event.type, levelIndex: fill.levelIndex,
+              triggerPercent: fill.triggerPercent, multiplier: fill.multiplier,
+              price: event.price, quantity: fill.quantity,
+              contributionUsdt: fill.contributionUsdt,
+              timestamp: event.timestamp, candleIndex: event.candleIndex,
+            });
+          }
           parityDiagnostics.push({
             symbol,
             status: 'PROCESSED',
@@ -672,6 +718,13 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       );
       const finalRunStatus = progress.failedSymbols.length === symbols.length ? 'FAILED' : 'COMPLETED';
       const reportGeneratedAt = new Date().toISOString();
+      if (contributions.length > 0) await deps.createBacktestContributions(contributions);
+      const entryContributionUsdtTotal = contributions
+        .filter((contribution) => contribution.kind === 'ENTRY')
+        .reduce((total, contribution) => total + contribution.contributionUsdt, 0);
+      const dcaContributionUsdtTotal = contributions
+        .filter((contribution) => contribution.kind === 'DCA')
+        .reduce((total, contribution) => total + contribution.contributionUsdt, 0);
 
       await deps.upsertBacktestReportForRun({
         backtestRunId: run.id,
@@ -700,6 +753,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             marginMode: progress.marginMode,
             liquidations: progress.liquidations,
             lifecycleEventCounts,
+            positionContributionCount: contributions.length,
+            entryContributionUsdtTotal,
+            dcaContributionUsdtTotal,
+            positionContributionUsdtTotal: entryContributionUsdtTotal + dcaContributionUsdtTotal,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
             runLifecycle: {
@@ -732,6 +789,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             marginMode: progress.marginMode,
             liquidations: progress.liquidations,
             lifecycleEventCounts,
+            positionContributionCount: contributions.length,
+            entryContributionUsdtTotal,
+            dcaContributionUsdtTotal,
+            positionContributionUsdtTotal: entryContributionUsdtTotal + dcaContributionUsdtTotal,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
             runLifecycle: {

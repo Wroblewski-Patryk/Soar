@@ -56,6 +56,7 @@ const deps: BacktestRunJobDeps = {
             liquidated: false,
           }],
           liquidations: 0,
+          events: [],
           eventCounts: { ENTRY: 1, EXIT: 1, DCA: 0, TP: 0, TTP: 0, SL: 0, TSL: 0, LIQUIDATION: 0 },
           decisionTrace: [],
         },
@@ -63,6 +64,7 @@ const deps: BacktestRunJobDeps = {
     };
   },
   createBacktestTrades: async () => { throw new Error('Unfenced trade write'); },
+  createBacktestContributions: async () => { throw new Error('Unfenced contribution write'); },
   deleteBacktestTradesForRun: async () => { throw new Error('Unfenced trade delete'); },
   countWinningBacktestTrades: async () => 0,
   countLosingBacktestTrades: async () => 0,

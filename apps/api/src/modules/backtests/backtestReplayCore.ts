@@ -10,6 +10,7 @@ import {
 } from '../engine/strategySignalEvaluator';
 import { computeRiskBasedOrderQuantity, normalizeWalletRiskPercent } from '../engine/positionSizing';
 import { BacktestFillModelConfig, createHistoricalBacktestFillModel } from './backtestFillModel';
+import { entryContribution, dcaContribution, type ReplayContributionDraft } from './backtestContributionDraft';
 
 export type ReplayMarketType = 'SPOT' | 'FUTURES';
 export type ReplayMarginMode = 'CROSSED' | 'ISOLATED' | 'NONE';
@@ -57,6 +58,7 @@ export type ReplayEventDraft = {
   pnl: number | null;
   tradeSequence: number;
   candleIndex: number;
+  contribution?: ReplayContributionDraft;
 };
 
 export type ReplayDcaFundsExhaustedSample = {
@@ -600,6 +602,7 @@ export const simulateTradesForSymbolReplay = (input: {
     pnl: number | null,
     candleIndex: number,
     sequence: number,
+    contribution?: ReplayContributionDraft,
   ) => {
     events.push({
       symbol,
@@ -610,6 +613,7 @@ export const simulateTradesForSymbolReplay = (input: {
       pnl,
       candleIndex,
       tradeSequence: sequence,
+      contribution,
     });
     eventCounts[type] += 1;
   };
@@ -707,7 +711,9 @@ export const simulateTradesForSymbolReplay = (input: {
         marginUsed: initialMargin,
         executedDcaLevelIndices: undefined,
       };
-      pushEvent('ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), effectiveEntryPrice, null, index, tradeSequence);
+      pushEvent('ENTRY', decision.positionSide as PositionSide, new Date(current.openTime),
+        effectiveEntryPrice, null, index, tradeSequence,
+        entryContribution(effectiveEntryPrice, initialQuantity));
       continue;
     }
 
@@ -805,7 +811,10 @@ export const simulateTradesForSymbolReplay = (input: {
           dcaFillPrice,
           null,
           index,
-          tradeSequence
+          tradeSequence,
+          dcaContribution({ addSequence: openPosition.dcaCount,
+            levelIndex: dcaProbeResult.dcaLevelIndex, levels: riskConfig.dcaLevels,
+            multipliers: riskConfig.dcaMultipliers, price: dcaFillPrice, quantity: addedQty }),
         );
       }
     }

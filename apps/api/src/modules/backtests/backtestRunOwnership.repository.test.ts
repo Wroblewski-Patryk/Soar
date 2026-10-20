@@ -27,6 +27,7 @@ const withRun = async (test: (runId: string, userId: string) => Promise<void>) =
   try {
     await test(run.id, user.id);
   } finally {
+    await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
     await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
     await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
     await prisma.backtestRun.deleteMany({ where: { id: run.id } });
@@ -51,6 +52,13 @@ const outcome = (runId: string, userId: string, token: string) => ({
     openedAt: new Date(0),
     closedAt: new Date(60_000),
     pnl: 10,
+  }],
+  contributions: [{
+    userId, backtestRunId: runId, symbol: 'BTCUSDT', side: 'LONG' as const,
+    tradeSequence: 1, addSequence: 0, kind: 'ENTRY' as const,
+    levelIndex: null, triggerPercent: null, multiplier: null,
+    price: 100, quantity: 1, contributionUsdt: 100,
+    timestamp: new Date(0), candleIndex: 1,
   }],
   report: {
     backtestRunId: runId,
@@ -88,6 +96,7 @@ describe('backtest database execution lease', () => {
       expect(saved.status).toBe('COMPLETED');
       expect(saved.notes).toBeNull();
       expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(1);
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(1);
       expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(1);
       expect(await listRecoverableBacktestRunIds()).not.toContain(runId);
     });
@@ -101,6 +110,7 @@ describe('backtest database execution lease', () => {
       await prisma.backtestRun.update({ where: { id: runId }, data: { status: 'CANCELED' } });
       expect(await commitClaimedBacktestRun(outcome(runId, userId, token))).toBe(false);
       expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(0);
       expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(0);
     });
   });

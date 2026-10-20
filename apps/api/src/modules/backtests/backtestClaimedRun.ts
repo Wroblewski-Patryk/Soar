@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { createBacktestRunJob, type BacktestRunJobDeps, type CreateTradeInput } from './backtestRunJob';
+import { createBacktestRunJob, type BacktestRunJobDeps, type CreateContributionInput, type CreateTradeInput } from './backtestRunJob';
 import {
   BACKTEST_LEASE_MS,
   claimBacktestRun,
@@ -26,6 +26,7 @@ type ClaimStore = {
 type GuardedDependency =
   | 'safeUpdateRun'
   | 'createBacktestTrades'
+  | 'createBacktestContributions'
   | 'deleteBacktestTradesForRun'
   | 'countWinningBacktestTrades'
   | 'countLosingBacktestTrades'
@@ -50,6 +51,7 @@ export const createClaimedBacktestRunJob = (
   if (!run) return;
 
   const trades: CreateTradeInput[] = [];
+  const contributions: CreateContributionInput[] = [];
   let report: ClaimedBacktestReport | null = null;
   let active = true;
   let timer: NodeJS.Timeout | null = null;
@@ -93,6 +95,7 @@ export const createClaimedBacktestRunJob = (
             status,
             seedConfig: data.seedConfig as Prisma.InputJsonValue,
             trades: status === 'COMPLETED' ? trades : [],
+            contributions: status === 'COMPLETED' ? contributions : [],
             report,
           });
           if (!committed) throw new BacktestClaimLostError();
@@ -110,10 +113,15 @@ export const createClaimedBacktestRunJob = (
       deleteBacktestTradesForRun: async () => {
         assertActive();
         trades.length = 0;
+        contributions.length = 0;
       },
       createBacktestTrades: async (items) => {
         assertActive();
         trades.push(...items);
+      },
+      createBacktestContributions: async (items) => {
+        assertActive();
+        contributions.push(...items);
       },
       countWinningBacktestTrades: async () => trades.filter((trade) => trade.pnl > 0).length,
       countLosingBacktestTrades: async () => trades.filter((trade) => trade.pnl < 0).length,

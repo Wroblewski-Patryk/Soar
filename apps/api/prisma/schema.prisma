@@ -45,6 +45,7 @@ model User {
   signals                  Signal[]
   backtestRuns             BacktestRun[]
   backtestTrades           BacktestTrade[]
+  backtestContributions    BacktestContribution[]
   backtestReports          BacktestReport[]
   subscriptionAssignments  UserSubscription[]
   paymentIntents           PaymentIntent[]
@@ -1221,6 +1222,7 @@ model BacktestRun {
   user     User            @relation(fields: [userId], references: [id])
   strategy Strategy?       @relation(fields: [strategyId], references: [id])
   trades   BacktestTrade[]
+  contributions BacktestContribution[]
   report   BacktestReport?
 
   @@index([userId])
@@ -1262,6 +1264,37 @@ model BacktestTrade {
   @@index([strategyId])
   @@index([backtestRunId])
   @@index([symbol])
+}
+
+model BacktestContribution {
+  id               String  @id @default(uuid())
+  userId           String
+  backtestRunId    String
+  symbol           String
+  side             PositionSide
+  tradeSequence    Int
+  addSequence      Int
+  kind             BacktestContributionKind
+  levelIndex       Int?
+  triggerPercent   Float?
+  multiplier       Float?
+  price            Float
+  quantity         Float
+  contributionUsdt Float
+  timestamp        DateTime
+  candleIndex      Int
+  createdAt        DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id])
+  backtestRun BacktestRun @relation(fields: [backtestRunId], references: [id])
+
+  @@unique([backtestRunId, symbol, tradeSequence, addSequence])
+  @@index([userId, backtestRunId, timestamp])
+}
+
+enum BacktestContributionKind {
+  ENTRY
+  DCA
 }
 
 enum BacktestExitReason {

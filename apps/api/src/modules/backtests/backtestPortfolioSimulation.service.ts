@@ -24,6 +24,7 @@ import {
   resolveReplayDcaProbePrice,
   shouldBlockCloseByPendingDca,
 } from './backtestReplayCore';
+import { entryContribution, dcaContribution, type ReplayContributionDraft } from './backtestContributionDraft';
 import {
   BacktestFillModelConfig,
   createHistoricalBacktestFillModel,
@@ -258,6 +259,7 @@ export const simulateInterleavedPortfolio = (input: {
     pnl: number | null,
     candleIndex: number,
     tradeSequence: number,
+    contribution?: ReplayContributionDraft,
   ) => {
     const bucket = perSymbol[symbol];
     bucket.events.push({
@@ -269,6 +271,7 @@ export const simulateInterleavedPortfolio = (input: {
       pnl,
       candleIndex,
       tradeSequence,
+      contribution,
     });
     bucket.eventCounts[type] += 1;
   };
@@ -397,7 +400,8 @@ export const simulateInterleavedPortfolio = (input: {
           strategyId: selectedStrategy?.strategyId ?? null,
           riskConfig: selectedStrategy?.riskConfig ?? defaultRiskConfig,
         });
-        pushEvent(symbol, 'ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), entryPrice, null, index, sequence);
+        pushEvent(symbol, 'ENTRY', decision.positionSide as PositionSide, new Date(current.openTime),
+          entryPrice, null, index, sequence, entryContribution(entryPrice, quantity));
       }
       cursorBySymbol.set(symbol, index + 1);
       continue;
@@ -510,6 +514,9 @@ export const simulateInterleavedPortfolio = (input: {
           null,
           index,
           tradeSequenceBySymbol.get(symbol) ?? 1,
+          dcaContribution({ addSequence: position.dcaCount,
+            levelIndex: dcaProbeResult.dcaLevelIndex, levels: riskConfig.dcaLevels,
+            multipliers: riskConfig.dcaMultipliers, price: dcaFillPrice, quantity: addedQty }),
         );
       }
     }
