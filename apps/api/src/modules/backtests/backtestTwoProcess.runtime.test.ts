@@ -97,6 +97,73 @@ const requireOneOwnedTerminalWaiter = (
   return owned[0];
 };
 
+const requireDedicated007fDatabase = () => {
+  const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
+  if (!/^soar_007f3(?:_[a-z0-9]+)*_test$/.test(databaseName)) {
+    throw new Error('007F proof requires its own disposable soar_007f3 _test database');
+  }
+  return databaseName;
+};
+
+type CleanupStep = { name: string; run: () => Promise<unknown> | void };
+
+const run007fCleanup = async (label: string, steps: CleanupStep[]) => {
+  const failures: Error[] = [];
+  for (const step of steps) {
+    try {
+      await step.run();
+    } catch (error) {
+      failures.push(new Error(`${step.name}: ${String(error)}`, { cause: error }));
+    }
+  }
+  if (failures.length > 0) {
+    throw new AggregateError(failures, `007F cleanup failed for ${label}`);
+  }
+};
+
+const stopProofProcess = async (proofProcess: ProofProcess) => {
+  if (proofProcess.child.exitCode !== null || proofProcess.child.signalCode !== null) return;
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Timed out stopping owned proof worker')),
+      5_000);
+    proofProcess.child.once('close', () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    try {
+      proofProcess.child.kill();
+    } catch (error) {
+      clearTimeout(timer);
+      reject(error);
+    }
+  });
+};
+
+const drop007fTrigger = async () => {
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SET LOCAL lock_timeout = '3s'`;
+    await tx.$executeRaw`DROP TRIGGER IF EXISTS soar_007f_report_gate ON "BacktestReport"`;
+  }, { timeout: 10_000 });
+};
+
+const drop007fFunction = async () => {
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SET LOCAL lock_timeout = '3s'`;
+    await tx.$executeRaw`DROP FUNCTION IF EXISTS soar_007f_report_gate()`;
+  }, { timeout: 10_000 });
+};
+
+const verify007fBarrierRemoved = async () => {
+  const objects = await prisma.$queryRaw<Array<{ triggers: number; functions: number }>>`
+    SELECT (SELECT COUNT(*)::int FROM pg_trigger
+              WHERE tgname = 'soar_007f_report_gate') AS triggers,
+           (SELECT COUNT(*)::int FROM pg_proc
+              WHERE proname = 'soar_007f_report_gate') AS functions`;
+  if (objects.length !== 1 || objects[0].triggers !== 0 || objects[0].functions !== 0) {
+    throw new Error(`007F trigger/function remain: ${JSON.stringify(objects)}`);
+  }
+};
+
 const positionCycleConfig = {
   openConditions: { direction: 'long', noMatchAction: 'EXIT',
     indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
@@ -578,9 +645,45 @@ describe('real backtest worker process proof', () => {
     }
   }, 60_000);
 
+  runtimeIt('removes its trigger and function after an injected cleanup waiter timeout', async () => {
+    requireDedicated007fDatabase();
+    try {
+      await prisma.$executeRaw`
+        CREATE FUNCTION soar_007f_report_gate() RETURNS trigger LANGUAGE plpgsql AS $$
+        BEGIN RETURN NEW; END;
+        $$`;
+      await prisma.$executeRaw`
+        CREATE TRIGGER soar_007f_report_gate
+        AFTER INSERT OR UPDATE ON "BacktestReport"
+        FOR EACH ROW EXECUTE FUNCTION soar_007f_report_gate()`;
+      let cleanupError: unknown;
+      try {
+        await run007fCleanup('injected waiter timeout', [
+          { name: 'wait for waiters', run: async () => {
+            throw new Error('injected waiter timeout');
+          } },
+          { name: 'drop trigger', run: drop007fTrigger },
+          { name: 'drop function', run: drop007fFunction },
+          { name: 'verify objects removed', run: verify007fBarrierRemoved },
+        ]);
+      } catch (error) {
+        cleanupError = error;
+      }
+      expect(cleanupError).toBeInstanceOf(AggregateError);
+      expect((cleanupError as AggregateError).errors.map(String).join(' | '))
+        .toContain('injected waiter timeout');
+      await verify007fBarrierRemoved();
+    } finally {
+      await run007fCleanup('injected-timeout fallback', [
+        { name: 'drop trigger', run: drop007fTrigger },
+        { name: 'drop function', run: drop007fFunction },
+        { name: 'verify objects removed', run: verify007fBarrierRemoved },
+      ]);
+    }
+  }, 60_000);
+
   runtimeIt('rolls back an interrupted terminal 007 transaction before recovery', async () => {
-    const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
-    if (!databaseName.endsWith('_test')) throw new Error('Refusing to mutate a non-test database');
+    const databaseName = requireDedicated007fDatabase();
     const queueName = `backtest-uncommitted-007-${randomUUID()}`;
     const workerApplicationName = `soar-007f-worker-${randomUUID()}`;
     const foreignApplicationName = `soar-007f-foreign-${randomUUID()}`;
@@ -622,6 +725,7 @@ describe('real backtest worker process proof', () => {
     let releaseLock: () => void = () => {};
     let lockHolder: Promise<void> | null = null;
     let foreignWaiter: Promise<void> | null = null;
+    let bodyError: unknown = null;
     try {
       await redis.connect();
       const identityClient = new PrismaClient({
@@ -645,6 +749,7 @@ describe('real backtest worker process proof', () => {
       await prisma.$executeRaw`
         CREATE FUNCTION soar_007f_report_gate() RETURNS trigger LANGUAGE plpgsql AS $$
         BEGIN
+          PERFORM set_config('lock_timeout', '10s', true);
           PERFORM pg_advisory_xact_lock(7007, 15);
           RAISE EXCEPTION '007F terminal barrier must not commit';
           RETURN NEW;
@@ -711,33 +816,10 @@ describe('real backtest worker process proof', () => {
       const firstClosed = new Promise((resolve) => first.child.once('close', resolve));
       first.child.kill();
       await firstClosed;
-      // A blocked backend can outlive a dead client. Recheck the exact database,
-      // per-worker application name, PID and lock before terminating it.
-      const ownedAfterKill = (await waitingReportQueries()).filter((waiter) =>
-        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName));
-      if (ownedAfterKill.length > 1) {
-        throw new Error('Ambiguous 007F worker backend after process death');
-      }
-      if (ownedAfterKill.length === 1) {
-        expect(requireOneOwnedTerminalWaiter(ownedAfterKill,
-          databaseName, workerApplicationName).pid).toBe(blockedBackendPid);
-        const terminated = await prisma.$queryRaw<Array<{ terminated: boolean }>>`
-          SELECT pg_terminate_backend(${blockedBackendPid}::int) AS terminated
-          WHERE EXISTS (
-            SELECT 1 FROM pg_stat_activity AS activity
-            JOIN pg_locks AS lock ON lock.pid = activity.pid
-            WHERE activity.pid = ${blockedBackendPid}::int
-              AND activity.datname = ${databaseName}
-              AND activity.application_name = ${workerApplicationName}
-              AND activity.query LIKE '%BacktestReport%'
-              AND lock.locktype = 'advisory'
-              AND lock.classid = 7007::oid AND lock.objid = 15::oid
-              AND NOT lock.granted
-          )`;
-        if (terminated.length > 0) expect(terminated[0].terminated).toBe(true);
-      }
+      // The trigger's transaction-local lock timeout aborts the orphaned transaction.
+      // No PostgreSQL backend PID is targeted: PID reuse cannot affect this proof.
       await waitUntil(async () => !(await waitingReportQueries()).some((waiter) =>
-        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName)));
+        isOwnedTerminalWaiter(waiter, databaseName, workerApplicationName)), 20_000);
       expect((await waitingReportQueries()).some((waiter) =>
         waiter.pid === foreignBackend!.pid && waiter.application_name === foreignApplicationName))
         .toBe(true);
@@ -753,8 +835,11 @@ describe('real backtest worker process proof', () => {
       lockHolder = null;
       await foreignWaiter;
       foreignWaiter = null;
-      await prisma.$executeRaw`DROP TRIGGER soar_007f_report_gate ON "BacktestReport"`;
-      await prisma.$executeRaw`DROP FUNCTION soar_007f_report_gate()`;
+      await run007fCleanup('before 007F recovery', [
+        { name: 'drop trigger', run: drop007fTrigger },
+        { name: 'drop function', run: drop007fFunction },
+        { name: 'verify objects removed', run: verify007fBarrierRemoved },
+      ]);
 
       await prisma.backtestRun.update({ where: { id: run.id },
         data: { executionLeaseExpiresAt: new Date(Date.now() - 1_000) } });
@@ -836,41 +921,72 @@ describe('real backtest worker process proof', () => {
         where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
       })).toEqual(completedFills);
       expect(await prisma.backtestRun.count({ where: { userId: user.id } })).toBe(1);
+    } catch (error) {
+      bodyError = error;
+      throw error;
     } finally {
-      for (const process of processes) {
-        if (process.child.exitCode === null && process.child.signalCode === null) {
-          const closed = new Promise((resolve) => process.child.once('close', resolve));
-          process.child.kill();
-          await closed;
+      try {
+        await run007fCleanup(`${databaseName}/${queueName}`, [
+          ...processes.map((proofProcess, index) => ({
+            name: `stop proof worker ${index}`, run: () => stopProofProcess(proofProcess),
+          })),
+          { name: 'release owned advisory lock', run: () => releaseLock() },
+          { name: 'await lock holder', run: async () => {
+            if (lockHolder) await lockHolder;
+          } },
+          { name: 'await foreign waiter', run: async () => {
+            if (foreignWaiter) await foreignWaiter;
+          } },
+          { name: 'wait for isolated database waiters', run: () => waitUntil(async () =>
+            !(await waitingReportQueries()).some((waiter) => waiter.datname === databaseName),
+          20_000) },
+          { name: 'drop trigger', run: drop007fTrigger },
+          { name: 'drop function', run: drop007fFunction },
+          { name: 'verify barrier objects removed', run: verify007fBarrierRemoved },
+          { name: 'remove release file', run: () => {
+            if (existsSync(releaseFile)) unlinkSync(releaseFile);
+          } },
+          { name: 'stop queue producer', run: () => producer.stopWorker() },
+          { name: 'remove owned Redis keys', run: async () => {
+            if (redis.isOpen) await redis.del([pendingKey, processingKey, dedupeKey]);
+          } },
+          { name: 'close Redis client', run: async () => {
+            if (redis.isOpen) await redis.quit();
+          } },
+          { name: 'delete contributions', run: () => prisma.backtestContribution.deleteMany({
+            where: { backtestRunId: run.id },
+          }) },
+          { name: 'delete trades', run: () => prisma.backtestTrade.deleteMany({
+            where: { backtestRunId: run.id },
+          }) },
+          { name: 'delete report', run: () => prisma.backtestReport.deleteMany({
+            where: { backtestRunId: run.id },
+          }) },
+          { name: 'delete run', run: () => prisma.backtestRun.delete({
+            where: { id: run.id },
+          }) },
+          { name: 'delete strategy', run: () => prisma.strategy.delete({
+            where: { id: strategy.id },
+          }) },
+          { name: 'delete user', run: () => prisma.user.delete({
+            where: { id: user.id },
+          }) },
+          { name: 'verify owned records removed', run: async () => {
+            const [runs, users] = await Promise.all([
+              prisma.backtestRun.count({ where: { id: run.id } }),
+              prisma.user.count({ where: { id: user.id } }),
+            ]);
+            if (runs !== 0 || users !== 0) {
+              throw new Error(`007F records remain: run=${runs}, user=${users}`);
+            }
+          } },
+        ]);
+      } catch (cleanupError) {
+        if (bodyError) {
+          throw new AggregateError([bodyError, cleanupError], '007F body and cleanup failed');
         }
+        throw cleanupError;
       }
-      releaseLock();
-      if (lockHolder) await lockHolder.catch(() => undefined);
-      if (foreignWaiter) await foreignWaiter.catch(() => undefined);
-      await waitUntil(async () => !(await waitingReportQueries()).some((waiter) =>
-        waiter.datname === databaseName));
-      await prisma.$executeRaw`DROP TRIGGER IF EXISTS soar_007f_report_gate ON "BacktestReport"`;
-      await prisma.$executeRaw`DROP FUNCTION IF EXISTS soar_007f_report_gate()`;
-      const barrierObjects = await prisma.$queryRaw<Array<{
-        triggers: number; functions: number;
-      }>>`
-        SELECT (SELECT COUNT(*)::int FROM pg_trigger
-                  WHERE tgname = 'soar_007f_report_gate') AS triggers,
-               (SELECT COUNT(*)::int FROM pg_proc
-                  WHERE proname = 'soar_007f_report_gate') AS functions`;
-      expect(barrierObjects).toEqual([{ triggers: 0, functions: 0 }]);
-      if (existsSync(releaseFile)) unlinkSync(releaseFile);
-      await producer.stopWorker();
-      if (redis.isOpen) {
-        await redis.del([pendingKey, processingKey, dedupeKey]);
-        await redis.quit();
-      }
-      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
-      await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
-      await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
-      await prisma.backtestRun.delete({ where: { id: run.id } });
-      await prisma.strategy.delete({ where: { id: strategy.id } });
-      await prisma.user.delete({ where: { id: user.id } });
     }
   }, 60_000);
 });
