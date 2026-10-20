@@ -215,6 +215,11 @@ const positionCycleConfig = {
     dcaLevels: [{ percent: -30.5, multiplier: 2 }] },
 };
 
+const tpAfterDcaConfig = {
+  ...positionCycleConfig,
+  close: { ...positionCycleConfig.close, tp: 20 },
+};
+
 describe('real backtest worker process proof', () => {
   it('selects only the owned terminal backend and fails closed on missing or ambiguous identity', () => {
     const own = { pid: 101, datname: 'soar_007f_test',
@@ -431,16 +436,24 @@ describe('real backtest worker process proof', () => {
     }
   }, 60_000);
 
-  runtimeIt('recovers ACK loss after a real 007 position cycle without a second simulation', async () => {
+  runtimeIt.each([
+    { reason: 'SL' as const, config: positionCycleConfig,
+      terminalRole: 'position-cycle-ack-hold', recoveryRole: 'position-cycle-recovery',
+      exitPrice: 0.47 },
+    { reason: 'TP' as const, config: tpAfterDcaConfig,
+      terminalRole: 'position-cycle-tp-ack-hold', recoveryRole: 'position-cycle-tp-recovery',
+      exitPrice: 0.72 },
+  ])('recovers ACK loss after a real 007 $reason cycle without a second simulation',
+    async ({ reason, config, terminalRole, recoveryRole, exitPrice }) => {
     const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
     if (!databaseName.endsWith('_test')) throw new Error('Refusing to mutate a non-test database');
-    const queueName = `backtest-ack-loss-007-${randomUUID()}`;
+    const queueName = `backtest-ack-loss-007-${reason.toLowerCase()}-${randomUUID()}`;
     const user = await prisma.user.create({
       data: { email: `bt-ack-loss-${randomUUID()}@example.test`, password: 'test-only' },
     });
     const strategy = await prisma.strategy.create({ data: {
       userId: user.id, name: '007 ACK loss strategy', interval: '1m', leverage: 1,
-      walletRisk: 10, config: positionCycleConfig,
+      walletRisk: 10, config,
     } });
     const run = await prisma.backtestRun.create({ data: {
       userId: user.id, strategyId: strategy.id, name: '007 ACK loss cycle',
@@ -449,7 +462,7 @@ describe('real backtest worker process proof', () => {
         marginMode: 'CROSSED', initialBalance: 10, maxCandles: 100,
         feeRate: 0, slippageRate: 0,
         contextSnapshot: { strategy: { id: strategy.id, walletRisk: 10,
-          config: positionCycleConfig } } },
+          config } } },
     } });
     const redis = createClient({ url: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379' });
     const processes: ProofProcess[] = [];
@@ -465,7 +478,7 @@ describe('real backtest worker process proof', () => {
       await producer.enqueue(run.id);
       await producer.stopWorker();
 
-      const terminalWorker = startProofProcess('position-cycle-ack-hold', queueName, [run.id]);
+      const terminalWorker = startProofProcess(terminalRole, queueName, [run.id]);
       processes.push(terminalWorker);
       await terminalWorker.waitFor('COMMITTED_BEFORE_ACK');
       expect(terminalWorker.lines.filter((line) => line === 'JOB_INVOKED')).toHaveLength(1);
@@ -480,16 +493,20 @@ describe('real backtest worker process proof', () => {
       expect(committedRun.status).toBe('COMPLETED');
       expect(committedRun.executionToken).toBeNull();
       expect(committedTrades).toHaveLength(1);
-      expect(committedTrades[0].exitReason).toBe('SL');
+      expect(committedTrades[0].exitReason).toBe(reason);
       expect(committedTrades[0].entryPrice * committedTrades[0].quantity).toBeCloseTo(9, 6);
+      expect(committedTrades[0].exitPrice).toBeCloseTo(exitPrice, 6);
       expect(committedReports).toHaveLength(1);
+      expect(committedReports[0].totalTrades).toBe(1);
       const metrics = committedReports[0].metrics as {
         lifecycleEventCounts: Record<string, number>;
         positionContributionUsdtTotal: number;
         runLifecycle: { reportReady: boolean };
       };
       expect(metrics.runLifecycle.reportReady).toBe(true);
-      expect(metrics.lifecycleEventCounts).toMatchObject({ ENTRY: 1, DCA: 2, EXIT: 0, SL: 1 });
+      expect(metrics.lifecycleEventCounts).toMatchObject({
+        ENTRY: 1, DCA: 2, EXIT: 0, [reason]: 1,
+      });
       expect(metrics.positionContributionUsdtTotal).toBeCloseTo(9, 6);
       expect(committedFills.map((fill) => [fill.kind, fill.addSequence, fill.levelIndex,
         fill.triggerPercent, fill.multiplier, fill.price])).toEqual([
@@ -499,6 +516,22 @@ describe('real backtest worker process proof', () => {
       ]);
       committedFills.forEach((fill, index) =>
         expect(fill.contributionUsdt).toBeCloseTo([1, 2, 6][index], 6));
+      if (reason === 'TP') {
+        expect(metrics.lifecycleEventCounts.SL).toBe(0);
+        expect(committedFills.map((fill) => fill.candleIndex)).toEqual([2, 3, 4]);
+        const totalQuantity = committedFills.reduce((sum, fill) => sum + fill.quantity, 0);
+        const averagedEntry = 9 / totalQuantity;
+        expect(committedTrades[0].quantity).toBeCloseTo(totalQuantity, 6);
+        expect(committedTrades[0].entryPrice).toBeCloseTo(averagedEntry, 6);
+        expect(exitPrice).toBeGreaterThanOrEqual(averagedEntry * 1.2);
+        expect(committedTrades[0].pnl).toBeCloseTo(
+          (exitPrice - averagedEntry) * totalQuantity, 6);
+        expect(committedReports[0].netPnl).toBeCloseTo(committedTrades[0].pnl, 6);
+        expect(committedReports[0].winningTrades).toBe(1);
+        expect(committedReports[0].losingTrades).toBe(0);
+        expect(committedTrades[0].closedAt.getTime())
+          .toBe(1_710_000_000_000 + 6 * 60_000 + 59_999);
+      }
       expect(await redis.lRange(pendingKey, 0, -1)).toEqual([]);
       expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
       expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
@@ -508,7 +541,7 @@ describe('real backtest worker process proof', () => {
       expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
       expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
 
-      const recoveryWorker = startProofProcess('position-cycle-recovery', queueName, [run.id]);
+      const recoveryWorker = startProofProcess(recoveryRole, queueName, [run.id]);
       processes.push(recoveryWorker);
       await recoveryWorker.waitFor('READY');
       await waitUntil(async () =>

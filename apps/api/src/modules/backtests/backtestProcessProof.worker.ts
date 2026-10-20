@@ -18,8 +18,10 @@ if (process.env.SOAR_BT_PROOF !== '1' ||
 const role = process.env.SOAR_BT_PROOF_ROLE;
 const midCalculationProof = role === 'position-cycle-mid-hold' ||
   role === 'position-cycle-mid-release';
+const tpAfterDcaProof = role === 'position-cycle-tp-ack-hold' ||
+  role === 'position-cycle-tp-recovery';
 const positionCycleProof = midCalculationProof || role === 'position-cycle-ack-hold' ||
-  role === 'position-cycle-recovery';
+  role === 'position-cycle-recovery' || tpAfterDcaProof;
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
 if (!queueName) throw new Error('Proof queue name missing');
 const proofRunIds = (process.env.SOAR_BT_PROOF_RUN_IDS ?? '').split(',').filter(Boolean);
@@ -36,7 +38,10 @@ const deps: BacktestRunJobDeps = {
   findOwnedStrategySignalConfig: async () => null,
   fetchKlines: async () => {
     if (positionCycleProof) {
-      const prices = [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.47];
+      // The drop after TP prevents a fresh valid LONG vote on the next candle.
+      const prices = tpAfterDcaProof
+        ? [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.72, 0.5]
+        : [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.47];
       return Array.from({ length: 100 }, (_, index) => {
         const price = prices[index] ?? prices.at(-1)!;
         const openTime = 1_710_000_000_000 + index * 60_000;
@@ -154,7 +159,8 @@ const queue = new BacktestRunQueue(async (runId) => {
   if (positionCycleProof) process.stdout.write('JOB_INVOKED\n');
   await job(runId);
   if (role === 'hold-release') process.stdout.write('JOB_RETURNED\n');
-  if (role === 'ack-hold' || role === 'position-cycle-ack-hold') {
+  if (role === 'ack-hold' || role === 'position-cycle-ack-hold' ||
+      role === 'position-cycle-tp-ack-hold') {
     process.stdout.write('COMMITTED_BEFORE_ACK\n');
     await new Promise<void>(() => undefined);
   }
