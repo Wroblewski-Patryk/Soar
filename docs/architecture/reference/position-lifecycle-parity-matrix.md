@@ -1,6 +1,11 @@
-# Position Lifecycle Parity Matrix (CryptoBot -> CryptoSparrow)
+# Position Lifecycle Parity Matrix (Soar Current Version)
 
-Status: canonical contract for lifecycle parity and execution order.
+Status: canonical contract for lifecycle parity and execution order. The
+[current version product contract](../../product/current-version-contract.md)
+owns required behavior; the local
+[`positionManagement.service.ts`](../../../apps/api/src/modules/engine/positionManagement.service.ts)
+and [focused tests](../../../apps/api/src/modules/engine/positionManagement.service.test.ts)
+show selected implementation behavior, not whole-cycle PAPER/LIVE acceptance.
 
 ## Scope
 
@@ -9,8 +14,9 @@ This matrix defines lifecycle behavior that must be identical across:
 - `PAPER`
 - `LIVE`
 
-Reference deep-dive:
-- [Legacy CryptoBot Positions Module - Deep Analysis](../archive/legacy-cryptobot-positions-analysis.md)
+The [legacy CryptoBot analysis](../archive/legacy-cryptobot-positions-analysis.md)
+is historical context for loss-side (negative) DCA only. It is not the authority
+for profit-side DCA or the complete current Soar lifecycle.
 
 ---
 
@@ -37,17 +43,20 @@ Order is hard contract.
 
 ## DCA-First Guard (Mandatory)
 
-If there are pending DCA levels and next DCA is still financially possible:
-- `TSL` and `SL` must not close the position yet.
-- `TTP` must not close while any remaining DCA threshold is on the profit side
-  (`>= 0` current position pnl fraction threshold).
-- `TTP` may close if all remaining DCA thresholds are loss-side only, because
-  those levels do not represent pending profit-side continuation.
+For current USDT-contribution DCA, guard each protection by the side of the
+remaining, unfilled DCA levels:
 
-If pending DCA exists but next DCA is not affordable:
-- close protections may execute (`TTP`/`TSL`/`SL`) to avoid uncontrolled loss.
-
-This is required for parity with expected strategy semantics in CryptoSparrow.
+- Pending loss-side (negative) DCA blocks `SL` and `TSL`. Pending profit-side
+  (non-negative) DCA blocks `TP` and `TTP`.
+- `TP` or `TTP` may close at a profit while only loss-side DCA remains. `SL` or
+  `TSL` may close while only profit-side DCA remains.
+- If a reached loss-side DCA cannot be funded and the `SL` threshold is
+  breached, `SL` closes the position and the insufficient-funds condition is
+  reported. Exhausted funds do not generally release `TTP` or `TSL` while
+  their matching-side DCA remains pending.
+- An attempted USDT add is only a proposal until its fill is confirmed. Do not
+  close using the pre-fill quantity, average entry, or protection price in
+  that cycle.
 
 ---
 
@@ -55,11 +64,11 @@ This is required for parity with expected strategy semantics in CryptoSparrow.
 
 | Step | Activation Gate | Trigger Condition | Side Effect | Reset Rules |
 |---|---|---|---|---|
-| `DCA` | `dca.enabled=true`, `dcaCount < maxAdds` | Current position pnl fraction crosses next configured DCA level | Increase quantity and recalc average entry; increment DCA count | Clear on open/close |
-| `TP` (basic) | `close.mode=basic`, `tp.enabled` | Profit reaches TP threshold | Close with `TP` reason | Clear DCA/TTP/TSL on close |
-| `SL` (basic) | `close.mode=basic`, `sl.enabled`, DCA-first guard allows close | Price reaches SL threshold | Close with `SL` reason | Clear DCA/TTP/TSL on close |
-| `TTP` (advanced) | `close.mode=advanced`, `ttp levels active`, DCA-first guard allows close for remaining profit-side DCA only | Profit retraces by active trailing step from high watermark | Close with `TTP` reason | Clear DCA/TTP/TSL on close |
-| `TSL` (advanced) | `close.mode=advanced`, `tsl levels active`, DCA-first guard allows close | Trailing-loss condition reached | Close with `TSL` reason | Clear DCA/TTP/TSL on close |
+| `DCA` | `dca.enabled=true`, `dcaCount < maxAdds` | Current position pnl fraction crosses next configured DCA level | Propose an add; confirmed fill increases quantity, recalculates average entry, and advances DCA | Clear on open/close |
+| `TP` (basic) | `close.mode=basic`, `tp.enabled`, no pending profit-side DCA | Profit reaches TP threshold | Close with `TP` reason | Clear DCA/TTP/TSL on close |
+| `SL` (basic) | `close.mode=basic`, `sl.enabled`, no pending loss-side DCA or reached unfunded loss-side DCA | Price reaches SL threshold | Close with `SL` reason; report insufficient funds in the unfunded case | Clear DCA/TTP/TSL on close |
+| `TTP` (advanced) | `close.mode=advanced`, `ttp levels active`, no pending profit-side DCA | Profit retraces by active trailing step from high watermark | Close with `TTP` reason | Clear DCA/TTP/TSL on close |
+| `TSL` (advanced) | `close.mode=advanced`, `tsl levels active`, no pending loss-side DCA | Trailing-loss condition reached | Close with `TSL` reason | Clear DCA/TTP/TSL on close |
 | `LIQUIDATION` | Futures risk boundary crossed | Mark/price breach of liquidation boundary | Force close with `LIQUIDATION` reason | Clear DCA/TTP/TSL on close |
 
 ---
@@ -146,7 +155,7 @@ Backtest, paper, and live must call one shared lifecycle decision engine with id
 - strategy close config,
 - DCA config,
 - leverage/margin mode and canonical margin basis,
-- affordability flag for next DCA.
+- reached DCA side and its affordability/funds-exhausted state.
 
 Canonical margin-basis authority by mode:
 
@@ -163,9 +172,11 @@ semantics must be identical.
 
 ## Required Verification
 
-- Unit tests for DCA-first guard, profit-side-vs-loss-side `TTP` gating, and
-  affordability exception.
+- Unit tests for side-specific `TP`/`TTP` and `SL`/`TSL` guards, plus the
+  reached, unfunded loss-side DCA exception for `SL` only.
 - Parity tests ensuring same close reason for identical candle/price sequence in:
   - replay/backtest engine,
   - runtime paper/live engine.
+- A durable PAPER cycle with DCA and a durable mock LIVE order/fill cycle;
+  presence of focused unit tests does not establish these end-to-end proofs.
 - UI parity checks: chart markers and counters must reflect lifecycle events only.
