@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
@@ -35,6 +35,15 @@ const registerAndLogin = async (email: string) => {
 };
 
 describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   beforeEach(async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -157,6 +166,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     });
     expect(botRes.status).toBe(201);
     const botId = botRes.body.id as string;
+    createdBotId = botId;
 
     await expect(
       prisma.botMarketGroup.findFirstOrThrow({ where: { botId, isEnabled: true, lifecycleStatus: 'ACTIVE' } })

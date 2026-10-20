@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
@@ -16,6 +16,15 @@ const symbol = 'BTCUSDT';
 const leverage = 100;
 
 describe('PAPER unfunded negative DCA and crossed SL', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   it('records insufficient funds and closes once by SL across automation restart', async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -62,6 +71,7 @@ describe('PAPER unfunded negative DCA and crossed SL', () => {
     });
     expect(botResponse.status).toBe(201);
     const botId = botResponse.body.id as string;
+    createdBotId = botId;
 
     const candleBaseTime = Date.now();
     const emitFinalCandle = (index: number, close: number) => {

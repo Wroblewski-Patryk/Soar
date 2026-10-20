@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
@@ -16,6 +16,15 @@ const symbol = 'BTCUSDT';
 const leverage = 100;
 
 describe('PAPER profit-side DCA before TP', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   it('fills reached DCA before TP and closes once on a later tick after restart', async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -70,6 +79,7 @@ describe('PAPER profit-side DCA before TP', () => {
     });
     expect(botResponse.status).toBe(201);
     const botId = botResponse.body.id as string;
+    createdBotId = botId;
 
     const candleBaseTime = Date.now();
     const emitFinalCandle = (index: number, close: number) => {
@@ -174,6 +184,5 @@ describe('PAPER profit-side DCA before TP', () => {
     expect(persistedOrders).toHaveLength(3);
     expect(persistedOrders.every((order) => order.status === 'FILLED')).toBe(true);
     expect(await prisma.botRuntimeEvent.count({ where: { botId, symbol } })).toBe(events.length);
-    await prisma.bot.update({ where: { id: botId }, data: { isActive: false } });
   });
 });

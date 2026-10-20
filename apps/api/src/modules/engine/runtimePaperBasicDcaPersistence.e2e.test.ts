@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
@@ -19,6 +19,15 @@ const readCounts = async (botId: string) => ({
 });
 
 describe('PAPER basic DCA persisted position cycle', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   beforeEach(async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -92,6 +101,7 @@ describe('PAPER basic DCA persisted position cycle', () => {
     });
     expect(botResponse.status).toBe(201);
     const botId = botResponse.body.id as string;
+    createdBotId = botId;
 
     const candleBaseTime = Date.now();
     const emitFinalCandle = (index: number, close: number) => {

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
@@ -16,6 +16,15 @@ const symbol = 'BTCUSDT';
 const leverage = 100;
 
 describe('PAPER TP while negative DCA remains untriggered', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   it('holds after entry signal loss, persists one TP close, and does not replay it after restart', async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -62,6 +71,7 @@ describe('PAPER TP while negative DCA remains untriggered', () => {
     });
     expect(botResponse.status).toBe(201);
     const botId = botResponse.body.id as string;
+    createdBotId = botId;
 
     const candleBaseTime = Date.now();
     const emitFinalCandle = (index: number, close: number) => {
