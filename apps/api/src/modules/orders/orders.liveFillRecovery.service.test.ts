@@ -41,7 +41,7 @@ afterEach(async () => {
 
 const fixture = async (action: 'OPEN' | 'DCA' | 'CLOSE', withOrder = true,
   context: { exchange: Exchange; marketType: TradeMarket } =
-    { exchange: 'BINANCE', marketType: 'FUTURES' }) => {
+    { exchange: 'BINANCE', marketType: 'FUTURES' }, bindCredential = false) => {
   const id = randomUUID();
   const user = await prisma.user.create({ data: {
     email: `live-fill-recovery-${id}@example.com`, password: 'hashed',
@@ -74,6 +74,8 @@ const fixture = async (action: 'OPEN' | 'DCA' | 'CLOSE', withOrder = true,
     userId: user.id, clientOrderId: `soar_${id.replace(/-/g, '').slice(0, 22)}`,
     payloadHash: id, exchange: context.exchange, marketType: context.marketType,
     symbol: 'BTCUSDT',
+    ...(bindCredential ? { apiKeyId: key.id,
+      apiKeyCredentialVersion: key.credentialVersion } : {}),
     payload: { mode: 'LIVE', origin: 'BOT', botId: bot.id, walletId: wallet.id,
       positionId: position?.id ?? null, side: action === 'CLOSE' ? 'SELL' : 'BUY',
       type: 'MARKET', quantity: 1, symbol: 'BTCUSDT', price: 100, runtimeDedupeKey: dedupeKey },
@@ -941,6 +943,74 @@ describe('explicit LIVE fill recovery', () => {
         [fill(fx.venueId, 'drift-fill', 1, 0.1)])) });
     expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
     expect((await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } })).status).toBe('OPEN');
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
+    expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(1);
+  });
+
+  it('finalizes a version-bound intent after neutral key metadata writes', async () => {
+    const fx = await fixture('DCA', true,
+      { exchange: 'BINANCE', marketType: 'FUTURES' }, true);
+    const changed = await prisma.apiKey.update({ where: { id: fx.key.id }, data: {
+      lastUsed: new Date(), label: 'neutral metadata',
+    } });
+    expect(changed.credentialVersion).toBe(fx.intent.apiKeyCredentialVersion);
+    const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1,
+        [fill(fx.venueId, 'neutral-fill', 1, 0.1)])) });
+    expect(result).toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(1);
+  });
+
+  it.each([
+    ['apiKey', { apiKey: 'rotated-key' }],
+    ['apiSecret', { apiSecret: 'rotated-secret' }],
+    ['exchange', { exchange: 'GATEIO' as const }],
+  ] as const)('holds a version-bound intent UNKNOWN after %s rotation',
+    async (_field, data) => {
+      const fx = await fixture('DCA', true,
+        { exchange: 'BINANCE', marketType: 'FUTURES' }, true);
+      const changed = await prisma.apiKey.update({ where: { id: fx.key.id }, data });
+      expect(changed.credentialVersion).toBe(fx.key.credentialVersion + 1);
+      const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+        lookup: useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1,
+          [fill(fx.venueId, 'rotated-fill', 1, 0.1)])) });
+      expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
+      expect((await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } })).status).toBe('OPEN');
+      expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
+      expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(1);
+    });
+
+  it('rejects a same-version key reassignment during finalization', async () => {
+    const fx = await fixture('DCA', true,
+      { exchange: 'BINANCE', marketType: 'FUTURES' }, true);
+    const replacement = await prisma.apiKey.create({ data: {
+      userId: fx.user.id, label: 'replacement', exchange: 'BINANCE',
+      apiKey: 'replacement-key', apiSecret: 'replacement-secret',
+    } });
+    expect(replacement.credentialVersion).toBe(fx.key.credentialVersion);
+    await prisma.bot.update({ where: { id: fx.bot.id }, data: {
+      apiKeyId: replacement.id, updatedAt: fx.intent.createdAt,
+    } });
+    const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate,
+      lookup: useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1,
+        [fill(fx.venueId, 'reassigned-fill', 1, 0.1)])) });
+    expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
+  });
+
+  it('rechecks rotation that lands between venue lookup and finalization', async () => {
+    const fx = await fixture('DCA', true,
+      { exchange: 'BINANCE', marketType: 'FUTURES' }, true);
+    const lookup = vi.fn(async () => {
+      await prisma.apiKey.update({ where: { id: fx.key.id }, data: {
+        apiSecret: 'rotated-after-lookup',
+      } });
+      return found(fx.candidate, fx.key.id, fx.venueId, 1,
+        [fill(fx.venueId, 'late-rotation-fill', 1, 0.1)]);
+    });
+    const result = await recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup });
+    expect(result).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_PROVENANCE_CHANGED' });
+    expect(lookup).toHaveBeenCalledOnce();
     expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(0);
     expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(1);
   });

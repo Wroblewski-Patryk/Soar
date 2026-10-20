@@ -228,6 +228,23 @@ export const recoverLiveFillCandidateOnce = async (input: {
   }
   try {
     const committed = await (input.client ?? prisma).$transaction(async (tx) => {
+      const intentBinding = await tx.liveOrderIntent.findUnique({
+        where: { id: candidate.intentId ?? '' },
+        select: { apiKeyId: true },
+      });
+      if (intentBinding?.apiKeyId) {
+        // Hold provenance rows through finalization so a concurrent reassignment
+        // or credential rotation cannot commit after the second check.
+        if (candidate.botId) await tx.$queryRaw`
+          SELECT id FROM "Bot" WHERE id = ${candidate.botId}
+          AND "userId" = ${candidate.userId} FOR SHARE`;
+        if (candidate.walletId) await tx.$queryRaw`
+          SELECT id FROM "Wallet" WHERE id = ${candidate.walletId}
+          AND "userId" = ${candidate.userId} FOR SHARE`;
+        await tx.$queryRaw`
+          SELECT id FROM "ApiKey" WHERE id = ${intentBinding.apiKeyId}
+          AND "userId" = ${candidate.userId} FOR SHARE`;
+      }
       const credentials = await resolveLiveFillCredentials(candidate, tx);
       if (credentials.kind !== 'OK' || credentials.apiKeyId !== lookup.apiKeyId) {
         return unknown('ACCOUNT_PROVENANCE_CHANGED');

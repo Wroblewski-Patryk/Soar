@@ -135,9 +135,17 @@ export const resolveLiveFillCredentials = async (
     apiKeyId = wallet.apiKeyId;
   }
   if (!apiKeyId) return { kind: 'UNKNOWN', reason: 'IDENTITY_MISSING' };
+  const boundCredential = intent.apiKeyId != null && intent.apiKeyCredentialVersion != null;
+  if (boundCredential && apiKeyId !== intent.apiKeyId) {
+    return { kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' };
+  }
   const key = await db.apiKey.findFirst({ where: { id: apiKeyId, userId: candidate.userId },
-    select: { id: true, exchange: true, apiKey: true, apiSecret: true, updatedAt: true } });
-  if (!key || key.exchange !== intent.exchange || key.updatedAt > intent.createdAt) {
+    select: { id: true, exchange: true, apiKey: true, apiSecret: true,
+      updatedAt: true, credentialVersion: true } });
+  if (!key || key.exchange !== intent.exchange ||
+      (boundCredential
+        ? key.credentialVersion !== intent.apiKeyCredentialVersion
+        : key.updatedAt > intent.createdAt)) {
     return { kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' };
   }
   return { kind: 'OK', apiKeyId: key.id, exchange: intent.exchange,

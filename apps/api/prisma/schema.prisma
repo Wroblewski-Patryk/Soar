@@ -955,6 +955,8 @@ model LiveOrderIntent {
   userId        String
   clientOrderId String   @unique
   payloadHash   String
+  apiKeyId      String?
+  apiKeyCredentialVersion Int?
   payload       Json?
   exchange      Exchange
   marketType    TradeMarket

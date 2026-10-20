@@ -148,6 +148,10 @@ const createLiveScopedBotContext = async (params: {
   symbol: string;
   apiKeyId?: string;
 }) => {
+  const apiKeyId = params.apiKeyId ?? (await prisma.apiKey.create({ data: {
+    userId: params.userId, label: `${params.botName} test key`, exchange: 'BINANCE',
+    apiKey: `${params.botName} test key`, apiSecret: 'test secret',
+  } })).id;
   const strategy = await prisma.strategy.create({
     data: {
       userId: params.userId,
@@ -200,7 +204,7 @@ const createLiveScopedBotContext = async (params: {
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       positionMode: 'ONE_WAY',
-      apiKeyId: params.apiKeyId ?? null,
+      apiKeyId,
       isActive: true,
       liveOptIn: true,
       consentTextVersion: 'mvp-v1',
@@ -225,6 +229,51 @@ describe('durable LIVE order intent', () => {
   beforeEach(async () => {
     await cleanupDb();
     await liveEntitlementFixture.allowLive();
+  });
+
+  it('persists the selected credential generation before submit and keeps retry lookup-only', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'bound-live-intent@example.com', password: 'hashed',
+    } });
+    const key = await prisma.apiKey.create({ data: {
+      userId: user.id, label: 'bound', exchange: 'BINANCE',
+      apiKey: 'test-key', apiSecret: 'test-secret',
+    } });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Bound intent bot',
+      strategyName: 'Bound intent strategy', symbol: 'BTCUSDT', apiKeyId: key.id,
+    });
+    const payload = { botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'LIMIT' as const, quantity: 0.5, price: 100, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: 'soar_bound_intent_1' };
+    const execute = vi.fn(async ({ credentialBinding }: {
+      credentialBinding: { apiKeyId: string; apiKeyCredentialVersion: number } | null,
+    }) => {
+      const intent = await prisma.liveOrderIntent.findUniqueOrThrow({
+        where: { clientOrderId: payload.clientOrderId },
+      });
+      expect(intent.apiKeyId).toBe(key.id);
+      expect(intent.apiKeyCredentialVersion).toBe(key.credentialVersion);
+      expect(credentialBinding).toEqual({ apiKeyId: key.id,
+        apiKeyCredentialVersion: key.credentialVersion });
+      return { exchangeOrderId: 'simulated-only', status: 'OPEN' as const };
+    });
+    const lookup = vi.fn().mockRejectedValue(new Error('unavailable'));
+    await executeDurableLiveOrder({ userId: user.id, bot, payload: { ...payload },
+      execute, lookup });
+    await expect(prisma.liveOrderIntent.update({
+      where: { clientOrderId: payload.clientOrderId },
+      data: { apiKeyCredentialVersion: key.credentialVersion + 1 },
+    })).rejects.toThrow();
+    await prisma.apiKey.update({ where: { id: key.id }, data: {
+      apiSecret: 'rotated-secret',
+    } });
+    await expect(executeDurableLiveOrder({ userId: user.id, bot,
+      payload: { ...payload }, execute, lookup })).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.liveExecutionUnknown,
+    });
+    expect(execute).toHaveBeenCalledOnce();
+    expect(lookup).toHaveBeenCalledOnce();
   });
 
   it('persists the final intent before any submit and makes an existing ID lookup-only', async () => {
@@ -953,6 +1002,7 @@ describe('durable LIVE order intent', () => {
     await prisma.wallet.update({ where: { id: wallet.id }, data: { exchange: 'GATEIO' } });
     await prisma.marketUniverse.update({ where: { id: universe.id }, data: { exchange: 'GATEIO' } });
     await prisma.bot.update({ where: { id: bot.id }, data: { exchange: 'GATEIO' } });
+    await prisma.apiKey.update({ where: { id: bot.apiKeyId! }, data: { exchange: 'GATEIO' } });
     const runtimeId = 'soar_123456789012345678901234';
     const executeLiveOrder = vi.fn(async ({ payload }: { payload: { clientOrderId?: string | null } }) => {
       expect(payload.clientOrderId).toMatch(/^soar_[A-Za-z0-9_-]{22}$/);

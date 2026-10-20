@@ -140,6 +140,29 @@ describe('exchangeAdapterBoundary.service', () => {
       expect(connector.disconnect).toHaveBeenCalledTimes(invalid.length + 1);
     });
 
+  it.each([
+    ['rotated generation', 'key-1', 2],
+    ['reassigned key', 'key-2', 1],
+  ] as const)('refuses a bound retry lookup after %s', async (_case, keyId, version) => {
+    const createAuthenticatedConnector = vi.fn();
+    await expect(lookupLiveOrderThroughBoundary({
+      userId: 'user-1', credentialBinding: {
+        apiKeyId: 'key-1', apiKeyCredentialVersion: 1,
+      },
+      bot: { exchange: 'BINANCE', marketType: 'FUTURES',
+        positionMode: 'ONE_WAY', apiKeyId: keyId, walletId: null },
+      order: { symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT', quantity: 0.1,
+        clientOrderId: 'soar_bound_retry' },
+      targetLeverage: null,
+    }, {
+      createAuthenticatedConnector,
+      resolveLiveExecutionApiKey: vi.fn(async () => ({ id: keyId,
+        exchange: 'BINANCE' as const, apiKey: 'key', apiSecret: 'secret',
+        credentialVersion: version })),
+    })).rejects.toMatchObject({ code: 'LIVE_EXECUTION_FAILED' });
+    expect(createAuthenticatedConnector).not.toHaveBeenCalled();
+  });
+
   it('reads Binance positions and open orders through one feature-facing boundary', async () => {
     const connector = createConnector();
     const createAuthenticatedConnector = vi.fn(() => connector);
@@ -750,6 +773,35 @@ describe('exchangeAdapterBoundary.service', () => {
       )
     ).rejects.toMatchObject({ code: 'LIVE_API_KEY_REQUIRED' });
     expect(createAuthenticatedConnector).not.toHaveBeenCalled();
+  });
+
+  it('does not submit when credentials rotate during pretrade checks', async () => {
+    const connector = createConnector();
+    const placeLiveOrderWithFees = vi.fn();
+    const resolveLiveExecutionApiKey = vi.fn()
+      .mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
+        apiKey: 'key', apiSecret: 'secret', credentialVersion: 1 })
+      .mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
+        apiKey: 'key', apiSecret: 'rotated', credentialVersion: 2 });
+    await expect(submitLiveOrderThroughBoundary({
+      userId: 'user-1', credentialBinding: {
+        apiKeyId: 'key-1', apiKeyCredentialVersion: 1,
+      },
+      bot: { exchange: 'BINANCE', marketType: 'FUTURES',
+        positionMode: 'ONE_WAY', apiKeyId: 'key-1', walletId: null },
+      order: { symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 0.1, price: 100_000, clientOrderId: 'soar_rotation_test' },
+      targetLeverage: null,
+    }, {
+      createAuthenticatedConnector: vi.fn(() => connector),
+      fetchBalanceRaw: vi.fn(), resolveLiveExecutionApiKey,
+      createLiveOrderAdapter: vi.fn(() => ({ placeLiveOrderWithFees })),
+      enforceLivePretradeGuards: vi.fn(async () => undefined),
+      convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
+    })).rejects.toMatchObject({ code: 'LIVE_EXECUTION_FAILED' });
+    expect(resolveLiveExecutionApiKey).toHaveBeenCalledTimes(2);
+    expect(placeLiveOrderWithFees).not.toHaveBeenCalled();
+    expect(connector.disconnect).toHaveBeenCalledOnce();
   });
 
   it('propagates reduce-only LIVE close intent through the canonical exchange boundary', async () => {

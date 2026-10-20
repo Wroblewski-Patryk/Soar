@@ -58,6 +58,55 @@ const current: { exchange: Exchange; marketType: TradeMarket } =
   { exchange: 'BINANCE', marketType: 'SPOT' };
 
 describe('read-only LIVE fill lookup', () => {
+  it('accepts neutral key metadata changes for a version-bound intent', async () => {
+    current.exchange = 'BINANCE'; current.marketType = 'FUTURES';
+    db.liveOrderIntent.findUnique.mockResolvedValueOnce({
+      id: 'intent-1', userId: 'user-1', clientOrderId: 'soar_abc',
+      exchange: 'BINANCE', marketType: 'FUTURES', symbol: 'BTCUSDT', createdAt,
+      payload: { botId: 'bot-1', walletId: null },
+      apiKeyId: 'key-1', apiKeyCredentialVersion: 3,
+    });
+    db.apiKey.findFirst.mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
+      apiKey: 'test-key', apiSecret: 'test-secret', credentialVersion: 3,
+      updatedAt: new Date('2026-10-17T11:00:00Z') });
+    const read = connector();
+    expect((await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'),
+      deps(read))).kind).toBe('FOUND');
+    expect(read.fetchOrderByClientOrderId).toHaveBeenCalledOnce();
+  });
+
+  it('keeps credential rotation and key reassignment UNKNOWN before venue lookup', async () => {
+    current.exchange = 'BINANCE'; current.marketType = 'FUTURES';
+    const boundIntent = { id: 'intent-1', userId: 'user-1',
+      clientOrderId: 'soar_abc', exchange: 'BINANCE', marketType: 'FUTURES',
+      symbol: 'BTCUSDT', createdAt, payload: { botId: 'bot-1', walletId: null },
+      apiKeyId: 'key-1', apiKeyCredentialVersion: 3 };
+    db.liveOrderIntent.findUnique.mockResolvedValueOnce(boundIntent);
+    db.apiKey.findFirst.mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
+      apiKey: 'test-key', apiSecret: 'rotated-secret', credentialVersion: 4,
+      updatedAt: earlier });
+    const read = connector();
+    expect(await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'),
+      deps(read))).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' });
+    db.liveOrderIntent.findUnique.mockResolvedValueOnce(boundIntent);
+    db.bot.findFirst.mockResolvedValueOnce({ apiKeyId: 'key-2', walletId: null,
+      exchange: 'BINANCE', marketType: 'FUTURES', updatedAt: earlier });
+    expect(await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'),
+      deps(read))).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' });
+    expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
+  });
+
+  it('retains the timestamp rule for a legacy unbound intent', async () => {
+    current.exchange = 'BINANCE'; current.marketType = 'FUTURES';
+    db.apiKey.findFirst.mockResolvedValueOnce({ id: 'key-1', exchange: 'BINANCE',
+      apiKey: 'test-key', apiSecret: 'test-secret', credentialVersion: 1,
+      updatedAt: new Date('2026-10-17T11:00:00Z') });
+    const read = connector();
+    expect(await lookupLiveFillCandidate(candidate('BINANCE', 'FUTURES'),
+      deps(read))).toMatchObject({ kind: 'UNKNOWN', reason: 'ACCOUNT_UNAVAILABLE' });
+    expect(read.fetchOrderByClientOrderId).not.toHaveBeenCalled();
+  });
+
   it.each([
     ['BINANCE', 'SPOT'], ['BINANCE', 'FUTURES'],
     ['GATEIO', 'SPOT'], ['GATEIO', 'FUTURES'],

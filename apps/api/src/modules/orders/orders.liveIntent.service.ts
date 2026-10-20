@@ -8,6 +8,8 @@ import { orderErrors } from './orders.errors';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
+import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
+import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
 
 export type LiveBotContext = {
   id: string;
@@ -44,6 +46,7 @@ type LiveOrderOperation = (params: {
   userId: string;
   bot: LiveBotContext;
   payload: LiveOrderPayload;
+  credentialBinding: LiveExecutionCredentialBinding | null;
 }) => Promise<LiveExecutionResult>;
 
 export const resolveLiveClientOrderId = (input: string | null | undefined, exchange: Exchange) => {
@@ -80,6 +83,7 @@ export type PreparedLiveOrderIntent = {
   payload: LiveOrderPayload;
   created: boolean;
   existingOrder: Order | null;
+  credentialBinding: LiveExecutionCredentialBinding | null;
 };
 
 // Durable boundary before any venue call. A retry of an existing client ID is
@@ -89,6 +93,7 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   bot: LiveBotContext;
   payload: LiveOrderPayload;
   tx?: Prisma.TransactionClient;
+  credentialBinding?: LiveExecutionCredentialBinding | null;
 }): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
@@ -100,6 +105,8 @@ export const persistOrReuseLiveOrderIntent = async (params: {
     userId,
     clientOrderId: payload.clientOrderId,
     payloadHash,
+    apiKeyId: params.credentialBinding?.apiKeyId ?? null,
+    apiKeyCredentialVersion: params.credentialBinding?.apiKeyCredentialVersion ?? null,
     payload: JSON.parse(JSON.stringify(payload)) as Prisma.InputJsonValue,
     exchange: bot.exchange,
     marketType: bot.marketType,
@@ -147,6 +154,9 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   return {
     intentId: intent.id, clientOrderId: intent.clientOrderId,
     payload: retryPayload, created: createdIntent, existingOrder,
+    credentialBinding: intent.apiKeyId && intent.apiKeyCredentialVersion
+      ? { apiKeyId: intent.apiKeyId,
+          apiKeyCredentialVersion: intent.apiKeyCredentialVersion } : null,
   };
 };
 
@@ -161,13 +171,28 @@ export const executeDurableLiveOrder = async (params: {
   | { existingOrder?: never; intentId: string; liveResult: LiveExecutionResult; payload: LiveOrderPayload }
 > => {
   const { userId, bot, payload } = params;
-  const prepared = await persistOrReuseLiveOrderIntent({ userId, bot, payload });
+  payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
+  const existing = await prisma.liveOrderIntent.findUnique({
+    where: { clientOrderId: payload.clientOrderId }, select: { id: true },
+  });
+  let credentialBinding: LiveExecutionCredentialBinding | null = null;
+  if (!existing) {
+    const key = await resolveLiveExecutionApiKey({ userId, bot });
+    if (!Number.isInteger(key.credentialVersion) || (key.credentialVersion ?? 0) <= 0) {
+      throw orderErrors.liveExecutionFailed();
+    }
+    credentialBinding = { apiKeyId: key.id,
+      apiKeyCredentialVersion: key.credentialVersion! };
+  }
+  const prepared = await persistOrReuseLiveOrderIntent({ userId, bot, payload,
+    credentialBinding });
   if (prepared.existingOrder) return { existingOrder: prepared.existingOrder };
 
   let liveResult: LiveExecutionResult;
   if (prepared.created) {
     try {
-      liveResult = await params.execute({ userId, bot, payload: prepared.payload });
+      liveResult = await params.execute({ userId, bot, payload: prepared.payload,
+        credentialBinding: prepared.credentialBinding });
       if (!liveResult.exchangeOrderId) throw new Error('Exchange returned no order identity');
     } catch (error) {
       if (isAppErrorLike(error) && error.code.startsWith('LIVE_PRETRADE_')) {
@@ -175,7 +200,8 @@ export const executeDurableLiveOrder = async (params: {
         throw error;
       }
       try {
-        liveResult = await params.lookup({ userId, bot, payload: prepared.payload });
+        liveResult = await params.lookup({ userId, bot, payload: prepared.payload,
+          credentialBinding: prepared.credentialBinding });
         if (!liveResult.exchangeOrderId) throw new Error('Exchange lookup returned no order identity');
       } catch {
         throw orderErrors.liveExecutionUnknown({
@@ -188,7 +214,8 @@ export const executeDurableLiveOrder = async (params: {
     // An existing intent may have been sent before a crash. A lookup is the
     // only permitted recovery action, even when the venue says not found.
     try {
-      liveResult = await params.lookup({ userId, bot, payload: prepared.payload });
+      liveResult = await params.lookup({ userId, bot, payload: prepared.payload,
+        credentialBinding: prepared.credentialBinding });
       if (!liveResult.exchangeOrderId) throw new Error('Exchange lookup returned no order identity');
     } catch {
       throw orderErrors.liveExecutionUnknown({

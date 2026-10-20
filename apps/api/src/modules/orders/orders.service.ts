@@ -35,6 +35,7 @@ import {
   lookupLiveOrderThroughBoundary,
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
+  type LiveExecutionCredentialBinding,
 } from '../exchange/exchangeAdapterBoundary.service';
 import {
   resolveUserAppManualCloseAttribution,
@@ -110,11 +111,13 @@ type OpenOrderDeps = {
     userId: string;
     bot: LiveBotContext;
     payload: OpenOrderInput;
+    credentialBinding?: LiveExecutionCredentialBinding | null;
   }) => Promise<LiveExecutionResult>;
   lookupLiveOrder?: (params: {
     userId: string;
     bot: LiveBotContext;
     payload: OpenOrderInput;
+    credentialBinding?: LiveExecutionCredentialBinding | null;
   }) => Promise<LiveExecutionResult>;
   manualOrderContextDeps?: ManualOrderContextDeps;
 };
@@ -333,6 +336,7 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
 
   return submitLiveOrderThroughBoundary({
     userId: params.userId,
+    credentialBinding: params.credentialBinding,
     bot: params.bot,
     order: {
       symbol: params.payload.symbol,
@@ -351,6 +355,7 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
 const lookupLiveOrderOnExchange: NonNullable<OpenOrderDeps['lookupLiveOrder']> = async (params) =>
   lookupLiveOrderThroughBoundary({
     userId: params.userId,
+    credentialBinding: params.credentialBinding,
     bot: params.bot,
     order: {
       symbol: params.payload.symbol,

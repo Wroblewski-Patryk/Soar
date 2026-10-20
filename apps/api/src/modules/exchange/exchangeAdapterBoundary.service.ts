@@ -26,6 +26,12 @@ export type LiveExecutionApiKey = {
   exchange: Exchange;
   apiKey: string;
   apiSecret: string;
+  credentialVersion?: number;
+};
+
+export type LiveExecutionCredentialBinding = {
+  apiKeyId: string;
+  apiKeyCredentialVersion: number;
 };
 
 export type SupportedExchangeReadCredentials = {
@@ -37,6 +43,7 @@ export type SupportedExchangeReadCredentials = {
 
 export type SubmitLiveExchangeOrderInput = {
   userId: string;
+  credentialBinding?: LiveExecutionCredentialBinding | null;
   bot: {
     exchange: Exchange;
     marketType: TradeMarket;
@@ -319,6 +326,7 @@ export const resolveLiveExecutionApiKey = async (params: {
         exchange: true,
         apiKey: true,
         apiSecret: true,
+        credentialVersion: true,
       },
     });
 
@@ -342,6 +350,7 @@ export const resolveLiveExecutionApiKey = async (params: {
             exchange: true,
             apiKey: true,
             apiSecret: true,
+            credentialVersion: true,
           },
         },
       },
@@ -353,6 +362,16 @@ export const resolveLiveExecutionApiKey = async (params: {
   }
 
   throw orderErrors.liveApiKeyRequired();
+};
+
+const assertLiveCredentialBinding = (
+  key: LiveExecutionApiKey,
+  binding: LiveExecutionCredentialBinding | null | undefined
+) => {
+  if (binding && (key.id !== binding.apiKeyId ||
+      key.credentialVersion !== binding.apiKeyCredentialVersion)) {
+    throw orderErrors.liveExecutionFailed();
+  }
 };
 
 export const fetchSupportedExchangePositionsRaw = async (
@@ -478,6 +497,7 @@ export const submitLiveOrderThroughBoundary = async (
   if (apiKey.exchange !== params.bot.exchange) {
     throw orderErrors.liveApiKeyRequired();
   }
+  assertLiveCredentialBinding(apiKey, params.credentialBinding);
 
   const connector = deps.createAuthenticatedConnector({
     exchange: apiKey.exchange,
@@ -510,6 +530,13 @@ export const submitLiveOrderThroughBoundary = async (
       symbol: params.order.symbol.toUpperCase(),
       targetLeverage: params.targetLeverage,
     });
+
+    if (params.credentialBinding) {
+      // Pretrade calls can take time. Recheck before the only venue submit.
+      assertLiveCredentialBinding(await deps.resolveLiveExecutionApiKey({
+        userId: params.userId, bot: params.bot,
+      }), params.credentialBinding);
+    }
 
     const liveOrderPayload = {
       symbol: params.order.symbol.toUpperCase(),
@@ -557,6 +584,7 @@ export const lookupLiveOrderThroughBoundary = async (
   if (!params.order.clientOrderId) throw orderErrors.liveExecutionFailed();
   const apiKey = await deps.resolveLiveExecutionApiKey({ userId: params.userId, bot: params.bot });
   if (apiKey.exchange !== params.bot.exchange) throw orderErrors.liveApiKeyRequired();
+  assertLiveCredentialBinding(apiKey, params.credentialBinding);
   const connector = deps.createAuthenticatedConnector({
     exchange: apiKey.exchange,
     apiKey: apiKey.apiKey,
