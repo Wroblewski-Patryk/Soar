@@ -338,6 +338,18 @@ On a fresh `soar_ext_grant_001t_e1b7c91a_test` database, the 001T claim tests
 passed 3/3 and the existing reservation regression passed 37/37; the test
 database was removed after the run.
 
+`SOAR-EXT-GRANT-001U/CLAIM-CROSS-ROW-BINDING` verifies every new claim and
+every reuse of an uncertain reservation against the linked reservation, intent,
+grant, bot, and selected API key. Under the grant row lock, it takes the shared
+pause lock and row locks before comparing the canonical command hash, intent
+payload hash, marker fields, bot/key identity, and API-key update time. A
+missing or divergent claim returns `claimStatus: UNKNOWN`; the marker and spent
+allowance remain, and reuse stays lookup-only. `VERIFIED` is an observation,
+not a submit permit. The delegated submit callback remains disabled. Local
+isolated `_test` cases cover cross-row SQL changes, concurrent key updates,
+restart/reuse, and pause/revoke blocking; they do not establish venue or LIVE
+execution.
+
 `SOAR-EXT-GRANT-001R/TEST-ONLY-HTTP-MOCK` provides a separate HTTP test app at
 `apps/api/test-only/mockOrdersHttpApp.ts`. It is outside the production TypeScript
 build, excluded from the Docker context, and never imported by the production

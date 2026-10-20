@@ -13,7 +13,9 @@ import { assertLiveCreateOrderPermittedInTransaction, LIVE_EXECUTION_PAUSE_LOCK_
 import { getOwnedGrantBotScope, isAssignedGrantSymbol } from './externalClientGrants.service';
 import { delegatedMockScenarios, runDelegatedMockTransport } from './externalClientGrantMockTransport';
 import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
-import { deny, hasAtomicIntentBinding, representableNumber } from './externalClientGrantReservation.helpers';
+import { intentMatchesCommand, intentMatchesCommandAndScope,
+  verifyDispatchClaimInTransaction } from './externalClientGrantDispatchClaimProof';
+import { deny, GrantReservationError, hasAtomicIntentBinding, representableNumber } from './externalClientGrantReservation.helpers';
 export { GrantReservationError } from './externalClientGrantReservation.helpers';
 import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable,
   retryMockFinalizationConflict } from './externalClientGrantMockResult';
@@ -337,10 +339,27 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
     const grant = await lockGrant(tx, found.grantId);
     const current = await tx.externalClientGrantReservation.findUnique({ where: { id: found.id } });
     if (!current) return deny('RESERVATION_UNAVAILABLE');
-    const command = canonicalize(current.command);
     if (!secretPattern.test(input.secret) || grant.secretHash !== secretHash(input.secret)) {
       return deny('GRANT_SCOPE_UNAVAILABLE');
     }
+    if (current.state === 'SUBMISSION_UNCERTAIN') {
+      const marker = await tx.liveCreateOrderSubmission.findUnique({ where: { reservationId: current.id } });
+      if (!marker) return deny('RESERVATION_NOT_DISPATCHABLE');
+      let proof: { verified: boolean };
+      try {
+        proof = await verifyDispatchClaimInTransaction(tx, {
+          grantId: grant.id, reservationId: current.id, command: canonicalize(current.command),
+        });
+      } catch (error) {
+        if (!(error instanceof GrantReservationError)) throw error;
+        proof = { verified: false };
+      }
+      return { markerId: marker.id, reservationId: current.id,
+        intentId: marker.intentId, reused: true, lookupOnly: true,
+        claimStatus: proof.verified ? 'VERIFIED' : 'UNKNOWN',
+        ...(claimDispatch ? { claimed: false } : {}) } as const;
+    }
+    const command = canonicalize(current.command);
     if (current.clientOrderId !== command.clientOrderId || current.commandHash !== fingerprint(command)) {
       return deny('RESERVATION_COMMAND_UNAVAILABLE');
     }
@@ -357,13 +376,6 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
         (deps.expectedIntentPayloadHash && intent.payloadHash !== deps.expectedIntentPayloadHash)) {
       return deny('RESERVATION_INTENT_UNAVAILABLE');
     }
-    if (current.state === 'SUBMISSION_UNCERTAIN') {
-      const marker = await tx.liveCreateOrderSubmission.findUnique({ where: { reservationId: current.id } });
-      if (!marker || marker.grantId !== grant.id || marker.intentId !== intent.id ||
-          marker.clientOrderId !== command.clientOrderId) return deny('RESERVATION_NOT_DISPATCHABLE');
-      return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
-        reused: true, lookupOnly: true, ...(claimDispatch ? { claimed: false } : {}) } as const;
-    }
     if (current.state !== 'RESERVED' || current.dispatchStartedAt) return deny('RESERVATION_NOT_DISPATCHABLE');
     if (await tx.liveCreateOrderSubmission.findUnique({ where: { grantId: grant.id }, select: { id: true } })) {
       return deny('GRANT_PREVIOUS_OPERATION_UNRESOLVED');
@@ -379,7 +391,7 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
       : command.exchange === 'BINANCE' ? 'future' : 'swap';
     await assertLiveCreateOrderPermittedInTransaction({ marketType, reduceOnly: false }, tx);
     await assertCurrentScope(tx, grant, input.secret, command);
-    const claimKey = claimDispatch ? await resolveDispatchClaimKey(tx, command) : null;
+    const claimKey = claimDispatch ? await resolveDispatchClaimKey(tx, command, true) : null;
     if (claimDispatch && !claimKey) return deny('DISPATCH_ACCOUNT_UNAVAILABLE');
     const marker = await tx.liveCreateOrderSubmission.create({ data: {
       grantId: grant.id, reservationId: current.id, intentId: intent.id,
@@ -392,6 +404,9 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
     await tx.externalClientGrantReservation.update({ where: { id: current.id }, data: {
       state: 'SUBMISSION_UNCERTAIN', dispatchStartedAt: new Date(),
     } });
+    if (claimKey && !(await verifyDispatchClaimInTransaction(tx, {
+      grantId: grant.id, reservationId: current.id, command,
+    })).verified) return deny('DISPATCH_CLAIM_UNVERIFIED');
     await tx.log.create({ data: {
       userId: grant.userId, botId: grant.botId, source: 'external_client_grant',
       actor: 'SYSTEM', action: claimKey ? 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED'
@@ -402,7 +417,8 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
         clientOrderId: command.clientOrderId },
     } });
     return { markerId: marker.id, reservationId: current.id, intentId: intent.id,
-      reused: false, lookupOnly: true, ...(claimDispatch ? { claimed: !!claimKey } : {}) } as const;
+      reused: false, lookupOnly: true, claimStatus: claimKey ? 'VERIFIED' : 'UNKNOWN',
+      ...(claimDispatch ? { claimed: !!claimKey } : {}) } as const;
   }, transactionOptions);
 };
 
@@ -932,29 +948,6 @@ export const refundUnsentExternalClientGrantReservation = async (
 
 // Recovery is lookup-only. A durable intent plus local Order carrying an
 // exchange identity is accepted as submission evidence; allowance stays spent.
-const intentMatchesCommand = (payload: unknown, command: GrantLimitCommand) => {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
-  const raw = payload as Record<string, unknown>;
-  const quantity = typeof raw.quantity === 'number' || typeof raw.quantity === 'string'
-    ? String(raw.quantity) : '';
-  const price = typeof raw.price === 'number' || typeof raw.price === 'string'
-    ? String(raw.price) : '';
-  try {
-    return raw.botId === command.botId && (raw.walletId ?? null) === command.walletId &&
-      (raw.strategyId ?? null) === command.strategyId &&
-      (raw.positionId ?? null) === command.positionId && raw.symbol === command.symbol &&
-      raw.side === command.side && raw.type === command.type &&
-      (raw.reduceOnly ?? false) === command.reduceOnly &&
-      new Prisma.Decimal(quantity).eq(command.quantity) &&
-      new Prisma.Decimal(price).eq(command.limitPrice);
-  } catch { return false; }
-};
-
-const intentMatchesCommandAndScope = (intent: LiveOrderIntent, command: GrantLimitCommand) =>
-  intent.userId === command.userId && intent.exchange === command.exchange &&
-  intent.marketType === command.marketType && intent.symbol === command.symbol &&
-  intent.clientOrderId === command.clientOrderId && intentMatchesCommand(intent.payload, command);
-
 export const reconcileSubmittedExternalClientGrantReservation = async (
   reservationId: string, db: DbClient = prisma,
 ) => db.$transaction(async (tx) => {

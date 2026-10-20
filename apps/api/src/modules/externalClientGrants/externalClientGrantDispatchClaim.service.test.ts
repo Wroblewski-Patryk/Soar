@@ -138,6 +138,7 @@ describe('001T durable dispatch claim foundation', () => {
       expect(results.filter((result) => result.claimed)).toHaveLength(1);
       expect(results.filter((result) => result.reused)).toHaveLength(1);
       expect(results.every((result) => result.lookupOnly)).toBe(true);
+      expect(results.every((result) => result.claimStatus === 'VERIFIED')).toBe(true);
       const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
         where: { reservationId: f.bound.reservation.id } });
       const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: f.bound.intentId } });
@@ -166,6 +167,138 @@ describe('001T durable dispatch claim foundation', () => {
         .rejects.toMatchObject({ status: 409 });
     });
   });
+
+  it.skipIf(!dedicatedDb)('marks cross-row SQL tampering UNKNOWN without another claim or permit', async () => {
+    await withUnpausedControl(async () => {
+      const f = await fixture();
+      const input = { reservationId: f.bound.reservation.id, secret: f.secret };
+      const claim = () => claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules });
+      expect((await claim()).claimStatus).toBe('VERIFIED');
+      const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+        where: { reservationId: input.reservationId } });
+      const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: input.reservationId } });
+      const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: f.bound.intentId } });
+      const alternateKey = await prisma.apiKey.create({ data: { userId: f.user.id,
+        label: 'alternate test key', exchange: 'BINANCE', apiKey: 'alternate-key',
+        apiSecret: 'alternate-secret' } });
+      const cases: Array<{ name: string; change: () => Promise<unknown>; restore: () => Promise<unknown> }> = [
+        { name: 'reservation command hash',
+          change: () => prisma.externalClientGrantReservation.update({ where: { id: reservation.id },
+            data: { commandHash: 'a'.repeat(64) } }),
+          restore: () => prisma.externalClientGrantReservation.update({ where: { id: reservation.id },
+            data: { commandHash: reservation.commandHash } }) },
+        { name: 'marker command hash',
+          change: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchCommandHash: 'b'.repeat(64) } }),
+          restore: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchCommandHash: marker.dispatchCommandHash } }) },
+        { name: 'intent hash',
+          change: () => prisma.liveOrderIntent.update({ where: { id: intent.id },
+            data: { payloadHash: 'c'.repeat(64) } }),
+          restore: () => prisma.liveOrderIntent.update({ where: { id: intent.id },
+            data: { payloadHash: intent.payloadHash } }) },
+        { name: 'marker intent hash',
+          change: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchIntentHash: 'd'.repeat(64) } }),
+          restore: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchIntentHash: marker.dispatchIntentHash } }) },
+        { name: 'intent bot identity',
+          change: () => prisma.liveOrderIntent.update({ where: { id: intent.id },
+            data: { payload: { ...(intent.payload as object), botId: crypto.randomUUID() } } }),
+          restore: () => prisma.liveOrderIntent.update({ where: { id: intent.id },
+            data: { payload: intent.payload as Prisma.InputJsonValue } }) },
+        { name: 'marker bot identity',
+          change: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchBotId: crypto.randomUUID() } }),
+          restore: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchBotId: marker.dispatchBotId } }) },
+        { name: 'marker key identity',
+          change: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchApiKeyId: alternateKey.id } }),
+          restore: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchApiKeyId: marker.dispatchApiKeyId } }) },
+        { name: 'bot key selection',
+          change: () => prisma.bot.update({ where: { id: f.bot.id },
+            data: { apiKeyId: alternateKey.id } }),
+          restore: () => prisma.bot.update({ where: { id: f.bot.id },
+            data: { apiKeyId: f.key.id } }) },
+        { name: 'key version',
+          change: () => prisma.apiKey.update({ where: { id: f.key.id },
+            data: { updatedAt: new Date(f.key.updatedAt.getTime() + 1000) } }),
+          restore: () => prisma.apiKey.update({ where: { id: f.key.id },
+            data: { updatedAt: f.key.updatedAt } }) },
+        { name: 'marker key version',
+          change: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchApiKeyUpdatedAt: new Date(f.key.updatedAt.getTime() + 1000) } }),
+          restore: () => prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
+            data: { dispatchApiKeyUpdatedAt: marker.dispatchApiKeyUpdatedAt } }) },
+      ];
+      for (const testCase of cases) {
+        await testCase.change();
+        try {
+          const reused = await claim();
+          expect(reused, testCase.name).toMatchObject({ markerId: marker.id,
+            reused: true, lookupOnly: true, claimed: false, claimStatus: 'UNKNOWN' });
+          expect(await prisma.liveCreateOrderSubmission.count({ where: { id: marker.id } })).toBe(1);
+          if (testCase.name === 'marker command hash') {
+            const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+            await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+              reason: 'Tampered marker stays unresolved', expectedVersion: control.version }))
+              .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+            await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+              .rejects.toMatchObject({ status: 409 });
+          }
+        } finally { await testCase.restore(); }
+        expect((await claim()).claimStatus, testCase.name).toBe('VERIFIED');
+      }
+      expect(await prisma.log.count({ where: { entityId: reservation.id,
+        action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
+      expect(await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .toMatchObject({ usedActions: 1, usedQuoteAmount: new Prisma.Decimal(50) });
+      let submissions = 0;
+      await expect(withFreshBoundExternalClientGrantSubmitPermit(input,
+        async () => { submissions += 1; })).rejects.toMatchObject({ code: 'DELEGATED_SUBMIT_PERMIT_DISABLED' });
+      expect(submissions).toBe(0);
+    });
+  }, 30_000);
+
+  it.skipIf(!dedicatedDb)('waits for a concurrent key update then sees the committed version', async () => {
+    await withUnpausedControl(async () => {
+      const f = await fixture();
+      const input = { reservationId: f.bound.reservation.id, secret: f.secret };
+      expect((await claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules }))
+        .claimStatus).toBe('VERIFIED');
+      let releaseWriter!: () => void;
+      let writerEntered!: () => void;
+      const release = new Promise<void>((resolve) => { releaseWriter = resolve; });
+      const entered = new Promise<void>((resolve) => { writerEntered = resolve; });
+      const writer = prisma.$transaction(async (tx) => {
+        await tx.apiKey.update({ where: { id: f.key.id },
+          data: { updatedAt: new Date(f.key.updatedAt.getTime() + 1000) } });
+        writerEntered();
+        await release;
+      }, { timeout: 15_000 });
+      await entered;
+      const reuse = claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules });
+      try {
+        let blocked = false;
+        const until = Date.now() + 5000;
+        while (!blocked && Date.now() < until) {
+          const rows = await prisma.$queryRaw<Array<{ waiting: number }>>`
+            SELECT count(*)::int AS waiting FROM pg_stat_activity
+            WHERE datname = current_database() AND wait_event_type = 'Lock'
+              AND query LIKE '%"ApiKey"%'`;
+          blocked = rows[0]?.waiting > 0;
+          if (!blocked) await new Promise((resolve) => setTimeout(resolve, 25));
+        }
+        expect(blocked).toBe(true);
+      } finally { releaseWriter(); }
+      await writer;
+      expect(await reuse).toMatchObject({ reused: true, lookupOnly: true,
+        claimed: false, claimStatus: 'UNKNOWN' });
+    });
+  }, 30_000);
 
   it.skipIf(!dedicatedDb)('lets pause and revoke win before claim without changing reservation', async () => {
     await withUnpausedControl(async () => {
