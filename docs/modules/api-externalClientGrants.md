@@ -387,6 +387,15 @@ version after claim blocks transport and leaves reconciliation required. This
 is `_test` synthetic evidence only; no delegated LIVE permit or venue call is
 enabled.
 
+`SOAR-EXT-GRANT-001V2/KEY-VERSION-TRANSPORT-BOUNDARY` checks the claim again
+after writing the mock transport-start audit, within that same short
+transaction. Deferred constraint triggers are flushed before the second check.
+If an audit trigger changes the selected key version or revokes the grant, the
+audit transaction rolls back; the earlier claim and uncertain marker remain,
+and retries are lookup-only without a transport or another allowance charge.
+The transaction ends before the synthetic transport runs. This boundary is
+test-only evidence and does not authorize a LIVE venue call.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

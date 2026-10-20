@@ -3,7 +3,8 @@ import { LiveOrderIntent, Prisma } from '@prisma/client';
 import { fingerprintLiveOrderIntentPayload, type LiveOrderPayload } from '../orders/orders.liveIntent.service';
 import { LIVE_EXECUTION_PAUSE_LOCK_KEY } from '../orders/liveExecutionPause.service';
 import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
-import { hasAtomicIntentBinding } from './externalClientGrantReservation.helpers';
+import type { DelegatedMockScenario } from './externalClientGrantMockTransport';
+import { deny, hasAtomicIntentBinding } from './externalClientGrantReservation.helpers';
 import type { GrantLimitCommand } from './externalClientGrantReservation.service';
 
 type Tx = Prisma.TransactionClient;
@@ -106,4 +107,28 @@ export const verifyDispatchClaimInTransaction = async (tx: Tx, input: Input) => 
   if (!key || key.id !== marker.dispatchApiKeyId ||
       key.updatedAt.getTime() !== marker.dispatchApiKeyUpdatedAt.getTime()) return unknown;
   return { markerId: marker.id, verified: true } as const;
+};
+
+// The start audit and its triggers must leave the captured claim unchanged.
+// This transaction commits before the fixed local transport runs.
+export const recordVerifiedMockTransportStart = async (tx: Tx, input: Omit<Input, 'allowSubmitted'> & {
+  markerId: string; scenario: DelegatedMockScenario,
+}) => {
+  const verify = async () => {
+    const proof = await verifyDispatchClaimInTransaction(tx, {
+      grantId: input.grantId, reservationId: input.reservationId, command: input.command,
+    });
+    if (!proof.verified || proof.markerId !== input.markerId) return deny('DISPATCH_CLAIM_UNVERIFIED');
+  };
+  await verify();
+  await tx.log.create({ data: {
+    userId: input.command.userId, botId: input.command.botId,
+    source: 'external_client_grant', actor: 'SYSTEM',
+    action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED', level: 'INFO',
+    message: 'Fixed delegated mock transport entered',
+    entityType: 'ExternalClientGrantReservation', entityId: input.reservationId,
+    metadata: { scenario: input.scenario, clientOrderId: input.command.clientOrderId },
+  } });
+  await tx.$executeRaw`SET CONSTRAINTS ALL IMMEDIATE`;
+  await verify();
 };

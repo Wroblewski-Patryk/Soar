@@ -335,6 +335,73 @@ it('denies transport when the selected key version changes after the claim', asy
     .usedActions).toBe(1);
 });
 
+it('rolls back the start audit when key rotation or grant revoke occurs inside it', async () => {
+  await prisma.$executeRawUnsafe('CREATE SEQUENCE mock_001v2_boundary_seq START 1');
+  try {
+    for (const change of ['key', 'key-deferred', 'revoke'] as const) {
+      const f = await fixture();
+      const input = body();
+      const update = change !== 'revoke'
+        ? `UPDATE "ApiKey" SET "updatedAt" = "updatedAt" + interval '1 second'
+           WHERE "id" = (SELECT "dispatchApiKeyId" FROM "LiveCreateOrderSubmission"
+             WHERE "reservationId" = NEW."entityId")`
+        : `UPDATE "ExternalClientGrant" SET "revokedAt" = clock_timestamp()
+           WHERE "id" = (SELECT "grantId" FROM "LiveCreateOrderSubmission"
+             WHERE "reservationId" = NEW."entityId")`;
+      try {
+        await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_001v2_boundary() RETURNS trigger
+          LANGUAGE plpgsql AS $$ BEGIN
+            PERFORM nextval('mock_001v2_boundary_seq'); ${update}; RETURN NEW;
+          END $$`);
+        await prisma.$executeRawUnsafe(`CREATE ${change === 'key-deferred'
+          ? 'CONSTRAINT TRIGGER mock_001v2_boundary_trigger AFTER INSERT ON "Log" DEFERRABLE INITIALLY DEFERRED'
+          : 'TRIGGER mock_001v2_boundary_trigger AFTER INSERT ON "Log"'} FOR EACH ROW
+          WHEN (NEW."action" = 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED')
+          EXECUTE FUNCTION mock_001v2_boundary()`);
+        const first = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+          .set('Authorization', `Bearer ${f.secret}`).send(input);
+        expect(first.status, change).toBe(202);
+        expect(first.body.state).toBe('RECONCILIATION_REQUIRED');
+      } finally {
+        await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001v2_boundary_trigger ON "Log"');
+        await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001v2_boundary()');
+      }
+      const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { clientOrderId: input.clientOrderId } });
+      const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
+        where: { reservationId: reservation.id } });
+      const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
+      expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
+      expect(marker.dispatchApiKeyId).toBe(key.id);
+      expect(marker.dispatchApiKeyUpdatedAt).toEqual(key.updatedAt);
+      expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .revokedAt).toBeNull();
+      expect(await transportStarts(reservation.id)).toBe(0);
+      expect(await prisma.log.count({ where: { entityId: reservation.id,
+        action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
+      expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(0);
+      const retry = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+        .set('Authorization', `Bearer ${f.secret}`).send(input);
+      expect(retry.status).toBe(202);
+      expect(await transportStarts(reservation.id)).toBe(0);
+      expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .usedActions).toBe(1);
+      const control = await prisma.liveExecutionControl.findUniqueOrThrow({ where: { id: 'global' } });
+      await expect(setLiveExecutionPause({ actorUserId: f.user.id, paused: true,
+        reason: 'Boundary marker remains', expectedVersion: control.version }))
+        .rejects.toMatchObject({ code: 'LIVE_PAUSE_SUBMISSION_IN_FLIGHT' });
+      await expect(revokeExternalClientGrant(f.user.id, f.grant.id))
+        .rejects.toMatchObject({ status: 409 });
+    }
+    const attempts = await prisma.$queryRawUnsafe<Array<{ last_value: bigint }>>(
+      'SELECT last_value FROM mock_001v2_boundary_seq');
+    expect(attempts[0].last_value).toBe(3n);
+  } finally {
+    await prisma.$executeRawUnsafe('DROP SEQUENCE IF EXISTS mock_001v2_boundary_seq');
+  }
+});
+
 it('fails closed on credential, scope, command, and entitlement changes before transport', async () => {
   const f = await fixture();
   const input = body();

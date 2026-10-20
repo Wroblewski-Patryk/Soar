@@ -15,7 +15,7 @@ import { delegatedMockScenarios, fixedMockSymbolRules,
   runDelegatedMockTransport } from './externalClientGrantMockTransport';
 import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
 import { intentMatchesCommand, intentMatchesCommandAndScope,
-  verifyDispatchClaimInTransaction } from './externalClientGrantDispatchClaimProof';
+  recordVerifiedMockTransportStart, verifyDispatchClaimInTransaction } from './externalClientGrantDispatchClaimProof';
 import { deny, GrantReservationError, hasAtomicIntentBinding, representableNumber } from './externalClientGrantReservation.helpers';
 export { GrantReservationError } from './externalClientGrantReservation.helpers';
 import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable,
@@ -551,19 +551,10 @@ export async function executeBoundExternalClientGrantMock(
     return deny('DELEGATED_MOCK_MARKET_UNSUPPORTED');
   }
 
-  await prisma.$transaction(async (tx) => {
-    const proof = await verifyDispatchClaimInTransaction(tx, {
-      grantId: reservation.grantId, reservationId: reservation.id, command,
-    });
-    if (!proof.verified || proof.markerId !== admitted.markerId) return deny('DISPATCH_CLAIM_UNVERIFIED');
-    await tx.log.create({ data: {
-    userId: command.userId, botId: command.botId, source: 'external_client_grant',
-    actor: 'SYSTEM', action: 'EXTERNAL_CLIENT_GRANT_MOCK_TRANSPORT_STARTED', level: 'INFO',
-    message: 'Fixed delegated mock transport entered',
-    entityType: 'ExternalClientGrantReservation', entityId: reservation.id,
-    metadata: { scenario: request.data.scenario, clientOrderId: command.clientOrderId },
-    } });
-  }, transactionOptions);
+  await prisma.$transaction((tx) => recordVerifiedMockTransportStart(tx, {
+    grantId: reservation.grantId, reservationId: reservation.id, command,
+    markerId: admitted.markerId, scenario: request.data.scenario,
+  }), transactionOptions);
   let result: LiveExecutionResult;
   try {
     result = await runDelegatedMockTransport({ exchange: command.exchange,
