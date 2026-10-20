@@ -13,6 +13,7 @@ import { ORDER_ERROR_CODES, orderErrors } from './orders.errors';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
+import { createLiveScopedBotContext } from './orders.service.fixture';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -40,79 +41,6 @@ const cleanupDb = async () => {
   await prisma.wallet.deleteMany();
   await prisma.apiKey.deleteMany();
   await prisma.user.deleteMany();
-};
-
-const createLiveScopedBotContext = async (params: {
-  userId: string;
-  botName: string;
-  strategyName: string;
-  symbol: string;
-  apiKeyId?: string;
-}) => {
-  const strategy = await prisma.strategy.create({
-    data: {
-      userId: params.userId,
-      name: params.strategyName,
-      interval: '5m',
-      leverage: 5,
-      walletRisk: 1,
-      config: {
-        additional: {
-          orderType: 'MARKET',
-          marginMode: 'ISOLATED',
-        },
-      },
-    },
-  });
-  const wallet = await prisma.wallet.create({
-    data: {
-      userId: params.userId,
-      name: `${params.botName} wallet`,
-      mode: 'LIVE',
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      baseCurrency: 'USDT',
-    },
-  });
-  const universe = await prisma.marketUniverse.create({
-    data: {
-      userId: params.userId,
-      name: `${params.botName} universe`,
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      baseCurrency: 'USDT',
-      whitelist: [params.symbol],
-      blacklist: [],
-    },
-  });
-  const symbolGroup = await prisma.symbolGroup.create({
-    data: {
-      userId: params.userId,
-      marketUniverseId: universe.id,
-      name: `${params.botName} symbols`,
-      symbols: [params.symbol],
-    },
-  });
-  const bot = await prisma.bot.create({
-    data: {
-      userId: params.userId,
-      name: params.botName,
-      mode: 'LIVE',
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      positionMode: 'ONE_WAY',
-      apiKeyId: params.apiKeyId ?? null,
-      isActive: true,
-      liveOptIn: true,
-      consentTextVersion: 'mvp-v1',
-      maxOpenPositions: 3,
-      walletId: wallet.id,
-      strategyId: strategy.id,
-      symbolGroupId: symbolGroup.id,
-    },
-  });
-
-  return { bot, strategy, wallet, universe, symbolGroup };
 };
 
 const allowLive = async () => {
@@ -1199,6 +1127,10 @@ describe('openOrder live execution contract', () => {
     const user = await createEntitledUser({
       data: { email: 'orders-canonical-context@example.com', password: 'hashed' },
     });
+    const canonicalKey = await prisma.apiKey.create({ data: {
+      userId: user.id, label: 'Canonical wallet key', exchange: 'BINANCE',
+      apiKey: 'canonical-wallet-key', apiSecret: 'canonical-wallet-secret',
+    } });
     const strategyCanonical = await prisma.strategy.create({
       data: {
         userId: user.id,
@@ -1227,6 +1159,7 @@ describe('openOrder live execution contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: canonicalKey.id,
       },
     });
     const spoofedWallet = await prisma.wallet.create({
@@ -1336,6 +1269,37 @@ describe('openOrder live execution contract', () => {
       expect(order.strategyId).not.toBe(strategySpoofed.id);
       expect(order.status).toBe('OPEN');
       expect(order.positionId).toBeNull();
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('refuses a new LIVE intent without a bound key before any submit', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-live-unbound-key@example.com', password: 'hashed',
+    } });
+    await prisma.apiKey.create({ data: {
+      userId: user.id, label: 'Unbound Binance key', exchange: 'BINANCE',
+      apiKey: 'unbound-key', apiSecret: 'unbound-secret',
+    } });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'No-key LIVE bot',
+      strategyName: 'No-key LIVE strategy', symbol: 'BTCUSDT', apiKeyId: null,
+    });
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 0.1, price: 60_000, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_unbound_live_key',
+      }, { executeLiveOrder })).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.liveApiKeyRequired,
+      });
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+      expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
