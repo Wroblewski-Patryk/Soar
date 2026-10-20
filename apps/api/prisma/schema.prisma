@@ -1268,6 +1268,8 @@ enum BacktestExitReason {
   SIGNAL_EXIT
   FINAL_CANDLE
   LIQUIDATION
+  TP
+  SL
 }
 
 model BacktestReport {

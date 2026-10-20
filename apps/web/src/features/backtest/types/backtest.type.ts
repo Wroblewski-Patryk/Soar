@@ -29,7 +29,7 @@ export type BacktestTrade = {
   closedAt: string;
   pnl: number;
   fee: number | null;
-  exitReason?: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason?: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
   liquidated?: boolean;
 };
 

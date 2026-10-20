@@ -267,6 +267,18 @@ describe('USDT contribution DCA in historical replay', () => {
         .toEqual([0.7, 0.5764]);
       expect(result.events.find((event) => event.type === 'SL')?.price).toBe(0.5424);
       expect(result.trades[0].entryPrice).toBeCloseTo(0.678, 2);
+      expect(result.trades[0].exitReason).toBe('SL');
+    }
+  });
+
+  it('persists basic TP as TP in both replay paths', () => {
+    const config = { ...strategyConfig,
+      close: { mode: 'basic', tp: 20, sl: 99 },
+      additional: { ...strategyConfig.additional, dcaEnabled: false, dcaTimes: 0 },
+    };
+    for (const result of replayBothTrailingPaths([0.99, 1, 1, 1.3, 0.99], config)) {
+      expect(result.eventCounts.TP).toBe(1);
+      expect(result.trades.filter((trade) => trade.exitReason === 'TP')).toHaveLength(1);
     }
   });
 

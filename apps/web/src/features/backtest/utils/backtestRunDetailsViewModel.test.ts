@@ -6,6 +6,7 @@ import {
   buildSyntheticTradesFromTimelineEvents,
   extractStrategyIndicatorMeta,
   filterTradesByTimelineWindow,
+  getExitReasonLabel,
 } from "./backtestRunDetailsViewModel";
 
 describe("backtestRunDetailsViewModel", () => {
@@ -82,6 +83,23 @@ describe("backtestRunDetailsViewModel", () => {
         liquidated: true,
       }),
     ]);
+  });
+
+  it("keeps basic TP and SL distinct from liquidation in trade readback", () => {
+    const copy = {
+      exitReasonSignal: "Signal", exitReasonFinalCandle: "Final candle",
+      exitReasonLiquidation: "Liquidation",
+    } as Parameters<typeof getExitReasonLabel>[1];
+    for (const reason of ["TP", "SL"] as const) {
+      const events = [
+        { id: "entry", tradeId: reason, type: "ENTRY", side: "LONG",
+          timestamp: "2026-04-10T10:00:00.000Z", price: 100, pnl: null, candleIndex: 0 },
+        { id: "close", tradeId: reason, type: reason, side: "LONG",
+          timestamp: "2026-04-10T10:01:00.000Z", price: 110, pnl: 10, candleIndex: 1 },
+      ] satisfies BacktestTimelineEvent[];
+      expect(buildSyntheticTradesFromTimelineEvents(events, "BTCUSDT")[0].exitReason).toBe(reason);
+      expect(getExitReasonLabel(reason, copy)).toBe(reason);
+    }
   });
 
   it("aggregates daily pnl into cumulative balance points", () => {

@@ -46,7 +46,7 @@ type TradeDraft = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
   liquidated: boolean;
 };
 
@@ -622,7 +622,9 @@ export const simulateInterleavedPortfolio = (input: {
       closedAt: new Date(current.closeTime),
       pnl,
       fee: settlement.fees,
-      exitReason: isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
+      exitReason: closeType === 'TP' || closeType === 'SL'
+        ? closeType
+        : isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
       liquidated: isIsolatedLiquidated,
     });
     pushEvent(

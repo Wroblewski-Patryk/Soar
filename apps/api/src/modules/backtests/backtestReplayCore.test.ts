@@ -62,6 +62,8 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(
       result.events.some((event) => event.type === 'EXIT' && event.candleIndex < candles.length - 1),
     ).toBe(false);
+    expect(result.trades).toHaveLength(1);
+    expect(result.trades[0].exitReason).toBe('FINAL_CANDLE');
   });
 
   it('does not create overlapping trade intervals for one symbol', () => {
@@ -111,6 +113,7 @@ describe('simulateTradesForSymbolReplay', () => {
 
     expect(result.liquidations).toBeGreaterThanOrEqual(1);
     expect(result.eventCounts.LIQUIDATION).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'LIQUIDATION')).toBe(true);
   });
 
   it('supports FUNDING_RATE strategy rules via derivatives series input', () => {
@@ -334,6 +337,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TP).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TP')).toBe(true);
   });
 
   it('emits TSL-take-profit event when arm and pullback thresholds are hit', () => {

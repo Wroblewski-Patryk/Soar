@@ -34,7 +34,7 @@ export type ReplayTradeDraft = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
   liquidated: boolean;
 };
 
@@ -918,7 +918,9 @@ export const simulateTradesForSymbolReplay = (input: {
       closedAt: new Date(current.closeTime),
       pnl,
       fee,
-      exitReason: isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
+      exitReason: closeType === 'TP' || closeType === 'SL'
+        ? closeType
+        : isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
       liquidated: isIsolatedLiquidated,
     });
     pushEvent(
