@@ -23,7 +23,7 @@ RUN pnpm --filter api build
 
 FROM node:20-bookworm-slim AS runtime
 ARG SOURCE_COMMIT
-RUN printf '%s' "$SOURCE_COMMIT" | grep -Eq '^[0-9a-f]{40}$' || { echo 'SOURCE_COMMIT must be a full lowercase 40-character git SHA' >&2; exit 1; }
+RUN [ "${#SOURCE_COMMIT}" -eq 40 ] && case "$SOURCE_COMMIT" in *[!0123456789abcdef]*) false ;; *) true ;; esac || { echo 'SOURCE_COMMIT must be a full lowercase 40-character git SHA' >&2; exit 1; }
 LABEL org.opencontainers.image.revision="${SOURCE_COMMIT}"
 ENV NODE_ENV=production
 ENV NODE_OPTIONS="--max-old-space-size=768"
