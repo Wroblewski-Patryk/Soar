@@ -111,6 +111,7 @@ test('evaluateCoolifyStackEnv rejects recommended placeholders in strict mode', 
 test('evaluateCoolifyStackEnv accepts a valid production-shaped stack env', () => {
   const env = {
     SOURCE_COMMIT: '0123456789abcdef0123456789abcdef01234567',
+    API_STACK_IMAGE: `registry.example/soar-api@sha256:${'a'.repeat(64)}`,
     SERVICE_FQDN_API_3001: 'https://api.soar.luckysparrow.ch',
     SERVICE_FQDN_WEB_3002: 'https://soar.luckysparrow.ch',
     DATABASE_URL: 'postgresql://user:pass@postgres:5432/soar',
@@ -137,6 +138,19 @@ test('evaluateCoolifyStackEnv accepts a valid production-shaped stack env', () =
 
   assert.equal(result.status, 'PASS');
   assert.deepEqual(result.valueIssues, []);
+});
+
+test('stack image must be present and pinned to a repository digest', () => {
+  const missing = evaluateCoolifyStackEnv({
+    env: {}, requiredKeys: ['API_STACK_IMAGE'], recommendedKeys: [],
+  });
+  assert.deepEqual(missing.missingRequired, ['API_STACK_IMAGE']);
+  const mutable = evaluateCoolifyStackEnv({
+    env: { API_STACK_IMAGE: 'registry.example/soar-api:latest' },
+    requiredKeys: ['API_STACK_IMAGE'], recommendedKeys: [],
+  });
+  assert.equal(mutable.status, 'FAIL');
+  assert.deepEqual(mutable.valueIssues.map((issue) => issue.key), ['API_STACK_IMAGE']);
 });
 
 test('CLI rejects stack env file flag without a path', () => {
