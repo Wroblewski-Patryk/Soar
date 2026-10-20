@@ -242,9 +242,13 @@ export const reserveExternalClientGrantOrder = async (
         grant.usedQuoteAmount.plus(quoteAmount).gt(grant.maxTotalQuoteAmount)) {
       return deny('GRANT_LIMIT_EXCEEDED');
     }
+    const boundKey = deps.bindIntent ? await resolveDispatchClaimKey(tx, command, true) : null;
+    if (deps.bindIntent && !boundKey) return deny('DISPATCH_ACCOUNT_UNAVAILABLE');
     const reservation = await tx.externalClientGrantReservation.create({
       data: { grantId: grant.id, clientOrderId: command.clientOrderId, commandHash,
-        command: command as Prisma.InputJsonValue, quoteAmount },
+        command: command as Prisma.InputJsonValue, quoteAmount,
+        ...(boundKey ? { boundApiKeyId: boundKey.id,
+          boundApiKeyCredentialVersion: boundKey.credentialVersion } : {}) },
     });
     const intentId = deps.bindIntent ? await bindNewIntent(tx, command) : undefined;
     await tx.externalClientGrant.update({
@@ -394,6 +398,10 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
     await assertCurrentScope(tx, grant, input.secret, command);
     const claimKey = claimDispatch ? await resolveDispatchClaimKey(tx, command, true) : null;
     if (claimDispatch && !claimKey) return deny('DISPATCH_ACCOUNT_UNAVAILABLE');
+    if (claimDispatch && (current.boundApiKeyId !== claimKey?.id ||
+        current.boundApiKeyCredentialVersion !== claimKey?.credentialVersion)) {
+      return deny('DISPATCH_CREDENTIAL_CHANGED');
+    }
     const marker = await tx.liveCreateOrderSubmission.create({ data: {
       grantId: grant.id, reservationId: current.id, intentId: intent.id,
       exchangeId: command.exchange, clientOrderId: command.clientOrderId,

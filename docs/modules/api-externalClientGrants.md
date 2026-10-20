@@ -418,6 +418,34 @@ preserved and read back a preexisting claimed marker with a null new version.
 The 001K orphan/retry suite passed 9 tests, reservation regressions 37, and
 profile API-key regressions 19. These are local proofs only.
 
+`SOAR-EXT-GRANT-001Z1/APIKEY-MUTATION-FENCE` binds the selected `ApiKey` ID and
+database-owned credential version when a reservation and intent are first bound.
+Claim compares that snapshot under the selected key's row lock before creating
+its durable submission marker. A credential rotation or selected-key change that
+wins between bind and claim therefore denies the claim with zero synthetic
+transport starts; the charged reservation remains available only for lookup or
+explicit recovery under its existing contract. Existing reservations with no
+bound key snapshot are left intact and cannot gain a new claim. Previously
+claimed markers remain readable and lookup-only.
+
+The forward migration adds a database `BEFORE UPDATE OR DELETE` fence on the
+selected `ApiKey`. Once a claim marker commits, PATCH/rotate credential changes,
+revoke/delete, and direct SQL credential UPDATE/DELETE are rejected while that
+marker exists. The key row lock serializes these mutations with claim across
+processes. Neutral label, sync-option, and `lastUsed` writes remain allowed and
+do not advance `credentialVersion`; they do not false-block a current marker.
+The marker and charged allowance survive an unknown result, process crash, or
+deadline cancellation. Reuse stays lookup-only and cannot start transport again.
+Only the existing confirmed mock reconciliation/finalization path removes the
+marker, after which normal key lifecycle mutations can proceed. The fence does
+not hold a database transaction across synthetic transport. It also rejects
+credential changes attempted by triggers inside the claim transaction, causing
+that claim to roll back before any transport start.
+
+This is a local, selected-`ApiKey` synthetic proof. It does not fence Wallet,
+Bot, account, or other execution inputs, and it does not authorize a real
+CCXT/LIVE call, production deployment, or a delegated full-call permit.
+
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has
 ended or been canceled before releasing authority, and integrate the existing

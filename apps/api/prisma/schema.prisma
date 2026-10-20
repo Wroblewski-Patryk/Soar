@@ -1406,6 +1406,8 @@ model ExternalClientGrantReservation {
   commandHash       String
   command           Json
   quoteAmount       Decimal                        @db.Decimal(20, 8)
+  boundApiKeyId      String?
+  boundApiKeyCredentialVersion Int?
   state             ExternalClientReservationState @default(RESERVED)
   dispatchStartedAt DateTime?
   resolvedAt        DateTime?
@@ -1470,6 +1472,7 @@ model LiveCreateOrderSubmission {
   intent      LiveOrderIntent?                 @relation(fields: [intentId], references: [id], onDelete: Restrict)
 
   @@index([startedAt])
+  @@index([dispatchApiKeyId])
 }
 
 enum LogLevel {

@@ -87,6 +87,10 @@ export const verifyDispatchClaimInTransaction = async (tx: Tx, input: Input) => 
       !marker.dispatchApiKeyUpdatedAt || intent.userId !== command.userId ||
       intent.exchange !== command.exchange || intent.marketType !== command.marketType ||
       !intentMatchesCommandAndScope(intent, command)) return unknown;
+  if (reservation.boundApiKeyId != null || reservation.boundApiKeyCredentialVersion != null) {
+    if (reservation.boundApiKeyId !== marker.dispatchApiKeyId ||
+        reservation.boundApiKeyCredentialVersion !== marker.dispatchApiKeyCredentialVersion) return unknown;
+  }
   const payload = intent.payload as Record<string, unknown>;
   if (payload.mode !== 'LIVE' || payload.riskAck !== true ||
       payload.clientOrderId !== command.clientOrderId ||

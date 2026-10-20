@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
 import { Prisma } from '@prisma/client';
 import { app as productionApp } from '../src/index';
@@ -15,6 +15,8 @@ import { createExternalClientGrant, revokeExternalClientGrant } from
 import { admitBoundExternalClientGrantSubmission, bindExternalClientGrantReservationIntent,
   executeBoundExternalClientGrantMock, type GrantLimitCommand } from
   '../src/modules/externalClientGrants/externalClientGrantReservation.service';
+import { claimBoundExternalClientGrantDispatch } from
+  '../src/modules/externalClientGrants/externalClientGrantDispatchClaim.service';
 import { createMockOrdersHttpApp } from './mockOrdersHttpApp';
 
 const users: string[] = [];
@@ -34,6 +36,42 @@ const rules = async () => ({ minQuantity: 0.001, minNotional: 1, quantityStep: 0
 const body = () => ({ clientOrderId: `soar_${crypto.randomUUID().replace(/-/g, '').slice(0, 22)}`,
   side: 'BUY' as const, quantity: '0.5', limitPrice: '100' });
 const path = (grantId: string) => `/external-client/grants/${grantId}/mock-orders`;
+const originalEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+const originalEncryptionVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+
+const bindFixture = async (f: Awaited<ReturnType<typeof fixture>>) => {
+  const input = body();
+  const command: GrantLimitCommand = {
+    userId: f.user.id, botId: f.bot.id, exchange: 'BINANCE', marketType: 'FUTURES',
+    symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER', clientOrderId: input.clientOrderId,
+    side: 'BUY', type: 'LIMIT', quantity: input.quantity, limitPrice: input.limitPrice,
+    reduceOnly: false, walletId: f.wallet.id, strategyId: f.strategy.id, positionId: null,
+  };
+  return bindExternalClientGrantReservationIntent({ grantId: f.grant.id, secret: f.secret,
+    command }, { getSymbolRules: rules });
+};
+
+const fenceWorker = (input: Record<string, string>) => {
+  const child = spawn(process.execPath, ['--import', 'tsx',
+    'test-only/apiKeyMutationFence.worker.ts'], {
+    cwd: process.cwd(), env: process.env, windowsHide: true,
+  });
+  let output = '';
+  let errors = '';
+  child.stdout.on('data', (chunk) => { output += chunk.toString(); });
+  child.stderr.on('data', (chunk) => { errors += chunk.toString(); });
+  child.stdin.write(`${JSON.stringify(input)}\n`);
+  const closed = new Promise<number | null>((resolve) => child.on('close', resolve));
+  const waitFor = async (needle: string) => {
+    const until = Date.now() + 12_000;
+    while (!output.includes(needle) && Date.now() < until) {
+      if (errors) throw new Error(errors);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+    if (!output.includes(needle)) throw new Error(`Worker did not emit ${needle}: ${errors} ${output}`);
+  };
+  return { child, closed, waitFor, get output() { return output; }, get errors() { return errors; } };
+};
 
 beforeAll(async () => {
   if (process.env.NODE_ENV !== 'test' ||
@@ -45,6 +83,8 @@ beforeAll(async () => {
     create: { id: 'global', paused: false, reason: 'test available', version: 1 },
     update: { paused: false, reason: 'test available' } });
   useSharedTestStore();
+  process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-api-key-mutation-fence';
+  process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
 });
 
 afterEach(async () => {
@@ -76,6 +116,10 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+  if (originalEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+  else process.env.API_KEY_ENCRYPTION_KEYS = originalEncryptionKeys;
+  if (originalEncryptionVersion === undefined) delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+  else process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = originalEncryptionVersion;
   await __rateLimitInternals.closeRedisClientForTests();
   __rateLimitInternals.resetForTests();
   if (originalControl) await prisma.liveExecutionControl.update({ where: { id: 'global' },
@@ -295,7 +339,7 @@ it('keeps the committed claim lookup-only when the transport-start audit fails',
     .rejects.toMatchObject({ status: 409 });
 });
 
-it('denies transport when the selected credential changes after the claim', async () => {
+it('rolls back a claim when its own audit tries to mutate the selected credential', async () => {
   const f = await fixture();
   const input = body();
   try {
@@ -311,28 +355,25 @@ it('denies transport when the selected credential changes after the claim', asyn
       EXECUTE FUNCTION mock_001v_rotate_claim_key()`);
     const first = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
       .set('Authorization', `Bearer ${f.secret}`).send(input);
-    expect(first.status).toBe(202);
-    expect(first.body.state).toBe('RECONCILIATION_REQUIRED');
+    expect(first.status).toBe(503);
   } finally {
     await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001v_rotate_claim_key_trigger ON "Log"');
     await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001v_rotate_claim_key()');
   }
   const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
     where: { clientOrderId: input.clientOrderId } });
-  const marker = await prisma.liveCreateOrderSubmission.findUniqueOrThrow({
-    where: { reservationId: reservation.id } });
   const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
-  expect(marker.dispatchApiKeyId).toBe(key.id);
-  expect(marker.dispatchApiKeyCredentialVersion).toBe(f.key.credentialVersion);
-  expect(key.credentialVersion).toBe(f.key.credentialVersion + 1);
-  expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
+  expect(key.credentialVersion).toBe(f.key.credentialVersion);
+  expect(reservation.state).toBe('RESERVED');
+  expect(await prisma.liveCreateOrderSubmission.count({
+    where: { reservationId: reservation.id } })).toBe(0);
   expect(await transportStarts(reservation.id)).toBe(0);
   expect(await prisma.log.count({ where: { entityId: reservation.id,
-    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
+    action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(0);
   const retry = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
     .set('Authorization', `Bearer ${f.secret}`).send(input);
-  expect(retry.status).toBe(202);
-  expect(await transportStarts(reservation.id)).toBe(0);
+  expect(retry.status).toBe(200);
+  expect(await transportStarts(reservation.id)).toBe(1);
   expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
     .usedActions).toBe(1);
 });
@@ -401,8 +442,8 @@ it('rolls back the start audit when key rotation or grant revoke occurs inside i
           EXECUTE FUNCTION mock_001v2_boundary()`);
         const first = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
           .set('Authorization', `Bearer ${f.secret}`).send(input);
-        expect(first.status, change).toBe(202);
-        expect(first.body.state).toBe('RECONCILIATION_REQUIRED');
+        expect(first.status, change).toBe(change === 'revoke' ? 202 : 503);
+        if (change === 'revoke') expect(first.body.state).toBe('RECONCILIATION_REQUIRED');
       } finally {
         await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001v2_boundary_trigger ON "Log"');
         await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001v2_boundary()');
@@ -623,6 +664,154 @@ it('serializes concurrent identical HTTP submissions without duplicate mock tran
   expect(changed.status).toBe(409);
   expect(await transportStarts(reservation.id)).toBe(1);
 });
+
+it('lets a separate-process rotation win before claim with no synthetic start', async () => {
+  const f = await fixture();
+  const bound = await bindFixture(f);
+  const worker = fenceWorker({ operation: 'hold-rotation', keyId: f.key.id });
+  try {
+    await worker.waitFor('ROTATION_LOCKED');
+    const claim = claimBoundExternalClientGrantDispatch({
+      reservationId: bound.reservation.id, secret: f.secret,
+    }, { getSymbolRules: rules });
+    void claim.catch(() => {});
+    let waiting = false;
+    for (let attempt = 0; attempt < 200 && !waiting; attempt += 1) {
+      const rows = await prisma.$queryRaw<Array<{ waiting: number }>>`
+        SELECT count(*)::int AS waiting FROM pg_stat_activity
+        WHERE datname = current_database() AND wait_event_type = 'Lock'
+          AND query LIKE '%"ApiKey"%'`;
+      waiting = rows[0]?.waiting > 0;
+      if (!waiting) await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+    expect(waiting).toBe(true);
+    worker.child.stdin.end('COMMIT\n');
+    expect(await worker.closed).toBe(0);
+    expect(worker.errors).toBe('');
+    await expect(claim).rejects.toMatchObject({ code: 'DISPATCH_CREDENTIAL_CHANGED' });
+    expect(await transportStarts(bound.reservation.id)).toBe(0);
+    expect(await prisma.liveCreateOrderSubmission.count({
+      where: { reservationId: bound.reservation.id } })).toBe(0);
+    expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } })).usedActions)
+      .toBe(1);
+  } finally {
+    if (!worker.child.killed) worker.child.stdin.end('COMMIT\n');
+    await worker.closed;
+  }
+}, 30_000);
+
+it('fences HTTP and SQL key mutations through a committed claim until certain finish', async () => {
+  const f = await fixture();
+  const bound = await bindFixture(f);
+  const reservationId = bound.reservation.id;
+  const worker = fenceWorker({ operation: 'mock-hold-result', reservationId,
+    secret: f.secret });
+  try {
+    let started = false;
+    for (let attempt = 0; attempt < 400 && !started; attempt += 1) {
+      started = (await transportStarts(reservationId)) === 1;
+      if (!started) await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+    expect({ started, errors: worker.errors }).toEqual({ started: true, errors: '' });
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { reservationId } })).toBe(1);
+    const agent = request.agent(productionApp);
+    expect((await agent.post('/auth/login').send({
+      email: f.user.email, password: 'GrantTest1234',
+    })).status).toBe(200);
+    const endpoint = `/dashboard/profile/apiKeys/${f.key.id}`;
+    expect((await agent.patch(endpoint).send({ apiSecret: 'PATCHEDSECRET12345' })).status).toBe(409);
+    expect((await agent.post(`${endpoint}/rotate`).send({
+      apiKey: 'ROTATEKEY12345', apiSecret: 'ROTATESECRET12345',
+    })).status).toBe(409);
+    expect((await agent.post(`${endpoint}/revoke`)).status).toBe(409);
+    expect((await agent.delete(endpoint)).status).toBe(409);
+    await expect(prisma.$executeRaw`UPDATE "ApiKey" SET "apiSecret" = 'raw-rotation'
+      WHERE "id" = ${f.key.id}`).rejects.toThrow();
+    await expect(prisma.$executeRaw`DELETE FROM "ApiKey" WHERE "id" = ${f.key.id}`)
+      .rejects.toThrow();
+    await expect(prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`UPDATE "LiveCreateOrderSubmission"
+        SET "startedAt" = "startedAt" WHERE "reservationId" = ${reservationId}`;
+      await tx.apiKey.update({ where: { id: f.key.id },
+        data: { apiSecret: 'marker-updated-in-same-transaction' } });
+    })).rejects.toThrow('Selected API key has a delegated submission');
+    const before = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
+    const neutral = await prisma.apiKey.update({ where: { id: f.key.id },
+      data: { label: 'neutral while claimed', lastUsed: new Date() } });
+    expect(neutral.credentialVersion).toBe(before.credentialVersion);
+    expect((await claimBoundExternalClientGrantDispatch({ reservationId, secret: f.secret },
+      { getSymbolRules: rules })).claimStatus).toBe('VERIFIED');
+    expect(await transportStarts(reservationId)).toBe(1);
+    expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } })).usedActions)
+      .toBe(1);
+    expect(await worker.closed).toBe(0);
+    expect(worker.errors).toBe('');
+    expect(worker.output).toContain('"orderId":');
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { reservationId } })).toBe(0);
+    expect((await agent.post(`${endpoint}/rotate`).send({
+      apiKey: 'ROTATEKEY12345', apiSecret: 'ROTATESECRET12345',
+    })).status).toBe(200);
+    expect((await agent.delete(endpoint)).status).toBe(204);
+    expect(await transportStarts(reservationId)).toBe(1);
+  } finally {
+    if (worker.child.exitCode === null) worker.child.kill();
+    await worker.closed;
+  }
+}, 40_000);
+
+it('keeps the credential fence and one allowance after UNKNOWN, crash, and timeout cancellation', async () => {
+  const unknown = await fixture();
+  const unknownBound = await bindFixture(unknown);
+  await expect(executeBoundExternalClientGrantMock({
+    reservationId: unknownBound.reservation.id, secret: unknown.secret, scenario: 'UNKNOWN',
+  })).rejects.toMatchObject({ code: 'DELEGATED_MOCK_OUTCOME_UNKNOWN' });
+  expect(await transportStarts(unknownBound.reservation.id)).toBe(1);
+  expect(await prisma.liveCreateOrderSubmission.count({
+    where: { reservationId: unknownBound.reservation.id } })).toBe(1);
+  expect((await executeBoundExternalClientGrantMock({
+    reservationId: unknownBound.reservation.id, secret: unknown.secret,
+  })).orderId).toBeNull();
+  await expect(prisma.$executeRaw`UPDATE "ApiKey" SET "apiSecret" = 'after-unknown'
+    WHERE "id" = ${unknown.key.id}`).rejects.toThrow();
+
+  for (const operation of ['mock-crash-after-start', 'mock-hold-result'] as const) {
+    const f = await fixture();
+    const bound = await bindFixture(f);
+    const worker = fenceWorker({ operation, reservationId: bound.reservation.id,
+      secret: f.secret });
+    try {
+      if (operation === 'mock-crash-after-start') {
+        await worker.waitFor('MOCK_ENTERED');
+        expect(await worker.closed).toBe(76);
+      } else {
+        let started = false;
+        for (let attempt = 0; attempt < 400 && !started; attempt += 1) {
+          started = (await transportStarts(bound.reservation.id)) === 1;
+          if (!started) await new Promise((resolve) => setTimeout(resolve, 25));
+        }
+        expect({ started, errors: worker.errors }).toEqual({ started: true, errors: '' });
+        worker.child.kill(); // Simulated deadline cancellation after transport entry.
+        await worker.closed;
+      }
+      expect(await prisma.liveCreateOrderSubmission.count({
+        where: { reservationId: bound.reservation.id } })).toBe(1);
+      expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+        .usedActions).toBe(1);
+      expect(await transportStarts(bound.reservation.id)).toBe(1);
+      expect((await executeBoundExternalClientGrantMock({
+        reservationId: bound.reservation.id, secret: f.secret,
+      })).orderId).toBeNull();
+      expect(await transportStarts(bound.reservation.id)).toBe(1);
+      await expect(prisma.$executeRaw`UPDATE "ApiKey" SET "apiSecret" = 'after-interruption'
+        WHERE "id" = ${f.key.id}`).rejects.toThrow();
+      await expect(prisma.$executeRaw`DELETE FROM "ApiKey" WHERE "id" = ${f.key.id}`)
+        .rejects.toThrow();
+    } finally {
+      if (worker.child.exitCode === null) worker.child.kill();
+      await worker.closed;
+    }
+  }
+}, 45_000);
 
 it.skipIf(!process.env.TEST_REDIS_URL || !process.env.TEST_REDIS_CONTAINER)(
   'enforces both buckets with real isolated Redis and fails closed through stop and restart', async () => {

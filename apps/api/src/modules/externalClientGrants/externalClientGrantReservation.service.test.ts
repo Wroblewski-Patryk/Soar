@@ -79,15 +79,15 @@ const fixture = async (
     userId: user.id, name: 'Delegated seam wallet', mode: 'LIVE', exchange, marketType,
     baseCurrency: 'USDT',
   } }) : null;
-  const key = domainReady ? await prisma.apiKey.create({ data: {
+  const key = await prisma.apiKey.create({ data: {
     userId: user.id, label: 'Reservation mock key', exchange,
     apiKey: 'test-only-key', apiSecret: 'test-only-secret',
-  } }) : null;
+  } });
   const bot = await prisma.bot.create({ data: {
     userId: user.id, name: 'Reservation bot', mode: 'LIVE', exchange, marketType,
-    isActive: true, liveOptIn: true, symbolGroupId: group.id,
+    isActive: true, liveOptIn: true, symbolGroupId: group.id, apiKeyId: key.id,
     ...(domainReady ? { consentTextVersion: 'mvp-v1', strategyId: strategy!.id,
-      walletId: wallet!.id, apiKeyId: key!.id } : {}),
+      walletId: wallet!.id } : {}),
   } });
   const { grant, secret } = await createExternalClientGrant(user.id, {
     botId: bot.id, clientLabel: 'Test external client', exchange, marketType,

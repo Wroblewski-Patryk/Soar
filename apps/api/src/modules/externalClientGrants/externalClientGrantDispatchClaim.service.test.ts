@@ -259,7 +259,7 @@ describe('001T durable dispatch claim foundation', () => {
     });
   }, 30_000);
 
-  it.skipIf(!dedicatedDb)('keeps neutral writes verified and fails closed after a credential change', async () => {
+  it.skipIf(!dedicatedDb)('keeps neutral writes verified and fences a claimed credential', async () => {
     await withUnpausedControl(async () => {
       const f = await fixture();
       const input = { reservationId: f.bound.reservation.id, secret: f.secret };
@@ -273,20 +273,23 @@ describe('001T durable dispatch claim foundation', () => {
       expect(telemetry.credentialVersion).toBe(f.key.credentialVersion);
       expect(telemetry.updatedAt.getTime()).toBeGreaterThanOrEqual(f.key.updatedAt.getTime());
       expect((await claim()).claimStatus).toBe('VERIFIED');
-      const rotated = await prisma.apiKey.update({ where: { id: f.key.id },
-        data: { apiSecret: 'rotated-test-only-secret' } });
-      expect(rotated.credentialVersion).toBe(f.key.credentialVersion + 1);
-      const unchanged = await prisma.apiKey.update({ where: { id: f.key.id },
-        data: { apiSecret: rotated.apiSecret } });
-      expect(unchanged.credentialVersion).toBe(rotated.credentialVersion);
-      const identifierChanged = await prisma.apiKey.update({ where: { id: f.key.id },
+      await expect(prisma.apiKey.update({ where: { id: f.key.id },
+        data: { apiSecret: 'rotated-test-only-secret' } }))
+        .rejects.toThrow('Selected API key has a delegated submission');
+      const spare = await prisma.apiKey.create({ data: { userId: f.user.id,
+        label: 'unclaimed version test', exchange: 'BINANCE',
+        apiKey: 'spare-key', apiSecret: 'spare-secret' } });
+      const unchanged = await prisma.apiKey.update({ where: { id: spare.id },
+        data: { apiSecret: spare.apiSecret } });
+      expect(unchanged.credentialVersion).toBe(spare.credentialVersion);
+      const identifierChanged = await prisma.apiKey.update({ where: { id: spare.id },
         data: { apiKey: 'rotated-test-only-identifier' } });
-      expect(identifierChanged.credentialVersion).toBe(rotated.credentialVersion + 1);
-      const exchangeChanged = await prisma.apiKey.update({ where: { id: f.key.id },
+      expect(identifierChanged.credentialVersion).toBe(spare.credentialVersion + 1);
+      const exchangeChanged = await prisma.apiKey.update({ where: { id: spare.id },
         data: { exchange: 'GATEIO' } });
       expect(exchangeChanged.credentialVersion).toBe(identifierChanged.credentialVersion + 1);
       expect(await claim()).toMatchObject({ markerId: marker.id, reused: true,
-        lookupOnly: true, claimed: false, claimStatus: 'UNKNOWN' });
+        lookupOnly: true, claimed: false, claimStatus: 'VERIFIED' });
       expect(await prisma.liveCreateOrderSubmission.count({ where: { id: marker.id } })).toBe(1);
       expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
         where: { id: input.reservationId } })).state).toBe('SUBMISSION_UNCERTAIN');
@@ -305,6 +308,8 @@ describe('001T durable dispatch claim foundation', () => {
         where: { reservationId: input.reservationId } });
       await prisma.liveCreateOrderSubmission.update({ where: { id: marker.id },
         data: { dispatchApiKeyCredentialVersion: null } });
+      await prisma.externalClientGrantReservation.update({ where: { id: input.reservationId },
+        data: { boundApiKeyId: null, boundApiKeyCredentialVersion: null } });
       expect((await claim()).claimStatus).toBe('VERIFIED');
       const key = await prisma.apiKey.update({ where: { id: f.key.id }, data: {
         lastUsed: new Date(), updatedAt: new Date(f.key.updatedAt.getTime() + 1000),
@@ -315,12 +320,10 @@ describe('001T durable dispatch claim foundation', () => {
     });
   });
 
-  it.skipIf(!dedicatedDb)('waits for a concurrent credential update then sees the committed version', async () => {
+  it.skipIf(!dedicatedDb)('denies a claim after a concurrent credential update wins', async () => {
     await withUnpausedControl(async () => {
       const f = await fixture();
       const input = { reservationId: f.bound.reservation.id, secret: f.secret };
-      expect((await claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules }))
-        .claimStatus).toBe('VERIFIED');
       let releaseWriter!: () => void;
       let writerEntered!: () => void;
       const release = new Promise<void>((resolve) => { releaseWriter = resolve; });
@@ -332,7 +335,7 @@ describe('001T durable dispatch claim foundation', () => {
         await release;
       }, { timeout: 15_000 });
       await entered;
-      const reuse = claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules });
+      const claim = claimBoundExternalClientGrantDispatch(input, { getSymbolRules: rules });
       try {
         let blocked = false;
         const until = Date.now() + 5000;
@@ -347,8 +350,11 @@ describe('001T durable dispatch claim foundation', () => {
         expect(blocked).toBe(true);
       } finally { releaseWriter(); }
       await writer;
-      expect(await reuse).toMatchObject({ reused: true, lookupOnly: true,
-        claimed: false, claimStatus: 'UNKNOWN' });
+      await expect(claim).rejects.toMatchObject({ code: 'DISPATCH_CREDENTIAL_CHANGED' });
+      expect(await prisma.liveCreateOrderSubmission.count({
+        where: { reservationId: input.reservationId } })).toBe(0);
+      expect((await prisma.externalClientGrantReservation.findUniqueOrThrow({
+        where: { id: input.reservationId } })).state).toBe('RESERVED');
     });
   }, 30_000);
 
