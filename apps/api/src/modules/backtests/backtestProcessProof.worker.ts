@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { createClaimedBacktestRunJob } from './backtestClaimedRun';
 import { simulateInterleavedPortfolio } from './backtestPortfolioSimulation.service';
 import type { BacktestRunJobDeps } from './backtestRunJob';
@@ -15,7 +16,10 @@ if (process.env.SOAR_BT_PROOF !== '1' ||
 }
 
 const role = process.env.SOAR_BT_PROOF_ROLE;
-const positionCycleProof = role === 'position-cycle-ack-hold' || role === 'position-cycle-recovery';
+const midCalculationProof = role === 'position-cycle-mid-hold' ||
+  role === 'position-cycle-mid-release';
+const positionCycleProof = midCalculationProof || role === 'position-cycle-ack-hold' ||
+  role === 'position-cycle-recovery';
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
 if (!queueName) throw new Error('Proof queue name missing');
 const proofRunIds = (process.env.SOAR_BT_PROOF_RUN_IDS ?? '').split(',').filter(Boolean);
@@ -57,6 +61,65 @@ const deps: BacktestRunJobDeps = {
   fetchSupplementalSeries: async () => ({ fundingRates: [], openInterest: [], orderBook: [] }),
   simulateInterleavedPortfolio: (input) => {
     process.stdout.write('SIMULATE\n');
+    if (midCalculationProof) {
+      const candles = input.candlesBySymbol.get('BTCUSDT');
+      if (!candles || candles.length < 7 || candles[6].close !== 0.47) {
+        throw new Error('007 mid-calculation proof requires the SL candle');
+      }
+      const confirmedDcaUsdt: number[] = [];
+      const originalPush = Array.prototype.push;
+      Array.prototype.push = function (...items: unknown[]) {
+        const length = originalPush.apply(this, items);
+        for (const item of items) {
+          const event = item as {
+            symbol?: unknown; type?: unknown; contribution?: { contributionUsdt?: unknown };
+          } | null;
+          if (event?.symbol === 'BTCUSDT' && event.type === 'DCA' &&
+              typeof event.contribution?.contributionUsdt === 'number') {
+            confirmedDcaUsdt[confirmedDcaUsdt.length] = event.contribution.contributionUsdt;
+          }
+        }
+        return length;
+      };
+      const guardedCandles = [...candles];
+      let checkpointReached = false;
+      guardedCandles[6] = new Proxy(candles[6], {
+        get(target, property, receiver) {
+          // The clock reaches candle 6 only after the two basic DCA candles.
+          // Precomputation can also read candle 6, so pause only in the clock picker.
+          if (property === 'openTime' && !checkpointReached &&
+              new Error().stack?.includes('pickNextSymbol')) {
+            if (confirmedDcaUsdt.length !== 2 ||
+                Math.abs(confirmedDcaUsdt[0] - 2) > 1e-6 ||
+                Math.abs(confirmedDcaUsdt[1] - 6) > 1e-6) {
+              throw new Error('007 checkpoint reached without confirmed 2/6 USDT DCA events');
+            }
+            checkpointReached = true;
+            process.stdout.write('AFTER_BOTH_DCA_BEFORE_SL\n');
+            const gate = new Int32Array(new SharedArrayBuffer(4));
+            if (role === 'position-cycle-mid-release') {
+              const releaseFile = process.env.SOAR_BT_PROOF_RELEASE_FILE;
+              if (!releaseFile) throw new Error('Mid-calculation release file missing');
+              const deadline = Date.now() + 30_000;
+              while (!existsSync(releaseFile)) {
+                if (Date.now() >= deadline) throw new Error('Mid-calculation release timed out');
+                Atomics.wait(gate, 0, 0, 50);
+              }
+            } else {
+              Atomics.wait(gate, 0, 0);
+            }
+          }
+          return Reflect.get(target, property, receiver);
+        },
+      });
+      const candlesBySymbol = new Map(input.candlesBySymbol);
+      candlesBySymbol.set('BTCUSDT', guardedCandles);
+      try {
+        return simulateInterleavedPortfolio({ ...input, candlesBySymbol });
+      } finally {
+        Array.prototype.push = originalPush;
+      }
+    }
     if (positionCycleProof) return simulateInterleavedPortfolio(input);
     return {
       perSymbol: {
