@@ -291,14 +291,17 @@ Cutover order:
    web build-info alone is not image provenance. If Coolify cannot separate
    build from start or cannot pin the verified image for the later start, stop:
    this cutover path is NO-GO until an approved immutable-image path exists.
-5. Stop the old four worker Applications. If the old API can consume work inline
-   or its ownership is unknown, stop the old API too. Wait for every old worker
-   container to report `Running=false` and `Pid=0`; do not merely request a
-   stop. Keep the old Applications registered and do not delete their data.
-6. Capture a fresh, complete, no-secret Coolify/VPS inventory and run the
+5. Stop the old four worker Applications and old API. This conservative cutover
+   does not rely on an unverified claim that the old API has no inline worker.
+   Wait for every old worker and API container to report `Running=false` and
+   `Pid=0`; do not merely request a stop. Keep the old Applications registered
+   and do not delete their data.
+6. Capture a fresh, complete, no-secret Coolify resource inventory and run the
    [worker switch preflight](#worker-switch-preflight) **before** starting the
-   new stack. A FAIL, missing old resource, unknown container state, stale
-   snapshot, missing source revision, or image mismatch blocks the start.
+   new stack on the target VPS. It cross-checks the snapshot against a live,
+   read-only enumeration of all Docker containers. A FAIL, missing or additional
+   Soar container, unknown state, stale snapshot, missing source revision, or
+   image mismatch blocks the start.
 7. Start the new stack from the verified immutable candidate image. Do not
    rebuild from a moving branch between preflight and start. If the deployment
    mechanism rebuilds or changes the image ID, stop acceptance and investigate.
@@ -325,28 +328,31 @@ Cutover order:
 
 ### Worker switch preflight
 
-Run this only after the candidate image is built and the old workers have
-stopped, immediately before the candidate starts. The script reads a local JSON
-snapshot; it does not contact Docker, Coolify, Redis, or the database. The
-operator must collect the snapshot through authorized read-only Coolify and VPS
-access. Record no environment dump, credential, user data, or backtest ID.
+Run this only after the candidate image is built and the old workers **and old
+API** have stopped, immediately before the candidate starts. The script reads
+the operator's Coolify resource snapshot and independently calls `docker ps`
+and a field-limited `docker inspect` on **all** containers on the target VPS.
+It reads no Docker environment variables and performs no Docker mutation. It
+does not contact Coolify, Redis, or the database; the operator must obtain the
+Coolify resource list through authorized read-only access. Do not put an
+environment dump, credential, user data, or backtest ID in the snapshot.
 
 ```bash
-docker ps -a --no-trunc --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}'
-docker inspect --format '{{.Id}} {{.State.Running}} {{.State.Pid}} {{.Image}}' <each-old-container-id>
 docker image inspect --format '{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}' <candidate-api-image>
 docker compose -f docker-compose.coolify.yml config --images
 pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha>
 ```
 
 The snapshot has `schemaVersion: 1`, a UTC `capturedAt` no more than five
-minutes old, `inventoryComplete: true`, and
+minutes old, `inventoryComplete: true`, `coolifyProjectName` matching the
+Coolify project label on the target host, and
 `inventorySource: "coolify-and-docker-readback"`. `oldApplications` must contain
 exactly one resource entry each for `api`, `workers-market-data`,
 `workers-market-stream`, `workers-backtest`, and `workers-execution`, with all
-their container IDs and `running`/`pid` readbacks. A running old API also needs
-`workerMode: "split"` and `ownership` with `marketData`, `marketStream`,
-`backtest`, and `execution` all set to `worker`; otherwise stop it. The
+their container IDs and `running`/`pid` readbacks. Every old API and worker
+container must be stopped. `passiveResources` identifies the old Web resource
+and any Soar Postgres/Redis resources that may remain running; the preflight
+rejects unlisted or ambiguous Soar containers. The
 `provenance` object needs `coolifyResourceId`, `coolifyDeploymentId`, the
 Coolify-resolved source `coolifyResolvedSha`, the built `apiImageId`, its
 `apiImageRevision` label, and `plannedImageIds` for the API and four workers.
@@ -355,6 +361,9 @@ must equal the candidate API image ID. Obtain the Coolify-resolved revision
 from the control plane's actual source/build readback, independently of the
 operator-entered `SOURCE_COMMIT`. Do not mark `inventoryComplete` until every
 old Soar worker resource and container on the host is accounted for.
+Use Coolify resource UUIDs, not numeric database IDs, for `resourceId`; use the
+exact `coolify.projectName` label for `coolifyProjectName`. If the host or
+resource labels cannot establish that mapping, the preflight must fail.
 
 The snapshot structure is:
 
@@ -364,6 +373,12 @@ The snapshot structure is:
   "capturedAt": "<current UTC ISO time>",
   "inventoryComplete": true,
   "inventorySource": "coolify-and-docker-readback",
+  "coolifyProjectName": "<exact Soar project label>",
+  "passiveResources": [
+    { "role": "web", "resourceId": "<old Web resource UUID>" },
+    { "role": "postgres", "resourceId": "<Soar Postgres resource UUID, if in project>" },
+    { "role": "redis", "resourceId": "<Soar Redis resource UUID, if in project>" }
+  ],
   "provenance": {
     "coolifyResourceId": "<candidate stack resource ID>",
     "coolifyDeploymentId": "<candidate build record ID>",
@@ -390,16 +405,23 @@ The snapshot structure is:
 }
 ```
 
-Replace every placeholder from live readbacks; each worker's `containers`
-array must contain every old container, including stopped replicas. Empty
-arrays in this shape deliberately fail. A running old API needs the additional
-`workerMode` and `ownership` fields described above; the shown stopped API does
-not. Keep the filled snapshot outside the repository.
+Replace every placeholder from live readbacks; omit Postgres/Redis entries only
+when those resources are outside this Coolify project. Each API/worker
+`containers` array must contain every old container, including stopped
+replicas. Empty arrays deliberately fail. Keep the filled snapshot outside the
+repository.
 
-The script reports only PASS or failure codes and fails closed on missing or
-unknown evidence. Its PASS validates the supplied readback, not a live host;
-repeat collection if the snapshot expires or container state changes. The
-post-start image-ID and Web build-info checks remain separate acceptance gates.
+The script reports `PASS_INVENTORY_ONLY` or failure codes and fails closed when
+Docker access is unavailable, the container set changes during the read, an
+extra replica appears, or a container cannot be attributed. The Coolify
+resource list is still operator supplied; `inventoryComplete: true` is never
+sufficient by itself. If its completeness cannot be established or legacy
+labels leave ownership uncertain, the result is FAIL.
+The live Docker read is a point-in-time gate: keep deployments frozen and run
+it immediately before start. `PASS_INVENTORY_ONLY` is **not** deployment GO.
+Image provenance beyond the entered Coolify/build readbacks and a safe rollback
+sequence remain separate P2 work for independent review. The post-start
+image-ID and Web build-info checks remain separate acceptance gates.
 Public `/health`, `/ready`, and worker heartbeats do not prove that old code
 has stopped or that a backtest moved from `PENDING` to a terminal state.
 

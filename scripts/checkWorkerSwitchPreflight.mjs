@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readWorkerSwitchDockerInventory } from './readWorkerSwitchDockerInventory.mjs';
 
 const FULL_SHA = /^[0-9a-f]{40}$/i;
 const IMAGE_ID = /^sha256:[0-9a-f]{64}$/i;
@@ -18,8 +19,9 @@ const ROLES = [
   'workers-backtest',
   'workers-execution',
 ];
-const WORKER_ROLES = ROLES.filter((role) => role !== 'api');
-const OWNERSHIP_FAMILIES = ['marketData', 'marketStream', 'backtest', 'execution'];
+const PASSIVE_ROLES = ['web', 'postgres', 'redis'];
+const SOAR_MARKER = /soar|cryptosparrow/i;
+const WORKER_MARKER = /worker|backtest|execution|market.?data|market.?stream/i;
 
 const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const hasOnlyKeys = (value, allowed) =>
@@ -28,14 +30,87 @@ const fullSha = (value) => typeof value === 'string' && FULL_SHA.test(value);
 const imageId = (value) => typeof value === 'string' && IMAGE_ID.test(value);
 const normalizedSha = (value) => typeof value === 'string' ? value.toLowerCase() : '';
 
-export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = Date.now() }) => {
+const resolveResourceId = (container, knownResourceIds) => {
+  const labeled = [container.applicationUuid, container.serviceUuid, container.databaseUuid]
+    .filter(Boolean);
+  if (new Set(labeled).size > 1) return null;
+  if (labeled.length) return labeled[0];
+  if (!container.legacyApplicationId) return '';
+  if (knownResourceIds.has(container.composeProject)) return container.composeProject;
+  return [...knownResourceIds].find((id) =>
+    container.composeService === id || container.composeService?.startsWith(`${id}-`)) ?? '';
+};
+
+const validateLiveInventory = ({ snapshot, liveInventory, oldByResource, passiveByResource, fail }) => {
+  if (liveInventory?.status !== 'PASS' || !Array.isArray(liveInventory.containers)) {
+    fail(liveInventory?.issues?.[0] ?? 'LIVE_DOCKER_REQUIRED');
+    return;
+  }
+  const knownResourceIds = new Set([...oldByResource.keys(), ...passiveByResource.keys()]);
+  const liveOldIds = new Map([...oldByResource.keys()].map((id) => [id, new Set()]));
+  const oldImageIds = new Set(liveInventory.containers
+    .filter((container) => oldByResource.has(resolveResourceId(container, knownResourceIds)))
+    .map((container) => container.imageId));
+  const expectedProject = snapshot.coolifyProjectName?.toLowerCase();
+  let projectLabelSeen = false;
+  for (const container of liveInventory.containers) {
+    const owner = resolveResourceId(container, knownResourceIds);
+    const sameProject = Boolean(expectedProject && container.projectName?.toLowerCase() === expectedProject);
+    if (sameProject && (oldByResource.has(owner) || passiveByResource.has(owner))) {
+      projectLabelSeen = true;
+    }
+    const looksLikeSoar = SOAR_MARKER.test(`${container.name} ${container.imageRef}`) ||
+      oldImageIds.has(container.imageId);
+    if (owner === null) {
+      fail('SOAR_CONTAINER_OWNER_AMBIGUOUS');
+      continue;
+    }
+    if (owner === snapshot.provenance?.coolifyResourceId) {
+      fail('CANDIDATE_CONTAINER_ALREADY_PRESENT');
+      continue;
+    }
+    if (oldByResource.has(owner)) {
+      const app = oldByResource.get(owner);
+      liveOldIds.get(owner).add(container.id);
+      if (container.projectName && !sameProject) fail('SOAR_PROJECT_MISMATCH');
+      const expected = app.containers.find((item) => item.id === container.id);
+      if (!expected) fail('UNLISTED_OLD_CONTAINER');
+      else if (expected.running !== container.running || expected.pid !== container.pid) {
+        fail('SNAPSHOT_STATE_MISMATCH');
+      }
+      if (container.running || container.pid !== 0) fail('OLD_WORKER_ACTIVE');
+      continue;
+    }
+    if (passiveByResource.has(owner)) {
+      if (container.projectName && !sameProject) fail('SOAR_PROJECT_MISMATCH');
+      if (WORKER_MARKER.test(`${container.name} ${container.composeService}`)) {
+        fail('PASSIVE_RESOURCE_MAY_CONSUME');
+      }
+      continue;
+    }
+    if (sameProject || looksLikeSoar || (owner && !container.projectName)) {
+      fail('UNASSIGNED_SOAR_CONTAINER');
+    }
+  }
+  for (const [resourceId, app] of oldByResource) {
+    const found = liveOldIds.get(resourceId);
+    if (app.containers.some((container) => !found.has(container.id))) {
+      fail('OLD_CONTAINER_NOT_FOUND');
+    }
+  }
+  if (!projectLabelSeen) fail('COOLIFY_PROJECT_UNVERIFIED');
+};
+
+export const evaluateWorkerSwitchPreflight = ({
+  snapshot, expectedSha, liveInventory, nowMs = Date.now(),
+}) => {
   const issues = [];
   const fail = (code) => issues.push(code);
 
   if (!fullSha(expectedSha)) fail('EXPECTED_SHA_INVALID');
   if (!hasOnlyKeys(snapshot, [
     'schemaVersion', 'capturedAt', 'inventoryComplete', 'inventorySource',
-    'provenance', 'oldApplications',
+    'coolifyProjectName', 'passiveResources', 'provenance', 'oldApplications',
   ])) {
     fail('SNAPSHOT_SCHEMA_INVALID');
     return { status: 'FAIL', issues };
@@ -43,6 +118,9 @@ export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = D
   if (snapshot.schemaVersion !== 1) fail('SNAPSHOT_VERSION_INVALID');
   if (snapshot.inventoryComplete !== true || snapshot.inventorySource !== 'coolify-and-docker-readback') {
     fail('OLD_INVENTORY_UNCONFIRMED');
+  }
+  if (typeof snapshot.coolifyProjectName !== 'string' || !snapshot.coolifyProjectName.trim()) {
+    fail('COOLIFY_PROJECT_UNKNOWN');
   }
   const capturedMs = Date.parse(snapshot.capturedAt);
   if (typeof snapshot.capturedAt !== 'string' || !UTC_ISO.test(snapshot.capturedAt) ||
@@ -77,6 +155,24 @@ export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = D
     }
   }
 
+  const passiveByResource = new Map();
+  if (!Array.isArray(snapshot.passiveResources) ||
+      snapshot.passiveResources.filter((resource) => resource?.role === 'web').length !== 1) {
+    fail('COOLIFY_RESOURCES_INCOMPLETE');
+  } else {
+    for (const resource of snapshot.passiveResources) {
+      if (!hasOnlyKeys(resource, ['role', 'resourceId']) ||
+          !PASSIVE_ROLES.includes(resource.role) ||
+          typeof resource.resourceId !== 'string' || !resource.resourceId.trim() ||
+          passiveByResource.has(resource.resourceId)) {
+        fail('COOLIFY_RESOURCES_INCOMPLETE');
+        continue;
+      }
+      passiveByResource.set(resource.resourceId, resource);
+    }
+  }
+
+  const oldByResource = new Map();
   if (!Array.isArray(snapshot.oldApplications)) {
     fail('OLD_INVENTORY_INCOMPLETE');
   } else {
@@ -88,7 +184,7 @@ export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = D
     const resourceIds = new Set();
     const containerIds = new Set();
     for (const app of snapshot.oldApplications) {
-      if (!hasOnlyKeys(app, ['role', 'resourceId', 'containers', 'workerMode', 'ownership']) ||
+      if (!hasOnlyKeys(app, ['role', 'resourceId', 'containers']) ||
           !ROLES.includes(app.role) || typeof app.resourceId !== 'string' ||
           !app.resourceId.trim() || !Array.isArray(app.containers) || app.containers.length === 0) {
         fail('OLD_INVENTORY_INCOMPLETE');
@@ -96,6 +192,8 @@ export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = D
       }
       if (resourceIds.has(app.resourceId)) fail('OLD_INVENTORY_DUPLICATE');
       resourceIds.add(app.resourceId);
+      if (passiveByResource.has(app.resourceId)) fail('OLD_INVENTORY_DUPLICATE');
+      oldByResource.set(app.resourceId, app);
       for (const container of app.containers) {
         if (!hasOnlyKeys(container, ['id', 'running', 'pid']) ||
             typeof container.id !== 'string' || !CONTAINER_ID.test(container.id) ||
@@ -106,26 +204,20 @@ export const evaluateWorkerSwitchPreflight = ({ snapshot, expectedSha, nowMs = D
         }
         if (containerIds.has(container.id)) fail('OLD_INVENTORY_DUPLICATE');
         containerIds.add(container.id);
-        if (WORKER_ROLES.includes(app.role) && (container.running || container.pid !== 0)) {
+        if (container.running || container.pid !== 0) {
           fail('OLD_WORKER_ACTIVE');
-        }
-      }
-      if (app.role === 'api') {
-        const apiRunning = app.containers.some((container) => container?.running || container?.pid > 0);
-        if (apiRunning && (app.workerMode !== 'split' ||
-            !hasOnlyKeys(app.ownership, OWNERSHIP_FAMILIES) ||
-            OWNERSHIP_FAMILIES.some((family) => app.ownership[family] !== 'worker'))) {
-          fail('OLD_API_MAY_CONSUME_INLINE');
         }
       }
     }
   }
 
+  validateLiveInventory({ snapshot, liveInventory, oldByResource, passiveByResource, fail });
+
   return { status: issues.length === 0 ? 'PASS' : 'FAIL', issues: [...new Set(issues)] };
 };
 
 export const formatWorkerSwitchPreflight = (result) =>
-  `[ops:worker-switch:preflight] ${result.status}${result.issues.length ? ` ${result.issues.join(',')}` : ''}`;
+  `[ops:worker-switch:preflight] ${result.status === 'PASS' ? 'PASS_INVENTORY_ONLY' : 'FAIL'}${result.issues.length ? ` ${result.issues.join(',')}` : ''}`;
 
 const runCli = () => {
   const args = process.argv.slice(2);
@@ -150,7 +242,8 @@ const runCli = () => {
     process.exitCode = 1;
     return;
   }
-  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha });
+  const liveInventory = readWorkerSwitchDockerInventory();
+  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha, liveInventory });
   process.stdout.write(`${formatWorkerSwitchPreflight(result)}\n`);
   if (result.status !== 'PASS') process.exitCode = 1;
 };
