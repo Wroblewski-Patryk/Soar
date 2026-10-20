@@ -286,9 +286,12 @@ Cutover order:
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
 4. Prepare the candidate API image from the selected exact Git SHA **without
    starting any candidate process**, using the isolated Buildx path below.
-   Preserve its builder-generated metadata file. It must bind the resolved Git
-   source SHA, Buildx build ID and OCI index digest. The revision label is copied
-   from the build ARG and is only a consistency check. Both Compose files now
+   Preserve its builder-generated metadata file. The preflight verifies the
+   registry attestation, including its resolved Git SHA, BuildKit invocation ID,
+   subject manifest and the pinned OCI index/config digest. The local Buildx
+   reference must match the image's local build identity; if Docker drops that
+   identity, this gate fails. The revision label is copied from the build ARG
+   and is only a consistency check. Both Compose files now
    require `API_STACK_IMAGE=repository@sha256:<OCI index digest>` and have no API
    build stanza; a missing image reference fails configuration. A tag, label or
    web build-info alone is not provenance. Confirm separately that the actual
@@ -303,8 +306,8 @@ Cutover order:
    [worker switch preflight](#worker-switch-preflight) **before** starting the
    new stack on the target VPS with the same resolved `SOURCE_COMMIT` and
    `API_STACK_IMAGE` values intended for Compose. It checks local Git HEAD and
-   clean status, builder metadata, the pinned OCI index/platform/config digests,
-   the API image ID and the rendered image references of all five roles in both
+   clean status, builder metadata, the pinned OCI index/platform/config and
+   attestation digests, the API image ID and the rendered references of all five roles in both
    Compose files. It also cross-checks the snapshot against a live, read-only
    enumeration of all Docker containers. A FAIL,
    missing or additional Soar container, unknown state, stale snapshot, source
@@ -348,7 +351,8 @@ candidate release evidence, outside the source tree:
 
 ```bash
 docker buildx build --platform linux/amd64 --target runtime \
-  --provenance=mode=min --metadata-file "$BUILD_METADATA" \
+  --attest=type=provenance,mode=min,version=v1 \
+  --metadata-file "$BUILD_METADATA" \
   --build-arg "SOURCE_COMMIT=$SOURCE_COMMIT" \
   -f apps/api/Dockerfile -t "$CANDIDATE_TAG" --push \
   "https://github.com/Wroblewski-Patryk/Soar.git#$SOURCE_COMMIT"
@@ -361,13 +365,17 @@ pnpm run ops:worker-switch:build-record -- \
 ```
 
 The metadata must describe `target=runtime`; a base-stage probe does not pass.
-The validator checks the builder's resolved Git digest and source material,
-Buildx build ID, OCI index digest, unique `linux/amd64` manifest, its config
-digest and the locally resolved image/label. When Docker retains a local build
-reference, that ID must also match. The OCI index digest,
-platform manifest digest and config digest are different identities. This local
-record can still be edited by a party with file access; protect its custody and
-obtain an independent production readback before GO.
+The validator hashes the registry's OCI index, platform manifest, image config,
+attestation manifest and in-toto statement against their pinned digests. It
+checks the attestation subject, resolved Git SHA, source material and BuildKit
+invocation ID. The metadata's Buildx reference must match Docker's local image
+build identity; missing identity fails. The OCI index, platform manifest and
+config digests are different identities. This local registry attestation is
+unsigned and depends on trust in the isolated builder and registry. Neither its
+PASS nor an operator-edited metadata file proves which image Coolify started;
+obtain an independent production readback before GO. The isolated registry must
+allow authorized read-only access to the config and attestation blobs; a 401 or
+missing blob fails this gate without printing credentials.
 
 Run this only after the candidate image is built and the old workers **and old
 API** have stopped, immediately before the candidate starts. The script reads

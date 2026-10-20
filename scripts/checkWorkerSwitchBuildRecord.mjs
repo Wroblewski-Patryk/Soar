@@ -24,6 +24,6 @@ if (!metadataPath || !expectedSha || (args.length !== 4 && args.length !== 6) ||
   });
   process.stdout.write(`[ops:worker-switch:build-record] ${result.status === 'PASS' ? 'PASS_LOCAL_BUILD_ONLY' : `FAIL ${result.issues.join(',')}`}\n`);
   if (result.status === 'PASS') {
-    process.stdout.write(`sourceSha=${result.sourceSha} buildId=${result.buildId} manifestDigest=${result.manifestDigest} platformManifestDigest=${result.platformManifestDigest} configDigest=${result.configDigest} imageId=${result.imageId}\n`);
+    process.stdout.write(`sourceSha=${result.sourceSha} attestedBuildId=${result.buildId} buildRef=${result.buildRef} manifestDigest=${result.manifestDigest} platformManifestDigest=${result.platformManifestDigest} attestationDigest=${result.attestationDigest} configDigest=${result.configDigest} imageId=${result.imageId}\n`);
   } else process.exitCode = 1;
 }
