@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import type { GrantLimitCommand } from './externalClientGrantReservation.service';
 
 // Snapshot only the identity selected by the current adapter. A future venue
-// permit must recheck the ID and updatedAt before reading any credentials.
+// permit must recheck the ID and credential version before reading credentials.
 export const resolveDispatchClaimKey = async (tx: Prisma.TransactionClient, command: GrantLimitCommand,
   lockRows = false) => {
   const lock = async (table: 'Bot' | 'Wallet' | 'ApiKey', id: string) => {
@@ -20,7 +20,7 @@ export const resolveDispatchClaimKey = async (tx: Prisma.TransactionClient, comm
   const findKey = async (id: string) => {
     await lock('ApiKey', id);
     return tx.apiKey.findFirst({ where: { id, userId: command.userId },
-      select: { id: true, exchange: true, updatedAt: true } });
+      select: { id: true, exchange: true, updatedAt: true, credentialVersion: true } });
   };
   if (bot.apiKeyId) {
     const key = await findKey(bot.apiKeyId);

@@ -400,7 +400,8 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
       symbol: command.symbol, marketType, reduceOnly: command.reduceOnly,
       ...(claimKey ? { dispatchClaimedAt: new Date(), dispatchBotId: command.botId,
         dispatchCommandHash: current.commandHash, dispatchIntentHash: intent.payloadHash,
-        dispatchApiKeyId: claimKey.id, dispatchApiKeyUpdatedAt: claimKey.updatedAt } : {}),
+        dispatchApiKeyId: claimKey.id, dispatchApiKeyUpdatedAt: claimKey.updatedAt,
+        dispatchApiKeyCredentialVersion: claimKey.credentialVersion } : {}),
     } });
     await tx.externalClientGrantReservation.update({ where: { id: current.id }, data: {
       state: 'SUBMISSION_UNCERTAIN', dispatchStartedAt: new Date(),

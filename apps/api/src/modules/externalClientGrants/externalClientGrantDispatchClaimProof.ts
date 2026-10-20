@@ -105,7 +105,9 @@ export const verifyDispatchClaimInTransaction = async (tx: Tx, input: Input) => 
   if (intent.payloadHash !== expectedIntentHash) return unknown;
   const key = await resolveDispatchClaimKey(tx, command, true);
   if (!key || key.id !== marker.dispatchApiKeyId ||
-      key.updatedAt.getTime() !== marker.dispatchApiKeyUpdatedAt.getTime()) return unknown;
+      (marker.dispatchApiKeyCredentialVersion === null
+        ? key.updatedAt.getTime() !== marker.dispatchApiKeyUpdatedAt.getTime()
+        : key.credentialVersion !== marker.dispatchApiKeyCredentialVersion)) return unknown;
   return { markerId: marker.id, verified: true } as const;
 };
 

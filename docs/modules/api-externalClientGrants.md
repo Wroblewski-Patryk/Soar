@@ -342,7 +342,7 @@ database was removed after the run.
 every reuse of an uncertain reservation against the linked reservation, intent,
 grant, bot, and selected API key. Under the grant row lock, it takes the shared
 pause lock and row locks before comparing the canonical command hash, intent
-payload hash, marker fields, bot/key identity, and API-key update time. A
+payload hash, marker fields, bot/key identity, and API-key version. A
 missing or divergent claim returns `claimStatus: UNKNOWN`; the marker and spent
 allowance remain, and reuse stays lookup-only. `VERIFIED` is an observation,
 not a submit permit. The delegated submit callback remains disabled. Local
@@ -375,7 +375,7 @@ delegated LIVE permit, Codex/Claude integration, or exchange proof.
 `SOAR-EXT-GRANT-001V/CLAIMED-MOCK-TRANSPORT-SEAM` makes every fixed mock
 transport enter through the durable dispatch claim. The claim commits the
 reservation's `SUBMISSION_UNCERTAIN` state and snapshots the bound intent,
-command, bot, API-key identity, and key update time before transport. A second
+command, bot, API-key identity, and key version before transport. A second
 transaction verifies those rows under the grant, pause, and linked-row locks
 while recording the single mock transport-start audit. Retries after a claim,
 including a failure before that audit, remain lookup-only with the allowance
@@ -395,6 +395,28 @@ audit transaction rolls back; the earlier claim and uncertain marker remain,
 and retries are lookup-only without a transport or another allowance charge.
 The transaction ends before the synthetic transport runs. This boundary is
 test-only evidence and does not authorize a LIVE venue call.
+
+`SOAR-EXT-GRANT-001Y3/CREDENTIAL-VERSION-SEPARATION` introduces a database-owned
+`ApiKey.credentialVersion`. A `BEFORE UPDATE` trigger increments it atomically
+only when `apiKey`, `apiSecret`, or `exchange` actually changes. Telemetry
+`lastUsed`, labels, sync options, and other neutral metadata leave it unchanged,
+even if Prisma updates `updatedAt`. New dispatch claims store both the key ID
+and `dispatchApiKeyCredentialVersion`; verification uses that version at reuse
+and on both sides of the mock transport-start audit. Existing claimed markers
+are not backfilled: their version remains null and verification keeps the old
+`dispatchApiKeyUpdatedAt` check, which may conservatively return `UNKNOWN`
+after a neutral write. The forward migration preserves those rows and the
+preexisting claim constraint. A credential change observed by pre-start
+verification returns `UNKNOWN`, keeps the marker and charged reservation, and
+makes retry lookup-only.
+This fixes the neutral-write false rejection within the short claim/start
+transactions. It does not cover a mutation after the start-audit commit, does
+not create a full-call permit, and does not enable a real venue submit.
+On isolated fresh and upgraded `_test` databases, the claim and HTTP mock suites
+passed 21 tests each (one Redis-dependent case skipped); the upgrade also
+preserved and read back a preexisting claimed marker with a null new version.
+The 001K orphan/retry suite passed 9 tests, reservation regressions 37, and
+profile API-key regressions 19. These are local proofs only.
 
 Before any delegated LIVE submit, the next ticket must provide a lock lifetime
 that covers the entire venue call, enforce a deadline, confirm that the call has

@@ -274,7 +274,8 @@ it('keeps the committed claim lookup-only when the transport-start audit fails',
   expect(marker).toMatchObject({ grantId: f.grant.id, intentId: intent.id,
     dispatchBotId: f.bot.id, dispatchCommandHash: reservation.commandHash,
     dispatchIntentHash: intent.payloadHash, dispatchApiKeyId: f.key.id,
-    dispatchApiKeyUpdatedAt: f.key.updatedAt });
+    dispatchApiKeyUpdatedAt: f.key.updatedAt,
+    dispatchApiKeyCredentialVersion: f.key.credentialVersion });
   expect(await transportStarts(reservation.id)).toBe(0);
   expect(await prisma.log.count({ where: { entityId: reservation.id,
     action: 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED' } })).toBe(1);
@@ -294,13 +295,13 @@ it('keeps the committed claim lookup-only when the transport-start audit fails',
     .rejects.toMatchObject({ status: 409 });
 });
 
-it('denies transport when the selected key version changes after the claim', async () => {
+it('denies transport when the selected credential changes after the claim', async () => {
   const f = await fixture();
   const input = body();
   try {
     await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_001v_rotate_claim_key() RETURNS trigger
       LANGUAGE plpgsql AS $$ BEGIN
-        UPDATE "ApiKey" SET "updatedAt" = "updatedAt" + interval '1 second'
+        UPDATE "ApiKey" SET "apiSecret" = "apiSecret" || '-rotated'
         WHERE "id" = (SELECT "dispatchApiKeyId" FROM "LiveCreateOrderSubmission"
           WHERE "id" = NEW."metadata"->>'markerId');
         RETURN NEW; END $$`);
@@ -322,7 +323,8 @@ it('denies transport when the selected key version changes after the claim', asy
     where: { reservationId: reservation.id } });
   const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
   expect(marker.dispatchApiKeyId).toBe(key.id);
-  expect(marker.dispatchApiKeyUpdatedAt?.getTime()).not.toBe(key.updatedAt.getTime());
+  expect(marker.dispatchApiKeyCredentialVersion).toBe(f.key.credentialVersion);
+  expect(key.credentialVersion).toBe(f.key.credentialVersion + 1);
   expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
   expect(await transportStarts(reservation.id)).toBe(0);
   expect(await prisma.log.count({ where: { entityId: reservation.id,
@@ -335,6 +337,45 @@ it('denies transport when the selected key version changes after the claim', asy
     .usedActions).toBe(1);
 });
 
+it('keeps the claim verified when lastUsed advances before the start audit', async () => {
+  const f = await fixture();
+  const input = body();
+  try {
+    await prisma.$executeRawUnsafe(`CREATE FUNCTION mock_001y3_touch_last_used() RETURNS trigger
+      LANGUAGE plpgsql AS $$ BEGIN
+        UPDATE "ApiKey" SET "lastUsed" = clock_timestamp(),
+          "updatedAt" = "updatedAt" + interval '1 second'
+        WHERE "id" = (SELECT "dispatchApiKeyId" FROM "LiveCreateOrderSubmission"
+          WHERE "id" = NEW."metadata"->>'markerId');
+        RETURN NEW; END $$`);
+    await prisma.$executeRawUnsafe(`CREATE TRIGGER mock_001y3_touch_last_used_trigger
+      AFTER INSERT ON "Log" FOR EACH ROW
+      WHEN (NEW."action" = 'EXTERNAL_CLIENT_GRANT_DISPATCH_CLAIMED')
+      EXECUTE FUNCTION mock_001y3_touch_last_used()`);
+    const first = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+      .set('Authorization', `Bearer ${f.secret}`).send(input);
+    expect(first.status).toBe(201);
+    expect(first.body.state).toBe('MOCK_FILLED');
+  } finally {
+    await prisma.$executeRawUnsafe('DROP TRIGGER IF EXISTS mock_001y3_touch_last_used_trigger ON "Log"');
+    await prisma.$executeRawUnsafe('DROP FUNCTION IF EXISTS mock_001y3_touch_last_used()');
+  }
+  const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
+  expect(key.lastUsed).not.toBeNull();
+  expect(key.updatedAt.getTime()).toBe(f.key.updatedAt.getTime() + 1000);
+  expect(key.credentialVersion).toBe(f.key.credentialVersion);
+  const reservation = await prisma.externalClientGrantReservation.findUniqueOrThrow({
+    where: { clientOrderId: input.clientOrderId } });
+  expect(reservation.state).toBe('SUBMITTED');
+  expect(await transportStarts(reservation.id)).toBe(1);
+  const retry = await request(createMockOrdersHttpApp()).post(path(f.grant.id))
+    .set('Authorization', `Bearer ${f.secret}`).send(input);
+  expect(retry.status).toBe(200);
+  expect(await transportStarts(reservation.id)).toBe(1);
+  expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
+    .usedActions).toBe(1);
+});
+
 it('rolls back the start audit when key rotation or grant revoke occurs inside it', async () => {
   await prisma.$executeRawUnsafe('CREATE SEQUENCE mock_001v2_boundary_seq START 1');
   try {
@@ -342,7 +383,7 @@ it('rolls back the start audit when key rotation or grant revoke occurs inside i
       const f = await fixture();
       const input = body();
       const update = change !== 'revoke'
-        ? `UPDATE "ApiKey" SET "updatedAt" = "updatedAt" + interval '1 second'
+          ? `UPDATE "ApiKey" SET "apiSecret" = "apiSecret" || '-rotated'
            WHERE "id" = (SELECT "dispatchApiKeyId" FROM "LiveCreateOrderSubmission"
              WHERE "reservationId" = NEW."entityId")`
         : `UPDATE "ExternalClientGrant" SET "revokedAt" = clock_timestamp()
@@ -373,7 +414,7 @@ it('rolls back the start audit when key rotation or grant revoke occurs inside i
       const key = await prisma.apiKey.findUniqueOrThrow({ where: { id: f.key.id } });
       expect(reservation.state).toBe('SUBMISSION_UNCERTAIN');
       expect(marker.dispatchApiKeyId).toBe(key.id);
-      expect(marker.dispatchApiKeyUpdatedAt).toEqual(key.updatedAt);
+      expect(marker.dispatchApiKeyCredentialVersion).toBe(key.credentialVersion);
       expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: f.grant.id } }))
         .revokedAt).toBeNull();
       expect(await transportStarts(reservation.id)).toBe(0);

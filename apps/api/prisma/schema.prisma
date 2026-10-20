@@ -192,6 +192,8 @@ model ApiKey {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   lastUsed  DateTime?
+  // Database trigger changes this only when stored dispatch credentials change.
+  credentialVersion Int @default(1)
   user      User      @relation(fields: [userId], references: [id])
   bots      Bot[]
   wallets   Wallet[]
@@ -1459,7 +1461,9 @@ model LiveCreateOrderSubmission {
   dispatchCommandHash     String?
   dispatchIntentHash      String?
   dispatchApiKeyId        String?
+  // Legacy claims still verify this timestamp when no credential version exists.
   dispatchApiKeyUpdatedAt DateTime?
+  dispatchApiKeyCredentialVersion Int?
 
   grant       ExternalClientGrant?            @relation(fields: [grantId], references: [id], onDelete: Restrict)
   reservation ExternalClientGrantReservation? @relation(fields: [reservationId], references: [id], onDelete: Restrict)
