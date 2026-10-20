@@ -60,14 +60,22 @@ Provide a deterministic response flow when deployment promotion is blocked or wh
 
 ## Playbook C: Failed PROD Rollout
 1. Mark incident `PROD_FAILED`.
-2. Confirm whether `prod-rollback` workflow already executed.
-3. If rollback did not execute, trigger rollback manually.
-4. Validate post-rollback stability:
+2. Identify the active topology and read back actual process state; do not infer
+   a completed rollback from a workflow status or health endpoint.
+3. For Coolify Service Stack cutover, follow the
+   [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   before starting any old API or worker. Unknown process state, unresolved
+   in-flight/`UNKNOWN` work, or unproven schema compatibility is STOP/NO-GO;
+   obtain an operator recovery decision. Do not trigger automatic destructive
+   rollback or replay.
+4. For other topologies, use the controlled
+   [rollback playbook](deployment-rollback-playbook.md).
+5. Validate post-rollback stability:
    - API ready,
    - web reachable,
    - workers healthy.
-5. Freeze promotion of failing SHA.
-6. Create remediation issue and require new validated SHA through STAGE path.
+6. Freeze promotion of failing SHA.
+7. Create remediation issue and require new validated SHA through STAGE path.
 
 ## Communication Contract
 Every incident update must include:

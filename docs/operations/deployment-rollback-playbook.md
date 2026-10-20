@@ -38,18 +38,22 @@ If web/api are healthy and issue is isolated to workers:
 - rollback/restart worker services only,
 - keep web/api online.
 
+For a Coolify Service Stack cutover, do not use this fast path: the new API may
+consume work inline. Follow the stop-before-start sequence in mode D instead.
+
 ### D) Coolify Service Stack Cutover Rollback
 If the new Soar Service Stack fails after domain cutover:
 - keep the old six Applications available until at least one stable monitoring
   window proves the stack;
-- for API/Web routing failures, stop stack workers and verify they exited
-  before restoring the old `soar-api` and `soar-web` Applications or routes;
-- for worker-only failures, stop the stack worker containers, verify each has
-  exited, and restart the old worker Applications only when their SHA is
-  schema-compatible; never run mixed old/new worker versions together;
-- for migration/schema failures, do not destroy or roll back schema ad hoc;
-  return only to a schema-compatible application version or use the approved
-  backup/restore drill path.
+- for every failure mode, follow the canonical
+  [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover):
+  stop **new API and all four new workers**, then read back `Running=false` and
+  `Pid=0` for every replica before starting any old API or worker;
+- unknown/active container state, unresolved in-flight work or `UNKNOWN` order
+  outcome, or unproven schema compatibility means **STOP/NO-GO**; preserve state
+  for an operator decision rather than automatically replaying or restoring;
+- never run destructive schema rollback ad hoc; use a proven compatible version
+  or the separately approved backup/restore path.
 
 The stack migration must not include production Postgres/Redis data movement
 unless a separate data migration plan and restore proof are approved.
@@ -62,7 +66,7 @@ unless a separate data migration plan and restore proof are approved.
 ## Standard Rollback Procedure
 1. Freeze promotion pipeline for affected environment.
 2. Identify last known stable release reference (tag/artifact/SHA).
-3. Execute rollback mode (A/B/C).
+3. Execute rollback mode (A/B/C/D), including its stop-before-start gates.
 4. Re-run required post-rollback checks:
    - API `/health` + `/ready`,
    - web root + auth smoke,

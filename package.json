@@ -68,6 +68,7 @@
     "ops:coolify-stack:env-check:test": "node --test scripts/checkCoolifyStackEnv.test.mjs",
     "ops:worker-switch:preflight": "node scripts/checkWorkerSwitchPreflight.mjs",
     "ops:worker-switch:preflight:test": "node --test scripts/checkWorkerSwitchPreflight.test.mjs",
+    "ops:worker-switch:rollback-order:test": "node --test scripts/checkWorkerSwitchRollbackOrder.test.mjs",
     "test:go-live:api": "pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/strategies/strategies.e2e.test.ts src/modules/backtests/backtests.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts",
     "test:go-live:server": "pnpm run test:go-live:api",
     "test:go-live:api:with-infra": "node scripts/goLiveSmoke.mjs --target=api",

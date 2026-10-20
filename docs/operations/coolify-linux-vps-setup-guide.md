@@ -428,15 +428,46 @@ image-ID and Web build-info checks remain separate acceptance gates.
 Public `/health`, `/ready`, and worker heartbeats do not prove that old code
 has stopped or that a backtest moved from `PENDING` to a terminal state.
 
-Rollback from stack cutover:
-- routing/app failure: stop the stack workers and verify they exited before
-  restoring any old process that can consume work; then reattach domains or
-  route traffic back to schema-compatible old API/Web Applications;
-- worker-only failure: stop the stack workers, verify they exited, and restart
-  the old worker Applications only if their SHA is compatible with the current
-  schema; never overlap old and new worker versions;
-- schema/migration failure: do not run destructive ad hoc rollback; use only a
-  schema-compatible app rollback or the approved backup/restore path.
+### Rollback from stack cutover
+
+This order applies to routing, API, worker-only, and schema failures. The old
+API may still consume work inline, so a worker-only rollback cannot leave the
+new API running. The operator performs these steps; a failed gate does not
+trigger an automatic destructive rollback.
+
+1. **Stop new API and workers.** Freeze promotion, then request stop of the new
+   stack `api`, `workers-market-data`, `workers-market-stream`,
+   `workers-backtest`, and `workers-execution`. Keep Postgres, Redis/AOF, and
+   evidence intact. Prevent automatic restart or redeploy of these five new
+   consumers during rollback. Do not start any old API or worker yet.
+2. **Verify new consumers stopped.** On the target host, enumerate every
+   container for the new `api`, `workers-market-data`,
+   `workers-market-stream`, `workers-backtest`, and `workers-execution` resources,
+   including replicas. Read back `Running=false` and `Pid=0` for each container;
+   also check for unassigned Soar consumers. A missing resource, active process,
+   incomplete inventory, or unknown state is **STOP/NO-GO** for old API or worker
+   startup. A stop request or green `/health` is not proof of exit.
+3. **Resolve in-flight and unknown work.** Inspect authorized queue, database,
+   and order-intent status readbacks before choosing a recovery version. Any
+   unresolved in-flight job or `UNKNOWN` exchange outcome is **STOP/NO-GO** for
+   restarting an older consumer until the incident owner records a safe
+   reconciliation decision. Preserve the original run/order identity; do not
+   blindly requeue backtests, replay orders, or infer completion from health.
+4. **Confirm rollback compatibility.** Record the exact old API/worker SHAs and
+   prove they are compatible with the current database schema, Redis state,
+   execution tokens, and LIVE order-intent contract. If compatibility is
+   unproven, keep the old consumers stopped and choose a compatible recovery
+   version. No ad hoc destructive schema rollback or automatic restore.
+5. **Restore old applications.** Only after steps 2–4 pass, repeat the
+   `Running=false`/`Pid=0` readback immediately before starting the old API and
+   four worker Applications as one compatible set; any changed state is
+   **STOP/NO-GO**. Then restore the old Web route if needed. Confirm the old
+   consumers' exact SHA and worker ownership, queue
+   readiness, one terminal result for any recovered backtest, and no duplicate
+   effects. Keep the new API and workers stopped throughout this check.
+
+Run `pnpm run ops:worker-switch:rollback-order:test` to check the documented
+stop-before-start sequence. This static check does not prove target-host state.
 
 Local validation before using the stack manifest:
 
@@ -530,10 +561,12 @@ Note:
 ## Rollback Baseline
 
 If post-deploy health fails:
-1. Roll back API/Web to previous stable release.
-2. Keep DB safety in mind (prefer backward-compatible migrations).
-3. Re-validate `/health` and `/ready`.
-4. Log incident and rollback reason.
+1. For Service Stack cutover, follow the
+   [rollback stop-before-start sequence](#rollback-from-stack-cutover) before
+   starting any old API or worker.
+2. Use a previous stable, schema-compatible release; preserve DB/Redis state.
+3. Re-validate `/health`, `/ready`, worker readiness, and queue outcomes.
+4. Log the incident, rollback decision, and exact SHAs.
 
 ## Common Failure Points
 
