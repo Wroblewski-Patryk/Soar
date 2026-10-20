@@ -29,12 +29,11 @@ WORKDIR /app
 
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
-COPY --from=build --chown=node:node /app/apps/api/package.json /app/apps/api/prisma.config.ts /app/apps/api/
+COPY --from=build --chown=node:node /app/apps/api/package.json /app/apps/api/
 COPY --from=build --chown=node:node /app/apps/api/node_modules /app/apps/api/node_modules
 COPY --from=build --chown=node:node /app/apps/api/dist /app/apps/api/dist
 COPY --from=build --chown=node:node /app/apps/api/prisma/schema.prisma /app/apps/api/prisma/schema.prisma
 COPY --from=build --chown=node:node /app/apps/api/prisma/migrations /app/apps/api/prisma/migrations
-COPY --from=build --chown=node:node /app/apps/api/prisma/seed.ts /app/apps/api/prisma/seedAdminPassword.ts /app/apps/api/prisma/
 COPY --from=build --chown=node:node /app/apps/api/scripts/start-with-migrate.mjs /app/apps/api/scripts/start-with-migrate.mjs
 COPY --from=build --chown=node:node /app/apps/api/public/avatars/default.png /app/apps/api/public/avatars/default.png
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared

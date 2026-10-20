@@ -48,6 +48,11 @@ Use `pnpm --filter api start` for the production-safe launcher that applies
 `pnpm --filter api run db:reset:local` only for the explicit destructive local
 reset + seed workflow.
 
+The runtime API and worker images contain Prisma schema and migrations for
+`migrate deploy`. They do not contain the source tree required by
+`prisma db seed`, so seeding is not supported inside those images. Run an
+approved seed workflow from the source checkout in a non-production environment.
+
 5. Start frontend (new terminal):
 ```bash
 pnpm --filter web start
