@@ -21,6 +21,30 @@ const rollbackSection = (document) => {
   return start >= 0 && end > start ? document.slice(start, end) : '';
 };
 
+const cacheRollbackSection = (document) => {
+  const start = document.indexOf('## 3) Rollback');
+  const end = document.indexOf('## 4) Exit Criteria', start);
+  return start >= 0 && end > start ? document.slice(start, end) : '';
+};
+
+const checkCacheRollbackPath = (section) => {
+  const step2Start = section.indexOf('\n2. ');
+  const step3Start = section.indexOf('\n3. ', step2Start);
+  if (step2Start < 0 || step3Start < 0) return ['CACHE_API_ROLLBACK_GATE_MISSING'];
+  const step2 = section.slice(step2Start, step3Start);
+  const required = [
+    'deployment-rollback-playbook.md#rollback-modes',
+    'coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover',
+    'any** new Service Stack process starts', 'before domain',
+    'Running=false', 'Pid=0', 'all four new workers',
+    'in-flight/`UNKNOWN`', 'schema compatibility',
+    'Mode A requires proof', 'STOP/NO-GO',
+  ];
+  return required.every((item) => step2.includes(item)) &&
+    section.includes('does not start an old API or worker')
+    ? [] : ['CACHE_API_ROLLBACK_GATE_MISSING'];
+};
+
 const checkOrder = (section) => {
   const markers = [...section.matchAll(/^(\d+)\. \*\*([^*]+)\*\*/gm)];
   const issues = [];
@@ -101,6 +125,16 @@ test('canonical rollback documents stop and exit readback before old startup', (
   assert.match(playbook, /no new stack process ever started/);
   assert.match(playbook, /before or after domain cutover/);
   assert.match(trigger, /A one-click restore is not an\s+exception/);
+  assert.match(read('docs/operations/operations-documentation.md'),
+    /stale-cache-incident-playbook\.md/);
+});
+
+test('stale-cache API rollback selects A/D and blocks an unguarded old API start', () => {
+  const good = cacheRollbackSection(read('docs/operations/stale-cache-incident-playbook.md'));
+  assert.deepEqual(checkCacheRollbackPath(good), []);
+  const unsafe = good.replace(/\n2\. [\s\S]*?(?=\n3\. )/,
+    '\n2. Roll back API to the previous release.');
+  assert.ok(checkCacheRollbackPath(unsafe).includes('CACHE_API_ROLLBACK_GATE_MISSING'));
 });
 
 test('restoring old API before new process exit fails the static gate', () => {

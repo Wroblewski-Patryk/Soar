@@ -40,9 +40,20 @@ Purpose: provide a deterministic response when users see outdated runtime/authen
 
 Rollback if mitigation does not restore freshness within incident SLA.
 
-1. Roll back web image to last known-good release.
-2. Keep API on current release unless header regression was introduced there.
-3. Re-run verification checklist from section 1 against rolled-back version.
+1. Roll back only the Web image to its last known-good release when the change
+   does not start an old API or worker. If Coolify would restore the whole stack,
+   first use the mode-selection guard in step 2.
+2. Keep API on the current release unless the header regression was introduced
+   there. Before any old API or worker starts, select A or D using the
+   [rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes).
+   After **any** new Service Stack process starts, including before domain
+   cutover, [mode D](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   requires stopping and reading back `Running=false` and `Pid=0` for the new
+   API and all four new workers (and Web), resolving in-flight/`UNKNOWN` work,
+   and proving schema compatibility. Mode A requires proof that no new process
+   ever started. Unknown start history, active/unknown process state, unresolved
+   work, or unproven compatibility is **STOP/NO-GO**; do not one-click restore.
+3. Re-run verification checklist from section 1 against the rolled-back version.
 4. Confirm stale symptom clears on:
    - clean browser profile
    - existing session profile with previous SW cache
