@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readWorkerSwitchDockerInventory } from './readWorkerSwitchDockerInventory.mjs';
+import { readWorkerSwitchSourceBinding } from './readWorkerSwitchSourceBinding.mjs';
 
 const FULL_SHA = /^[0-9a-f]{40}$/i;
 const IMAGE_ID = /^sha256:[0-9a-f]{64}$/i;
@@ -103,12 +104,20 @@ const validateLiveInventory = ({ snapshot, liveInventory, oldByResource, passive
 };
 
 export const evaluateWorkerSwitchPreflight = ({
-  snapshot, expectedSha, liveInventory, nowMs = Date.now(),
+  snapshot, expectedSha, liveInventory, sourceBinding, nowMs = Date.now(),
 }) => {
   const issues = [];
   const fail = (code) => issues.push(code);
 
   if (!fullSha(expectedSha)) fail('EXPECTED_SHA_INVALID');
+  if (sourceBinding?.status !== 'PASS') {
+    fail(sourceBinding?.issues?.[0] ?? 'LOCAL_SOURCE_BINDING_REQUIRED');
+  } else {
+    if (normalizedSha(sourceBinding.headSha) !== normalizedSha(expectedSha) ||
+        normalizedSha(sourceBinding.sourceCommit) !== normalizedSha(expectedSha)) {
+      fail('SOURCE_COMMIT_HEAD_MISMATCH');
+    }
+  }
   if (!hasOnlyKeys(snapshot, [
     'schemaVersion', 'capturedAt', 'inventoryComplete', 'inventorySource',
     'coolifyProjectName', 'passiveResources', 'provenance', 'oldApplications',
@@ -134,13 +143,14 @@ export const evaluateWorkerSwitchPreflight = ({
   const provenance = snapshot.provenance;
   if (!hasOnlyKeys(provenance, [
     'coolifyResourceId', 'coolifyDeploymentId', 'coolifyResolvedSha',
-    'apiImageId', 'apiImageRevision', 'plannedImageIds',
+    'apiImageRef', 'apiImageId', 'apiImageRevision', 'plannedImageIds',
   ])) {
     fail('CANDIDATE_PROVENANCE_MISSING');
   } else {
     if (typeof provenance.coolifyResourceId !== 'string' || !provenance.coolifyResourceId.trim() ||
         typeof provenance.coolifyDeploymentId !== 'string' || !provenance.coolifyDeploymentId.trim() ||
         !fullSha(provenance.coolifyResolvedSha) || !fullSha(provenance.apiImageRevision) ||
+        typeof provenance.apiImageRef !== 'string' || !provenance.apiImageRef.trim() ||
         !imageId(provenance.apiImageId)) {
       fail('CANDIDATE_PROVENANCE_MISSING');
     }
@@ -153,6 +163,15 @@ export const evaluateWorkerSwitchPreflight = ({
         ROLES.some((role) => !imageId(provenance.plannedImageIds[role]) ||
           provenance.plannedImageIds[role] !== provenance.apiImageId)) {
       fail('CANDIDATE_IMAGE_MISMATCH');
+    }
+    if (sourceBinding?.status === 'PASS') {
+      if (sourceBinding.pinnedImageRef !== provenance.apiImageRef ||
+          normalizedSha(sourceBinding.imageId) !== normalizedSha(provenance.apiImageId)) {
+        fail('CANDIDATE_IMAGE_MISMATCH');
+      }
+      if (normalizedSha(sourceBinding.revisionLabel) !== normalizedSha(provenance.apiImageRevision)) {
+        fail('CANDIDATE_SHA_MISMATCH');
+      }
     }
   }
 
@@ -218,7 +237,7 @@ export const evaluateWorkerSwitchPreflight = ({
 };
 
 export const formatWorkerSwitchPreflight = (result) =>
-  `[ops:worker-switch:preflight] ${result.status === 'PASS' ? 'PASS_INVENTORY_ONLY' : 'FAIL'}${result.issues.length ? ` ${result.issues.join(',')}` : ''}`;
+  `[ops:worker-switch:preflight] ${result.status === 'PASS' ? 'PASS_LOCAL_PROCEDURAL_ONLY' : 'FAIL'}${result.issues.length ? ` ${result.issues.join(',')}` : ''}`;
 
 const runCli = () => {
   const args = process.argv.slice(2);
@@ -243,8 +262,9 @@ const runCli = () => {
     process.exitCode = 1;
     return;
   }
+  const sourceBinding = readWorkerSwitchSourceBinding();
   const liveInventory = readWorkerSwitchDockerInventory();
-  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha, liveInventory });
+  const result = evaluateWorkerSwitchPreflight({ snapshot, expectedSha, liveInventory, sourceBinding });
   process.stdout.write(`${formatWorkerSwitchPreflight(result)}\n`);
   if (result.status !== 'PASS') process.exitCode = 1;
 };

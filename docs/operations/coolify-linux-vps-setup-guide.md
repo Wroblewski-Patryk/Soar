@@ -287,10 +287,15 @@ Cutover order:
 4. Prepare the candidate API image from the selected exact Git SHA **without
    starting any candidate process**. Read the resolved source SHA from the
    Coolify build/deployment record and the `org.opencontainers.image.revision`
-   label plus immutable image ID from the built image. A `SOURCE_COMMIT` tag or
-   web build-info alone is not image provenance. If Coolify cannot separate
-   build from start or cannot pin the verified image for the later start, stop:
-   this cutover path is NO-GO until an approved immutable-image path exists.
+   label plus immutable image ID from the built image. The label is copied from
+   the build ARG and does **not** prove image contents. Verify the source
+   checkout is clean and its actual `git rev-parse HEAD` equals `SOURCE_COMMIT`;
+   require `API_STACK_IMAGE` to be an immutable `sha256:<image ID>` or
+   `repository@sha256:<digest>` reference. Both Compose files otherwise fall
+   back to a mutable `soar-api-stack:${SOURCE_COMMIT}` tag, which fails preflight.
+   A `SOURCE_COMMIT` tag, label, or web build-info alone is not provenance. If
+   Coolify cannot separate build from start or pin that image for the later
+   start, this cutover path is NO-GO.
 5. Stop the old four worker Applications and old API. This conservative cutover
    does not rely on an unverified claim that the old API has no inline worker.
    Wait for every old worker and API container to report `Running=false` and
@@ -298,10 +303,15 @@ Cutover order:
    and do not delete their data.
 6. Capture a fresh, complete, no-secret Coolify resource inventory and run the
    [worker switch preflight](#worker-switch-preflight) **before** starting the
-   new stack on the target VPS. It cross-checks the snapshot against a live,
-   read-only enumeration of all Docker containers. A FAIL, missing or additional
-   Soar container, unknown state, stale snapshot, missing source revision, or
-   image mismatch blocks the start.
+   new stack on the target VPS with the same resolved `SOURCE_COMMIT` and
+   `API_STACK_IMAGE` values intended for Compose. It checks local Git HEAD and
+   clean status, inspects the pinned image ID, and cross-checks the snapshot
+   against a live, read-only enumeration of all Docker containers. A FAIL,
+   missing or additional Soar container, unknown state, stale snapshot, source
+   mismatch, or image mismatch blocks the start. Its local procedural PASS is
+   not production provenance: require a separate authoritative build record
+   binding Coolify's resolved source SHA, deployment ID, and built image ID.
+   If that readback is unavailable or does not bind all three, **NO-GO**.
 7. Start the new stack from the verified immutable candidate image. Do not
    rebuild from a moving branch between preflight and start. If the deployment
    mechanism rebuilds or changes the image ID, stop acceptance and investigate.
@@ -332,13 +342,19 @@ Run this only after the candidate image is built and the old workers **and old
 API** have stopped, immediately before the candidate starts. The script reads
 the operator's Coolify resource snapshot and independently calls `docker ps`
 and a field-limited `docker inspect` on **all** containers on the target VPS.
+It also reads Git HEAD and clean status in this checkout and inspects only the
+ID and revision label of the immutable `API_STACK_IMAGE` reference. Export
+`SOURCE_COMMIT` and `API_STACK_IMAGE` from the same resolved build/start plan
+before running it; missing values, a mutable tag, or a dirty checkout fail.
 It reads no Docker environment variables and performs no Docker mutation. It
 does not contact Coolify, Redis, or the database; the operator must obtain the
 Coolify resource list through authorized read-only access. Do not put an
 environment dump, credential, user data, or backtest ID in the snapshot.
 
 ```bash
-docker image inspect --format '{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}' <candidate-api-image>
+git rev-parse HEAD
+git status --porcelain=v1 --untracked-files=all
+docker image inspect --format '{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}' "$API_STACK_IMAGE"
 docker compose -f docker-compose.coolify.yml config --images
 pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha>
 ```
@@ -354,12 +370,16 @@ container must be stopped. `passiveResources` identifies the old Web resource
 and any Soar Postgres/Redis resources that may remain running; the preflight
 rejects unlisted or ambiguous Soar containers. The
 `provenance` object needs `coolifyResourceId`, `coolifyDeploymentId`, the
-Coolify-resolved source `coolifyResolvedSha`, the built `apiImageId`, its
+Coolify-resolved source `coolifyResolvedSha`, pinned `apiImageRef`, the built
+`apiImageId`, its
 `apiImageRevision` label, and `plannedImageIds` for the API and four workers.
 All SHA fields must equal the exact candidate SHA, and every planned image ID
-must equal the candidate API image ID. Obtain the Coolify-resolved revision
-from the control plane's actual source/build readback, independently of the
-operator-entered `SOURCE_COMMIT`. Do not mark `inventoryComplete` until every
+must equal the candidate API image ID. The preflight compares `apiImageRef` to
+the local `API_STACK_IMAGE` and resolves that reference to an image ID using
+Docker, but this still does not establish which Git tree Coolify built. Obtain
+the Coolify-resolved revision from the control plane's actual source/build
+readback, independently of the operator-entered `SOURCE_COMMIT`. Do not mark
+`inventoryComplete` until every
 old Soar worker resource and container on the host is accounted for.
 Use Coolify resource UUIDs, not numeric database IDs, for `resourceId`; use the
 exact `coolify.projectName` label for `coolifyProjectName`. If the host or
@@ -383,6 +403,7 @@ The snapshot structure is:
     "coolifyResourceId": "<candidate stack resource ID>",
     "coolifyDeploymentId": "<candidate build record ID>",
     "coolifyResolvedSha": "<40-character source SHA from Coolify>",
+    "apiImageRef": "<immutable sha256:image-ID or repository@sha256:digest>",
     "apiImageId": "sha256:<64-character image ID>",
     "apiImageRevision": "<40-character OCI revision label>",
     "plannedImageIds": {
@@ -411,7 +432,7 @@ when those resources are outside this Coolify project. Each API/worker
 replicas. Empty arrays deliberately fail. Keep the filled snapshot outside the
 repository.
 
-The script reports `PASS_INVENTORY_ONLY` or failure codes and fails closed when
+The script reports `PASS_LOCAL_PROCEDURAL_ONLY` or failure codes and fails closed when
 Docker access is unavailable, the container set or running state changes during
 the read, an extra replica appears, or an active container cannot be attributed
 to a declared resource. On a shared VPS, an active unrelated infrastructure
@@ -421,10 +442,16 @@ resource list is still operator supplied; `inventoryComplete: true` is never
 sufficient by itself. If its completeness cannot be established or legacy
 labels leave ownership uncertain, the result is FAIL.
 The live Docker read is a point-in-time gate: keep deployments frozen and run
-it immediately before start. `PASS_INVENTORY_ONLY` is **not** deployment GO.
-Image provenance beyond the entered Coolify/build readbacks and a safe rollback
-sequence remain separate P2 work for independent review. The post-start
-image-ID and Web build-info checks remain separate acceptance gates.
+it immediately before start. `PASS_LOCAL_PROCEDURAL_ONLY` is **not** deployment
+GO. Git HEAD/clean status and `docker image inspect` are separate local
+readbacks; neither binds the image contents to that Git tree. The ARG-supplied
+revision label is only a consistency check. An independent Coolify build record
+or trusted build attestation must identify the resolved Git SHA and resulting
+image ID under the same deployment/build ID, then match the pinned reference's
+Docker readback. We have no authorized production read of such a binding in
+this task; production cutover remains **NO-GO** until it is obtained and
+independently reviewed. The post-start image-ID and Web build-info checks are
+separate acceptance gates.
 Public `/health`, `/ready`, and worker heartbeats do not prove that old code
 has stopped or that a backtest moved from `PENDING` to a terminal state.
 

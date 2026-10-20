@@ -9,9 +9,14 @@ import {
   INSPECT_FORMAT,
   readWorkerSwitchDockerInventory,
 } from './readWorkerSwitchDockerInventory.mjs';
+import {
+  IMAGE_INSPECT_FORMAT,
+  readWorkerSwitchSourceBinding,
+} from './readWorkerSwitchSourceBinding.mjs';
 
 const sha = 'a'.repeat(40);
 const image = `sha256:${'b'.repeat(64)}`;
+const pinnedRef = `registry.example/soar-api@sha256:${'c'.repeat(64)}`;
 const nowMs = Date.parse('2026-10-20T01:00:00.000Z');
 const roles = [
   'api', 'workers-market-data', 'workers-market-stream', 'workers-backtest', 'workers-execution',
@@ -28,6 +33,7 @@ const snapshot = () => ({
     coolifyResourceId: 'candidate-stack',
     coolifyDeploymentId: 'candidate-build',
     coolifyResolvedSha: sha,
+    apiImageRef: pinnedRef,
     apiImageId: image,
     apiImageRevision: sha,
     plannedImageIds: Object.fromEntries(roles.map((role) => [role, image])),
@@ -94,8 +100,24 @@ const mockDocker = (containers, {
 const readLive = (containers, options) => readWorkerSwitchDockerInventory({
   runDocker: mockDocker(containers, options), now: () => nowMs,
 });
-const evaluate = (value, liveInventory) => evaluateWorkerSwitchPreflight({
-  snapshot: value, expectedSha: sha, liveInventory, nowMs,
+const readBinding = ({
+  headSha = sha, gitStatus = '', sourceCommit = sha, imageRef = pinnedRef,
+  inspectedImageId = image, revisionLabel = sha, gitUnavailable = false,
+} = {}) => readWorkerSwitchSourceBinding({
+  root: '/fixture/soar', sourceCommit, imageRef,
+  runGit: (args) => {
+    if (gitUnavailable) return { status: 1, stdout: '', stderr: 'private path' };
+    if (args.includes('rev-parse')) return { status: 0, stdout: `${headSha}\n` };
+    if (args.includes('status')) return { status: 0, stdout: gitStatus };
+    throw new Error('unexpected git call');
+  },
+  runDocker: (args) => {
+    assert.deepEqual(args, ['image', 'inspect', '--format', IMAGE_INSPECT_FORMAT, imageRef]);
+    return { status: 0, stdout: `${inspectedImageId}\t${revisionLabel}\n` };
+  },
+});
+const evaluate = (value, liveInventory, sourceBinding = readBinding()) => evaluateWorkerSwitchPreflight({
+  snapshot: value, expectedSha: sha, liveInventory, sourceBinding, nowMs,
 });
 
 test('complete fresh Docker/Coolify inventory passes with every old process stopped', () => {
@@ -103,6 +125,50 @@ test('complete fresh Docker/Coolify inventory passes with every old process stop
   const live = readLive(liveContainers(value));
   assert.equal(live.status, 'PASS');
   assert.deepEqual(evaluate(value, live), { status: 'PASS', issues: [] });
+  assert.match(formatWorkerSwitchPreflight(evaluate(value, live)), /PASS_LOCAL_PROCEDURAL_ONLY/);
+});
+
+test('exact clean SHA and pinned image ID pass the local procedural gate', () => {
+  const value = snapshot();
+  value.provenance.apiImageRef = image;
+  const binding = readBinding({ imageRef: image });
+  assert.equal(binding.status, 'PASS');
+  assert.deepEqual(evaluate(value, readLive(liveContainers(value)), binding), {
+    status: 'PASS', issues: [],
+  });
+});
+
+test('SOURCE_COMMIT must equal actual clean Git HEAD', () => {
+  const value = snapshot();
+  const live = readLive(liveContainers(value));
+  const wrongCommit = readBinding({ sourceCommit: 'c'.repeat(40) });
+  assert.deepEqual(wrongCommit, { status: 'FAIL', issues: ['SOURCE_COMMIT_HEAD_MISMATCH'] });
+  assert.ok(evaluate(value, live, wrongCommit).issues.includes('SOURCE_COMMIT_HEAD_MISMATCH'));
+
+  const dirtyTracked = readBinding({ gitStatus: ' M apps/api/Dockerfile\n' });
+  assert.deepEqual(dirtyTracked, { status: 'FAIL', issues: ['SOURCE_TREE_DIRTY'] });
+  assert.equal(evaluate(value, live, dirtyTracked).status, 'FAIL');
+
+  const missingHead = readBinding({ gitUnavailable: true });
+  assert.deepEqual(missingHead, { status: 'FAIL', issues: ['SOURCE_HEAD_UNAVAILABLE'] });
+});
+
+test('mutable reference or swapped image ID cannot pass local binding', () => {
+  const value = snapshot();
+  const live = readLive(liveContainers(value));
+  const mutable = readBinding({ imageRef: `soar-api-stack:${sha}` });
+  assert.deepEqual(mutable, { status: 'FAIL', issues: ['CANDIDATE_IMAGE_NOT_PINNED'] });
+  assert.equal(evaluate(value, live, mutable).status, 'FAIL');
+
+  const swapped = readBinding({ inspectedImageId: `sha256:${'c'.repeat(64)}` });
+  assert.equal(swapped.status, 'PASS');
+  assert.ok(evaluate(value, live, swapped).issues.includes('CANDIDATE_IMAGE_MISMATCH'));
+
+  const mislabeled = readBinding({ revisionLabel: 'c'.repeat(40) });
+  assert.ok(evaluate(value, live, mislabeled).issues.includes('CANDIDATE_SHA_MISMATCH'));
+
+  value.provenance.plannedImageIds['workers-backtest'] = `sha256:${'d'.repeat(64)}`;
+  assert.ok(evaluate(value, live).issues.includes('CANDIDATE_IMAGE_MISMATCH'));
 });
 
 test('hidden running backtest replica fails even when JSON claims inventoryComplete', () => {
@@ -213,12 +279,14 @@ test('active container with no recognized labels, name, or image blocks', () => 
   const result = evaluate(value, readLive(containers));
   assert.equal(result.status, 'FAIL');
   assert.ok(result.issues.includes('ACTIVE_CONTAINER_UNATTRIBUTED'));
-  assert.doesNotMatch(formatWorkerSwitchPreflight(result), /PASS_INVENTORY_ONLY/);
+  assert.doesNotMatch(formatWorkerSwitchPreflight(result), /PASS_LOCAL_PROCEDURAL_ONLY/);
 });
 
 test('missing live Docker inventory and missing candidate SHA cannot produce PASS', () => {
   const value = snapshot();
   assert.ok(evaluate(value).issues.includes('LIVE_DOCKER_REQUIRED'));
+  assert.ok(evaluateWorkerSwitchPreflight({ snapshot: value, expectedSha: sha, nowMs })
+    .issues.includes('LOCAL_SOURCE_BINDING_REQUIRED'));
   delete value.provenance.apiImageRevision;
   const result = evaluate(value, readLive(liveContainers(value)));
   assert.ok(result.issues.includes('CANDIDATE_PROVENANCE_MISSING'));
@@ -226,6 +294,7 @@ test('missing live Docker inventory and missing candidate SHA cannot produce PAS
 
 test('only selected Docker fields are requested and failure output omits private data', () => {
   assert.doesNotMatch(INSPECT_FORMAT, /\.Env|Password|Secret/i);
+  assert.doesNotMatch(IMAGE_INSPECT_FORMAT, /\.Env|Password|Secret/i);
   const value = snapshot();
   value.DATABASE_URL = 'postgresql://never-print-this';
   const report = formatWorkerSwitchPreflight(evaluate(value, readLive(liveContainers(value))));
