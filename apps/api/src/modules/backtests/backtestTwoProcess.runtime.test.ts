@@ -65,6 +65,16 @@ const startProofProcess = (role: string, queueName: string, runIds: string[]): P
 
 const runtimeIt = process.env.RUN_BACKTEST_PROCESS_PROOF === '1' ? it : it.skip;
 
+const positionCycleConfig = {
+  openConditions: { direction: 'long', noMatchAction: 'EXIT',
+    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+    indicatorsShort: [] },
+  close: { mode: 'basic', tp: 99, sl: 20 },
+  additional: { dcaEnabled: true, dcaMode: 'basic', dcaTimes: 2,
+    dcaSizingBasis: 'usdt_contribution_v1',
+    dcaLevels: [{ percent: -30.5, multiplier: 2 }] },
+};
+
 describe('real backtest worker process proof', () => {
   runtimeIt('recovers a crashed owner and an interrupted acknowledgement with one result', async () => {
     const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
@@ -150,10 +160,12 @@ describe('real backtest worker process proof', () => {
         ]);
         await redis.quit();
       }
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
       await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
       await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
       await prisma.backtestRun.deleteMany({ where: { id: run.id } });
       if (orphanRunId) {
+        await prisma.backtestContribution.deleteMany({ where: { backtestRunId: orphanRunId } });
         await prisma.backtestTrade.deleteMany({ where: { backtestRunId: orphanRunId } });
         await prisma.backtestReport.deleteMany({ where: { backtestRunId: orphanRunId } });
         await prisma.backtestRun.deleteMany({ where: { id: orphanRunId } });
@@ -238,9 +250,123 @@ describe('real backtest worker process proof', () => {
         ]));
         await redis.quit();
       }
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: { in: runIds } } });
       await prisma.backtestTrade.deleteMany({ where: { backtestRunId: { in: runIds } } });
       await prisma.backtestReport.deleteMany({ where: { backtestRunId: { in: runIds } } });
       await prisma.backtestRun.deleteMany({ where: { id: { in: runIds } } });
+      await prisma.user.delete({ where: { id: user.id } });
+    }
+  }, 60_000);
+
+  runtimeIt('recovers ACK loss after a real 007 position cycle without a second simulation', async () => {
+    const databaseName = new URL(process.env.DATABASE_URL ?? '').pathname.slice(1);
+    if (!databaseName.endsWith('_test')) throw new Error('Refusing to mutate a non-test database');
+    const queueName = `backtest-ack-loss-007-${randomUUID()}`;
+    const user = await prisma.user.create({
+      data: { email: `bt-ack-loss-${randomUUID()}@example.test`, password: 'test-only' },
+    });
+    const strategy = await prisma.strategy.create({ data: {
+      userId: user.id, name: '007 ACK loss strategy', interval: '1m', leverage: 1,
+      walletRisk: 10, config: positionCycleConfig,
+    } });
+    const run = await prisma.backtestRun.create({ data: {
+      userId: user.id, strategyId: strategy.id, name: '007 ACK loss cycle',
+      symbol: 'BTCUSDT', timeframe: '1m',
+      seedConfig: { symbols: ['BTCUSDT'], marketType: 'FUTURES', leverage: 1,
+        marginMode: 'CROSSED', initialBalance: 10, maxCandles: 100,
+        feeRate: 0, slippageRate: 0,
+        contextSnapshot: { strategy: { id: strategy.id, walletRisk: 10,
+          config: positionCycleConfig } } },
+    } });
+    const redis = createClient({ url: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379' });
+    const processes: ProofProcess[] = [];
+    const pendingKey = `soar:queue:${queueName}:pending`;
+    const processingKey = `soar:queue:${queueName}:processing`;
+    const dedupeKey = `soar:queue:${queueName}:dedupe`;
+    try {
+      await redis.connect();
+      const producer = new BacktestRunQueue(async () => undefined, {
+        backend: 'redis', queueName,
+        redisUrl: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
+      });
+      await producer.enqueue(run.id);
+      await producer.stopWorker();
+
+      const terminalWorker = startProofProcess('position-cycle-ack-hold', queueName, [run.id]);
+      processes.push(terminalWorker);
+      await terminalWorker.waitFor('COMMITTED_BEFORE_ACK');
+      expect(terminalWorker.lines.filter((line) => line === 'JOB_INVOKED')).toHaveLength(1);
+      expect(terminalWorker.lines.filter((line) => line === 'SIMULATE')).toHaveLength(1);
+
+      const committedRun = await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } });
+      const committedTrades = await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } });
+      const committedReports = await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } });
+      const committedFills = await prisma.backtestContribution.findMany({
+        where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+      });
+      expect(committedRun.status).toBe('COMPLETED');
+      expect(committedRun.executionToken).toBeNull();
+      expect(committedTrades).toHaveLength(1);
+      expect(committedTrades[0].exitReason).toBe('SL');
+      expect(committedTrades[0].entryPrice * committedTrades[0].quantity).toBeCloseTo(9, 6);
+      expect(committedReports).toHaveLength(1);
+      const metrics = committedReports[0].metrics as {
+        lifecycleEventCounts: Record<string, number>;
+        positionContributionUsdtTotal: number;
+        runLifecycle: { reportReady: boolean };
+      };
+      expect(metrics.runLifecycle.reportReady).toBe(true);
+      expect(metrics.lifecycleEventCounts).toMatchObject({ ENTRY: 1, DCA: 2, EXIT: 0, SL: 1 });
+      expect(metrics.positionContributionUsdtTotal).toBeCloseTo(9, 6);
+      expect(committedFills.map((fill) => [fill.kind, fill.addSequence, fill.levelIndex,
+        fill.triggerPercent, fill.multiplier, fill.price])).toEqual([
+        ['ENTRY', 0, null, null, null, 1],
+        ['DCA', 1, 0, -30.5, 2, 0.6949],
+        ['DCA', 2, 1, -30.5, 2, 0.5375],
+      ]);
+      committedFills.forEach((fill, index) =>
+        expect(fill.contributionUsdt).toBeCloseTo([1, 2, 6][index], 6));
+      expect(await redis.lRange(pendingKey, 0, -1)).toEqual([]);
+      expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
+      expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
+
+      terminalWorker.child.kill();
+      await new Promise((resolve) => terminalWorker.child.once('close', resolve));
+      expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
+      expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
+
+      const recoveryWorker = startProofProcess('position-cycle-recovery', queueName, [run.id]);
+      processes.push(recoveryWorker);
+      await recoveryWorker.waitFor('READY');
+      await waitUntil(async () =>
+        (await redis.lRange(processingKey, 0, -1)).length === 0 &&
+        (await redis.lRange(pendingKey, 0, -1)).length === 0 &&
+        !(await redis.sIsMember(dedupeKey, run.id)));
+      await wait(250);
+      expect(recoveryWorker.lines).not.toContain('JOB_INVOKED');
+      expect(recoveryWorker.lines).not.toContain('SIMULATE');
+      expect(await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } }))
+        .toEqual(committedRun);
+      expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedTrades);
+      expect(await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedReports);
+      expect(await prisma.backtestContribution.findMany({
+        where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+      })).toEqual(committedFills);
+    } finally {
+      for (const process of processes) {
+        if (process.child.exitCode === null) process.child.kill();
+      }
+      if (redis.isOpen) {
+        await redis.del([pendingKey, processingKey, dedupeKey]);
+        await redis.quit();
+      }
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestRun.delete({ where: { id: run.id } });
+      await prisma.strategy.delete({ where: { id: strategy.id } });
       await prisma.user.delete({ where: { id: user.id } });
     }
   }, 60_000);

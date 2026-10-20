@@ -1,6 +1,8 @@
 import { createClaimedBacktestRunJob } from './backtestClaimedRun';
+import { simulateInterleavedPortfolio } from './backtestPortfolioSimulation.service';
 import type { BacktestRunJobDeps } from './backtestRunJob';
 import { BacktestRunQueue } from './backtestRunQueue';
+import { parseStrategySignalRules } from '../engine/strategySignalEvaluator';
 import { findBacktestRunById } from './backtests.repository';
 import {
   listDiscardableBacktestRunIds,
@@ -13,6 +15,7 @@ if (process.env.SOAR_BT_PROOF !== '1' ||
 }
 
 const role = process.env.SOAR_BT_PROOF_ROLE;
+const positionCycleProof = role === 'position-cycle-ack-hold' || role === 'position-cycle-recovery';
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
 if (!queueName) throw new Error('Proof queue name missing');
 const proofRunIds = (process.env.SOAR_BT_PROOF_RUN_IDS ?? '').split(',').filter(Boolean);
@@ -24,10 +27,19 @@ const deps: BacktestRunJobDeps = {
   uniqueSorted: (values) => [...new Set(values)].sort(),
   computeAdaptiveMaxCandles: () => 250,
   resolveIndicatorWarmupCandles: () => 0,
-  normalizeWalletRiskPercent: () => 1,
-  parseStrategySignalRules: () => null,
+  normalizeWalletRiskPercent: (value) => positionCycleProof ? value : 1,
+  parseStrategySignalRules: (config) => positionCycleProof ? parseStrategySignalRules(config) : null,
   findOwnedStrategySignalConfig: async () => null,
   fetchKlines: async () => {
+    if (positionCycleProof) {
+      const prices = [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.47];
+      return Array.from({ length: 100 }, (_, index) => {
+        const price = prices[index] ?? prices.at(-1)!;
+        const openTime = 1_710_000_000_000 + index * 60_000;
+        return { openTime, closeTime: openTime + 59_999,
+          open: price, high: price, low: price, close: price, volume: 1_000 };
+      });
+    }
     if (role === 'hold' || role === 'hold-release') {
       process.stdout.write('FETCH_STARTED\n');
       if (role === 'hold') {
@@ -43,8 +55,9 @@ const deps: BacktestRunJobDeps = {
     }));
   },
   fetchSupplementalSeries: async () => ({ fundingRates: [], openInterest: [], orderBook: [] }),
-  simulateInterleavedPortfolio: () => {
+  simulateInterleavedPortfolio: (input) => {
     process.stdout.write('SIMULATE\n');
+    if (positionCycleProof) return simulateInterleavedPortfolio(input);
     return {
       perSymbol: {
         BTCUSDT: {
@@ -75,9 +88,10 @@ const deps: BacktestRunJobDeps = {
 
 const job = createClaimedBacktestRunJob(deps);
 const queue = new BacktestRunQueue(async (runId) => {
+  if (positionCycleProof) process.stdout.write('JOB_INVOKED\n');
   await job(runId);
   if (role === 'hold-release') process.stdout.write('JOB_RETURNED\n');
-  if (role === 'ack-hold') {
+  if (role === 'ack-hold' || role === 'position-cycle-ack-hold') {
     process.stdout.write('COMMITTED_BEFORE_ACK\n');
     await new Promise<void>(() => undefined);
   }
