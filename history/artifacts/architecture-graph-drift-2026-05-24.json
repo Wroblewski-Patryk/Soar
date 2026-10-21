@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 904,
-    "covered": 904,
+    "total": 907,
+    "covered": 907,
     "missing": 0
   },
   "categories": {
@@ -37,14 +37,14 @@
       "missingSamples": []
     },
     "webHooksAndServices": {
-      "total": 40,
-      "covered": 40,
+      "total": 42,
+      "covered": 42,
       "missing": 0,
       "missingSamples": []
     },
     "webTests": {
-      "total": 158,
-      "covered": 158,
+      "total": 159,
+      "covered": 159,
       "missing": 0,
       "missingSamples": []
     },

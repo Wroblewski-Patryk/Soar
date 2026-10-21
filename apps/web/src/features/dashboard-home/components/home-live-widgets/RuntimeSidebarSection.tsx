@@ -66,6 +66,8 @@ export type RuntimeSidebarSectionProps = {
     maxExecutableQty: number | null;
     liveReferencePrice: number | null;
     quantity: string;
+    quantityError: string | null;
+    quantityStep: number | null;
     budget: string;
     price: string;
     sliderPercent: number;
@@ -673,16 +675,20 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                       type="number"
                       inputMode="decimal"
                       min={props.manualOrder.minExecutableQty ?? 0}
-                      step="0.000001"
+                      step={props.manualOrder.quantityStep ?? "any"}
                       className="input input-bordered input-sm"
                       data-testid="manual-order-quantity-input"
+                      aria-invalid={props.manualOrder.quantityError != null && props.manualOrder.quantity !== ""}
+                      aria-describedby="manual-order-quantity-helper"
                       value={props.manualOrder.quantity}
                       disabled={props.manualOrder.isSubmitting}
                       onChange={(event) => props.manualOrder.onQuantityChange(event.target.value)}
                     />
                   </label>
-                  <p className="min-h-4 text-[10px] leading-4 opacity-70" data-testid="manual-order-min-qty-helper">
-                    {props.manualOrder.minQtyLabel}: {props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}
+                  <p id="manual-order-quantity-helper" role={props.manualOrder.quantityError ? "alert" : undefined}
+                    className={`min-h-4 text-[10px] leading-4 ${props.manualOrder.quantityError ? "text-error" : "opacity-70"}`}
+                    data-testid="manual-order-min-qty-helper">
+                    {props.manualOrder.quantityError ?? `${props.manualOrder.minQtyLabel}: ${props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}`}
                   </p>
                 </div>
                 <div className="space-y-1.5 pt-1">
@@ -713,7 +719,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     className="input input-bordered input-sm"
                     data-testid="manual-order-budget-input"
                     value={props.manualOrder.budget}
-                    disabled={props.manualOrder.isSubmitting}
+                    disabled={props.manualOrder.isSubmitting || props.manualOrder.quantityStep == null}
                     onChange={(event) => props.manualOrder.onBudgetChange(event.target.value)}
                   />
                   <span className="text-[10px] opacity-70">

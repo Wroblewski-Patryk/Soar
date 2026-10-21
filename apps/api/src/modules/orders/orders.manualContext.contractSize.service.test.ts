@@ -100,12 +100,13 @@ describe('getManualOrderContext contract-size rules', () => {
       },
     });
 
-    let amountPrecisionMode: 'TICK_SIZE' | null = 'TICK_SIZE';
+    let amountPrecisionMode: 'TICK_SIZE' | 'DECIMAL_PLACES' | null = 'TICK_SIZE';
+    let amountPrecision = 1;
     const connectorFactory = vi.fn(() => ({
       getSymbolTradingRules: async () => ({
         minAmount: 1,
         minNotional: 5.1,
-        amountPrecision: 1,
+        amountPrecision,
         amountPrecisionMode,
         contractSize: 10,
       }),
@@ -126,6 +127,8 @@ describe('getManualOrderContext contract-size rules', () => {
     expect(context?.symbol).toBe('ADAUSDT');
     expect(context?.leverage).toBe(5);
     expect(context?.quantityConstraints.contractSize).toBe(10);
+    expect(context?.quantityConstraints.amountPrecisionMode).toBe('TICK_SIZE');
+    expect(context?.quantityConstraints.amountStep).toBe(1);
     expect(context?.quantityConstraints.minExecutableQty).toBe(3);
     expect(context?.sideAwarePreview.requestedQuantity).toBe(4);
     expect(context?.sideAwarePreview.estimatedNotional).toBe(10);
@@ -140,12 +143,40 @@ describe('getManualOrderContext contract-size rules', () => {
     expect(offGrid?.sideAwarePreview.estimatedNotional).toBeNull();
     expect(offGrid?.sideAwarePreview.estimatedMargin).toBeNull();
 
+    const belowMinimum = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 2 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(belowMinimum?.quantityConstraints.minExecutableQty).toBe(3);
+    expect(belowMinimum?.sideAwarePreview.estimatedNotional).toBeNull();
+    expect(belowMinimum?.sideAwarePreview.estimatedMargin).toBeNull();
+
+    amountPrecisionMode = 'DECIMAL_PLACES';
+    const decimal = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 3.5 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(decimal?.quantityConstraints.amountStep).toBe(0.1);
+    expect(decimal?.quantityConstraints.minExecutableQty).toBe(2.1);
+    expect(decimal?.sideAwarePreview.estimatedNotional).toBe(8.75);
+    expect(decimal?.sideAwarePreview.estimatedMargin).toBe(1.75);
+
+    amountPrecisionMode = 'TICK_SIZE';
+    amountPrecision = 5;
+    const fiveStep = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 60.5 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(fiveStep?.quantityConstraints.amountStep).toBe(5);
+    expect(fiveStep?.sideAwarePreview.estimatedNotional).toBeNull();
+
     amountPrecisionMode = null;
     const unknownMode = await getManualOrderContext(
       user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 4 },
       { createPublicConnector: connectorFactory }
     );
     expect(unknownMode?.quantityConstraints.minExecutableQty).toBeNull();
+    expect(unknownMode?.quantityConstraints.amountStep).toBeNull();
     expect(unknownMode?.sideAwarePreview.estimatedNotional).toBeNull();
   });
 });

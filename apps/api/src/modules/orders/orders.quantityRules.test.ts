@@ -5,6 +5,7 @@ import {
   enforceLivePretradeGuards,
   normalizeAmountByPrecision,
   normalizeAmountFixed,
+  resolvePrecisionStep,
 } from './orders.quantityRules';
 
 describe('orders.quantityRules', () => {
@@ -48,6 +49,10 @@ describe('orders.quantityRules', () => {
   });
 
   it('keeps preview minimum on the explicit CCXT quantity grid', () => {
+    expect(resolvePrecisionStep(1, 'TICK_SIZE')).toBe(1);
+    expect(resolvePrecisionStep(1, 'DECIMAL_PLACES')).toBe(0.1);
+    expect(resolvePrecisionStep(5, 'TICK_SIZE')).toBe(5);
+    expect(resolvePrecisionStep(1, null)).toBeNull();
     const rules = { minAmount: 1, minNotional: 5.1, markPrice: 0.25,
       amountPrecision: 1, contractSize: 10 };
     expect(computeMinExecutableQuantity({ ...rules,

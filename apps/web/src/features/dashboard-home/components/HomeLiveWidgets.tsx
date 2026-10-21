@@ -390,6 +390,8 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
   const cancelOpenOrderErrorLabel = t("dashboard.home.runtime.cancelOpenOrderError");
   const manualOrderInvalidSymbolLabel = t("dashboard.home.runtime.manualOrderSymbolRequired");
   const manualOrderInvalidQuantityLabel = t("dashboard.home.runtime.manualOrderQuantityRequired");
+  const manualOrderInvalidQuantityStepLabel = t("dashboard.home.runtime.manualOrderQuantityStepInvalid");
+  const manualOrderQuantityRulesUnavailableLabel = t("dashboard.home.runtime.manualOrderQuantityRulesUnavailable");
   const manualOrderInvalidPriceLabel = t("dashboard.home.runtime.manualOrderPriceInvalid");
   const manualOrderRequiredPriceLabel = t("dashboard.home.runtime.manualOrderPriceRequired");
   const manualOrderMarketPriceUnavailableLabel = t(
@@ -471,6 +473,9 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
     manualOrderNotionalEstimate,
     manualOrderPrice,
     manualOrderQuantity,
+    manualOrderQuantityError,
+    manualOrderQuantityRulesAvailable,
+    manualOrderQuantityStep,
     manualOrderSide,
     manualOrderSliderMaxQuantity,
     manualOrderSliderPercent,
@@ -493,6 +498,8 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
     labels: {
       invalidSymbol: manualOrderInvalidSymbolLabel,
       invalidQuantity: manualOrderInvalidQuantityLabel,
+      invalidQuantityStep: manualOrderInvalidQuantityStepLabel,
+      quantityRulesUnavailable: manualOrderQuantityRulesUnavailableLabel,
       invalidPrice: manualOrderInvalidPriceLabel,
       requiredPrice: manualOrderRequiredPriceLabel,
       marketPriceUnavailable: manualOrderMarketPriceUnavailableLabel,
@@ -710,6 +717,9 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
         manualOrderSliderMaxQuantity,
         manualOrderLiveReferencePrice,
         manualOrderQuantity,
+        manualOrderQuantityError,
+        manualOrderQuantityRulesAvailable,
+        manualOrderQuantityStep,
         manualOrderBudget,
         manualOrderPrice,
         manualOrderSliderPercent,
@@ -752,6 +762,9 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
       manualOrderOpenLabel,
       manualOrderPrice,
       manualOrderQuantity,
+      manualOrderQuantityError,
+      manualOrderQuantityRulesAvailable,
+      manualOrderQuantityStep,
       manualOrderSide,
       manualOrderSliderMaxQuantity,
       manualOrderSliderPercent,

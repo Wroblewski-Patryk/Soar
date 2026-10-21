@@ -150,7 +150,10 @@ export type DashboardManualOrderContext = {
   quantityConstraints: {
     minAmount: number | null;
     amountPrecision: number | null;
+    amountPrecisionMode: "TICK_SIZE" | "DECIMAL_PLACES" | null;
+    amountStep: number | null;
     minNotional: number | null;
+    contractSize: number | null;
     minExecutableQty: number | null;
   };
   sideAwarePreview: {

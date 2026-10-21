@@ -14,8 +14,9 @@ import {
   getDashboardManualOrderContext,
   openDashboardManualOrder,
 } from "../../bots/services/bots.service";
-import type { DashboardManualOrderResponse } from "../../bots/types/bot.type";
+import type { DashboardManualOrderContext, DashboardManualOrderResponse } from "../../bots/types/bot.type";
 import type { RuntimeSelectedData, RuntimeSnapshot } from "../components/home-live-widgets/types";
+import { floorManualQuantity, getManualOrderQuantityRules, isExecutableManualQuantity, isQuantityOnGrid } from "./manualOrderQuantityRules";
 
 type UseManualOrderControllerArgs = {
   selected: RuntimeSnapshot | null;
@@ -25,6 +26,8 @@ type UseManualOrderControllerArgs = {
   labels: {
     invalidSymbol: string;
     invalidQuantity: string;
+    invalidQuantityStep: string;
+    quantityRulesUnavailable: string;
     invalidPrice: string;
     requiredPrice: string;
     marketPriceUnavailable: string;
@@ -51,15 +54,7 @@ export const useManualOrderController = ({
   const [manualOrderPriceAutofilledSymbol, setManualOrderPriceAutofilledSymbol] = useState<string | null>(null);
   const [manualOrderPriceManuallyEditedSymbol, setManualOrderPriceManuallyEditedSymbol] = useState<string | null>(null);
   const [manualOrderLastResolvedSymbol, setManualOrderLastResolvedSymbol] = useState<string | null>(null);
-  const [manualOrderContext, setManualOrderContext] = useState<{
-    botId: string;
-    symbol: string;
-    orderType: "MARKET" | "LIMIT" | "STOP" | "STOP_LIMIT" | "TAKE_PROFIT" | "TRAILING";
-    marginMode: "CROSSED" | "ISOLATED" | "NONE";
-    leverage: number;
-    priceReference: { markPrice: number | null };
-    quantityConstraints: { minExecutableQty: number | null };
-  } | null>(null);
+  const [manualOrderContext, setManualOrderContext] = useState<DashboardManualOrderContext | null>(null);
   const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
   const [manualOrderLastResponse, setManualOrderLastResponse] = useState<DashboardManualOrderResponse | null>(null);
@@ -241,7 +236,12 @@ export const useManualOrderController = ({
     resolvedManualOrderType === "STOP" ||
     resolvedManualOrderType === "STOP_LIMIT" ||
     resolvedManualOrderType === "TAKE_PROFIT";
-  const manualOrderMinExecutableQty = manualOrderContext?.quantityConstraints.minExecutableQty ?? null;
+  const manualOrderQuantityRules = useMemo(() => {
+    if (!manualOrderContext || manualOrderContext.botId !== selected?.bot.id ||
+        normalizeSymbol(manualOrderContext.symbol) !== normalizeSymbol(manualOrderSymbol)) return null;
+    return getManualOrderQuantityRules(manualOrderContext.quantityConstraints);
+  }, [manualOrderContext, manualOrderSymbol, selected?.bot.id]);
+  const manualOrderMinExecutableQty = manualOrderQuantityRules?.minQuantity ?? null;
 
   const manualOrderLeverageForEstimate = useMemo(() => {
     if (manualOrderContext?.leverage && Number.isFinite(manualOrderContext.leverage) && manualOrderContext.leverage > 0) {
@@ -265,29 +265,26 @@ export const useManualOrderController = ({
   }, [manualOrderLiveReferencePrice, manualOrderPrice]);
 
   const manualOrderSliderMaxQuantity = useMemo(() => {
+    if (!manualOrderQuantityRules) return null;
     if (manualOrderEffectivePriceForSizing == null || manualOrderEffectivePriceForSizing <= 0) {
-      return manualOrderMinExecutableQty;
+      return null;
     }
     const freeCash = selectedData?.free;
     if (freeCash == null || !Number.isFinite(freeCash) || freeCash <= 0) {
-      return manualOrderMinExecutableQty;
+      return null;
     }
     const effectiveLeverage =
       manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
         ? manualOrderLeverageForEstimate
         : 1;
-    const rawMax = (freeCash * effectiveLeverage) / manualOrderEffectivePriceForSizing;
-    if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
-
-    if (manualOrderMinExecutableQty != null) {
-      return Math.max(manualOrderMinExecutableQty, rawMax);
-    }
-    return rawMax;
+    const rawMax = (freeCash * effectiveLeverage) /
+      (manualOrderEffectivePriceForSizing * manualOrderQuantityRules.contractSize);
+    return floorManualQuantity(rawMax, manualOrderQuantityRules);
   }, [
     manualOrderEffectivePriceForSizing,
     manualOrderBudgetUsesMargin,
     manualOrderLeverageForEstimate,
-    manualOrderMinExecutableQty,
+    manualOrderQuantityRules,
     selectedData?.free,
   ]);
 
@@ -354,20 +351,21 @@ export const useManualOrderController = ({
   }, [manualOrderMinExecutableQty, manualOrderQuantity, manualOrderSliderMaxQuantity]);
 
   const handleManualOrderSliderChange = useCallback((nextPercent: number) => {
+    if (!manualOrderQuantityRules || manualOrderSliderMaxQuantity == null) return;
     const clampedPercent = Math.max(0, Math.min(100, nextPercent));
     setManualOrderSliderPercent(clampedPercent);
     clearManualOrderActionState();
 
-    const minQty = manualOrderMinExecutableQty ?? 0;
-    const maxQty = manualOrderSliderMaxQuantity ?? minQty;
-    if (!Number.isFinite(maxQty) || maxQty <= 0) return;
+    const minQty = manualOrderQuantityRules.minQuantity;
+    const maxQty = manualOrderSliderMaxQuantity;
 
     const targetQuantity =
       maxQty <= minQty
         ? minQty
         : minQty + ((maxQty - minQty) * clampedPercent) / 100;
-    setManualOrderQuantity(formatQuantityForInput(targetQuantity));
-  }, [clearManualOrderActionState, manualOrderMinExecutableQty, manualOrderSliderMaxQuantity]);
+    const executableQuantity = floorManualQuantity(targetQuantity, manualOrderQuantityRules);
+    if (executableQuantity != null) setManualOrderQuantity(formatQuantityForInput(executableQuantity));
+  }, [clearManualOrderActionState, manualOrderQuantityRules, manualOrderSliderMaxQuantity]);
 
   const fillManualOrderPriceFromReference = useCallback(() => {
     if (manualOrderLiveReferencePrice == null || !Number.isFinite(manualOrderLiveReferencePrice) || manualOrderLiveReferencePrice <= 0) {
@@ -405,14 +403,35 @@ export const useManualOrderController = ({
   }, [clearManualOrderActionState]);
 
   const manualOrderQuantityValue = useMemo(() => {
-    const parsed = Number(manualOrderQuantity);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-  }, [manualOrderQuantity]);
+    if (!manualOrderQuantityRules) return null;
+    const parsed = parsePositiveQuantityInput(manualOrderQuantity);
+    return parsed !== "invalid" && isExecutableManualQuantity(parsed, manualOrderQuantityRules) ? parsed : null;
+  }, [manualOrderQuantity, manualOrderQuantityRules]);
+
+  const manualOrderQuantityError = useMemo(() => {
+    if (!manualOrderQuantityRules) return manualOrderContextLoading ? null : labels.quantityRulesUnavailable;
+    if (!manualOrderQuantity.trim()) return null;
+    const parsed = parsePositiveQuantityInput(manualOrderQuantity);
+    if (parsed === "invalid") return labels.invalidQuantity;
+    if (parsed < manualOrderQuantityRules.minQuantity - 1e-12) {
+      return interpolateTemplate(labels.minQuantity, {
+        value: formatQuantityForInput(manualOrderQuantityRules.minQuantity),
+      });
+    }
+    if (!isQuantityOnGrid(parsed, manualOrderQuantityRules.step)) {
+      return interpolateTemplate(labels.invalidQuantityStep, {
+        value: formatQuantityForInput(manualOrderQuantityRules.step),
+      });
+    }
+    return null;
+  }, [labels.invalidQuantity, labels.invalidQuantityStep, labels.minQuantity,
+    labels.quantityRulesUnavailable, manualOrderContextLoading, manualOrderQuantity, manualOrderQuantityRules]);
 
   const manualOrderNotionalEstimate = useMemo(() => {
-    if (manualOrderQuantityValue == null || manualOrderEffectivePriceForSizing == null) return null;
-    return manualOrderQuantityValue * manualOrderEffectivePriceForSizing;
-  }, [manualOrderEffectivePriceForSizing, manualOrderQuantityValue]);
+    if (!manualOrderQuantityRules || manualOrderQuantityValue == null || manualOrderEffectivePriceForSizing == null) return null;
+    return Number((manualOrderQuantityValue * manualOrderEffectivePriceForSizing *
+      manualOrderQuantityRules.contractSize).toPrecision(15));
+  }, [manualOrderEffectivePriceForSizing, manualOrderQuantityRules, manualOrderQuantityValue]);
 
   const manualOrderMarginEstimate = useMemo(() => {
     if (manualOrderNotionalEstimate == null || manualOrderLeverageForEstimate == null || manualOrderLeverageForEstimate <= 0) {
@@ -436,6 +455,11 @@ export const useManualOrderController = ({
   const handleManualOrderBudgetChange = useCallback((budget: string) => {
     setManualOrderBudget(budget);
     clearManualOrderActionState();
+
+    if (!manualOrderQuantityRules) {
+      setManualOrderQuantity("");
+      return;
+    }
 
     const parsedBudget = parseOptionalPositivePriceInput(budget);
     if (parsedBudget == null) {
@@ -463,13 +487,16 @@ export const useManualOrderController = ({
       manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
         ? manualOrderLeverageForEstimate
         : 1;
-    const targetQuantity = (clampedBudget * effectiveLeverage) / manualOrderEffectivePriceForSizing;
-    setManualOrderQuantity(formatQuantityForInput(targetQuantity));
+    const targetQuantity = (clampedBudget * effectiveLeverage) /
+      (manualOrderEffectivePriceForSizing * manualOrderQuantityRules.contractSize);
+    const executableQuantity = floorManualQuantity(targetQuantity, manualOrderQuantityRules);
+    setManualOrderQuantity(executableQuantity == null ? "" : formatQuantityForInput(executableQuantity));
   }, [
     clearManualOrderActionState,
     manualOrderBudgetUsesMargin,
     manualOrderEffectivePriceForSizing,
     manualOrderLeverageForEstimate,
+    manualOrderQuantityRules,
     selectedData?.free,
   ]);
 
@@ -480,17 +507,27 @@ export const useManualOrderController = ({
       toast.error(labels.invalidSymbol);
       return;
     }
+    if (!manualOrderQuantityRules) {
+      toast.error(labels.quantityRulesUnavailable);
+      return;
+    }
     const quantity = parsePositiveQuantityInput(manualOrderQuantity);
     if (quantity === "invalid") {
       toast.error(labels.invalidQuantity);
       return;
     }
-    if (manualOrderMinExecutableQty != null && quantity < manualOrderMinExecutableQty) {
+    if (quantity < manualOrderQuantityRules.minQuantity - 1e-12) {
       toast.error(
         interpolateTemplate(labels.minQuantity, {
-          value: formatQuantityForInput(manualOrderMinExecutableQty),
+          value: formatQuantityForInput(manualOrderQuantityRules.minQuantity),
         })
       );
+      return;
+    }
+    if (!isQuantityOnGrid(quantity, manualOrderQuantityRules.step)) {
+      toast.error(interpolateTemplate(labels.invalidQuantityStep, {
+        value: formatQuantityForInput(manualOrderQuantityRules.step),
+      }));
       return;
     }
 
@@ -532,7 +569,7 @@ export const useManualOrderController = ({
       effectiveManualOrderPrice != null &&
       Number.isFinite(effectiveManualOrderPrice) &&
       effectiveManualOrderPrice > 0 &&
-      ((quantity * effectiveManualOrderPrice) /
+      ((quantity * effectiveManualOrderPrice * manualOrderQuantityRules.contractSize) /
         (manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
           ? manualOrderLeverageForEstimate
           : 1)) >
@@ -635,16 +672,18 @@ export const useManualOrderController = ({
     labels.exceedsFreeFunds,
     labels.invalidPrice,
     labels.invalidQuantity,
+    labels.invalidQuantityStep,
     labels.invalidSymbol,
     labels.marketPriceUnavailable,
     labels.minQuantity,
+    labels.quantityRulesUnavailable,
     labels.requiredPrice,
     labels.success,
     load,
     manualOrderLiveReferencePrice,
     manualOrderBudgetUsesMargin,
     manualOrderLeverageForEstimate,
-    manualOrderMinExecutableQty,
+    manualOrderQuantityRules,
     manualOrderPrice,
     manualOrderPriceManuallyEditedSymbol,
     manualOrderQuantity,
@@ -668,6 +707,9 @@ export const useManualOrderController = ({
     manualOrderNotionalEstimate,
     manualOrderPrice,
     manualOrderQuantity,
+    manualOrderQuantityError,
+    manualOrderQuantityRulesAvailable: manualOrderQuantityRules != null,
+    manualOrderQuantityStep: manualOrderQuantityRules?.step ?? null,
     manualOrderSide,
     manualOrderSliderMaxQuantity,
     manualOrderSliderPercent,

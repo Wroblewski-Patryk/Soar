@@ -183,6 +183,8 @@ export const dashboardHomePl = {
     "manualOrderSemanticsHint": "Zlecenie reczne korzysta z jednolitego cyklu: order -> fill -> position.",
     "manualOrderSymbolRequired": "Symbol jest wymagany.",
     "manualOrderQuantityRequired": "Ilosc musi byc dodatnia liczba.",
+    "manualOrderQuantityStepInvalid": "Ilość musi odpowiadać krokowi giełdy {value}.",
+    "manualOrderQuantityRulesUnavailable": "Reguły ilości giełdy są niedostępne. Odśwież przed złożeniem zlecenia.",
     "manualOrderPriceRequired": "Dla tego typu zlecenia cena jest wymagana.",
     "manualOrderPriceInvalid": "Cena musi byc dodatnia liczba.",
     "manualOrderMarketPriceUnavailable": "Brak wiarygodnej ceny rynkowej do otwarcia PAPER MARKET.",

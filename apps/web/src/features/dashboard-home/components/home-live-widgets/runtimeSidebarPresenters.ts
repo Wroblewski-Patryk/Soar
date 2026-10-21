@@ -23,6 +23,9 @@ type BuildManualOrderPresenterArgs = {
   manualOrderSliderMaxQuantity: number | null;
   manualOrderLiveReferencePrice: number | null;
   manualOrderQuantity: string;
+  manualOrderQuantityError: string | null;
+  manualOrderQuantityRulesAvailable: boolean;
+  manualOrderQuantityStep: number | null;
   manualOrderBudget: string;
   manualOrderPrice: string;
   manualOrderSliderPercent: number;
@@ -146,6 +149,9 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   manualOrderSliderMaxQuantity,
   manualOrderLiveReferencePrice,
   manualOrderQuantity,
+  manualOrderQuantityError,
+  manualOrderQuantityRulesAvailable,
+  manualOrderQuantityStep,
   manualOrderBudget,
   manualOrderPrice,
   manualOrderSliderPercent,
@@ -215,6 +221,8 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   maxExecutableQty: manualOrderSliderMaxQuantity ?? null,
   liveReferencePrice: manualOrderLiveReferencePrice,
   quantity: manualOrderQuantity,
+  quantityError: manualOrderQuantityError,
+  quantityStep: manualOrderQuantityStep,
   budget: manualOrderBudget,
   price: manualOrderPrice,
   sliderPercent: manualOrderSliderPercent,
@@ -222,7 +230,8 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   estimatedMargin: manualOrderMarginEstimate,
   isContextLoading: manualOrderContextLoading,
   isSubmitting: isSubmittingManualOrder,
-  isActionDisabled: !selectedRuntimeCapabilityAvailable || manualOrderSymbolOptions.length === 0,
+  isActionDisabled: !selectedRuntimeCapabilityAvailable || manualOrderSymbolOptions.length === 0 ||
+    !manualOrderQuantityRulesAvailable || (manualOrderQuantity !== "" && manualOrderQuantityError != null),
   onSymbolChange,
   onSideChange,
   onPriceChange,

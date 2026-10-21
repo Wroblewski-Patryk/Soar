@@ -90,6 +90,9 @@ describe("HomeLiveWidgets manual order", () => {
         quantityConstraints: {
           minAmount: 0.001,
           amountPrecision: 0.001,
+          amountPrecisionMode: "TICK_SIZE",
+          amountStep: 0.001,
+          contractSize: 1,
           minNotional: 50,
           minExecutableQty: 0.001,
         },
@@ -374,6 +377,9 @@ describe("HomeLiveWidgets manual order", () => {
         quantityConstraints: {
           minAmount: 0.001,
           amountPrecision: 0.001,
+          amountPrecisionMode: "TICK_SIZE",
+          amountStep: 0.001,
+          contractSize: 1,
           minNotional: 50,
           minExecutableQty: 0.001,
         },
@@ -667,8 +673,8 @@ describe("HomeLiveWidgets manual order", () => {
 
     fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "12000" } });
     await waitFor(() => {
-      expect(Number(screen.getByTestId("manual-order-budget-input").getAttribute("value") ?? "0")).toBeCloseTo(10000, 3);
-      expect(Number(screen.getByTestId("manual-order-quantity-input").getAttribute("value") ?? "0")).toBeCloseTo(1.4705882, 6);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(9996);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(1.47);
     });
   });
 
@@ -800,6 +806,9 @@ describe("HomeLiveWidgets manual order", () => {
         quantityConstraints: {
           minAmount: 0.001,
           amountPrecision: 0.001,
+          amountPrecisionMode: "TICK_SIZE",
+          amountStep: 0.001,
+          contractSize: 1,
           minNotional: 50,
           minExecutableQty: 0.001,
         },
@@ -822,8 +831,8 @@ describe("HomeLiveWidgets manual order", () => {
 
     fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "100" } });
     await waitFor(() => {
-      expect(Number(screen.getByTestId("manual-order-budget-input").getAttribute("value") ?? "0")).toBeCloseTo(100, 3);
-      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.01470588);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(95.2);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.014);
     });
   });
 

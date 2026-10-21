@@ -36,7 +36,7 @@ const getExposureCacheKey = (params: {
   symbol: string;
 }) => `${params.apiKeyId}:${params.symbol.toUpperCase()}`;
 
-const resolvePrecisionStep = (
+export const resolvePrecisionStep = (
   amountPrecision: number | null,
   mode?: SymbolTradingRules['amountPrecisionMode']
 ): number | null => {
