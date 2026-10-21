@@ -98,3 +98,44 @@ Nie zmieniono danych źródłowych ani strategii.
 Ten PASS dowodzi lokalnej trwałości i odtworzenia przez nowy proces testowy.
 Nie dowodzi automatycznego uruchomienia procesu przez supervisor ani
 rzeczywistej giełdy; niezależny odbiór 011/011A pozostaje REVIEW/NO-GO.
+
+## Plan przed próbą nadzorowanego restartu (2026-10-21)
+
+Projektowy mechanizm nadzoru to `restart: unless-stopped` dla
+`workers-execution` w `docker-compose.coolify.yml` i `docker-compose.vps.yml`.
+`scripts/start-workers-prod.mjs` kończy własny proces po awarii dziecka;
+sam nie uruchamia go ponownie. Dlatego nowy opt-in dowód użyje izolowanego
+projektu Docker Compose z tą samą polityką restartu i procesem świadectwa 011
+zawierającym zwykły runtime PAPER oraz internal mock LIVE. Testowy proces nie
+jest produkcyjnym `execution.worker.js`; wynik trzeba tak właśnie opisać.
+
+Projekt Compose ma mieć własną nazwę, sieć, PostgreSQL z bazą
+`soar_position_parity_011_test`, Redis i wolumeny, bez publikowania portów
+oraz bez połączenia ze zwykłym stosem Soar. Obraz testowy powstaje z etapu
+`build` istniejącego Dockerfile API i zawiera test Vitest; żaden obraz nie
+zostanie wdrożony. Jedyny restartowany serwis wykonuje ten sam testowy
+entrypoint przy każdym starcie. Wybór pierwszego przebiegu lub odzyskania
+następuje automatycznie z markera w **tym izolowanym Redisie**; host nie
+uruchamia procesu `resume`.
+
+Pierwszy przebieg ma zapisać jedną strategię i źródło, dojść do źródłowego
+`a=167049972`, wykazać trwałe pojedyncze DCA w obu trybach i dopiero wtedy
+opublikować marker. Orkiestrator ma zweryfikować własność kontenera po nazwie
+projektu/serwisu, stan bazy i PID, po czym `SIGKILL` dotknie wyłącznie tego
+kontenera. Odbiór wymaga wzrostu `RestartCount`, nowego PID oraz automatycznego
+odczytu tego samego markera, strategii i archiwum. Proces po restarcie poda
+ponownie tick DCA, następnie `a=167049975` (arm) i `a=167049977` (jedno TTP).
+Drugi submit DCA lub CLOSE jest błędem.
+
+Po restarcie porównać trwałe ID pozycji, botów, runu, DCA, intencji i filli,
+wkłady, ilości, średnią, opłaty, PnL, jedną intencję i fill na każde z trzech
+zleceń mock LIVE oraz brak EXIT. Zgodność z wcześniej zamrożonym świadkiem jest
+wymagana. BACKTEST może służyć jako odniesienie w bazie, lecz automatyczne
+odzyskanie jego kolejki pozostaje odrębną otwartą bramką. Real Binance LIVE,
+produkcyjny obraz workera, Coolify i mixed-version restart pozostają poza
+zakresem dowodu.
+
+Po zebraniu wyniku wolno usunąć tylko zasoby utworzone pod dokładną nazwą tego
+projektu Compose. Przy braku możliwości uruchomienia tego supervisora lub
+niepewnej własności procesu próba kończy się blockerem, bez ręcznego
+`resume` i bez zastępczego PASS.
