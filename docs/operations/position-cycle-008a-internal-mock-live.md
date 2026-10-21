@@ -15,6 +15,8 @@ state from PostgreSQL and Redis, replays the last DCA tick without another
 venue submit, and closes the first position at TP. A new position with DCA
 disabled exercises SL independently. Basic SL is deferred while loss-side
 DCA levels remain pending, so the second strategy configuration is deliberate.
+Each invocation reports one passed test and one skipped test. An unknown stage
+fails during collection, and neither single invocation is the full cycle proof.
 
 The assertions read back `LiveOrderIntent`, `FILLED` Order, `OrderFill`,
 Position, and Trade for every leg, including stable client/venue identities,

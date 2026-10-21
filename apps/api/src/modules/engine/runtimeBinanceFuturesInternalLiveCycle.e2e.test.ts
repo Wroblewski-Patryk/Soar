@@ -67,7 +67,11 @@ vi.mock('../orders/orders.service', async (importOriginal) => {
 
 const run = process.env.RUN_BINANCE_FUTURES_INTERNAL_MOCK_LIVE === '1';
 const stage = process.env.BINANCE_FUTURES_INTERNAL_MOCK_LIVE_STAGE;
-const proofIt = run ? it : it.skip;
+if (run && stage !== 'open' && stage !== 'resume') {
+  throw new Error('internal mock LIVE cycle requires an open or resume stage');
+}
+const openIt = run && stage === 'open' ? it : it.skip;
+const resumeIt = run && stage === 'resume' ? it : it.skip;
 const email = 'binance-futures-internal-live-cycle@example.test';
 const symbol = 'BTCUSDT';
 const prices = [1, 0.99694, 0.9949, 0.99792];
@@ -142,9 +146,8 @@ const readCycle = async (botId: string, positionId: string, actions: string[]) =
 };
 
 describe('SOAR-POSITION-CYCLE-008A internal Binance Futures mock LIVE cycle', () => {
-  proofIt('persists entry, HOLD and two DCA fills', async () => {
+  openIt('persists entry, HOLD and two DCA fills', async () => {
     assertIsolated();
-    if (stage !== 'open') return;
     if (await prisma.user.count() !== 0) throw new Error('dedicated proof database must start empty');
     const previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
@@ -242,9 +245,8 @@ describe('SOAR-POSITION-CYCLE-008A internal Binance Futures mock LIVE cycle', ()
     }
   }, 60_000);
 
-  proofIt('rebuilds after process restart, replays safely, closes TP and a fresh SL position', async () => {
+  resumeIt('rebuilds after process restart, replays safely, closes TP and a fresh SL position', async () => {
     assertIsolated();
-    if (stage !== 'resume') return;
     const previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
     try {
