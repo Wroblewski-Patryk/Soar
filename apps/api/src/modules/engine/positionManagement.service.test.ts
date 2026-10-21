@@ -119,6 +119,33 @@ describe('position management', () => {
     expect(negative.shouldClose).toBe(false);
   });
 
+  it('tracks advanced TSL behind a pending negative USDT DCA and closes only after its fill', () => {
+    const input = { side: 'LONG' as const,
+      trailingLossLevels: [
+        { startPercent: -0.5, stepPercent: 0.25 },
+        { startPercent: -0.25, stepPercent: 0.12 },
+      ],
+      dca: { enabled: true, maxAdds: 1, stepPercent: 0.7, addSizeFraction: 1,
+        levelPercents: [-0.7], addSizeFractions: [1],
+        sizingBasis: 'usdt_contribution_v1' as const } };
+    const entry = { averageEntryPrice: 100, quantity: 0.01, currentAdds: 0 };
+    const armed = evaluatePositionManagement({ ...input, currentPrice: 49 }, entry);
+    expect(armed.shouldClose).toBe(false);
+    expect(armed.nextState.trailingLossActiveLevelIndex).toBe(0);
+    expect(armed.nextState.trailingLossLimitPercent).toBeCloseTo(-0.76);
+    const ratcheted = evaluatePositionManagement({ ...input, currentPrice: 57 }, armed.nextState);
+    expect(ratcheted.shouldClose).toBe(false);
+    expect(ratcheted.nextState.trailingLossLimitPercent).toBeCloseTo(-0.68);
+    const add = evaluatePositionManagement({ ...input, currentPrice: 25 }, ratcheted.nextState);
+    expect(add.dcaExecuted).toBe(true);
+    expect(add.shouldClose).toBe(false);
+    const filled = rebasePositionManagementProtection({ ...add.nextState,
+      averageEntryPrice: 100 }, 40, 'LONG', 1);
+    expect(filled.trailingLossLimitPercent).toBeCloseTo(-0.2);
+    expect(evaluatePositionManagement({ ...input, currentPrice: 25 }, filled).closeReason)
+      .toBe('trailing_stop');
+  });
+
   it('closes position on take-profit hit', () => {
     const result = evaluatePositionManagement(
       {

@@ -482,9 +482,12 @@ export const evaluatePositionManagement = (
     };
   }
 
-  if (tslDcaProtectionSatisfied && !ttpTrackingActive) {
-    const configuredLossLevels = [...(parsedInput.trailingLossLevels ?? [])]
-      .sort((left, right) => left.startPercent - right.startPercent);
+  const configuredLossLevels = [...(parsedInput.trailingLossLevels ?? [])]
+    .sort((left, right) => left.startPercent - right.startPercent);
+  // Preserve the advanced loss tracker while a USDT DCA remains pending.
+  // The pending add still fences the close, and a confirmed fill rebases its floor.
+  if ((tslDcaProtectionSatisfied || (usdtContribution && configuredLossLevels.length > 0)) &&
+      !ttpTrackingActive) {
     if (configuredLossLevels.length > 0) {
       let activeIndex = Math.min(configuredLossLevels.length - 1,
         nextState.trailingLossActiveLevelIndex ??
@@ -501,7 +504,7 @@ export const evaluatePositionManagement = (
         nextState.trailingLossLimitPercent = Math.max(
           priorLimit, favorableMove - configuredLossLevels[activeIndex].stepPercent,
         );
-        if (favorableMove < nextState.trailingLossLimitPercent) {
+        if (tslDcaProtectionSatisfied && favorableMove < nextState.trailingLossLimitPercent) {
           return { shouldClose: true, closeReason: 'trailing_stop',
             dcaExecuted, dcaAddedQuantity, dcaLevelIndex, nextState };
         }
