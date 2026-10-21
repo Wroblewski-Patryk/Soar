@@ -69,6 +69,36 @@ Zapisana `.CHECKSUM` nie jest podpisem cyfrowym Binance: potwierdza
 spójność dokładnie pobranych bajtów i wykrywa późniejszą zmianę w bazie
 w granicach zaufania do snapshotu. Nie dowodzi niezmienności zdalnego
 archiwum po pobraniu ani filli PAPER/LIVE. Większe pliki, archiwa
-miesięczne, trzecia doba i produkcja pozostają poza zakresem. Pełne 011A
-i 011 `REVIEW`, `POSITION-CYCLE` `OPEN`, LIVE/wydanie `NO-GO` do
-niezależnego odbioru.
+miesięczne, trzecia doba i produkcja pozostają poza zakresem. W chwili
+wyniku autorskiego pełne 011A i 011 były `REVIEW`, `POSITION-CYCLE` `OPEN`,
+LIVE/wydanie `NO-GO` do niezależnego odbioru.
+
+## Niezależny odbiór ograniczonego raw v3
+
+Na dokładnym kodowym i migracyjnym SHA
+`13ff23a1e4ac3956b703a78f4509729ccc572a80` niezależny statyczny
+review dał ograniczony `PASS` bez uwag P0/P1. Niezależny runtime QA na
+własnej `_test` po migracji 85 i Redisie uzyskał: publiczny walidator
+`13/13 PASS`, proces `9/9 PASS`, legacy `1/1 PASS`. Dwa oryginalne ZIP
+zajęły łącznie `401456` bajtów; obie pobrane `.CHECKSUM` zostały zapisane.
+Po `SIGKILL` nowy PID wznowił ten sam run offline bez fetch, ponownie
+porównał SHA zapisanych raw ZIP z zapisanymi checksum i snapshotem oraz
+utrwalił jeden raport, trzy trades, net PnL `+0,34133` USDT.
+
+Zmiana lub brak raw ZIP, checksum albo snapshotu kończy retry jako `FAILED`,
+bez nowych trades, wkładów i PnL. Po zakończonym runie tamper blokuje
+odczyt timeline, lecz nie usuwa wcześniej utrwalonego raportu. Snapshoty
+v1/v2 pozostają czytelne jako `LEGACY_SNAPSHOT`, bez deklaracji raw
+provenance. SHA-256 logów QA: walidator
+`91B0C2791A1B09F48179E4C407A1ECB32A41DB42DCCC9FD84EED7BC42BDA25AB`,
+proces `A97C78D66031D875C6814219B53C3E97D05597BBFBA57DDDB2610F8A30808B29`,
+legacy `19DE55477B601E7940D156421788D5FC9EACB98DC28C3F4B8695ED996F7CC4DD`.
+
+Limit raw ZIP wynosi 8 MiB łącznie na run/symbol, każda `.CHECKSUM` ma
+limit 256 B, CSV 64 MiB, a wybrana taśma 20 000 agregatów. Raw pozostaje
+w DB do usunięcia runu, bez TTL. Zapisana `.CHECKSUM` potwierdza spójność
+pobranych bajtów; nie jest podpisem Binance i nie dowodzi późniejszej
+niezmienności pliku zdalnego. Lease QA skrócono. Przed pełnym odbiorem
+pozostają test równoległych zapisów, pojemności i rollbacku migracji oraz
+real LIVE i produkcja. Pełne 011A i 011 pozostają `REVIEW`,
+`POSITION-CYCLE` `OPEN`, wydanie `NO-GO`.
