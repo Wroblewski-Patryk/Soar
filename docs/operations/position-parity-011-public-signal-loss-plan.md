@@ -50,3 +50,55 @@ rentowności. Mock venue ma syntetyczne reguły ilości, ceny i fille; żaden
 wynik nie dowodzi prawdziwego zlecenia Binance, produkcji ani odzyskania po
 awarii, której test nie wywołał. Pełne 011/011A pozostają REVIEW i wydanie
 NO-GO do niezależnego odbioru.
+
+## Wynik lokalnej próby
+
+Plan wypchnięto przed testem w SHA `fa7eec0c9`. Zweryfikowany ZIP i `.CHECKSUM`,
+100 niezależnych klines oraz digest
+`506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8`
+pozostały zgodne. Pierwszy kandydat `(1,3)` (`MOMENTUM(1)<-0,00005`)
+odpadł: evaluator wciąż dawał LONG na świecy 3. Drugi `(1,4)` został
+wybrany bez dalszego szukania: `MOMENTUM(1)<0`, decyzje evaluatora na
+świecach 0–4 to `[null,null,LONG,LONG,null]`. Zanik nastąpił na finalnej
+świecy 4 o 02:45:59.999 UTC po zwykłym otwarciu na świecy 2 i przed DCA.
+
+Jedna zapisana konfiguracja przeszła przez BACKTEST, PAPER i Binance FUTURES
+internal mock LIVE. Obie pozycje runtime po świecy 4 pozostały OPEN bez EXIT;
+na publicznym agregacie `a=167049972` o 02:46:47.639 UTC doszedł jeden
+dodatni DCA. Po wznowieniu w odrębnym PID agregat `a=167049975` uzbroił TTP,
+a `a=167049977` zamknął obie pozycje o 02:46:57.282 UTC; powtórzenie ticku
+nie dodało zlecenia. Każdy runtime miał dokładnie OPEN/DCA/CLOSE; mock LIVE
+zachował trzy unikalne intenty i fille, DCA dedupe jeden raz. BACKTEST miał
+COMPLETED, jeden raport, sześć trades (net PnL całego raportu `-0,1221`
+USDT), tę samą pierwszą parę źródłową i nie dodał duplikatów po ponowieniu
+joba.
+
+Pierwszy cykl BACKTEST: ilość `1376,463143376176`, średnia
+`0,145299931177`, fee `0,16006`, net PnL `-0,02232` USDT. PAPER i mock LIVE:
+ilość `1376,46314337`, średnia `0,145299931176875`, fee
+`0,1600550964180656`, net PnL `-0,02231404958610045` USDT. Różnice są
+skutkiem jawnych kroków ilości i zaokrągleń modelu, tak jak w pierwszym
+źródłowym teście 011. Zmiana reguły wejścia zmieniła późniejsze transakcje,
+więc cały raport ma sześć, a nie wcześniejsze pięć trades.
+
+Próba na osobnych PostgreSQL `_test` po 84 migracjach i Redisie: etap `open`
+1 PASS / 1 SKIP oraz odrębny proces `resume` 1 PASS. Stary wariant opt-in
+`MOMENTUM(1)>-100` również ponownie przeszedł 1 PASS / 1 SKIP z pięcioma
+trades i dotychczasowym raportem. API typecheck, docs parity, quality
+guardrails i graph drift `937/937` PASS. Po obu próbach SQL
+`migracje/User/BacktestRun/BacktestTrade/BacktestReport/Position/Order/Dedupe`
+`84/0/0/0/0/0/0/0`, Redis `DBSIZE=0`.
+
+Powtórzenie: w `apps/api` ustaw `DATABASE_URL` na lokalne administracyjne
+`postgres`, `TEST_DATABASE_URL` na pustą własną
+`soar_position_parity_011_test`, `REDIS_URL` na własny port i
+`JWT_SECRET` na wartość lokalną; ustaw
+`RUN_011_REAL_SOURCE_SIGNAL_LOSS_PROOF=1` i
+`RUN_011_REAL_SOURCE_THREE_MODE_STAGE=open`, następnie uruchom
+`pnpm exec vitest run src/modules/engine/runtime011RealSourceThreeMode.e2e.test.ts
+-t 'ordinary LONG' --reporter=dot`. Etap `open` uruchamia proces `resume`.
+
+To lokalny, celowo wybrany świadek rzeczywistego zaniku sygnału i HOLD przed
+DCA→TTP; nie dowodzi automatycznego wznowienia po awarii procesu ani
+zachowania prawdziwego Binance/produkcji. Pełne 011/011A pozostają REVIEW,
+wydanie NO-GO.

@@ -103,3 +103,7 @@ metadane ani prawdziwy fill Binance. Test nie mierzy całych 100 minut PAPER/LIV
 nie dowodzi produkcji ani zyskowności; wcześniejszy 011A osobno potwierdził
 procesowe odzyskanie BACKTEST po SIGKILL. Pełne 011 i 011A nadal `REVIEW`,
 wydanie `NO-GO` do niezależnego odbioru tego kodu.
+
+Następna zamrożona próba na tym samym oknie, z rzeczywistym zanikiem sygnału
+wejścia przed DCA, jest opisana w
+[planie i wyniku 011 signal loss](position-parity-011-public-signal-loss-plan.md).

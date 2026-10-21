@@ -15,6 +15,7 @@ import { digestVerifiedBinanceFuturesIntrabar } from '../backtests/backtestBinan
 import { createClaimedBacktestRunJob } from '../backtests/backtestClaimedRun';
 import { resolveIndicatorWarmupCandles } from '../backtests/backtestIndicatorSpecs';
 import { simulateInterleavedPortfolio } from '../backtests/backtestPortfolioSimulation.service';
+import type { BacktestKlineCandle } from '../backtests/backtestDataGateway';
 import { computeAdaptiveMaxCandles, computeSourceWindowMs } from '../backtests/backtestRange.service';
 import { getRunTimeline } from '../backtests/backtests.service';
 import { GetBacktestTimelineQuerySchema } from '../backtests/backtests.types';
@@ -99,10 +100,67 @@ vi.mock('../orders/orders.service', async (importOriginal) => {
   };
 });
 
-const enabled = process.env.RUN_011_REAL_SOURCE_THREE_MODE_PROOF === '1';
+const signalLossProof = process.env.RUN_011_REAL_SOURCE_SIGNAL_LOSS_PROOF === '1';
+const enabled = process.env.RUN_011_REAL_SOURCE_THREE_MODE_PROOF === '1' || signalLossProof;
 const stage = process.env.RUN_011_REAL_SOURCE_THREE_MODE_STAGE;
 const openIt = enabled && stage === 'open' ? it : it.skip;
 const resumeIt = enabled && stage === 'resume' ? it : it.skip;
+const selectSignalLossWitness = (verified: BacktestKlineCandle[]) => {
+  const closes = verified.map((candle) => candle.close);
+  const attempts: Array<Record<string, unknown>> = [];
+  for (const period of [1, 2]) {
+    for (const lossIndex of [3, 4]) {
+      const entry = closes[2] - closes[2 - period];
+      const loss = closes[lossIndex] - closes[lossIndex - period];
+      if (entry === loss) {
+        attempts.push({ period, lossIndex, entry, loss, outcome: 'equal_values' });
+        continue;
+      }
+      const threshold = (entry + loss) / 2;
+      const condition = entry > loss ? '>' : '<';
+      const config = { ...marketSequenceStrategyConfig,
+        open: { ...marketSequenceStrategyConfig.open,
+          indicatorsLong: [{ name: 'MOMENTUM', condition, value: threshold,
+            params: { period } }] } };
+      const rules = parseStrategySignalRules(config);
+      if (!rules) throw new Error('candidate rules rejected');
+      const decisions = [0, 1, 2, 3, 4].map((index) =>
+        evaluateStrategySignalAtIndex(rules, verified, index, new Map()));
+      if (decisions[0] !== null || decisions[1] !== null ||
+          decisions[2] !== 'LONG' || decisions[lossIndex] !== null) {
+        attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+          decisions, outcome: 'signal_sequence' });
+        continue;
+      }
+      const result = simulateInterleavedPortfolio({ symbols: [symbol],
+        candlesBySymbol: new Map([[symbol, verified]]),
+        analysisStartIndexBySymbol: new Map([[symbol, 2]]),
+        marketType: 'FUTURES', leverage: 1, marginMode: 'ISOLATED',
+        strategyConfig: config, walletRiskPercent: 10,
+        initialBalance: 1000, fillModelConfig: { feeRate, slippageRate: 0 },
+      }).perSymbol[symbol];
+      const firstEntry = result.events.find((event) => event.type === 'ENTRY');
+      const firstDca = result.events.find((event) => event.type === 'DCA' &&
+        event.tradeSequence === firstEntry?.tradeSequence);
+      const firstTtp = result.events.find((event) => event.type === 'TTP' &&
+        event.tradeSequence === firstEntry?.tradeSequence);
+      if (firstEntry?.candleIndex !== 2 ||
+          firstDca?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:47.639Z') ||
+          firstTtp?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:57.282Z') ||
+          firstDca.price !== 0.1454 || firstTtp.price !== 0.1454 ||
+          firstDca.candleIndex !== 5 || firstTtp.candleIndex !== 5) {
+        attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+          decisions, outcome: 'source_pair', firstEntry, firstDca, firstTtp });
+        continue;
+      }
+      attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+        decisions, outcome: 'selected' });
+      return { config, period, lossIndex, threshold, condition,
+        decisions, attempts };
+    }
+  }
+  throw new Error(`No predeclared signal-loss witness: ${JSON.stringify(attempts)}`);
+};
 const ensureIsolated = () => {
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redis = new URL(process.env.REDIS_URL ?? '');
@@ -182,6 +240,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       .toMatchObject({ eventTime: Date.parse('2026-10-18T02:46:57.282Z'), price: 0.1454 });
     const digest = digestVerifiedBinanceFuturesIntrabar(verified, symbol);
     expect(digest).toBe('506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8');
+    const signalLossWitness = signalLossProof ? selectSignalLossWitness(verified) : null;
     const previousPaperFeeRate = process.env.RUNTIME_PAPER_TAKER_FEE_RATE;
     const previousNodeEnv = process.env.NODE_ENV;
     process.env.RUNTIME_PAPER_TAKER_FEE_RATE = String(feeRate);
@@ -201,7 +260,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
         metadata: { reason: 'isolated-real-source-011-proof' } });
       const strategyResponse = await agent.post('/dashboard/strategies').send({
         name: '011 real source three mode', interval: '1m', leverage: 1,
-        walletRisk: 10, config: marketSequenceStrategyConfig,
+        walletRisk: 10, config: signalLossWitness?.config ?? marketSequenceStrategyConfig,
       });
       expect(strategyResponse.status).toBe(201);
       const strategyId = strategyResponse.body.id as string;
@@ -212,7 +271,14 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       if (!rules) throw new Error('saved strategy signal rules missing');
       const signalDecisions = [2, 3, 4].map((index) =>
         evaluateStrategySignalAtIndex(rules, verified, index, new Map()));
-      expect(signalDecisions).toEqual(['LONG', 'LONG', 'LONG']);
+      if (signalLossWitness) {
+        const persistedDecisions = [0, 1, 2, 3, 4].map((index) =>
+          evaluateStrategySignalAtIndex(rules, verified, index, new Map()));
+        expect(persistedDecisions).toEqual(signalLossWitness.decisions);
+        expect(verified[signalLossWitness.lossIndex].closeTime).toBeLessThan(
+          Date.parse('2026-10-18T02:46:47.639Z'));
+        expect(signalDecisions[signalLossWitness.lossIndex - 2]).toBeNull();
+      } else expect(signalDecisions).toEqual(['LONG', 'LONG', 'LONG']);
       const universe = await prisma.marketUniverse.create({ data: {
         userId: user.id, name: '011 PAPER universe', exchange: 'BINANCE',
         marketType: 'FUTURES', baseCurrency: 'USDT', whitelist: [symbol], blacklist: [],
@@ -291,8 +357,15 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
         where: { backtestRunId: backtest.id }, orderBy: { openedAt: 'asc' } });
       const report = await prisma.backtestReport.findUniqueOrThrow({
         where: { backtestRunId: backtest.id } });
-      expect([backtestTrades.length, report.totalTrades]).toEqual([5, 5]);
-      expect(report.netPnl).toBe(-0.16687);
+      expect(backtestTrades.length).toBeGreaterThan(0);
+      expect(report.totalTrades).toBe(backtestTrades.length);
+      if (signalLossWitness) {
+        expect(backtestTrades).toHaveLength(6);
+        expect(report.netPnl).toBe(-0.1221);
+      } else {
+        expect(backtestTrades).toHaveLength(5);
+        expect(report.netPnl).toBe(-0.16687);
+      }
       expect(backtestTrades[0].exitReason).toBe('TTP');
       expect(backtestTrades[0].closedAt.getTime())
         .toBe(Date.parse('2026-10-18T02:46:57.282Z'));
@@ -341,6 +414,10 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
           .toBe('OPEN');
         expect((await prisma.position.findUniqueOrThrow({ where: { id: liveId } })).status)
           .toBe('OPEN');
+        if (index === signalLossWitness?.lossIndex) {
+          for (const botId of [paperBotId, liveBot.id])
+            expect(await prisma.signal.count({ where: { botId, direction: 'EXIT' } })).toBe(0);
+        }
       }
       for (const botId of [paperBotId, liveBot.id]) {
         expect(await prisma.signal.count({ where: { botId, direction: 'LONG' } })).toBe(1);
@@ -464,12 +541,17 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       expect(await prisma.backtestRun.findUniqueOrThrow({ where: { id: backtest.id } }))
         .toEqual(runBeforeRetry);
       expect(await prisma.backtestTrade.count({ where: { backtestRunId: backtest.id } }))
-        .toBe(5);
+        .toBe(backtestTrades.length);
       expect(await prisma.backtestReport.count({ where: { backtestRunId: backtest.id } }))
         .toBe(1);
       expect(await prisma.backtestRun.count({ where: { userId: user.id } })).toBe(1);
       process.stdout.write(`PUBLIC_011_THREE_MODE ${JSON.stringify({
-        digest, signalDecisions, backtest: { quantity: backtestTrades[0].quantity,
+        digest, signalDecisions, signalLossWitness: signalLossWitness && {
+          period: signalLossWitness.period, lossIndex: signalLossWitness.lossIndex,
+          threshold: signalLossWitness.threshold, condition: signalLossWitness.condition,
+          attempts: signalLossWitness.attempts },
+        backtest: { totalTrades: backtestTrades.length, reportNetPnl: report.netPnl,
+          quantity: backtestTrades[0].quantity,
           average: backtestTrades[0].entryPrice, fee: backtestTrades[0].fee,
           pnl: backtestTrades[0].pnl },
         paper: { contributionUsdt: paperContributions,
