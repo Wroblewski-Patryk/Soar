@@ -50,11 +50,13 @@ po 85 migracjach oraz osobnym Redisie. Wznowienie po `SIGKILL` sprawdza
 utrwalone ZIP i `.CHECKSUM` bez fetch; zmiana bajtów lub ich brak odmawia
 symulacji i nowego PnL. V1/v2 pozostają czytelne z oznaczeniem legacy.
 Surowe pliki są zachowane do usunięcia runu, z limitem 8 MiB ZIP na
-run/symbol. Jest to lokalny dowód autorski, bez niezależnego review tego SHA.
+run/symbol. Niezależny odbiór tego SHA opisano w dokumencie raw v3;
+[lokalny test kolizji dwóch PID](position-parity-011a-raw-race-evidence.md)
+dodał ograniczony dowód pojedynczego kanonicznego zapisu.
 
 ## Brakujący odbiór
 
-Po ograniczonym niezależnym odbiorze na SHA `886eb30aa15febe109d5583e06d2b2c279b9cf14` i naprawie `d46c70a47d2682a011f936243c8746f5ea2e63f9` [lokalny dowód dwóch sąsiednich dób](position-parity-011a-cross-midnight-evidence.md) zamyka ten ograniczony przypadek po skróconym lease. [Lokalny dowód trwałych surowych plików](position-parity-011a-raw-archive-evidence.md) dodaje ponowną kontrolę zapisanych bajtów po restarcie, ale oczekuje niezależnego odbioru. Nadal potrzebne są większe pliki i szersze okna. Naturalny 10-minutowy lease ma osobny lokalny dowód na jednym publicznym archiwum; naprawa P1 zamknęła lokalną lukę timeline. Celowany świadek poniżej potwierdza źródłową parę DCA→późniejszy TTP na jednej świecy, ale nie dowodzi typowej częstości, rzeczywistych filli ani produkcyjnego runtime. Pełny 011A `REVIEW`, 011 `REVIEW` i `POSITION-CYCLE` `OPEN`, LIVE i wydanie `NO-GO`.
+Po ograniczonym niezależnym odbiorze na SHA `886eb30aa15febe109d5583e06d2b2c279b9cf14` i naprawie `d46c70a47d2682a011f936243c8746f5ea2e63f9` [lokalny dowód dwóch sąsiednich dób](position-parity-011a-cross-midnight-evidence.md) zamyka ten ograniczony przypadek po skróconym lease. [Lokalny dowód trwałych surowych plików](position-parity-011a-raw-archive-evidence.md) ma już ograniczony niezależny odbiór; [test równoległych zapisów](position-parity-011a-raw-race-evidence.md) dodaje lokalny dowód autorski. Nadal potrzebne są większe pliki i szersze okna. Naturalny 10-minutowy lease ma osobny lokalny dowód na jednym publicznym archiwum; naprawa P1 zamknęła lokalną lukę timeline. Celowany świadek poniżej potwierdza źródłową parę DCA→późniejszy TTP na jednej świecy, ale nie dowodzi typowej częstości, rzeczywistych filli ani produkcyjnego runtime. Pełny 011A `REVIEW`, 011 `REVIEW` i `POSITION-CYCLE` `OPEN`, LIVE i wydanie `NO-GO`.
 
 Ustalona przed analizą [próba na rzeczywistym oknie ALICEUSDT](position-parity-011a-real-market-sequence-probe.md) dała trzy źródłowo potwierdzone DCA i późniejsze TTP na **innych** świecach, lecz żadnej pary DCA→TTP na tej samej świecy. Jest to negatywny wynik brakującej bramki 011A/011 przy tych parametrach, a nie jej odbiór.
 

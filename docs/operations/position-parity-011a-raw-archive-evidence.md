@@ -99,6 +99,7 @@ limit 256 B, CSV 64 MiB, a wybrana taśma 20 000 agregatów. Raw pozostaje
 w DB do usunięcia runu, bez TTL. Zapisana `.CHECKSUM` potwierdza spójność
 pobranych bajtów; nie jest podpisem Binance i nie dowodzi późniejszej
 niezmienności pliku zdalnego. Lease QA skrócono. Przed pełnym odbiorem
-pozostają test równoległych zapisów, pojemności i rollbacku migracji oraz
-real LIVE i produkcja. Pełne 011A i 011 pozostają `REVIEW`,
+test równoległych zapisów ma osobny [lokalny odbiór autorski](position-parity-011a-raw-race-evidence.md).
+Pozostają pojemność i rollback migracji oraz real LIVE i produkcja.
+Pełne 011A i 011 pozostają `REVIEW`,
 `POSITION-CYCLE` `OPEN`, wydanie `NO-GO`.
