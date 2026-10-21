@@ -99,3 +99,18 @@ order deferred TTP to candle 6. This is local proof using synthetic venue
 metadata, balance, fills and fees. It does not establish actual Binance
 FUTURES execution, authenticated production behavior or release safety.
 Parent `POSITION-CYCLE` remains `OPEN`; release `NO-GO`.
+
+## Celowany publiczny świadek źródła w trzech trybach
+
+[Plan i lokalny wynik 011](position-parity-011-real-source-three-mode-plan.md)
+używają tej samej zapisanej strategii i zweryfikowanego historycznego
+ALICEUSDT `aggTrades` 02:41–04:21 UTC co funkcjonalny świadek 011A. Zwykły
+LONG otworzył PAPER i Binance FUTURES internal mock LIVE; oba utrzymały
+pozycję bez EXIT, a DCA na `a=167049972` poprzedził uzbrojenie TTP
+na `a=167049975` i zamknięcie TTP na `a=167049977` po restarcie. BACKTEST
+odtworzył tę parę z DB archiwum. Lokalne ilości, średnia, wkłady, opłaty i
+PnL są porównane z jawną różnicą zaokrąglenia. Evaluator dawał LONG również
+na kolejnych świecach, więc ten rzeczywisty przypadek nie dowodzi HOLD po
+zaniku wejścia; test nie sprawdza też prawdziwych filli ani bieżących reguł
+Binance. Pełne 011 `REVIEW`, 011A `REVIEW`, wydanie
+`NO-GO` do niezależnego odbioru.
