@@ -16,6 +16,8 @@ const start = Date.parse('2026-10-18T02:27:00.000Z');
 const end = start + 100 * 60_000;
 const adjacentStart = Date.parse('2026-10-18T04:07:00.000Z');
 const adjacentEnd = adjacentStart + 100 * 60_000;
+const witnessStart = Date.parse('2026-10-18T02:41:00.000Z');
+const witnessEnd = witnessStart + 100 * 60_000;
 const expectedZipSha =
   '4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b';
 const strategyConfig = {
@@ -85,12 +87,14 @@ const stopWorker = async (proof: ProofProcess) => {
 };
 
 type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence' |
-  'adjacent-sequence';
+  'adjacent-sequence' | 'functional-witness';
 const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
   const adjacentSequence = variant === 'adjacent-sequence';
-  const marketSequence = variant === 'market-sequence' || adjacentSequence;
-  const windowStart = adjacentSequence ? adjacentStart : start;
-  const windowEnd = adjacentSequence ? adjacentEnd : end;
+  const functionalWitness = variant === 'functional-witness';
+  const marketSequence = variant === 'market-sequence' || adjacentSequence ||
+    functionalWitness;
+  const windowStart = functionalWitness ? witnessStart : adjacentSequence ? adjacentStart : start;
+  const windowEnd = functionalWitness ? witnessEnd : adjacentSequence ? adjacentEnd : end;
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redisUrl = new URL(process.env.REDIS_URL ?? '');
   const queueName = process.env.WORKER_BACKTEST_QUEUE ?? '';
@@ -236,6 +240,75 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
               price: ttp!.price },
           })),
         })}\n`);
+        if (functionalWitness) {
+          const dca = dcaEvents.find((event) =>
+            event.timestamp === '2026-10-18T02:46:47.639Z' && event.price === 0.1454);
+          const ttp = ttpEvents.find((event) =>
+            event.timestamp === '2026-10-18T02:46:57.282Z' && event.price === 0.1454 &&
+            event.candleIndex === dca?.candleIndex && event.tradeId === dca?.tradeId);
+          expect(dca).toBeDefined();
+          expect(ttp).toBeDefined();
+          expect(dca!.candleIndex).toBe(3);
+          const timelineCandle = timeline.candles.find((entry) =>
+            entry.candleIndex === dca!.candleIndex);
+          const sourceIndex = archived.findIndex((entry) =>
+            entry.openTime === Date.parse(timelineCandle?.openTime ?? ''));
+          expect(sourceIndex).toBe(5);
+          const candle = archived[sourceIndex];
+          const dcaMatches = candle.intrabarTicks.filter((tick) =>
+            tick.eventTime === Date.parse(dca!.timestamp) && tick.price === dca!.price);
+          const ttpMatches = candle.intrabarTicks.filter((tick) =>
+            tick.eventTime === Date.parse(ttp!.timestamp) && tick.price === ttp!.price);
+          expect(dcaMatches).toHaveLength(1);
+          expect(ttpMatches).toHaveLength(1);
+          expect(dcaMatches[0].sequenceId).toBe(167049972);
+          expect(ttpMatches[0].sequenceId).toBe(167049977);
+          expect(ttpMatches[0].sequenceId).toBeGreaterThan(dcaMatches[0].sequenceId!);
+          expect(Date.parse(ttp!.timestamp)).toBeLessThan(candle.closeTime);
+          const add = contributions.find((row) => row.kind === 'DCA' &&
+            row.timestamp.getTime() === Date.parse(dca!.timestamp) &&
+            row.candleIndex === sourceIndex);
+          const entry = contributions.find((row) => row.kind === 'ENTRY' &&
+            row.tradeSequence === add?.tradeSequence);
+          const closed = trades.find((row) => row.exitReason === 'TTP' &&
+            row.closedAt.getTime() === Date.parse(ttp!.timestamp));
+          expect(add).toBeDefined();
+          expect(entry).toBeDefined();
+          expect(closed).toBeDefined();
+          expect(add!.levelIndex).toBe(0);
+          expect(add!.multiplier).toBe(1);
+          expect(add!.contributionUsdt).toBeCloseTo(entry!.contributionUsdt, 6);
+          const quantity = entry!.quantity + add!.quantity;
+          const cost = entry!.contributionUsdt + add!.contributionUsdt;
+          const roundSettlement = (value: number) => Math.round(value * 100_000) / 100_000;
+          const expectedFee = roundSettlement(0.0004 * closed!.quantity *
+            (closed!.entryPrice + closed!.exitPrice));
+          const expectedPnl = roundSettlement(
+            (closed!.exitPrice - closed!.entryPrice) * closed!.quantity) - expectedFee;
+          expect(closed!.quantity).toBeCloseTo(quantity, 8);
+          expect(closed!.entryPrice).toBeCloseTo(cost / quantity, 8);
+          expect(closed!.exitPrice).toBe(ttp!.price);
+          expect(closed!.fee).toBe(expectedFee);
+          expect(closed!.pnl).toBeCloseTo(expectedPnl, 8);
+          expect(reports[0].netPnl).toBeCloseTo(trades.reduce((sum, trade) =>
+            sum + trade.pnl, 0), 8);
+          const replay = await getRunTimeline(user.id, runId,
+            GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' }));
+          expect(replay?.events).toEqual(timeline.events);
+          process.stdout.write(`PUBLIC_FUNCTIONAL_WITNESS ${JSON.stringify({
+            digest: firstDigest, zipSha256: expectedZipSha,
+            dca: { time: dca!.timestamp, price: dca!.price,
+              aggregateId: dcaMatches[0].sequenceId },
+            ttp: { time: ttp!.timestamp, price: ttp!.price,
+              aggregateId: ttpMatches[0].sequenceId },
+            trades: trades.length, dcaEvents: dcaEvents.length,
+            ttpEvents: ttpEvents.length, entryUsdt: entry!.contributionUsdt,
+            dcaUsdt: add!.contributionUsdt, quantity: closed!.quantity,
+            averageEntry: closed!.entryPrice, fee: closed!.fee,
+            tradeNetPnl: closed!.pnl, reportNetPnl: reports[0].netPnl,
+          })}\n`);
+          return;
+        }
         if (adjacentSequence) {
           expect(dcaEvents).toHaveLength(1);
           expect(ttpEvents).toHaveLength(0);
@@ -415,4 +488,8 @@ describe('real archived intrabar job recovery across processes', () => {
     ? it : it.skip;
   adjacentIt('records DCA without TTP on predeclared adjacent public tape',
     async () => runProcessCase('adjacent-sequence', false), 120_000);
+  const witnessIt = process.env.RUN_BACKTEST_FUNCTIONAL_MARKET_WITNESS_PROOF === '1'
+    ? it : it.skip;
+  witnessIt('records source-tick DCA then TTP on the selected public candle',
+    async () => runProcessCase('functional-witness', false), 120_000);
 });

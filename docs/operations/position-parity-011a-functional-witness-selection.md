@@ -41,6 +41,53 @@ nie szuka następnego okna po ujawnieniu wyniku integracji.
 Granice pozostają: agregat to cena, nie fill użytkownika; brak dowodu PAPER/LIVE,
 produkcji lub pełnego 011A. Pełne 011A `REVIEW`, 011 `OPEN`, release `NO-GO`.
 
-## Wynik
+## Wynik lokalny na uprzednio zapisanym planie
 
-Do uzupełnienia po selektywnym commicie planu i wykonaniu próby.
+Plan i selektor zapisano oraz wypchnięto **przed** skanem w commicie
+`5a85cb5d82751efb40c82ad712b3b9471b7d2094` (`api` typecheck PASS).
+Skan `pnpm exec tsx scripts/select011aMarketWitness.ts` z `apps/api` sprawdził
+opublikowany `.CHECKSUM` i SHA-256 ZIP
+`4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b`.
+CSV zawierał 13 278 agregatów; niezależne publiczne 1m klines zgadzały się z
+wyprowadzonymi OHLC/volume. Pierwszy kwalifikujący się zakres to
+**02:41–04:21 UTC**. W porządku planu obejrzano **161** okien: **146** miało
+przynajmniej jedną minutę z mniej niż dwoma agregatami, a **15** pełnych
+oceniono silnikiem. Nie oglądano późniejszych 1178 okien i nie zmieniono
+parametrów po wyniku.
+
+Selektor wskazał DCA 02:46:47.639 UTC przy 0,1454 z `a=167049972` i
+późniejszy TTP 02:46:57.282 UTC przy 0,1454 z `a=167049977`. Oba agregaty są
+jednoznaczne w tej samej źródłowej świecy 02:46–02:47 UTC. TTP nie ma czasu
+modelowego close świecy 02:46:59.999 UTC.
+
+Opt-in `RUN_BACKTEST_FUNCTIONAL_MARKET_WITNESS_PROOF=1` w
+`backtestArchivedProcess.runtime.test.ts` wykonał strict `createRun` dla tego
+zakresu na własnej PostgreSQL `_test` (84 migracje) i osobnym Redisie. PID A
+zapisał zweryfikowane archiwum i digest
+`506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8`
+przed symulacją i został zabity. Po skróceniu lease wyłącznie własnego runu
+testowego PID B odzyskał **ten sam** run offline, bez ponownego pobrania ZIP lub
+`.CHECKSUM` i bez nowego submitu. Status `COMPLETED`, jeden raport, pięć
+trades, cztery DCA, cztery TTP, z których wybrana para odpowiada powyższym
+dwóm ID źródłowym. Kolejka i dedupe były puste po ACK.
+
+Dla trade z parą tej samej świecy trwałe ENTRY i DCA wyniosły po około
+100 USDT, ilość `1376,463143376176`, średnia `0,145299931177`, fee
+`0,16006` USDT i net PnL `-0,02232` USDT. Cały raport ma net PnL
+`-0,16687` USDT, zgodny z sumą pięciu trades; powtórny odczyt timeline
+odtworzył te same zdarzenia. Te kwoty są modelem BACKTEST, nie rzeczywistymi
+fillami Binance ani dowodem zyskowności. Wynik nie podnosi pełnego 011A ponad
+`REVIEW`, 011 pozostaje `OPEN`, a wydanie `NO-GO`.
+
+Powtórzenie: w `apps/api` z własną PostgreSQL `soar_011a_archived_process_test`
+po 84 migracjach, osobnym Redisie i unikalnym prefiksem kolejki
+`backtest-011a-archived-process-`, ustawić `WORKER_MODE=split`,
+`WORKER_BACKTEST_OWNERSHIP=worker`,
+`RUN_BACKTEST_FUNCTIONAL_MARKET_WITNESS_PROOF=1` i wykonać
+`pnpm exec vitest run src/modules/backtests/backtestArchivedProcess.runtime.test.ts -t 'source-tick DCA' --reporter=dot`.
+Wynik lokalny 1/1 PASS. Cały plik przy włączonych również wcześniejszych
+wariantach archiwum i obu negatywnych prób: 6 PASS, 1 SKIP (naturalny lease).
+API typecheck, docs parity, repo guardrails i graph drift 936/936 PASS.
+Po selektywnym cleanup własne SQL migracje/User/Strategy/Run/Archive/Trade/
+Report/Contribution `84/0/0/0/0/0/0/0`, Redis `DBSIZE=0`. Nie wykonano
+manualnego UI, PAPER/LIVE ani produkcyjnego testu.
