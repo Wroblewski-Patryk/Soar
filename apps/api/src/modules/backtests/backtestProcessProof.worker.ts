@@ -16,13 +16,19 @@ if (process.env.SOAR_BT_PROOF !== '1' ||
 }
 
 const role = process.env.SOAR_BT_PROOF_ROLE;
+const naturalLeaseProof = role === 'position-cycle-natural-lease-hold' ||
+  role === 'position-cycle-natural-lease-release' ||
+  role === 'position-cycle-natural-lease-recovery';
 const tpMidCalculationProof = role === 'position-cycle-tp-mid-hold' ||
-  role === 'position-cycle-tp-mid-release';
+  role === 'position-cycle-tp-mid-release' ||
+  role === 'position-cycle-natural-lease-hold' ||
+  role === 'position-cycle-natural-lease-release';
 const midCalculationProof = role === 'position-cycle-mid-hold' ||
   role === 'position-cycle-mid-release' || tpMidCalculationProof;
 const tpAfterDcaProof = role === 'position-cycle-tp-ack-hold' ||
   role === 'position-cycle-tp-recovery' || tpMidCalculationProof ||
-  role === 'position-cycle-tp-mid-recovery';
+  role === 'position-cycle-tp-mid-recovery' ||
+  role === 'position-cycle-natural-lease-recovery';
 const advancedTtpProof = role === 'position-cycle-advanced-ttp-ack-hold' ||
   role === 'position-cycle-advanced-ttp-recovery';
 const negativeTslProof = role === 'position-cycle-negative-tsl-ack-hold' ||
@@ -118,7 +124,8 @@ const deps: BacktestRunJobDeps = {
             process.stdout.write(tpMidCalculationProof
               ? 'AFTER_BOTH_DCA_BEFORE_TP\n' : 'AFTER_BOTH_DCA_BEFORE_SL\n');
             const gate = new Int32Array(new SharedArrayBuffer(4));
-            if (role === 'position-cycle-mid-release' || role === 'position-cycle-tp-mid-release') {
+            if (role === 'position-cycle-mid-release' || role === 'position-cycle-tp-mid-release' ||
+                role === 'position-cycle-natural-lease-release') {
               const releaseFile = process.env.SOAR_BT_PROOF_RELEASE_FILE;
               if (!releaseFile) throw new Error('Mid-calculation release file missing');
               const deadline = Date.now() + 30_000;
@@ -186,8 +193,7 @@ const queue = new BacktestRunQueue(async (runId) => {
   backend: 'redis',
   queueName,
   redisUrl: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
-  pollIntervalMs: 50,
-  recoveryIntervalMs: 50,
+  ...(naturalLeaseProof ? {} : { pollIntervalMs: 50, recoveryIntervalMs: 50 }),
   recoverPendingRunIds: () => listRecoverableBacktestRunIds(proofRunIds),
   discardProcessingRunIds: listDiscardableBacktestRunIds,
 });
