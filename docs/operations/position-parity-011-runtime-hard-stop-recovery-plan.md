@@ -186,4 +186,26 @@ PASS dotyczy lokalnego procesu świadectwa 011 pod taką samą polityką
 Compose `restart: unless-stopped` jak `workers-execution`. Nie dowodzi
 uruchomienia produkcyjnego `execution.worker.js`, realnego Binance LIVE,
 Coolify, mixed-version ani automatycznego odzyskania kolejki BACKTEST.
-Te bramki i niezależny odbiór exact SHA pozostają otwarte.
+Po autorskim przebiegu te bramki i niezależny odbiór exact SHA pozostawały otwarte.
+
+## Niezależny odbiór nadzorowanej próby na exact SHA
+
+Plan nadzorowanej próby zapisano przed kodem w
+`7825aa3bc659ef41e6f35d25233f0bcd00599db4`. Na kodowym SHA
+`ed8ad5c331556ec7a1e6f5a74a73b3559a4b8c4a` niezależne QA uruchomiło
+`RUN_011_SUPERVISED_PROOF=1` i `RUN_011_REQUIRE_EXACT_SHA=1`; proces
+zakończył się kodem 0. Marker podał ten sam `sourceCommit` i
+`proofSourcesClean=true`. Niezależny statyczny reviewer po weryfikacji QA
+wydał ograniczony `PASS` na tym dokładnym SHA. SHA-256 logu QA:
+`3F26B99AD559AC14E218A96E44558E8C9BDC58440217B8C00B99550BF502EF7A`.
+
+Compose zwiększył `RestartCount` z 0 do 1 i zmienił PID hosta kontenera
+z `36708` na `37228`. Zachował identyfikatory sprzed awarii; powtórzony
+źródłowy tick DCA `a=167049972` nie dodał drugiego DCA, `a=167049975`
+uzbroił TTP, a `a=167049977` zamknął pozycje jednym TTP. Liczba unikalnych
+intencji i filli internal mock LIVE wzrosła z `2/2` do `3/3`.
+Izolowane zasoby próby zostały usunięte. To lokalny dowód automatycznego
+restartu **testowego entrypointu** przez Compose; nie dowodzi produkcyjnego
+`execution.worker.js`, rzeczywistego Binance, kolejki BACKTEST ani
+uwierzytelnionego odczytu produkcyjnego. Pełne 011 i 011A pozostają
+`REVIEW`, `POSITION-CYCLE` `OPEN`, wydanie `NO-GO`.
