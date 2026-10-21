@@ -63,7 +63,7 @@ i `dedupe`. Drugi worker nie otrzymał ręcznego enqueue ani claim; skan
 odzyskał ten sam run po naturalnym terminie 10-minutowego lease.
 Nie nastąpił ponowny fetch ZIP/.CHECKSUM; wynik zachował ID runu, raportu
 i archiwum (`runId` + symbol oraz hash payloadu). Po ACK kolejka była pusta.
-Jedna terminalna symulacja dała sześć trades, jeden raport i net PnL około
+Jeden terminalny zapis wyniku dał sześć trades, jeden raport i net PnL około
 `+0,01386` USDT. Zapisana taśma zawierała też późniejsze
 `a=167049975` oraz `a=167049977`; timeline po odzyskaniu miał DCA i TTP
 na oczekiwanych znacznikach czasu. Sam ten test nie wystawia osobnego
@@ -76,4 +76,28 @@ BacktestReport/BacktestContribution/BacktestIntrabarArchive wynosiły zero,
 Redis miał zero kluczy. Dowód obejmuje automatyczne przejęcie w lokalnej
 kolejce BACKTEST; nie dowodzi real LIVE, produkcji, nadzoru produkcyjnego
 workera ani braku ponownych **obliczeń** po SIGKILL. Pełne 011/011A
-pozostają REVIEW/NO-GO do niezależnego odbioru.
+pozostawały REVIEW/NO-GO do niezależnego odbioru.
+
+## Niezależny odbiór ograniczonego lokalnego recovery kolejki
+
+Plan zapisano przed kodem w `a7791113860812e97ed6e7c08ee58c1e50f943bb`.
+Na dokładnym kodowym SHA `f0687fb6157624653ed22cf2c349921d00bcbe5d`
+niezależny statyczny reviewer i runtime QA dali ograniczony `PASS`.
+Po `SIGKILL` drugi worker automatycznie przejął **ten sam** run po naturalnym
+10-minutowym lease, bez ręcznego enqueue ani claim; QA zmierzył `610,84` s.
+Nie pobrał ponownie ZIP ani `.CHECKSUM`. Pozostał jeden raport, sześć
+trades i net PnL `+0,01386` USDT, bez drugiego trwałego wyniku. Zmieniona
+lub brakująca zapisana taśma zakończyła się `FAILED` w dwóch wariantach
+(`2/2`), bez częściowych trades, wkładów lub PnL. SHA-256 logów QA:
+naturalny lease `68502D4EC5F3145D9900A37628C57C9A064288A694D97D55F48933232C3F8E97`;
+błędna taśma `CEDD619CED92877635111D0C941C5F9E00824629505EAB877205D1446453756E`.
+
+Po awarii worker **przelicza symulację od początku zapisanej taśmy**,
+nie wznawia jej od checkpointu DCA. `PASS` oznacza jeden trwały wynik
+bez duplikatów, a nie wykonanie obliczeń dokładnie raz. Ten test nie
+emituje osobnego zdarzenia ARM na `a=167049975`; wcześniejszy lokalny
+dowód 011 potwierdził arm na tym agregacie. Źródłowe DCA `a=167049972`
+i późniejszy TTP `a=167049977` zachowały kolejność. To lokalny test
+kolejki i workera, bez dowodu produkcyjnego odzyskania, rzeczywistego
+Binance LIVE lub uwierzytelnionego odczytu produkcyjnego. Pełne 011 i 011A
+pozostają `REVIEW`, `POSITION-CYCLE` `OPEN`, wydanie `NO-GO`.
