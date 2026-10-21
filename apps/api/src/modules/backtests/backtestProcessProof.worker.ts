@@ -16,10 +16,13 @@ if (process.env.SOAR_BT_PROOF !== '1' ||
 }
 
 const role = process.env.SOAR_BT_PROOF_ROLE;
+const tpMidCalculationProof = role === 'position-cycle-tp-mid-hold' ||
+  role === 'position-cycle-tp-mid-release';
 const midCalculationProof = role === 'position-cycle-mid-hold' ||
-  role === 'position-cycle-mid-release';
+  role === 'position-cycle-mid-release' || tpMidCalculationProof;
 const tpAfterDcaProof = role === 'position-cycle-tp-ack-hold' ||
-  role === 'position-cycle-tp-recovery';
+  role === 'position-cycle-tp-recovery' || tpMidCalculationProof ||
+  role === 'position-cycle-tp-mid-recovery';
 const positionCycleProof = midCalculationProof || role === 'position-cycle-ack-hold' ||
   role === 'position-cycle-recovery' || tpAfterDcaProof;
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
@@ -68,8 +71,9 @@ const deps: BacktestRunJobDeps = {
     process.stdout.write('SIMULATE\n');
     if (midCalculationProof) {
       const candles = input.candlesBySymbol.get('BTCUSDT');
-      if (!candles || candles.length < 7 || candles[6].close !== 0.47) {
-        throw new Error('007 mid-calculation proof requires the SL candle');
+      const exitPrice = tpMidCalculationProof ? 0.72 : 0.47;
+      if (!candles || candles.length < 7 || candles[6].close !== exitPrice) {
+        throw new Error('007 mid-calculation proof requires the expected exit candle');
       }
       const confirmedDcaUsdt: number[] = [];
       const originalPush = Array.prototype.push;
@@ -100,9 +104,10 @@ const deps: BacktestRunJobDeps = {
               throw new Error('007 checkpoint reached without confirmed 2/6 USDT DCA events');
             }
             checkpointReached = true;
-            process.stdout.write('AFTER_BOTH_DCA_BEFORE_SL\n');
+            process.stdout.write(tpMidCalculationProof
+              ? 'AFTER_BOTH_DCA_BEFORE_TP\n' : 'AFTER_BOTH_DCA_BEFORE_SL\n');
             const gate = new Int32Array(new SharedArrayBuffer(4));
-            if (role === 'position-cycle-mid-release') {
+            if (role === 'position-cycle-mid-release' || role === 'position-cycle-tp-mid-release') {
               const releaseFile = process.env.SOAR_BT_PROOF_RELEASE_FILE;
               if (!releaseFile) throw new Error('Mid-calculation release file missing');
               const deadline = Date.now() + 30_000;
