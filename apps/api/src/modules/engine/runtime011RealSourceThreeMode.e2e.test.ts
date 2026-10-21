@@ -13,6 +13,7 @@ import { fetchVerifiedArchivedIntrabarForRun, fetchVerifiedDailyUsdMArchive,
   saveVerifiedRunArchive } from '../backtests/backtestBinanceFuturesIntrabarArchive';
 import { digestVerifiedBinanceFuturesIntrabar } from '../backtests/backtestBinanceFuturesIntrabarSource';
 import { createClaimedBacktestRunJob } from '../backtests/backtestClaimedRun';
+import { claimBacktestRun } from '../backtests/backtestRunOwnership.repository';
 import { resolveIndicatorWarmupCandles } from '../backtests/backtestIndicatorSpecs';
 import { simulateInterleavedPortfolio } from '../backtests/backtestPortfolioSimulation.service';
 import type { BacktestKlineCandle } from '../backtests/backtestDataGateway';
@@ -369,7 +370,12 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
           contextSnapshot: { strategy: { id: strategyId, walletRisk: 10,
             config: persisted.config } } },
       } });
-      await saveVerifiedRunArchive(backtest.id, snapshot, rawArchives);
+      const preloadToken = await claimBacktestRun(backtest.id);
+      expect(preloadToken).toBeTruthy();
+      await saveVerifiedRunArchive(backtest.id, snapshot, rawArchives, preloadToken!);
+      // The job takes over the disposable preloaded run without another source fetch.
+      await prisma.backtestRun.update({ where: { id: backtest.id },
+        data: { executionLeaseExpiresAt: new Date(Date.now() - 1_000) } });
       vi.stubGlobal('fetch', async () => { throw new Error('network after archive forbidden'); });
       const job = createClaimedBacktestRunJob({
         findBacktestRunById: (id) => prisma.backtestRun.findUnique({ where: { id } }),

@@ -73,6 +73,19 @@ const ownedRunWhere = (runId: string, token: string) => ({
   executionLeaseExpiresAt: { gt: new Date() },
 });
 
+// Lock and renew the claimed run in the same transaction as an archived source
+// write. A takeover must wait for this row lock, and an expired token writes
+// neither the snapshot nor any raw archive bytes.
+export const fenceBacktestArchiveWrite = async (
+  tx: Prisma.TransactionClient, runId: string, token: string,
+) => {
+  const result = await tx.backtestRun.updateMany({
+    where: ownedRunWhere(runId, token),
+    data: { executionLeaseExpiresAt: leaseUntil() },
+  });
+  return result.count === 1;
+};
+
 export const renewBacktestRunLease = async (runId: string, token: string) => {
   const result = await prisma.backtestRun.updateMany({
     where: ownedRunWhere(runId, token),

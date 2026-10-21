@@ -177,7 +177,7 @@ export type BacktestRunJobDeps = {
   fetchVerifiedArchivedIntrabarForRun?: (
     runId: string, exchange: Exchange, symbol: string, timeframe: string,
     marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
-    startTimeMs?: number, expectedDigest?: string,
+    startTimeMs?: number, expectedDigest?: string, executionToken?: string,
   ) => Promise<BacktestKlineCandle[]>;
   fetchSupplementalSeries: (
     exchange: Exchange,

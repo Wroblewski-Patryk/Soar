@@ -6,6 +6,7 @@ import { fetchVerifiedBinanceFuturesIntrabar,
   type VerifiedIntrabarCandle } from './backtestBinanceFuturesIntrabarSource';
 import { fetchKlines, type BacktestKlineCandle,
   type BacktestMarketType } from './backtestDataGateway';
+import { fenceBacktestArchiveWrite } from './backtestRunOwnership.repository';
 
 const MAX_ZIP_BYTES = 8 * 1024 * 1024;
 const MAX_CSV_BYTES = 64 * 1024 * 1024;
@@ -333,7 +334,8 @@ export const readVerifiedRunArchive = async (runId: string, symbol: string,
 };
 
 export const saveVerifiedRunArchive = async (runId: string, snapshot: SnapshotV3,
-  rawArchives: RawArchive[]) => {
+  rawArchives: RawArchive[], executionToken: string) => {
+  if (!executionToken) fail('CLAIM_REQUIRED');
   const rows = rowsFromRawArchives({ symbol: snapshot.symbol,
     startTimeMs: snapshot.startTimeMs, endTimeMs: snapshot.endTimeMs,
     archives: snapshot.archives, rawArchives });
@@ -342,6 +344,8 @@ export const saveVerifiedRunArchive = async (runId: string, snapshot: SnapshotV3
   const payloadSha256 = snapshotHash(snapshot);
   try {
     await prisma.$transaction(async (tx) => {
+      if (!(await fenceBacktestArchiveWrite(tx, runId, executionToken)))
+        fail('CLAIM_LOST');
       await tx.backtestIntrabarArchive.create({ data: { runId, symbol: snapshot.symbol,
         payload: snapshot as unknown as Prisma.InputJsonValue, payloadSha256 } });
       await tx.backtestIntrabarArchiveRaw.createMany({ data: rawArchives.map((raw) => ({
@@ -367,7 +371,7 @@ export const saveVerifiedRunArchive = async (runId: string, snapshot: SnapshotV3
 export const fetchVerifiedArchivedIntrabarForRun = async (
   runId: string, exchange: Exchange, symbol: string, timeframe: string,
   marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
-  startTimeMs?: number, expectedDigest?: string,
+  startTimeMs?: number, expectedDigest?: string, executionToken?: string,
 ) => {
   if (exchange !== Exchange.BINANCE || marketType !== 'FUTURES' ||
       timeframe !== '1m' || typeof startTimeMs !== 'number' ||
@@ -386,5 +390,6 @@ export const fetchVerifiedArchivedIntrabarForRun = async (
       candles.some((candle, index) => index > 0 &&
         candles[index - 1].closeTime + 1 !== candle.openTime)) fail('CANDLE_WINDOW_INCOMPLETE');
   const { snapshot, rawArchives } = await fetchVerifiedDailyUsdMArchive({ symbol, candles });
-  return (await saveVerifiedRunArchive(runId, snapshot, rawArchives)) ?? fail('SNAPSHOT_MISSING');
+  return (await saveVerifiedRunArchive(runId, snapshot, rawArchives,
+    executionToken ?? fail('CLAIM_REQUIRED'))) ?? fail('SNAPSHOT_MISSING');
 };

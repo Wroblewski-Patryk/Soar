@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 import { readVerifiedRunArchive } from './backtestBinanceFuturesIntrabarArchive';
+import { claimBacktestRun } from './backtestRunOwnership.repository';
 
 type Event = { name: string; value: {
   pid?: number; digest?: string; proof?: string; zipShas?: string[]; message?: string;
@@ -29,12 +30,13 @@ const event = (worker: Worker, name: string) =>
   worker.events.find((item) => item.name === name)?.value;
 const startWorker = (runId: string,
   variant: 'same' | 'changed' | 'bad-checksum',
-  role: 'save' | 'save-hold' | 'offline-retry'): Worker => {
+  role: 'save' | 'save-hold' | 'offline-retry', executionToken: string): Worker => {
   const child = spawn(process.execPath, ['--import', 'tsx',
     resolve(process.cwd(), 'src/modules/backtests/backtestRawArchiveRaceProof.worker.ts'),
   ], { cwd: process.cwd(), env: { ...process.env, SOAR_RAW_RACE_PROOF: '1',
     SOAR_RAW_RACE_RUN_ID: runId, SOAR_RAW_RACE_VARIANT: variant,
-    SOAR_RAW_RACE_ROLE: role }, stdio: ['pipe', 'pipe', 'pipe'] });
+    SOAR_RAW_RACE_ROLE: role, SOAR_RAW_RACE_TOKEN: executionToken },
+    stdio: ['pipe', 'pipe', 'pipe'] });
   const events: Event[] = [];
   let buffer = '';
   child.stdout.on('data', (chunk: Buffer) => {
@@ -91,7 +93,7 @@ const verifyCanonical = async (runId: string, expected: NonNullable<ReturnType<t
     expect(globalThis.fetch).not.toHaveBeenCalled();
   } finally { vi.unstubAllGlobals(); }
   const run = await prisma.backtestRun.findUniqueOrThrow({ where: { id: runId } });
-  expect(run.status).toBe('PENDING');
+  expect(run.status).toBe('RUNNING');
   expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
   expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(0);
   expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(0);
@@ -109,6 +111,7 @@ describe('raw v3 concurrent process race', () => {
       const redis = createClient({ url: redisUrl.toString() });
       const workers: Worker[] = [];
       const runIds: string[] = [];
+      const tokens = new Map<string, string>();
       let userId: string | null = null;
       try {
         await redis.connect();
@@ -123,12 +126,19 @@ describe('raw v3 concurrent process race', () => {
             symbol: 'BTCUSDT', timeframe: '1m',
           } });
           runIds.push(run.id);
+          const token = await claimBacktestRun(run.id);
+          if (!token) throw new Error('Could not claim disposable race run');
+          tokens.set(run.id, token);
           return run.id;
         };
+        const spawnFor = (runId: string,
+          variant: 'same' | 'changed' | 'bad-checksum',
+          role: 'save' | 'save-hold' | 'offline-retry',
+          token = tokens.get(runId)!) => startWorker(runId, variant, role, token);
         const race = async (runId: string,
           variants: Array<'same' | 'changed'>) => {
           const pair = variants.map((variant) => {
-            const worker = startWorker(runId, variant, 'save');
+            const worker = spawnFor(runId, variant, 'save');
             workers.push(worker);
             return worker;
           });
@@ -159,8 +169,8 @@ describe('raw v3 concurrent process race', () => {
         await verifyCanonical(runIds[1], event(winner!, 'RESULT')!);
 
         const corruptRun = await newRun();
-        const good = startWorker(corruptRun, 'same', 'save');
-        const bad = startWorker(corruptRun, 'bad-checksum', 'save');
+        const good = spawnFor(corruptRun, 'same', 'save');
+        const bad = spawnFor(corruptRun, 'bad-checksum', 'save');
         workers.push(good, bad);
         await until(() => !!event(good, 'READY') && !!event(bad, 'ERROR'),
           [good, bad]);
@@ -174,14 +184,37 @@ describe('raw v3 concurrent process race', () => {
         await until(() => !!event(good, 'RESULT'), [good]);
         await verifyCanonical(corruptRun, event(good, 'RESULT')!);
 
+        const staleRun = await newRun();
+        const stale = spawnFor(staleRun, 'changed', 'save');
+        workers.push(stale);
+        await until(() => !!event(stale, 'READY'), [stale]);
+        await prisma.backtestRun.update({ where: { id: staleRun },
+          data: { executionLeaseExpiresAt: new Date(Date.now() - 1_000) } });
+        const freshToken = await claimBacktestRun(staleRun);
+        expect(freshToken).toBeTruthy();
+        const fresh = spawnFor(staleRun, 'same', 'save', freshToken!);
+        workers.push(fresh);
+        await until(() => !!event(fresh, 'READY'), [fresh]);
+        stale.child.stdin.write('GO\n');
+        fresh.child.stdin.write('GO\n');
+        await until(() => !!event(stale, 'ERROR') && !!event(fresh, 'RESULT'),
+          [stale, fresh]);
+        expect(event(stale, 'ERROR')?.message)
+          .toBe('BACKTEST_INTRABAR_ARCHIVE_CLAIM_LOST');
+        await verifyCanonical(staleRun, event(fresh, 'RESULT')!);
+
         const killRun = await newRun();
-        const held = startWorker(killRun, 'same', 'save-hold');
+        const held = spawnFor(killRun, 'same', 'save-hold');
         workers.push(held);
         await until(() => !!event(held, 'READY'), [held]);
         held.child.stdin.write('GO\n');
         await until(() => !!event(held, 'SAVED_HOLD'), [held]);
         await killWorker(held);
-        const retried = startWorker(killRun, 'same', 'offline-retry');
+        await prisma.backtestRun.update({ where: { id: killRun },
+          data: { executionLeaseExpiresAt: new Date(Date.now() - 1_000) } });
+        const retryToken = await claimBacktestRun(killRun);
+        expect(retryToken).toBeTruthy();
+        const retried = spawnFor(killRun, 'same', 'offline-retry', retryToken!);
         workers.push(retried);
         await until(() => !!event(retried, 'OFFLINE_READ') &&
           !!event(retried, 'READY'), [retried]);
@@ -197,6 +230,9 @@ describe('raw v3 concurrent process race', () => {
           winnerPid: event(winner!, 'RESULT')?.pid,
           conflict: event(loser!, 'ERROR')?.message,
           corrupt: event(bad, 'ERROR')?.message,
+          stalePid: event(stale, 'ERROR')?.pid,
+          staleFence: event(stale, 'ERROR')?.message,
+          takeoverPid: event(fresh, 'RESULT')?.pid,
           killedPid: event(held, 'SAVED_HOLD')?.pid,
           retryPid: event(retried, 'RESULT')?.pid,
           offlineDigest: event(retried, 'OFFLINE_READ')?.digest,

@@ -141,6 +141,16 @@ export const createClaimedBacktestRunJob = (
         assertActive();
         return result;
       },
+      fetchVerifiedArchivedIntrabarForRun: deps.fetchVerifiedArchivedIntrabarForRun
+        ? async (id, exchange, symbol, timeframe, marketType, maxCandles,
+          endTimeMs, startTimeMs, expectedDigest) => {
+          assertActive();
+          const result = await deps.fetchVerifiedArchivedIntrabarForRun!(id,
+            exchange, symbol, timeframe, marketType, maxCandles,
+            endTimeMs, startTimeMs, expectedDigest, token);
+          assertActive();
+          return result;
+        } : undefined,
     });
     await job(runId);
   } catch (error) {

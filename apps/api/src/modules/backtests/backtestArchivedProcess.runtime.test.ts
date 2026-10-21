@@ -48,7 +48,8 @@ type ProofProcess = {
   eventTimes: Map<string, number[]>;
   waitFor: (marker: string, timeoutMs?: number) => Promise<void>;
 };
-const startWorker = (runId: string, role: 'hold' | 'resume'): ProofProcess => {
+const startWorker = (runId: string,
+  role: 'hold' | 'resume' | 'stale' | 'fresh'): ProofProcess => {
   const child = spawn(process.execPath, ['--import', 'tsx',
     resolve(process.cwd(), 'src/modules/backtests/backtestArchivedProcessProof.worker.ts'),
   ], {
@@ -600,8 +601,145 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
   }
 };
 
+const runStaleRawFenceCase = async () => {
+  const db = new URL(process.env.DATABASE_URL ?? '');
+  const redisUrl = new URL(process.env.REDIS_URL ?? '');
+  const queueName = process.env.WORKER_BACKTEST_QUEUE ?? '';
+  if (db.pathname.slice(1) !== 'soar_011a_archived_process_test' ||
+      db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
+      redisUrl.hostname !== '127.0.0.1' || !redisUrl.port || redisUrl.port === '6379' ||
+      process.env.WORKER_BACKTEST_OWNERSHIP !== 'worker' ||
+      !queueName.startsWith('backtest-011a-archived-process-'))
+    throw new Error('Requires isolated PostgreSQL, Redis and worker queue');
+  const user = await prisma.user.create({ data: {
+    email: `archive-stale-raw-${randomUUID()}@example.test`, password: 'local-test-only',
+  } });
+  const redis = createClient({ url: redisUrl.toString() });
+  const processes: ProofProcess[] = [];
+  const pendingKey = `soar:queue:${queueName}:pending`;
+  const processingKey = `soar:queue:${queueName}:processing`;
+  const dedupeKey = `soar:queue:${queueName}:dedupe`;
+  let strategyId: string | null = null;
+  let runId: string | null = null;
+  try {
+    await redis.connect();
+    const strategy = await prisma.strategy.create({ data: {
+      userId: user.id, name: 'Stale archive fence proof', interval: '1m',
+      leverage: 1, walletRisk: 10, config: strategyConfig,
+    } });
+    strategyId = strategy.id;
+    const run = await createRun(user.id, {
+      name: 'Stale archive fence', symbol: 'ALICEUSDT', timeframe: '1m',
+      strategyId: strategy.id, startAt: new Date(midnightStart),
+      endAt: new Date(midnightEnd),
+      seedConfig: { maxCandles: 100, initialBalance: 1_000,
+        feeRate: 0, slippageRate: 0,
+        intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' },
+    });
+    if (!run) throw new Error('createRun returned null');
+    runId = run.id;
+    expect(await redis.lRange(pendingKey, 0, -1)).toEqual([runId]);
+    const stale = startWorker(runId, 'stale');
+    processes.push(stale);
+    await stale.waitFor('ARCHIVE_SECOND_ZIP_FETCHED_HOLD', 60_000);
+    expect(stale.events.filter((item) => item === 'ARCHIVE_ZIP_FETCH')).toHaveLength(2);
+    expect(await prisma.backtestIntrabarArchive.count({ where: { runId } })).toBe(0);
+    expect(await prisma.backtestIntrabarArchiveRaw.count({ where: { runId } })).toBe(0);
+    expect((await prisma.backtestRun.findUniqueOrThrow({ where: { id: runId } })).status)
+      .toBe('RUNNING');
+    await prisma.backtestRun.update({ where: { id: runId }, data: {
+      executionLeaseExpiresAt: new Date(Date.now() - 1_000),
+    } });
+    const fresh = startWorker(runId, 'fresh');
+    processes.push(fresh);
+    await fresh.waitFor('JOB_RETURNED', 60_000);
+    await until(async () => (await redis.lRange(pendingKey, 0, -1)).length === 0 &&
+      (await redis.lRange(processingKey, 0, -1)).length === 0 &&
+      !(await redis.sIsMember(dedupeKey, runId!)));
+    expect(fresh.child.pid).not.toBe(stale.child.pid);
+    expect(fresh.events.filter((item) => item === 'JOB_INVOKED')).toHaveLength(1);
+    expect(fresh.events.filter((item) => item === 'SIMULATE')).toHaveLength(1);
+    const finalBeforeStale = await prisma.backtestRun.findUniqueOrThrow({
+      where: { id: runId },
+    });
+    const archivesBeforeStale = await prisma.backtestIntrabarArchive.findMany({
+      where: { runId }, include: { rawArchives: true },
+    });
+    const tradesBeforeStale = await prisma.backtestTrade.findMany({
+      where: { backtestRunId: runId },
+    });
+    const contributionsBeforeStale = await prisma.backtestContribution.findMany({
+      where: { backtestRunId: runId },
+    });
+    const reportsBeforeStale = await prisma.backtestReport.findMany({
+      where: { backtestRunId: runId },
+    });
+    expect(finalBeforeStale.status).toBe('COMPLETED');
+    expect(finalBeforeStale.executionToken).toBeNull();
+    expect(finalBeforeStale.finishedAt).not.toBeNull();
+    expect(await prisma.backtestRun.count({ where: { userId: user.id } })).toBe(1);
+    expect(archivesBeforeStale).toHaveLength(1);
+    expect(archivesBeforeStale[0].rawArchives).toHaveLength(2);
+    expect(tradesBeforeStale).toHaveLength(3);
+    expect(contributionsBeforeStale.length).toBeGreaterThan(0);
+    expect(reportsBeforeStale).toHaveLength(1);
+    expect(reportsBeforeStale[0].netPnl).toBeCloseTo(0.34133, 5);
+    expect(reportsBeforeStale[0].netPnl).toBeCloseTo(tradesBeforeStale.reduce(
+      (sum, trade) => sum + trade.pnl, 0), 6);
+    expect((reportsBeforeStale[0].metrics as any).runLifecycle).toMatchObject({
+      state: 'COMPLETED', reportReady: true,
+    });
+    const verified = await readVerifiedRunArchive(runId, 'ALICEUSDT',
+      midnightStart, midnightEnd);
+    expect(verified).toHaveLength(20);
+    expect(verified?.every((candle) => candle.intrabarProvenance.archiveProof ===
+      'PERSISTED_CHECKSUM_REVERIFIED')).toBe(true);
+
+    stale.child.stdin.write('GO\n');
+    await stale.waitFor('RAW_CLAIM_LOST', 30_000);
+    await stale.waitFor('JOB_RETURNED', 30_000);
+    expect(stale.events).not.toContain('SIMULATE');
+    expect(await prisma.backtestIntrabarArchive.findMany({
+      where: { runId }, include: { rawArchives: true },
+    })).toEqual(archivesBeforeStale);
+    expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: runId } }))
+      .toEqual(tradesBeforeStale);
+    expect(await prisma.backtestContribution.findMany({ where: { backtestRunId: runId } }))
+      .toEqual(contributionsBeforeStale);
+    expect(await prisma.backtestReport.findMany({ where: { backtestRunId: runId } }))
+      .toEqual(reportsBeforeStale);
+    expect(await prisma.backtestRun.findUniqueOrThrow({ where: { id: runId } }))
+      .toEqual(finalBeforeStale);
+    expect(await redis.lRange(pendingKey, 0, -1)).toEqual([]);
+    expect(await redis.lRange(processingKey, 0, -1)).toEqual([]);
+    expect(await redis.sIsMember(dedupeKey, runId)).toBe(false);
+    process.stdout.write(`STALE_RAW_FENCE_PROOF ${JSON.stringify({
+      runId, stalePid: stale.child.pid, freshPid: fresh.child.pid,
+      staleClaimLost: stale.events.filter((item) => item === 'RAW_CLAIM_LOST').length,
+      status: finalBeforeStale.status, archives: archivesBeforeStale.length,
+      raw: archivesBeforeStale[0].rawArchives.length,
+      trades: tradesBeforeStale.length, reports: reportsBeforeStale.length,
+      netPnl: reportsBeforeStale[0].netPnl,
+    })}\n`);
+  } finally {
+    for (const processProof of processes) await stopWorker(processProof);
+    await backtestRunQueue.stopWorker();
+    if (redis.isOpen) {
+      await redis.del([pendingKey, processingKey, dedupeKey]);
+      await redis.quit();
+    }
+    if (runId) await deleteOwnedBacktestRunCascade(user.id, runId);
+    if (strategyId) await prisma.strategy.delete({ where: { id: strategyId } });
+    await prisma.user.delete({ where: { id: user.id } });
+  }
+};
+
 const runtimeIt = process.env.RUN_BACKTEST_ARCHIVED_PROCESS_PROOF === '1' ? it : it.skip;
 describe('real archived intrabar job recovery across processes', () => {
+  const rawFenceIt = process.env.RUN_BACKTEST_ARCHIVED_STALE_RAW_FENCE_PROOF === '1'
+    ? it : it.skip;
+  rawFenceIt('fences a stale raw writer after another process claims and commits the run',
+    runStaleRawFenceCase, 120_000);
   runtimeIt.each(['baseline', 'changed', 'missing'] as const)(
     'recovers the same archived run without a second source fetch: %s',
     async (variant) => runProcessCase(variant, false), 120_000);

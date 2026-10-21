@@ -7,12 +7,14 @@ import { fetchVerifiedDailyUsdMArchive, readVerifiedRunArchive,
 
 const db = new URL(process.env.DATABASE_URL ?? '');
 const runId = process.env.SOAR_RAW_RACE_RUN_ID ?? '';
+const executionToken = process.env.SOAR_RAW_RACE_TOKEN ?? '';
 const variant = process.env.SOAR_RAW_RACE_VARIANT ?? '';
 const role = process.env.SOAR_RAW_RACE_ROLE ?? '';
 if (process.env.SOAR_RAW_RACE_PROOF !== '1' ||
     db.pathname.slice(1) !== 'soar_011a_raw_race_test' ||
     db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
-    !runId || !['same', 'changed', 'bad-checksum'].includes(variant) ||
+    !runId || !executionToken ||
+    !['same', 'changed', 'bad-checksum'].includes(variant) ||
     !['save', 'save-hold', 'offline-retry'].includes(role))
   throw new Error('Raw race worker requires the dedicated local test database');
 
@@ -78,7 +80,8 @@ const main = async () => {
       digest: digestVerifiedBinanceFuturesIntrabar(sourceVerified, 'BTCUSDT'),
       zipShas: snapshot.archives.map((archive) => archive.zipSha256) });
     await barrier();
-    const verified = await saveVerifiedRunArchive(runId, snapshot, rawArchives);
+    const verified = await saveVerifiedRunArchive(runId, snapshot, rawArchives,
+      executionToken);
     if (!verified) throw new Error('Verified archive missing after save');
     emit(role === 'save-hold' ? 'SAVED_HOLD' : 'RESULT', {
       pid: process.pid,

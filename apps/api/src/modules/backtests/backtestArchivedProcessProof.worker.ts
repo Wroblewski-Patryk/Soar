@@ -21,18 +21,24 @@ if (process.env.SOAR_ARCHIVED_PROCESS_PROOF !== '1' ||
     database.hostname !== '127.0.0.1' || !database.port || database.port === '5432' ||
     redis.hostname !== '127.0.0.1' || !redis.port || redis.port === '6379' ||
     !queueName?.startsWith('backtest-011a-archived-process-') || !runId ||
-    !['hold', 'resume'].includes(role ?? ''))
+    !['hold', 'resume', 'stale', 'fresh'].includes(role ?? ''))
   throw new Error('Archived process proof requires isolated test resources');
 
 const originalFetch = globalThis.fetch;
-globalThis.fetch = ((input: Parameters<typeof fetch>[0], init?: RequestInit) => {
+globalThis.fetch = (async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
   if (role === 'resume') throw new Error('NETWORK_FORBIDDEN_ON_ARCHIVE_RETRY');
   const url = String(input);
   if (url.includes('data.binance.vision') && url.endsWith('.CHECKSUM'))
     process.stdout.write('ARCHIVE_CHECKSUM_FETCH\n');
   if (url.includes('data.binance.vision') && url.endsWith('.zip'))
     process.stdout.write('ARCHIVE_ZIP_FETCH\n');
-  return originalFetch(input, init);
+  const response = await originalFetch(input, init);
+  if (role === 'stale' && url.includes('data.binance.vision') &&
+      url.endsWith('2026-10-18.zip')) {
+    process.stdout.write('ARCHIVE_SECOND_ZIP_FETCHED_HOLD\n');
+    await new Promise<void>((resolveHold) => process.stdin.once('data', () => resolveHold()));
+  }
+  return response;
 }) as typeof fetch;
 
 const job = createClaimedBacktestRunJob({
@@ -47,7 +53,14 @@ const job = createClaimedBacktestRunJob({
   fetchKlinesWithVerifiedBinanceFuturesIntrabar: async () => {
     throw new Error('RECENT_REST_PATH_FORBIDDEN');
   },
-  fetchVerifiedArchivedIntrabarForRun,
+  fetchVerifiedArchivedIntrabarForRun: async (...args) => {
+    try { return await fetchVerifiedArchivedIntrabarForRun(...args); }
+    catch (error) {
+      if ((error as Error).message === 'BACKTEST_INTRABAR_ARCHIVE_CLAIM_LOST')
+        process.stdout.write('RAW_CLAIM_LOST\n');
+      throw error;
+    }
+  },
   fetchSupplementalSeries: async () => ({ fundingRates: [], openInterest: [], orderBook: [] }),
   simulateInterleavedPortfolio: (input) => {
     if (role === 'hold') {
