@@ -43,5 +43,27 @@ przeszły (`941/941` ścieżek). Dowód jest lokalny i dotyczy tego okna oraz
 skróconego lease. Surowe ZIP nie są zapisane do późniejszej niezależnej
 kontroli `.CHECKSUM`; odczyt offline sprawdza SHA-256 payloadu i taśmę.
 Większe archiwa, miesięczne pliki, trzy doby, PAPER/LIVE, rzeczywiste
-fille i produkcja pozostają poza wycinkiem. Pełne 011A i 011 nadal `REVIEW`,
-`POSITION-CYCLE` `OPEN`, LIVE i wydanie `NO-GO` do niezależnego odbioru.
+fille i produkcja pozostają poza wycinkiem. W chwili wyniku autorskiego
+pełne 011A i 011 nadal były `REVIEW`, `POSITION-CYCLE` `OPEN`, LIVE i
+wydanie `NO-GO` do niezależnego odbioru.
+
+## Niezależny odbiór ograniczonego wycinka
+
+Niezależny statyczny review na dokładnym kodowym SHA
+`22e08d1233097b6996ae6cc128ce7f88d5831114` dał ograniczony `PASS`.
+Niezależny runtime QA uzyskał `12/12 PASS` walidatora i `3/3 PASS` próby
+procesowej na publicznym oknie ALICEUSDT 20 świec przez północ UTC.
+Każdy z dwóch ZIP przeszedł własną `.CHECKSUM`; OHLCV zgodziło się z
+publicznymi klines. Po `SIGKILL` drugi PID odzyskał ten sam run offline bez
+ponownego fetch i bez duplikatu: jeden raport, trzy trades, net PnL
+`+0,34133` USDT i 18 świec timeline. Zmiana lub usunięcie snapshotu
+zakończyły się `FAILED`, `netPnl=null`, bez trades i wkładów.
+
+SHA-256 logów QA: walidator
+`B91CBF6AACDE5F9F5D7B7F9BF68AFDC3C0981EA1FAE17266508E858ECD475F78`;
+runtime `E263AACCF264CE33FA1C9C444F9FF91EFEC72C28868BA3D00796F66B6DD630BF`.
+Zakres `1–120` świec w dwóch sąsiednich dobach to granica walidatora w kodzie;
+publiczny test potwierdził **20** świec. Surowe ZIP nie są utrwalane do
+późniejszej ponownej kontroli `.CHECKSUM`, a lease skrócono w teście.
+To lokalny odbiór BACKTEST, bez dowodu real LIVE lub produkcji. Pełne 011A
+i 011 pozostają `REVIEW`, `POSITION-CYCLE` `OPEN`, wydanie `NO-GO`.
