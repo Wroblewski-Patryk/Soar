@@ -183,6 +183,8 @@ export const dashboardHomeDeCh = {
     "manualOrderSemanticsHint": "Die manuelle Bestellung folgt einem einheitlichen Lebenszyklus: Bestellung -> Ausfüllen -> Position.",
     "manualOrderSymbolRequired": "Symbol ist erforderlich.",
     "manualOrderQuantityRequired": "Die Menge muss eine positive Zahl sein.",
+    "manualOrderQuantityStepInvalid": "Die Menge muss dem Mengenschritt der Börse von {value} entsprechen.",
+    "manualOrderQuantityRulesUnavailable": "Die Mengenregeln der Börse sind nicht verfügbar. Aktualisieren Sie vor dem Absenden der Order.",
     "manualOrderPriceRequired": "Für diesen Bestelltyp ist ein Preis erforderlich.",
     "manualOrderPriceInvalid": "Der Preis muss eine positive Zahl sein.",
     "manualOrderMarketPriceUnavailable": "Für die PAPIERMARKT-Eröffnung ist kein vertrauenswürdiger Marktpreis verfügbar.",

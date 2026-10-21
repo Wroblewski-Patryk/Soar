@@ -183,6 +183,8 @@ export const dashboardHomePt = {
     "manualOrderSemanticsHint": "A ordem manual segue o ciclo unificado: order -> fill -> position.",
     "manualOrderSymbolRequired": "O simbolo e obrigatorio.",
     "manualOrderQuantityRequired": "A quantidade tem de ser um numero positivo.",
+    "manualOrderQuantityStepInvalid": "A quantidade tem de respeitar o passo da bolsa de {value}.",
+    "manualOrderQuantityRulesUnavailable": "As regras de quantidade da bolsa não estão disponíveis. Atualize antes de enviar a ordem.",
     "manualOrderPriceRequired": "O preco e obrigatorio para este tipo de ordem.",
     "manualOrderPriceInvalid": "O preco tem de ser um numero positivo.",
     "manualOrderMarketPriceUnavailable": "Nao ha preco de mercado confiavel para abrir PAPER MARKET.",
