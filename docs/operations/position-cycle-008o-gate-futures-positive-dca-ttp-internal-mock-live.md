@@ -79,12 +79,29 @@ $env:GATEIO_FUTURES_POSITIVE_DCA_TTP_INTERNAL_MOCK_LIVE_STAGE = 'resume'
 pnpm exec vitest run src/modules/engine/runtimeGateFuturesPositiveDcaTtpInternalLiveCycle.e2e.test.ts
 ```
 
-Author-local SQL readback after 82 migrations: 3 intents, 3 `FILLED` orders,
+Historical author-local SQL readback, without using its reported migration
+count as acceptance evidence: 3 intents, 3 `FILLED` orders,
 3 fills, 3 trades, 3 distinct client IDs, and one successful DCA dedupe.
 Position: `CLOSED|TTP|BOT_APP|199|1.001542211055277|0.14048446|100`
 (status, reason, initiator, quantity, average, net PnL, leverage). Telemetry
 has one `DCA_EXECUTED`, one TTP `SIGNAL_DECISION`, and one `POSITION_CLOSED`.
-This author-local internal mock awaits independent review. It does not prove
-actual Gate.io rules, balances, fills, fees, liquidation behavior, other
-exchanges or markets, signed-in browser 003A, or production safety. The full
-`POSITION-CYCLE` remains OPEN and release remains NO-GO.
+
+Independent static review of code on exact SHA `1e256d5a1067ec7760e78b0f4ad953debbb1854a`
+passed on substance; its `REVIEW` concerned only the stale migration count in
+the documentation. Independent QA on that exact code SHA used a fresh own
+PostgreSQL `_test` database and Redis: `prisma migrate deploy` found 83
+migrations and `_prisma_migrations` contained 83 finished migrations. Separate
+`open` and `resume` processes each reported 1 PASS / 1 SKIP. The run showed
+no-signal HOLD; funded DCA before armed TTP on the shared tick without CLOSE;
+six invalid-rule refusals before DCA dedupe, intent, or venue submit; and one
+later TTP after restart. SQL after replay had 3 unique intents, 3 `FILLED`
+orders, 3 fills, 3 trades, and 1 successful DCA dedupe, with no duplicate
+IDs or submits. ENTRY margin was 1 USDT and DCA margin 0.993069 USDT; the
+position held 199 contracts at fill-weighted average 1.0015422110552765.
+Fees totaled 0.15956554 USDT and net PnL was +0.14048446 USDT, matching
+the three fills.
+
+This independent PASS is limited to the local synthetic Gate FUTURES mock.
+It does not prove actual Gate.io rules, balances, fills, fees, liquidation
+behavior, other exchanges or markets, signed-in browser 003A, or production
+safety. The full `POSITION-CYCLE` remains OPEN and release remains NO-GO.
