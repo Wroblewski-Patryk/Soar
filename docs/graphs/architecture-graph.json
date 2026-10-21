@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21T01:03:50.355Z",
+  "generatedAt": "2026-10-21T01:22:12.351Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",
@@ -880,7 +880,7 @@
       "feature": "runtime-dca-pnl",
       "description": "Regression proving exchange PnL threshold truth for DCA automation.",
       "file_path": "apps/api/src/modules/engine/runtimePositionAutomation.exchangePnl.test.ts",
-      "related_files": "apps/api/src/modules/engine/positionManagement.service.test.ts;apps/api/src/modules/engine/runtimePaperBasicDcaPersistence.e2e.test.ts;apps/api/src/modules/engine/runtimePaperBacktestOneCycle.e2e.test.ts;apps/api/src/modules/engine/runtimePaperBacktestLeveragedCycle.e2e.test.ts;apps/api/src/modules/engine/runtimePaperFuturesBalanceProof.e2e.test.ts;apps/api/src/modules/engine/runtimeBinanceFuturesInternalLiveCycle.e2e.test.ts",
+      "related_files": "apps/api/src/modules/engine/positionManagement.service.test.ts;apps/api/src/modules/engine/runtimePaperBasicDcaPersistence.e2e.test.ts;apps/api/src/modules/engine/runtimePaperBacktestOneCycle.e2e.test.ts;apps/api/src/modules/engine/runtimePaperBacktestLeveragedCycle.e2e.test.ts;apps/api/src/modules/engine/runtimePaperFuturesBalanceProof.e2e.test.ts;apps/api/src/modules/engine/runtimeBinanceFuturesInternalLiveCycle.e2e.test.ts;apps/api/src/modules/engine/runtimeGateFuturesInternalLiveCycle.e2e.test.ts",
       "parent_id": "SOAR-FEATURE-RUNTIME-DCA-PNL",
       "child_ids": "",
       "depends_on": "SOAR-FEATURE-RUNTIME-DCA-PNL",
