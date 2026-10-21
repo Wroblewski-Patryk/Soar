@@ -33,3 +33,51 @@ zmieniamy progów po obejrzeniu danych w tej próbie.
 Granica: agregaty dokumentują kolejność cen, lecz nie dowodzą rzeczywistych
 filli użytkownika ani zachowania PAPER/LIVE lub produkcji. Pełne 011A pozostaje
 `REVIEW`, 011 `OPEN`, wydanie `NO-GO`.
+
+## Wynik ustalonej próby
+
+Na publicznym ZIP i `.CHECKSUM` zgodnym z wyżej zapisanym SHA-256, strict run
+utrwalił digest taśmy `ba2e8a273032ed1dfa816132e77316429cd7a0f6f67f40cae13b37d6804388a2`.
+Pierwszy PID zatrzymano po zapisie snapshotu i digest, przed symulacją. Drugi
+PID odzyskał ten sam run z Redis po skróconym lease **wyłącznie własnego runu
+testowego**; jego fetch był zablokowany, a taśma pochodziła z PostgreSQL.
+Nie ma dowodu naturalnego 10-minutowego lease dla tej konkretnej strategii;
+osobny test 011A wcześniej potwierdził to na tej samej publicznej taśmie z
+inną strategią.
+
+Wynik warunku tej samej świecy jest **negatywny** przy ustalonych parametrach:
+4 trwałe trades, 3 DCA i 3 TTP, lecz 0 par DCA→TTP na tej samej świecy.
+Trzy pary w jednym runie to:
+
+| DCA z agregatu | Cena | TTP modelu na późniejszym zamknięciu | Cena |
+| --- | ---: | --- | ---: |
+| 02:33:33.109 UTC, świeca 4, `a=167049888` | 0,1457 | 02:55:59.999 UTC, świeca 26 | 0,1457 |
+| 03:01:00.488 UTC, świeca 32, `a=167050085` | 0,1460 | 03:12:59.999 UTC, świeca 43 | 0,1460 |
+| 03:42:25.875 UTC, świeca 73, `a=167050444` | 0,1463 | 03:48:59.999 UTC, świeca 79 | 0,1464 |
+
+Po drugim DCA źródłowa świeca ma jeszcze 8 późniejszych agregatów, ale
+ustalony TTP nie zamknął pozycji w tej świecy. Test sprawdza ich istnienie,
+trwały wkład DCA równy bieżącemu wkładowi ENTRY (około 100 USDT na parę),
+ilość i średnią ważoną, opłatę `0,0004` od notional wejścia i wyjścia z
+zaokrągleniem symulatora, PnL każdego zamknięcia oraz raportową sumę
+`-0,42076` USDT dla czterech trades. Odczyt timeline po ponowieniu ma te same
+zdarzenia. Trzy TTP są zdarzeniami modelu na **zamknięciach późniejszych
+świec**, a nie potwierdzonymi źródłowo tickami TTP. Nie stanowią dowodu
+rynkowej kolejności DCA→TTP na tej samej świecy.
+
+Najbliższy mały wycinek odbioru to jedna dodatkowa, wcześniej zadeklarowana
+100-minutowa próba na sąsiednim oknie `ALICEUSDT` 04:07–05:47 UTC tego samego
+dnia, z identycznymi progami i kryteriami. Jeśli również nie ma pary na jednej
+świecy, wynik pozostaje negatywny; nie należy stroić progów pod obejrzaną
+taśmę ani podnosić pełnego 011A/011 z `REVIEW`/`OPEN`.
+
+Powtórzenie lokalne: na własnej PostgreSQL `soar_011a_archived_process_test`
+po 84 migracjach i osobnym Redisie użyć `WORKER_MODE=split`,
+`WORKER_BACKTEST_OWNERSHIP=worker`, unikalnej kolejki z prefiksem
+`backtest-011a-archived-process-` oraz
+`RUN_BACKTEST_REAL_MARKET_SEQUENCE_PROBE=1`. Z `apps/api` uruchomić
+`pnpm exec vitest run src/modules/backtests/backtestArchivedProcess.runtime.test.ts -t 'records separate-candle'`.
+Cały plik przy dodatkowym `RUN_BACKTEST_ARCHIVED_PROCESS_PROOF=1` przeszedł
+4/4 scenariusze procesowe (naturalny 10-minutowy wariant był pominięty);
+API typecheck `PASS`. Test po każdym wariancie usuwa wyłącznie swoje rekordy
+i klucze kolejki.

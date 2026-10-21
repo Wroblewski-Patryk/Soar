@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { backtestRunQueue, createRun, getRunTimeline } from './backtests.service';
 import { deleteOwnedBacktestRunCascade } from './backtests.repository';
+import { readVerifiedRunArchive } from './backtestBinanceFuturesIntrabarArchive';
 import { BACKTEST_LEASE_MS } from './backtestRunOwnership.repository';
 import { GetBacktestTimelineQuerySchema } from './backtests.types';
 
@@ -20,6 +21,16 @@ const strategyConfig = {
       params: { period: 1 } }], indicatorsShort: [] },
   close: { mode: 'basic', tp: 0.1, sl: 0.1 },
   additional: { dcaEnabled: false, dcaTimes: 0 },
+};
+// Fixed before inspecting the public tape; see the committed 011A probe plan.
+const marketSequenceStrategyConfig = {
+  open: { direction: 'long', noMatchAction: 'EXIT',
+    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: -100,
+      params: { period: 1 } }], indicatorsShort: [] },
+  close: { mode: 'advanced', ttp: [{ percent: 0.08, arm: 0.05 }], tsl: [] },
+  additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
+    dcaSizingBasis: 'usdt_contribution_v1',
+    dcaLevels: [{ percent: 0.10, multiplier: 1 }], marginMode: 'ISOLATED' },
 };
 
 const sleep = (ms: number) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
@@ -81,8 +92,9 @@ const stopWorker = async (proof: ProofProcess) => {
   });
 };
 
-type Variant = 'baseline' | 'changed' | 'missing';
+type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence';
 const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
+  const marketSequence = variant === 'market-sequence';
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redisUrl = new URL(process.env.REDIS_URL ?? '');
   const queueName = process.env.WORKER_BACKTEST_QUEUE ?? '';
@@ -107,14 +119,15 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     await redis.connect();
     const strategy = await prisma.strategy.create({ data: {
       userId: user.id, name: 'Archived process restart proof', interval: '1m',
-      leverage: 1, walletRisk: 10, config: strategyConfig,
+      leverage: 1, walletRisk: 10,
+      config: marketSequence ? marketSequenceStrategyConfig : strategyConfig,
     } });
     strategyId = strategy.id;
     const created = await createRun(user.id, {
       name: `Archived process ${variant}`, symbol: 'ALICEUSDT', timeframe: '1m',
       strategyId: strategy.id, startAt: new Date(start), endAt: new Date(end),
       seedConfig: { maxCandles: 100, initialBalance: 1_000,
-        feeRate: 0, slippageRate: 0,
+        feeRate: marketSequence ? 0.0004 : 0, slippageRate: 0,
         intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' },
     });
     if (!created) throw new Error('createRun returned null');
@@ -187,7 +200,7 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     });
     const reports = await prisma.backtestReport.findMany({ where: { backtestRunId: runId } });
     expect(reports).toHaveLength(1);
-    if (variant === 'baseline') {
+    if (variant === 'baseline' || marketSequence) {
       expect(final.status).toBe('COMPLETED');
       expect((final.seedConfig as Record<string, any>)
         .intrabarSourceDigestBySymbol.ALICEUSDT).toBe(firstDigest);
@@ -207,6 +220,94 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
       expect(timeline?.events.filter((event) =>
         event.type !== 'ENTRY' && event.type !== 'DCA').length).toBe(trades.length);
       expect(trades.filter((trade) => trade.exitReason === 'SIGNAL_EXIT')).toHaveLength(0);
+      if (marketSequence) {
+        const archived = await readVerifiedRunArchive(runId, 'ALICEUSDT', start, end);
+        if (!archived || !timeline) throw new Error('Verified public archive or timeline missing');
+        const dcaEvents = timeline.events.filter((event) => event.type === 'DCA');
+        const ttpEvents = timeline.events.filter((event) => event.type === 'TTP');
+        expect(trades).toHaveLength(4);
+        expect(dcaEvents).toHaveLength(3);
+        expect(ttpEvents).toHaveLength(3);
+        expect(reports[0].netPnl).toBeCloseTo(-0.42076, 5);
+        const pairs = dcaEvents.map((dca) => ({ dca,
+          ttp: ttpEvents.find((ttp) => ttp.tradeId === dca.tradeId &&
+            Date.parse(ttp.timestamp) > Date.parse(dca.timestamp)) }))
+          .filter((candidate) => candidate.ttp);
+        process.stdout.write(`PUBLIC_MARKET_SEQUENCE_PROBE ${JSON.stringify({
+          digest: firstDigest, trades: trades.length,
+          dcaEvents: dcaEvents.length, ttpEvents: ttpEvents.length,
+          pairs: pairs.map(({ dca, ttp }) => ({
+            dca: { timestamp: dca.timestamp, candleIndex: dca.candleIndex, price: dca.price },
+            ttp: { timestamp: ttp!.timestamp, candleIndex: ttp!.candleIndex,
+              price: ttp!.price },
+          })),
+        })}\n`);
+        expect(pairs).toHaveLength(3);
+        expect(pairs.filter(({ dca, ttp }) =>
+          ttp!.candleIndex === dca.candleIndex)).toHaveLength(0);
+        const accountingSamples: Array<Record<string, number>> = [];
+        for (const { dca, ttp: close } of pairs) {
+          const ttp = close!;
+          expect(ttp.candleIndex).toBeGreaterThan(dca.candleIndex);
+          const dcaCandle = timeline.candles.find((entry) =>
+            entry.candleIndex === dca.candleIndex);
+          const sourceIndex = archived.findIndex((entry) =>
+            entry.openTime === Date.parse(dcaCandle?.openTime ?? ''));
+          expect(sourceIndex).toBeGreaterThanOrEqual(0);
+          const source = archived[sourceIndex];
+          const dcaTick = source.intrabarTicks.find((tick) =>
+            tick.eventTime === Date.parse(dca.timestamp) && tick.price === dca.price);
+          expect(dcaTick?.sequenceId).toBeDefined();
+          const add = contributions.find((row) => row.kind === 'DCA' &&
+            row.candleIndex === sourceIndex &&
+            row.timestamp.getTime() === Date.parse(dca.timestamp));
+          expect(add).toBeDefined();
+          const entry = contributions.find((row) => row.kind === 'ENTRY' &&
+            row.tradeSequence === add?.tradeSequence);
+          expect(entry).toBeDefined();
+          expect(add!.levelIndex).toBe(0);
+          expect(add!.multiplier).toBe(1);
+          expect(add!.contributionUsdt).toBeCloseTo(entry!.contributionUsdt, 6);
+          const closed = trades.find((row) => row.exitReason === 'TTP' &&
+            row.closedAt.getTime() === Date.parse(ttp.timestamp));
+          expect(closed).toBeDefined();
+          const quantity = entry!.quantity + add!.quantity;
+          const cost = entry!.contributionUsdt + add!.contributionUsdt;
+          const expectedFee = 0.0004 * closed!.quantity *
+            (closed!.entryPrice + closed!.exitPrice);
+          const roundSettlement = (value: number) => Math.round(value * 100_000) / 100_000;
+          expect(closed!.quantity).toBeCloseTo(quantity, 8);
+          expect(closed!.entryPrice).toBeCloseTo(cost / quantity, 8);
+          expect(closed!.fee).toBe(roundSettlement(expectedFee));
+          expect(closed!.pnl).toBeCloseTo(roundSettlement(
+            (closed!.exitPrice - closed!.entryPrice) * closed!.quantity) -
+            roundSettlement(expectedFee), 8);
+          expect(dca.price).toBe(add!.price);
+          expect(ttp.price).toBe(closed!.exitPrice);
+          const ttpCandle = timeline.candles.find((entry) =>
+            entry.candleIndex === ttp.candleIndex);
+          expect(ttp.timestamp).toBe(ttpCandle?.closeTime);
+          expect(ttp.price).toBe(ttpCandle?.close);
+          accountingSamples.push({
+            sourceAggregateId: dcaTick!.sequenceId!,
+            laterAggregatesOnDcaCandle: source.intrabarTicks.filter((tick) =>
+              (tick.sequenceId ?? -1) > dcaTick!.sequenceId!).length,
+            entryUsdt: entry!.contributionUsdt, dcaUsdt: add!.contributionUsdt,
+            averageEntry: closed!.entryPrice, quantity: closed!.quantity,
+            fee: closed!.fee ?? 0, pnl: closed!.pnl,
+          });
+        }
+        expect(accountingSamples.map((sample) =>
+          sample.laterAggregatesOnDcaCandle)).toEqual([0, 8, 0]);
+        expect(accountingSamples.map((sample) => sample.sourceAggregateId))
+          .toEqual([167049888, 167050085, 167050444]);
+        process.stdout.write(`PUBLIC_MARKET_ACCOUNTING ${JSON.stringify({
+          reportNetPnl: reports[0].netPnl, samples: accountingSamples,
+        })}\n`);
+        const replay = await getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' }));
+        expect(replay?.events).toEqual(timeline.events);
+      }
     } else {
       expect(final.status).toBe('FAILED');
       expect((final.seedConfig as Record<string, any>).error).toContain(
@@ -244,4 +345,7 @@ describe('real archived intrabar job recovery across processes', () => {
   const naturalIt = process.env.RUN_BACKTEST_ARCHIVED_NATURAL_LEASE_PROOF === '1' ? it : it.skip;
   naturalIt('waits for the real lease before resuming the same archived run',
     async () => runProcessCase('baseline', true), BACKTEST_LEASE_MS + 180_000);
+  const marketIt = process.env.RUN_BACKTEST_REAL_MARKET_SEQUENCE_PROBE === '1' ? it : it.skip;
+  marketIt('records separate-candle DCA and TTP for the predeclared public tape',
+    async () => runProcessCase('market-sequence', false), 120_000);
 });

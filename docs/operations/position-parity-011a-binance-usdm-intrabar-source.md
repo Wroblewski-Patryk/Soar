@@ -46,3 +46,5 @@ Niezależny statyczny review na dokładnym SHA `886eb30aa15febe109d5583e06d2b2c2
 ## Brakujący odbiór
 
 Po ograniczonym niezależnym odbiorze na SHA `886eb30aa15febe109d5583e06d2b2c279b9cf14` i naprawie `d46c70a47d2682a011f936243c8746f5ea2e63f9` nadal potrzebne są okna przekraczające dobę i większe pliki, możliwość ponownej niezależnej weryfikacji checksum surowego ZIP oraz rzeczywiste okno 011 z konkurencją DCA→późniejszy TTP i uzgodnionym PnL. Naturalny 10-minutowy lease i restart całego historycznego joba mają lokalny dowód na jednym publicznym archiwum; dopiero naprawa P1 zamyka lokalną lukę timeline. Produkcyjny runtime, rzeczywiste fille i pełny 011A pozostają bez odbioru. Pełny 011A `REVIEW`, 011 `OPEN`, wydanie `NO-GO`.
+
+Ustalona przed analizą [próba na rzeczywistym oknie ALICEUSDT](position-parity-011a-real-market-sequence-probe.md) dała trzy źródłowo potwierdzone DCA i późniejsze TTP na **innych** świecach, lecz żadnej pary DCA→TTP na tej samej świecy. Jest to negatywny wynik brakującej bramki 011A/011 przy tych parametrach, a nie jej odbiór.
