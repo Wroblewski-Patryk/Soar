@@ -2,7 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
-import { computeMinExecutableQuantity, normalizeAmountByPrecision, normalizeAmountFixed, resolvePrecisionStep, type SymbolTradingRules } from './orders.quantityRules';
+import { computeMinExecutableQuantity, normalizeAmountByPrecision, normalizeAmountFixed, resolvePrecisionStep, resolveQuantityContractSize, type SymbolTradingRules } from './orders.quantityRules';
 import type { ManualOrderContextQuery, OpenOrderDto } from './orders.types';
 import { resolveSymbolTradingRulesMetadata } from '../exchange/exchangeMetadataContract.service';
 import { resolveCanonicalRuntimeVenueContext } from '../engine/runtimeBotExecutionContext';
@@ -338,6 +338,7 @@ export const getManualOrderContext = async (
   }
 
   const minExecutableQty = computeMinExecutableQuantity({
+    marketType: venueContext.marketType,
     minAmount: rules.minAmount,
     minNotional: rules.minNotional,
     markPrice,
@@ -345,12 +346,9 @@ export const getManualOrderContext = async (
     amountPrecisionMode: rules.amountPrecisionMode,
     contractSize: rules.contractSize,
   });
-  const contractSize =
-    typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
-      ? rules.contractSize
-      : 1;
-  const amountStep = rules.amountPrecisionMode === 'TICK_SIZE' ||
-    rules.amountPrecisionMode === 'DECIMAL_PLACES'
+  const contractSize = resolveQuantityContractSize(rules.contractSize, venueContext.marketType);
+  const amountStep = contractSize != null && (rules.amountPrecisionMode === 'TICK_SIZE' ||
+    rules.amountPrecisionMode === 'DECIMAL_PLACES')
       ? resolvePrecisionStep(rules.amountPrecision, rules.amountPrecisionMode)
       : null;
 
@@ -361,7 +359,7 @@ export const getManualOrderContext = async (
   const normalizedQuantity = requestedQuantity == null ? null
     : normalizeAmountByPrecision(requestedQuantity, rules.amountPrecision, rules.amountPrecisionMode);
   const estimatedNotional =
-    requestedQuantity != null && markPrice != null && normalizedQuantity != null
+    requestedQuantity != null && markPrice != null && normalizedQuantity != null && contractSize != null
       && minExecutableQty != null && requestedQuantity + 1e-12 >= minExecutableQty
       && Number.isFinite(normalizedQuantity)
       && Math.abs(requestedQuantity - normalizedQuantity) <= 1e-12

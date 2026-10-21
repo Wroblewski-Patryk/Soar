@@ -239,8 +239,8 @@ export const useManualOrderController = ({
   const manualOrderQuantityRules = useMemo(() => {
     if (!manualOrderContext || manualOrderContext.botId !== selected?.bot.id ||
         normalizeSymbol(manualOrderContext.symbol) !== normalizeSymbol(manualOrderSymbol)) return null;
-    return getManualOrderQuantityRules(manualOrderContext.quantityConstraints);
-  }, [manualOrderContext, manualOrderSymbol, selected?.bot.id]);
+    return getManualOrderQuantityRules(manualOrderContext.quantityConstraints, selectedVenueContext.marketType);
+  }, [manualOrderContext, manualOrderSymbol, selected?.bot.id, selectedVenueContext.marketType]);
   const manualOrderMinExecutableQty = manualOrderQuantityRules?.minQuantity ?? null;
 
   const manualOrderLeverageForEstimate = useMemo(() => {

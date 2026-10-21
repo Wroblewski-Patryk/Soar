@@ -536,6 +536,39 @@ describe('exchangeAdapterBoundary.service', () => {
       expect(connector.hasOpenPosition).toHaveBeenCalledTimes(reduceOnly ? 0 : 1);
     });
 
+  it.each([false, true])('rejects unknown Gate Futures contract size before submit (reduceOnly=%s)',
+    async (reduceOnly) => {
+      const connector = { ...createConnector(),
+        getSymbolTradingRules: vi.fn(async () => ({
+          minAmount: 2, minNotional: 5, amountPrecision: 1,
+          amountPrecisionMode: 'TICK_SIZE' as const, contractSize: null,
+        })),
+        fetchMarkPrice: vi.fn(async () => 3.305),
+      };
+      const placeLiveOrderWithFees = vi.fn();
+      const convergeLiveMarginAndLeverageIfNeeded = vi.fn(async () => undefined);
+      await expect(submitLiveOrderThroughBoundary({
+        userId: 'user-unknown-contract-003a',
+        bot: { exchange: 'GATEIO', marketType: 'FUTURES', positionMode: 'ONE_WAY',
+          apiKeyId: 'key-unknown-contract-003a', walletId: 'wallet-unknown-contract-003a' },
+        order: { symbol: `NGCONTRACT${reduceOnly ? 'CLOSE' : 'OPEN'}USDT`, side: 'BUY',
+          type: 'LIMIT', quantity: 60, price: 3.305, reduceOnly },
+        targetLeverage: 100,
+      }, {
+        createAuthenticatedConnector: vi.fn(() => connector),
+        fetchBalanceRaw: vi.fn(),
+        resolveLiveExecutionApiKey: vi.fn(async () => ({ id: 'key-unknown-contract-003a',
+          exchange: 'GATEIO' as const, apiKey: 'local-fake', apiSecret: 'local-fake' })),
+        createLiveOrderAdapter: vi.fn(() => ({ placeLiveOrderWithFees })),
+        enforceLivePretradeGuards,
+        convergeLiveMarginAndLeverageIfNeeded,
+      })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE' });
+      expect(connector.getSymbolTradingRules).toHaveBeenCalledOnce();
+      expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
+      expect(placeLiveOrderWithFees).not.toHaveBeenCalled();
+      expect(connector.disconnect).toHaveBeenCalledOnce();
+    });
+
   it('cancels Gate.io live orders through the canonical exchange boundary', async () => {
     const connector = createConnector();
     const createAuthenticatedConnector = vi.fn(() => connector);

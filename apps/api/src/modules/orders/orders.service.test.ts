@@ -2584,6 +2584,7 @@ describe('getManualOrderContext', () => {
             minAmount: 0.0031,
             minNotional: 100,
             amountPrecision: 0.001,
+            contractSize: 1,
           }),
           fetchMarkPrice: async () => 27_000,
           disconnect: async () => undefined,

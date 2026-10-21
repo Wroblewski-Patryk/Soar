@@ -16,8 +16,9 @@ export const isQuantityOnGrid = (quantity: number, step: number) =>
 
 export const getManualOrderQuantityRules = (
   constraints: QuantityConstraints | null | undefined,
+  marketType: "FUTURES" | "SPOT" | null,
 ): ManualOrderQuantityRules | null => {
-  if (!constraints ||
+  if (!constraints || !marketType ||
       (constraints.amountPrecisionMode !== "TICK_SIZE" &&
        constraints.amountPrecisionMode !== "DECIMAL_PLACES") ||
       typeof constraints.amountStep !== "number" ||
@@ -33,7 +34,8 @@ export const getManualOrderQuantityRules = (
   if (expectedStep == null || !Number.isFinite(expectedStep) || expectedStep <= 0 ||
       Math.abs(constraints.amountStep - expectedStep) > Math.max(1e-12, expectedStep * 1e-12)) return null;
 
-  const contractSize = constraints.contractSize == null ? 1 : constraints.contractSize;
+  const contractSize = marketType === "SPOT" ? 1 : constraints.contractSize;
+  if (typeof contractSize !== "number") return null;
   if (!Number.isFinite(contractSize) || contractSize <= 0) return null;
   return {
     step: constraints.amountStep,

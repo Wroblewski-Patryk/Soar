@@ -23,6 +23,7 @@ export const ORDER_ERROR_CODES = {
   livePretradeExternalPositionOpen: 'LIVE_PRETRADE_EXTERNAL_POSITION_OPEN',
   livePretradeAmountBelowMin: 'LIVE_PRETRADE_AMOUNT_BELOW_MIN',
   livePretradeAmountPrecision: 'LIVE_PRETRADE_AMOUNT_PRECISION',
+  livePretradeContractSizeUnavailable: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE',
   livePretradeNotionalBelowMin: 'LIVE_PRETRADE_NOTIONAL_BELOW_MIN',
   livePretradeNotionalPriceUnavailable: 'LIVE_PRETRADE_NOTIONAL_PRICE_UNAVAILABLE',
   livePretradePaused: 'LIVE_PRETRADE_PAUSED',
@@ -79,6 +80,8 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountBelowMin, 400),
   livePretradeAmountPrecision: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountPrecision, 400),
+  livePretradeContractSizeUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeContractSizeUnavailable, 400),
   livePretradeNotionalBelowMin: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalBelowMin, 400),
   livePretradeNotionalPriceUnavailable: () =>

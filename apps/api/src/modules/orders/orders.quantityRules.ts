@@ -54,6 +54,16 @@ export const resolvePrecisionStep = (
   return null;
 };
 
+export const resolveQuantityContractSize = (
+  contractSize: number | null | undefined,
+  marketType: 'FUTURES' | 'SPOT'
+): number | null => {
+  if (marketType === 'SPOT') return 1;
+  return typeof contractSize === 'number' && Number.isFinite(contractSize) && contractSize > 0
+    ? contractSize
+    : null;
+};
+
 export const normalizeAmountUpByPrecision = (
   value: number, amountPrecision: number | null,
   mode?: SymbolTradingRules['amountPrecisionMode']
@@ -105,6 +115,7 @@ export const normalizeAmountFixed = (
 };
 
 export const computeMinExecutableQuantity = (params: {
+  marketType: 'FUTURES' | 'SPOT';
   minAmount: number | null;
   minNotional: number | null;
   markPrice: number | null;
@@ -114,11 +125,9 @@ export const computeMinExecutableQuantity = (params: {
 }) => {
   const step = resolvePrecisionStep(params.amountPrecision, params.amountPrecisionMode);
   if (params.amountPrecisionMode !== undefined && step == null) return null;
+  const contractSize = resolveQuantityContractSize(params.contractSize, params.marketType);
+  if (contractSize == null) return null;
   const candidates: number[] = [];
-  const contractSize =
-    typeof params.contractSize === 'number' && Number.isFinite(params.contractSize) && params.contractSize > 0
-      ? params.contractSize
-      : 1;
 
   if (typeof params.minAmount === 'number' && Number.isFinite(params.minAmount) && params.minAmount > 0) {
     candidates.push(params.minAmount);
@@ -277,6 +286,11 @@ export const enforceLivePretradeGuards = async (params: {
     symbol: normalizedSymbol,
   });
 
+  const contractSize = resolveQuantityContractSize(rules.contractSize, params.marketType);
+  if (contractSize == null) {
+    throw orderErrors.livePretradeContractSizeUnavailable();
+  }
+
   if (typeof rules.minAmount === 'number' && approxLessThan(quantity, rules.minAmount)) {
     throw orderErrors.livePretradeAmountBelowMin();
   }
@@ -290,10 +304,6 @@ export const enforceLivePretradeGuards = async (params: {
   }
 
   if (typeof rules.minNotional === 'number' && Number.isFinite(rules.minNotional) && rules.minNotional > 0) {
-    const contractSize =
-      typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
-        ? rules.contractSize
-        : 1;
     let priceForNotional: number | null = null;
     if (typeof params.payload.price === 'number' && Number.isFinite(params.payload.price)) {
       priceForNotional = params.payload.price;

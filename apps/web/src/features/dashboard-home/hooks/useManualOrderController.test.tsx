@@ -733,6 +733,7 @@ describe("manual quantity grid parity", () => {
     step: number | null;
     marketType?: "FUTURES" | "SPOT";
     min?: number | null;
+    contractSize?: number | null;
   }) => {
     const spot = params.marketType === "SPOT";
     const symbol = spot ? "ADAUSDT" : "NGUSDT";
@@ -745,7 +746,8 @@ describe("manual quantity grid parity", () => {
       quantityConstraints: {
         minAmount: spot ? 0.25 : 1, minNotional: spot ? 1 : 5.1,
         amountPrecision: params.precision, amountPrecisionMode: params.mode,
-        amountStep: params.step, contractSize: spot ? null : 10,
+        amountStep: params.step,
+        contractSize: params.contractSize === undefined ? (spot ? null : 10) : params.contractSize,
         minExecutableQty: params.min === undefined ? (spot ? 0.25 : 60) : params.min,
       },
       sideAwarePreview: { side: "BUY", requestedQuantity: null,
@@ -833,6 +835,30 @@ describe("manual quantity grid parity", () => {
     await act(async () => { await unknown.result.current.handleSubmitManualOrder(); });
     expect(toast.error).toHaveBeenCalledWith("rules-unavailable");
     expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed for FUTURES without a contract size while SPOT keeps unit sizing", async () => {
+    const futures = await setup({ precision: 1, mode: "TICK_SIZE", step: 1,
+      min: 2, contractSize: null });
+    act(() => futures.result.current.handleManualOrderQuantityChange("60"));
+    expect(futures.result.current.manualOrderQuantityError).toBe("rules-unavailable");
+    expect(futures.result.current.manualOrderSliderMaxQuantity).toBeNull();
+    expect(futures.result.current.manualOrderNotionalEstimate).toBeNull();
+    expect(futures.result.current.manualOrderMarginEstimate).toBeNull();
+    act(() => futures.result.current.handleManualOrderBudgetChange("20"));
+    expect(futures.result.current.manualOrderQuantity).toBe("");
+    await act(async () => { await futures.result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+    futures.unmount();
+
+    const spot = await setup({ precision: 0.25, mode: "TICK_SIZE", step: 0.25,
+      marketType: "SPOT", contractSize: null });
+    act(() => spot.result.current.handleManualOrderQuantityChange("1.25"));
+    expect(spot.result.current.manualOrderNotionalEstimate).toBe(2.5);
+    await act(async () => { await spot.result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+      botId: "spot-bot", quantity: 1.25,
+    }));
   });
 
   it("uses one unit of notional per SPOT quantity and floors a budget to its fractional tick", async () => {

@@ -12,6 +12,7 @@ describe('orders.quantityRules', () => {
   it('derives min executable quantity from min notional and rounds up to precision', () => {
     expect(
       computeMinExecutableQuantity({
+        marketType: 'SPOT',
         minAmount: 0.001,
         minNotional: 10,
         markPrice: 19_500,
@@ -21,6 +22,7 @@ describe('orders.quantityRules', () => {
 
     expect(
       computeMinExecutableQuantity({
+        marketType: 'SPOT',
         minAmount: 0.0001,
         minNotional: 10,
         markPrice: 30_000,
@@ -32,6 +34,7 @@ describe('orders.quantityRules', () => {
   it('uses contract size when deriving executable quantity from notional rules', () => {
     expect(
       computeMinExecutableQuantity({
+        marketType: 'FUTURES',
         minAmount: 1,
         minNotional: 5,
         markPrice: 0.25,
@@ -54,7 +57,7 @@ describe('orders.quantityRules', () => {
     expect(resolvePrecisionStep(5, 'TICK_SIZE')).toBe(5);
     expect(resolvePrecisionStep(1, null)).toBeNull();
     const rules = { minAmount: 1, minNotional: 5.1, markPrice: 0.25,
-      amountPrecision: 1, contractSize: 10 };
+      amountPrecision: 1, contractSize: 10, marketType: 'FUTURES' as const };
     expect(computeMinExecutableQuantity({ ...rules,
       amountPrecisionMode: 'TICK_SIZE' })).toBe(3);
     expect(computeMinExecutableQuantity({ ...rules,
@@ -122,6 +125,34 @@ describe('orders.quantityRules', () => {
     } })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
   });
 
+  it('requires a known positive contract size for FUTURES before LIVE submit', async () => {
+    const fetchMarkPrice = vi.fn(async () => 3.305);
+    for (const [index, contractSize] of [null, 0, -1, NaN, Infinity].entries()) {
+      const connector = {
+        hasOpenPosition: vi.fn(async () => false),
+        getSymbolTradingRules: vi.fn(async () => ({
+          minAmount: 2, minNotional: 5, amountPrecision: 1,
+          amountPrecisionMode: 'TICK_SIZE' as const, contractSize,
+        })),
+        fetchMarkPrice,
+      };
+      await expect(enforceLivePretradeGuards({
+        apiKeyId: 'gate-unknown-contract-003a', exchange: 'GATEIO', marketType: 'FUTURES',
+        connector, payload: { symbol: `NGUNKNOWNCONTRACT${index}`, quantity: 60,
+          price: 3.305, reduceOnly: true },
+      })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE' });
+      expect(fetchMarkPrice).not.toHaveBeenCalled();
+    }
+    expect(computeMinExecutableQuantity({
+      marketType: 'FUTURES', minAmount: 2, minNotional: 5, markPrice: 3.305,
+      amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE', contractSize: null,
+    })).toBeNull();
+    expect(computeMinExecutableQuantity({
+      marketType: 'SPOT', minAmount: 2, minNotional: 5, markPrice: 3.305,
+      amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE', contractSize: null,
+    })).toBe(2);
+  });
+
   it('fails closed when min notional exists but price truth is unavailable', async () => {
     await expect(
       enforceLivePretradeGuards({
@@ -134,7 +165,7 @@ describe('orders.quantityRules', () => {
             minAmount: null,
             minNotional: 10,
             amountPrecision: null,
-            contractSize: null,
+            contractSize: 1,
           }),
           fetchMarkPrice: async () => {
             throw new Error('price unavailable');
