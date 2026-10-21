@@ -212,6 +212,7 @@ describe('SOAR-POSITION-CYCLE-008D Gate.io Futures DCA to SL internal mock LIVE'
         { ...compatibleGateRules, contractSize: null },
         { ...compatibleGateRules, minAmount: 300 },
         { ...compatibleGateRules, minNotional: 300 },
+        { ...compatibleGateRules, minNotional: null },
         { ...compatibleGateRules, amountPrecision: null },
         { ...compatibleGateRules, amountPrecisionMode: null },
       ]) {
@@ -221,6 +222,8 @@ describe('SOAR-POSITION-CYCLE-008D Gate.io Futures DCA to SL internal mock LIVE'
         expect(venue.submits).toHaveLength(1);
         expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
         expect(await prisma.order.count({ where: { userId: user.id } })).toBe(1);
+        expect(await prisma.runtimeExecutionDedupe.count({ where: {
+          botId: bot.id, commandType: 'DCA' } })).toBe(0);
       }
       const automation = createAutomation();
       await tick(automation, prices.firstDca, 120_000);

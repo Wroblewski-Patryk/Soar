@@ -8,11 +8,12 @@ used.
 
 The positive path deliberately supplies **synthetic executable unit-contract
 rules**: `contractSize=1`, `minAmount=1`, `minNotional=5`, and explicit
-`amountPrecisionMode=TICK_SIZE` with step `1`. Before DCA, six invalid rule
-variants (`contractSize=10` or null, `minAmount=300`, `minNotional=300`,
-`amountPrecision=null`, or `amountPrecisionMode=null`) must return
-`DCA_ORDER_RULES_INVALID` while intent, order, and venue-submit counts remain
-at the one ENTRY. These rules do not describe an actual Gate.io market.
+`amountPrecisionMode=TICK_SIZE` with step `1`. Before DCA, seven invalid rule
+variants (`contractSize=10` or null, `minAmount=300`, `minNotional=300` or
+null, `amountPrecision=null`, or `amountPrecisionMode=null`) must return
+`DCA_ORDER_RULES_INVALID` while DCA dedupe remains absent and intent,
+order, and venue-submit counts remain at the one ENTRY. These rules do not
+describe an actual Gate.io market.
 
 The strategy uses 100x leverage, basic SL at 20% ROI, and two loss-side basic
 DCA levels at -30.5% ROI with multiplier 2. The old SL price is
