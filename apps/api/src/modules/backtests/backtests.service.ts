@@ -39,6 +39,8 @@ import {
   type BacktestSupplementalSeries as SupplementalSeries,
   fetchSupplementalSeries,
 } from './backtestDataGateway';
+import { BacktestTimelineSourceError,
+  fetchVerifiedIntrabarTimelineCandles } from './backtestIntrabarTimelineSource';
 import {
   simulateInterleavedPortfolio,
 } from './backtestPortfolioSimulation.service';
@@ -688,21 +690,18 @@ export const getRunTimeline = async (
       : undefined;
   const candlesBySymbol = new Map<string, KlineCandle[]>();
   const supplementalBySymbol = new Map<string, SupplementalSeries>();
-  const timelineCandleFetcher = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED'
-    ? fetchKlinesWithVerifiedBinanceFuturesIntrabar : fetchKlines;
+  const requireVerifiedIntrabar = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED';
+  const storedDigests = asRecord(seed.intrabarSourceDigestBySymbol);
   for (const replaySymbol of replaySymbols) {
-    candlesBySymbol.set(
-      replaySymbol,
-      await timelineCandleFetcher(
-        exchange,
-        replaySymbol,
-        run.timeframe,
-        marketType,
-        maxCandles + indicatorWarmupCandles,
-        timelineEndTimeMs,
-        timelineStartTimeMs,
-      ),
-    );
+    const sourceCandles = requireVerifiedIntrabar
+      ? await fetchVerifiedIntrabarTimelineCandles({ exchange, symbol: replaySymbol,
+        timeframe: run.timeframe, marketType,
+        maxCandles: maxCandles + indicatorWarmupCandles,
+        endTimeMs: timelineEndTimeMs, startTimeMs: timelineStartTimeMs,
+        expectedDigest: storedDigests?.[replaySymbol] })
+      : await fetchKlines(exchange, replaySymbol, run.timeframe, marketType,
+        maxCandles + indicatorWarmupCandles, timelineEndTimeMs, timelineStartTimeMs);
+    candlesBySymbol.set(replaySymbol, sourceCandles);
     supplementalBySymbol.set(
       replaySymbol,
       await fetchSupplementalSeries(
@@ -719,11 +718,11 @@ export const getRunTimeline = async (
   const visibleStartBySymbol = new Map<string, number>();
   for (const replaySymbol of replaySymbols) {
     const symbolCandles = candlesBySymbol.get(replaySymbol) ?? [];
-    if (seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' &&
+    if (requireVerifiedIntrabar &&
         symbolCandles.length <= indicatorWarmupCandles)
-      throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
+      throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
     visibleStartBySymbol.set(replaySymbol, Math.max(
-      seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' ? indicatorWarmupCandles : 0,
+      requireVerifiedIntrabar ? indicatorWarmupCandles : 0,
       symbolCandles.length - maxCandles,
     ));
   }

@@ -1,5 +1,5 @@
 import { Exchange, PositionSide } from '@prisma/client';
-import { createHash } from 'node:crypto';
+import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 import { BacktestFillModelConfig } from './backtestFillModel';
 import {
   BacktestKlineCandle,
@@ -512,13 +512,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           if (requireVerifiedIntrabar) {
             if (candles.length <= indicatorWarmupCandles)
               throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
-            if (candles.some((candle) => !candle.intrabarTicks ||
-                !candle.intrabarProvenance ||
-                candle.intrabarProvenance.source !== 'BINANCE_USDM_AGGTRADES')) {
-              throw new Error('BACKTEST_INTRABAR_SOURCE_UNVERIFIED');
-            }
-            const digest = createHash('sha256').update(candles.map((candle) =>
-              `${candle.openTime}:${candle.intrabarProvenance!.sha256}`).join('|')).digest('hex');
+            const digest = digestVerifiedBinanceFuturesIntrabar(candles, symbol);
             const priorDigests = seed.intrabarSourceDigestBySymbol &&
               typeof seed.intrabarSourceDigestBySymbol === 'object'
               ? seed.intrabarSourceDigestBySymbol as Record<string, string> : {};

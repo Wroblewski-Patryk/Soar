@@ -12,8 +12,10 @@ describe('createBacktestRunJob', () => {
       if (!changedOnRetry) throw new Error('BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE');
       return [{ openTime: 1_700_000_000_000, closeTime: 1_700_000_059_999,
         open: 1, high: 1, low: 1, close: 1, volume: 1,
-        intrabarTicks: [{ eventTime: 1_700_000_000_001, price: 1 }],
+        intrabarTicks: [{ eventTime: 1_700_000_000_001, price: 1 },
+          { eventTime: 1_700_000_000_002, price: 1 }],
         intrabarProvenance: { source: 'BINANCE_USDM_AGGTRADES',
+          endpoint: '/fapi/v1/aggTrades', symbol: 'BTCUSDT',
           sha256: 'a'.repeat(64) } }];
     });
     const createBacktestTrades = vi.fn();

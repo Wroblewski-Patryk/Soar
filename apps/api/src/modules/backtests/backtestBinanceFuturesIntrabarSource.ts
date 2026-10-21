@@ -44,6 +44,21 @@ const publicFetchPage: FetchPage = (query) => {
 };
 
 const fail = (reason: string): never => { throw new Error(`BACKTEST_INTRABAR_SOURCE_${reason}`); };
+export const digestVerifiedBinanceFuturesIntrabar = (
+  candles: BacktestKlineCandle[], symbol: string,
+): string => {
+  if (candles.length === 0 || candles.some((candle) => {
+    const provenance = candle.intrabarProvenance;
+    return !Array.isArray(candle.intrabarTicks) || candle.intrabarTicks.length < 2 ||
+      !provenance || provenance.source !== 'BINANCE_USDM_AGGTRADES' ||
+      provenance.endpoint !== '/fapi/v1/aggTrades' || provenance.symbol !== symbol ||
+      !/^[0-9a-f]{64}$/.test(provenance.sha256);
+  })) fail('UNVERIFIED');
+  // Match the digest persisted by existing strict runs: open time plus the
+  // per-candle canonical aggregate-trade hash, in candle order.
+  return createHash('sha256').update(candles.map((candle) =>
+    `${candle.openTime}:${candle.intrabarProvenance!.sha256}`).join('|')).digest('hex');
+};
 const finitePositive = (value: unknown) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : NaN;

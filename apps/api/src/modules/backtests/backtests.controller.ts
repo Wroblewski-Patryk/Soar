@@ -10,6 +10,7 @@ import {
   ListBacktestTradesQuerySchema,
 } from './backtests.types';
 import * as backtestsService from './backtests.service';
+import { BacktestTimelineSourceError } from './backtestIntrabarTimelineSource';
 
 export const listBacktestRuns = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -104,6 +105,8 @@ export const getBacktestRunTimeline = async (req: Request, res: Response) => {
     if (!timeline) return sendError(res, 404, 'Not found');
     return res.json(timeline);
   } catch (error) {
+    if (error instanceof BacktestTimelineSourceError)
+      return sendError(res, 409, error.message, { code: error.code });
     return sendValidationError(res, error);
   }
 };
