@@ -32,7 +32,7 @@ zmieniamy progów po obejrzeniu danych w tej próbie.
 
 Granica: agregaty dokumentują kolejność cen, lecz nie dowodzą rzeczywistych
 filli użytkownika ani zachowania PAPER/LIVE lub produkcji. Pełne 011A pozostaje
-`REVIEW`, 011 `OPEN`, wydanie `NO-GO`.
+`REVIEW`, 011 `REVIEW`, wydanie `NO-GO`.
 
 ## Wynik ustalonej próby
 
@@ -69,7 +69,7 @@ Najbliższy mały wycinek odbioru to jedna dodatkowa, wcześniej zadeklarowana
 100-minutowa próba na sąsiednim oknie `ALICEUSDT` 04:07–05:47 UTC tego samego
 dnia, z identycznymi progami i kryteriami. Jeśli również nie ma pary na jednej
 świecy, wynik pozostaje negatywny; nie należy stroić progów pod obejrzaną
-taśmę ani podnosić pełnego 011A/011 z `REVIEW`/`OPEN`.
+taśmę ani podnosić pełnych 011A i 011 ponad `REVIEW`.
 
 Powtórzenie lokalne: na własnej PostgreSQL `soar_011a_archived_process_test`
 po 84 migracjach i osobnym Redisie użyć `WORKER_MODE=split`,
@@ -111,4 +111,4 @@ Opt-in `RUN_BACKTEST_ADJACENT_MARKET_SEQUENCE_PROBE=1` uruchamia test
 **prawidłowe wykrycie wyniku negatywnego** na ustalonej taśmie, nie zamknięcie
 bramki P0. Do dodatniego odbioru potrzebne będzie inne okno zadeklarowane
 przed jego oceną; nie dobierać progów pod obejrzane agregaty. Pełne 011A
-`REVIEW`, 011 `OPEN`, wydanie `NO-GO`.
+`REVIEW`, 011 `REVIEW`, wydanie `NO-GO`.

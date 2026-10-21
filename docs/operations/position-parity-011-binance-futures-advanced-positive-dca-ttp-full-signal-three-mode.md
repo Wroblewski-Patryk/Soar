@@ -158,3 +158,27 @@ rzeczywiste Binance i produkcja pozostają bez dowodu. Oddzielna rozbieżność
 zapisanego `MOMENTUM(period=1)` i efektywnego okresu 2 ma ticket
 `SOAR-STRATEGY-MOMENTUM-PERIOD-001` w tablicy; ten wariant jej nie naprawia.
 Pełne 011 i 011A `REVIEW`, `POSITION-CYCLE` `OPEN`, release `NO-GO`.
+
+## Twarde przerwanie po trwałym DCA — ograniczony odbiór lokalny
+
+[Plan przed próbą](position-parity-011-runtime-hard-stop-recovery-plan.md)
+zapisano w `06768e36e403104f7843e8f00ab792503baf1f2e`. Na dokładnym
+kodowym SHA `192d32796d7ec8e46c174e52f08223cda98bf1e4` niezależny
+statyczny review i runtime QA dały ograniczony `PASS` dla testowego
+przerwania po potwierdzonym trwałym DCA. Na własnej świeżej `_test` i
+Redisie QA zweryfikował stan po DCA, zakończył własny PID `139192` przez
+`SIGKILL`, a nowy PID `205712` odczytał stan i dokończył cykl bez drugiego
+DCA. Źródłowe agregaty zachowały kolejność: DCA `a=167049972`, uzbrojenie
+TTP `a=167049975`, zamknięcie TTP `a=167049977`. PAPER i Binance FUTURES
+internal mock LIVE miały po jednym OPEN/DCA/CLOSE; mock LIVE miał trzy
+unikalne intenty i fille. Net PnL każdej pozycji wyniósł
+`-0,02231404958610045` USDT. BACKTEST zachował sześć trades, jeden raport
+net `+0,01386` USDT i przeszedł lokalny retry bez duplikatu.
+
+Proces `resume` uruchomił ręcznie orkiestrator testu: ten wynik nie dowodzi
+automatycznego startu przez supervisor. Statyczny reviewer wskazał brak
+osobnych asercji ponownego odczytu strategii i redostarczenia ticku DCA.
+BACKTEST nie przeszedł tu pełnej produkcyjnej ścieżki kolejki. Reguły i
+fille mock LIVE pozostają syntetyczne; rzeczywiste Binance i produkcja są
+bez dowodu. Pełne 011 i 011A pozostają `REVIEW`, `POSITION-CYCLE` `OPEN`,
+wydanie `NO-GO`.

@@ -39,7 +39,7 @@ run nie potwierdzi obu źródłowych ticków, wynik pozostaje negatywny i selekt
 nie szuka następnego okna po ujawnieniu wyniku integracji.
 
 Granice pozostają: agregat to cena, nie fill użytkownika; brak dowodu PAPER/LIVE,
-produkcji lub pełnego 011A. Pełne 011A `REVIEW`, 011 `OPEN`, release `NO-GO`.
+produkcji lub pełnego 011A. Pełne 011A `REVIEW`, 011 `REVIEW`, release `NO-GO`.
 
 ## Wynik lokalny na uprzednio zapisanym planie
 
@@ -77,7 +77,7 @@ Dla trade z parą tej samej świecy trwałe ENTRY i DCA wyniosły po około
 `-0,16687` USDT, zgodny z sumą pięciu trades; powtórny odczyt timeline
 odtworzył te same zdarzenia. Te kwoty są modelem BACKTEST, nie rzeczywistymi
 fillami Binance ani dowodem zyskowności. Wynik nie podnosi pełnego 011A ponad
-`REVIEW`, 011 pozostaje `OPEN`, a wydanie `NO-GO`.
+`REVIEW`, 011 pozostaje `REVIEW`, a wydanie `NO-GO`.
 
 Powtórzenie: w `apps/api` z własną PostgreSQL `soar_011a_archived_process_test`
 po 84 migracjach, osobnym Redisie i unikalnym prefiksem kolejki
