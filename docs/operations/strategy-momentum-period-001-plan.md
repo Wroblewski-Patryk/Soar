@@ -167,3 +167,20 @@ User/Strategy/BacktestRun/Bot `0/0/0/0`, Redis `0` kluczy. To jest dowód
 lokalny; nie wykonano spisu ani migracji produkcyjnej, deploy ani real LIVE.
 Status ticketu pozostaje REVIEW/NO-GO do niezależnego odbioru i osobnego
 okna operacyjnego dla spisu oraz migracji produkcyjnej.
+
+## Uzupełnienie po niezależnym FAIL na `2aae38d0fc9fa8e67cf5ad2e2f560af1c817e117`
+
+Web błędnie traktuje każdy `operand.kind='constant'` jako wybrany. Gdy jego
+`value` nie jest skończoną liczbą, parser evaluatora odrzuca operand jawny i
+może wybrać serię z pola `value`. Dla EMA z
+`value:{indicator:'MOMENTUM',params:{period:1}}` i
+`operand:{kind:'constant',value:'invalid'}` API słusznie odrzuca zapis,
+ale formularz nie pokazuje własnej walidacji.
+
+Poprawka Web ma odwzorować wybór operandu parsera: poprawna stała lub seria
+jawna mają pierwszeństwo, niepoprawny operand jawny dopuszcza fallback na
+serię z `value`, a porównanie z wybraną band jest niewykonywalne. Dla reguł
+zakresowych wybierana jest wyłącznie poprawna band. Test obejmie LONG i SHORT,
+niepoprawną jawną stałą, poprawną stałą i jawny operand serii oraz wynik
+formularza. Kontrole: celowane Vitest Web i typecheck, a potem selektywny
+commit/push bez zmiany API, produkcji lub obcych plików.
