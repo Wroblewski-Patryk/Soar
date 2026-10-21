@@ -510,6 +510,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
           }
           if (requireVerifiedIntrabar) {
+            if (candles.length <= indicatorWarmupCandles)
+              throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
             if (candles.some((candle) => !candle.intrabarTicks ||
                 !candle.intrabarProvenance ||
                 candle.intrabarProvenance.source !== 'BINANCE_USDM_AGGTRADES')) {
@@ -602,7 +604,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           analysisStartIndexBySymbol: new Map(
             loadedSymbols.map((symbol) => {
               const symbolCandles = candlesBySymbol.get(symbol) ?? [];
-              const startIndex = Math.max(1, symbolCandles.length - maxCandlesPerSymbol);
+              const startIndex = Math.max(1, requireVerifiedIntrabar ? indicatorWarmupCandles : 0,
+                symbolCandles.length - maxCandlesPerSymbol);
               return [symbol, startIndex];
             }),
           ),

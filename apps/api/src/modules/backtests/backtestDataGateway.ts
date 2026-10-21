@@ -374,13 +374,16 @@ export const fetchKlinesWithVerifiedBinanceFuturesIntrabar = async (
 ): Promise<BacktestKlineCandle[]> => {
   if (exchange !== 'BINANCE' || marketType !== 'FUTURES')
     throw new Error('BACKTEST_INTRABAR_SOURCE_UNSUPPORTED_MARKET');
-  if (normalizeTimeframe(timeframe) !== '1m' || !Number.isInteger(maxCandles) ||
-      maxCandles < 1 || maxCandles > 120 ||
+  const windowCandleCount = Number.isSafeInteger(startTimeMs) && Number.isSafeInteger(endTimeMs)
+    ? ((endTimeMs as number) - (startTimeMs as number)) / 60_000 : NaN;
+  if (normalizeTimeframe(timeframe) !== '1m' || !Number.isSafeInteger(maxCandles) ||
+      maxCandles < 1 || !Number.isSafeInteger(windowCandleCount) ||
+      windowCandleCount < 1 || windowCandleCount > 120 ||
+      windowCandleCount > maxCandles ||
       !Number.isSafeInteger(startTimeMs) || !Number.isSafeInteger(endTimeMs) ||
       (endTimeMs as number) <= (startTimeMs as number) ||
       (startTimeMs as number) % 60_000 !== 0 ||
       (endTimeMs as number) % 60_000 !== 0 ||
-      (endTimeMs as number) - (startTimeMs as number) !== maxCandles * 60_000 ||
       (endTimeMs as number) - (startTimeMs as number) > 2 * 60 * 60 * 1000) {
     throw new Error('BACKTEST_INTRABAR_SOURCE_EXPLICIT_BOUNDED_WINDOW_REQUIRED');
   }
@@ -389,8 +392,8 @@ export const fetchKlinesWithVerifiedBinanceFuturesIntrabar = async (
       (endTimeMs as number) - 1 >= nowMs - 1000)
     throw new Error('BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE');
   const candles = await fetchKlines(exchange, symbol, timeframe, marketType,
-    maxCandles, endTimeMs, startTimeMs);
-  if (candles.length !== maxCandles || candles[0].openTime !== startTimeMs ||
+    windowCandleCount, endTimeMs, startTimeMs);
+  if (candles.length !== windowCandleCount || candles[0].openTime !== startTimeMs ||
       candles[candles.length - 1].closeTime !== (endTimeMs as number) - 1 ||
       !hasContinuousCandleIntervals(candles, timeframe))
     throw new Error('BACKTEST_INTRABAR_SOURCE_CANDLE_WINDOW_INCOMPLETE');

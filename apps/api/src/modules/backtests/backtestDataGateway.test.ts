@@ -73,10 +73,37 @@ describe('backtestDataGateway', () => {
     });
   });
 
+  it.each([100, 60])('reads all %i explicit 1m candles when the adaptive cap is 100 plus warmup',
+    async (windowCandles) => {
+      const start = Math.floor((Date.now() - (windowCandles + 3) * ONE_MINUTE_MS) /
+        ONE_MINUTE_MS) * ONE_MINUTE_MS;
+      vi.mocked(fetchExchangePublicRecentCandles).mockImplementation(async ({ since, limit }) =>
+        Array.from({ length: limit ?? 0 }, (_, index) =>
+          buildPublicCandle((since as number) + index * ONE_MINUTE_MS)));
+      vi.mocked(fetchVerifiedBinanceFuturesIntrabar).mockImplementation(async ({ candles }) =>
+        candles as any);
+      const result = await fetchKlinesWithVerifiedBinanceFuturesIntrabar('BINANCE',
+        'BTCUSDT', '1m', 'FUTURES', 102, start + windowCandles * ONE_MINUTE_MS, start);
+      expect(result).toHaveLength(windowCandles);
+      expect(fetchExchangePublicRecentCandles).toHaveBeenCalledWith(expect.objectContaining({
+        limit: windowCandles, since: start,
+      }));
+    });
+
+  it('rejects a source range over 120 candles even with a larger adaptive cap', async () => {
+    const start = Math.floor((Date.now() - 125 * ONE_MINUTE_MS) / ONE_MINUTE_MS) * ONE_MINUTE_MS;
+    await expect(fetchKlinesWithVerifiedBinanceFuturesIntrabar('BINANCE',
+      'BTCUSDT', '1m', 'FUTURES', 200, start + 121 * ONE_MINUTE_MS, start))
+      .rejects.toThrow('EXPLICIT_BOUNDED_WINDOW_REQUIRED');
+    expect(fetchExchangePublicRecentCandles).not.toHaveBeenCalled();
+  });
+
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     resetBacktestDataGatewayCacheForTests();
+    setDbCandleDelegateForTests({ findMany: async () => [],
+      createMany: async () => ({ count: 0 }) });
   });
 
   afterEach(() => {

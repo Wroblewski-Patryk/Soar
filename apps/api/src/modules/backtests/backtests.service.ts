@@ -719,7 +719,13 @@ export const getRunTimeline = async (
   const visibleStartBySymbol = new Map<string, number>();
   for (const replaySymbol of replaySymbols) {
     const symbolCandles = candlesBySymbol.get(replaySymbol) ?? [];
-    visibleStartBySymbol.set(replaySymbol, Math.max(0, symbolCandles.length - maxCandles));
+    if (seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' &&
+        symbolCandles.length <= indicatorWarmupCandles)
+      throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
+    visibleStartBySymbol.set(replaySymbol, Math.max(
+      seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' ? indicatorWarmupCandles : 0,
+      symbolCandles.length - maxCandles,
+    ));
   }
   const fullCandles = candlesBySymbol.get(symbol) ?? [];
   const visibleStart = visibleStartBySymbol.get(symbol) ?? 0;
