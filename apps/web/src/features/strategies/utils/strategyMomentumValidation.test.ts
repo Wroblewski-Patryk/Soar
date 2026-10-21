@@ -39,4 +39,30 @@ describe('strategy MOMENTUM form validation', () => {
     ], indicatorsShort: [] } as unknown as OpenConditions;
     expect(hasInvalidMomentumPeriod(open)).toBe(false);
   });
+
+  it.each(['indicatorsLong', 'indicatorsShort'] as const)(
+    'uses value series after an invalid explicit constant in %s', (side) => {
+      const rule = { name: 'EMA', params: { period: 2 }, condition: '>',
+        value: { indicator: 'MOMENTUM', params: { period: 1 } },
+        operand: { kind: 'constant', value: 'invalid' } };
+      const open = { direction: 'both', indicatorsLong: [], indicatorsShort: [],
+        [side]: [rule] } as unknown as OpenConditions;
+      expect(hasInvalidMomentumPeriod(open)).toBe(true);
+      rule.operand.value = '0';
+      expect(hasInvalidMomentumPeriod(open)).toBe(false);
+    },
+  );
+
+  it('follows explicit series and rejects a comparator band like the evaluator', () => {
+    const rule: Record<string, unknown> = { name: 'EMA', params: { period: 2 }, condition: '>',
+      value: { indicator: 'MOMENTUM', params: { period: 1 } },
+      operand: { kind: 'series', indicator: 'EMA', params: { period: 2 } } };
+    const open = { direction: 'long', indicatorsLong: [rule],
+      indicatorsShort: [] } as unknown as OpenConditions;
+    expect(hasInvalidMomentumPeriod(open)).toBe(false);
+    rule.operand = { kind: 'series', indicator: 'MOMENTUM', params: { period: 1 } };
+    expect(hasInvalidMomentumPeriod(open)).toBe(true);
+    rule.operand = { kind: 'band', low: 0, high: 1 };
+    expect(hasInvalidMomentumPeriod(open)).toBe(false);
+  });
 });

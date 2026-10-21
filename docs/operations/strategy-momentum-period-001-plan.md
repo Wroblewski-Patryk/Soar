@@ -184,3 +184,13 @@ zakresowych wybierana jest wyłącznie poprawna band. Test obejmie LONG i SHORT,
 niepoprawną jawną stałą, poprawną stałą i jawny operand serii oraz wynik
 formularza. Kontrole: celowane Vitest Web i typecheck, a potem selektywny
 commit/push bez zmiany API, produkcji lub obcych plików.
+
+### Wynik poprawki Web
+
+Selektor formularza odtwarza pierwszeństwo parsera dla poprawnej stałej,
+serii i band oraz fallback na `value`, gdy jawny operand jest niepoprawny.
+Celowane testy obejmują LONG i SHORT oraz widoczny komunikat formularza
+z blokadą submit; wynik `24/24` w dwóch plikach Web. Web typecheck,
+`quality:guardrails` i `architecture:graph:drift:strict` (`939/939`)
+przeszły. Nie uruchomiono produkcji ani testów dotykających współdzielonej
+bazy. Status ticketu pozostaje REVIEW/NO-GO do niezależnego odbioru exact SHA.

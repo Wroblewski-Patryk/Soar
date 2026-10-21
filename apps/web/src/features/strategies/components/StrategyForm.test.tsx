@@ -322,4 +322,33 @@ describe('StrategyForm', () => {
     expect(screen.getByRole('tab', { name: 'Entry conditions' }))
       .toHaveAttribute('aria-selected', 'true');
   });
+
+  it.each(['indicatorsLong', 'indicatorsShort'] as const)(
+    'shows the MOMENTUM error for a fallback %s value series', async (side) => {
+      window.localStorage.setItem('cryptosparrow-locale', 'en');
+      window.history.pushState({}, '', '/dashboard/strategies/legacy/edit');
+      const rule = { group: 'TREND', name: 'EMA', params: { period: 2 },
+        condition: '>', value: { indicator: 'MOMENTUM', params: { period: 1 } },
+        operand: { kind: 'constant', value: 'invalid' }, weight: 1 };
+      const initial: StrategyFormState = {
+        name: 'Fallback momentum', description: '', interval: '5m', leverage: 1, walletRisk: 1,
+        openConditions: { direction: 'both', indicatorsLong: [], indicatorsShort: [],
+          [side]: [rule] } as unknown as StrategyFormState['openConditions'],
+        closeConditions: { mode: 'basic', tp: 3, sl: 2, ttp: [], tsl: [] },
+        additional: { dcaEnabled: false, dcaMode: 'basic', dcaTimes: 0,
+          dcaMultiplier: 1, dcaLevels: [], maxPositions: 1, maxOrders: 1,
+          positionLifetime: 1, positionUnit: 'h', orderLifetime: 1,
+          orderUnit: 'h', marginMode: 'CROSSED' },
+      };
+      const onSubmit = vi.fn().mockResolvedValue(undefined);
+      const { container } = await renderWithI18n(onSubmit, initial);
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      await act(async () => { await Promise.resolve(); });
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('form-validation-summary'))
+        .toHaveTextContent('MOMENTUM period must be a whole number from 2 to 255');
+      expect(screen.getByRole('tab', { name: 'Entry conditions' }))
+        .toHaveAttribute('aria-selected', 'true');
+    },
+  );
 });
