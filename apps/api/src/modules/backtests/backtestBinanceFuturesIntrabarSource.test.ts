@@ -49,6 +49,26 @@ describe('Binance USD-M verified intrabar source', () => {
     expect(result[0].intrabarTicks).toHaveLength(1001);
   });
 
+  it('allows additional pages only for verified archives while REST remains bounded', async () => {
+    const many = Array.from({ length: 20_001 }, (_, index) => ({
+      a: index + 10, p: '1', q: '1', f: index + 20, l: index + 20,
+      T: start + index + 1, m: false,
+    }));
+    const flat = { ...candle, high: 1, close: 1, volume: many.length };
+    const fetchPage = async (query: { fromId?: number }) => {
+      const offset = query.fromId === undefined ? 0 : query.fromId - 10;
+      return many.slice(offset, offset + 1000);
+    };
+    await expect(fetchVerifiedBinanceFuturesIntrabar({ symbol: 'BTCUSDT',
+      candles: [flat], nowMs, fetchPage })).rejects.toThrow('BACKTEST_INTRABAR_SOURCE_LIMIT');
+    const archived = await fetchVerifiedBinanceFuturesIntrabar({ symbol: 'BTCUSDT',
+      candles: [flat], nowMs, fetchPage, verifiedArchive: true });
+    expect(archived[0].intrabarTicks).toHaveLength(many.length);
+    await expect(fetchVerifiedBinanceFuturesIntrabar({ symbol: 'BTCUSDT',
+      candles: [flat], nowMs, verifiedArchive: true }))
+      .rejects.toThrow('BACKTEST_INTRABAR_SOURCE_UNVERIFIED');
+  });
+
   it('accepts skipped raw trade IDs when aggregate coverage and kline agree', async () => {
     const withRawGap = rows.map((row) => row.a === 12 ? { ...row, f: 24, l: 24 } :
       row.a === 13 ? { ...row, f: 25, l: 25 } : row);

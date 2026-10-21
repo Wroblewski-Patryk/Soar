@@ -8,9 +8,9 @@ import { fetchKlines, type BacktestKlineCandle,
   type BacktestMarketType } from './backtestDataGateway';
 import { fenceBacktestArchiveWrite } from './backtestRunOwnership.repository';
 
-const MAX_ZIP_BYTES = 8 * 1024 * 1024;
+const MAX_ZIP_BYTES = 16 * 1024 * 1024;
 const MAX_CSV_BYTES = 64 * 1024 * 1024;
-const MAX_ROWS = 20_000;
+const MAX_ROWS = 80_000;
 const DAY_MS = 86_400_000;
 const BOUNDARY_MS = 1_000;
 type Row = { a: number; p: string; q: string; f: number; l: number; T: number; m: boolean };
@@ -154,7 +154,13 @@ const parseRows = (parts: Array<{ day: string; csv: Uint8Array }>,
   for (const { day, csv } of parts) {
     const dayStart = Date.parse(`${day}T00:00:00.000Z`);
     const text = new TextDecoder('utf-8', { fatal: true }).decode(csv);
-    for (const [index, line] of text.split(/\r?\n/).entries()) {
+    let index = 0;
+    for (let offset = 0; offset < text.length; index += 1) {
+      const newline = text.indexOf('\n', offset);
+      const lineEnd = newline < 0 ? text.length : newline;
+      const rawLine = text.slice(offset, lineEnd);
+      const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
+      offset = newline < 0 ? text.length : newline + 1;
       if (!line) continue;
       if (index === 0 && line ===
           'agg_trade_id,price,quantity,first_trade_id,last_trade_id,transact_time,is_buyer_maker')

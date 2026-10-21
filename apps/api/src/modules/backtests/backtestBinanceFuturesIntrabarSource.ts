@@ -6,6 +6,7 @@ import type { BacktestKlineCandle } from './backtestDataGateway';
 // compresses contiguous same-price/same-side market trades within 100 ms.
 const MAX_AGE_MS = 48 * 60 * 60 * 1000;
 const MAX_PAGES = 20;
+const MAX_ARCHIVE_PAGES = 80;
 const PAGE_SIZE = 1000;
 const MAX_CANDLES = 120;
 const MAX_WINDOW_MS = 2 * 60 * 60 * 1000;
@@ -118,9 +119,11 @@ export const fetchVerifiedBinanceFuturesIntrabar = async (input: {
     }
   }
 
+  if (input.verifiedArchive && !input.fetchPage) fail('UNVERIFIED');
   const fetchPage = input.fetchPage ?? publicFetchPage;
   const rows: AggregateTrade[] = [];
-  for (let page = 0; page < MAX_PAGES; page += 1) {
+  const maxPages = input.verifiedArchive ? MAX_ARCHIVE_PAGES : MAX_PAGES;
+  for (let page = 0; page < maxPages; page += 1) {
     const first = page === 0;
     const query: Query = first
       ? { symbol, startTime: start - BOUNDARY_MS,
@@ -139,23 +142,30 @@ export const fetchVerifiedBinanceFuturesIntrabar = async (input: {
       if (first && (row.T < query.startTime! || row.T > query.endTime!)) fail('BAD_PAGE');
       if (!first && row.a < query.fromId!) fail('BAD_PAGE');
       rows.push(row);
-      if (rows.length > MAX_PAGES * PAGE_SIZE) fail('LIMIT');
+      if (rows.length > maxPages * PAGE_SIZE) fail('LIMIT');
     }
     const completeShortPage = parsed.length < PAGE_SIZE &&
       (!first || query.endTime! >= end + BOUNDARY_MS);
     if (completeShortPage || rows[rows.length - 1].T > end) break;
-    if (page === MAX_PAGES - 1) fail('LIMIT');
+    if (page === maxPages - 1) fail('LIMIT');
   }
 
   return candles.map((candle) => {
     const inCandle = rows.filter((row) => row.T >= candle.openTime && row.T <= candle.closeTime);
     if (inCandle.length < 2) fail('INCOMPLETE');
-    const prices = inCandle.map((row) => finitePositive(row.p));
-    const volume = inCandle.reduce((sum, row) => sum + finitePositive(row.q), 0);
-    if (!closeEnough(prices[0], candle.open) ||
-        !closeEnough(prices[prices.length - 1], candle.close) ||
-        !closeEnough(Math.max(...prices), candle.high) ||
-        !closeEnough(Math.min(...prices), candle.low) ||
+    let high = -Infinity;
+    let low = Infinity;
+    let volume = 0;
+    for (const row of inCandle) {
+      const price = finitePositive(row.p);
+      high = Math.max(high, price);
+      low = Math.min(low, price);
+      volume += finitePositive(row.q);
+    }
+    if (!closeEnough(finitePositive(inCandle[0].p), candle.open) ||
+        !closeEnough(finitePositive(inCandle[inCandle.length - 1].p), candle.close) ||
+        !closeEnough(high, candle.high) ||
+        !closeEnough(low, candle.low) ||
         !closeEnough(volume, candle.volume)) fail('OHLC_MISMATCH');
     const canonical = inCandle.map((row) =>
       [row.a, row.p, row.q, row.f, row.l, row.T, row.m ? 1 : 0].join(',')).join('\n');

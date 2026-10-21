@@ -1,4 +1,7 @@
 import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { Prisma } from '@prisma/client';
 import { strToU8, zipSync } from 'fflate';
 import { describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
@@ -189,7 +192,7 @@ describe('two adjacent UTC daily archives', () => {
         ? { ...candle, high: 101 } : candle),
       fetcher: midnightArchiveFetcher().fetcher }))
       .rejects.toThrow('BACKTEST_INTRABAR_SOURCE_OHLC_MISMATCH');
-    const huge = 'x'.repeat(4 * 1024 * 1024 + 1);
+    const huge = 'x'.repeat(8 * 1024 * 1024 + 1);
     await expect(fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
       candles: midnightCandles,
       fetcher: midnightArchiveFetcher({ csvOverride: {
@@ -208,12 +211,12 @@ describe('two adjacent UTC daily archives', () => {
   it('applies the selected-row limit to both archives together', async () => {
     const manyRows = [
       midnightRows[0],
-      ...Array.from({ length: 20_001 }, (_, index) => {
+      ...Array.from({ length: 80_001 }, (_, index) => {
         const id = 101 + index;
         return [id, 100, 1, 200 + id - 100, 200 + id - 100,
           index < 10_001 ? midnightStart + 1 : midnightStart + 120_001, false];
       }),
-      [20_102, 100, 1, 20_202, 20_202, midnightStart + 240_500, false],
+      [80_102, 100, 1, 80_202, 80_202, midnightStart + 240_500, false],
     ];
     await expect(fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
       candles: midnightCandles,
@@ -278,6 +281,70 @@ publicIt('verifies an actual archived ALICEUSDT window older than 48 hours', asy
   expect(source.verified[0].intrabarTicks.length).toBeGreaterThanOrEqual(2);
   expect(source.verified[1].intrabarTicks.length).toBeGreaterThanOrEqual(2);
 }, 60_000);
+
+const capacityIt = process.env.RUN_011A_ARCHIVE_CAPACITY_PROOF === '1' ? it : it.skip;
+capacityIt('replays source-consistent windows from larger raw v3 archives and rejects mismatched 120-minute windows', async () => {
+  const root = process.env.RUN_011A_ARCHIVE_DIR;
+  if (!root) throw new Error('RUN_011A_ARCHIVE_DIR_REQUIRED');
+  const startTime = Date.parse('2026-10-18T02:00:00.000Z');
+  const endTime = startTime + 120 * 60_000;
+  for (const [symbol, from, to, selected] of [
+    ['BTCUSDT', 18, 108, 41_022], ['ETHUSDT', 74, 120, 19_383],
+  ] as const) {
+    const basename = `${symbol}-aggTrades-2026-10-18.zip`;
+    const [zipBytes, checksumBytes] = await Promise.all([
+      readFile(join(root, basename)),
+      readFile(join(root, `${basename}.CHECKSUM`)),
+    ]);
+    const response = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}` +
+      `&interval=1m&startTime=${startTime}&endTime=${endTime - 1}&limit=120`,
+    { signal: AbortSignal.timeout(15_000) });
+    expect(response.ok).toBe(true);
+    const klines = await response.json() as Array<Array<string | number>>;
+    expect(klines).toHaveLength(120);
+    const allCandles = klines.map((row) => ({
+        openTime: Number(row[0]), closeTime: Number(row[6]),
+        open: Number(row[1]), high: Number(row[2]), low: Number(row[3]),
+        close: Number(row[4]), volume: Number(row[5]),
+      }));
+    const fetcher = (async (url: string) => new Response(
+        url.endsWith('.CHECKSUM') ? checksumBytes : zipBytes,
+        { status: 200 },
+      )) as typeof fetch;
+    await expect(fetchVerifiedDailyUsdMArchive({ symbol,
+      candles: allCandles, fetcher })).rejects.toThrow('BACKTEST_INTRABAR_SOURCE_OHLC_MISMATCH');
+    const source = await fetchVerifiedDailyUsdMArchive({ symbol,
+      candles: allCandles.slice(from, to), fetcher,
+    });
+    expect(source.snapshot.version).toBe(3);
+    expect(source.snapshot.rows).toHaveLength(selected + 2);
+    expect(source.verified).toHaveLength(to - from);
+    expect(source.rawArchives).toHaveLength(1);
+    expect(source.rawArchives[0].zipBytes.byteLength).toBeGreaterThan(8 * 1024 * 1024);
+    const dbMode = process.env.RUN_011A_CAPACITY_DB_PROOF;
+    if (dbMode) {
+      if (!['seed', 'verify'].includes(dbMode)) throw new Error('INVALID_CAPACITY_DB_MODE');
+      const url = new URL(process.env.DATABASE_URL ?? '');
+      if (!['127.0.0.1', 'localhost'].includes(url.hostname) ||
+          !url.port || url.port === '5432' ||
+          !/^\/soar_011a_[a-z_]+_test$/.test(url.pathname))
+        throw new Error('OWN_ISOLATED_011A_DATABASE_REQUIRED');
+      const runId = symbol === 'BTCUSDT' ? 'soar011a-v3-btc' : 'soar011a-v3-eth';
+      if (dbMode === 'seed') {
+        await prisma.backtestIntrabarArchive.update({
+          where: { runId_symbol: { runId, symbol } },
+          data: { payload: source.snapshot as unknown as Prisma.InputJsonValue,
+            payloadSha256: createHash('sha256').update(stable(source.snapshot)).digest('hex') },
+        });
+      }
+      const persisted = await readVerifiedRunArchive(runId, symbol,
+        source.snapshot.startTimeMs, source.snapshot.endTimeMs);
+      expect(persisted).toHaveLength(to - from);
+      expect(persisted?.every((value) =>
+        value.intrabarProvenance.archiveProof === 'PERSISTED_CHECKSUM_REVERIFIED')).toBe(true);
+    }
+  }
+}, 120_000);
 
 publicIt('covers a 100-minute archived window for the backtest warmup contract', async () => {
   const historicalStart = Date.parse('2026-10-18T02:27:00.000Z');
