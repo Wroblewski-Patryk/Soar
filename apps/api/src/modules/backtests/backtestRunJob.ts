@@ -175,7 +175,9 @@ export type BacktestRunJobDeps = {
   ) => Promise<BacktestKlineCandle[]>;
   fetchKlinesWithVerifiedBinanceFuturesIntrabar?: BacktestRunJobDeps['fetchKlines'];
   fetchVerifiedArchivedIntrabarForRun?: (
-    runId: string, ...args: Parameters<BacktestRunJobDeps['fetchKlines']>
+    runId: string, exchange: Exchange, symbol: string, timeframe: string,
+    marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
+    startTimeMs?: number, expectedDigest?: string,
   ) => Promise<BacktestKlineCandle[]>;
   fetchSupplementalSeries: (
     exchange: Exchange,
@@ -506,7 +508,12 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           if (archivedWindow) {
             if (!deps.fetchVerifiedArchivedIntrabarForRun)
               throw new Error('BACKTEST_INTRABAR_ARCHIVE_UNAVAILABLE');
-            candles = await deps.fetchVerifiedArchivedIntrabarForRun(runId, ...fetchArgs);
+            const priorDigest = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? (seed.intrabarSourceDigestBySymbol as Record<string, unknown>)[symbol]
+              : undefined;
+            candles = await deps.fetchVerifiedArchivedIntrabarForRun(runId, ...fetchArgs,
+              typeof priorDigest === 'string' ? priorDigest : undefined);
           } else {
             const candleFetcher = requireVerifiedIntrabar
               ? deps.fetchKlinesWithVerifiedBinanceFuturesIntrabar : deps.fetchKlines;

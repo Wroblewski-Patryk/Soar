@@ -224,7 +224,7 @@ export const saveVerifiedRunArchive = async (runId: string, snapshot: Snapshot) 
 export const fetchVerifiedArchivedIntrabarForRun = async (
   runId: string, exchange: Exchange, symbol: string, timeframe: string,
   marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
-  startTimeMs?: number,
+  startTimeMs?: number, expectedDigest?: string,
 ) => {
   if (exchange !== Exchange.BINANCE || marketType !== 'FUTURES' ||
       timeframe !== '1m' || typeof startTimeMs !== 'number' ||
@@ -234,6 +234,7 @@ export const fetchVerifiedArchivedIntrabarForRun = async (
   exactDay(startTimeMs, endTimeMs);
   const persisted = await readVerifiedRunArchive(runId, symbol, startTimeMs, endTimeMs);
   if (persisted) return persisted;
+  if (expectedDigest) fail('SNAPSHOT_MISSING_ON_RETRY');
   const expectedCount = (endTimeMs - startTimeMs) / 60_000;
   const candles = await fetchKlines(exchange, symbol, timeframe, marketType,
     expectedCount, endTimeMs, startTimeMs);
