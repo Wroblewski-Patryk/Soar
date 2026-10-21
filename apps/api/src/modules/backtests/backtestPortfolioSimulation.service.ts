@@ -21,8 +21,10 @@ import {
   buildReplayPositionManagementInput,
   closeReasonToEventType,
   parseStrategyRiskConfig,
+  replayProtectionAfterConfirmedDca,
   resolveReplayDcaProbePrice,
   shouldBlockCloseByPendingDca,
+  verifyReplayIntrabarTicks,
 } from './backtestReplayCore';
 import { entryContribution, dcaContribution, type ReplayContributionDraft } from './backtestContributionDraft';
 import {
@@ -414,6 +416,7 @@ export const simulateInterleavedPortfolio = (input: {
 
     const position = open;
     const riskConfig = position.riskConfig;
+    const priorBestPrice = position.bestPrice;
     if (position.side === 'LONG') position.bestPrice = Math.max(position.bestPrice, current.high);
     else position.bestPrice = Math.min(position.bestPrice, current.low);
 
@@ -431,6 +434,7 @@ export const simulateInterleavedPortfolio = (input: {
       executedDcaLevelIndices: position.executedDcaLevelIndices,
     };
 
+    const orderedTicks = verifyReplayIntrabarTicks(current);
     const dcaProbeInput: PositionManagementInput = {
       ...buildReplayPositionManagementInput({
         side: position.side,
@@ -441,6 +445,7 @@ export const simulateInterleavedPortfolio = (input: {
           leverage: effectiveLeverage,
           riskConfig,
           executedDcaLevelIndices: position.executedDcaLevelIndices,
+          orderedTicks,
         }),
         entryPrice: position.entryPrice,
         leverage: effectiveLeverage,
@@ -476,6 +481,14 @@ export const simulateInterleavedPortfolio = (input: {
     }
     const lockTrailingByPendingDca = hasPendingDcaLevels &&
       (!dcaFundsExhausted || riskConfig.dcaSizingBasis === 'usdt_contribution_v1');
+    const dcaFilledThisCandle = dcaProbeResult.dcaExecuted && !dcaFundsExhausted;
+    if (orderedTicks && dcaFilledThisCandle) {
+      const fillIndex = orderedTicks.findIndex((tick) => Math.abs(tick.price - dcaFillPrice) <= 1e-9);
+      if (fillIndex < 0) throw new Error('BACKTEST_DCA_FILL_TICK_MISSING');
+      position.bestPrice = orderedTicks.slice(0, fillIndex + 1).reduce((best, tick) =>
+        position.side === 'LONG' ? Math.max(best, tick.price) : Math.min(best, tick.price),
+      priorBestPrice);
+    }
 
     if (dcaProbeResult.dcaExecuted) {
       if (addMargin > cashBalance && riskConfig.dcaSizingBasis !== 'usdt_contribution_v1') {
@@ -496,7 +509,8 @@ export const simulateInterleavedPortfolio = (input: {
         position.quantity = dcaProbeResult.nextState.quantity;
         position.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
         if (riskConfig.dcaSizingBasis === 'usdt_contribution_v1') {
-          const rebased = rebasePositionManagementProtection(baseState,
+          const rebased = rebasePositionManagementProtection({ ...baseState,
+            trailingAnchorPrice: position.bestPrice },
             position.entryPrice, position.side, effectiveLeverage);
           position.trailingLossLimit = rebased.trailingLossLimitPercent;
           position.trailingTakeProfitHigh = rebased.trailingTakeProfitHighPercent;
@@ -509,7 +523,8 @@ export const simulateInterleavedPortfolio = (input: {
           symbol,
           'DCA',
           position.side as PositionSide,
-          new Date(current.openTime),
+          new Date(orderedTicks?.find((tick) => Math.abs(tick.price - dcaFillPrice) <= 1e-9)
+            ?.eventTime ?? current.openTime),
           dcaFillPrice,
           null,
           index,
@@ -532,7 +547,7 @@ export const simulateInterleavedPortfolio = (input: {
       dca: undefined,
       dcaFundsExhausted,
     } satisfies PositionManagementInput;
-    let managementResult = evaluatePositionManagement(managementInput, {
+    const managementState = {
       averageEntryPrice: position.entryPrice,
       quantity: position.quantity,
       currentAdds: position.dcaCount,
@@ -544,7 +559,18 @@ export const simulateInterleavedPortfolio = (input: {
       trailingTakeProfitActiveLevelIndex: position.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: position.lastDcaPrice,
       executedDcaLevelIndices: position.executedDcaLevelIndices,
-    });
+    };
+    const orderedProtection = orderedTicks && dcaFilledThisCandle
+      ? replayProtectionAfterConfirmedDca({ ticks: orderedTicks, fillPrice: dcaFillPrice,
+          state: managementState, riskConfig, dcaFundsExhausted,
+          lockTrailingByPendingDca,
+          buildManagementInput: (price) => buildReplayPositionManagementInput({
+            side: position.side, currentPrice: price, entryPrice: position.entryPrice,
+            leverage: effectiveLeverage, riskConfig,
+          }) })
+      : null;
+    let managementResult = orderedProtection?.result ??
+      evaluatePositionManagement(managementInput, managementState);
 
     position.trailingLossLimit = managementResult.nextState.trailingLossLimitPercent;
     position.trailingLossActiveLevelIndex = managementResult.nextState.trailingLossActiveLevelIndex;
@@ -555,7 +581,7 @@ export const simulateInterleavedPortfolio = (input: {
 
     if (
       managementResult.shouldClose &&
-      shouldBlockCloseByPendingDca({
+      !orderedProtection && shouldBlockCloseByPendingDca({
         lockTrailingByPendingDca,
         closeReason: managementResult.closeReason,
         riskConfig,
@@ -574,7 +600,8 @@ export const simulateInterleavedPortfolio = (input: {
       };
     }
 
-    const exitMarkPrice = current.close;
+    const exitMarkPrice = orderedProtection?.closeTick?.price ?? current.close;
+    const exitTime = orderedProtection?.closeTick?.eventTime ?? current.closeTime;
 
     const adverseMove =
       position.side === 'LONG'
@@ -628,7 +655,7 @@ export const simulateInterleavedPortfolio = (input: {
       exitPrice,
       quantity: position.quantity,
       openedAt: position.openedAt,
-      closedAt: new Date(current.closeTime),
+      closedAt: new Date(exitTime),
       pnl,
       fee: settlement.fees,
       exitReason: closeType === 'TP' || closeType === 'SL' ||
@@ -641,7 +668,7 @@ export const simulateInterleavedPortfolio = (input: {
       symbol,
       closeType,
       position.side as PositionSide,
-      new Date(current.closeTime),
+      new Date(exitTime),
       exitPrice,
       pnl,
       index,

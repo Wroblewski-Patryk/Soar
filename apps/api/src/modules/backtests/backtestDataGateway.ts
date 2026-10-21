@@ -18,6 +18,9 @@ export type BacktestKlineCandle = {
   low: number;
   close: number;
   volume: number;
+  // Present only when a source supplies a verified chronological price path.
+  // Ordinary exchange OHLC klines cannot establish high/low order.
+  intrabarTicks?: Array<{ eventTime: number; price: number }>;
 };
 
 export type BacktestFundingRatePoint = {

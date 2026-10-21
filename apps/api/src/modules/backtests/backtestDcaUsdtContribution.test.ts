@@ -408,4 +408,54 @@ describe('USDT contribution DCA in historical replay', () => {
     expect(charged.trades[0].entryPrice * charged.trades[0].quantity).toBeCloseTo(9, 3);
     expect(charged.trades[0].fee).toBeGreaterThan(free.trades[0].fee);
   });
+
+  it('replays confirmed positive DCA before a later crossed TTP tick in both engines', () => {
+    const config = {
+      open: { direction: 'long', noMatchAction: 'EXIT',
+        indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0.5,
+          params: { period: 1 } }], indicatorsShort: [] },
+      close: { mode: 'advanced', ttp: [{ percent: 20, arm: 10 }], tsl: [] },
+      additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
+        dcaSizingBasis: 'usdt_contribution_v1',
+        dcaLevels: [{ percent: 25, multiplier: 1 }] },
+    };
+    const closePrices = [0.2, 1, 1, 0.99, 1.24, 1.13, 1.13];
+    const orderedCandles = closePrices.map((price, index) => {
+      const openTime = 1_710_000_000_000 + index * 60_000;
+      const closeTime = openTime + 59_999;
+      return { openTime, closeTime, open: index === 5 ? 1.25 : price,
+        high: index === 5 ? 1.25 : price, low: price, close: price,
+        volume: 1_000, intrabarTicks: index === 5 ? [
+          { eventTime: openTime + 20_000, price: 1.25 },
+          { eventTime: closeTime, price: 1.13 },
+        ] : undefined };
+    });
+    const run = (withTicks: boolean) => {
+      const tape = orderedCandles.map((candle) => ({ ...candle,
+        intrabarTicks: withTicks ? candle.intrabarTicks : undefined }));
+      return [
+        simulateTradesForSymbolReplay({ symbol: 'BTCUSDT', candles: tape,
+          marketType: 'FUTURES', leverage: 1, marginMode: 'ISOLATED',
+          strategyConfig: config, positionSizing: { mode: 'fixed', fixedQuantity: 100,
+            referenceBalance: 1_000 }, fillModelConfig: { feeRate: 0.0004, slippageRate: 0 } }),
+        simulateInterleavedPortfolio({ symbols: ['BTCUSDT'],
+          candlesBySymbol: new Map([['BTCUSDT', tape]]), marketType: 'FUTURES',
+          leverage: 1, marginMode: 'ISOLATED', strategyConfig: config,
+          walletRiskPercent: 10, initialBalance: 1_000,
+          fillModelConfig: { feeRate: 0.0004, slippageRate: 0 } }).perSymbol.BTCUSDT,
+      ];
+    };
+    for (const result of run(true)) {
+      expect(result.events.filter((event) => event.type === 'DCA').map((event) =>
+        [event.candleIndex, event.price])).toEqual([[5, 1.25]]);
+      expect(result.trades).toHaveLength(1);
+      expect(result.trades[0].exitReason).toBe('TTP');
+      expect(result.trades[0].closedAt.getTime()).toBe(orderedCandles[5].closeTime);
+      expect(result.trades[0].exitPrice).toBe(1.13);
+    }
+    for (const result of run(false)) {
+      expect(result.eventCounts.DCA).toBe(1);
+      expect(result.trades[0].closedAt.getTime()).toBe(orderedCandles[6].closeTime);
+    }
+  });
 });
