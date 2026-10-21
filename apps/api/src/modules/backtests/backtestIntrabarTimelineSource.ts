@@ -4,7 +4,8 @@ import { fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   type BacktestKlineCandle, type BacktestMarketType } from './backtestDataGateway';
 
 export class BacktestTimelineSourceError extends Error {
-  constructor(readonly code: 'SOURCE_DIGEST_MISSING' | 'SOURCE_UNAVAILABLE' | 'SOURCE_CHANGED') {
+  constructor(readonly code: 'RUN_NOT_COMPLETED' | 'SOURCE_DIGEST_MISSING' |
+    'SOURCE_UNAVAILABLE' | 'SOURCE_CHANGED') {
     super('Verified intrabar timeline unavailable');
     this.name = 'BacktestTimelineSourceError';
   }

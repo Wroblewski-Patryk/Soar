@@ -634,6 +634,8 @@ export const getRunTimeline = async (
   if (!run) return null;
 
   const seed = ((run.seedConfig ?? {}) as Record<string, unknown>) ?? {};
+  if (seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' && run.status !== 'COMPLETED')
+    throw new BacktestTimelineSourceError('RUN_NOT_COMPLETED');
   const runSymbols = Array.isArray(seed.symbols)
     ? normalizeSymbols(seed.symbols as string[])
     : [];
