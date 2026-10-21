@@ -246,11 +246,11 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       open: Number(row[1]), high: Number(row[2]), low: Number(row[3]),
       close: Number(row[4]), volume: Number(row[5]),
     }));
-    const { snapshot, verified } = await fetchVerifiedDailyUsdMArchive({ symbol,
+    const { snapshot, rawArchives, verified } = await fetchVerifiedDailyUsdMArchive({ symbol,
       candles: klines });
-    expect(snapshot.version).toBe(1);
-    if (snapshot.version !== 1) throw new Error('Expected one archive');
-    expect(snapshot.zipSha256).toBe(zipSha);
+    expect(snapshot.version).toBe(3);
+    expect(snapshot.archives).toHaveLength(1);
+    expect(snapshot.archives[0].zipSha256).toBe(zipSha);
     expect(verified).toHaveLength(100);
     expect(verified[5].intrabarTicks.find((tick) => tick.sequenceId === dcaId))
       .toMatchObject({ eventTime: Date.parse('2026-10-18T02:46:47.639Z'), price: 0.1454 });
@@ -369,7 +369,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
           contextSnapshot: { strategy: { id: strategyId, walletRisk: 10,
             config: persisted.config } } },
       } });
-      await saveVerifiedRunArchive(backtest.id, snapshot);
+      await saveVerifiedRunArchive(backtest.id, snapshot, rawArchives);
       vi.stubGlobal('fetch', async () => { throw new Error('network after archive forbidden'); });
       const job = createClaimedBacktestRunJob({
         findBacktestRunById: (id) => prisma.backtestRun.findUnique({ where: { id } }),

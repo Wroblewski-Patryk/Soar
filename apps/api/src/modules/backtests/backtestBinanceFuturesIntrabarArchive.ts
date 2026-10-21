@@ -13,6 +13,9 @@ const MAX_ROWS = 20_000;
 const DAY_MS = 86_400_000;
 const BOUNDARY_MS = 1_000;
 type Row = { a: number; p: string; q: string; f: number; l: number; T: number; m: boolean };
+type ArchiveMetadata = { day: string; archiveUrl: string; zipSha256: string };
+type RawArchiveMetadata = ArchiveMetadata & { checksumSha256: string };
+type RawArchive = { day: string; zipBytes: Uint8Array; checksumBytes: Uint8Array };
 type SnapshotV1 = {
   version: 1;
   symbol: string;
@@ -29,11 +32,20 @@ type SnapshotV2 = {
   symbol: string;
   startTimeMs: number;
   endTimeMs: number;
-  archives: Array<{ day: string; archiveUrl: string; zipSha256: string }>;
+  archives: ArchiveMetadata[];
   candles: BacktestKlineCandle[];
   rows: Row[];
 };
-type Snapshot = SnapshotV1 | SnapshotV2;
+type SnapshotV3 = {
+  version: 3;
+  symbol: string;
+  startTimeMs: number;
+  endTimeMs: number;
+  archives: RawArchiveMetadata[];
+  candles: BacktestKlineCandle[];
+  rows: Row[];
+};
+type Snapshot = SnapshotV1 | SnapshotV2 | SnapshotV3;
 
 const fail = (reason: string): never => {
   throw new Error(`BACKTEST_INTRABAR_ARCHIVE_${reason}`);
@@ -187,86 +199,157 @@ const pageFromRows = (rows: Row[]) => async (query: {
 }) => rows.filter((row) => query.fromId !== undefined ? row.a >= query.fromId :
   row.T >= (query.startTime ?? 0) && row.T <= (query.endTime ?? 0)).slice(0, query.limit);
 
-const replay = async (snapshot: Snapshot): Promise<VerifiedIntrabarCandle[]> =>
-  fetchVerifiedBinanceFuturesIntrabar({ symbol: snapshot.symbol,
+const replay = async (snapshot: Snapshot,
+  archiveProof: NonNullable<VerifiedIntrabarCandle['intrabarProvenance']['archiveProof']>) =>
+  (await fetchVerifiedBinanceFuturesIntrabar({ symbol: snapshot.symbol,
     candles: snapshot.candles, verifiedArchive: true,
-    fetchPage: pageFromRows(snapshot.rows) });
+    fetchPage: pageFromRows(snapshot.rows) })).map((candle) => ({
+    ...candle, intrabarProvenance: { ...candle.intrabarProvenance, archiveProof },
+  }));
+
+const checksumSha = (checksumBytes: Uint8Array, basename: string) => {
+  if (checksumBytes.length < 1 || checksumBytes.length > 256) fail('LIMIT');
+  const checksumText = (() => {
+    try { return new TextDecoder('utf-8', { fatal: true })
+      .decode(checksumBytes).trim(); }
+    catch { return fail('CHECKSUM_INVALID'); }
+  })();
+  const match = checksumText.match(/^([0-9a-f]{64})\s+([^\s]+)$/i);
+  if (!match || match[2] !== basename) fail('CHECKSUM_INVALID');
+  return match?.[1].toLowerCase() ?? fail('CHECKSUM_INVALID');
+};
+
+const rowsFromRawArchives = (input: {
+  symbol: string; startTimeMs: number; endTimeMs: number;
+  archives: RawArchiveMetadata[]; rawArchives: RawArchive[];
+}) => {
+  const days = archiveDays(input.startTimeMs, input.endTimeMs);
+  if (input.archives.length !== days.length ||
+      input.rawArchives.length !== days.length) fail('RAW_ARCHIVE_INCOMPLETE');
+  const parts: Array<{ day: string; csv: Uint8Array }> = [];
+  let zipBytes = 0;
+  let csvBytes = 0;
+  for (const [index, day] of days.entries()) {
+    const metadata = input.archives[index];
+    const raw = input.rawArchives[index];
+    const { basename, url } = archiveUrls(input.symbol, day);
+    if (!raw || !metadata || raw.day !== day || metadata.day !== day ||
+        metadata.archiveUrl !== url ||
+        !/^[0-9a-f]{64}$/.test(metadata.zipSha256) ||
+        !/^[0-9a-f]{64}$/.test(metadata.checksumSha256))
+      fail('RAW_ARCHIVE_INCOMPLETE');
+    zipBytes += raw.zipBytes.length;
+    if (zipBytes > MAX_ZIP_BYTES || raw.zipBytes.length < 1) fail('LIMIT');
+    if (sha256(raw.checksumBytes) !== metadata.checksumSha256)
+      fail('CHECKSUM_MISMATCH');
+    const expectedSha = checksumSha(raw.checksumBytes, basename);
+    const actualSha = sha256(raw.zipBytes);
+    if (actualSha !== expectedSha || actualSha !== metadata.zipSha256)
+      fail('CHECKSUM_MISMATCH');
+    const csvName = basename.replace(/\.zip$/, '.csv');
+    assertZipShape(raw.zipBytes, csvName, MAX_CSV_BYTES - csvBytes);
+    const csv = (() => {
+      try { return unzipSync(raw.zipBytes)[csvName] ?? fail('BAD_ZIP'); }
+      catch { return fail('BAD_ZIP'); }
+    })();
+    csvBytes += csv.length;
+    if (csvBytes > MAX_CSV_BYTES) fail('LIMIT');
+    parts.push({ day, csv });
+  }
+  return parseRows(parts, input.startTimeMs, input.endTimeMs - 1);
+};
 
 export const fetchVerifiedDailyUsdMArchive = async (input: {
   symbol: string;
   candles: BacktestKlineCandle[];
   fetcher?: typeof fetch;
-}): Promise<{ snapshot: Snapshot; verified: VerifiedIntrabarCandle[] }> => {
+}): Promise<{ snapshot: SnapshotV3; rawArchives: RawArchive[];
+  verified: VerifiedIntrabarCandle[] }> => {
   const { candles, symbol } = input;
   if (candles.length < 1 || candles.length > 120) fail('INVALID_CANDLES');
   const startTimeMs = candles[0].openTime;
   const endTimeMs = candles[candles.length - 1].closeTime + 1;
   const days = archiveDays(startTimeMs, endTimeMs);
   const fetcher = input.fetcher ?? fetch;
-  const archives: SnapshotV2['archives'] = [];
-  const parts: Array<{ day: string; csv: Uint8Array }> = [];
+  const archives: RawArchiveMetadata[] = [];
+  const rawArchives: RawArchive[] = [];
   let zipBytes = 0;
-  let csvBytes = 0;
   for (const day of days) {
     const { basename, url } = archiveUrls(symbol, day);
-    const checksumText = new TextDecoder().decode(await readBounded(
-      `${url}.CHECKSUM`, 256, fetcher)).trim();
-    const match = checksumText.match(/^([0-9a-f]{64})\s+([^\s]+)$/i);
-    if (!match || match[2] !== basename) fail('CHECKSUM_INVALID');
+    const checksumBytes = await readBounded(`${url}.CHECKSUM`, 256, fetcher);
+    const expectedSha = checksumSha(checksumBytes, basename);
     const zip = await readBounded(url, MAX_ZIP_BYTES - zipBytes, fetcher);
     zipBytes += zip.length;
     const zipSha256 = sha256(zip);
-    if (zipSha256 !== match?.[1].toLowerCase()) fail('CHECKSUM_MISMATCH');
-    const csvName = basename.replace(/\.zip$/, '.csv');
-    assertZipShape(zip, csvName, MAX_CSV_BYTES - csvBytes);
-    const csv = unzipSync(zip)[csvName];
-    if (!csv) fail('BAD_ZIP');
-    csvBytes += csv.length;
-    if (csvBytes > MAX_CSV_BYTES) fail('LIMIT');
-    archives.push({ day, archiveUrl: url, zipSha256 });
-    parts.push({ day, csv });
+    if (zipSha256 !== expectedSha) fail('CHECKSUM_MISMATCH');
+    archives.push({ day, archiveUrl: url, zipSha256,
+      checksumSha256: sha256(checksumBytes) });
+    rawArchives.push({ day, zipBytes: zip, checksumBytes });
   }
-  const rows = parseRows(parts, startTimeMs, endTimeMs - 1);
-  const snapshot: Snapshot = days.length === 1
-    ? { version: 1, symbol, day: days[0], startTimeMs, endTimeMs,
-        archiveUrl: archives[0].archiveUrl, zipSha256: archives[0].zipSha256,
-        candles, rows }
-    : { version: 2, symbol, startTimeMs, endTimeMs, archives, candles, rows };
-  return { snapshot, verified: await replay(snapshot) };
+  const rows = rowsFromRawArchives({ symbol, startTimeMs, endTimeMs,
+    archives, rawArchives });
+  const snapshot: SnapshotV3 = { version: 3, symbol, startTimeMs,
+    endTimeMs, archives, candles, rows };
+  return { snapshot, rawArchives,
+    verified: await replay(snapshot, 'CHECKSUM_VERIFIED') };
 };
 
 export const readVerifiedRunArchive = async (runId: string, symbol: string,
   startTimeMs: number, endTimeMs: number) => {
   const record = await prisma.backtestIntrabarArchive.findUnique({
     where: { runId_symbol: { runId, symbol } },
+    include: { rawArchives: { orderBy: { day: 'asc' } } },
   });
   if (!record) return null;
   const snapshot = record.payload as unknown as Snapshot;
-  if (!snapshot || ![1, 2].includes(snapshot.version) || snapshot.symbol !== symbol ||
+  if (!snapshot || ![1, 2, 3].includes(snapshot.version) || snapshot.symbol !== symbol ||
       snapshot.startTimeMs !== startTimeMs || snapshot.endTimeMs !== endTimeMs ||
       !Array.isArray(snapshot.candles) || !Array.isArray(snapshot.rows) ||
       snapshot.candles.length !== (endTimeMs - startTimeMs) / 60_000 ||
       snapshotHash(snapshot) !== record.payloadSha256) fail('SNAPSHOT_CHANGED');
   const days = archiveDays(startTimeMs, endTimeMs);
   if (snapshot.version === 1) {
-    if (days.length !== 1 || snapshot.day !== days[0] ||
+    if (record.rawArchives.length !== 0 || days.length !== 1 || snapshot.day !== days[0] ||
         snapshot.archiveUrl !== archiveUrls(symbol, snapshot.day).url ||
         !/^[0-9a-f]{64}$/.test(snapshot.zipSha256)) fail('SNAPSHOT_CHANGED');
   } else if (snapshot.version === 2) {
-    if (days.length !== 2 || !Array.isArray(snapshot.archives) ||
+    if (record.rawArchives.length !== 0 || days.length !== 2 ||
+        !Array.isArray(snapshot.archives) ||
         snapshot.archives.length !== 2 || snapshot.archives.some((archive, index) =>
           archive.day !== days[index] ||
           archive.archiveUrl !== archiveUrls(symbol, days[index]).url ||
           !/^[0-9a-f]{64}$/.test(archive.zipSha256))) fail('SNAPSHOT_CHANGED');
+  } else if (snapshot.version === 3) {
+    if (!Array.isArray(snapshot.archives)) fail('SNAPSHOT_CHANGED');
+    const rows = rowsFromRawArchives({ symbol, startTimeMs, endTimeMs,
+      archives: snapshot.archives,
+      rawArchives: record.rawArchives.map((raw) => ({
+        day: raw.day, zipBytes: raw.zipBytes, checksumBytes: raw.checksumBytes,
+      })) });
+    if (canonical(rows) !== canonical(snapshot.rows)) fail('SNAPSHOT_CHANGED');
+    return replay(snapshot, 'PERSISTED_CHECKSUM_REVERIFIED');
   } else fail('SNAPSHOT_CHANGED');
-  return replay(snapshot);
+  return replay(snapshot, 'LEGACY_SNAPSHOT');
 };
 
-export const saveVerifiedRunArchive = async (runId: string, snapshot: Snapshot) => {
+export const saveVerifiedRunArchive = async (runId: string, snapshot: SnapshotV3,
+  rawArchives: RawArchive[]) => {
+  const rows = rowsFromRawArchives({ symbol: snapshot.symbol,
+    startTimeMs: snapshot.startTimeMs, endTimeMs: snapshot.endTimeMs,
+    archives: snapshot.archives, rawArchives });
+  if (canonical(rows) !== canonical(snapshot.rows)) fail('SNAPSHOT_CHANGED');
+  await replay(snapshot, 'CHECKSUM_VERIFIED');
   const payloadSha256 = snapshotHash(snapshot);
   try {
-    await prisma.backtestIntrabarArchive.create({ data: { runId, symbol: snapshot.symbol,
-      payload: snapshot as unknown as Prisma.InputJsonValue, payloadSha256 } });
+    await prisma.$transaction(async (tx) => {
+      await tx.backtestIntrabarArchive.create({ data: { runId, symbol: snapshot.symbol,
+        payload: snapshot as unknown as Prisma.InputJsonValue, payloadSha256 } });
+      await tx.backtestIntrabarArchiveRaw.createMany({ data: rawArchives.map((raw) => ({
+        runId, symbol: snapshot.symbol, day: raw.day,
+        zipBytes: new Uint8Array(raw.zipBytes),
+        checksumBytes: new Uint8Array(raw.checksumBytes),
+      })) });
+    }, { maxWait: 10_000, timeout: 30_000 });
   } catch (error) {
     if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002')
       throw error;
@@ -302,6 +385,6 @@ export const fetchVerifiedArchivedIntrabarForRun = async (
       candles[candles.length - 1]?.closeTime !== endTimeMs - 1 ||
       candles.some((candle, index) => index > 0 &&
         candles[index - 1].closeTime + 1 !== candle.openTime)) fail('CANDLE_WINDOW_INCOMPLETE');
-  const { snapshot } = await fetchVerifiedDailyUsdMArchive({ symbol, candles });
-  return (await saveVerifiedRunArchive(runId, snapshot)) ?? fail('SNAPSHOT_MISSING');
+  const { snapshot, rawArchives } = await fetchVerifiedDailyUsdMArchive({ symbol, candles });
+  return (await saveVerifiedRunArchive(runId, snapshot, rawArchives)) ?? fail('SNAPSHOT_MISSING');
 };

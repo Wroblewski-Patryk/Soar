@@ -1243,8 +1243,22 @@ model BacktestIntrabarArchive {
   createdAt DateTime @default(now())
 
   run BacktestRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  rawArchives BacktestIntrabarArchiveRaw[]
 
   @@id([runId, symbol])
+}
+
+model BacktestIntrabarArchiveRaw {
+  runId String
+  symbol String
+  day String
+  zipBytes Bytes
+  checksumBytes Bytes
+  createdAt DateTime @default(now())
+
+  archive BacktestIntrabarArchive @relation(fields: [runId, symbol], references: [runId, symbol], onDelete: Cascade)
+
+  @@id([runId, symbol, day])
 }
 
 model BacktestTrade {

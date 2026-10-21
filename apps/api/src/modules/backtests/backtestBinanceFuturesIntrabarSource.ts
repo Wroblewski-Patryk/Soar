@@ -24,6 +24,7 @@ export type VerifiedIntrabarProvenance = {
   firstTradeId: number;
   lastTradeId: number;
   sha256: string;
+  archiveProof?: 'CHECKSUM_VERIFIED' | 'PERSISTED_CHECKSUM_REVERIFIED' | 'LEGACY_SNAPSHOT';
 };
 
 export type VerifiedIntrabarCandle = BacktestKlineCandle & {

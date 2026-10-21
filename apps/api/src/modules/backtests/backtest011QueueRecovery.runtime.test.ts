@@ -149,7 +149,9 @@ const runCase = async (variant: Variant) => {
     expect(held.executionLeaseExpiresAt?.getTime()).toBeGreaterThan(Date.now());
     expect((held.seedConfig as Record<string, any>).intrabarSourceDigestBySymbol.ALICEUSDT)
       .toBe(digest);
-    expect((archived.payload as Record<string, unknown>).zipSha256).toBe(zipSha);
+    expect((archived.payload as Record<string, unknown>).version).toBe(3);
+    expect((archived.payload as { archives: Array<{ zipSha256: string }> })
+      .archives[0].zipSha256).toBe(zipSha);
     expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
     expect(await prisma.backtestContribution.count({ where: { backtestRunId: runId } })).toBe(0);
     expect(await redis.lRange(processingKey, 0, -1)).toEqual([runId]);
@@ -161,7 +163,9 @@ const runCase = async (variant: Variant) => {
       await prisma.backtestIntrabarArchive.update({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
         data: { payload: { ...(archived.payload as Record<string, unknown>),
-          zipSha256: '0'.repeat(64) } as Prisma.InputJsonValue },
+          archives: [{ ...((archived.payload as { archives: Record<string, unknown>[] })
+            .archives[0]), zipSha256: '0'.repeat(64) }],
+        } as Prisma.InputJsonValue },
       });
     } else if (variant === 'missing') {
       await prisma.backtestIntrabarArchive.delete({

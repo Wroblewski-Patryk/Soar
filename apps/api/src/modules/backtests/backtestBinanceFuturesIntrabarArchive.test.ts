@@ -1,8 +1,20 @@
 import { createHash } from 'node:crypto';
 import { strToU8, zipSync } from 'fflate';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { prisma } from '../../prisma/client';
 import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
-import { fetchVerifiedDailyUsdMArchive } from './backtestBinanceFuturesIntrabarArchive';
+import { fetchVerifiedDailyUsdMArchive,
+  readVerifiedRunArchive } from './backtestBinanceFuturesIntrabarArchive';
+
+const stable = (value: unknown): string => {
+  if (Array.isArray(value)) return `[${value.map(stable).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record).sort().map((key) =>
+      `${JSON.stringify(key)}:${stable(record[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+};
 
 const day = '2020-01-01';
 const start = Date.parse(`${day}T00:01:00.000Z`);
@@ -90,9 +102,9 @@ describe('Binance USD-M daily aggTrades archive', () => {
       fetcher: archiveFetcher(rows) });
     const second = await fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT', candles,
       fetcher: archiveFetcher(rows) });
-    expect(first.snapshot.version).toBe(1);
-    if (first.snapshot.version !== 1) throw new Error('Expected one archive');
-    expect(first.snapshot.zipSha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(first.snapshot.version).toBe(3);
+    expect(first.snapshot.archives).toHaveLength(1);
+    expect(first.snapshot.archives[0].zipSha256).toMatch(/^[0-9a-f]{64}$/);
     expect(first.snapshot.rows.map((row) => row.a)).toEqual([100, 101, 102, 103, 104, 105]);
     expect(first.verified[0].intrabarProvenance.source)
       .toBe('BINANCE_USDM_AGGTRADES_ARCHIVE');
@@ -129,8 +141,8 @@ describe('two adjacent UTC daily archives', () => {
       candles: midnightCandles, fetcher: fixture.fetcher });
     const second = await fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
       candles: midnightCandles, fetcher: midnightArchiveFetcher().fetcher });
-    expect(first.snapshot.version).toBe(2);
-    if (first.snapshot.version !== 2) throw new Error('Expected two archives');
+    expect(first.snapshot.version).toBe(3);
+    expect(first.snapshot.archives).toHaveLength(2);
     expect(first.snapshot.archives.map((archive) => archive.day))
       .toEqual(['2020-01-01', '2020-01-02']);
     expect(first.snapshot.archives.map((archive) => archive.zipSha256))
@@ -210,6 +222,38 @@ describe('two adjacent UTC daily archives', () => {
   });
 });
 
+it('keeps v1 and v2 snapshots readable with an explicit legacy proof label', async () => {
+  const one = await fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT', candles,
+    fetcher: archiveFetcher(rows) });
+  const two = await fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
+    candles: midnightCandles, fetcher: midnightArchiveFetcher().fetcher });
+  const legacy = [
+    { version: 1, symbol: 'BTCUSDT', day,
+      startTimeMs: start, endTimeMs: start + 120_000,
+      archiveUrl: one.snapshot.archives[0].archiveUrl,
+      zipSha256: one.snapshot.archives[0].zipSha256,
+      candles, rows: one.snapshot.rows },
+    { version: 2, symbol: 'BTCUSDT',
+      startTimeMs: midnightStart, endTimeMs: midnightStart + 240_000,
+      archives: two.snapshot.archives.map(({ day: archiveDay, archiveUrl,
+        zipSha256 }) => ({ day: archiveDay, archiveUrl, zipSha256 })),
+      candles: midnightCandles, rows: two.snapshot.rows },
+  ];
+  const lookup = vi.spyOn(prisma.backtestIntrabarArchive, 'findUnique');
+  try {
+    for (const snapshot of legacy) {
+      lookup.mockResolvedValueOnce({ payload: snapshot,
+        payloadSha256: createHash('sha256').update(stable(snapshot)).digest('hex'),
+        rawArchives: [] } as never);
+      const replay = await readVerifiedRunArchive('legacy-run', 'BTCUSDT',
+        snapshot.startTimeMs, snapshot.endTimeMs);
+      expect(replay).toHaveLength(snapshot.candles.length);
+      expect(replay?.every((candle) =>
+        candle.intrabarProvenance.archiveProof === 'LEGACY_SNAPSHOT')).toBe(true);
+    }
+  } finally { lookup.mockRestore(); }
+});
+
 const publicIt = process.env.RUN_BINANCE_USDM_ARCHIVE_PUBLIC_PROOF === '1' ? it : it.skip;
 publicIt('verifies an actual archived ALICEUSDT window older than 48 hours', async () => {
   const historicalStart = Date.parse('2026-10-18T00:02:00.000Z');
@@ -226,9 +270,9 @@ publicIt('verifies an actual archived ALICEUSDT window older than 48 hours', asy
   expect(historicalCandles).toHaveLength(2);
   const source = await fetchVerifiedDailyUsdMArchive({ symbol: 'ALICEUSDT',
     candles: historicalCandles });
-  expect(source.snapshot.version).toBe(1);
-  if (source.snapshot.version !== 1) throw new Error('Expected one archive');
-  expect(source.snapshot.zipSha256)
+  expect(source.snapshot.version).toBe(3);
+  expect(source.snapshot.archives).toHaveLength(1);
+  expect(source.snapshot.archives[0].zipSha256)
     .toBe('4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b');
   expect(source.verified).toHaveLength(2);
   expect(source.verified[0].intrabarTicks.length).toBeGreaterThanOrEqual(2);
@@ -274,8 +318,8 @@ publicIt('verifies the frozen ALICEUSDT crossing of UTC midnight from two offici
   expect(historicalCandles).toHaveLength(20);
   const source = await fetchVerifiedDailyUsdMArchive({ symbol: 'ALICEUSDT',
     candles: historicalCandles });
-  expect(source.snapshot.version).toBe(2);
-  if (source.snapshot.version !== 2) throw new Error('Expected two archives');
+  expect(source.snapshot.version).toBe(3);
+  expect(source.snapshot.archives).toHaveLength(2);
   expect(source.snapshot.archives.map((archive) => archive.day))
     .toEqual(['2026-10-17', '2026-10-18']);
   expect(source.snapshot.archives.map((archive) => archive.zipSha256)).toEqual([

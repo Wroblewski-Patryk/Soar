@@ -47,7 +47,15 @@ export const fetchVerifiedIntrabarTimelineCandles = async (input: {
     return candles;
   } catch (error) {
     if (error instanceof BacktestTimelineSourceError) throw error;
-    if (error instanceof Error && error.message === 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED')
+    if (error instanceof Error && [
+      'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED',
+      'BACKTEST_INTRABAR_ARCHIVE_CHECKSUM_MISMATCH',
+      'BACKTEST_INTRABAR_ARCHIVE_BAD_ZIP',
+      'BACKTEST_INTRABAR_ARCHIVE_BAD_CSV',
+      'BACKTEST_INTRABAR_ARCHIVE_SEQUENCE_GAP',
+      'BACKTEST_INTRABAR_ARCHIVE_BOUNDARY_INCOMPLETE',
+      'BACKTEST_INTRABAR_ARCHIVE_CHECKSUM_INVALID',
+    ].includes(error.message))
       throw new BacktestTimelineSourceError('SOURCE_CHANGED');
     throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
   }

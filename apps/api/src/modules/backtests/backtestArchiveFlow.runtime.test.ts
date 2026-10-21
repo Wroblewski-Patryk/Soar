@@ -56,7 +56,8 @@ describe('archived strict backtest source on a private test database', () => {
       const record = await prisma.backtestIntrabarArchive.findUniqueOrThrow({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
       });
-      expect((record.payload as Record<string, unknown>).zipSha256)
+      expect((record.payload as Record<string, unknown>).version).toBe(3);
+      expect((record.payload as { archives: Array<{ zipSha256: string }> }).archives[0].zipSha256)
         .toBe('4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b');
       const verified = await readVerifiedRunArchive(runId, 'ALICEUSDT', start, end);
       expect(verified).toHaveLength(100);
@@ -90,7 +91,9 @@ describe('archived strict backtest source on a private test database', () => {
       await prisma.backtestIntrabarArchive.update({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
         data: { payload: { ...(record.payload as Record<string, unknown>),
-          zipSha256: '0'.repeat(64) } as Prisma.InputJsonValue },
+          archives: [{ ...((record.payload as { archives: Record<string, unknown>[] })
+            .archives[0]), zipSha256: '0'.repeat(64) }],
+        } as Prisma.InputJsonValue },
       });
       await expect(getRunTimeline(user.id, runId,
         GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))

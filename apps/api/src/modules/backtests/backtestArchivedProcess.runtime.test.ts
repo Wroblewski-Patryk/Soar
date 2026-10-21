@@ -94,7 +94,8 @@ const stopWorker = async (proof: ProofProcess) => {
 
 type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence' |
   'adjacent-sequence' | 'functional-witness' | 'midnight-baseline' |
-  'midnight-changed' | 'midnight-missing';
+  'midnight-changed' | 'midnight-missing' | 'midnight-raw-zip' |
+  'midnight-raw-checksum' | 'midnight-raw-missing';
 const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
   const midnight = variant.startsWith('midnight-');
   const adjacentSequence = variant === 'adjacent-sequence';
@@ -161,19 +162,23 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     const originalArchive = await prisma.backtestIntrabarArchive.findUniqueOrThrow({
       where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
     });
-    if (midnight) {
-      const payload = originalArchive.payload as Record<string, unknown>;
-      expect(payload.version).toBe(2);
-      expect((payload.archives as Array<{ day: string; zipSha256: string }>))
-        .toMatchObject([{ day: '2026-10-17' }, { day: '2026-10-18' }]);
-      expect((payload.archives as Array<{ zipSha256: string }>).every((archive) =>
-        /^[0-9a-f]{64}$/.test(archive.zipSha256))).toBe(true);
-      expect((payload.archives as Array<{ zipSha256: string }>).map((archive) =>
-        archive.zipSha256)).toEqual(expectedMidnightZipShas);
-    } else {
-      expect((originalArchive.payload as Record<string, unknown>).zipSha256)
-        .toBe(expectedZipSha);
-    }
+    const payload = originalArchive.payload as Record<string, unknown>;
+    expect(payload.version).toBe(3);
+    const archiveMetadata = payload.archives as Array<{
+      day: string; zipSha256: string; checksumSha256: string;
+    }>;
+    expect(archiveMetadata.map((archive) => archive.zipSha256))
+      .toEqual(midnight ? expectedMidnightZipShas : [expectedZipSha]);
+    expect(archiveMetadata.map((archive) => archive.day))
+      .toEqual(midnight ? ['2026-10-17', '2026-10-18'] : ['2026-10-18']);
+    expect(archiveMetadata.every((archive) =>
+      /^[0-9a-f]{64}$/.test(archive.checksumSha256))).toBe(true);
+    const storedRaw = await prisma.backtestIntrabarArchiveRaw.findMany({
+      where: { runId, symbol: 'ALICEUSDT' }, orderBy: { day: 'asc' },
+    });
+    expect(storedRaw).toHaveLength(midnight ? 2 : 1);
+    expect(storedRaw.reduce((size, raw) => size + raw.zipBytes.length, 0))
+      .toBeLessThanOrEqual(8 * 1024 * 1024);
     expect(await redis.lRange(processingKey, 0, -1)).toEqual([runId]);
     expect(await redis.sIsMember(dedupeKey, runId)).toBe(true);
     expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
@@ -181,20 +186,37 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     await stopWorker(first);
 
     if (variant === 'changed' || variant === 'midnight-changed') {
-      const payload = originalArchive.payload as Record<string, unknown>;
       await prisma.backtestIntrabarArchive.update({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
         data: { payload: { ...payload,
-          ...(midnight ? { archives: [
-            ...(payload.archives as Record<string, unknown>[]).slice(0, 1),
-            { ...(payload.archives as Record<string, unknown>[])[1],
-              zipSha256: '0'.repeat(64) },
-          ] } : { zipSha256: '0'.repeat(64) }),
+          archives: (payload.archives as Record<string, unknown>[])
+            .map((archive, index) => index === (midnight ? 1 : 0)
+              ? { ...archive, zipSha256: '0'.repeat(64) } : archive),
         } as Prisma.InputJsonValue },
       });
     } else if (variant === 'missing' || variant === 'midnight-missing') {
       await prisma.backtestIntrabarArchive.delete({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
+      });
+    } else if (variant === 'midnight-raw-zip') {
+      const changed = new Uint8Array(storedRaw[1].zipBytes);
+      changed[0] ^= 1;
+      await prisma.backtestIntrabarArchiveRaw.update({
+        where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+          day: storedRaw[1].day } }, data: { zipBytes: changed },
+      });
+    } else if (variant === 'midnight-raw-checksum') {
+      const changed = new Uint8Array(storedRaw[1].checksumBytes.length + 1);
+      changed.set(storedRaw[1].checksumBytes);
+      changed[changed.length - 1] = 32; // Parsed SHA is unchanged; exact file bytes changed.
+      await prisma.backtestIntrabarArchiveRaw.update({
+        where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+          day: storedRaw[1].day } }, data: { checksumBytes: changed },
+      });
+    } else if (variant === 'midnight-raw-missing') {
+      await prisma.backtestIntrabarArchiveRaw.delete({
+        where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+          day: storedRaw[1].day } },
       });
     }
     if (!naturalLease) {
@@ -240,6 +262,13 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
       });
       expect(finalArchive.payloadSha256).toBe(originalArchive.payloadSha256);
+      expect(await prisma.backtestIntrabarArchiveRaw.count({ where: { runId } }))
+        .toBe(midnight ? 2 : 1);
+      const verifiedAfterRestart = await readVerifiedRunArchive(runId, 'ALICEUSDT',
+        windowStart, windowEnd);
+      expect(verifiedAfterRestart).toHaveLength(midnight ? 20 : 100);
+      expect(verifiedAfterRestart?.every((candle) => candle.intrabarProvenance.archiveProof ===
+        'PERSISTED_CHECKSUM_REVERIFIED')).toBe(true);
       expect(trades.length).toBeGreaterThan(0);
       expect(reports[0].totalTrades).toBe(trades.length);
       expect(reports[0].netPnl).toBeCloseTo(trades.reduce((sum, trade) =>
@@ -258,11 +287,61 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
         runId, firstPid: first.child.pid, secondPid: second.child.pid,
         archiveDays: ['2026-10-17', '2026-10-18'],
         zipSha256: expectedMidnightZipShas,
+        checksumSha256: archiveMetadata.map((archive) => archive.checksumSha256),
         payloadSha256: originalArchive.payloadSha256, digest: firstDigest,
         status: final.status, trades: trades.length, reports: reports.length,
         reportNetPnl: reports[0].netPnl, timelineCandles: timeline?.totalCandles,
         timelineEvents: timeline?.events.length,
+        persistedRawBytes: storedRaw.reduce((size, raw) => size + raw.zipBytes.length, 0),
       })}\n`);
+      if (variant === 'midnight-baseline') {
+        const changed = new Uint8Array(storedRaw[1].zipBytes);
+        changed[0] ^= 1;
+        await prisma.backtestIntrabarArchiveRaw.update({
+          where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+            day: storedRaw[1].day } }, data: { zipBytes: changed },
+        });
+        await expect(getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))
+          .rejects.toMatchObject({ code: 'SOURCE_CHANGED' });
+        expect(await prisma.backtestReport.findMany({ where: { backtestRunId: runId } }))
+          .toEqual(reports);
+        expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: runId } }))
+          .toEqual(trades);
+        await prisma.backtestIntrabarArchiveRaw.update({
+          where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+            day: storedRaw[1].day } }, data: { zipBytes: storedRaw[1].zipBytes },
+        });
+        const changedChecksum = new Uint8Array(storedRaw[1].checksumBytes.length + 1);
+        changedChecksum.set(storedRaw[1].checksumBytes);
+        changedChecksum[changedChecksum.length - 1] = 32;
+        await prisma.backtestIntrabarArchiveRaw.update({
+          where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+            day: storedRaw[1].day } }, data: { checksumBytes: changedChecksum },
+        });
+        await expect(getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))
+          .rejects.toMatchObject({ code: 'SOURCE_CHANGED' });
+        await prisma.backtestIntrabarArchiveRaw.delete({
+          where: { runId_symbol_day: { runId, symbol: 'ALICEUSDT',
+            day: storedRaw[1].day } },
+        });
+        await expect(getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))
+          .rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE' });
+        await prisma.backtestIntrabarArchiveRaw.create({ data: {
+          runId, symbol: 'ALICEUSDT', day: storedRaw[1].day,
+          zipBytes: storedRaw[1].zipBytes,
+          checksumBytes: storedRaw[1].checksumBytes,
+        } });
+        const restoredTimeline = await getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' }));
+        expect(restoredTimeline?.events).toEqual(timeline?.events);
+        expect(await prisma.backtestReport.findMany({ where: { backtestRunId: runId } }))
+          .toEqual(reports);
+        expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: runId } }))
+          .toEqual(trades);
+      }
       if (marketSequence) {
         const archived = await readVerifiedRunArchive(runId, 'ALICEUSDT',
           windowStart, windowEnd);
@@ -489,9 +568,14 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
       }
     } else {
       expect(final.status).toBe('FAILED');
-      expect((final.seedConfig as Record<string, any>).error).toContain(
-        variant.endsWith('changed') ? 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED' :
-          'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_MISSING_ON_RETRY');
+      const expectedFailure = variant.endsWith('changed')
+        ? 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED'
+        : variant.endsWith('missing') && !variant.endsWith('raw-missing')
+          ? 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_MISSING_ON_RETRY'
+          : variant.endsWith('raw-missing')
+            ? 'BACKTEST_INTRABAR_ARCHIVE_RAW_ARCHIVE_INCOMPLETE'
+            : 'BACKTEST_INTRABAR_ARCHIVE_CHECKSUM_MISMATCH';
+      expect((final.seedConfig as Record<string, any>).error).toContain(expectedFailure);
       expect(second.events).not.toContain('SIMULATE');
       expect(trades).toHaveLength(0);
       expect(contributions).toHaveLength(0);
@@ -537,7 +621,8 @@ describe('real archived intrabar job recovery across processes', () => {
     async () => runProcessCase('functional-witness', false), 120_000);
   const midnightIt = process.env.RUN_BACKTEST_MIDNIGHT_PROCESS_PROOF === '1'
     ? it : it.skip;
-  midnightIt.each(['midnight-baseline', 'midnight-changed', 'midnight-missing'] as const)(
+  midnightIt.each(['midnight-baseline', 'midnight-changed', 'midnight-missing',
+    'midnight-raw-zip', 'midnight-raw-checksum', 'midnight-raw-missing'] as const)(
     'recovers the crossing-UTC-midnight run from two archives: %s',
     async (variant) => runProcessCase(variant, false), 120_000);
 });
