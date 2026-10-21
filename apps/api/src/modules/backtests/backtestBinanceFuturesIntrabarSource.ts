@@ -16,8 +16,8 @@ type AggregateTrade = {
 };
 
 export type VerifiedIntrabarProvenance = {
-  source: 'BINANCE_USDM_AGGTRADES';
-  endpoint: '/fapi/v1/aggTrades';
+  source: 'BINANCE_USDM_AGGTRADES' | 'BINANCE_USDM_AGGTRADES_ARCHIVE';
+  endpoint: '/fapi/v1/aggTrades' | 'data.binance.vision';
   symbol: string;
   firstAggregateId: number;
   lastAggregateId: number;
@@ -50,8 +50,12 @@ export const digestVerifiedBinanceFuturesIntrabar = (
   if (candles.length === 0 || candles.some((candle) => {
     const provenance = candle.intrabarProvenance;
     return !Array.isArray(candle.intrabarTicks) || candle.intrabarTicks.length < 2 ||
-      !provenance || provenance.source !== 'BINANCE_USDM_AGGTRADES' ||
-      provenance.endpoint !== '/fapi/v1/aggTrades' || provenance.symbol !== symbol ||
+      !provenance || !(
+        provenance.source === 'BINANCE_USDM_AGGTRADES' &&
+          provenance.endpoint === '/fapi/v1/aggTrades' ||
+        provenance.source === 'BINANCE_USDM_AGGTRADES_ARCHIVE' &&
+          provenance.endpoint === 'data.binance.vision'
+      ) || provenance.symbol !== symbol ||
       !/^[0-9a-f]{64}$/.test(provenance.sha256);
   })) fail('UNVERIFIED');
   // Match the digest persisted by existing strict runs: open time plus the
@@ -88,6 +92,7 @@ export const fetchVerifiedBinanceFuturesIntrabar = async (input: {
   candles: BacktestKlineCandle[];
   nowMs?: number;
   fetchPage?: FetchPage;
+  verifiedArchive?: boolean;
 }): Promise<VerifiedIntrabarCandle[]> => {
   const { symbol, candles } = input;
   if (!/^[A-Z0-9]{4,24}$/.test(symbol) || candles.length === 0 ||
@@ -97,7 +102,8 @@ export const fetchVerifiedBinanceFuturesIntrabar = async (input: {
   const now = input.nowMs ?? Date.now();
   if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) ||
       start >= end || end - start + 1 > MAX_WINDOW_MS ||
-      start - BOUNDARY_MS < now - MAX_AGE_MS || end + BOUNDARY_MS >= now) {
+      (!input.verifiedArchive && start - BOUNDARY_MS < now - MAX_AGE_MS) ||
+      end + BOUNDARY_MS >= now) {
     fail('WINDOW_UNAVAILABLE');
   }
   for (const [index, candle] of candles.entries()) {
@@ -157,8 +163,10 @@ export const fetchVerifiedBinanceFuturesIntrabar = async (input: {
         eventTime: row.T, price: finitePositive(row.p), sequenceId: row.a,
       })),
       intrabarProvenance: {
-        source: 'BINANCE_USDM_AGGTRADES' as const,
-        endpoint: '/fapi/v1/aggTrades' as const, symbol,
+        source: input.verifiedArchive
+          ? 'BINANCE_USDM_AGGTRADES_ARCHIVE' as const : 'BINANCE_USDM_AGGTRADES' as const,
+        endpoint: input.verifiedArchive
+          ? 'data.binance.vision' as const : '/fapi/v1/aggTrades' as const, symbol,
         firstAggregateId: inCandle[0].a,
         lastAggregateId: inCandle[inCandle.length - 1].a,
         firstTradeId: inCandle[0].f,

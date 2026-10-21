@@ -41,6 +41,7 @@ import {
 } from './backtestDataGateway';
 import { BacktestTimelineSourceError,
   fetchVerifiedIntrabarTimelineCandles } from './backtestIntrabarTimelineSource';
+import { fetchVerifiedArchivedIntrabarForRun } from './backtestBinanceFuturesIntrabarArchive';
 import {
   simulateInterleavedPortfolio,
 } from './backtestPortfolioSimulation.service';
@@ -432,6 +433,7 @@ const runBacktestAsync = createClaimedBacktestRunJob({
   findOwnedStrategySignalConfig,
   fetchKlines,
   fetchKlinesWithVerifiedBinanceFuturesIntrabar,
+  fetchVerifiedArchivedIntrabarForRun,
   fetchSupplementalSeries,
   simulateInterleavedPortfolio,
   computeSourceWindowMs,
@@ -697,6 +699,7 @@ export const getRunTimeline = async (
   for (const replaySymbol of replaySymbols) {
     const sourceCandles = requireVerifiedIntrabar
       ? await fetchVerifiedIntrabarTimelineCandles({ exchange, symbol: replaySymbol,
+        runId,
         timeframe: run.timeframe, marketType,
         maxCandles: maxCandles + indicatorWarmupCandles,
         endTimeMs: timelineEndTimeMs, startTimeMs: timelineStartTimeMs,

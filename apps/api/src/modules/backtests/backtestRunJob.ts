@@ -174,6 +174,9 @@ export type BacktestRunJobDeps = {
     startTimeMs?: number,
   ) => Promise<BacktestKlineCandle[]>;
   fetchKlinesWithVerifiedBinanceFuturesIntrabar?: BacktestRunJobDeps['fetchKlines'];
+  fetchVerifiedArchivedIntrabarForRun?: (
+    runId: string, ...args: Parameters<BacktestRunJobDeps['fetchKlines']>
+  ) => Promise<BacktestKlineCandle[]>;
   fetchSupplementalSeries: (
     exchange: Exchange,
     symbol: string,
@@ -493,19 +496,23 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
 
         try {
-          const candleFetcher = requireVerifiedIntrabar
-            ? deps.fetchKlinesWithVerifiedBinanceFuturesIntrabar
-            : deps.fetchKlines;
-          if (!candleFetcher) throw new Error('BACKTEST_INTRABAR_SOURCE_UNAVAILABLE');
-          const candles = await candleFetcher(
-            exchange,
-            symbol,
-            run.timeframe,
-            marketType,
+          const archivedWindow = requireVerifiedIntrabar &&
+            typeof fetchStartTimeMs === 'number' &&
+            fetchStartTimeMs < Date.now() - 48 * 60 * 60_000 + 1_000;
+          const fetchArgs = [exchange, symbol, run.timeframe, marketType,
             maxCandlesPerSymbol + indicatorWarmupCandles,
-            fetchEndTimeMs,
-            fetchStartTimeMs,
-          );
+            fetchEndTimeMs, fetchStartTimeMs] as const;
+          let candles: BacktestKlineCandle[];
+          if (archivedWindow) {
+            if (!deps.fetchVerifiedArchivedIntrabarForRun)
+              throw new Error('BACKTEST_INTRABAR_ARCHIVE_UNAVAILABLE');
+            candles = await deps.fetchVerifiedArchivedIntrabarForRun(runId, ...fetchArgs);
+          } else {
+            const candleFetcher = requireVerifiedIntrabar
+              ? deps.fetchKlinesWithVerifiedBinanceFuturesIntrabar : deps.fetchKlines;
+            if (!candleFetcher) throw new Error('BACKTEST_INTRABAR_SOURCE_UNAVAILABLE');
+            candles = await candleFetcher(...fetchArgs);
+          }
           if (candles.length === 0) {
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
           }

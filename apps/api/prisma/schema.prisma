@@ -1224,6 +1224,7 @@ model BacktestRun {
   trades   BacktestTrade[]
   contributions BacktestContribution[]
   report   BacktestReport?
+  intrabarArchives BacktestIntrabarArchive[]
 
   @@index([userId])
   @@index([userId, createdAt])
@@ -1232,6 +1233,18 @@ model BacktestRun {
   @@index([status])
   @@index([status, executionLeaseExpiresAt])
   @@index([startedAt])
+}
+
+model BacktestIntrabarArchive {
+  runId String
+  symbol String
+  payload Json
+  payloadSha256 String
+  createdAt DateTime @default(now())
+
+  run BacktestRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@id([runId, symbol])
 }
 
 model BacktestTrade {
