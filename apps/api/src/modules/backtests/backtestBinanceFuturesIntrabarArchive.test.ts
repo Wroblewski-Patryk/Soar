@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { Prisma } from '@prisma/client';
 import { strToU8, zipSync } from 'fflate';
 import { describe, expect, it, vi } from 'vitest';
@@ -283,6 +284,28 @@ publicIt('verifies an actual archived ALICEUSDT window older than 48 hours', asy
 }, 60_000);
 
 const capacityIt = process.env.RUN_011A_ARCHIVE_CAPACITY_PROOF === '1' ? it : it.skip;
+const boundaryIt = process.env.RUN_011A_80K_PROOF === '1' ? it : it.skip;
+boundaryIt('accepts 80,000 selected rows including two edges and rejects 80,001', async () => {
+  const oneCandle = [{ ...candles[0], volume: 79_998 }];
+  const makeRows = (inside: number) => [
+    [99, 100, 1, 199, 199, start - 1, false],
+    ...Array.from({ length: inside }, (_, index) =>
+      [100 + index, 100, 1, 200 + index, 200 + index, start + 1, false]),
+    [100 + inside, 100, 1, 200 + inside, 200 + inside, start + 60_001, false],
+  ];
+  const began = performance.now();
+  const accepted = await fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
+    candles: oneCandle, fetcher: archiveFetcher(makeRows(79_998)) });
+  expect(accepted.snapshot.rows).toHaveLength(80_000);
+  expect(accepted.verified[0].intrabarTicks).toHaveLength(79_998);
+  await expect(fetchVerifiedDailyUsdMArchive({ symbol: 'BTCUSDT',
+    candles: oneCandle, fetcher: archiveFetcher(makeRows(79_999)) }))
+    .rejects.toThrow('BACKTEST_INTRABAR_ARCHIVE_LIMIT');
+  console.info(JSON.stringify({ proof: '011A_80K', platform: process.platform,
+    elapsedMs: Math.round(performance.now() - began),
+    maxRSSKiB: process.resourceUsage().maxRSS }));
+}, 120_000);
+
 capacityIt('replays source-consistent windows from larger raw v3 archives and rejects mismatched 120-minute windows', async () => {
   const root = process.env.RUN_011A_ARCHIVE_DIR;
   if (!root) throw new Error('RUN_011A_ARCHIVE_DIR_REQUIRED');
