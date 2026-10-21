@@ -8,6 +8,7 @@ import { prisma } from '../../prisma/client';
 import { backtestRunQueue, createRun, getRunTimeline } from './backtests.service';
 import { deleteOwnedBacktestRunCascade } from './backtests.repository';
 import { readVerifiedRunArchive } from './backtestBinanceFuturesIntrabarArchive';
+import { marketSequenceStrategyConfig } from './backtest011aMarketWitness.config';
 import { BACKTEST_LEASE_MS } from './backtestRunOwnership.repository';
 import { GetBacktestTimelineQuerySchema } from './backtests.types';
 
@@ -24,17 +25,6 @@ const strategyConfig = {
   close: { mode: 'basic', tp: 0.1, sl: 0.1 },
   additional: { dcaEnabled: false, dcaTimes: 0 },
 };
-// Fixed before inspecting the public tape; see the committed 011A probe plan.
-const marketSequenceStrategyConfig = {
-  open: { direction: 'long', noMatchAction: 'EXIT',
-    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: -100,
-      params: { period: 1 } }], indicatorsShort: [] },
-  close: { mode: 'advanced', ttp: [{ percent: 0.08, arm: 0.05 }], tsl: [] },
-  additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
-    dcaSizingBasis: 'usdt_contribution_v1',
-    dcaLevels: [{ percent: 0.10, multiplier: 1 }], marginMode: 'ISOLATED' },
-};
-
 const sleep = (ms: number) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 const until = async (predicate: () => Promise<boolean>, timeoutMs = 30_000) => {
   const deadline = Date.now() + timeoutMs;
