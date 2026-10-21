@@ -7,6 +7,7 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { createClaimedBacktestRunJob } from '../backtests/backtestClaimedRun';
 import { simulateInterleavedPortfolio } from '../backtests/backtestPortfolioSimulation.service';
+import { resolveReplayDcaProbePrice, shouldBlockCloseByPendingDca } from '../backtests/backtestReplayCore';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { parseStrategySignalRules } from './strategySignalEvaluator';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
@@ -377,6 +378,7 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE full signal and position par
       expect(armed?.trailingTakeProfitHighPercent).toBeCloseTo(0.24, 6);
       expect(armed?.trailingTakeProfitStepPercent).toBeCloseTo(0.1, 6);
       expect(liveArmed?.trailingTakeProfitHighPercent).toBeCloseTo(0.24, 6);
+      expect(prices[4]).toBeLessThan(opened.entryPrice * (1 + 0.25));
       expect(await prisma.trade.count({ where: { positionId: opened.id,
         lifecycleAction: 'DCA' } })).toBe(0);
       // Separate adversarial policy probe on this same DCA price. The seeded
@@ -427,6 +429,28 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE full signal and position par
       expect(paperProtectionPrice).toBeCloseTo(1.14, 6);
       expect(prices[5]).toBeGreaterThan(paperProtectionPrice);
       expect(prices[7]).toBeLessThan(paperProtectionPrice);
+      // Diagnostic of the unresolved same-candle parity requirement. Replay
+      // buys at the high and blocks its TTP close at the low/close on this
+      // candle. A second runtime ticker at that low has already confirmed the
+      // DCA and independently qualifies for TTP, so it would close now.
+      const competingCandle = { high: prices[5], low: prices[7], close: prices[7] };
+      expect(resolveReplayDcaProbePrice({ side: 'LONG', candle: competingCandle,
+        entryPrice: opened.entryPrice, leverage, riskConfig: { dcaLevels: [0.25] },
+        executedDcaLevelIndices: [] })).toBe(prices[5]);
+      const runtimeSameCandleClose = evaluatePositionManagement({
+        side: 'LONG', currentPrice: competingCandle.close, leverage,
+        dcaSizingBasis: 'usdt_contribution_v1',
+        trailingTakeProfitLevels: [{ armPercent: 0.2, trailPercent: 0.1 }],
+        dca: { enabled: true, maxAdds: 1, stepPercent: 0.25,
+          addSizeFraction: 1, levelPercents: [0.25], addSizeFractions: [1],
+          sizingBasis: 'usdt_contribution_v1' },
+      }, afterDcaProtection!);
+      expect(runtimeSameCandleClose.closeReason).toBe('trailing_take_profit');
+      expect(shouldBlockCloseByPendingDca({ lockTrailingByPendingDca: true,
+        closeReason: runtimeSameCandleClose.closeReason,
+        riskConfig: { dcaLevels: [0.25] }, executedDcaLevelIndices: [0],
+        dcaSizingBasis: 'usdt_contribution_v1', reachedDcaLevelIndex: 0,
+        filledDcaLevelIndex: 0 })).toBe(true);
       expect(await prisma.trade.count({ where: { positionId: opened.id, lifecycleAction: 'DCA' } }))
         .toBe(1);
       expect(await prisma.trade.count({ where: { positionId: opened.id, lifecycleAction: 'CLOSE' } }))
@@ -640,6 +664,37 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE full signal and position par
       expect(backtestTrades[0].exitPrice).toBeCloseTo(liveLifecycleFills[2].price, 7);
       expect(backtestTrades[0].fee).toBeCloseTo(liveFees, 5);
       expect(backtestReports[0].netPnl).toBeCloseTo(liveClosed.realizedPnl ?? NaN, 5);
+
+      // Replay the chronological contention candle with the same saved strategy:
+      // high fills +25% DCA, low/close crosses the rebased TTP. Replay defers
+      // that close to the next candle, unlike a second runtime ticker at 1.13.
+      const mixedCandles = candlesFor(prices).map((candle, index) => index === 5
+        ? { ...candle, low: prices[7], close: prices[7] }
+        : index > 5
+          ? { ...candle, open: prices[7], high: prices[7], low: prices[7], close: prices[7] }
+          : candle);
+      const mixedRun = await prisma.backtestRun.create({ data: {
+        userId: user.id, strategyId, name: 'Same-candle DCA/TTP diagnostic', symbol,
+        timeframe: '1m', seedConfig: { symbols: [symbol], marketType: 'FUTURES',
+          leverage, marginMode: 'ISOLATED', initialBalance, maxCandles: 100,
+          feeRate, slippageRate: 0,
+          contextSnapshot: { strategy: { id: strategyId, walletRisk,
+            config: persistedStrategy.config } } },
+      } });
+      await createClaimedBacktestRunJob({ ...deps, fetchKlines: async () => mixedCandles })(mixedRun.id);
+      expect((await prisma.backtestRun.findUniqueOrThrow({ where: { id: mixedRun.id } })).status)
+        .toBe('COMPLETED');
+      const mixedFills = await prisma.backtestContribution.findMany({
+        where: { backtestRunId: mixedRun.id }, orderBy: { addSequence: 'asc' },
+      });
+      const mixedTrades = await prisma.backtestTrade.findMany({
+        where: { backtestRunId: mixedRun.id },
+      });
+      expect(mixedFills.map((fill) => [fill.kind, fill.candleIndex, fill.price]))
+        .toEqual([['ENTRY', 2, prices[2]], ['DCA', 5, prices[5]]]);
+      expect(mixedTrades).toHaveLength(1);
+      expect(mixedTrades[0].exitReason).toBe('TTP');
+      expect(mixedTrades[0].closedAt.getTime()).toBe(mixedCandles[6].closeTime);
 
       await runtimePositionStateStore.deletePositionRuntimeState(opened.id);
       await send(createAutomation(), 8, prices[8]);

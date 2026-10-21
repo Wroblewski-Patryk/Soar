@@ -49,6 +49,40 @@ cycle proves armed TTP, confirmed DCA, protection rebase and a later TTP;
 the same-tick crossed-TTP priority is proved only by this synthetic policy
 probe, not by an organic three-mode exchange event.
 
+## Same-candle chronology diagnostic (rework)
+
+The test now also checks an executable price chronology against the confirmed
+post-DCA PAPER state. The prior 1.24 candle arms TTP but is below the +25%
+DCA trigger. On the next candle, `high=1.25` reaches and fills that DCA;
+`low=close=1.13` crosses the rebased TTP protection at 1.14. BACKTEST probes
+positive LONG DCA at the high, evaluates protection at the close, then
+`shouldBlockCloseByPendingDca` retains the filled level for the entire candle
+and suppresses that TTP close. PAPER and internal mock LIVE process separate
+ticker events. After the confirmed 1.25 DCA, a second ticker at 1.13 evaluates
+the persisted post-fill state and qualifies for TTP; runtime has no equivalent
+same-candle guard. A fresh final candle at 1.13 is also skipped by the runtime
+fallback if the 1.25 ticker is still fresh. Thus the current implementation
+does not provide one common chronological three-mode contention decision.
+
+The rework also runs a second real BACKTEST with this OHLC candle. It persists
+the DCA contribution at candle 5 and a single TTP trade closed at candle 6,
+confirming the replay timing through its durable result. The runtime side is
+checked against the actual persisted post-DCA PAPER state and the production
+position-management decision function; the divergent second ticker is not
+submitted to the three-mode fixture because it would close those positions
+before the existing restart path. This is a diagnostic of the current replay
+guard and runtime position policy, not an organic three-mode acceptance result.
+The contract requires DCA before protection and prohibits a close on the pre-fill basis
+in that cycle, but does not define whether a later ticker in the same strategy
+candle starts a new cycle. The owner must choose the time boundary before
+changing execution behavior: either defer runtime TTP for the rest of the
+filled DCA candle, or allow BACKTEST to close after that fill when the same
+candle's subsequent price crosses protection. Acceptance then needs one saved
+strategy and chronological OHLC/tickers `1.24 → (high/tick 1.25, low/close/tick
+1.13) → next candle 1.13` in BACKTEST, PAPER and internal mock LIVE, with one
+confirmed DCA, the chosen matching TTP timing, persisted fill/fee/PnL and
+restart/retry identity. Ticket 011 stays `REVIEW`; parent remains `NO-GO`.
+
 Run from `apps/api` on an own fresh PostgreSQL `_test` database and Redis.
 The outer `open` stage launches and verifies a distinct `resume` process:
 
@@ -66,7 +100,7 @@ $env:BINANCE_FUTURES_POSITIVE_DCA_TTP_THREE_MODE_STAGE = 'open'
 pnpm exec vitest run src/modules/engine/runtimeBinanceFuturesThreeModePositiveDcaTtpParity.e2e.test.ts
 ```
 
-Author-local run: 83 applied migrations; outer stage 1 PASS / 1 SKIP and
+Author-local rework run: 83 applied migrations; outer stage 1 PASS / 1 SKIP and
 the separate resume process 1 PASS. After cleanup, SQL
 `User/BacktestRun/Trade=0/0/0`, Redis `DBSIZE=0`. This is local proof using
 synthetic venue metadata, balance, fills and fees. It does not establish
