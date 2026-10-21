@@ -13,7 +13,7 @@ const MAX_ROWS = 20_000;
 const DAY_MS = 86_400_000;
 const BOUNDARY_MS = 1_000;
 type Row = { a: number; p: string; q: string; f: number; l: number; T: number; m: boolean };
-type Snapshot = {
+type SnapshotV1 = {
   version: 1;
   symbol: string;
   day: string;
@@ -24,6 +24,16 @@ type Snapshot = {
   candles: BacktestKlineCandle[];
   rows: Row[];
 };
+type SnapshotV2 = {
+  version: 2;
+  symbol: string;
+  startTimeMs: number;
+  endTimeMs: number;
+  archives: Array<{ day: string; archiveUrl: string; zipSha256: string }>;
+  candles: BacktestKlineCandle[];
+  rows: Row[];
+};
+type Snapshot = SnapshotV1 | SnapshotV2;
 
 const fail = (reason: string): never => {
   throw new Error(`BACKTEST_INTRABAR_ARCHIVE_${reason}`);
@@ -50,6 +60,21 @@ const exactDay = (startTimeMs: number, endTimeMs: number) => {
   if (startTimeMs < dayStart + BOUNDARY_MS ||
       endTimeMs + BOUNDARY_MS >= dayStart + DAY_MS) fail('SINGLE_DAY_REQUIRED');
   return new Date(dayStart).toISOString().slice(0, 10);
+};
+const archiveDays = (startTimeMs: number, endTimeMs: number): string[] => {
+  if (!Number.isSafeInteger(startTimeMs) || !Number.isSafeInteger(endTimeMs) ||
+      startTimeMs % 60_000 !== 0 || endTimeMs % 60_000 !== 0 ||
+      endTimeMs <= startTimeMs || endTimeMs - startTimeMs > 120 * 60_000 ||
+      endTimeMs >= Date.now() - 48 * 60 * 60_000) fail('WINDOW_UNAVAILABLE');
+  const firstDayStart = Math.floor(startTimeMs / DAY_MS) * DAY_MS;
+  const lastDayStart = Math.floor((endTimeMs - 1) / DAY_MS) * DAY_MS;
+  if (firstDayStart === lastDayStart) return [exactDay(startTimeMs, endTimeMs)];
+  if (lastDayStart !== firstDayStart + DAY_MS ||
+      startTimeMs < firstDayStart + BOUNDARY_MS ||
+      endTimeMs + BOUNDARY_MS >= lastDayStart + DAY_MS)
+    fail('TWO_ADJACENT_DAYS_REQUIRED');
+  return [firstDayStart, lastDayStart].map((time) =>
+    new Date(time).toISOString().slice(0, 10));
 };
 const archiveUrls = (symbol: string, day: string) => {
   if (!/^[A-Z0-9]{4,24}$/.test(symbol) || !/^\d{4}-\d{2}-\d{2}$/.test(day))
@@ -84,7 +109,8 @@ const readBounded = async (url: string, maxBytes: number, fetcher: typeof fetch)
 
 // Refuse large or multi-entry ZIPs before decompression. The one-entry daily
 // archive is deliberately bounded; larger symbols fail rather than exhaust RAM.
-const assertZipShape = (zip: Uint8Array, csvName: string) => {
+const assertZipShape = (zip: Uint8Array, csvName: string,
+  remainingCsvBytes: number) => {
   const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
   let eocd = -1;
   for (let i = zip.length - 22; i >= Math.max(0, zip.length - 65_557); i -= 1) {
@@ -97,44 +123,56 @@ const assertZipShape = (zip: Uint8Array, csvName: string) => {
   const compressed = view.getUint32(directory + 20, true);
   const expanded = view.getUint32(directory + 24, true);
   const nameLength = view.getUint16(directory + 28, true);
+  if (compressed > zip.length || expanded > remainingCsvBytes) fail('LIMIT');
   if (compressed > MAX_ZIP_BYTES || expanded > MAX_CSV_BYTES ||
       directory + 46 + nameLength > zip.length ||
       new TextDecoder().decode(zip.subarray(directory + 46, directory + 46 + nameLength)) !== csvName)
     fail('BAD_ZIP');
 };
 
-const parseRows = (csv: Uint8Array, start: number, end: number) => {
-  const text = new TextDecoder('utf-8', { fatal: true }).decode(csv);
+const parseRows = (parts: Array<{ day: string; csv: Uint8Array }>,
+  start: number, end: number) => {
   const rows: Row[] = [];
   let before: Row | null = null;
   let after = false;
   let previousId = -1;
   let previousTime = -1;
-  for (const [index, line] of text.split(/\r?\n/).entries()) {
-    if (!line) continue;
-    if (index === 0 && line ===
-        'agg_trade_id,price,quantity,first_trade_id,last_trade_id,transact_time,is_buyer_maker')
-      continue;
-    const fields = line.split(',');
-    if (fields.length !== 7) fail('BAD_CSV');
-    const [a, p, q, f, l, T, maker] = fields;
-    const row = { a: Number(a), p, q, f: Number(f), l: Number(l),
-      T: Number(T), m: maker === 'true' };
-    if (![row.a, row.f, row.l, row.T].every(Number.isSafeInteger) ||
-        !Number.isFinite(Number(p)) || !Number.isFinite(Number(q)) ||
-        Number(p) <= 0 || Number(q) <= 0 || !['true', 'false'].includes(maker) ||
-        row.a <= previousId || row.T < previousTime) fail('BAD_CSV');
-    previousId = row.a;
-    previousTime = row.T;
-    if (row.T < start) before = row;
-    else if (row.T <= end) {
-      if (rows.length === 0 && before) rows.push(before);
-      rows.push(row);
-      if (rows.length > MAX_ROWS) fail('LIMIT');
-    } else if (!after && rows.length > 0) {
-      rows.push(row);
-      after = true;
-      if (rows.length > MAX_ROWS) fail('LIMIT');
+  let previousTradeId = -1;
+  for (const { day, csv } of parts) {
+    const dayStart = Date.parse(`${day}T00:00:00.000Z`);
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(csv);
+    for (const [index, line] of text.split(/\r?\n/).entries()) {
+      if (!line) continue;
+      if (index === 0 && line ===
+          'agg_trade_id,price,quantity,first_trade_id,last_trade_id,transact_time,is_buyer_maker')
+        continue;
+      const fields = line.split(',');
+      if (fields.length !== 7) fail('BAD_CSV');
+      const [a, p, q, f, l, T, maker] = fields;
+      const row = { a: Number(a), p, q, f: Number(f), l: Number(l),
+        T: Number(T), m: maker === 'true' };
+      if (![row.a, row.f, row.l, row.T].every(Number.isSafeInteger) ||
+          !Number.isFinite(Number(p)) || !Number.isFinite(Number(q)) ||
+          Number(p) <= 0 || Number(q) <= 0 || !['true', 'false'].includes(maker) ||
+          row.a <= previousId || row.T < previousTime ||
+          row.f > row.l || row.f <= previousTradeId ||
+          row.T < dayStart || row.T >= dayStart + DAY_MS) fail('BAD_CSV');
+      // The two files must join without a missing aggregate. The same check
+      // covers the selected tape and catches gaps elsewhere in the ZIPs.
+      if (previousId >= 0 && row.a !== previousId + 1) fail('SEQUENCE_GAP');
+      previousId = row.a;
+      previousTime = row.T;
+      previousTradeId = row.l;
+      if (row.T < start) before = row;
+      else if (row.T <= end) {
+        if (rows.length === 0 && before) rows.push(before);
+        rows.push(row);
+        if (rows.length > MAX_ROWS) fail('LIMIT');
+      } else if (!after && rows.length > 0) {
+        rows.push(row);
+        after = true;
+        if (rows.length > MAX_ROWS) fail('LIMIT');
+      }
     }
   }
   if (!rows.some((row) => row.T < start) || !rows.some((row) => row.T > end))
@@ -163,24 +201,37 @@ export const fetchVerifiedDailyUsdMArchive = async (input: {
   if (candles.length < 1 || candles.length > 120) fail('INVALID_CANDLES');
   const startTimeMs = candles[0].openTime;
   const endTimeMs = candles[candles.length - 1].closeTime + 1;
-  const day = exactDay(startTimeMs, endTimeMs);
-  const { basename, url } = archiveUrls(symbol, day);
+  const days = archiveDays(startTimeMs, endTimeMs);
   const fetcher = input.fetcher ?? fetch;
-  const checksumText = new TextDecoder().decode(await readBounded(
-    `${url}.CHECKSUM`, 256, fetcher)).trim();
-  const match = checksumText.match(/^([0-9a-f]{64})\s+([^\s]+)$/i);
-  if (!match || match[2] !== basename)
-    throw new Error('BACKTEST_INTRABAR_ARCHIVE_CHECKSUM_INVALID');
-  const zip = await readBounded(url, MAX_ZIP_BYTES, fetcher);
-  const zipSha256 = sha256(zip);
-  if (zipSha256 !== match[1].toLowerCase()) fail('CHECKSUM_MISMATCH');
-  const csvName = basename.replace(/\.zip$/, '.csv');
-  assertZipShape(zip, csvName);
-  const csv = unzipSync(zip)[csvName];
-  if (!csv || csv.length > MAX_CSV_BYTES) fail('BAD_ZIP');
-  const rows = parseRows(csv, startTimeMs, endTimeMs - 1);
-  const snapshot: Snapshot = { version: 1, symbol, day, startTimeMs, endTimeMs,
-    archiveUrl: url, zipSha256, candles, rows };
+  const archives: SnapshotV2['archives'] = [];
+  const parts: Array<{ day: string; csv: Uint8Array }> = [];
+  let zipBytes = 0;
+  let csvBytes = 0;
+  for (const day of days) {
+    const { basename, url } = archiveUrls(symbol, day);
+    const checksumText = new TextDecoder().decode(await readBounded(
+      `${url}.CHECKSUM`, 256, fetcher)).trim();
+    const match = checksumText.match(/^([0-9a-f]{64})\s+([^\s]+)$/i);
+    if (!match || match[2] !== basename) fail('CHECKSUM_INVALID');
+    const zip = await readBounded(url, MAX_ZIP_BYTES - zipBytes, fetcher);
+    zipBytes += zip.length;
+    const zipSha256 = sha256(zip);
+    if (zipSha256 !== match?.[1].toLowerCase()) fail('CHECKSUM_MISMATCH');
+    const csvName = basename.replace(/\.zip$/, '.csv');
+    assertZipShape(zip, csvName, MAX_CSV_BYTES - csvBytes);
+    const csv = unzipSync(zip)[csvName];
+    if (!csv) fail('BAD_ZIP');
+    csvBytes += csv.length;
+    if (csvBytes > MAX_CSV_BYTES) fail('LIMIT');
+    archives.push({ day, archiveUrl: url, zipSha256 });
+    parts.push({ day, csv });
+  }
+  const rows = parseRows(parts, startTimeMs, endTimeMs - 1);
+  const snapshot: Snapshot = days.length === 1
+    ? { version: 1, symbol, day: days[0], startTimeMs, endTimeMs,
+        archiveUrl: archives[0].archiveUrl, zipSha256: archives[0].zipSha256,
+        candles, rows }
+    : { version: 2, symbol, startTimeMs, endTimeMs, archives, candles, rows };
   return { snapshot, verified: await replay(snapshot) };
 };
 
@@ -191,14 +242,23 @@ export const readVerifiedRunArchive = async (runId: string, symbol: string,
   });
   if (!record) return null;
   const snapshot = record.payload as unknown as Snapshot;
-  if (!snapshot || snapshot.version !== 1 || snapshot.symbol !== symbol ||
+  if (!snapshot || ![1, 2].includes(snapshot.version) || snapshot.symbol !== symbol ||
       snapshot.startTimeMs !== startTimeMs || snapshot.endTimeMs !== endTimeMs ||
       !Array.isArray(snapshot.candles) || !Array.isArray(snapshot.rows) ||
       snapshot.candles.length !== (endTimeMs - startTimeMs) / 60_000 ||
-      snapshot.day !== exactDay(startTimeMs, endTimeMs) ||
-      snapshot.archiveUrl !== archiveUrls(symbol, snapshot.day).url ||
-      !/^[0-9a-f]{64}$/.test(snapshot.zipSha256) ||
       snapshotHash(snapshot) !== record.payloadSha256) fail('SNAPSHOT_CHANGED');
+  const days = archiveDays(startTimeMs, endTimeMs);
+  if (snapshot.version === 1) {
+    if (days.length !== 1 || snapshot.day !== days[0] ||
+        snapshot.archiveUrl !== archiveUrls(symbol, snapshot.day).url ||
+        !/^[0-9a-f]{64}$/.test(snapshot.zipSha256)) fail('SNAPSHOT_CHANGED');
+  } else if (snapshot.version === 2) {
+    if (days.length !== 2 || !Array.isArray(snapshot.archives) ||
+        snapshot.archives.length !== 2 || snapshot.archives.some((archive, index) =>
+          archive.day !== days[index] ||
+          archive.archiveUrl !== archiveUrls(symbol, days[index]).url ||
+          !/^[0-9a-f]{64}$/.test(archive.zipSha256))) fail('SNAPSHOT_CHANGED');
+  } else fail('SNAPSHOT_CHANGED');
   return replay(snapshot);
 };
 
@@ -231,7 +291,7 @@ export const fetchVerifiedArchivedIntrabarForRun = async (
       typeof endTimeMs !== 'number' ||
       (endTimeMs - startTimeMs) / 60_000 > maxCandles)
     throw new Error('BACKTEST_INTRABAR_ARCHIVE_UNSUPPORTED_WINDOW');
-  exactDay(startTimeMs, endTimeMs);
+  archiveDays(startTimeMs, endTimeMs);
   const persisted = await readVerifiedRunArchive(runId, symbol, startTimeMs, endTimeMs);
   if (persisted) return persisted;
   if (expectedDigest) fail('SNAPSHOT_MISSING_ON_RETRY');

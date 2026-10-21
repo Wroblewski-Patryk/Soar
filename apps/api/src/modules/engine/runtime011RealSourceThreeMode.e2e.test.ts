@@ -248,6 +248,8 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
     }));
     const { snapshot, verified } = await fetchVerifiedDailyUsdMArchive({ symbol,
       candles: klines });
+    expect(snapshot.version).toBe(1);
+    if (snapshot.version !== 1) throw new Error('Expected one archive');
     expect(snapshot.zipSha256).toBe(zipSha);
     expect(verified).toHaveLength(100);
     expect(verified[5].intrabarTicks.find((tick) => tick.sequenceId === dcaId))

@@ -18,8 +18,14 @@ const adjacentStart = Date.parse('2026-10-18T04:07:00.000Z');
 const adjacentEnd = adjacentStart + 100 * 60_000;
 const witnessStart = Date.parse('2026-10-18T02:41:00.000Z');
 const witnessEnd = witnessStart + 100 * 60_000;
+const midnightStart = Date.parse('2026-10-17T23:50:00.000Z');
+const midnightEnd = midnightStart + 20 * 60_000;
 const expectedZipSha =
   '4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b';
+const expectedMidnightZipShas = [
+  '0cb11b74fb1514e650613d23fb60224a4131af6fcbff0c14218604762dee9b01',
+  expectedZipSha,
+];
 const strategyConfig = {
   openConditions: { direction: 'long',
     indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: -100,
@@ -87,14 +93,18 @@ const stopWorker = async (proof: ProofProcess) => {
 };
 
 type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence' |
-  'adjacent-sequence' | 'functional-witness';
+  'adjacent-sequence' | 'functional-witness' | 'midnight-baseline' |
+  'midnight-changed' | 'midnight-missing';
 const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
+  const midnight = variant.startsWith('midnight-');
   const adjacentSequence = variant === 'adjacent-sequence';
   const functionalWitness = variant === 'functional-witness';
   const marketSequence = variant === 'market-sequence' || adjacentSequence ||
     functionalWitness;
-  const windowStart = functionalWitness ? witnessStart : adjacentSequence ? adjacentStart : start;
-  const windowEnd = functionalWitness ? witnessEnd : adjacentSequence ? adjacentEnd : end;
+  const windowStart = midnight ? midnightStart :
+    functionalWitness ? witnessStart : adjacentSequence ? adjacentStart : start;
+  const windowEnd = midnight ? midnightEnd :
+    functionalWitness ? witnessEnd : adjacentSequence ? adjacentEnd : end;
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redisUrl = new URL(process.env.REDIS_URL ?? '');
   const queueName = process.env.WORKER_BACKTEST_QUEUE ?? '';
@@ -136,8 +146,10 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     const first = startWorker(runId, 'hold');
     processes.push(first);
     await first.waitFor('ARCHIVE_DIGEST_PERSISTED_HOLD', 60_000);
-    expect(first.events.filter((event) => event === 'ARCHIVE_CHECKSUM_FETCH')).toHaveLength(1);
-    expect(first.events.filter((event) => event === 'ARCHIVE_ZIP_FETCH')).toHaveLength(1);
+    expect(first.events.filter((event) => event === 'ARCHIVE_CHECKSUM_FETCH'))
+      .toHaveLength(midnight ? 2 : 1);
+    expect(first.events.filter((event) => event === 'ARCHIVE_ZIP_FETCH'))
+      .toHaveLength(midnight ? 2 : 1);
     const held = await prisma.backtestRun.findUniqueOrThrow({ where: { id: runId } });
     const firstDigest = (held.seedConfig as Record<string, any>)
       .intrabarSourceDigestBySymbol?.ALICEUSDT;
@@ -149,20 +161,38 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     const originalArchive = await prisma.backtestIntrabarArchive.findUniqueOrThrow({
       where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
     });
-    expect((originalArchive.payload as Record<string, unknown>).zipSha256).toBe(expectedZipSha);
+    if (midnight) {
+      const payload = originalArchive.payload as Record<string, unknown>;
+      expect(payload.version).toBe(2);
+      expect((payload.archives as Array<{ day: string; zipSha256: string }>))
+        .toMatchObject([{ day: '2026-10-17' }, { day: '2026-10-18' }]);
+      expect((payload.archives as Array<{ zipSha256: string }>).every((archive) =>
+        /^[0-9a-f]{64}$/.test(archive.zipSha256))).toBe(true);
+      expect((payload.archives as Array<{ zipSha256: string }>).map((archive) =>
+        archive.zipSha256)).toEqual(expectedMidnightZipShas);
+    } else {
+      expect((originalArchive.payload as Record<string, unknown>).zipSha256)
+        .toBe(expectedZipSha);
+    }
     expect(await redis.lRange(processingKey, 0, -1)).toEqual([runId]);
     expect(await redis.sIsMember(dedupeKey, runId)).toBe(true);
     expect(await prisma.backtestTrade.count({ where: { backtestRunId: runId } })).toBe(0);
     expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(1);
     await stopWorker(first);
 
-    if (variant === 'changed') {
+    if (variant === 'changed' || variant === 'midnight-changed') {
+      const payload = originalArchive.payload as Record<string, unknown>;
       await prisma.backtestIntrabarArchive.update({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
-        data: { payload: { ...(originalArchive.payload as Record<string, unknown>),
-          zipSha256: '0'.repeat(64) } as Prisma.InputJsonValue },
+        data: { payload: { ...payload,
+          ...(midnight ? { archives: [
+            ...(payload.archives as Record<string, unknown>[]).slice(0, 1),
+            { ...(payload.archives as Record<string, unknown>[])[1],
+              zipSha256: '0'.repeat(64) },
+          ] } : { zipSha256: '0'.repeat(64) }),
+        } as Prisma.InputJsonValue },
       });
-    } else if (variant === 'missing') {
+    } else if (variant === 'missing' || variant === 'midnight-missing') {
       await prisma.backtestIntrabarArchive.delete({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
       });
@@ -200,12 +230,16 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     });
     const reports = await prisma.backtestReport.findMany({ where: { backtestRunId: runId } });
     expect(reports).toHaveLength(1);
-    if (variant === 'baseline' || marketSequence) {
+    if (variant === 'baseline' || variant === 'midnight-baseline' || marketSequence) {
       expect(final.status).toBe('COMPLETED');
       expect((final.seedConfig as Record<string, any>)
         .intrabarSourceDigestBySymbol.ALICEUSDT).toBe(firstDigest);
       expect(second.events.filter((event) => event === 'SIMULATE')).toHaveLength(1);
       expect(await prisma.backtestIntrabarArchive.count({ where: { runId } })).toBe(1);
+      const finalArchive = await prisma.backtestIntrabarArchive.findUniqueOrThrow({
+        where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
+      });
+      expect(finalArchive.payloadSha256).toBe(originalArchive.payloadSha256);
       expect(trades.length).toBeGreaterThan(0);
       expect(reports[0].totalTrades).toBe(trades.length);
       expect(reports[0].netPnl).toBeCloseTo(trades.reduce((sum, trade) =>
@@ -216,10 +250,19 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
       const timeline = await getRunTimeline(user.id, runId,
         GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' }));
       expect(timeline?.status).toBe('COMPLETED');
-      expect(timeline?.totalCandles).toBe(98);
+      expect(timeline?.totalCandles).toBe(midnight ? 18 : 98);
       expect(timeline?.events.filter((event) =>
         event.type !== 'ENTRY' && event.type !== 'DCA').length).toBe(trades.length);
       expect(trades.filter((trade) => trade.exitReason === 'SIGNAL_EXIT')).toHaveLength(0);
+      if (midnight) process.stdout.write(`PUBLIC_MIDNIGHT_PROCESS_PROOF ${JSON.stringify({
+        runId, firstPid: first.child.pid, secondPid: second.child.pid,
+        archiveDays: ['2026-10-17', '2026-10-18'],
+        zipSha256: expectedMidnightZipShas,
+        payloadSha256: originalArchive.payloadSha256, digest: firstDigest,
+        status: final.status, trades: trades.length, reports: reports.length,
+        reportNetPnl: reports[0].netPnl, timelineCandles: timeline?.totalCandles,
+        timelineEvents: timeline?.events.length,
+      })}\n`);
       if (marketSequence) {
         const archived = await readVerifiedRunArchive(runId, 'ALICEUSDT',
           windowStart, windowEnd);
@@ -447,7 +490,7 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     } else {
       expect(final.status).toBe('FAILED');
       expect((final.seedConfig as Record<string, any>).error).toContain(
-        variant === 'changed' ? 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED' :
+        variant.endsWith('changed') ? 'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED' :
           'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_MISSING_ON_RETRY');
       expect(second.events).not.toContain('SIMULATE');
       expect(trades).toHaveLength(0);
@@ -492,4 +535,9 @@ describe('real archived intrabar job recovery across processes', () => {
     ? it : it.skip;
   witnessIt('records source-tick DCA then TTP on the selected public candle',
     async () => runProcessCase('functional-witness', false), 120_000);
+  const midnightIt = process.env.RUN_BACKTEST_MIDNIGHT_PROCESS_PROOF === '1'
+    ? it : it.skip;
+  midnightIt.each(['midnight-baseline', 'midnight-changed', 'midnight-missing'] as const)(
+    'recovers the crossing-UTC-midnight run from two archives: %s',
+    async (variant) => runProcessCase(variant, false), 120_000);
 });
