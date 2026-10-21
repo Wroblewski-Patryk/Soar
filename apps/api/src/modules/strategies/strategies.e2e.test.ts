@@ -154,7 +154,8 @@ describe('Strategies CRUD contract', () => {
       ...createStrategyPayload(), config: legacyConfig,
     });
     expect(invalidCreate.status).toBe(400);
-    expect(invalidCreate.body.error.message).toBe('MOMENTUM period must be at least 2');
+    expect(invalidCreate.body.error.message)
+      .toBe('MOMENTUM period must be an integer from 2 to 255');
     expect(invalidCreate.body.error.details).toEqual(expect.objectContaining({
       fields: ['open.indicatorsLong[0].params.period',
         'open.indicatorsShort[0].operand.params.period'], min: 2,
@@ -169,8 +170,39 @@ describe('Strategies CRUD contract', () => {
     });
     expect(created.status).toBe(201);
     const id = created.body.id as string;
+    const metadataConfig = { open: { direction: 'long', indicatorsLong: [
+      { name: 'EMA', condition: '>', value: 0, params: { period: 2 },
+        metadata: { name: 'MOMENTUM', params: { period: 1 } } },
+    ], indicatorsShort: [] } };
+    const metadataCreated = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(), name: 'metadata only', config: metadataConfig,
+    });
+    expect(metadataCreated.status).toBe(201);
     const read = await agent.get(`/dashboard/strategies/${id}`);
     expect(read.body.config.open.indicatorsLong[0].params.period).toBe(2);
+    for (const period of [0, 1.5, '1', '2', 256]) {
+      const invalidConfig = structuredClone(legacyConfig) as any;
+      invalidConfig.open.indicatorsLong[0].params.period = period;
+      invalidConfig.open.indicatorsShort[0].operand.params.period = period;
+      const create = await agent.post('/dashboard/strategies').send({
+        ...createStrategyPayload(), config: invalidConfig,
+      });
+      const update = await agent.put(`/dashboard/strategies/${id}`)
+        .send({ config: invalidConfig });
+      const imported = await agent.post('/dashboard/strategies/import').send({
+        formatVersion: 'strategy.v1', exportedAt: new Date().toISOString(),
+        strategy: { ...createStrategyPayload(), config: invalidConfig },
+      });
+      for (const response of [create, update, imported]) {
+        expect(response.status).toBe(400);
+        expect(response.body.error.message)
+          .toBe('MOMENTUM period must be an integer from 2 to 255');
+        expect(response.body.error.details.fields).toEqual([
+          'open.indicatorsLong[0].params.period',
+          'open.indicatorsShort[0].operand.params.period',
+        ]);
+      }
+    }
     const invalidUpdate = await agent.put(`/dashboard/strategies/${id}`).send({
       config: legacyConfig,
     });
@@ -182,7 +214,8 @@ describe('Strategies CRUD contract', () => {
       strategy: { ...createStrategyPayload(), config: legacyConfig },
     });
     expect(invalidImport.status).toBe(400);
-    expect(invalidImport.body.error.message).toBe('MOMENTUM period must be at least 2');
+    expect(invalidImport.body.error.message)
+      .toBe('MOMENTUM period must be an integer from 2 to 255');
 
     // This record represents a definition saved before the policy was introduced.
     await prisma.strategy.update({ where: { id }, data: { config: legacyConfig } });
@@ -210,7 +243,7 @@ describe('Strategies CRUD contract', () => {
     await expect(applyMomentumPeriodMigration(prisma, staleInventory.digest))
       .rejects.toThrow('Strategy inventory changed since dry-run');
     const dryRun = await inspectMomentumPeriodMigration(prisma);
-    expect(dryRun).toMatchObject({ strategyCount: 1,
+    expect(dryRun).toMatchObject({ strategyCount: 2,
       candidateLinkedHistoricalRuns: 1,
       candidateActiveLegacyLinks: 0, candidateActiveCanonicalLinks: 1 });
     expect(dryRun.candidates).toEqual([{ id, fields: [
@@ -227,6 +260,8 @@ describe('Strategies CRUD contract', () => {
     expect(migratedRead.body.config.open.indicatorsLong[0].params.period).toBe(2);
     expect(migratedRead.body.config.open.indicatorsShort[0].operand.params.period).toBe(2);
     expect(migratedRead.body.config.metadata).toEqual(concurrentlyEditedConfig.metadata);
+    expect((await prisma.strategy.findUniqueOrThrow({
+      where: { id: metadataCreated.body.id as string } })).config).toEqual(metadataConfig);
     expect((await prisma.bot.findUniqueOrThrow({ where: { id: activeBotId } })).isActive)
       .toBe(true);
     const savedHistory = await prisma.backtestRun.findUniqueOrThrow({
@@ -236,6 +271,22 @@ describe('Strategies CRUD contract', () => {
     expect(secondDryRun.candidates).toEqual([]);
     expect(await applyMomentumPeriodMigration(prisma, secondDryRun.digest))
       .toMatchObject({ migrated: 0, changedFields: 0 });
+
+    const unsafeCreated = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(), name: 'pre-policy noninteger', config: validConfig,
+    });
+    expect(unsafeCreated.status).toBe(201);
+    const unsafeConfig = structuredClone(validConfig) as any;
+    unsafeConfig.open.indicatorsLong[0].params.period = 1.5;
+    await prisma.strategy.update({ where: { id: unsafeCreated.body.id as string },
+      data: { config: unsafeConfig } });
+    const unsafeInventory = await inspectMomentumPeriodMigration(prisma);
+    expect(unsafeInventory.unsafe).toEqual([{
+      id: unsafeCreated.body.id,
+      fields: ['open.indicatorsLong[0].params.period'],
+    }]);
+    await expect(applyMomentumPeriodMigration(prisma, unsafeInventory.digest))
+      .rejects.toThrow('invalid MOMENTUM periods requiring separate review');
   });
 
   it('supports create/list/get/update/delete flow for authenticated user', async () => {

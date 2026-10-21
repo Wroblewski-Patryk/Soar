@@ -21,9 +21,17 @@ const candidatesFromRows = (rows: StrategyRow[]) => rows.flatMap((row) => {
   return normalized.fields.length > 0 ? [{ ...row, ...normalized }] : [];
 });
 
+const unsafeFromRows = (rows: StrategyRow[]) => rows.flatMap((row) => {
+  const result = normalizeLegacyMomentumPeriod(row.config);
+  const migratable = new Set(result.fields);
+  const fields = result.invalidFields.filter((field) => !migratable.has(field));
+  return fields.length > 0 ? [{ id: row.id, fields }] : [];
+});
+
 const collectMomentumPeriodInventory = async (client: StrategyReader) => {
   const rows = await readRows(client);
   const candidates = candidatesFromRows(rows);
+  const unsafe = unsafeFromRows(rows);
   const ids = candidates.map((row) => row.id);
   const [activeLegacyLinks, activeCanonicalLinks, historicalRuns] = ids.length > 0
     ? await Promise.all([
@@ -41,6 +49,7 @@ const collectMomentumPeriodInventory = async (client: StrategyReader) => {
     candidateActiveCanonicalLinks: activeCanonicalLinks,
     candidateLinkedHistoricalRuns: historicalRuns,
     candidates: candidates.map(({ id, fields }) => ({ id, fields })),
+    unsafe,
   };
 };
 
@@ -62,6 +71,8 @@ export const applyMomentumPeriodMigration = async (
     const actualDigest = digestRows(rows);
     if (actualDigest !== expectedDigest)
       throw new Error('Strategy inventory changed since dry-run; rerun inventory');
+    if (unsafeFromRows(rows).length > 0)
+      throw new Error('Strategy inventory contains invalid MOMENTUM periods requiring separate review');
     const candidates = candidatesFromRows(rows);
     for (const candidate of candidates) {
       const updated = await tx.strategy.updateMany({

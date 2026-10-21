@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { resolveBootstrapAdminPassword } from '../prisma/seedAdminPassword';
+import { validateMomentumPeriod } from '../src/modules/strategies/strategyConfigValidation';
 
 const prisma = new PrismaClient();
 
@@ -130,6 +131,13 @@ async function main() {
   if (snapshot.schemaVersion !== 1) {
     throw new Error(`UNSUPPORTED_SNAPSHOT_SCHEMA_VERSION: ${snapshot.schemaVersion}`);
   }
+
+  // This import bypasses the public strategy service. Reject invalid executable
+  // MOMENTUM periods before ensureUser or any upsert can write to the database.
+  if (!snapshot.data || !Array.isArray(snapshot.data.strategies))
+    throw new Error('INVALID_PAPER_SNAPSHOT_STRATEGIES');
+  for (const item of snapshot.data.strategies)
+    validateMomentumPeriod(item.config);
 
   const userId = await ensureUser(snapshot.source.email);
 

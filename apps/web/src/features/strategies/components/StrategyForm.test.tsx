@@ -318,7 +318,7 @@ describe('StrategyForm', () => {
     await act(async () => { await Promise.resolve(); });
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByTestId('form-validation-summary'))
-      .toHaveTextContent('MOMENTUM period must be at least 2');
+      .toHaveTextContent('MOMENTUM period must be a whole number from 2 to 255');
     expect(screen.getByRole('tab', { name: 'Entry conditions' }))
       .toHaveAttribute('aria-selected', 'true');
   });

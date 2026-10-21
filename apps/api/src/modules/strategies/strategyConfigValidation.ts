@@ -125,15 +125,20 @@ const validateDcaConfig = (config: unknown) => {
   });
 };
 
-export const validateStrategyConfig = (config: unknown) => {
-  const legacyMomentumFields = normalizeLegacyMomentumPeriod(config).fields;
-  if (legacyMomentumFields.length > 0) {
+export const validateMomentumPeriod = (config: unknown) => {
+  const invalidMomentumFields = normalizeLegacyMomentumPeriod(config).invalidFields;
+  if (invalidMomentumFields.length > 0) {
     throw strategyErrors.invalidMomentumPeriod({
-      fields: legacyMomentumFields,
-      rule: 'momentum_period_min_2',
+      fields: invalidMomentumFields,
+      rule: 'momentum_period_integer_2_255',
       min: 2,
+      max: 255,
     });
   }
+};
+
+export const validateStrategyConfig = (config: unknown) => {
+  validateMomentumPeriod(config);
   validateTrailingTakeProfitLevels(config);
   validateTrailingStopLevels(config);
   validateDcaConfig(config);

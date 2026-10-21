@@ -285,6 +285,10 @@ const parseRule = (value: unknown): StrategyIndicatorRule | null => {
   };
 };
 
+// Shared by strategy admission and migration so both inspect only rules the
+// evaluator would actually execute.
+export const parseStrategyIndicatorRule = parseRule;
+
 export const parseStrategySignalRules = (
   strategyConfig?: Record<string, unknown> | null,
 ): StrategySignalRules | null => {

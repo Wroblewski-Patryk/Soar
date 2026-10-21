@@ -1,54 +1,89 @@
+import { parseStrategyIndicatorRule } from '../engine/strategySignalEvaluator';
+
 type JsonRecord = Record<string, unknown>;
 
 const asRecord = (value: unknown): JsonRecord | null =>
   value !== null && typeof value === 'object' && !Array.isArray(value)
     ? value as JsonRecord : null;
 
-const isLegacyOne = (value: unknown) =>
-  (typeof value === 'number' || typeof value === 'string') && Number(value) === 1;
-
 const isMomentum = (value: unknown) =>
   typeof value === 'string' && value.trim().toUpperCase().includes('MOMENTUM');
 
-const visitRule = (value: unknown, path: string, fields: string[]): unknown => {
-  if (Array.isArray(value)) {
-    const next = value.map((entry, index) => visitRule(entry, `${path}[${index}]`, fields));
-    return next.some((entry, index) => entry !== value[index]) ? next : value;
-  }
-  const record = asRecord(value);
-  if (!record) return value;
-
-  let next: JsonRecord = record;
-  const params = asRecord(record.params);
-  const periodKey = params?.period != null ? 'period' : 'length';
-  if ((isMomentum(record.name) || isMomentum(record.indicator)) && params &&
-      isLegacyOne(params[periodKey])) {
-    fields.push(`${path}.params.${periodKey}`);
-    next = { ...record, params: { ...params, [periodKey]: 2 } };
-  }
-  for (const [key, child] of Object.entries(next)) {
-    if (key === 'params') continue;
-    const transformed = visitRule(child, `${path}.${key}`, fields);
-    if (transformed !== child) next = { ...next, [key]: transformed };
-  }
-  return next;
+const effectivePeriod = (node: JsonRecord) => {
+  const params = asRecord(node.params);
+  if (!params) return null;
+  const key = params.period != null ? 'period' : 'length';
+  const value = params[key];
+  return value == null ? null : { params, key, value };
 };
 
-/** The only writable surface is a saved strategy's entry rules. */
+const isAdmissiblePeriod = (value: unknown) =>
+  typeof value === 'number' && Number.isInteger(value) && value >= 2 && value <= 255;
+
+const selectedOperand = (rule: JsonRecord, indicator: string) => {
+  const explicit = asRecord(rule.operand);
+  const explicitKind = explicit?.kind ?? explicit?.type;
+  const explicitIndicator = explicit?.indicator ?? explicit?.name;
+  if (explicit && explicitKind !== 'constant' && explicitKind !== 'band' &&
+      typeof explicitIndicator === 'string' &&
+      explicitIndicator.trim().toUpperCase() === indicator)
+    return { source: explicit, path: 'operand' };
+  const value = asRecord(rule.value);
+  const valueIndicator = value?.indicator ?? value?.name;
+  if (value && typeof valueIndicator === 'string' &&
+      valueIndicator.trim().toUpperCase() === indicator)
+    return { source: value, path: 'value' };
+  return null;
+};
+
+/** Examines only rules and series operands selected by the evaluator parser. */
 export const normalizeLegacyMomentumPeriod = (config: unknown): {
-  config: unknown; fields: string[];
+  config: unknown; fields: string[]; invalidFields: string[];
 } => {
   const root = asRecord(config);
   const openKey = root?.open != null ? 'open' : 'openConditions';
   const open = asRecord(root?.[openKey]);
-  if (!root || !open) return { config, fields: [] };
+  if (!root || !open) return { config, fields: [], invalidFields: [] };
   const fields: string[] = [];
+  const invalidFields: string[] = [];
   let nextOpen = open;
+
   for (const side of ['indicatorsLong', 'indicatorsShort'] as const) {
     const rules = open[side];
     if (!Array.isArray(rules)) continue;
-    const transformed = visitRule(rules, `${openKey}.${side}`, fields);
-    if (transformed !== rules) nextOpen = { ...nextOpen, [side]: transformed };
+    let nextRules = rules;
+    rules.forEach((raw, index) => {
+      const rule = asRecord(raw);
+      const parsed = parseStrategyIndicatorRule(raw);
+      if (!rule || !parsed) return;
+      let nextRule = rule;
+      const path = `${openKey}.${side}[${index}]`;
+      const inspect = (source: JsonRecord, sourcePath: string) => {
+        const period = effectivePeriod(source);
+        if (!period || isAdmissiblePeriod(period.value)) return source;
+        const field = `${sourcePath}.params.${period.key}`;
+        invalidFields.push(field);
+        if (period.value !== 1) return source;
+        fields.push(field);
+        return { ...source, params: { ...period.params, [period.key]: 2 } };
+      };
+
+      if (isMomentum(parsed.name))
+        nextRule = inspect(nextRule, path);
+      if (parsed.operand.kind === 'series' && isMomentum(parsed.operand.indicator)) {
+        const selected = selectedOperand(rule, parsed.operand.indicator);
+        if (selected) {
+          const next = inspect(selected.source, `${path}.${selected.path}`);
+          if (next !== selected.source) nextRule = { ...nextRule, [selected.path]: next };
+        }
+      }
+      if (nextRule !== rule) {
+        if (nextRules === rules) nextRules = [...rules];
+        nextRules[index] = nextRule;
+      }
+    });
+    if (nextRules !== rules) nextOpen = { ...nextOpen, [side]: nextRules };
   }
-  return { config: nextOpen === open ? config : { ...root, [openKey]: nextOpen }, fields };
+  return { config: nextOpen === open ? config : { ...root, [openKey]: nextOpen },
+    fields, invalidFields };
 };

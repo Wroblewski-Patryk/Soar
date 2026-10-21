@@ -79,7 +79,7 @@ export const dashboardStrategiesPt = {
       marginIsolated: "Isolated",
     },
     open: {
-      momentumPeriodValidation: "O periodo de MOMENTUM tem de ser pelo menos 2. Atualiza o indicador antes de guardar.",
+      momentumPeriodValidation: "O periodo de MOMENTUM tem de ser um numero inteiro entre 2 e 255. Atualiza o indicador antes de guardar.",
       title: "Condicoes de entrada",
       loadIndicatorsFailed: "Nao foi possivel carregar a lista de indicadores",
       direction: "Direcao",

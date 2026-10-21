@@ -31,7 +31,7 @@ const handleStrategyError = (
   }
 
   if (mapped.code === STRATEGY_ERROR_CODES.invalidMomentumPeriod) {
-    return sendError(res, 400, 'MOMENTUM period must be at least 2', mapped.details);
+    return sendError(res, 400, 'MOMENTUM period must be an integer from 2 to 255', mapped.details);
   }
 
   return sendError(res, mapped.status, mapped.message, mapped.details);

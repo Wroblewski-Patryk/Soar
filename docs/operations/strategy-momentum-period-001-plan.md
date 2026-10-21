@@ -142,3 +142,28 @@ Test subprocessu na własnej `_test` sprawdzi odmowę i brak User/Strategy.
 Wykonania produkcyjnego ani zmiany historycznych snapshotów nie ma w tym
 uzupełnieniu. Po kodzie ponowić API/Web i lokalny dry-run/apply, typecheck,
 guardrails oraz strict graph drift; przekazać exact SHA do nowego odbioru.
+
+### Wynik lokalnej poprawki po FAIL
+
+Walidacja API odmawia jawnych wartości `0`, `1`, `1.5`, string `"1"`/`"2"`
+oraz `256` z kodem `INVALID_MOMENTUM_PERIOD`, ścieżką pola i granicami
+`2..255`. Ta sama walidacja działa przed zapisem w publicznym
+create/update/import i w imporcie snapshotu PAPER, zanim ten utworzy
+użytkownika albo wykona upsert. Brak okresu zachowuje domyślne 14.
+
+Spis korzysta z parsera ewaluatora i ogląda tylko wykonywalne reguły oraz
+wybrany operand. EMA z `metadata.name=MOMENTUM` i `period=1` jest przyjmowana
+bez zmiany oraz bez kandydata. Istniejące wykonywalne 1 trafia do migracji
+1→2; inna niedozwolona wartość trafia do `unsafe` i blokuje apply. Test API
+potwierdził także ochronę digestu, zachowanie `seedConfig` historycznego
+backtestu, aktywnego bota i ponowny pusty apply.
+
+Dowody na własnym PostgreSQL `soar_momentum_period_001_test` (127.0.0.1:5581,
+84 migracje) i Redis (127.0.0.1:6421): API strategie `16/16`, polityka
+`12/12`, Web form i walidacja `19/19`, import PAPER subprocess `2/2`.
+Typecheck API/Web, `docs:parity:check`, `quality:guardrails` i
+`architecture:graph:drift:strict` (`939/939`) przeszły. Po sprzątaniu
+User/Strategy/BacktestRun/Bot `0/0/0/0`, Redis `0` kluczy. To jest dowód
+lokalny; nie wykonano spisu ani migracji produkcyjnej, deploy ani real LIVE.
+Status ticketu pozostaje REVIEW/NO-GO do niezależnego odbioru i osobnego
+okna operacyjnego dla spisu oraz migracji produkcyjnej.
