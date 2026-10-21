@@ -102,3 +102,15 @@ To lokalny, celowo wybrany świadek rzeczywistego zaniku sygnału i HOLD przed
 DCA→TTP; nie dowodzi automatycznego wznowienia po awarii procesu ani
 zachowania prawdziwego Binance/produkcji. Pełne 011/011A pozostają REVIEW,
 wydanie NO-GO.
+
+## Errata do SHA `fa7eec0c9` i `05822c0fe`
+
+Powyższa reguła doboru **nie odpowiadała wykonaniu**. `clampPeriod` w
+`sharedIndicatorSeries.ts` podnosi okres 1 do 2; kernel wywołuje ją dla
+`MOMENTUM`. Wcześniejsze `v(i,1)=close[i]-close[i-1]`, oba opisane progi
+oraz uzasadnienie kolejności kandydatów były liczone dla niewykonywanego
+okresu. Zaobserwowane przez evaluator i runtime decyzje, OPEN po zaniku
+sygnału i DCA→TTP są faktami z lokalnej próby, ale nie spełniają wymogu
+poprawnie zamrożonego doboru. Wcześniejszego planu i wyniku nie usuwamy ani
+nie przedstawiamy jako zatwierdzonego odbioru. Nowy plan przed próbą:
+[011 effective MOMENTUM](position-parity-011-effective-momentum-signal-loss-plan.md).
