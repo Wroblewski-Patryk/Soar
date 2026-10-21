@@ -10,17 +10,18 @@ import { simulateInterleavedPortfolio } from '../backtests/backtestPortfolioSimu
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { parseStrategySignalRules } from './strategySignalEvaluator';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
+import { listActiveRuntimeBots } from './runtimeSignalLoopDefaults';
+import { RuntimeSignalDecisionEngine } from './runtimeSignalDecisionEngine';
 import { executeRuntimeDca, RuntimePositionAutomationService } from './runtimePositionAutomation.service';
 import { loadDurableDcaProgress } from './runtimeDurableDcaProgress';
 import { runtimePositionStateStore } from './runtimePositionState.store';
-import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
-import { clearRuntimeTickerStore } from './runtimeTickerStore';
+import { clearRuntimeTickerStore, upsertRuntimeTicker } from './runtimeTickerStore';
 
-// Only the order fill and balance seams are synthetic; the LIVE intent/order/fill
-// transaction path remains real. Any other exchange transport is a tripwire.
+// The venue fill, balance and symbol-rule seams are synthetic. The signal evaluator,
+// LIVE decision, intent/order/fill transaction path and position lifecycle remain real.
 const venue = vi.hoisted(() => ({ submits: [] as string[], lookups: [] as string[] }));
 vi.mock('../exchange/exchangeAdapterBoundary.service', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../exchange/exchangeAdapterBoundary.service')>();
@@ -42,6 +43,17 @@ vi.mock('../exchange/exchangeConnectorFactory.service', async (importOriginal) =
   const actual = await importOriginal<typeof import('../exchange/exchangeConnectorFactory.service')>();
   return { ...actual, createPublicExchangeConnector: () => {
     throw new Error('unexpected public exchange transport');
+  } };
+});
+vi.mock('../exchange/exchangeSymbolRules.service', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../exchange/exchangeSymbolRules.service')>();
+  return { ...actual, getExchangeSymbolRules: async (input: {
+    exchange: string; marketType: string; symbol: string;
+  }) => {
+    if (input.exchange !== 'BINANCE' || input.marketType !== 'FUTURES' ||
+        input.symbol !== 'BTCUSDT') throw new Error('unexpected symbol-rule lookup');
+    return { minQuantity: 0.00000001, minNotional: 0.01,
+      quantityStep: 0.00000001, priceStep: 0.01, contractSize: 1 };
   } };
 });
 vi.mock('../orders/orders.service', async (importOriginal) => {
@@ -78,8 +90,8 @@ vi.mock('../orders/orders.service', async (importOriginal) => {
   };
 });
 
-const enabled = process.env.RUN_THREE_MODE_NEGATIVE_TSL_PARITY_PROOF === '1';
-const stage = process.env.THREE_MODE_NEGATIVE_TSL_STAGE;
+const enabled = process.env.RUN_FULL_SIGNAL_THREE_MODE_PROOF === '1';
+const stage = process.env.FULL_SIGNAL_THREE_MODE_STAGE;
 if (enabled && stage !== 'open' && stage !== 'resume')
   throw new Error('Three-mode parity proof requires open or resume stage');
 const proofIt = enabled && stage === 'open' ? it : it.skip;
@@ -101,6 +113,46 @@ const strategyConfig = {
 };
 const syntheticRules = { minAmount: 0.00000001, minNotional: 0.01,
   amountPrecision: 8, contractSize: 1 };
+const prices = [99, 100, 100, 49, 57, 25, 24.99, 20];
+
+const checkFinalNoSignalCandle = async (index: number, baseTime: number,
+  expectedBotIds: string[]) => {
+  const candles = prices.slice(0, index + 1).map((price, candleIndex) => {
+    const openTime = baseTime + candleIndex * 60_000;
+    return { openTime, closeTime: openTime + 59_999,
+      open: price, high: price, low: price, close: price, volume: 1_000 };
+  });
+  const engine = new RuntimeSignalDecisionEngine({
+    getSeries: () => candles,
+    resolveFundingRateSeriesForCandles: () => null,
+    resolveOpenInterestSeriesForCandles: () => null,
+    resolveOrderBookSeriesForCandles: () => null,
+  });
+  const topology = (await listActiveRuntimeBots()).filter((bot) =>
+    expectedBotIds.includes(bot.id));
+  expect(topology.map((bot) => bot.id).sort()).toEqual([...expectedBotIds].sort());
+  const decisions: Array<'LONG' | 'SHORT' | 'EXIT' | null> = [];
+  await processRuntimeFinalCandleDecision({ type: 'candle', exchange: 'BINANCE',
+    marketType: 'FUTURES', symbol, interval: '1m', eventTime: candles[index].closeTime,
+    ...candles[index], isFinal: true }, {
+    nowMs: Date.now, minDirectionalScore: 1, runtimeSignalQuantity: 0.00000001,
+    signalDecisionDedupeRetentionMs: 21_600_000, processedDecisionWindows: new Map(),
+    listActiveBotsFromTopologyCacheWithMetrics: async () => topology,
+    listRuntimeManagedExternalPositions: async () => [],
+    resolveRuntimeRoutesForEvent: (_event, bots) => bots.map((bot) => ({ bot })),
+    countOpenPositionsForBotAndSymbols: async ({ botId }) =>
+      prisma.position.count({ where: { botId, status: 'OPEN' } }),
+    analyzePreTradeFn: async () => { throw new Error('pretrade on no-signal candle'); },
+    createSignal: async () => { throw new Error('signal on no-signal candle'); },
+    evaluateStrategy: (input) => {
+      const evaluation = engine.evaluateStrategy(input);
+      decisions.push(evaluation.direction);
+      return evaluation;
+    },
+    orchestrateFn: async () => { throw new Error('order on no-signal candle'); },
+  });
+  expect(decisions).toEqual([null, null]);
+};
 
 const resumeBothInFreshProcess = (paperPositionId: string, livePositionId: string,
   baseTime: number) =>
@@ -115,7 +167,7 @@ const resumeBothInFreshProcess = (paperPositionId: string, livePositionId: strin
       cwd: process.cwd(),
       env: { ...process.env, NODE_ENV: 'test', DATABASE_URL: runtimeUrl.toString(),
         TEST_DATABASE_URL: process.env.DATABASE_URL,
-        THREE_MODE_NEGATIVE_TSL_STAGE: 'resume',
+        FULL_SIGNAL_THREE_MODE_STAGE: 'resume',
         THREE_MODE_PAPER_POSITION_ID: paperPositionId,
         THREE_MODE_LIVE_POSITION_ID: livePositionId,
         THREE_MODE_OPEN_PID: String(process.pid),
@@ -129,18 +181,18 @@ const resumeBothInFreshProcess = (paperPositionId: string, livePositionId: strin
     child.on('error', reject);
     child.on('close', (code) => {
       clearTimeout(timeout);
-      if (code === 0) resolve();
+      if (code === 0 && /Tests\s+1 passed/.test(output)) resolve();
       else reject(new Error(`Three-mode resume process exited ${code}: ${output}`));
     });
   });
 
-describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity', () => {
-  proofIt('persists one shared HOLD, DCA and TSL cycle across three modes', async () => {
+describe('BACKTEST/PAPER/Binance internal mock LIVE full signal and position parity', () => {
+  proofIt('evaluates one shared signal tape and persists HOLD, DCA and TSL across three modes', async () => {
     const databaseUrl = new URL(process.env.DATABASE_URL ?? '');
-    if (databaseUrl.pathname.slice(1) !== 'soar_position_parity_006_test' ||
+    if (databaseUrl.pathname.slice(1) !== 'soar_position_parity_007_test' ||
         databaseUrl.hostname !== '127.0.0.1' || !databaseUrl.port ||
         databaseUrl.port === '5432') {
-      throw new Error('Position parity proof requires its own local soar_position_parity_006_test database');
+      throw new Error('Position parity proof requires its own local soar_position_parity_007_test database');
     }
     const redisUrl = new URL(process.env.REDIS_URL ?? '');
     if (redisUrl.hostname !== '127.0.0.1' || !redisUrl.port || redisUrl.port === '6379') {
@@ -200,10 +252,38 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
       expect(botResponse.status).toBe(201);
       botId = botResponse.body.id as string;
 
+      vi.stubGlobal('fetch', async () => { throw new Error('unexpected network transport'); });
+      process.env.NODE_ENV = 'development';
+      const key = await prisma.apiKey.create({ data: { userId: user.id,
+        label: 'local synthetic only', exchange: 'BINANCE',
+        apiKey: 'local-fake-only', apiSecret: 'local-fake-only' } });
+      const liveWallet = await prisma.wallet.create({ data: { userId: user.id,
+        name: 'Three-mode internal LIVE wallet', mode: 'LIVE', exchange: 'BINANCE',
+        marketType: 'FUTURES', baseCurrency: 'USDT', apiKeyId: key.id } });
+      const liveUniverse = await prisma.marketUniverse.create({ data: { userId: user.id,
+        name: 'Three-mode LIVE universe', exchange: 'BINANCE', marketType: 'FUTURES',
+        baseCurrency: 'USDT', whitelist: [symbol], blacklist: [] } });
+      const liveGroup = await prisma.symbolGroup.create({ data: { userId: user.id,
+        marketUniverseId: liveUniverse.id, name: 'Three-mode LIVE symbols', symbols: [symbol] } });
+      const liveBot = await prisma.bot.create({ data: { userId: user.id,
+        name: 'Three-mode internal LIVE bot', mode: 'LIVE', exchange: 'BINANCE',
+        marketType: 'FUTURES', positionMode: 'ONE_WAY', apiKeyId: key.id,
+        isActive: true, liveOptIn: true, consentTextVersion: 'mvp-v1',
+        maxOpenPositions: 1, walletId: liveWallet.id, strategyId,
+        symbolGroupId: liveGroup.id } });
+      liveBotId = liveBot.id;
+      const assignment = await prisma.botMarketGroup.create({ data: { userId: user.id,
+        botId: liveBot.id, symbolGroupId: liveGroup.id, lifecycleStatus: 'ACTIVE',
+        executionOrder: 1, maxOpenPositions: 1, isEnabled: true } });
+      await prisma.marketGroupStrategyLink.create({ data: { userId: user.id,
+        botId: liveBot.id, botMarketGroupId: assignment.id, strategyId } });
+      const activeTopology = await listActiveRuntimeBots();
+      expect(activeTopology.map((bot) => bot.id)).toContain(liveBot.id);
+      expect(activeTopology.find((bot) => bot.id === liveBot.id)?.runtimeContext?.symbols)
+        .toContain(symbol);
       const baseTime = Date.now();
-      // PAPER uses finalized candles for the entry decision and tickers for lifecycle fills;
+      // Both runtime bots evaluate every final candle from the same saved strategy.
       // BACKTEST uses the same indexed close prices as historical fill marks.
-      const prices = [99, 100, 100, 49, 57, 25, 24.99, 20];
       const candlesFor = (prices: number[]) => Array.from({ length: 100 }, (_, index) => {
         const price = prices[index] ?? prices.at(-1)!;
         const openTime = baseTime + index * 60_000;
@@ -235,79 +315,27 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
         .toBe('OPEN');
       expect(await prisma.signal.count({ where: { botId, symbol, direction: 'EXIT' } })).toBe(0);
 
-      vi.stubGlobal('fetch', async () => { throw new Error('unexpected network transport'); });
-      process.env.NODE_ENV = 'development';
-      const key = await prisma.apiKey.create({ data: { userId: user.id,
-        label: 'local synthetic only', exchange: 'BINANCE',
-        apiKey: 'local-fake-only', apiSecret: 'local-fake-only' } });
-      const liveWallet = await prisma.wallet.create({ data: { userId: user.id,
-        name: 'Three-mode internal LIVE wallet', mode: 'LIVE', exchange: 'BINANCE',
-        marketType: 'FUTURES', baseCurrency: 'USDT', apiKeyId: key.id } });
-      const liveUniverse = await prisma.marketUniverse.create({ data: { userId: user.id,
-        name: 'Three-mode LIVE universe', exchange: 'BINANCE', marketType: 'FUTURES',
-        baseCurrency: 'USDT', whitelist: [symbol], blacklist: [] } });
-      const liveGroup = await prisma.symbolGroup.create({ data: { userId: user.id,
-        marketUniverseId: liveUniverse.id, name: 'Three-mode LIVE symbols', symbols: [symbol] } });
-      const liveBot = await prisma.bot.create({ data: { userId: user.id,
-        name: 'Three-mode internal LIVE bot', mode: 'LIVE', exchange: 'BINANCE',
-        marketType: 'FUTURES', positionMode: 'ONE_WAY', apiKeyId: key.id,
-        isActive: true, liveOptIn: true, consentTextVersion: 'mvp-v1',
-        maxOpenPositions: 1, walletId: liveWallet.id, strategyId,
-        symbolGroupId: liveGroup.id } });
-      liveBotId = liveBot.id;
-      const assignment = await prisma.botMarketGroup.create({ data: { userId: user.id,
-        botId: liveBot.id, symbolGroupId: liveGroup.id, lifecycleStatus: 'ACTIVE',
-        executionOrder: 1, maxOpenPositions: 1, isEnabled: true } });
-      await prisma.marketGroupStrategyLink.create({ data: { userId: user.id,
-        botId: liveBot.id, botMarketGroupId: assignment.id, strategyId } });
-      const session = await prisma.botRuntimeSession.create({ data: {
-        userId: user.id, botId: liveBot.id, mode: 'LIVE', metadata: { proofOpenPid: process.pid },
-      } });
-      const liveEntry = await orchestrateRuntimeSignal({ userId: user.id,
-        botId: liveBot.id, walletId: liveWallet.id, botMarketGroupId: assignment.id,
-        strategyId, strategyLeverage: leverage, strategyInterval: '1m',
-        runtimeSessionId: session.id, symbol, direction: 'LONG',
-        quantity: opened.quantity, markPrice: prices[2], mode: 'LIVE',
-        candleOpenTime: baseTime + 2 * 60_000,
-        candleCloseTime: baseTime + 2 * 60_000 + 59_999 });
-      expect(liveEntry.status).toBe('opened');
-      if (liveEntry.status !== 'opened') throw new Error('internal LIVE entry did not fill');
+      const liveOpened = await prisma.position.findFirstOrThrow({
+        where: { botId: liveBot.id, symbol, status: 'OPEN' },
+      });
+      const liveEntry = { positionId: liveOpened.id };
       livePositionId = liveEntry.positionId;
-      const routeBot = { id: liveBot.id, userId: user.id, mode: 'LIVE',
-        exchange: 'BINANCE', marketType: 'FUTURES', walletId: liveWallet.id,
-        runtimeContext: { symbolGroupId: liveGroup.id, strategyId,
-          maxOpenPositions: 1, symbols: [symbol], strategy: {
-            strategyId, strategyInterval: '1m', strategyLeverage: leverage,
-            walletRisk, strategyConfig, priority: 1, weight: 1,
-          } } };
-      const noSignalCreate = vi.fn(async () => undefined);
-      const noSignalOrchestrate = vi.fn(async () => liveEntry);
-      await processRuntimeFinalCandleDecision({ type: 'candle', exchange: 'BINANCE',
-        marketType: 'FUTURES', symbol, interval: '1m',
-        eventTime: baseTime + 3 * 60_000 + 59_999,
-        openTime: baseTime + 3 * 60_000, closeTime: baseTime + 3 * 60_000 + 59_999,
-        open: prices[3], high: prices[3], low: prices[3], close: prices[3],
-        volume: 1_000, isFinal: true }, {
-        nowMs: Date.now, minDirectionalScore: 1, runtimeSignalQuantity: opened.quantity,
-        signalDecisionDedupeRetentionMs: 21_600_000,
-        processedDecisionWindows: new Map(),
-        listActiveBotsFromTopologyCacheWithMetrics: async () => [routeBot],
-        listRuntimeManagedExternalPositions: async () => [],
-        resolveRuntimeRoutesForEvent: () => [{ bot: routeBot }],
-        ensureRuntimeSession: async () => session.id,
-        countOpenPositionsForBotAndSymbols: async () => prisma.position.count({ where: {
-          botId: liveBot.id, status: 'OPEN', symbol } }),
-        analyzePreTradeFn: async () => ({ allowed: true, reasons: [], metrics: {} }),
-        createSignal: noSignalCreate,
-        evaluateStrategy: () => ({ direction: null, conditionLines: [], indicatorSummary: null }),
-        orchestrateFn: noSignalOrchestrate,
-      } as unknown as Parameters<typeof processRuntimeFinalCandleDecision>[1]);
-      expect(noSignalCreate).not.toHaveBeenCalled();
-      expect(noSignalOrchestrate).not.toHaveBeenCalled();
-      expect(await prisma.position.count({ where: { id: liveEntry.positionId, status: 'OPEN' } }))
-        .toBe(1);
-      expect(await prisma.signal.count({ where: { botId: liveBot.id, direction: 'EXIT' } }))
-        .toBe(0);
+      expect(liveOpened.entryPrice * liveOpened.quantity / leverage).toBeCloseTo(1, 4);
+      for (const ownedBotId of [botId, liveBot.id]) {
+        const entrySignals = await prisma.signal.findMany({
+          where: { botId: ownedBotId, direction: 'LONG' },
+        });
+        expect(entrySignals).toHaveLength(1);
+        expect(entrySignals[0].strategyId).toBe(strategyId);
+        const payload = entrySignals[0].payload as { candle?: { openTime?: number };
+          strategyDriven?: boolean };
+        expect(payload.strategyDriven).toBe(true);
+        expect(payload.candle?.openTime).toBe(baseTime + 2 * 60_000);
+        expect(await prisma.signal.count({ where: { botId: ownedBotId, direction: 'EXIT' } }))
+          .toBe(0);
+        expect(await prisma.position.count({ where: { botId: ownedBotId, status: 'OPEN' } }))
+          .toBe(1);
+      }
 
       const createAutomation = () => new RuntimePositionAutomationService({
         getCanonicalPositionState: async (id) => {
@@ -321,10 +349,13 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
           resolveFundsExhausted: (context) => resolveRuntimeDcaFundsExhausted(context) }),
         resolveLifecyclePrice: ({ fallbackPrice }) => fallbackPrice,
       });
-      const send = (service: RuntimePositionAutomationService, index: number, price: number) =>
-        service.handleTickerEvent({ type: 'ticker', exchange: 'BINANCE',
+      const send = async (service: RuntimePositionAutomationService, index: number, price: number) => {
+        const event = { type: 'ticker' as const, exchange: 'BINANCE' as const,
           marketType: 'FUTURES', symbol, eventTime: baseTime + index * 60_000 + 59_999,
-          lastPrice: price, priceChangePercent24h: 0 });
+          lastPrice: price, priceChangePercent24h: 0 } as const;
+        await service.handleTickerEvent(event);
+        upsertRuntimeTicker(event);
+      };
       // Exercise the shared Redis tracker across process restart, as production does.
       const firstService = createAutomation();
       await send(firstService, 3, prices[3]);
@@ -334,11 +365,13 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
       expect(armed?.trailingLossActiveLevelIndex).toBe(0);
       expect(armed?.trailingLossLimitPercent).toBeCloseTo(-0.76, 5);
       await send(firstService, 4, prices[4]);
+      await emitCandle(4, prices[4]);
       expect((await prisma.position.findUniqueOrThrow({ where: { id: opened.id } })).status)
         .toBe('OPEN');
       expect((await runtimePositionStateStore.getPositionRuntimeState(opened.id))
         ?.trailingLossLimitPercent).toBeCloseTo(-0.68, 5);
       await send(firstService, 5, prices[5]);
+      await emitCandle(5, prices[5]);
       const afterDca = await prisma.position.findUniqueOrThrow({ where: { id: opened.id } });
       expect(afterDca.status).toBe('OPEN');
       expect(afterDca.quantity).toBeGreaterThan(opened.quantity);
@@ -377,6 +410,15 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
         .toEqual([prices[2], prices[5]]);
       expect(venue.submits).toHaveLength(2);
       expect(venue.lookups).toHaveLength(0);
+      for (const ownedBotId of [botId, liveBot.id]) {
+        for (const index of [3, 5]) {
+          expect(await prisma.botRuntimeEvent.count({ where: {
+            botId: ownedBotId, eventType: 'SIGNAL_DECISION',
+            message: 'No trade decision after strategy merge',
+            eventAt: new Date(baseTime + index * 60_000 + 59_999),
+          } })).toBe(1);
+        }
+      }
 
       await resumeBothInFreshProcess(opened.id, liveEntry.positionId, baseTime);
       const paperClosed = await prisma.position.findUniqueOrThrow({ where: { id: opened.id } });
@@ -384,6 +426,12 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
       expect(paperClosed.closeReason).toBe('TSL');
       expect(await prisma.position.count({ where: { botId } })).toBe(1);
       expect(await prisma.signal.count({ where: { botId, symbol, direction: 'EXIT' } })).toBe(0);
+      for (const ownedBotId of [botId, liveBot.id]) {
+        expect(await prisma.signal.count({ where: { botId: ownedBotId, direction: 'LONG' } }))
+          .toBe(1);
+        expect(await prisma.signal.count({ where: { botId: ownedBotId, direction: 'EXIT' } }))
+          .toBe(0);
+      }
       const paperTrades = await prisma.trade.findMany({ where: { positionId: opened.id } });
       const paperOrders = await prisma.order.findMany({ where: { positionId: opened.id } });
       expect(paperOrders).toHaveLength(3);
@@ -596,7 +644,7 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
   resumeIt('resumes PAPER and mock LIVE from shared Redis', async () => {
     const database = new URL(process.env.DATABASE_URL ?? '');
     const redis = new URL(process.env.REDIS_URL ?? '');
-    if (database.pathname !== '/soar_position_parity_006_test' ||
+    if (database.pathname !== '/soar_position_parity_007_test' ||
         database.hostname !== '127.0.0.1' || !database.port || database.port === '5432' ||
         redis.hostname !== '127.0.0.1' || !redis.port || redis.port === '6379' ||
         process.env.NODE_ENV !== 'test' ||
@@ -633,6 +681,7 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
         marketType: 'FUTURES', symbol, eventTime: baseTime + 6 * 60_000 + 59_999,
         lastPrice: 24.99, priceChangePercent24h: 0 });
       await tick();
+      await checkFinalNoSignalCandle(6, baseTime, [paper.botId!, live.botId!]);
       const paperClosed = await prisma.position.findUniqueOrThrow({ where: { id: paperId } });
       const liveClosed = await prisma.position.findUniqueOrThrow({ where: { id: liveId } });
       expect(paperClosed).toMatchObject({ status: 'CLOSED', closeReason: 'TSL' });
@@ -640,11 +689,18 @@ describe('BACKTEST/PAPER/Binance internal mock LIVE negative DCA and TSL parity'
       expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(3);
       expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(3);
       expect(venue.submits).toHaveLength(1);
-      expect(venue.lookups).toHaveLength(0);
       await tick();
       expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(3);
       expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(3);
       expect(venue.submits).toHaveLength(1);
+      await automation.handleTickerEvent({ type: 'ticker', exchange: 'BINANCE',
+        marketType: 'FUTURES', symbol, eventTime: baseTime + 7 * 60_000 + 59_999,
+        lastPrice: prices[7], priceChangePercent24h: 0 });
+      await checkFinalNoSignalCandle(7, baseTime, [paper.botId!, live.botId!]);
+      expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(3);
+      expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(3);
+      expect(venue.submits).toHaveLength(1);
+      expect(venue.lookups).toHaveLength(0);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
       vi.unstubAllGlobals();
