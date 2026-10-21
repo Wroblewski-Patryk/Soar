@@ -24,16 +24,20 @@ the trusted state, replays the DCA tick without a second submit, closes TP,
 then opens a new position with DCA disabled and closes SL. Readback checks
 intent, filled order, fill, position, trade, stable Gate client order ID,
 quantity, average, fee, net PnL, and close attribution.
+For both TP and SL, the close trade and position net PnL are compared with
+close-fill notional minus entry/DCA-fill notionals and every fill fee. This
+also checks the persisted notional and fee of each fill.
 
 Example PowerShell setup in `apps/api`:
 
 ```powershell
 docker run -d --name soar-position008b-pg -e POSTGRES_USER=soar008b -e POSTGRES_PASSWORD=soar008b -e POSTGRES_DB=soar_position_cycle_008b_test -p 127.0.0.1:5549:5432 postgres:16-alpine
 docker run -d --name soar-position008b-redis -p 127.0.0.1:6389:6379 redis:7-alpine
-$env:DATABASE_URL = 'postgresql://soar008b:soar008b@127.0.0.1:5549/soar_position_cycle_008b_test'
-$env:TEST_DATABASE_URL = $env:DATABASE_URL
+$env:TEST_DATABASE_URL = 'postgresql://soar008b:soar008b@127.0.0.1:5549/soar_position_cycle_008b_test'
+$env:DATABASE_URL = $env:TEST_DATABASE_URL
 $env:REDIS_URL = 'redis://127.0.0.1:6389'
 pnpm exec prisma migrate deploy
+$env:DATABASE_URL = 'postgresql://soar008b:soar008b@127.0.0.1:5549/soar_position_cycle_008b'
 $env:RUN_GATEIO_FUTURES_INTERNAL_MOCK_LIVE = '1'
 $env:GATEIO_FUTURES_INTERNAL_MOCK_LIVE_STAGE = 'open'
 pnpm exec vitest run src/modules/engine/runtimeGateFuturesInternalLiveCycle.e2e.test.ts

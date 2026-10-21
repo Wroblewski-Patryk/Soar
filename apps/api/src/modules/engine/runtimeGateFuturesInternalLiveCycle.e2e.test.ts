@@ -156,6 +156,25 @@ const readCycle = async (botId: string, positionId: string, actions: string[]) =
   return { position, orders, trades, intents, fills };
 };
 
+const assertClosedLongNetPnlFromFills = (cycle: Awaited<ReturnType<typeof readCycle>>) => {
+  const closeTrade = cycle.trades.find((trade) => trade.lifecycleAction === 'CLOSE');
+  if (!closeTrade?.orderId) throw new Error('closed cycle requires an identified close trade');
+  const closeFills = cycle.fills.filter((fill) => fill.orderId === closeTrade.orderId);
+  const entryFills = cycle.fills.filter((fill) => fill.orderId !== closeTrade.orderId);
+  expect(closeFills).toHaveLength(1);
+  expect(entryFills).toHaveLength(cycle.trades.length - 1);
+  for (const fill of cycle.fills) {
+    expect(fill.notional).toBeCloseTo(fill.price * fill.quantity, 7);
+    expect(fill.feeCost).toBeCloseTo(fill.notional * 0.0004, 7);
+  }
+  const entryNotional = entryFills.reduce((sum, fill) => sum + fill.notional, 0);
+  const closeNotional = closeFills.reduce((sum, fill) => sum + fill.notional, 0);
+  const fees = cycle.fills.reduce((sum, fill) => sum + (fill.feeCost ?? NaN), 0);
+  const expectedNetPnl = closeNotional - entryNotional - fees;
+  expect(closeTrade.realizedPnl).toBeCloseTo(expectedNetPnl, 6);
+  expect(cycle.position.realizedPnl).toBeCloseTo(expectedNetPnl, 6);
+};
+
 describe('SOAR-POSITION-CYCLE-008B internal Gate.io Futures mock LIVE cycle', () => {
   openIt('persists entry, HOLD and two DCA fills', async () => {
     assertIsolated();
@@ -310,6 +329,7 @@ describe('SOAR-POSITION-CYCLE-008B internal Gate.io Futures mock LIVE cycle', ()
       const average = basis.reduce((sum, trade) => sum + trade.price * trade.quantity, 0) / quantity;
       const fees = tp.trades.reduce((sum, trade) => sum + (trade.fee ?? 0), 0);
       expect(tp.position.realizedPnl).toBeCloseTo((close.price - average) * quantity - fees, 6);
+      assertClosedLongNetPnlFromFills(tp);
       expect(venue.submits).toHaveLength(1);
       const walletId = bot.walletId!;
       const strategyId = bot.strategyId!;
@@ -332,6 +352,7 @@ describe('SOAR-POSITION-CYCLE-008B internal Gate.io Futures mock LIVE cycle', ()
         closeInitiator: 'BOT_APP' });
       expect(sl.trades.find((trade) => trade.lifecycleAction === 'CLOSE'))
         .toMatchObject({ closeReason: 'SL', closeInitiator: 'BOT_APP' });
+      assertClosedLongNetPnlFromFills(sl);
       expect(sl.position.realizedPnl).toBeLessThan(0);
       expect(venue.submits).toHaveLength(3);
       expect(venue.lookups).toHaveLength(0);
