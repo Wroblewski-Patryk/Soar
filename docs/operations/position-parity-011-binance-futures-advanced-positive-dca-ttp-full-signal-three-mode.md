@@ -102,15 +102,23 @@ Parent `POSITION-CYCLE` remains `OPEN`; release `NO-GO`.
 
 ## Celowany publiczny świadek źródła w trzech trybach
 
-[Plan i lokalny wynik 011](position-parity-011-real-source-three-mode-plan.md)
-używają tej samej zapisanej strategii i zweryfikowanego historycznego
-ALICEUSDT `aggTrades` 02:41–04:21 UTC co funkcjonalny świadek 011A. Zwykły
-LONG otworzył PAPER i Binance FUTURES internal mock LIVE; oba utrzymały
-pozycję bez EXIT, a DCA na `a=167049972` poprzedził uzbrojenie TTP
-na `a=167049975` i zamknięcie TTP na `a=167049977` po restarcie. BACKTEST
-odtworzył tę parę z DB archiwum. Lokalne ilości, średnia, wkłady, opłaty i
-PnL są porównane z jawną różnicą zaokrąglenia. Evaluator dawał LONG również
-na kolejnych świecach, więc ten rzeczywisty przypadek nie dowodzi HOLD po
-zaniku wejścia; test nie sprawdza też prawdziwych filli ani bieżących reguł
-Binance. Pełne 011 `REVIEW`, 011A `REVIEW`, wydanie
-`NO-GO` do niezależnego odbioru.
+[Plan i wynik 011](position-parity-011-real-source-three-mode-plan.md) zapisano
+przed próbą w SHA `fe008242e2adce4d2508081b769f175a5ae6be3e`. Na
+kodowym SHA `5b49dbfe4f60b5985ba4add453487d81b49a843d` niezależny
+statyczny review i runtime QA dały dwa ograniczone `PASS` dla tej samej
+zapisanej strategii i zweryfikowanego publicznego ZIP + `.CHECKSUM` ALICEUSDT
+02:41–04:21 UTC. W BACKTEST, PAPER i Binance FUTURES internal mock LIVE DCA
+na źródłowym `a=167049972` poprzedził uzbrojenie TTP na `a=167049975` i
+zamknięcie na późniejszym `a=167049977` tej samej świecy. Niezależny QA na
+własnej bazie `_test` i Redisie uzyskał `open` 1/1 i odrębny PID `resume` 1/1;
+trwałe fille/intenty, raport BACKTEST, timeline i DCA dedupe pozostały bez
+duplikatów. Różnica net PnL pierwszego cyklu BACKTEST wobec PAPER/mock LIVE
+wyniosła `0,00000595041389956` USDT z jawnych zaokrągleń ilości i opłaty.
+
+Evaluator dawał LONG na świecach 2–4, więc ta taśma **nie odebrała HOLD po
+zaniku sygnału wejścia**. `resume` uruchomił nowy PID bez zabicia pierwszego;
+nie dowodzi odzyskania PAPER/mock LIVE po awarii. Run BACKTEST zapisano
+bezpośrednio w test DB, a job wykonano bez kolejki. Reguły ilości/ceny i
+fille internal mock LIVE są syntetyczne, bez dowodu prawdziwych filli Binance,
+LIVE lub produkcji. Pełne 011 i 011A pozostają `REVIEW`, `POSITION-CYCLE`
+`OPEN`, wydanie `NO-GO`.
