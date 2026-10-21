@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseStrategyRiskConfig, simulateTradesForSymbolReplay } from './backtestReplayCore';
 import { simulateInterleavedPortfolio } from './backtestPortfolioSimulation.service';
+import { fetchVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 
 const candles = [0.99, 1, 1, 0.6949, 0.5375, 0.5375].map((price, index) => ({
   openTime: 1_710_000_000_000 + index * 60_000,
@@ -409,7 +410,7 @@ describe('USDT contribution DCA in historical replay', () => {
     expect(charged.trades[0].fee).toBeGreaterThan(free.trades[0].fee);
   });
 
-  it('replays confirmed positive DCA before a later crossed TTP tick in both engines', () => {
+  it('replays verified aggregate-trade order from DCA to later TTP in both engines', async () => {
     const config = {
       open: { direction: 'long', noMatchAction: 'EXIT',
         indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0.5,
@@ -430,6 +431,16 @@ describe('USDT contribution DCA in historical replay', () => {
           { eventTime: closeTime, price: 1.13 },
         ] : undefined };
     });
+    const contested = orderedCandles[5];
+    const verified = await fetchVerifiedBinanceFuturesIntrabar({ symbol: 'BTCUSDT',
+      candles: [{ ...contested, volume: 1_000 }], nowMs: contested.closeTime + 120_000,
+      fetchPage: async () => [
+        { a: 120, p: '1.25', q: '500', f: 200, l: 200,
+          T: contested.openTime + 20_000, m: false },
+        { a: 121, p: '1.13', q: '500', f: 201, l: 201,
+          T: contested.closeTime, m: true },
+      ] });
+    orderedCandles[5].intrabarTicks = verified[0].intrabarTicks;
     const run = (withTicks: boolean) => {
       const tape = orderedCandles.map((candle) => ({ ...candle,
         intrabarTicks: withTicks ? candle.intrabarTicks : undefined }));
@@ -452,6 +463,8 @@ describe('USDT contribution DCA in historical replay', () => {
       expect(result.trades[0].exitReason).toBe('TTP');
       expect(result.trades[0].closedAt.getTime()).toBe(orderedCandles[5].closeTime);
       expect(result.trades[0].exitPrice).toBe(1.13);
+      expect(result.trades[0].fee).toBeCloseTo(0.16136, 6);
+      expect(result.trades[0].pnl).toBeCloseTo(3.23864, 6);
     }
     for (const result of run(false)) {
       expect(result.eventCounts.DCA).toBe(1);

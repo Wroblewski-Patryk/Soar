@@ -6,6 +6,7 @@ import {
 } from '../exchange/exchangePublicMarketData.service';
 import {
   fetchKlines,
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   fetchSupplementalSeries,
   getBacktestDataGatewayCacheSizesForTests,
   hasContinuousCandleIntervals,
@@ -13,11 +14,15 @@ import {
   setDbCandleDelegateForTests,
   type BacktestKlineCandle,
 } from './backtestDataGateway';
+import { fetchVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 
 vi.mock('../exchange/exchangePublicMarketData.service', () => ({
   fetchExchangePublicFundingRateHistory: vi.fn(),
   fetchExchangePublicOpenInterestHistory: vi.fn(),
   fetchExchangePublicRecentCandles: vi.fn(),
+}));
+vi.mock('./backtestBinanceFuturesIntrabarSource', () => ({
+  fetchVerifiedBinanceFuturesIntrabar: vi.fn(),
 }));
 
 const ONE_MINUTE_MS = 60_000;
@@ -38,6 +43,36 @@ const buildPublicCandle = (openTime: number) => ({
 });
 
 describe('backtestDataGateway', () => {
+  it('rejects an unbounded or incomplete strict intrabar candle window before trade replay', async () => {
+    const start = Math.floor((Date.now() - 5 * ONE_MINUTE_MS) / ONE_MINUTE_MS) * ONE_MINUTE_MS;
+    await expect(fetchKlinesWithVerifiedBinanceFuturesIntrabar('BINANCE',
+      'BTCUSDT', '1m', 'FUTURES', 2, undefined, undefined))
+      .rejects.toThrow('EXPLICIT_BOUNDED_WINDOW_REQUIRED');
+    expect(fetchExchangePublicRecentCandles).not.toHaveBeenCalled();
+
+    vi.mocked(fetchExchangePublicRecentCandles).mockResolvedValue([buildPublicCandle(start)]);
+    await expect(fetchKlinesWithVerifiedBinanceFuturesIntrabar('BINANCE',
+      'BTCUSDT', '1m', 'FUTURES', 2, start + 120_000, start))
+      .rejects.toThrow('CANDLE_WINDOW_INCOMPLETE');
+  });
+
+  it('passes an exact exclusive end boundary to the verified source', async () => {
+    const start = Math.floor((Date.now() - 5 * ONE_MINUTE_MS) / ONE_MINUTE_MS) * ONE_MINUTE_MS;
+    const candles = [buildPublicCandle(start), buildPublicCandle(start + ONE_MINUTE_MS)];
+    vi.mocked(fetchExchangePublicRecentCandles).mockResolvedValue(candles);
+    vi.mocked(fetchVerifiedBinanceFuturesIntrabar).mockImplementation(async ({ candles: input }) =>
+      input as any);
+    const result = await fetchKlinesWithVerifiedBinanceFuturesIntrabar('BINANCE',
+      'BTCUSDT', '1m', 'FUTURES', 2, start + 2 * ONE_MINUTE_MS, start);
+    expect(result).toHaveLength(2);
+    expect(fetchVerifiedBinanceFuturesIntrabar).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT', candles: expect.arrayContaining([
+        expect.objectContaining({ openTime: start }),
+        expect.objectContaining({ closeTime: start + 2 * ONE_MINUTE_MS - 1 }),
+      ]),
+    });
+  });
+
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();

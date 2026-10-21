@@ -7,6 +7,8 @@ import {
   fetchExchangePublicRecentCandles,
 } from '../exchange/exchangePublicMarketData.service';
 import { getTimeframeIntervalMs, normalizeTimeframe } from './backtestTimeframe';
+import { fetchVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
+import type { VerifiedIntrabarProvenance } from './backtestBinanceFuturesIntrabarSource';
 
 export type BacktestMarketType = 'SPOT' | 'FUTURES';
 
@@ -20,7 +22,8 @@ export type BacktestKlineCandle = {
   volume: number;
   // Present only when a source supplies a verified chronological price path.
   // Ordinary exchange OHLC klines cannot establish high/low order.
-  intrabarTicks?: Array<{ eventTime: number; price: number }>;
+  intrabarTicks?: Array<{ eventTime: number; price: number; sequenceId?: number }>;
+  intrabarProvenance?: VerifiedIntrabarProvenance;
 };
 
 export type BacktestFundingRatePoint = {
@@ -356,6 +359,42 @@ export const fetchKlines = async (
 
   setCandleCacheEntry(key, result);
   return result;
+};
+
+// Strict, bounded source for explicitly requested Binance USD-M intrabar replay.
+// The ordinary OHLC cache never supplies or certifies trade order.
+export const fetchKlinesWithVerifiedBinanceFuturesIntrabar = async (
+  exchange: Exchange,
+  symbol: string,
+  timeframe: string,
+  marketType: BacktestMarketType,
+  maxCandles: number,
+  endTimeMs?: number,
+  startTimeMs?: number,
+): Promise<BacktestKlineCandle[]> => {
+  if (exchange !== 'BINANCE' || marketType !== 'FUTURES')
+    throw new Error('BACKTEST_INTRABAR_SOURCE_UNSUPPORTED_MARKET');
+  if (normalizeTimeframe(timeframe) !== '1m' || !Number.isInteger(maxCandles) ||
+      maxCandles < 1 || maxCandles > 120 ||
+      !Number.isSafeInteger(startTimeMs) || !Number.isSafeInteger(endTimeMs) ||
+      (endTimeMs as number) <= (startTimeMs as number) ||
+      (startTimeMs as number) % 60_000 !== 0 ||
+      (endTimeMs as number) % 60_000 !== 0 ||
+      (endTimeMs as number) - (startTimeMs as number) !== maxCandles * 60_000 ||
+      (endTimeMs as number) - (startTimeMs as number) > 2 * 60 * 60 * 1000) {
+    throw new Error('BACKTEST_INTRABAR_SOURCE_EXPLICIT_BOUNDED_WINDOW_REQUIRED');
+  }
+  const nowMs = Date.now();
+  if ((startTimeMs as number) < nowMs - 48 * 60 * 60 * 1000 + 1000 ||
+      (endTimeMs as number) - 1 >= nowMs - 1000)
+    throw new Error('BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE');
+  const candles = await fetchKlines(exchange, symbol, timeframe, marketType,
+    maxCandles, endTimeMs, startTimeMs);
+  if (candles.length !== maxCandles || candles[0].openTime !== startTimeMs ||
+      candles[candles.length - 1].closeTime !== (endTimeMs as number) - 1 ||
+      !hasContinuousCandleIntervals(candles, timeframe))
+    throw new Error('BACKTEST_INTRABAR_SOURCE_CANDLE_WINDOW_INCOMPLETE');
+  return fetchVerifiedBinanceFuturesIntrabar({ symbol, candles });
 };
 
 export const fetchSupplementalSeries = async (

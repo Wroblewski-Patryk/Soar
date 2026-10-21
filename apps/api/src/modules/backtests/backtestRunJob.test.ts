@@ -2,6 +2,71 @@ import { describe, expect, it, vi } from 'vitest';
 import { createBacktestRunJob } from './backtestRunJob';
 
 describe('createBacktestRunJob', () => {
+  it.each(['source unavailable', 'source changed on retry'])(
+    'fails a strict intrabar run without estimating PnL from OHLC: %s', async (caseName) => {
+    const changedOnRetry = caseName === 'source changed on retry';
+    const safeUpdateRun = vi.fn(async () => true);
+    const simulateInterleavedPortfolio = vi.fn();
+    const fetchKlines = vi.fn();
+    const fetchKlinesWithVerifiedBinanceFuturesIntrabar = vi.fn(async () => {
+      if (!changedOnRetry) throw new Error('BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE');
+      return [{ openTime: 1_700_000_000_000, closeTime: 1_700_000_059_999,
+        open: 1, high: 1, low: 1, close: 1, volume: 1,
+        intrabarTicks: [{ eventTime: 1_700_000_000_001, price: 1 }],
+        intrabarProvenance: { source: 'BINANCE_USDM_AGGTRADES',
+          sha256: 'a'.repeat(64) } }];
+    });
+    const createBacktestTrades = vi.fn();
+    const upsertBacktestReportForRun = vi.fn(async () => true);
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: async () => ({ id: 'strict-run', userId: 'u',
+        symbol: 'BTCUSDT', timeframe: '1m', strategyId: null, status: 'PENDING',
+        seedConfig: { symbols: ['BTCUSDT'], exchange: 'BINANCE',
+          marketType: 'FUTURES', maxCandles: 100,
+          ...(changedOnRetry ? { intrabarSourceDigestBySymbol: { BTCUSDT: 'b'.repeat(64) } } : {}),
+          intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' } }),
+      safeUpdateRun,
+      uniqueSorted: (values: string[]) => values,
+      computeAdaptiveMaxCandles: () => 100,
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => null,
+      findOwnedStrategySignalConfig: async () => null,
+      fetchKlines,
+      fetchKlinesWithVerifiedBinanceFuturesIntrabar,
+      fetchSupplementalSeries: async () => ({ fundingRates: [],
+        openInterest: [], orderBook: [] }),
+      simulateInterleavedPortfolio,
+      createBacktestTrades,
+      createBacktestContributions: async () => undefined,
+      deleteBacktestTradesForRun: async () => undefined,
+      countWinningBacktestTrades: async () => 0,
+      countLosingBacktestTrades: async () => 0,
+      upsertBacktestReportForRun,
+      computeSourceWindowMs: () => 60_000,
+      maxDrawdownFromPnlSeries: () => 0,
+    } as any);
+
+    await runJob('strict-run');
+    expect(fetchKlinesWithVerifiedBinanceFuturesIntrabar).toHaveBeenCalledOnce();
+    expect(fetchKlines).not.toHaveBeenCalled();
+    expect(simulateInterleavedPortfolio).not.toHaveBeenCalled();
+    expect(createBacktestTrades).not.toHaveBeenCalled();
+    expect(upsertBacktestReportForRun).toHaveBeenCalledWith(expect.objectContaining({
+      update: expect.objectContaining({ netPnl: null,
+        metrics: expect.objectContaining({ runLifecycle: expect.objectContaining({
+          state: 'FAILED', reportReady: false,
+        }) }),
+      }),
+    }));
+    expect(safeUpdateRun).toHaveBeenCalledWith('strict-run',
+      expect.objectContaining({ status: 'FAILED', seedConfig: expect.objectContaining({
+        error: expect.stringContaining(changedOnRetry
+          ? 'BACKTEST_INTRABAR_SOURCE_CHANGED_ON_RETRY'
+          : 'BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE'),
+      }) }));
+  });
+
   it('persists trades and report metrics for processed symbols', async () => {
     const safeUpdateRun = vi.fn(async () => true);
     const createBacktestTrades = vi.fn(async () => undefined);

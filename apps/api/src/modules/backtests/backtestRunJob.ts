@@ -1,4 +1,5 @@
 import { Exchange, PositionSide } from '@prisma/client';
+import { createHash } from 'node:crypto';
 import { BacktestFillModelConfig } from './backtestFillModel';
 import {
   BacktestKlineCandle,
@@ -172,6 +173,7 @@ export type BacktestRunJobDeps = {
     endTimeMs?: number,
     startTimeMs?: number,
   ) => Promise<BacktestKlineCandle[]>;
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar?: BacktestRunJobDeps['fetchKlines'];
   fetchSupplementalSeries: (
     exchange: Exchange,
     symbol: string,
@@ -322,6 +324,12 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       ? (seed.exchange as Exchange)
       : Exchange.BINANCE;
     const marketType = (seed.marketType === 'SPOT' ? 'SPOT' : 'FUTURES') as BacktestMarketType;
+    const requireVerifiedIntrabar = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED';
+    if (seed.intrabarSource !== undefined && !requireVerifiedIntrabar) {
+      await deps.safeUpdateRun(runId, { status: 'FAILED', finishedAt: new Date(),
+        seedConfig: { ...seed, failureReason: 'BACKTEST_INTRABAR_SOURCE_UNSUPPORTED' } });
+      return;
+    }
     const leverageCandidate = Number((seed as { leverage?: unknown }).leverage);
     const leverage = Number.isFinite(leverageCandidate) ? leverageCandidate : 1;
     const marginMode =
@@ -485,7 +493,11 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
 
         try {
-          const candles = await deps.fetchKlines(
+          const candleFetcher = requireVerifiedIntrabar
+            ? deps.fetchKlinesWithVerifiedBinanceFuturesIntrabar
+            : deps.fetchKlines;
+          if (!candleFetcher) throw new Error('BACKTEST_INTRABAR_SOURCE_UNAVAILABLE');
+          const candles = await candleFetcher(
             exchange,
             symbol,
             run.timeframe,
@@ -496,6 +508,21 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           );
           if (candles.length === 0) {
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
+          }
+          if (requireVerifiedIntrabar) {
+            if (candles.some((candle) => !candle.intrabarTicks ||
+                !candle.intrabarProvenance ||
+                candle.intrabarProvenance.source !== 'BINANCE_USDM_AGGTRADES')) {
+              throw new Error('BACKTEST_INTRABAR_SOURCE_UNVERIFIED');
+            }
+            const digest = createHash('sha256').update(candles.map((candle) =>
+              `${candle.openTime}:${candle.intrabarProvenance!.sha256}`).join('|')).digest('hex');
+            const priorDigests = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? seed.intrabarSourceDigestBySymbol as Record<string, string> : {};
+            if (priorDigests[symbol] && priorDigests[symbol] !== digest)
+              throw new Error('BACKTEST_INTRABAR_SOURCE_CHANGED_ON_RETRY');
+            seed.intrabarSourceDigestBySymbol = { ...priorDigests, [symbol]: digest };
           }
           const supplemental = await deps.fetchSupplementalSeries(
             exchange,
@@ -557,6 +584,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
       }
 
+      if (requireVerifiedIntrabar && progress.failedSymbols.length > 0)
+        throw new Error(`BACKTEST_INTRABAR_SOURCE_INCOMPLETE:${parityDiagnostics
+          .filter((diagnostic) => diagnostic.status === 'FAILED')
+          .map((diagnostic) => `${diagnostic.symbol}=${diagnostic.error}`).join(',')}`);
       const loadedSymbols = symbols.filter((symbol) => candlesBySymbol.has(symbol));
       if (loadedSymbols.length > 0) {
         progress.currentSymbol = 'INTERLEAVED_PORTFOLIO_CLOCK';

@@ -2,7 +2,7 @@ import { evaluatePositionManagement } from '../engine/positionManagement.service
 import type { DcaSizingBasis, PositionManagementInput,
   PositionManagementState } from '../engine/positionManagement.types';
 
-export type ReplayIntrabarTick = { eventTime: number; price: number };
+export type ReplayIntrabarTick = { eventTime: number; price: number; sequenceId?: number };
 
 type TickCandle = {
   openTime: number; closeTime: number; open: number; high: number;
@@ -16,11 +16,15 @@ export const verifyReplayIntrabarTicks = (candle: TickCandle): ReplayIntrabarTic
   let tickHigh = Number.NEGATIVE_INFINITY;
   let tickLow = Number.POSITIVE_INFINITY;
   let priorTime = Number.NEGATIVE_INFINITY;
+  let priorSequenceId = Number.NEGATIVE_INFINITY;
   for (const tick of ticks) {
     if (!Number.isFinite(tick.eventTime) || !Number.isFinite(tick.price) || tick.price <= 0 ||
       tick.eventTime < candle.openTime || tick.eventTime > candle.closeTime ||
-      tick.eventTime <= priorTime) throw new Error('BACKTEST_INTRABAR_TICKS_INVALID');
+      tick.eventTime < priorTime ||
+      (tick.eventTime === priorTime && (!Number.isSafeInteger(tick.sequenceId) ||
+        tick.sequenceId! <= priorSequenceId))) throw new Error('BACKTEST_INTRABAR_TICKS_INVALID');
     priorTime = tick.eventTime;
+    priorSequenceId = tick.sequenceId ?? Number.NEGATIVE_INFINITY;
     tickHigh = Math.max(tickHigh, tick.price);
     tickLow = Math.min(tickLow, tick.price);
   }

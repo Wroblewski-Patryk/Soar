@@ -31,6 +31,7 @@ import {
 import {
   type BacktestFundingRatePoint as FundingRatePoint,
   fetchKlines,
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   type BacktestKlineCandle as KlineCandle,
   type BacktestMarketType as MarketType,
   type BacktestOpenInterestPoint as OpenInterestPoint,
@@ -428,6 +429,7 @@ const runBacktestAsync = createClaimedBacktestRunJob({
   parseStrategySignalRules,
   findOwnedStrategySignalConfig,
   fetchKlines,
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   fetchSupplementalSeries,
   simulateInterleavedPortfolio,
   computeSourceWindowMs,
@@ -686,10 +688,12 @@ export const getRunTimeline = async (
       : undefined;
   const candlesBySymbol = new Map<string, KlineCandle[]>();
   const supplementalBySymbol = new Map<string, SupplementalSeries>();
+  const timelineCandleFetcher = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED'
+    ? fetchKlinesWithVerifiedBinanceFuturesIntrabar : fetchKlines;
   for (const replaySymbol of replaySymbols) {
     candlesBySymbol.set(
       replaySymbol,
-      await fetchKlines(
+      await timelineCandleFetcher(
         exchange,
         replaySymbol,
         run.timeframe,
