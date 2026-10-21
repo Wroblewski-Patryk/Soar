@@ -122,3 +122,29 @@ bezpośrednio w test DB, a job wykonano bez kolejki. Reguły ilości/ceny i
 fille internal mock LIVE są syntetyczne, bez dowodu prawdziwych filli Binance,
 LIVE lub produkcji. Pełne 011 i 011A pozostają `REVIEW`, `POSITION-CYCLE`
 `OPEN`, wydanie `NO-GO`.
+
+## Wariant źródłowy po faktycznym zaniku sygnału
+
+[Poprawiony plan](position-parity-011-effective-momentum-signal-loss-plan.md)
+zapisano przed próbą w SHA `8537eddee2653e7a0cbb8aa4424f9e9c682b66a9`.
+Na kodowym SHA `81ffb2fb24a32858a6dc1540c5c033527a762efd` niezależny
+statyczny review i runtime QA dały ograniczony `PASS` dla lokalnego
+source-backed BACKTEST, PAPER i Binance FUTURES internal mock LIVE. Efektywny
+`MOMENTUM(2)` dał na świecach 0–4 decyzje `[null,null,LONG,null,null]`:
+po wejściu na 2 sygnał zniknął, a pozycje pozostały OPEN bez EXIT. Na tej
+samej publicznej taśmie DCA `a=167049972` poprzedził uzbrojenie TTP
+`a=167049975` i późniejszy TTP `a=167049977` na jednej świecy. Niezależny
+QA na własnej `_test` i Redisie uzyskał `open` 1/1 oraz osobny PID `resume`
+1/1, z trwałymi fillami, intentami i DCA dedupe bez duplikatów. BACKTEST
+miał sześć trades i raport net PnL `+0,01386` USDT, lecz asercje nowego
+wariantu nie przypinają jeszcze tych dwóch wartości. Net PnL pierwszego
+cyklu to `-0,02232` USDT w BACKTEST wobec `-0,02231404958610045` USDT
+w PAPER/mock LIVE; różnica wynika z jawnej syntetycznej precyzji.
+
+`resume` to nowy PID bez `SIGKILL` pierwszego, więc nie dowodzi odzyskania
+PAPER/mock LIVE po awarii. Run BACKTEST zapisano bezpośrednio w test DB i job
+wykonano bez kolejki. Reguły oraz fille internal mock LIVE są syntetyczne;
+rzeczywiste Binance i produkcja pozostają bez dowodu. Oddzielna rozbieżność
+zapisanego `MOMENTUM(period=1)` i efektywnego okresu 2 ma ticket
+`SOAR-STRATEGY-MOMENTUM-PERIOD-001` w tablicy; ten wariant jej nie naprawia.
+Pełne 011 i 011A `REVIEW`, `POSITION-CYCLE` `OPEN`, release `NO-GO`.
