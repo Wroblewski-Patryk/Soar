@@ -194,3 +194,26 @@ z blokadą submit; wynik `24/24` w dwóch plikach Web. Web typecheck,
 `quality:guardrails` i `architecture:graph:drift:strict` (`939/939`)
 przeszły. Nie uruchomiono produkcji ani testów dotykających współdzielonej
 bazy. Status ticketu pozostaje REVIEW/NO-GO do niezależnego odbioru exact SHA.
+
+## Niezależny odbiór ograniczonej poprawki lokalnej
+
+Kolejność dowodu jest istotna: plan bazowy `67a2e86c27209fafb443ffc6a80ab00de87f01c3`
+i kod `ab2652da29f2580d5454be4a50584bf400087089` poprzedziły niezależny
+`FAIL`. Plan naprawczy `79150679c6fa2e8556a22d840889f522125008db`
+i kod `2aae38d0fc9fa8e67cf5ad2e2f560af1c817e117` domknęły walidację
+całkowitego okresu `2..255`, spis wyłącznie wykonywalnych reguł, migrację
+schematową oraz odmowę importu PAPER przed zapisem. Niezależny statyczny
+review wskazał jeszcze `FAIL` formularza Web dla niepoprawnej jawnej stałej
+i fallbacku na serię z `value`.
+
+Po zapisanym przed poprawką planie Web
+`a867daf5194d7ba3012ae987d68ba908fcbd92cb` końcowy kod
+`fbcf4ea28e26b80440e803f796b5b6893dc6f6d1` przeszedł niezależny
+celowany statyczny review i runtime QA z ograniczonym wynikiem `PASS`.
+Dotyczy to lokalnej polityki odmowy nowych `period=1`, wykonywalnej
+migracji `1→2` po spisie i zgodności selektora operandu Web z evaluatorem.
+Wynik nie dowodzi produkcyjnego spisu, zatwierdzonej migracji ani planu
+rollback, odczytu produkcyjnego po migracji, ręcznej zalogowanej ścieżki Web,
+rzeczywistego venue lub LIVE. Produkcyjne dane i historyczne snapshoty nie
+były zmieniane. Pełny P1 pozostaje `OPEN` / w odbiorze `REVIEW`, wydanie
+`NO-GO` do osobnego zatwierdzenia i dowodu produkcyjnego.
