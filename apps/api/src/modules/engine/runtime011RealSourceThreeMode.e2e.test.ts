@@ -361,7 +361,10 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
         where: { backtestRunId: backtest.id } });
       expect(backtestTrades.length).toBeGreaterThan(0);
       expect(report.totalTrades).toBe(backtestTrades.length);
-      if (!signalLossWitness) {
+      if (signalLossWitness) {
+        expect(backtestTrades).toHaveLength(6);
+        expect(report.netPnl).toBeCloseTo(0.01386, 8);
+      } else {
         expect(backtestTrades).toHaveLength(5);
         expect(report.netPnl).toBe(-0.16687);
       }
@@ -455,6 +458,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       expect(resumed.childPid).not.toBe(process.pid);
       expect(resumed).toMatchObject({ dcaId, ttpId,
         ttpTime: '2026-10-18T02:46:57.282Z' });
+      expect(resumed.armAggregateId).toBe(167049975);
       expect(resumed.armAggregateId).toBeGreaterThan(dcaId);
       expect(resumed.armAggregateId).toBeLessThan(ttpId);
       const paperClosed = await prisma.position.findUniqueOrThrow({ where: { id: paperId } });
