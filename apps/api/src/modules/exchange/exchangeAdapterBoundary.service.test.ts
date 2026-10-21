@@ -13,6 +13,7 @@ import {
 import {
   ExchangeExecutionCapabilityUnsupportedError,
 } from './exchangeExecutionCapabilityContract.service';
+import { enforceLivePretradeGuards } from '../orders/orders.quantityRules';
 
 const createConnector = () => ({
   fetchPositions: vi.fn(async () => [{ symbol: 'BTC/USDT:USDT', contracts: 1 }]),
@@ -500,6 +501,40 @@ describe('exchangeAdapterBoundary.service', () => {
       fills: [],
     });
   });
+
+  it.each([false, true])('rejects Gate tick-size amount before submit (reduceOnly=%s)',
+    async (reduceOnly) => {
+      const connector = { ...createConnector(),
+        getSymbolTradingRules: vi.fn(async () => ({
+          minAmount: 1, minNotional: 5, amountPrecision: 1,
+          amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 1,
+        })),
+        fetchMarkPrice: vi.fn(async () => 3.305),
+      };
+      const placeLiveOrderWithFees = vi.fn();
+      const convergeLiveMarginAndLeverageIfNeeded = vi.fn(async () => undefined);
+      await expect(submitLiveOrderThroughBoundary({
+        userId: 'user-gate-tick-002',
+        bot: { exchange: 'GATEIO', marketType: 'FUTURES', positionMode: 'ONE_WAY',
+          apiKeyId: 'key-gate-tick-002', walletId: 'wallet-gate-tick-002' },
+        order: { symbol: `NGTICK${reduceOnly ? 'CLOSE' : 'OPEN'}USDT`, side: 'BUY',
+          type: 'LIMIT', quantity: 60.5, price: 3.305, reduceOnly },
+        targetLeverage: 100,
+      }, {
+        createAuthenticatedConnector: vi.fn(() => connector),
+        fetchBalanceRaw: vi.fn(),
+        resolveLiveExecutionApiKey: vi.fn(async () => ({ id: 'key-gate-tick-002',
+          exchange: 'GATEIO' as const, apiKey: 'local-fake', apiSecret: 'local-fake' })),
+        createLiveOrderAdapter: vi.fn(() => ({ placeLiveOrderWithFees })),
+        enforceLivePretradeGuards,
+        convergeLiveMarginAndLeverageIfNeeded,
+      })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+      expect(connector.getSymbolTradingRules).toHaveBeenCalledOnce();
+      expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
+      expect(placeLiveOrderWithFees).not.toHaveBeenCalled();
+      expect(connector.disconnect).toHaveBeenCalledOnce();
+      expect(connector.hasOpenPosition).toHaveBeenCalledTimes(reduceOnly ? 0 : 1);
+    });
 
   it('cancels Gate.io live orders through the canonical exchange boundary', async () => {
     const connector = createConnector();

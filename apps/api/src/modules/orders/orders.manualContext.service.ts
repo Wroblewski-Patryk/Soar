@@ -2,7 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
-import { computeMinExecutableQuantity, normalizeAmountFixed, type SymbolTradingRules } from './orders.quantityRules';
+import { computeMinExecutableQuantity, normalizeAmountByPrecision, normalizeAmountFixed, type SymbolTradingRules } from './orders.quantityRules';
 import type { ManualOrderContextQuery, OpenOrderDto } from './orders.types';
 import { resolveSymbolTradingRulesMetadata } from '../exchange/exchangeMetadataContract.service';
 import { resolveCanonicalRuntimeVenueContext } from '../engine/runtimeBotExecutionContext';
@@ -342,6 +342,7 @@ export const getManualOrderContext = async (
     minNotional: rules.minNotional,
     markPrice,
     amountPrecision: rules.amountPrecision,
+    amountPrecisionMode: rules.amountPrecisionMode,
     contractSize: rules.contractSize,
   });
   const contractSize =
@@ -353,9 +354,15 @@ export const getManualOrderContext = async (
     typeof query.quantity === 'number' && Number.isFinite(query.quantity) && query.quantity > 0
       ? query.quantity
       : null;
+  const normalizedQuantity = requestedQuantity == null ? null
+    : normalizeAmountByPrecision(requestedQuantity, rules.amountPrecision, rules.amountPrecisionMode);
   const estimatedNotional =
-    requestedQuantity != null && markPrice != null
-      ? normalizeAmountFixed(requestedQuantity * markPrice * contractSize, rules.amountPrecision)
+    requestedQuantity != null && markPrice != null && normalizedQuantity != null
+      && Number.isFinite(normalizedQuantity)
+      && Math.abs(requestedQuantity - normalizedQuantity) <= 1e-12
+      ? rules.amountPrecisionMode === undefined
+        ? normalizeAmountFixed(requestedQuantity * markPrice * contractSize, rules.amountPrecision)
+        : Number((requestedQuantity * markPrice * contractSize).toPrecision(15))
       : null;
   const estimatedMargin =
     estimatedNotional != null ? estimatedNotional / Math.max(1, resolvedLeverage) : null;

@@ -36,15 +36,33 @@ const getExposureCacheKey = (params: {
   symbol: string;
 }) => `${params.apiKeyId}:${params.symbol.toUpperCase()}`;
 
-const resolvePrecisionStep = (amountPrecision: number | null): number | null => {
+const resolvePrecisionStep = (
+  amountPrecision: number | null,
+  mode?: SymbolTradingRules['amountPrecisionMode']
+): number | null => {
   if (!Number.isFinite(amountPrecision as number) || amountPrecision == null) return null;
+  if (mode === 'TICK_SIZE') return amountPrecision > 0 ? amountPrecision : null;
+  if (mode === 'DECIMAL_PLACES') {
+    if (!Number.isInteger(amountPrecision) || amountPrecision < 0) return null;
+    const step = 10 ** -amountPrecision;
+    return Number.isFinite(step) && step > 0 ? step : null;
+  }
+  if (mode !== undefined) return null;
+  // Legacy synthetic rules omitted the CCXT mode and retain their old convention.
   if (amountPrecision >= 1) return 1 / 10 ** Math.trunc(amountPrecision);
   if (amountPrecision > 0 && amountPrecision < 1) return amountPrecision;
   return null;
 };
 
-export const normalizeAmountUpByPrecision = (value: number, amountPrecision: number | null) => {
+export const normalizeAmountUpByPrecision = (
+  value: number, amountPrecision: number | null,
+  mode?: SymbolTradingRules['amountPrecisionMode']
+) => {
   if (!Number.isFinite(value) || value <= 0) return value;
+  if (mode !== undefined) {
+    const step = resolvePrecisionStep(amountPrecision, mode);
+    return step == null ? NaN : Number((Math.ceil((value - 1e-12) / step) * step).toPrecision(15));
+  }
   if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
 
   if (amountPrecision >= 1) {
@@ -62,8 +80,15 @@ export const normalizeAmountUpByPrecision = (value: number, amountPrecision: num
   return value;
 };
 
-export const normalizeAmountFixed = (value: number, amountPrecision: number | null) => {
+export const normalizeAmountFixed = (
+  value: number, amountPrecision: number | null,
+  mode?: SymbolTradingRules['amountPrecisionMode']
+) => {
   if (!Number.isFinite(value)) return value;
+  if (mode !== undefined) {
+    const step = resolvePrecisionStep(amountPrecision, mode);
+    return step == null ? NaN : Number((Math.round(value / step) * step).toPrecision(15));
+  }
   if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
 
   if (amountPrecision >= 1) {
@@ -84,8 +109,11 @@ export const computeMinExecutableQuantity = (params: {
   minNotional: number | null;
   markPrice: number | null;
   amountPrecision: number | null;
+  amountPrecisionMode?: SymbolTradingRules['amountPrecisionMode'];
   contractSize?: number | null;
 }) => {
+  const step = resolvePrecisionStep(params.amountPrecision, params.amountPrecisionMode);
+  if (params.amountPrecisionMode !== undefined && step == null) return null;
   const candidates: number[] = [];
   const contractSize =
     typeof params.contractSize === 'number' && Number.isFinite(params.contractSize) && params.contractSize > 0
@@ -110,11 +138,12 @@ export const computeMinExecutableQuantity = (params: {
   if (candidates.length === 0) return null;
 
   const baseCandidate = Math.max(...candidates);
-  let normalized = normalizeAmountUpByPrecision(baseCandidate, params.amountPrecision);
+  let normalized = normalizeAmountUpByPrecision(
+    baseCandidate, params.amountPrecision, params.amountPrecisionMode
+  );
 
   if (!Number.isFinite(normalized) || normalized <= 0) return null;
 
-  const step = resolvePrecisionStep(params.amountPrecision);
   if (
     step &&
     typeof params.minNotional === 'number' &&
@@ -132,11 +161,15 @@ export const computeMinExecutableQuantity = (params: {
     }
   }
 
-  return normalizeAmountFixed(normalized, params.amountPrecision);
+  return normalizeAmountFixed(normalized, params.amountPrecision, params.amountPrecisionMode);
 };
 
-export const normalizeAmountByPrecision = (value: number, precision: number | null) => {
+export const normalizeAmountByPrecision = (
+  value: number, precision: number | null,
+  mode?: SymbolTradingRules['amountPrecisionMode']
+) => {
   if (!Number.isFinite(value)) return value;
+  if (mode !== undefined) return normalizeAmountFixed(value, precision, mode);
   if (precision == null || !Number.isFinite(precision)) return value;
   if (precision >= 1) {
     const factor = 10 ** Math.trunc(precision);
@@ -248,8 +281,11 @@ export const enforceLivePretradeGuards = async (params: {
     throw orderErrors.livePretradeAmountBelowMin();
   }
 
-  const normalizedByPrecision = normalizeAmountByPrecision(quantity, rules.amountPrecision);
-  if (Number.isFinite(normalizedByPrecision) && approxGreaterThan(Math.abs(quantity - normalizedByPrecision), 1e-12)) {
+  const normalizedByPrecision = normalizeAmountByPrecision(
+    quantity, rules.amountPrecision, rules.amountPrecisionMode
+  );
+  if (!Number.isFinite(normalizedByPrecision)
+    || approxGreaterThan(Math.abs(quantity - normalizedByPrecision), 1e-12)) {
     throw orderErrors.livePretradeAmountPrecision();
   }
 

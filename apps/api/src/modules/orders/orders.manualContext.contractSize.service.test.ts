@@ -100,11 +100,13 @@ describe('getManualOrderContext contract-size rules', () => {
       },
     });
 
+    let amountPrecisionMode: 'TICK_SIZE' | null = 'TICK_SIZE';
     const connectorFactory = vi.fn(() => ({
       getSymbolTradingRules: async () => ({
         minAmount: 1,
-        minNotional: 5,
+        minNotional: 5.1,
         amountPrecision: 1,
+        amountPrecisionMode,
         contractSize: 10,
       }),
       fetchMarkPrice: async () => 0.25,
@@ -124,9 +126,26 @@ describe('getManualOrderContext contract-size rules', () => {
     expect(context?.symbol).toBe('ADAUSDT');
     expect(context?.leverage).toBe(5);
     expect(context?.quantityConstraints.contractSize).toBe(10);
-    expect(context?.quantityConstraints.minExecutableQty).toBe(2);
+    expect(context?.quantityConstraints.minExecutableQty).toBe(3);
     expect(context?.sideAwarePreview.requestedQuantity).toBe(4);
     expect(context?.sideAwarePreview.estimatedNotional).toBe(10);
     expect(context?.sideAwarePreview.estimatedMargin).toBe(2);
+
+    const offGrid = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 3.5 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(offGrid?.quantityConstraints.minExecutableQty).toBe(3);
+    expect(offGrid?.sideAwarePreview.requestedQuantity).toBe(3.5);
+    expect(offGrid?.sideAwarePreview.estimatedNotional).toBeNull();
+    expect(offGrid?.sideAwarePreview.estimatedMargin).toBeNull();
+
+    amountPrecisionMode = null;
+    const unknownMode = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 4 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(unknownMode?.quantityConstraints.minExecutableQty).toBeNull();
+    expect(unknownMode?.sideAwarePreview.estimatedNotional).toBeNull();
   });
 });
