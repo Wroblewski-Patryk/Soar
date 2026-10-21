@@ -28,10 +28,14 @@ rzeczywista kolizja bazy, nie `Promise.all` w jednym kliencie Prisma.
    i odzyskanie po testowo skróconym lease; nie czekamy bez potrzeby na
    naturalne 10 minut. Jeśli test odkryje błąd, naprawimy tylko tę ścieżkę.
 
-Test tworzy jeden własny run, ale nie rozpoczyna transakcji LIVE ani
-produkcji. Nieudany zapis nie może opublikować raportu/trades/PnL;
-kanoniczny snapshot musi weryfikować bajty offline. Sprawdzimy liczniki
-SQL, kolejkę Redis i selektywny cleanup własnych zasobów. Obcy untracked
+Plan zakładał jeden własny run, ale wykonanie na `fffe48b618576d2d7e0e3ab13f3f4cd3a14352f3`
+utworzyło cztery osobne runy `PENDING` — po jednym na wariant. Test
+sprawdził `DBSIZE=0`, nie wykonał pracy z kolejki Redis. Po odczycie
+offline przez nowy PID harness ponownie zbudował syntetyczny ZIP przez
+wstrzyknięty lokalny fetcher i wywołał zapis bez claimu; to nie był
+automatyczny retry joba. [Errata dowodu](position-parity-011a-raw-race-evidence.md)
+i [plan fence](position-parity-011a-raw-lease-fence-plan.md) rozdzielają
+te granice. Test nie rozpoczyna transakcji LIVE ani produkcji. Obcy untracked
 i zasoby zablokowane przez policy review zostają bez zmian.
 
 Plan nie zwiększa limitu 8 MiB ZIP, nie dodaje nowych źródeł, nie

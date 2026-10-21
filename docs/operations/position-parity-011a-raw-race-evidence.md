@@ -5,6 +5,17 @@ Kod testu: `fffe48b618576d2d7e0e3ab13f3f4cd3a14352f3`.
 Kod zapisu raw i migracja 85 nie były zmieniane. Próba dotyczy tylko
 lokalnego BACKTEST Binance USD-M 1m i dwóch sąsiednich dób UTC.
 
+**Errata po niezależnym review dokumentacji tego SHA:** test tworzył
+cztery **odrębne** runy `PENDING`, po jednym na wariant. `DBSIZE=0`
+sprawdzało brak kluczy, nie odzyskiwanie kolejki. Po `SIGKILL` nowy PID
+najpierw odczytał DB offline, po czym harness odtworzył syntetyczne ZIP
+i `.CHECKSUM` przez lokalny fetcher przed ponownym wywołaniem `save`;
+nie było claimu, lease ani automatycznego retry joba. Niezależny odbiór
+tego opisu zakończył się `FAIL` prawdziwości zakresu. Osobny test joba
+poniżej sprawdzał skrócony lease, lecz nie współbieżny zapis raw.
+[Późniejsza korekta P1](position-parity-011a-raw-lease-fence-evidence.md)
+dodaje transakcyjny fence i test obu workerów.
+
 Na własnej świeżej PostgreSQL `soar_011a_raw_race_test` po 85 migracjach
 i osobnym Redisie test procesowy `backtestRawArchiveRace.runtime.test.ts`
 dał 1/1 `PASS`. Dwa różne PID sprawdzały oba syntetyczne dzienne ZIP i
