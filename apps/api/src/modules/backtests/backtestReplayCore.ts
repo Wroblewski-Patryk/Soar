@@ -125,6 +125,7 @@ export const shouldBlockCloseByPendingDca = (
     dcaFundsExhausted?: boolean;
     dcaSizingBasis?: DcaSizingBasis;
     reachedDcaLevelIndex?: number;
+    filledDcaLevelIndex?: number;
   }
 ) => {
   if (!input.lockTrailingByPendingDca) return false;
@@ -136,7 +137,6 @@ export const shouldBlockCloseByPendingDca = (
   const blocksProfitSideDca =
     input.closeReason === 'take_profit' || input.closeReason === 'trailing_take_profit';
   if (!blocksLossSideDca && !blocksProfitSideDca) return false;
-
   const executed = new Set(
     (input.executedDcaLevelIndices ?? []).filter(
       (index) => Number.isInteger(index) && index >= 0,
@@ -144,7 +144,8 @@ export const shouldBlockCloseByPendingDca = (
   );
   return input.riskConfig.dcaLevels.some(
     (level, index) =>
-      !executed.has(index) &&
+      // A same-candle fill retains priority after leaving the pending set.
+      (index === input.filledDcaLevelIndex || !executed.has(index)) &&
       Number.isFinite(level) &&
       (blocksProfitSideDca ? level >= 0 : level < 0),
   );
@@ -862,6 +863,8 @@ export const simulateTradesForSymbolReplay = (input: {
         dcaFundsExhausted,
         dcaSizingBasis: riskConfig.dcaSizingBasis,
         reachedDcaLevelIndex: dcaProbeResult.dcaExecuted ? dcaProbeResult.dcaLevelIndex : undefined,
+        filledDcaLevelIndex: dcaProbeResult.dcaExecuted && !dcaFundsExhausted
+          ? dcaProbeResult.dcaLevelIndex : undefined,
       })
     ) {
       managementResult = {

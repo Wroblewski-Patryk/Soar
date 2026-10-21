@@ -180,6 +180,35 @@ describe('USDT contribution DCA in historical replay', () => {
       }
     });
 
+  it('keeps a filled negative advanced DCA ahead of armed TSL on the same candle', () => {
+    const config = { ...strategyConfig,
+      openConditions: { ...strategyConfig.openConditions, noMatchAction: 'EXIT',
+        indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0,
+          params: { period: 1 } }] },
+      close: { mode: 'advanced', tp: 99, sl: 99,
+        tsl: [{ percent: -50, arm: 25 }, { percent: -25, arm: 12 }] },
+      additional: { ...strategyConfig.additional, dcaMode: 'advanced', dcaTimes: 1,
+        dcaLevels: [{ percent: -70, multiplier: 1 }] },
+    };
+    const tape = [99, 100, 100, 49, 57, 25, 25, 20];
+    const withoutDca = { ...config, additional: { ...config.additional,
+      dcaEnabled: false, dcaTimes: 0 } };
+    for (const result of replayBothTrailingPaths(tape, withoutDca)) {
+      expect(result.events.filter((event) => event.type === 'TSL')
+        .map((event) => event.candleIndex)).toEqual([5]);
+    }
+    for (const result of replayBothTrailingPaths(tape, config)) {
+      expect(result.eventCounts).toMatchObject({ ENTRY: 1, DCA: 1, TSL: 1,
+        EXIT: 0, TP: 0, TTP: 0, SL: 0 });
+      expect(result.events.filter((event) => event.type === 'DCA')
+        .map((event) => [event.candleIndex, event.price])).toEqual([[5, 25]]);
+      expect(result.events.filter((event) => event.type === 'TSL')
+        .map((event) => [event.candleIndex, event.price])).toEqual([[6, 25]]);
+      expect(result.trades).toHaveLength(1);
+      expect(result.trades[0].exitReason).toBe('TSL');
+    }
+  });
+
   it('keeps reached positive USDT DCA pending without funds instead of taking TP or TTP', () => {
     const additional = { ...strategyConfig.additional, dcaTimes: 1,
       dcaLevels: [{ percent: 20, multiplier: 1 }] };

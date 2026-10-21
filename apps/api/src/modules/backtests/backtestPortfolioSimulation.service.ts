@@ -563,6 +563,8 @@ export const simulateInterleavedPortfolio = (input: {
         dcaFundsExhausted,
         dcaSizingBasis: riskConfig.dcaSizingBasis,
         reachedDcaLevelIndex: dcaProbeResult.dcaExecuted ? dcaProbeResult.dcaLevelIndex : undefined,
+        filledDcaLevelIndex: dcaProbeResult.dcaExecuted && !dcaFundsExhausted
+          ? dcaProbeResult.dcaLevelIndex : undefined,
       })
     ) {
       managementResult = {

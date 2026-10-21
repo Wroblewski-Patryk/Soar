@@ -25,8 +25,10 @@ const tpAfterDcaProof = role === 'position-cycle-tp-ack-hold' ||
   role === 'position-cycle-tp-mid-recovery';
 const advancedTtpProof = role === 'position-cycle-advanced-ttp-ack-hold' ||
   role === 'position-cycle-advanced-ttp-recovery';
+const negativeTslProof = role === 'position-cycle-negative-tsl-ack-hold' ||
+  role === 'position-cycle-negative-tsl-recovery';
 const positionCycleProof = midCalculationProof || role === 'position-cycle-ack-hold' ||
-  role === 'position-cycle-recovery' || tpAfterDcaProof || advancedTtpProof;
+  role === 'position-cycle-recovery' || tpAfterDcaProof || advancedTtpProof || negativeTslProof;
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
 if (!queueName) throw new Error('Proof queue name missing');
 const proofRunIds = (process.env.SOAR_BT_PROOF_RUN_IDS ?? '').split(',').filter(Boolean);
@@ -46,6 +48,8 @@ const deps: BacktestRunJobDeps = {
       // The final drop prevents a fresh valid LONG vote after the close.
       const prices = advancedTtpProof
         ? [99, 100, 100, 99.9, 130, 140, 140, 127, 100]
+        : negativeTslProof
+        ? [99, 100, 100, 49, 57, 25, 25, 20]
         : tpAfterDcaProof
         ? [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.72, 0.5]
         : [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.47];
@@ -173,7 +177,8 @@ const queue = new BacktestRunQueue(async (runId) => {
   if (role === 'hold-release') process.stdout.write('JOB_RETURNED\n');
   if (role === 'ack-hold' || role === 'position-cycle-ack-hold' ||
       role === 'position-cycle-tp-ack-hold' ||
-      role === 'position-cycle-advanced-ttp-ack-hold') {
+      role === 'position-cycle-advanced-ttp-ack-hold' ||
+      role === 'position-cycle-negative-tsl-ack-hold') {
     process.stdout.write('COMMITTED_BEFORE_ACK\n');
     await new Promise<void>(() => undefined);
   }
