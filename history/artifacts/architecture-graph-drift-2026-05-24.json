@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 939,
-    "covered": 939,
+    "total": 940,
+    "covered": 940,
     "missing": 0
   },
   "categories": {
@@ -61,8 +61,8 @@
       "missingSamples": []
     },
     "configAndPipelines": {
-      "total": 12,
-      "covered": 12,
+      "total": 13,
+      "covered": 13,
       "missing": 0,
       "missingSamples": []
     }

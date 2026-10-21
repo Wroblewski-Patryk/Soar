@@ -9,7 +9,7 @@ feature: ops-config-pipeline
 risk_level: 85
 completion_percent: 2026-05-24
 last_verified_at: verified_local
-verification_status: Local infra topology is validated by existing guardrails and local proof tasks.
+verification_status: Local infra topology and isolated 011 proof fixture are validated locally; neither proves production worker recovery.
 tags: [soar-map, config, operations, verified_local]
 ---
 
@@ -17,9 +17,9 @@ tags: [soar-map, config, operations, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Local compose topology for development infrastructure services. |
+| Description | Local compose topology for development infrastructure services; the 011 proof Compose is a separate isolated test fixture. |
 | File path | docker-compose.yml |
-| Related files | docker-compose.vps.yml |
+| Related files | docker-compose.vps.yml, docker-compose.proof011.yml |
 | Parent | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | Children |  |
 | Depends on | [[SOAR-CONFIG-ROOT-PACKAGE]] |

@@ -121,8 +121,10 @@ uruchamia procesu `resume`.
 Pierwszy przebieg ma zapisać jedną strategię i źródło, dojść do źródłowego
 `a=167049972`, wykazać trwałe pojedyncze DCA w obu trybach i dopiero wtedy
 opublikować marker. Orkiestrator ma zweryfikować własność kontenera po nazwie
-projektu/serwisu, stan bazy i PID, po czym `SIGKILL` dotknie wyłącznie tego
-kontenera. Odbiór wymaga wzrostu `RestartCount`, nowego PID oraz automatycznego
+projektu/serwisu, stan bazy i PID, po czym `SIGKILL` dotknie wyłącznie
+procesu świadectwa wewnątrz tego kontenera. Bootstrap zakończy się błędem,
+a Compose ma wznowić usługę. Odbiór wymaga wzrostu `RestartCount`, nowego PID
+hosta kontenera oraz automatycznego
 odczytu tego samego markera, strategii i archiwum. Proces po restarcie poda
 ponownie tick DCA, następnie `a=167049975` (arm) i `a=167049977` (jedno TTP).
 Drugi submit DCA lub CLOSE jest błędem.
@@ -139,3 +141,49 @@ Po zebraniu wyniku wolno usunąć tylko zasoby utworzone pod dokładną nazwą t
 projektu Compose. Przy braku możliwości uruchomienia tego supervisora lub
 niepewnej własności procesu próba kończy się blockerem, bez ręcznego
 `resume` i bez zastępczego PASS.
+
+## Wynik nadzorowanej próby lokalnej
+
+Uruchomienie opt-in: z katalogu repo ustawić `RUN_011_SUPERVISED_PROOF=1` i
+wykonać `node scripts/run011-supervised-proof.mjs`. Skrypt sam losuje nazwę
+projektu Compose i testowy sekret JWT, buduje etap `build`, wdraża migracje
+wyłącznie do `soar_position_parity_011_test`, identyfikuje swój kontener po
+etykietach i po zakończeniu usuwa tylko własny projekt, wolumeny oraz obraz.
+Żadna usługa tej próby nie publikuje portu hosta.
+
+Trzeci przebieg testowy zakończył się `PUBLIC_011_SUPERVISOR_PROOF` dla
+projektu `soar011e464ab8c3329`. Przed sygnałem baza zawierała dwie pozycje
+OPEN, dwa DCA, cztery orders, dwie intencje i dwa fille mock LIVE, jeden
+COMPLETED BACKTEST, jeden raport i sześć backtest trades. Marker miał
+`a=167049972` oraz dokładne ID dwóch DCA trades, czterech orders, dwóch
+intencji i dwóch filli. SIGKILL objął tylko jego proces Vitest PID 18;
+Compose zwiększył `RestartCount` z 0 do 1, a PID hosta kontenera zmienił się
+z 26738 na 27265. Nowy start sam wybrał odzyskanie z Redis, odczytał tę samą
+strategię i archiwum o digest
+`506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8`.
+Nie było wywołania ręcznego etapu `resume` przez hosta.
+
+Powtórzony źródłowy tick DCA nie dodał trade ani order. `a=167049975`
+uzbroił TTP, `a=167049977` zamknął obie pozycje raz; ponowienie ticku CLOSE
+również niczego nie dodało. Po odzyskaniu baza miała zero OPEN, dwie CLOSED,
+nadal dwa DCA, sześć orders, trzy unikalne intencje i trzy fille mock LIVE,
+zero EXIT, nadal jeden BACKTEST run i raport oraz sześć backtest trades.
+Test potwierdził zachowanie wszystkich ID zapisanych przed awarią. PAPER
+i mock LIVE osiągnęły po `-0,02231404958610045` USDT PnL i po
+`0,1600550964180656` USDT opłat; BACKTEST miał `+0,01386` USDT net PnL.
+Własne kontenery, wolumeny i obraz zostały po odczycie usunięte; obcych
+zasobów nie dotknięto.
+
+Pierwsza próba ujawniła, że `kill -9 1` wykonane wewnątrz kontenera nie
+zatrzymało PID 1, więc nie wystąpił restart; wynik pozostał FAIL. Druga
+zatrzymała się na nadmiernie restrykcyjnym rozpoznaniu nazwy procesu przed
+SIGKILL. Izolowana próba kontrolna potwierdziła, że przerwanie procesu
+potomnego, po którym PID 1 kończy się błędem, uruchamia politykę Compose.
+Finalny przebieg stosował tę granicę i sprawdził własność PID przez marker
+procesu oraz istnienie tego PID w zweryfikowanym kontenerze.
+
+PASS dotyczy lokalnego procesu świadectwa 011 pod taką samą polityką
+Compose `restart: unless-stopped` jak `workers-execution`. Nie dowodzi
+uruchomienia produkcyjnego `execution.worker.js`, realnego Binance LIVE,
+Coolify, mixed-version ani automatycznego odzyskania kolejki BACKTEST.
+Te bramki i niezależny odbiór exact SHA pozostają otwarte.

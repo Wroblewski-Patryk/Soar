@@ -175,9 +175,14 @@ const ensureIsolated = () => {
   const redis = new URL(process.env.REDIS_URL ?? '');
   const expectedDb = momentumMigrationProof
     ? '/soar_momentum_period_001_test' : '/soar_position_parity_011_test';
-  if (db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
-      db.pathname !== expectedDb ||
-      redis.hostname !== '127.0.0.1' || !redis.port || redis.port === '6379')
+  const local = db.hostname === '127.0.0.1' && !!db.port && db.port !== '5432' &&
+    redis.hostname === '127.0.0.1' && !!redis.port && redis.port !== '6379';
+  const supervised = !!process.env.RUN_011_SUPERVISED_ID &&
+    /^[a-z0-9]{8,24}$/.test(process.env.RUN_011_SUPERVISED_ID) &&
+    db.hostname === 'proof-postgres' && db.port === '5432' &&
+    redis.hostname === 'proof-redis' && redis.port === '6379' &&
+    process.env.NODE_ENV === 'test';
+  if ((!local && !supervised) || db.pathname !== expectedDb)
     throw new Error('011 real source proof requires its own _test and Redis');
 };
 const sourceTicker = (tick: { eventTime: number; price: number }) => ({
@@ -475,9 +480,26 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       if (crashProof && stage === 'crash-open') {
         expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(2);
         expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(2);
+        const positionIds = [paperId, liveId];
+        const dcaTrades = await prisma.trade.findMany({ where: {
+          positionId: { in: positionIds }, lifecycleAction: 'DCA' }, select: { id: true } });
+        const orders = await prisma.order.findMany({ where: {
+          positionId: { in: positionIds } }, select: { id: true } });
+        const liveOrders = await prisma.order.findMany({ where: {
+          positionId: liveId }, select: { id: true } });
+        const intents = await prisma.liveOrderIntent.findMany({ where: {
+          id: { in: liveOrders.map((order) => order.id) } }, select: { id: true } });
+        const fills = await prisma.orderFill.findMany({ where: {
+          orderId: { in: liveOrders.map((order) => order.id) } }, select: { id: true } });
+        expect([dcaTrades.length, orders.length, intents.length, fills.length])
+          .toEqual([2, 4, 2, 2]);
+        const durableIds = { dcaTradeIds: dcaTrades.map((row) => row.id).sort(),
+          orderIds: orders.map((row) => row.id).sort(),
+          intentIds: intents.map((row) => row.id).sort(),
+          fillIds: fills.map((row) => row.id).sort() };
         process.stdout.write(`PUBLIC_011_DCA_CHECKPOINT ${JSON.stringify({
           pid: process.pid, paperId, liveId, paperBotId, liveBotId: liveBot.id,
-          runId: backtest.id, dcaId,
+          runId: backtest.id, strategyId, dcaId, durableIds,
         })}\n`);
         await new Promise<void>(() => {});
       }
@@ -618,7 +640,12 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
 
   resumeIt('resumes the real source pair from persisted state and archive', async () => {
     ensureIsolated();
-    if (Number(process.env.RUN_011_REAL_SOURCE_PARENT_PID) === process.pid)
+    if (process.env.RUN_011_SUPERVISED_ID) {
+      if (!process.env.RUN_011_SUPERVISED_BOOT_ID ||
+          process.env.RUN_011_SUPERVISED_BOOT_ID ===
+            process.env.RUN_011_SUPERVISED_PREVIOUS_BOOT_ID)
+        throw new Error('supervised resume requires a new container boot');
+    } else if (Number(process.env.RUN_011_REAL_SOURCE_PARENT_PID) === process.pid)
       throw new Error('resume must use a distinct process');
     const paperId = process.env.RUN_011_REAL_SOURCE_PAPER_ID;
     const liveId = process.env.RUN_011_REAL_SOURCE_LIVE_ID;
@@ -630,6 +657,20 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
     try {
       const archive = await readVerifiedRunArchive(runId, symbol, start, end);
       if (!archive) throw new Error('persisted source archive missing');
+      expect(digestVerifiedBinanceFuturesIntrabar(archive, symbol))
+        .toBe('506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8');
+      const runBeforeReplay = await prisma.backtestRun.findUniqueOrThrow({
+        where: { id: runId } });
+      if (!runBeforeReplay.strategyId) throw new Error('persisted strategy ID missing');
+      const strategy = await prisma.strategy.findUniqueOrThrow({
+        where: { id: runBeforeReplay.strategyId } });
+      if (process.env.RUN_011_REAL_SOURCE_STRATEGY_ID)
+        expect(strategy.id).toBe(process.env.RUN_011_REAL_SOURCE_STRATEGY_ID);
+      const rules = parseStrategySignalRules(strategy.config as Record<string, unknown>);
+      expect(rules).not.toBeNull();
+      expect([2, 3, 4].map((index) =>
+        evaluateStrategySignalAtIndex(rules!, archive, index, new Map())))
+        .toEqual(['LONG', null, null]);
       const paper = await prisma.position.findUniqueOrThrow({ where: { id: paperId } });
       const live = await prisma.position.findUniqueOrThrow({ where: { id: liveId } });
       expect([paper.status, live.status]).toEqual(['OPEN', 'OPEN']);
@@ -642,8 +683,15 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       const automation = makeAutomation(false);
       let armAggregateId: number | null = null;
       for (const tick of archive[5].intrabarTicks.filter((row) =>
-        row.sequenceId! > dcaId && row.sequenceId! <= ttpId)) {
+        row.sequenceId! >= dcaId && row.sequenceId! <= ttpId)) {
         await automation.handleTickerEvent(sourceTicker(tick));
+        if (tick.sequenceId === dcaId) {
+          for (const positionId of [paperId, liveId]) {
+            expect(await prisma.trade.count({ where: { positionId,
+              lifecycleAction: 'DCA' } })).toBe(1);
+            expect(await prisma.order.count({ where: { positionId } })).toBe(2);
+          }
+        }
         if (tick.sequenceId !== ttpId) {
           const paperTracking = await runtimePositionStateStore.getTrustedPositionRuntimeState(paperId);
           const liveTracking = await runtimePositionStateStore.getTrustedPositionRuntimeState(liveId);
@@ -662,10 +710,94 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(3);
       expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(3);
       expect(venue.submits).toHaveLength(1);
+      const paperClosed = await prisma.position.findUniqueOrThrow({ where: { id: paperId } });
+      const liveClosed = await prisma.position.findUniqueOrThrow({ where: { id: liveId } });
+      expect([paperClosed.status, liveClosed.status]).toEqual(['CLOSED', 'CLOSED']);
+      expect([paperClosed.closeReason, liveClosed.closeReason]).toEqual(['TTP', 'TTP']);
+      const tradesByPosition = await Promise.all([paperId, liveId].map((positionId) =>
+        prisma.trade.findMany({ where: { positionId }, orderBy: { executedAt: 'asc' } })));
+      for (const trades of tradesByPosition)
+        expect(trades.map((trade) => trade.lifecycleAction)).toEqual(['OPEN', 'DCA', 'CLOSE']);
+      expect(paperClosed.quantity).toBeCloseTo(1376.46314337, 8);
+      expect(liveClosed.quantity).toBeCloseTo(paperClosed.quantity, 8);
+      expect(paperClosed.entryPrice).toBeCloseTo(0.145299931176875, 8);
+      expect(liveClosed.entryPrice).toBeCloseTo(paperClosed.entryPrice, 8);
+      expect(paperClosed.realizedPnl).toBeCloseTo(-0.02231404958610045, 8);
+      expect(liveClosed.realizedPnl).toBeCloseTo(paperClosed.realizedPnl ?? NaN, 8);
+      const [paperTrades, liveTrades] = tradesByPosition;
+      const paperFees = paperTrades.reduce((sum, trade) => sum + (trade.fee ?? 0), 0);
+      const liveFees = liveTrades.reduce((sum, trade) => sum + (trade.fee ?? 0), 0);
+      expect(paperFees).toBeCloseTo(0.1600550964180656, 8);
+      expect(liveFees).toBeCloseTo(paperFees, 8);
+      const paperContributions = paperTrades.slice(0, 2)
+        .map((trade) => trade.price * trade.quantity);
+      expect(paperContributions[0]).toBeCloseTo(100, 4);
+      expect(paperContributions[1]).toBeCloseTo(paperContributions[0], 4);
+      const liveOrders = await prisma.order.findMany({ where: { positionId: liveId } });
+      const liveIntents = await prisma.liveOrderIntent.findMany({ where: {
+        id: { in: liveOrders.map((order) => order.id) } } });
+      const liveFills = await prisma.orderFill.findMany({ where: {
+        orderId: { in: liveOrders.map((order) => order.id) } } });
+      expect([liveIntents.length, liveFills.length]).toEqual([3, 3]);
+      expect(new Set(liveIntents.map((intent) => intent.clientOrderId)).size).toBe(3);
+      expect(liveOrders.every((order) => order.status === 'FILLED' &&
+        order.feeSource === 'EXCHANGE_FILL' && !order.feePending)).toBe(true);
+      for (const trade of liveTrades) {
+        const fill = liveFills.find((candidate) => candidate.orderId === trade.orderId);
+        expect(fill).toBeDefined();
+        expect(fill!.feeCost).toBeCloseTo(fill!.notional * feeRate, 8);
+      }
+      for (const botId of [paperClosed.botId, liveClosed.botId]) {
+        expect(await prisma.position.count({ where: { botId } })).toBe(1);
+        expect(await prisma.signal.count({ where: { botId, direction: 'LONG' } })).toBe(1);
+        expect(await prisma.signal.count({ where: { botId, direction: 'EXIT' } })).toBe(0);
+        expect(await prisma.runtimeExecutionDedupe.count({ where: {
+          botId, commandType: 'DCA', status: 'SUCCEEDED' } })).toBe(1);
+      }
+      const run = await prisma.backtestRun.findUniqueOrThrow({ where: { id: runId } });
+      const report = await prisma.backtestReport.findUniqueOrThrow({
+        where: { backtestRunId: runId } });
+      expect(run.status).toBe('COMPLETED');
+      expect(report.totalTrades).toBe(6);
+      expect(report.netPnl).toBeCloseTo(0.01386, 8);
+      expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } }))
+        .toBe(1);
+      const backtestAdds = await prisma.backtestContribution.findMany({ where: {
+        backtestRunId: runId, timestamp: {
+          lte: new Date('2026-10-18T02:46:47.639Z') } },
+        orderBy: { addSequence: 'asc' } });
+      const backtestDca = backtestAdds.find((add) => add.kind === 'DCA' &&
+        add.timestamp.getTime() === Date.parse('2026-10-18T02:46:47.639Z'));
+      const backtestEntry = backtestAdds.find((add) => add.kind === 'ENTRY' &&
+        add.tradeSequence === backtestDca?.tradeSequence);
+      expect(backtestDca).toBeDefined();
+      expect(backtestEntry).toBeDefined();
+      expect(backtestDca!.contributionUsdt)
+        .toBeCloseTo(backtestEntry!.contributionUsdt, 6);
+      expect(backtestDca!.contributionUsdt).toBeCloseTo(paperContributions[1], 4);
+      const preCrashIds = process.env.RUN_011_REAL_SOURCE_DURABLE_IDS;
+      if (preCrashIds) {
+        const ids = JSON.parse(preCrashIds) as { dcaTradeIds: string[];
+          orderIds: string[]; intentIds: string[]; fillIds: string[] };
+        expect((await prisma.trade.findMany({ where: {
+          id: { in: ids.dcaTradeIds } }, select: { id: true } }))
+          .map((row) => row.id).sort()).toEqual(ids.dcaTradeIds);
+        expect((await prisma.order.findMany({ where: {
+          id: { in: ids.orderIds } }, select: { id: true } }))
+          .map((row) => row.id).sort()).toEqual(ids.orderIds);
+        expect(liveIntents.map((row) => row.id).filter((id) =>
+          ids.intentIds.includes(id)).sort()).toEqual(ids.intentIds);
+        expect(liveFills.map((row) => row.id).filter((id) =>
+          ids.fillIds.includes(id)).sort()).toEqual(ids.fillIds);
+      }
       process.stdout.write(`PUBLIC_011_RUNTIME_PAIR ${JSON.stringify({
         dcaId, ttpId, armAggregateId,
         ttpTime: new Date(closeTick.eventTime).toISOString(),
-        paperId, liveId, childPid: process.pid })}\n`);
+        paperId, liveId, childPid: process.pid, paperPnl: paperClosed.realizedPnl,
+        mockLivePnl: liveClosed.realizedPnl, liveIntents: liveIntents.length,
+        liveFills: liveFills.length, paperFees, liveFees,
+        backtestTrades: report.totalTrades, backtestPnl: report.netPnl,
+        retainedPreCrashIds: !!preCrashIds })}\n`);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
       vi.unstubAllGlobals();
