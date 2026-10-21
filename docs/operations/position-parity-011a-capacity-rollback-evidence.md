@@ -5,6 +5,8 @@ Kod i migracja 86: `bafad15c9fa7c5f20b699cb729424ee1c415cb51`.
 Zakres: wyłącznie lokalny BACKTEST Binance USD-M i własna PostgreSQL `_test`.
 Pełne 011A pozostaje `REVIEW`; produkcja, LIVE, Gate.io i wydanie `NO-GO`.
 
+**Errata:** ten dokument opisuje pierwotny kodowy SHA `bafad15c9fa7c5f20b699cb729424ee1c415cb51`, który dostał niezależny `FAIL` za nieatomową migrację 86, brak SQL limitu sumy ZIP oraz przekroczenie budżetu próby. [Korekta i nowy lokalny dowód](position-parity-011a-capacity-migration-errata-evidence.md) dotyczą kodu `b7c4f7f6535f0c6695f2fbef9f7e10a40e50b943`. Poniższe wartości historyczne pozostają świadectwem tamtej próby, nie odbiorem nowego SHA.
+
 ## Pomiar źródła i decyzja o limitach
 
 Publiczne dzienne `aggTrades` z 2026-10-18 pobrano z
@@ -17,9 +19,9 @@ Pobrane `.CHECKSUM` obu plików pasowały do SHA-256 ZIP:
 | ETHUSDT | 12 205 717 | 59 500 129 | `b1042326e8a3157497532da615dd744bddf955e4e5a8095b76c0d85fa129f8b8` | 49 585 |
 
 Nowy limit to **16 MiB ZIP łącznie na run/symbol**, **64 MiB CSV** i
-**80 000 wybranych agregatów**; archiwalny replay może pobrać do 80 stron
+**80 000 rekordów łącznie, w tym dwa brzegowe (maksymalnie 79 998 w oknie)**; archiwalny replay może pobrać do 80 stron
 po 1000. REST zachowuje limit 20 stron po 1000. SQL ogranicza każdy ZIP
-do 16 MiB, a kod sumę dwóch ZIP do 16 MiB. Skan CSV przestał tworzyć
+do 16 MiB, a na tamtym SHA tylko kod sumę dwóch ZIP do 16 MiB. Skan CSV przestał tworzyć
 tablicę wszystkich linii dnia. To nadal całodzienne pliki przechowywane
 bez TTL do usunięcia runu, z kosztem bazy i kopii na każdy run/symbol.
 
