@@ -62,9 +62,11 @@ but without tick order records DCA on candle 5 and TTP on candle 6. If a tick
 path is supplied, it must have strictly increasing times inside the candle,
 matching open/close and exact extrema; invalid paths fail closed. The ordered
 path in this local proof is a declared synthetic fixture, not historical
-Binance market data. Ticket 011 stays `REVIEW` pending independent review of
-the exact code SHA and a source-backed production intrabar ordering policy;
-parent `POSITION-CYCLE` and release remain `NO-GO`.
+Binance market data. Independent static review and process QA passed on exact
+code SHA `cd803c38faed825c13e4c7887b415cf13f13475c` for this ordered
+synthetic path. Ticket 011 stays `REVIEW`: the historical gateway remains
+OHLC-only, and a source-backed production intrabar ordering policy is `P0 OPEN`.
+Parent `POSITION-CYCLE` is `OPEN`; release remains `NO-GO`.
 
 Run from `apps/api` on an own fresh PostgreSQL `_test` database and Redis.
 The outer `open` stage launches and verifies a distinct `resume` process:
@@ -85,7 +87,15 @@ pnpm exec vitest run src/modules/engine/runtimeBinanceFuturesThreeModePositiveDc
 
 Author-local chronology run: 83 applied migrations; outer stage 1 PASS / 1 SKIP and
 the separate resume process 1 PASS. After cleanup, SQL
-`User/BacktestRun/Trade=0/0/0`, Redis `DBSIZE=0`. This is local proof using
-synthetic venue metadata, balance, fills and fees. It does not establish
-actual Binance FUTURES execution, authenticated production behavior or
-release safety. Parent `POSITION-CYCLE` remains OPEN; release NO-GO.
+`User/BacktestRun/Trade=0/0/0`, Redis `DBSIZE=0`. Independent static review
+on code SHA `cd803c38faed825c13e4c7887b415cf13f13475c` passed for
+confirmed DCA before the later same-candle TTP, protection rebase, and
+OHLC-only deferral. Independent runtime QA on that SHA used its own fresh
+`_test` database after 83 migrations and Redis; distinct `open` and `resume`
+processes each passed 1/1. The ordered synthetic BACKTEST, PAPER, and internal
+mock LIVE runs agreed on fee `0.16136` and net PnL `+3.23864` USDT from
+persisted fills, with no retry duplicates. The identical OHLC without tick
+order deferred TTP to candle 6. This is local proof using synthetic venue
+metadata, balance, fills and fees. It does not establish actual Binance
+FUTURES execution, authenticated production behavior or release safety.
+Parent `POSITION-CYCLE` remains `OPEN`; release `NO-GO`.
