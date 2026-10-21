@@ -59,3 +59,42 @@ przez test, więc dowód obejmuje trwałe odtworzenie po twardym przerwaniu,
 nie automatyczny nadzór procesu w produkcji. Internal mock LIVE używa
 syntetycznych filli i reguł; nie dowodzi prawdziwego Binance ani wydania.
 Pełne 011/011A pozostają REVIEW, release NO-GO do niezależnego odbioru.
+
+## Wynik próby 2026-10-21 (lokalny, izolowany)
+
+Plan powyżej został wypchnięty przed implementacją testu w SHA
+`06768e36e403104f7843e8f00ab792503baf1f2e`. Opt-in test
+`runtime011RealSourceThreeMode.e2e.test.ts` przeszedł na własnym PostgreSQL
+`soar_position_parity_011_test` pod `127.0.0.1:5577` i Redisie pod
+`127.0.0.1:6417`, po 84 migracjach. Nie korzystał ze zwykłych portów stacka.
+
+Etap `crash-open` potwierdził po jednym trwałym DCA i dwóch orders dla każdej
+otwartej pozycji przed przerwaniem. Marker PID był zgodny z `spawn.pid`.
+`child.kill('SIGKILL')` zakończył własny PID `12108`; Node na Windows zwrócił
+`code=null`, `signal=SIGKILL`. Po wyjściu nadal istniał użytkownik i obie
+pozycje OPEN z pojedynczym DCA oraz stanem poziomu `[0]` w Redisie, co
+wykluczyło wykonanie bloku `finally` procesu. Nowy PID `191948` odczytał
+zapisane archiwum bez sieci i doprowadził obie pozycje do TTP: źródłowe
+`a=167049972` DCA, `a=167049975` arm, `a=167049977` close. Ponowienie ticku
+close nie dodało zlecenia. Każda pozycja miała jeden OPEN/DCA/CLOSE, trzy
+orders i jeden dedupe DCA; mock LIVE miał trzy unikalne intents i trzy fills.
+Oba boty miały jeden LONG i zero EXIT. PAPER i mock LIVE miały po
+`1376,46314337` jednostek, średnią `0,145299931176875`, sumę opłat
+`0,1600550964180656` USDT i net PnL `-0,02231404958610045` USDT.
+BACKTEST pozostał COMPLETED z sześcioma trades, jednym raportem i net PnL
+`+0,01386` USDT. Osobny pełny przebieg 011 na tym samym świadku przeszedł
+z decyzjami `[LONG,null,null]`, porównał wkłady i fee oraz powtórzył job
+BACKTEST bez zmiany przebiegu, trades i raportu.
+
+Wynik: `1 passed / 2 skipped` dla testu twardego przerwania i osobno
+`1 passed / 2 skipped` dla pełnego testu sygnału; API typecheck,
+repo guardrails i strict graph drift przeszły. Po cleanup izolowana baza miała
+zero User, BacktestRun, Position, Order, LiveOrderIntent i OrderFill, a Redis
+zero kluczy. Pierwsze dwa uruchomienia testu awarii zatrzymały się na odczycie
+stanu przez tryb testowy, który trzyma go wyłącznie w pamięci procesu;
+orkiestrator został poprawiony tak, by odczytywać wspólny Redis jak runtime.
+Nie zmieniono danych źródłowych ani strategii.
+
+Ten PASS dowodzi lokalnej trwałości i odtworzenia przez nowy proces testowy.
+Nie dowodzi automatycznego uruchomienia procesu przez supervisor ani
+rzeczywistej giełdy; niezależny odbiór 011/011A pozostaje REVIEW/NO-GO.

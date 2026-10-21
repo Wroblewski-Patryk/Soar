@@ -102,10 +102,14 @@ vi.mock('../orders/orders.service', async (importOriginal) => {
 });
 
 const signalLossProof = process.env.RUN_011_REAL_SOURCE_SIGNAL_LOSS_PROOF === '1';
-const enabled = process.env.RUN_011_REAL_SOURCE_THREE_MODE_PROOF === '1' || signalLossProof;
+const crashProof = process.env.RUN_011_REAL_SOURCE_CRASH_RECOVERY_PROOF === '1';
+const enabled = process.env.RUN_011_REAL_SOURCE_THREE_MODE_PROOF === '1' ||
+  signalLossProof || crashProof;
 const stage = process.env.RUN_011_REAL_SOURCE_THREE_MODE_STAGE;
-const openIt = enabled && stage === 'open' ? it : it.skip;
+const openIt = enabled && (stage === 'open' || (crashProof && stage === 'crash-open'))
+  ? it : it.skip;
 const resumeIt = enabled && stage === 'resume' ? it : it.skip;
+const crashIt = crashProof && stage === 'crash-orchestrate' ? it : it.skip;
 const selectSignalLossWitness = (verified: BacktestKlineCandle[]) => {
   const closes = verified.map((candle) => candle.close);
   const attempts: Array<Record<string, unknown>> = [];
@@ -242,7 +246,8 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       .toMatchObject({ eventTime: Date.parse('2026-10-18T02:46:57.282Z'), price: 0.1454 });
     const digest = digestVerifiedBinanceFuturesIntrabar(verified, symbol);
     expect(digest).toBe('506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8');
-    const signalLossWitness = signalLossProof ? selectSignalLossWitness(verified) : null;
+    const signalLossWitness = signalLossProof || crashProof
+      ? selectSignalLossWitness(verified) : null;
     const previousPaperFeeRate = process.env.RUNTIME_PAPER_TAKER_FEE_RATE;
     const previousNodeEnv = process.env.NODE_ENV;
     process.env.RUNTIME_PAPER_TAKER_FEE_RATE = String(feeRate);
@@ -445,6 +450,15 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
         .toBe('OPEN');
       expect((await prisma.position.findUniqueOrThrow({ where: { id: liveId } })).status)
         .toBe('OPEN');
+      if (crashProof && stage === 'crash-open') {
+        expect(await prisma.order.count({ where: { positionId: paperId } })).toBe(2);
+        expect(await prisma.order.count({ where: { positionId: liveId } })).toBe(2);
+        process.stdout.write(`PUBLIC_011_DCA_CHECKPOINT ${JSON.stringify({
+          pid: process.pid, paperId, liveId, paperBotId, liveBotId: liveBot.id,
+          runId: backtest.id, dcaId,
+        })}\n`);
+        await new Promise<void>(() => {});
+      }
       const resumeOutput = await startResume(paperId, liveId, backtest.id);
       expect(resumeOutput).toContain('PUBLIC_011_RUNTIME_PAIR');
       const resumeLine = resumeOutput.split(/\r?\n/).find((line) =>
@@ -635,4 +649,214 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       vi.unstubAllGlobals();
     }
   }, 45_000);
+
+  crashIt('hard-stops its own runtime after DCA and recovers without duplicate fills', async () => {
+    ensureIsolated();
+    if (await prisma.user.count() !== 0) throw new Error('Requires empty disposable _test');
+    const adminUrl = new URL(process.env.DATABASE_URL ?? '');
+    adminUrl.pathname = '/postgres';
+    const child = spawn(process.execPath, [
+      resolve(process.cwd(), 'node_modules/vitest/vitest.mjs'), 'run',
+      'src/modules/engine/runtime011RealSourceThreeMode.e2e.test.ts',
+      '-t', 'uses ordinary LONG', '--reporter=dot', '--pool=threads', '--maxWorkers=1',
+    ], { cwd: process.cwd(), env: { ...process.env, NODE_ENV: 'test',
+      DATABASE_URL: adminUrl.toString(), TEST_DATABASE_URL: process.env.DATABASE_URL,
+      RUN_011_REAL_SOURCE_THREE_MODE_STAGE: 'crash-open',
+    }, stdio: ['ignore', 'pipe', 'pipe'] });
+    type Checkpoint = { pid: number; paperId: string; liveId: string;
+      paperBotId: string; liveBotId: string; runId: string; dcaId: number };
+    let childClosed = false;
+    child.on('close', () => { childClosed = true; });
+    let checkpoint: Checkpoint | null = null;
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      checkpoint = await new Promise<Checkpoint>((resolvePromise, reject) => {
+        let output = '';
+        let errors = '';
+        const timer = setTimeout(() => reject(new Error(
+          `011 crash checkpoint timeout: ${output}\n${errors}`)), 75_000);
+        const fail = (error: Error) => { clearTimeout(timer); reject(error); };
+        child.stdout.on('data', (chunk: Buffer) => {
+          output += chunk.toString();
+          const match = output.match(/PUBLIC_011_DCA_CHECKPOINT (\{[^\r\n]*\})/);
+          if (!match) return;
+          clearTimeout(timer);
+          try { resolvePromise(JSON.parse(match[1]) as Checkpoint); }
+          catch (error) { reject(error); }
+        });
+        child.stderr.on('data', (chunk: Buffer) => { errors += chunk.toString(); });
+        child.on('error', fail);
+        child.on('close', (code) => fail(new Error(
+          `011 crash-open exited before checkpoint (${code}): ${output}\n${errors}`)));
+      });
+      expect(checkpoint.pid).toBe(child.pid);
+      expect(checkpoint.pid).not.toBe(process.pid);
+      expect(checkpoint.dcaId).toBe(dcaId);
+      for (const positionId of [checkpoint.paperId, checkpoint.liveId]) {
+        expect((await prisma.position.findUniqueOrThrow({ where: { id: positionId } })).status)
+          .toBe('OPEN');
+        expect(await prisma.trade.count({ where: { positionId,
+          lifecycleAction: 'DCA' } })).toBe(1);
+        expect(await prisma.order.count({ where: { positionId } })).toBe(2);
+      }
+      const stopped = new Promise<{ code: number | null; signal: NodeJS.Signals | null }>(
+        (resolvePromise, reject) => {
+          const timer = setTimeout(() => reject(new Error('own crash-open PID stayed alive')), 10_000);
+          child.once('close', (code, signal) => {
+            clearTimeout(timer); resolvePromise({ code, signal });
+          });
+        });
+      expect(child.kill('SIGKILL')).toBe(true);
+      const stoppedResult = await stopped;
+      expect(stoppedResult.code).not.toBe(0);
+      expect(childClosed).toBe(true);
+      expect(await prisma.user.count()).toBe(1);
+      for (const positionId of [checkpoint.paperId, checkpoint.liveId]) {
+        expect((await prisma.position.findUniqueOrThrow({ where: { id: positionId } })).status)
+          .toBe('OPEN');
+        const state = await runtimePositionStateStore.getPositionRuntimeState(positionId);
+        expect(state?.currentAdds).toBe(1);
+        expect(state?.executedDcaLevelIndices).toEqual([0]);
+        expect(await prisma.trade.count({ where: { positionId,
+          lifecycleAction: 'DCA' } })).toBe(1);
+        expect(await prisma.order.count({ where: { positionId } })).toBe(2);
+      }
+      const archive = await readVerifiedRunArchive(checkpoint.runId, symbol, start, end);
+      expect(archive).not.toBeNull();
+      expect(digestVerifiedBinanceFuturesIntrabar(archive!, symbol))
+        .toBe('506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8');
+      const resumeOutput = await startResume(checkpoint.paperId, checkpoint.liveId,
+        checkpoint.runId);
+      const resumeLine = resumeOutput.split(/\r?\n/).find((line) =>
+        line.includes('PUBLIC_011_RUNTIME_PAIR '));
+      expect(resumeLine).toBeDefined();
+      const resumed = JSON.parse(resumeLine!.slice(resumeLine!.indexOf(
+        'PUBLIC_011_RUNTIME_PAIR ') + 'PUBLIC_011_RUNTIME_PAIR '.length)) as {
+          childPid: number; dcaId: number; ttpId: number; armAggregateId: number;
+          ttpTime: string;
+        };
+      expect(resumed.childPid).not.toBe(checkpoint.pid);
+      expect(resumed.childPid).not.toBe(process.pid);
+      expect(resumed).toMatchObject({ dcaId, ttpId, armAggregateId: 167049975,
+        ttpTime: '2026-10-18T02:46:57.282Z' });
+      const paper = await prisma.position.findUniqueOrThrow({ where: { id: checkpoint.paperId } });
+      const live = await prisma.position.findUniqueOrThrow({ where: { id: checkpoint.liveId } });
+      expect([paper.status, live.status]).toEqual(['CLOSED', 'CLOSED']);
+      expect([paper.closeReason, live.closeReason]).toEqual(['TTP', 'TTP']);
+      for (const botId of [checkpoint.paperBotId, checkpoint.liveBotId])
+        expect(await prisma.position.count({ where: { botId } })).toBe(1);
+      const tradesByPosition = [];
+      for (const positionId of [checkpoint.paperId, checkpoint.liveId]) {
+        const trades = await prisma.trade.findMany({ where: { positionId },
+          orderBy: { executedAt: 'asc' } });
+        expect(trades.map((trade) => trade.lifecycleAction)).toEqual(['OPEN','DCA','CLOSE']);
+        expect(trades.map((trade) => trade.price))
+          .toEqual([archive![2].close, 0.1454, 0.1454]);
+        expect(await prisma.order.count({ where: { positionId } })).toBe(3);
+        tradesByPosition.push(trades);
+      }
+      expect(paper.quantity).toBeCloseTo(1376.46314337, 8);
+      expect(live.quantity).toBeCloseTo(paper.quantity, 8);
+      expect(paper.entryPrice).toBeCloseTo(0.145299931176875, 8);
+      expect(live.entryPrice).toBeCloseTo(paper.entryPrice, 8);
+      expect(paper.realizedPnl).toBeCloseTo(-0.02231404958610045, 8);
+      expect(live.realizedPnl).toBeCloseTo(paper.realizedPnl ?? NaN, 8);
+      const liveOrders = await prisma.order.findMany({ where: { positionId: checkpoint.liveId } });
+      const liveIntents = await prisma.liveOrderIntent.findMany({ where: {
+        id: { in: liveOrders.map((order) => order.id) } } });
+      const liveFills = await prisma.orderFill.findMany({ where: {
+        orderId: { in: liveOrders.map((order) => order.id) } } });
+      expect([liveIntents.length, liveFills.length]).toEqual([3, 3]);
+      expect(new Set(liveIntents.map((intent) => intent.clientOrderId)).size).toBe(3);
+      expect(liveOrders.every((order) => order.status === 'FILLED' &&
+        order.feeSource === 'EXCHANGE_FILL' && !order.feePending)).toBe(true);
+      for (const botId of [checkpoint.paperBotId, checkpoint.liveBotId])
+        expect(await prisma.runtimeExecutionDedupe.count({ where: {
+          botId, commandType: 'DCA', status: 'SUCCEEDED' } })).toBe(1);
+      const [paperTrades, liveTrades] = tradesByPosition;
+      const paperFees = paperTrades.reduce((sum, trade) => sum + (trade.fee ?? 0), 0);
+      const liveFees = liveTrades.reduce((sum, trade) => sum + (trade.fee ?? 0), 0);
+      const paperContributions = paperTrades.slice(0, 2)
+        .map((trade) => trade.price * trade.quantity);
+      const paperQuantity = paperTrades.slice(0, 2)
+        .reduce((sum, trade) => sum + trade.quantity, 0);
+      const paperAverage = paperTrades.slice(0, 2)
+        .reduce((sum, trade) => sum + trade.price * trade.quantity, 0) / paperQuantity;
+      expect(paperContributions[0]).toBeCloseTo(100, 4);
+      expect(paperContributions[1]).toBeCloseTo(paperContributions[0], 4);
+      expect(paper.quantity).toBeCloseTo(paperQuantity, 6);
+      expect(paper.entryPrice).toBeCloseTo(paperAverage, 6);
+      expect(paper.realizedPnl).toBeCloseTo(
+        (paperTrades[2].price - paperAverage) * paperQuantity - paperFees, 4);
+      expect(live.realizedPnl).toBeCloseTo(
+        (liveTrades[2].price - live.entryPrice) * live.quantity - liveFees, 4);
+      for (const trade of liveTrades) {
+        const fill = liveFills.find((candidate) => candidate.orderId === trade.orderId);
+        expect(fill).toBeDefined();
+        expect(fill!.feeCost).toBeCloseTo(fill!.notional * feeRate, 8);
+      }
+      const backtestAdds = await prisma.backtestContribution.findMany({ where: {
+        backtestRunId: checkpoint.runId, timestamp: {
+          lte: new Date('2026-10-18T02:46:47.639Z') } },
+        orderBy: { addSequence: 'asc' } });
+      const firstBacktestAdd = backtestAdds.find((add) => add.kind === 'DCA' &&
+        add.timestamp.getTime() === Date.parse('2026-10-18T02:46:47.639Z'));
+      const firstBacktestEntry = backtestAdds.find((add) => add.kind === 'ENTRY' &&
+        add.tradeSequence === firstBacktestAdd?.tradeSequence);
+      expect(firstBacktestAdd).toBeDefined();
+      expect(firstBacktestEntry).toBeDefined();
+      expect(firstBacktestAdd!.contributionUsdt)
+        .toBeCloseTo(firstBacktestEntry!.contributionUsdt, 6);
+      expect(firstBacktestAdd!.contributionUsdt).toBeCloseTo(paperContributions[1], 4);
+      expect(firstBacktestEntry!.contributionUsdt).toBeCloseTo(paperContributions[0], 4);
+      for (const botId of [checkpoint.paperBotId, checkpoint.liveBotId]) {
+        expect(await prisma.signal.count({ where: { botId, direction: 'LONG' } })).toBe(1);
+        expect(await prisma.signal.count({ where: { botId, direction: 'EXIT' } })).toBe(0);
+      }
+      const run = await prisma.backtestRun.findUniqueOrThrow({ where: { id: checkpoint.runId } });
+      const report = await prisma.backtestReport.findUniqueOrThrow({
+        where: { backtestRunId: checkpoint.runId } });
+      expect(run.status).toBe('COMPLETED');
+      expect(report.totalTrades).toBe(6);
+      expect(report.netPnl).toBeCloseTo(0.01386, 8);
+      const backtestTrades = await prisma.backtestTrade.findMany({ where: {
+        backtestRunId: checkpoint.runId }, orderBy: { openedAt: 'asc' } });
+      expect(backtestTrades).toHaveLength(6);
+      expect(backtestTrades[0].entryPrice).toBeCloseTo(paperAverage, 4);
+      expect(backtestTrades[0].exitPrice).toBe(paperTrades[2].price);
+      expect((backtestTrades[0].fee ?? NaN) - paperFees)
+        .toBeCloseTo(0.0000049035819344, 8);
+      expect(await prisma.backtestReport.count({ where: { backtestRunId: checkpoint.runId } }))
+        .toBe(1);
+      process.stdout.write(`PUBLIC_011_CRASH_RECOVERY ${JSON.stringify({
+        killedPid: checkpoint.pid, killExit: stoppedResult, resumePid: resumed.childPid,
+        dcaId, armAggregateId: resumed.armAggregateId, ttpId,
+        reportTrades: report.totalTrades, reportNetPnl: report.netPnl,
+        paperPnl: paper.realizedPnl, mockLivePnl: live.realizedPnl,
+        liveIntents: liveIntents.length, liveFills: liveFills.length,
+      })}\n`);
+    } finally {
+      try {
+        if (!childClosed) {
+          child.kill('SIGKILL');
+          await new Promise<void>((resolvePromise) => {
+            if (childClosed) return resolvePromise();
+            const timer = setTimeout(resolvePromise, 10_000);
+            child.once('close', () => { clearTimeout(timer); resolvePromise(); });
+          });
+        }
+        if (childClosed) {
+          if (checkpoint?.paperId)
+            await runtimePositionStateStore.deletePositionRuntimeState(checkpoint.paperId);
+          if (checkpoint?.liveId)
+            await runtimePositionStateStore.deletePositionRuntimeState(checkpoint.liveId);
+          await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE`;
+        }
+      } finally {
+        if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+        else process.env.NODE_ENV = previousNodeEnv;
+      }
+    }
+  }, 180_000);
 });
