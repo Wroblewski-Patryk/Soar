@@ -280,6 +280,7 @@ export class CcxtFuturesConnector {
     minAmount: number | null;
     minNotional: number | null;
     amountPrecision: number | null;
+    amountPrecisionMode: 'TICK_SIZE' | 'DECIMAL_PLACES' | null;
     contractSize: number | null;
   }> {
     const client = await this.getOrCreateClient();
@@ -313,6 +314,10 @@ export class CcxtFuturesConnector {
       minAmount: readNumber(amountLimits.min),
       minNotional: readNumber(costLimits.min),
       amountPrecision: readNumber(precision.amount),
+      // CCXT 4.5.43 precision modes: 4 = TICK_SIZE, 2 = DECIMAL_PLACES.
+      // Do not guess when the client reports another mode or no mode.
+      amountPrecisionMode: client.precisionMode === 4 ? 'TICK_SIZE'
+        : client.precisionMode === 2 ? 'DECIMAL_PLACES' : null,
       contractSize: readNumber(market?.contractSize),
     };
   }

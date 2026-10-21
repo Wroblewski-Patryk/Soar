@@ -7,6 +7,8 @@ type SymbolTradingRules = {
   minAmount: number | null;
   minNotional: number | null;
   amountPrecision: number | null;
+  // Omitted by legacy synthetic rules; live CCXT metadata supplies a mode or null.
+  amountPrecisionMode?: 'TICK_SIZE' | 'DECIMAL_PLACES' | null;
   contractSize?: number | null;
 };
 

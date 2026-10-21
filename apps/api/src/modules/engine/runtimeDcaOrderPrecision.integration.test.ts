@@ -127,6 +127,45 @@ const runIntegratedSequence = async (input: {
 };
 
 describe('runtime DCA venue precision and filled contribution', () => {
+  describe('runtime DCA amount precision modes', () => {
+    const input = { quantity: 60.5, markPrice: 3.305, marketType: 'FUTURES' as const,
+      rules: { minAmount: 1, minNotional: 5, amountPrecision: 1,
+        amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 1 } };
+
+    it('floors CCXT tick-size contracts without exceeding the contribution', () => {
+      expect(resolveRuntimeDcaOrderQuantity(input)).toBe(60);
+      expect(resolveRuntimeDcaOrderQuantity({ ...input, quantity: 62, rules: {
+        ...input.rules, amountPrecision: 5,
+      } })).toBe(60);
+      expect(resolveRuntimeDcaOrderQuantity({ ...input, rules: {
+        ...input.rules, amountPrecision: 0.1,
+      } })).toBe(60.5);
+    });
+
+    it('keeps decimal places and legacy synthetic rules distinct from tick size', () => {
+      expect(resolveRuntimeDcaOrderQuantity({ ...input, rules: {
+        ...input.rules, amountPrecisionMode: 'DECIMAL_PLACES',
+      } })).toBe(60.5);
+      const { amountPrecisionMode: _omitted, ...legacyRules } = input.rules;
+      expect(resolveRuntimeDcaOrderQuantity({ ...input, rules: legacyRules })).toBe(60.5);
+    });
+
+    it('fails closed on unknown mode, missing notional or non-unit contract', () => {
+      type Rules = Parameters<typeof resolveRuntimeDcaOrderQuantity>[0]['rules'];
+      const invalidRules: Rules[] = [
+        { ...input.rules, amountPrecisionMode: null },
+        { ...input.rules, amountPrecisionMode: 'SIGNIFICANT_DIGITS' as unknown as Rules['amountPrecisionMode'] },
+        { ...input.rules, minNotional: null },
+        { ...input.rules, contractSize: null },
+        { ...input.rules, contractSize: 0.0001 },
+      ];
+      for (const rules of invalidRules) {
+        expect(() => resolveRuntimeDcaOrderQuantity({ ...input, rules }))
+          .toThrowError(expect.objectContaining({ code: 'DCA_ORDER_RULES_INVALID' }));
+      }
+    });
+  });
+
   it('floors integer and fractional steps without exceeding the requested add', () => {
     const base = { quantity: 2.8776978417, markPrice: 0.695,
       marketType: 'SPOT' as const,

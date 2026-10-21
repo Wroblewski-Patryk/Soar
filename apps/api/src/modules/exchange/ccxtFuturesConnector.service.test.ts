@@ -346,7 +346,11 @@ describe('CcxtFuturesConnector scaffold', () => {
   });
 
   it('reads trading rules from the preferred Gate.io swap market', async () => {
+    const ccxt = (await import('ccxt')).default;
+    expect(ccxt.TICK_SIZE).toBe(4);
+    expect(ccxt.DECIMAL_PLACES).toBe(2);
     const client = createMockClient();
+    client.precisionMode = 4;
     const markets = {
       'ADA/USDT': {
         symbol: 'ADA/USDT',
@@ -379,8 +383,18 @@ describe('CcxtFuturesConnector scaffold', () => {
       minAmount: 1,
       minNotional: null,
       amountPrecision: 1,
+      amountPrecisionMode: 'TICK_SIZE',
       contractSize: 10,
     });
+    client.precisionMode = 2;
+    await expect(connector.getSymbolTradingRules('ADAUSDT')).resolves.toMatchObject({
+      amountPrecision: 1, amountPrecisionMode: 'DECIMAL_PLACES',
+    });
+    client.precisionMode = undefined;
+    await expect(connector.getSymbolTradingRules('ADAUSDT')).resolves.toMatchObject({
+      amountPrecisionMode: null,
+    });
+    expect(client.createOrder).not.toHaveBeenCalled();
   });
 
   it('fetches and normalizes recent public candles while dropping malformed rows', async () => {

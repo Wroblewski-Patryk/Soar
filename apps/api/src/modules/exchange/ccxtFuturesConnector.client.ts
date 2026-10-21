@@ -67,6 +67,7 @@ export type CcxtPositionLike = {
 };
 
 export interface CcxtExchangeLikeClient {
+  precisionMode?: number;
   setSandboxMode?: (enabled: boolean) => void;
   loadMarkets: () => Promise<unknown>;
   fetchPositions?: (

@@ -8,6 +8,15 @@ const invalidRules = () => new RuntimeDcaPolicyError({
   message: 'Runtime USDT DCA quantity cannot be confirmed against venue amount, notional and precision rules',
 });
 
+const resolveAmountStep = (precision: number, mode: SymbolTradingRules['amountPrecisionMode']) => {
+  if (mode === 'TICK_SIZE') return precision;
+  if (mode === 'DECIMAL_PLACES') return Number.isInteger(precision) ? 10 ** -precision : NaN;
+  if (mode !== undefined) return NaN;
+  // Existing synthetic fixtures omitted the mode and used this legacy convention.
+  return precision >= 1 ? 10 ** -Math.trunc(precision)
+    : precision > 0 ? precision : 1;
+};
+
 export const resolveRuntimeDcaOrderQuantity = (input: {
   quantity: number;
   markPrice: number;
@@ -25,11 +34,10 @@ export const resolveRuntimeDcaOrderQuantity = (input: {
       || Math.abs(rules.contractSize - 1) > 1e-12))) {
     throw invalidRules();
   }
-  // Venue precision is either a decimal count or a fractional quantity step.
-  // Floor the requested contribution: rounding to nearest could spend more than the target.
   const precision = rules.amountPrecision;
-  const step = precision >= 1 ? 10 ** -Math.trunc(precision)
-    : precision > 0 ? precision : 1;
+  // Live CCXT rules always carry an explicit mode or null; null fails closed.
+  const step = resolveAmountStep(precision, rules.amountPrecisionMode);
+  // Floor the requested contribution: rounding to nearest could spend more than the target.
   if (!Number.isFinite(step) || step <= 0) throw invalidRules();
   const steps = Math.floor(quantity / step + 1e-10);
   if (!Number.isSafeInteger(steps)) throw invalidRules();
