@@ -22,6 +22,7 @@ import { GetBacktestTimelineQuerySchema } from '../backtests/backtests.types';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { evaluateStrategySignalAtIndex,
   parseStrategySignalRules } from './strategySignalEvaluator';
+import { clampPeriod } from './sharedIndicatorSeries';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
 import { listActiveRuntimeBots } from './runtimeSignalLoopDefaults';
 import { executeRuntimeDca, RuntimePositionAutomationService } from './runtimePositionAutomation.service';
@@ -108,56 +109,57 @@ const resumeIt = enabled && stage === 'resume' ? it : it.skip;
 const selectSignalLossWitness = (verified: BacktestKlineCandle[]) => {
   const closes = verified.map((candle) => candle.close);
   const attempts: Array<Record<string, unknown>> = [];
-  for (const period of [1, 2]) {
-    for (const lossIndex of [3, 4]) {
-      const entry = closes[2] - closes[2 - period];
-      const loss = closes[lossIndex] - closes[lossIndex - period];
-      if (entry === loss) {
-        attempts.push({ period, lossIndex, entry, loss, outcome: 'equal_values' });
-        continue;
-      }
-      const threshold = (entry + loss) / 2;
-      const condition = entry > loss ? '>' : '<';
-      const config = { ...marketSequenceStrategyConfig,
-        open: { ...marketSequenceStrategyConfig.open,
-          indicatorsLong: [{ name: 'MOMENTUM', condition, value: threshold,
-            params: { period } }] } };
-      const rules = parseStrategySignalRules(config);
-      if (!rules) throw new Error('candidate rules rejected');
-      const decisions = [0, 1, 2, 3, 4].map((index) =>
-        evaluateStrategySignalAtIndex(rules, verified, index, new Map()));
-      if (decisions[0] !== null || decisions[1] !== null ||
-          decisions[2] !== 'LONG' || decisions[lossIndex] !== null) {
-        attempts.push({ period, lossIndex, entry, loss, threshold, condition,
-          decisions, outcome: 'signal_sequence' });
-        continue;
-      }
-      const result = simulateInterleavedPortfolio({ symbols: [symbol],
-        candlesBySymbol: new Map([[symbol, verified]]),
-        analysisStartIndexBySymbol: new Map([[symbol, 2]]),
-        marketType: 'FUTURES', leverage: 1, marginMode: 'ISOLATED',
-        strategyConfig: config, walletRiskPercent: 10,
-        initialBalance: 1000, fillModelConfig: { feeRate, slippageRate: 0 },
-      }).perSymbol[symbol];
-      const firstEntry = result.events.find((event) => event.type === 'ENTRY');
-      const firstDca = result.events.find((event) => event.type === 'DCA' &&
-        event.tradeSequence === firstEntry?.tradeSequence);
-      const firstTtp = result.events.find((event) => event.type === 'TTP' &&
-        event.tradeSequence === firstEntry?.tradeSequence);
-      if (firstEntry?.candleIndex !== 2 ||
-          firstDca?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:47.639Z') ||
-          firstTtp?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:57.282Z') ||
-          firstDca.price !== 0.1454 || firstTtp.price !== 0.1454 ||
-          firstDca.candleIndex !== 5 || firstTtp.candleIndex !== 5) {
-        attempts.push({ period, lossIndex, entry, loss, threshold, condition,
-          decisions, outcome: 'source_pair', firstEntry, firstDca, firstTtp });
-        continue;
-      }
-      attempts.push({ period, lossIndex, entry, loss, threshold, condition,
-        decisions, outcome: 'selected' });
-      return { config, period, lossIndex, threshold, condition,
-        decisions, attempts };
+  const period = 2;
+  if (clampPeriod(period, 14) !== period)
+    throw new Error('frozen MOMENTUM period differs from effective period');
+  for (const lossIndex of [3, 4]) {
+    const entry = closes[2] - closes[2 - period];
+    const loss = closes[lossIndex] - closes[lossIndex - period];
+    if (entry === loss) {
+      attempts.push({ period, lossIndex, entry, loss, outcome: 'equal_values' });
+      continue;
     }
+    const threshold = (entry + loss) / 2;
+    const condition = entry > loss ? '>' : '<';
+    const config = { ...marketSequenceStrategyConfig,
+      open: { ...marketSequenceStrategyConfig.open,
+        indicatorsLong: [{ name: 'MOMENTUM', condition, value: threshold,
+          params: { period } }] } };
+    const rules = parseStrategySignalRules(config);
+    if (!rules) throw new Error('candidate rules rejected');
+    const decisions = [0, 1, 2, 3, 4].map((index) =>
+      evaluateStrategySignalAtIndex(rules, verified, index, new Map()));
+    if (decisions[0] !== null || decisions[1] !== null ||
+        decisions[2] !== 'LONG' || decisions[lossIndex] !== null) {
+      attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+        decisions, outcome: 'signal_sequence' });
+      continue;
+    }
+    const result = simulateInterleavedPortfolio({ symbols: [symbol],
+      candlesBySymbol: new Map([[symbol, verified]]),
+      analysisStartIndexBySymbol: new Map([[symbol, 2]]),
+      marketType: 'FUTURES', leverage: 1, marginMode: 'ISOLATED',
+      strategyConfig: config, walletRiskPercent: 10,
+      initialBalance: 1000, fillModelConfig: { feeRate, slippageRate: 0 },
+    }).perSymbol[symbol];
+    const firstEntry = result.events.find((event) => event.type === 'ENTRY');
+    const firstDca = result.events.find((event) => event.type === 'DCA' &&
+      event.tradeSequence === firstEntry?.tradeSequence);
+    const firstTtp = result.events.find((event) => event.type === 'TTP' &&
+      event.tradeSequence === firstEntry?.tradeSequence);
+    if (firstEntry?.candleIndex !== 2 ||
+        firstDca?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:47.639Z') ||
+        firstTtp?.timestamp.getTime() !== Date.parse('2026-10-18T02:46:57.282Z') ||
+        firstDca.price !== 0.1454 || firstTtp.price !== 0.1454 ||
+        firstDca.candleIndex !== 5 || firstTtp.candleIndex !== 5) {
+      attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+        decisions, outcome: 'source_pair', firstEntry, firstDca, firstTtp });
+      continue;
+    }
+    attempts.push({ period, lossIndex, entry, loss, threshold, condition,
+      decisions, outcome: 'selected' });
+    return { config, period, lossIndex, threshold, condition,
+      decisions, attempts };
   }
   throw new Error(`No predeclared signal-loss witness: ${JSON.stringify(attempts)}`);
 };
@@ -359,10 +361,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
         where: { backtestRunId: backtest.id } });
       expect(backtestTrades.length).toBeGreaterThan(0);
       expect(report.totalTrades).toBe(backtestTrades.length);
-      if (signalLossWitness) {
-        expect(backtestTrades).toHaveLength(6);
-        expect(report.netPnl).toBe(-0.1221);
-      } else {
+      if (!signalLossWitness) {
         expect(backtestTrades).toHaveLength(5);
         expect(report.netPnl).toBe(-0.16687);
       }

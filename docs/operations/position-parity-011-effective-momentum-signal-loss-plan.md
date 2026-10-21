@@ -47,3 +47,59 @@ wznowieniu w osobnym procesie. Bez ręcznych ENTRY/EXIT/TTP lub stanu.
 To lokalny celowany świadek, a nie dowód realnego venue, produkcji,
 rentowności czy automatycznego odzyskania PAPER/LIVE po SIGKILL. Pełne
 011/011A nadal REVIEW, wydanie NO-GO do niezależnego odbioru.
+
+## Wynik ponownej próby lokalnej
+
+Ten poprawiony plan został wypchnięty **przed** próbą w SHA `8537eddee`.
+ZIP, `.CHECKSUM`, 100 niezależnych klines i digest
+`506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8`
+pozostały niezmienione. Pierwszy kandydat `(period=2, lossIndex=3)` spełnił
+warunki; drugiego nie próbowano. Źródłowe wartości to
+`v(2)=-0,00020000000000000573` i `v(3)=-0,00010000000000001674`.
+Wybrana, jawnie zapisana reguła `MOMENTUM(2)<-0,00015000000000001124`
+dała decyzje evaluatora `[null,null,LONG,null,null]` na świecach 0–4.
+Brak LONG na finalnej świecy 3 o 02:44:59.999 UTC nastąpił po ENTRY na 2
+i przed DCA na świecy 5.
+
+BACKTEST, PAPER i Binance FUTURES internal mock LIVE użyły tej samej
+zapisanej strategii. Obie pozycje runtime pozostały OPEN bez EXIT po
+zaniku sygnału. DCA na publicznym agregacie `a=167049972` o
+02:46:47.639 UTC poprzedził uzbrojenie TTP na `a=167049975` oraz
+zamknięcie przez TTP na `a=167049977` o 02:46:57.282 UTC po wznowieniu
+w osobnym PID. Każdy runtime miał OPEN/DCA/CLOSE; mock LIVE trzy unikalne
+intenty i fille, jeden DCA dedupe i zero dodatkowych zleceń po retry.
+BACKTEST miał status COMPLETED, jeden raport, sześć trades, net PnL całego
+raportu `+0,01386000000000004` USDT i bez duplikatu po ponowieniu joba.
+Pierwszy cykl miał ilość `1376,463143376176`, średnią `0,145299931177`,
+fee `0,16006` i net PnL `-0,02232` USDT; PAPER/mock LIVE miały ilość
+`1376,46314337`, średnią `0,145299931176875`, fee `0,1600550964180656`
+i net PnL `-0,02231404958610045` USDT. Drobna różnica pierwszego cyklu
+wynika z jawnych syntetycznych kroków ilości i zaokrągleń opłaty.
+
+Na własnej bazie PostgreSQL `_test` po 84 migracjach i osobnym Redisie
+opt-in `RUN_011_REAL_SOURCE_SIGNAL_LOSS_PROOF=1` miał `open` 1 PASS /
+1 SKIP i proces `resume` 1 PASS. API typecheck, docs parity, quality
+guardrails i graph drift `937/937` PASS. Po cleanup SQL
+`migracje/User/BacktestRun/BacktestTrade/BacktestReport/Position/Order/Dedupe`
+`84/0/0/0/0/0/0/0`, Redis `DBSIZE=0`. Wynik nie dowodzi produkcji ani
+automatycznego powrotu po SIGKILL. Pełne 011/011A nadal REVIEW, NO-GO.
+
+## Osobny defekt kontraktu parametru `MOMENTUM`
+
+Potwierdzone lokalnie: wcześniejszy POST `/dashboard/strategies` z
+`params.period=1` otrzymał 201 i zachował tę konfigurację. Funkcja
+`validateStrategyConfig` również przyjmuje ją bez błędu. Kernel używa
+`clampPeriod(1,14)=2`, więc wykonuje okres 2. Minimalna reprodukcja bez
+bazy: dla `closes=[1,2,3,4]` wywołanie kernela z `period=1` i `period=2`
+zwraca w obu przypadkach `[null,null,2,2]`; rzeczywista różnica o jeden
+krok byłaby `[null,1,1,1]`. API dopuszcza zatem parametr, którego znaczenia
+nie zachowuje wykonanie. Nie stwierdzamy tu, czy formularz Web dopuszcza 1.
+
+Proponowany priorytet **P1** jako osobny ticket: rozbieżność może zmienić
+decyzje transakcyjne względem strategii zadanej przez użytkownika, choć
+BACKTEST/PAPER/LIVE dzielą ten sam kernel. Odbiór osobnej poprawki powinien
+ustalić zamierzoną granicę, następnie albo jawnie odrzucać `period=1` przy
+zapisie z czytelnym błędem i sprawdzić istniejące strategie, albo obsłużyć
+prawdziwy okres 1 w kernelu we wszystkich trzech trybach. Wymagany test:
+create/read API i finalne świece na danych, na których `period=1` i `2`
+dają różne sygnały. Ta korekta 011 nie zmienia semantyki kernela.
