@@ -220,6 +220,15 @@ const tpAfterDcaConfig = {
   close: { ...positionCycleConfig.close, tp: 20 },
 };
 
+const advancedTtpAfterPositiveDcaConfig = {
+  ...positionCycleConfig,
+  close: { mode: 'advanced', tp: 99, sl: 99,
+    ttp: [{ percent: 20, arm: 10 }], tsl: [] },
+  additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
+    dcaSizingBasis: 'usdt_contribution_v1',
+    dcaLevels: [{ percent: 40, multiplier: 1 }] },
+};
+
 describe('real backtest worker process proof', () => {
   it('selects only the owned terminal backend and fails closed on missing or ambiguous identity', () => {
     const own = { pid: 101, datname: 'soar_007f_test',
@@ -904,6 +913,156 @@ describe('real backtest worker process proof', () => {
     } finally {
       for (const process of processes) await stopProofProcess(process);
       if (existsSync(releaseFile)) unlinkSync(releaseFile);
+      await producer.stopWorker();
+      if (redis.isOpen) {
+        await redis.del([pendingKey, processingKey, dedupeKey]);
+        await redis.quit();
+      }
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestTrade.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestReport.deleteMany({ where: { backtestRunId: run.id } });
+      await prisma.backtestRun.delete({ where: { id: run.id } });
+      await prisma.strategy.delete({ where: { id: strategy.id } });
+      await prisma.user.delete({ where: { id: user.id } });
+    }
+  }, 60_000);
+
+  runtimeIt('009A persists armed TTP after positive advanced DCA across ACK loss and retry', async () => {
+    const databaseUrl = new URL(process.env.DATABASE_URL ?? '');
+    const redisUrl = new URL(process.env.REDIS_URL ?? '');
+    if (databaseUrl.pathname.slice(1) !== 'soar_009a_advanced_ttp_test' ||
+        databaseUrl.hostname !== '127.0.0.1' || !databaseUrl.port || databaseUrl.port === '5432' ||
+        redisUrl.hostname !== '127.0.0.1' || !redisUrl.port || redisUrl.port === '6379') {
+      throw new Error('009A requires its own local _test database and Redis ports');
+    }
+    if (await prisma.user.count() !== 0) {
+      throw new Error('009A requires an empty disposable user dataset');
+    }
+    const queueName = `backtest-advanced-ttp-009a-${randomUUID()}`;
+    const user = await prisma.user.create({
+      data: { email: `bt-advanced-ttp-${randomUUID()}@example.test`, password: 'test-only' },
+    });
+    const strategy = await prisma.strategy.create({ data: {
+      userId: user.id, name: '009A advanced TTP strategy', interval: '1m', leverage: 1,
+      walletRisk: 10, config: advancedTtpAfterPositiveDcaConfig,
+    } });
+    const run = await prisma.backtestRun.create({ data: {
+      userId: user.id, strategyId: strategy.id, name: '009A advanced TTP persistence',
+      symbol: 'BTCUSDT', timeframe: '1m',
+      seedConfig: { symbols: ['BTCUSDT'], marketType: 'FUTURES', leverage: 1,
+        marginMode: 'CROSSED', initialBalance: 10, maxCandles: 100,
+        feeRate: 0.0004, slippageRate: 0,
+        contextSnapshot: { strategy: { id: strategy.id, walletRisk: 10,
+          config: advancedTtpAfterPositiveDcaConfig } } },
+    } });
+    const redis = createClient({ url: redisUrl.toString() });
+    const processes: ProofProcess[] = [];
+    const pendingKey = `soar:queue:${queueName}:pending`;
+    const processingKey = `soar:queue:${queueName}:processing`;
+    const dedupeKey = `soar:queue:${queueName}:dedupe`;
+    const producer = new BacktestRunQueue(async () => undefined, {
+      backend: 'redis', queueName, redisUrl: redisUrl.toString(),
+    });
+    try {
+      await redis.connect();
+      await producer.enqueue(run.id);
+      await producer.stopWorker();
+
+      const first = startProofProcess('position-cycle-advanced-ttp-ack-hold', queueName, [run.id]);
+      processes.push(first);
+      await first.waitFor('COMMITTED_BEFORE_ACK');
+      expect(first.lines.filter((line) => line === 'JOB_INVOKED')).toHaveLength(1);
+      expect(first.lines.filter((line) => line === 'SIMULATE')).toHaveLength(1);
+      const committedRun = await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } });
+      const committedTrades = await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } });
+      const committedReports = await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } });
+      const committedFills = await prisma.backtestContribution.findMany({
+        where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+      });
+      expect(committedRun.status).toBe('COMPLETED');
+      expect(committedRun.executionToken).toBeNull();
+      expect(committedTrades).toHaveLength(1);
+      expect(committedTrades[0].exitReason).toBe('TTP');
+      expect(committedTrades[0].exitPrice).toBeCloseTo(127, 6);
+      expect(committedTrades[0].openedAt.getTime())
+        .toBe(1_710_000_000_000 + 2 * 60_000);
+      expect(committedTrades[0].closedAt.getTime())
+        .toBe(1_710_000_000_000 + 7 * 60_000 + 59_999);
+      expect(committedReports).toHaveLength(1);
+      expect(committedReports[0].totalTrades).toBe(1);
+      const metrics = committedReports[0].metrics as {
+        lifecycleEventCounts: Record<string, number>;
+        positionContributionUsdtTotal: number;
+        runLifecycle: { reportReady: boolean };
+      };
+      expect(metrics.runLifecycle.reportReady).toBe(true);
+      expect(metrics.lifecycleEventCounts).toMatchObject({
+        ENTRY: 1, DCA: 1, TTP: 1, EXIT: 0, TP: 0, SL: 0, TSL: 0,
+      });
+      expect(metrics.positionContributionUsdtTotal).toBeCloseTo(2, 6);
+      expect(committedFills.map((fill) => [fill.kind, fill.addSequence, fill.levelIndex,
+        fill.triggerPercent, fill.multiplier, fill.candleIndex, fill.price])).toEqual([
+        ['ENTRY', 0, null, null, null, 2, 100],
+        ['DCA', 1, 0, 40, 1, 5, 140],
+      ]);
+      committedFills.forEach((fill) => expect(fill.contributionUsdt).toBeCloseTo(1, 6));
+      const totalQuantity = committedFills.reduce((sum, fill) => sum + fill.quantity, 0);
+      const averagedEntry = 2 / totalQuantity;
+      expect(committedTrades[0].quantity).toBeCloseTo(totalQuantity, 6);
+      expect(committedTrades[0].entryPrice).toBeCloseTo(averagedEntry, 6);
+      const roundSettlement = (value: number) => Math.round(value * 100_000) / 100_000;
+      const expectedFee = roundSettlement((2 + 127 * totalQuantity) * 0.0004);
+      expect(committedTrades[0].fee).toBeCloseTo(expectedFee, 8);
+      expect(committedTrades[0].pnl! + committedTrades[0].fee!)
+        .toBeCloseTo(roundSettlement((127 - averagedEntry) * totalQuantity), 8);
+      expect(committedReports[0].netPnl).toBeCloseTo(committedTrades[0].pnl, 6);
+      expect(await redis.lRange(pendingKey, 0, -1)).toEqual([]);
+      expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
+      expect(await redis.sIsMember(dedupeKey, run.id)).toBe(true);
+
+      await stopProofProcess(first);
+      expect(await redis.lRange(processingKey, 0, -1)).toEqual([run.id]);
+      const second = startProofProcess('position-cycle-advanced-ttp-recovery', queueName, [run.id]);
+      processes.push(second);
+      await second.waitFor('READY');
+      await waitUntil(async () =>
+        (await redis.lRange(processingKey, 0, -1)).length === 0 &&
+        (await redis.lRange(pendingKey, 0, -1)).length === 0 &&
+        !(await redis.sIsMember(dedupeKey, run.id)));
+      expect(second.lines).not.toContain('SIMULATE');
+      expect(await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } }))
+        .toEqual(committedRun);
+      expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedTrades);
+      expect(await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedReports);
+      expect(await prisma.backtestContribution.findMany({
+        where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+      })).toEqual(committedFills);
+
+      await stopProofProcess(second);
+      await producer.enqueue(run.id);
+      await producer.stopWorker();
+      const third = startProofProcess('position-cycle-advanced-ttp-recovery', queueName, [run.id]);
+      processes.push(third);
+      await third.waitFor('JOB_INVOKED');
+      await waitUntil(async () =>
+        (await redis.lRange(processingKey, 0, -1)).length === 0 &&
+        (await redis.lRange(pendingKey, 0, -1)).length === 0 &&
+        !(await redis.sIsMember(dedupeKey, run.id)));
+      expect(third.lines).not.toContain('SIMULATE');
+      expect(await prisma.backtestRun.findUniqueOrThrow({ where: { id: run.id } }))
+        .toEqual(committedRun);
+      expect(await prisma.backtestTrade.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedTrades);
+      expect(await prisma.backtestReport.findMany({ where: { backtestRunId: run.id } }))
+        .toEqual(committedReports);
+      expect(await prisma.backtestContribution.findMany({
+        where: { backtestRunId: run.id }, orderBy: { addSequence: 'asc' },
+      })).toEqual(committedFills);
+      expect(await prisma.backtestRun.count({ where: { userId: user.id } })).toBe(1);
+    } finally {
+      for (const process of processes) await stopProofProcess(process);
       await producer.stopWorker();
       if (redis.isOpen) {
         await redis.del([pendingKey, processingKey, dedupeKey]);

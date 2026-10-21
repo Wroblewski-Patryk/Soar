@@ -383,6 +383,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TTP).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TTP')).toBe(true);
   });
 
   it('keeps TTP blocked while affordable profit-side DCA levels remain pending', () => {
@@ -548,6 +549,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TSL).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TSL')).toBe(true);
   });
 
   it('triggers DCA on intrabar wick (low/high), not only on candle close', () => {

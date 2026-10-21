@@ -85,12 +85,12 @@ describe("backtestRunDetailsViewModel", () => {
     ]);
   });
 
-  it("keeps basic TP and SL distinct from liquidation in trade readback", () => {
+  it("keeps TP, SL, TTP, and TSL distinct from liquidation in trade readback", () => {
     const copy = {
       exitReasonSignal: "Signal", exitReasonFinalCandle: "Final candle",
       exitReasonLiquidation: "Liquidation",
     } as Parameters<typeof getExitReasonLabel>[1];
-    for (const reason of ["TP", "SL"] as const) {
+    for (const reason of ["TP", "SL", "TTP", "TSL"] as const) {
       const events = [
         { id: "entry", tradeId: reason, type: "ENTRY", side: "LONG",
           timestamp: "2026-04-10T10:00:00.000Z", price: 100, pnl: null, candleIndex: 0 },

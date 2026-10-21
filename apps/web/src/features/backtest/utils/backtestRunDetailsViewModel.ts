@@ -31,12 +31,12 @@ export const formatHoldDuration = (minutes: number) => {
 };
 
 export const getExitReasonLabel = (
-  reason: "SIGNAL_EXIT" | "FINAL_CANDLE" | "LIQUIDATION" | "TP" | "SL",
+  reason: "SIGNAL_EXIT" | "FINAL_CANDLE" | "LIQUIDATION" | "TP" | "SL" | "TTP" | "TSL",
   copy: BacktestRunDetailsCopy,
 ) => {
   if (reason === "SIGNAL_EXIT") return copy.exitReasonSignal;
   if (reason === "FINAL_CANDLE") return copy.exitReasonFinalCandle;
-  if (reason === "TP" || reason === "SL") return reason;
+  if (reason === "TP" || reason === "SL" || reason === "TTP" || reason === "TSL") return reason;
   return copy.exitReasonLiquidation;
 };
 
@@ -191,7 +191,8 @@ export const buildSyntheticTradesFromTimelineEvents = (
       pnl: pair.close.pnl ?? 0,
       fee: null,
       exitReason: pair.close.type === "LIQUIDATION" ||
-        pair.close.type === "TP" || pair.close.type === "SL"
+        pair.close.type === "TP" || pair.close.type === "SL" ||
+        pair.close.type === "TTP" || pair.close.type === "TSL"
         ? pair.close.type : "SIGNAL_EXIT",
       liquidated: pair.close.type === "LIQUIDATION",
     });

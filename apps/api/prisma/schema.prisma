@@ -1303,6 +1303,8 @@ enum BacktestExitReason {
   LIQUIDATION
   TP
   SL
+  TTP
+  TSL
 }
 
 model BacktestReport {

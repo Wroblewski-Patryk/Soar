@@ -23,8 +23,10 @@ const midCalculationProof = role === 'position-cycle-mid-hold' ||
 const tpAfterDcaProof = role === 'position-cycle-tp-ack-hold' ||
   role === 'position-cycle-tp-recovery' || tpMidCalculationProof ||
   role === 'position-cycle-tp-mid-recovery';
+const advancedTtpProof = role === 'position-cycle-advanced-ttp-ack-hold' ||
+  role === 'position-cycle-advanced-ttp-recovery';
 const positionCycleProof = midCalculationProof || role === 'position-cycle-ack-hold' ||
-  role === 'position-cycle-recovery' || tpAfterDcaProof;
+  role === 'position-cycle-recovery' || tpAfterDcaProof || advancedTtpProof;
 const queueName = process.env.SOAR_BT_PROOF_QUEUE;
 if (!queueName) throw new Error('Proof queue name missing');
 const proofRunIds = (process.env.SOAR_BT_PROOF_RUN_IDS ?? '').split(',').filter(Boolean);
@@ -41,15 +43,20 @@ const deps: BacktestRunJobDeps = {
   findOwnedStrategySignalConfig: async () => null,
   fetchKlines: async () => {
     if (positionCycleProof) {
-      // The drop after TP prevents a fresh valid LONG vote on the next candle.
-      const prices = tpAfterDcaProof
+      // The final drop prevents a fresh valid LONG vote after the close.
+      const prices = advancedTtpProof
+        ? [99, 100, 100, 99.9, 130, 140, 140, 127, 100]
+        : tpAfterDcaProof
         ? [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.72, 0.5]
         : [0.99, 1, 1, 0.6949, 0.5375, 0.5375, 0.47];
       return Array.from({ length: 100 }, (_, index) => {
         const price = prices[index] ?? prices.at(-1)!;
         const openTime = 1_710_000_000_000 + index * 60_000;
+        // At candle 5 the high reaches positive DCA while the close retraces
+        // through the armed TTP guard. DCA must win this candle; TTP comes later.
+        const close = advancedTtpProof && index === 5 ? 127 : price;
         return { openTime, closeTime: openTime + 59_999,
-          open: price, high: price, low: price, close: price, volume: 1_000 };
+          open: price, high: price, low: close, close, volume: 1_000 };
       });
     }
     if (role === 'hold' || role === 'hold-release') {
@@ -165,7 +172,8 @@ const queue = new BacktestRunQueue(async (runId) => {
   await job(runId);
   if (role === 'hold-release') process.stdout.write('JOB_RETURNED\n');
   if (role === 'ack-hold' || role === 'position-cycle-ack-hold' ||
-      role === 'position-cycle-tp-ack-hold') {
+      role === 'position-cycle-tp-ack-hold' ||
+      role === 'position-cycle-advanced-ttp-ack-hold') {
     process.stdout.write('COMMITTED_BEFORE_ACK\n');
     await new Promise<void>(() => undefined);
   }

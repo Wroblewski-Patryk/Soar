@@ -62,7 +62,7 @@ type SimulationTrade = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated: boolean;
 };
 
@@ -129,7 +129,7 @@ export type CreateTradeInput = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated: boolean;
 };
 
