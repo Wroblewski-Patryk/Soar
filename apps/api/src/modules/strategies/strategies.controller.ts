@@ -30,6 +30,10 @@ const handleStrategyError = (
     return sendError(res, 400, 'Invalid trailing close configuration', mapped.details);
   }
 
+  if (mapped.code === STRATEGY_ERROR_CODES.invalidMomentumPeriod) {
+    return sendError(res, 400, 'MOMENTUM period must be at least 2', mapped.details);
+  }
+
   return sendError(res, mapped.status, mapped.message, mapped.details);
 };
 

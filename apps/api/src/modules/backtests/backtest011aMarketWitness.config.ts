@@ -2,7 +2,7 @@
 export const marketSequenceStrategyConfig = {
   open: { direction: 'long', noMatchAction: 'EXIT',
     indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: -100,
-      params: { period: 1 } }], indicatorsShort: [] },
+      params: { period: 2 } }], indicatorsShort: [] },
   close: { mode: 'advanced', ttp: [{ percent: 0.08, arm: 0.05 }], tsl: [] },
   additional: { dcaEnabled: true, dcaMode: 'advanced', dcaTimes: 1,
     dcaSizingBasis: 'usdt_contribution_v1',

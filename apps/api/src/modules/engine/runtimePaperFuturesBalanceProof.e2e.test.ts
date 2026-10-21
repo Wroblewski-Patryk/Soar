@@ -55,7 +55,7 @@ describe('PAPER Futures capital snapshot from durable position cycle', () => {
         name: 'PAPER Futures balance cycle', interval: '1m', leverage, walletRisk: 10,
         config: {
           open: { direction: 'long', noMatchAction: 'EXIT',
-            indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+            indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 2 } }],
             indicatorsShort: [] },
           close: { mode: 'basic', tp: 20, sl: 20 },
           additional: { dcaEnabled: true, dcaMode: 'basic', dcaSizingBasis: 'usdt_contribution_v1',

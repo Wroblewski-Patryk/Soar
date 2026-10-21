@@ -5,6 +5,10 @@ import { I18nProvider } from '@/i18n/I18nProvider';
 import type { StrategyFormState } from '@/features/strategies/types/StrategyForm.type';
 import StrategyForm from './StrategyForm';
 
+vi.mock('../api/strategies.api', () => ({
+  listStrategyIndicators: vi.fn().mockResolvedValue([]),
+}));
+
 describe('StrategyForm', () => {
   afterEach(() => {
     cleanup();
@@ -291,5 +295,31 @@ describe('StrategyForm', () => {
     fireEvent.submit(container.querySelector('form') as HTMLFormElement);
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
     expect((onSubmit.mock.calls[0]?.[0] as StrategyFormState).additional.dcaSizingBasis).toBeUndefined();
+  });
+
+  it('shows MOMENTUM minimum 2 and does not submit a loaded period 1', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'en');
+    window.history.pushState({}, '', '/dashboard/strategies/legacy/edit');
+    const initial: StrategyFormState = {
+      name: 'Legacy momentum', description: '', interval: '5m', leverage: 1, walletRisk: 1,
+      openConditions: { direction: 'both', indicatorsLong: [{
+        group: 'MOMENTUM_OSCILLATOR', name: 'MOMENTUM', params: { period: 1 },
+        condition: '>', value: 1.5, weight: 1,
+      }], indicatorsShort: [] },
+      closeConditions: { mode: 'basic', tp: 3, sl: 2, ttp: [], tsl: [] },
+      additional: { dcaEnabled: false, dcaMode: 'basic', dcaTimes: 0,
+        dcaMultiplier: 1, dcaLevels: [], maxPositions: 1, maxOrders: 1,
+        positionLifetime: 1, positionUnit: 'h', orderLifetime: 1,
+        orderUnit: 'h', marginMode: 'CROSSED' },
+    };
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit, initial);
+    fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+    await act(async () => { await Promise.resolve(); });
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByTestId('form-validation-summary'))
+      .toHaveTextContent('MOMENTUM period must be at least 2');
+    expect(screen.getByRole('tab', { name: 'Entry conditions' }))
+      .toHaveAttribute('aria-selected', 'true');
   });
 });

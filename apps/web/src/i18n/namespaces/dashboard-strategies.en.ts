@@ -79,6 +79,7 @@ export const dashboardStrategiesEn = {
       marginIsolated: "Isolated",
     },
     open: {
+      momentumPeriodValidation: "MOMENTUM period must be at least 2. Update this indicator before saving.",
       title: "Entry conditions",
       loadIndicatorsFailed: "Could not load indicators list",
       direction: "Direction",

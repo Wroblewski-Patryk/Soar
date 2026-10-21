@@ -8,6 +8,29 @@ import {
 const candles = [100, 101, 102].map((close) => ({ close }));
 
 describe('strategySignalEvaluator', () => {
+  it('keeps legacy period 1 decisions equal to explicit 2 on final candles 1–4', () => {
+    const finalCandles = [1, 2, 3, 4].map((close) => ({ close }));
+    for (const [direction, condition, threshold, expected] of [
+      ['long', '>', 1.5, [null, null, 'LONG', 'LONG']],
+      ['short', '<', 2.5, [null, null, 'SHORT', 'SHORT']],
+    ] as const) {
+      const decisions = (period: number) => {
+        const config = { open: { direction,
+          indicatorsLong: direction === 'long' ? [
+            { name: 'MOMENTUM', condition, value: threshold, params: { period } }] : [],
+          indicatorsShort: direction === 'short' ? [
+            { name: 'MOMENTUM', condition, value: threshold, params: { period } }] : [],
+        } };
+        const rules = parseStrategySignalRules(config);
+        expect(rules).not.toBeNull();
+        return finalCandles.map((_, index) =>
+          evaluateStrategySignalAtIndex(rules!, finalCandles, index, new Map()));
+      };
+      expect(decisions(1)).toEqual(expected);
+      expect(decisions(2)).toEqual(expected);
+    }
+  });
+
   it('reuses precomputed price series across a replay without rereading all candles', () => {
     const rules = parseStrategySignalRules({
       open: {

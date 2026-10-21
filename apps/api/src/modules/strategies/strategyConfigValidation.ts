@@ -1,4 +1,5 @@
 import { strategyErrors } from './strategies.errors';
+import { normalizeLegacyMomentumPeriod } from './strategyMomentumPeriodPolicy';
 
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
@@ -125,6 +126,14 @@ const validateDcaConfig = (config: unknown) => {
 };
 
 export const validateStrategyConfig = (config: unknown) => {
+  const legacyMomentumFields = normalizeLegacyMomentumPeriod(config).fields;
+  if (legacyMomentumFields.length > 0) {
+    throw strategyErrors.invalidMomentumPeriod({
+      fields: legacyMomentumFields,
+      rule: 'momentum_period_min_2',
+      min: 2,
+    });
+  }
   validateTrailingTakeProfitLevels(config);
   validateTrailingStopLevels(config);
   validateDcaConfig(config);

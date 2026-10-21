@@ -31,6 +31,8 @@ import { runtimePositionStateStore } from './runtimePositionState.store';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore, upsertRuntimeTicker } from './runtimeTickerStore';
+import { applyMomentumPeriodMigration,
+  inspectMomentumPeriodMigration } from '../strategies/strategyMomentumMigration';
 
 const symbol = 'ALICEUSDT';
 const start = Date.parse('2026-10-18T02:41:00.000Z');
@@ -103,8 +105,9 @@ vi.mock('../orders/orders.service', async (importOriginal) => {
 
 const signalLossProof = process.env.RUN_011_REAL_SOURCE_SIGNAL_LOSS_PROOF === '1';
 const crashProof = process.env.RUN_011_REAL_SOURCE_CRASH_RECOVERY_PROOF === '1';
+const momentumMigrationProof = process.env.RUN_011_MOMENTUM_MIGRATION_PROOF === '1';
 const enabled = process.env.RUN_011_REAL_SOURCE_THREE_MODE_PROOF === '1' ||
-  signalLossProof || crashProof;
+  signalLossProof || crashProof || momentumMigrationProof;
 const stage = process.env.RUN_011_REAL_SOURCE_THREE_MODE_STAGE;
 const openIt = enabled && (stage === 'open' || (crashProof && stage === 'crash-open'))
   ? it : it.skip;
@@ -170,8 +173,10 @@ const selectSignalLossWitness = (verified: BacktestKlineCandle[]) => {
 const ensureIsolated = () => {
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redis = new URL(process.env.REDIS_URL ?? '');
+  const expectedDb = momentumMigrationProof
+    ? '/soar_momentum_period_001_test' : '/soar_position_parity_011_test';
   if (db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
-      db.pathname !== '/soar_position_parity_011_test' ||
+      db.pathname !== expectedDb ||
       redis.hostname !== '127.0.0.1' || !redis.port || redis.port === '6379')
     throw new Error('011 real source proof requires its own _test and Redis');
 };
@@ -246,7 +251,7 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       .toMatchObject({ eventTime: Date.parse('2026-10-18T02:46:57.282Z'), price: 0.1454 });
     const digest = digestVerifiedBinanceFuturesIntrabar(verified, symbol);
     expect(digest).toBe('506d8d6a1032cc955e5cf6b4232120aadb918217bb7107af8f8061e6609ec2a8');
-    const signalLossWitness = signalLossProof || crashProof
+    const signalLossWitness = signalLossProof || crashProof || momentumMigrationProof
       ? selectSignalLossWitness(verified) : null;
     const previousPaperFeeRate = process.env.RUNTIME_PAPER_TAKER_FEE_RATE;
     const previousNodeEnv = process.env.NODE_ENV;
@@ -271,6 +276,23 @@ describe('011 real source BACKTEST/PAPER/internal mock LIVE parity', () => {
       });
       expect(strategyResponse.status).toBe(201);
       const strategyId = strategyResponse.body.id as string;
+      if (momentumMigrationProof) {
+        const legacyConfig = structuredClone(signalLossWitness!.config);
+        legacyConfig.open.indicatorsLong[0].params.period = 1;
+        await prisma.strategy.update({ where: { id: strategyId },
+          data: { config: legacyConfig } });
+        const oldRules = parseStrategySignalRules(legacyConfig);
+        expect(oldRules).not.toBeNull();
+        const oldDecisions = [0, 1, 2, 3, 4].map((index) =>
+          evaluateStrategySignalAtIndex(oldRules!, verified, index, new Map()));
+        expect(oldDecisions).toEqual(signalLossWitness!.decisions);
+        const inventory = await inspectMomentumPeriodMigration(prisma);
+        expect(inventory.candidates).toEqual([{ id: strategyId,
+          fields: ['open.indicatorsLong[0].params.period'] }]);
+        expect(await applyMomentumPeriodMigration(prisma, inventory.digest))
+          .toMatchObject({ migrated: 1, changedFields: 1 });
+        expect((await inspectMomentumPeriodMigration(prisma)).candidates).toEqual([]);
+      }
       const persisted = await prisma.strategy.findUniqueOrThrow({ where: { id: strategyId } });
       if (!persisted.config || typeof persisted.config !== 'object' ||
           Array.isArray(persisted.config)) throw new Error('saved strategy config missing');

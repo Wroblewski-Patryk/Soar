@@ -120,7 +120,7 @@ const initialBalance = 10;
 const walletRisk = 10;
 const strategyConfig = {
   open: { direction: 'long', noMatchAction: 'EXIT',
-    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0.5, params: { period: 1 } }],
+    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0.5, params: { period: 2 } }],
     indicatorsShort: [] },
   close: { mode: 'basic', tp: 20, sl: 20 },
   additional: { dcaEnabled: true, dcaMode: 'basic', dcaSizingBasis: 'usdt_contribution_v1',

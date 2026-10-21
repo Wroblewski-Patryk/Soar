@@ -15,6 +15,7 @@ import {
 type StrategyDtoLike = StrategyDto & {
   config?: {
     open?: OpenConditions;
+    openConditions?: OpenConditions;
     close?: CloseConditions;
     additional?: Partial<Omit<AdditionalState, "dcaLevels">> & {
       dcaLevels?: Array<Partial<AdditionalState["dcaLevels"][number]>>;
@@ -139,7 +140,8 @@ export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   interval: normalizeInterval(s.interval),
   leverage: s.leverage,
   walletRisk: s.walletRisk ?? 1,
-  openConditions: s.config?.open ?? { direction: "both", indicatorsLong: [], indicatorsShort: [] },
+  openConditions: s.config?.open ?? s.config?.openConditions ??
+    { direction: "both", indicatorsLong: [], indicatorsShort: [] },
   closeConditions: sanitizeCloseConditions(s.config?.close),
   additional: hydrateAdditional(s.config?.additional),
 });

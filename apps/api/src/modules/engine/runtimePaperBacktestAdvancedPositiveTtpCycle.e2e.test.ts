@@ -23,7 +23,7 @@ const initialBalance = 10;
 const walletRisk = 10;
 const strategyConfig = {
   open: { direction: 'long', noMatchAction: 'EXIT',
-    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+    indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 2 } }],
     indicatorsShort: [] },
   close: { mode: 'advanced', tp: 99, sl: 99,
     ttp: [{ percent: 20, arm: 10 }], tsl: [] },

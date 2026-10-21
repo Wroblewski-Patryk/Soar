@@ -37,6 +37,19 @@ const baseForm = (): StrategyFormState => ({
 });
 
 describe('formToPayload', () => {
+  it('loads an old openConditions MOMENTUM definition without hiding its period', () => {
+    const base = baseForm();
+    const openConditions = { ...base.openConditions,
+      indicatorsLong: [{ group: 'MOMENTUM_OSCILLATOR', name: 'MOMENTUM',
+        params: { period: 1 }, condition: '>' as const, value: 1.5, weight: 1 }] };
+    const form = dtoToForm({ id: 'legacy-momentum', name: base.name,
+      description: '', interval: '5m', leverage: 5, walletRisk: 1,
+      createdAt: '2026-10-21T00:00:00.000Z', config: {
+        openConditions, close: base.closeConditions, additional: base.additional } });
+    expect(form.openConditions.indicatorsLong[0].params.period).toBe(1);
+    expect(formToPayload(form).config.open.indicatorsLong[0].params.period).toBe(1);
+  });
+
   it('preserves an unversioned legacy quantity strategy on edit', () => {
     const legacy = baseForm();
     const form = dtoToForm({

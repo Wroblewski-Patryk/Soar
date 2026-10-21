@@ -78,6 +78,7 @@ export const dashboardStrategiesDeCh = {
       "marginIsolated": "Isoliert"
     },
     "open": {
+      "momentumPeriodValidation": "Der MOMENTUM-Zeitraum muss mindestens 2 sein. Passen Sie den Indikator vor dem Speichern an.",
       "title": "Teilnahmebedingungen",
       "loadIndicatorsFailed": "Die Indikatorenliste konnte nicht geladen werden",
       "direction": "Richtung",

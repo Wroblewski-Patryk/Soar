@@ -79,6 +79,7 @@ export const dashboardStrategiesPl = {
       marginIsolated: "Isolated",
     },
     open: {
+      momentumPeriodValidation: "Okres MOMENTUM musi wynosic co najmniej 2. Zmien ten wskaznik przed zapisem.",
       title: "Warunki otwarcia",
       loadIndicatorsFailed: "Nie udalo sie pobrac listy wskaznikow",
       direction: "Kierunek",
