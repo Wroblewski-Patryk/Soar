@@ -28,10 +28,16 @@ export const fetchVerifiedIntrabarTimelineCandles = async (input: {
     throw new BacktestTimelineSourceError('SOURCE_DIGEST_MISSING');
 
   try {
+    // Once the window is older than REST coverage, require the persisted
+    // archive rather than reconstructing a completed run from another source.
+    const archiveRequired = typeof input.startTimeMs === 'number' &&
+      input.startTimeMs < Date.now() - 48 * 60 * 60_000 + 1_000;
     const archived = typeof input.startTimeMs === 'number' &&
       typeof input.endTimeMs === 'number'
       ? await readVerifiedRunArchive(input.runId, input.symbol,
         input.startTimeMs, input.endTimeMs) : null;
+    if (archiveRequired && !archived)
+      throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
     const candles = archived ?? await fetchKlinesWithVerifiedBinanceFuturesIntrabar(
       input.exchange, input.symbol, input.timeframe, input.marketType,
       input.maxCandles, input.endTimeMs, input.startTimeMs);

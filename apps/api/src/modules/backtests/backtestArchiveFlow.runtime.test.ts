@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
@@ -9,6 +9,7 @@ import { readVerifiedRunArchive } from './backtestBinanceFuturesIntrabarArchive'
 import { resetBacktestDataGatewayCacheForTests,
   setDbCandleDelegateForTests } from './backtestDataGateway';
 import { deleteOwnedBacktestRunCascade } from './backtests.repository';
+import { getBacktestRunTimeline } from './backtests.controller';
 import { createRun, getRunTimeline } from './backtests.service';
 import { GetBacktestTimelineQuerySchema } from './backtests.types';
 
@@ -74,6 +75,9 @@ describe('archived strict backtest source on a private test database', () => {
       const report = await prisma.backtestReport.findUniqueOrThrow({
         where: { backtestRunId: runId },
       });
+      const trades = await prisma.backtestTrade.findMany({
+        where: { backtestRunId: runId }, orderBy: { id: 'asc' },
+      });
       expect((report.metrics as any).runLifecycle).toMatchObject({
         state: 'COMPLETED', reportReady: true,
       });
@@ -99,9 +103,28 @@ describe('archived strict backtest source on a private test database', () => {
       await prisma.backtestIntrabarArchive.delete({
         where: { runId_symbol: { runId, symbol: 'ALICEUSDT' } },
       });
-      await expect(getRunTimeline(user.id, runId,
-        GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))
-        .rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE' });
+      const network = vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+        new Error('NETWORK_FORBIDDEN_AFTER_ARCHIVE_REMOVAL'));
+      try {
+        await expect(getRunTimeline(user.id, runId,
+          GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' })))
+          .rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE' });
+        const response = { status: vi.fn().mockReturnThis(), json: vi.fn() };
+        await getBacktestRunTimeline({ user: { id: user.id }, params: { id: runId },
+          query: { symbol: 'ALICEUSDT' } } as any, response as any);
+        expect(response.status).toHaveBeenCalledWith(409);
+        expect(response.json).toHaveBeenCalledWith({ error: {
+          message: 'Verified intrabar timeline unavailable',
+          details: { code: 'SOURCE_UNAVAILABLE' },
+        } });
+        expect(network).not.toHaveBeenCalled();
+      } finally { network.mockRestore(); }
+      expect(await prisma.backtestTrade.findMany({
+        where: { backtestRunId: runId }, orderBy: { id: 'asc' },
+      })).toEqual(trades);
+      expect(await prisma.backtestReport.findUniqueOrThrow({
+        where: { backtestRunId: runId },
+      })).toEqual(report);
     } finally {
       if (runId) await deleteOwnedBacktestRunCascade(user.id, runId);
       await prisma.user.delete({ where: { id: user.id } });
