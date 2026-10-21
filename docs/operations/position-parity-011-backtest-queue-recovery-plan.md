@@ -42,3 +42,38 @@ wymagają skrócenia lease, wynik opisze to jako ograniczenie.
 Wyłącznie własna PostgreSQL `_test`, Redis i nazwa kolejki; żadnego deploy,
 produkcji, real LIVE ani cudzych kontenerów. Własne zasoby zostaną usunięte
 po odczycie liczników. PASS lokalny nie zamknie 011/011A ani wydania.
+
+## Wynik lokalny 2026-10-21
+
+Plan powyżej został wypchnięty przed próbą jako
+`a7791113860812e97ed6e7c08ee58c1e50f943bb`. Na własnym PostgreSQL
+`soar_011_queue_recovery_test` (127.0.0.1:5578, 84 migracje), Redis
+(127.0.0.1:6418) i osobnej kolejce `backtest-011-queue-local-20261021`
+warianty zmienionej i brakującej taśmy zakończyły się `2/2 PASS` po
+skróceniu lease tylko tych dwóch testowych runów. Nowy worker nie pobierał
+źródła przez sieć, nie uruchomił symulacji i zapisał `FAILED` bez trades
+lub wkładów.
+
+Wariant naturalnego lease zakończył się `1/1 PASS` po 612,94 s. Pierwszy
+worker rzeczywiście pobrał ZIP i `.CHECKSUM`, zapisał archiwum i digest,
+przetworzył DCA o 02:46:47.639 UTC na `a=167049972`, a potem został
+zakończony `SIGKILL` przed TTP. Przed awarią był jeden `RUNNING` run,
+jeden raport, zero trwałych trades i wkładów, jeden ID w Redis `processing`
+i `dedupe`. Drugi worker nie otrzymał ręcznego enqueue ani claim; skan
+odzyskał ten sam run po naturalnym terminie 10-minutowego lease.
+Nie nastąpił ponowny fetch ZIP/.CHECKSUM; wynik zachował ID runu, raportu
+i archiwum (`runId` + symbol oraz hash payloadu). Po ACK kolejka była pusta.
+Jedna terminalna symulacja dała sześć trades, jeden raport i net PnL około
+`+0,01386` USDT. Zapisana taśma zawierała też późniejsze
+`a=167049975` oraz `a=167049977`; timeline po odzyskaniu miał DCA i TTP
+na oczekiwanych znacznikach czasu. Sam ten test nie wystawia osobnego
+zdarzenia `ARM`; dokładny arm na `a=167049975` pochodzi z wcześniejszego
+lokalnego dowodu 011 na tym samym digestcie i konfiguracji.
+
+API typecheck, docs parity, guardrails i strict graph drift przeszły.
+Po cleanup w tej `_test` liczniki User/Strategy/BacktestRun/BacktestTrade/
+BacktestReport/BacktestContribution/BacktestIntrabarArchive wynosiły zero,
+Redis miał zero kluczy. Dowód obejmuje automatyczne przejęcie w lokalnej
+kolejce BACKTEST; nie dowodzi real LIVE, produkcji, nadzoru produkcyjnego
+workera ani braku ponownych **obliczeń** po SIGKILL. Pełne 011/011A
+pozostają REVIEW/NO-GO do niezależnego odbioru.
