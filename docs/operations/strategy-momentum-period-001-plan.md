@@ -116,3 +116,29 @@ Do zamknięcia ticketu pozostają odczytowy spis produkcyjnych definicji,
 zatwierdzenie dokładnego digestu i osobne wykonanie migracji w oknie
 operacyjnym oraz niezależny odbiór. Historyczne snapshoty i raporty mają
 pozostać bez zmian; obecny wynik pozostaje REVIEW/NO-GO.
+
+## Uzupełnienie planu po niezależnym FAIL na `ab2652da29f2580d5454be4a50584bf400087089`
+
+Statyczny odbiór wskazał trzy luki przed ponownym odbiorem. Publiczne
+create/update/import i wewnętrzny import PAPER muszą przyjmować jedynie
+**liczbę całkowitą** `MOMENTUM` z efektywnym `params.period` (albo aliasem
+`params.length`) w przedziale `[2,255]`; obecny `clampPeriod` zaokrągla lub
+klamruje także 0, 1, 1.5, string i >255, więc walidacja ma odmawiać każdej
+takiej jawnej wartości przed zapisem. Brak parametru pozostaje domyślnym 14.
+W testach przypiąć deterministyczny kod i ścieżkę dla tych wariantów.
+
+Spis i migracja 1→2 mogą dotknąć tylko reguł wykonywanych przez parser:
+`open` albo fallback `openConditions`, `indicatorsLong/Short`, poprawnej
+reguły i jej faktycznie użytego operandowego `MOMENTUM`. Nie wolno przechodzić
+rekurencyjnie przez metadata lub ignorowane pola. Kontrprzykład
+`EMA` z `metadata:{name:'MOMENTUM',params:{period:1}}` musi zostać przyjęty
+bez zmiany metadata i bez kandydata w spisie. Fallback runtime dla
+historycznego 1 pozostaje, aby stare snapshoty nadal dawały efektywne 2.
+
+Import PAPER ma zbadać wszystkie `snapshot.data.strategies[].config` **przed**
+`ensureUser` i transakcją. Nieprawidłowa strategia ma zatrzymać import bez
+jakiegokolwiek zapisu, zarówno przy nowym ID, jak i upsert istniejącego.
+Test subprocessu na własnej `_test` sprawdzi odmowę i brak User/Strategy.
+Wykonania produkcyjnego ani zmiany historycznych snapshotów nie ma w tym
+uzupełnieniu. Po kodzie ponowić API/Web i lokalny dry-run/apply, typecheck,
+guardrails oraz strict graph drift; przekazać exact SHA do nowego odbioru.
