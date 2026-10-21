@@ -86,10 +86,26 @@ successful DCA dedupe. Position:
 `CLOSED|TSL|BOT_APP|200|0.99845|-0.479624|100`
 (status, reason, initiator, quantity, average, net PnL, leverage).
 Telemetry has one `DCA_EXECUTED`, one TSL `SIGNAL_DECISION`, and one
-`POSITION_CLOSED`. These are author-local results, awaiting independent
-review on the committed code SHA.
+`POSITION_CLOSED`. These are the historical author-local results.
 
-This test does not prove actual Gate.io rules, balances, fills, fees,
-liquidation behavior, other exchanges or markets, signed-in browser 003A,
-or production safety. The full `POSITION-CYCLE` remains OPEN and release
-remains NO-GO.
+Independent static review on exact code SHA
+`69da8080dfddadf77bdd36275fdbe9d9e9347f06` passed the HOLD, funded
+DCA-before-TSL, later single TSL, six Gate rule refusals, and fill-based
+calculation. API typecheck, docs parity, diff, and graph 921/921 passed.
+Independent QA on that exact SHA used a fresh own PostgreSQL `_test`
+database after 83 migrations and Redis. Separate `open` and `resume`
+processes each reported 1 PASS / 1 SKIP. No-signal held the position; on
+the shared `0.9969` tick DCA filled 100 contracts before armed TSL and
+there was no CLOSE. Six invalid-rule variants refused before DCA dedupe,
+intent, or venue submit. After restart a single TSL / `BOT_APP` closed the
+position. SQL after replay held 3 unique intents, 3 `FILLED` orders, 3
+fills, 3 trades, and 1 successful DCA dedupe without duplicate IDs or
+submits. ENTRY margin 1 USDT plus DCA margin 0.9969 USDT totaled 1.9969
+USDT; quantity was 200 contracts and fill-weighted average 0.99845.
+Fees totaled 0.159624 USDT and net PnL was -0.479624 USDT, matching the
+three fills.
+
+This independent PASS is limited to the local synthetic Gate FUTURES mock.
+It does not prove actual Gate.io rules, balances, fills, fees, liquidation
+behavior, other exchanges or markets, signed-in browser 003A, or production
+safety. The full `POSITION-CYCLE` remains OPEN and release remains NO-GO.
