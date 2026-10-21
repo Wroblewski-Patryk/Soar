@@ -136,10 +136,20 @@ samej publicznej taśmie DCA `a=167049972` poprzedził uzbrojenie TTP
 `a=167049975` i późniejszy TTP `a=167049977` na jednej świecy. Niezależny
 QA na własnej `_test` i Redisie uzyskał `open` 1/1 oraz osobny PID `resume`
 1/1, z trwałymi fillami, intentami i DCA dedupe bez duplikatów. BACKTEST
-miał sześć trades i raport net PnL `+0,01386` USDT, lecz asercje nowego
-wariantu nie przypinają jeszcze tych dwóch wartości. Net PnL pierwszego
+miał sześć trades i raport net PnL `+0,01386` USDT; na tym SHA asercje
+jeszcze nie przypinały tych dwóch wartości. Net PnL pierwszego
 cyklu to `-0,02232` USDT w BACKTEST wobec `-0,02231404958610045` USDT
 w PAPER/mock LIVE; różnica wynika z jawnej syntetycznej precyzji.
+
+Na kodowym SHA `db326b7b0c1b668bea26feedde40b2375a6930d2` niezależny
+statyczny review i runtime QA dały ograniczony `PASS` dla domknięcia tej
+luki. Test wymaga teraz dokładnie sześciu BACKTEST trades, raportu net PnL
+`+0,01386` USDT przez `toBeCloseTo(...,8)` i uzbrojenia TTP dokładnie na
+`a=167049975`. Niezależny QA na świeżej własnej `_test` i Redisie uzyskał
+`open` i osobny PID `resume` `PASS`: ZIP + `.CHECKSUM` były zgodne, decyzje
+`[null,null,LONG,null,null]` utrzymały HOLD bez EXIT, a DCA `a=167049972`
+poprzedził TTP `a=167049977`; trwałe fille, intenty i dedupe pozostały
+spójne. To nadal test lokalny, bez `SIGKILL` i rzeczywistego venue.
 
 `resume` to nowy PID bez `SIGKILL` pierwszego, więc nie dowodzi odzyskania
 PAPER/mock LIVE po awarii. Run BACKTEST zapisano bezpośrednio w test DB i job
