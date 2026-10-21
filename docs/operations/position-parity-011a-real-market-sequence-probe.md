@@ -81,3 +81,34 @@ Cały plik przy dodatkowym `RUN_BACKTEST_ARCHIVED_PROCESS_PROOF=1` przeszedł
 4/4 scenariusze procesowe (naturalny 10-minutowy wariant był pominięty);
 API typecheck `PASS`. Test po każdym wariancie usuwa wyłącznie swoje rekordy
 i klucze kolejki.
+
+## Druga wcześniej zadeklarowana próba: 04:07–05:47 UTC
+
+Na sąsiednim 100-minutowym oknie użyto **tej samej strategii, progów, opłaty
+i kryteriów** z planu wyżej. Publiczny dzienny ZIP i `.CHECKSUM` ponownie dały
+SHA-256 `4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b`.
+Digest zapisanego fragmentu taśmy to
+`5a5e873d4480e50341e3df3d867297bf76edabb7909e0987fa1bec4c60ff9fc8`.
+Pierwszy PID zakończono po zapisie archiwum i digest, przed symulacją; drugi
+PID przejął ten sam run z PostgreSQL po skróceniu lease wyłącznie własnego
+izolowanego rekordu, bez nowego submitu ani fetch źródła.
+
+Wynik P0 jest **negatywny** również tu: jeden `COMPLETED` run, jeden raport,
+jeden trade i trwałe ENTRY+DCA, ale **zero TTP**, więc zero par DCA→późniejszy
+TTP na tej samej świecy. DCA o 04:11:02.745 UTC przy 0,1463 odpowiada
+rzeczywistemu agregatowi `a=167050730` na źródłowej świecy 4; w tej świecy
+było jeszcze 7 późniejszych agregatów. Wkład ENTRY i DCA wynosił po około
+100 USDT, trwała ilość `1367,989696093452`, średnia `0,146199931601`.
+Pozycja została zamknięta wyłącznie przez regułę `FINAL_CANDLE` o
+05:46:59.999 UTC przy 0,1444, z opłatą `0,15902` i net PnL
+`-2,62131` USDT zgodnym z raportem i odtworzonym timeline. To zamknięcie
+jest decyzją symulatora na końcu zakresu, a nie tickiem TTP ani rzeczywistym
+fillem na Binance.
+
+Opt-in `RUN_BACKTEST_ADJACENT_MARKET_SEQUENCE_PROBE=1` uruchamia test
+`backtestArchivedProcess.runtime.test.ts -t 'predeclared adjacent'` na własnej
+`_test` po 84 migracjach i osobnym Redisie. Pozytywny wynik tego testu oznacza
+**prawidłowe wykrycie wyniku negatywnego** na ustalonej taśmie, nie zamknięcie
+bramki P0. Do dodatniego odbioru potrzebne będzie inne okno zadeklarowane
+przed jego oceną; nie dobierać progów pod obejrzane agregaty. Pełne 011A
+`REVIEW`, 011 `OPEN`, wydanie `NO-GO`.

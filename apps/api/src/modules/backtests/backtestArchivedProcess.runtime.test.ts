@@ -13,6 +13,8 @@ import { GetBacktestTimelineQuerySchema } from './backtests.types';
 
 const start = Date.parse('2026-10-18T02:27:00.000Z');
 const end = start + 100 * 60_000;
+const adjacentStart = Date.parse('2026-10-18T04:07:00.000Z');
+const adjacentEnd = adjacentStart + 100 * 60_000;
 const expectedZipSha =
   '4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b';
 const strategyConfig = {
@@ -92,9 +94,13 @@ const stopWorker = async (proof: ProofProcess) => {
   });
 };
 
-type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence';
+type Variant = 'baseline' | 'changed' | 'missing' | 'market-sequence' |
+  'adjacent-sequence';
 const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
-  const marketSequence = variant === 'market-sequence';
+  const adjacentSequence = variant === 'adjacent-sequence';
+  const marketSequence = variant === 'market-sequence' || adjacentSequence;
+  const windowStart = adjacentSequence ? adjacentStart : start;
+  const windowEnd = adjacentSequence ? adjacentEnd : end;
   const db = new URL(process.env.DATABASE_URL ?? '');
   const redisUrl = new URL(process.env.REDIS_URL ?? '');
   const queueName = process.env.WORKER_BACKTEST_QUEUE ?? '';
@@ -125,7 +131,7 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
     strategyId = strategy.id;
     const created = await createRun(user.id, {
       name: `Archived process ${variant}`, symbol: 'ALICEUSDT', timeframe: '1m',
-      strategyId: strategy.id, startAt: new Date(start), endAt: new Date(end),
+      strategyId: strategy.id, startAt: new Date(windowStart), endAt: new Date(windowEnd),
       seedConfig: { maxCandles: 100, initialBalance: 1_000,
         feeRate: marketSequence ? 0.0004 : 0, slippageRate: 0,
         intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' },
@@ -221,19 +227,17 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
         event.type !== 'ENTRY' && event.type !== 'DCA').length).toBe(trades.length);
       expect(trades.filter((trade) => trade.exitReason === 'SIGNAL_EXIT')).toHaveLength(0);
       if (marketSequence) {
-        const archived = await readVerifiedRunArchive(runId, 'ALICEUSDT', start, end);
+        const archived = await readVerifiedRunArchive(runId, 'ALICEUSDT',
+          windowStart, windowEnd);
         if (!archived || !timeline) throw new Error('Verified public archive or timeline missing');
         const dcaEvents = timeline.events.filter((event) => event.type === 'DCA');
         const ttpEvents = timeline.events.filter((event) => event.type === 'TTP');
-        expect(trades).toHaveLength(4);
-        expect(dcaEvents).toHaveLength(3);
-        expect(ttpEvents).toHaveLength(3);
-        expect(reports[0].netPnl).toBeCloseTo(-0.42076, 5);
         const pairs = dcaEvents.map((dca) => ({ dca,
           ttp: ttpEvents.find((ttp) => ttp.tradeId === dca.tradeId &&
             Date.parse(ttp.timestamp) > Date.parse(dca.timestamp)) }))
           .filter((candidate) => candidate.ttp);
         process.stdout.write(`PUBLIC_MARKET_SEQUENCE_PROBE ${JSON.stringify({
+          windowStart: new Date(windowStart).toISOString(),
           digest: firstDigest, trades: trades.length,
           dcaEvents: dcaEvents.length, ttpEvents: ttpEvents.length,
           pairs: pairs.map(({ dca, ttp }) => ({
@@ -242,6 +246,75 @@ const runProcessCase = async (variant: Variant, naturalLease: boolean) => {
               price: ttp!.price },
           })),
         })}\n`);
+        if (adjacentSequence) {
+          expect(dcaEvents).toHaveLength(1);
+          expect(ttpEvents).toHaveLength(0);
+          expect(pairs).toHaveLength(0);
+          expect(trades).toHaveLength(1);
+          expect(contributions).toHaveLength(2);
+          const dca = dcaEvents[0];
+          expect(dca.timestamp).toBe('2026-10-18T04:11:02.745Z');
+          expect(dca.price).toBe(0.1463);
+          const candle = timeline.candles.find((entry) =>
+            entry.candleIndex === dca.candleIndex);
+          const sourceIndex = archived.findIndex((entry) =>
+            entry.openTime === Date.parse(candle?.openTime ?? ''));
+          expect(sourceIndex).toBe(4);
+          const source = archived[sourceIndex];
+          const sourceTick = source.intrabarTicks.find((tick) =>
+            tick.eventTime === Date.parse(dca.timestamp) && tick.price === dca.price);
+          expect(sourceTick?.sequenceId).toBe(167050730);
+          const laterAggregatesOnDcaCandle = source.intrabarTicks.filter((tick) =>
+            (tick.sequenceId ?? -1) > sourceTick!.sequenceId!).length;
+          expect(laterAggregatesOnDcaCandle).toBe(7);
+          const entry = contributions.find((row) => row.kind === 'ENTRY');
+          const add = contributions.find((row) => row.kind === 'DCA');
+          expect(entry).toBeDefined();
+          expect(add).toBeDefined();
+          expect(add!.tradeSequence).toBe(entry!.tradeSequence);
+          expect(add!.timestamp.getTime()).toBe(Date.parse(dca.timestamp));
+          expect(add!.candleIndex).toBe(sourceIndex);
+          expect(add!.levelIndex).toBe(0);
+          expect(add!.multiplier).toBe(1);
+          expect(add!.contributionUsdt).toBeCloseTo(entry!.contributionUsdt, 6);
+          const trade = trades[0];
+          const quantity = entry!.quantity + add!.quantity;
+          const cost = entry!.contributionUsdt + add!.contributionUsdt;
+          const roundSettlement = (value: number) => Math.round(value * 100_000) / 100_000;
+          const fee = 0.0004 * trade.quantity * (trade.entryPrice + trade.exitPrice);
+          expect(trade.exitReason).toBe('FINAL_CANDLE');
+          expect(trade.closedAt.getTime()).toBe(adjacentEnd - 1);
+          expect(trade.quantity).toBeCloseTo(quantity, 8);
+          expect(trade.entryPrice).toBeCloseTo(cost / quantity, 8);
+          expect(trade.fee).toBe(roundSettlement(fee));
+          expect(trade.fee).toBe(0.15902);
+          expect(trade.pnl).toBeCloseTo(roundSettlement(
+            (trade.exitPrice - trade.entryPrice) * trade.quantity) -
+            roundSettlement(fee), 8);
+          expect(trade.pnl).toBe(-2.62131);
+          expect(reports[0].netPnl).toBe(trade.pnl);
+          expect(timeline.events.filter((event) =>
+            event.type !== 'ENTRY' && event.type !== 'DCA'))
+            .toMatchObject([{ type: 'EXIT', timestamp: trade.closedAt.toISOString(),
+              price: trade.exitPrice }]);
+          const replay = await getRunTimeline(user.id, runId,
+            GetBacktestTimelineQuerySchema.parse({ symbol: 'ALICEUSDT' }));
+          expect(replay?.events).toEqual(timeline.events);
+          process.stdout.write(`PUBLIC_ADJACENT_MARKET_RESULT ${JSON.stringify({
+            digest: firstDigest, sourceAggregateId: sourceTick!.sequenceId,
+            dcaTime: dca.timestamp, dcaPrice: dca.price,
+            laterAggregatesOnDcaCandle,
+            entryUsdt: entry!.contributionUsdt, dcaUsdt: add!.contributionUsdt,
+            averageEntry: trade.entryPrice, quantity: trade.quantity,
+            closeTime: trade.closedAt.toISOString(), closePrice: trade.exitPrice,
+            fee: trade.fee, netPnl: trade.pnl, ttpEvents: ttpEvents.length,
+          })}\n`);
+          return;
+        }
+        expect(trades).toHaveLength(4);
+        expect(dcaEvents).toHaveLength(3);
+        expect(ttpEvents).toHaveLength(3);
+        expect(reports[0].netPnl).toBeCloseTo(-0.42076, 5);
         expect(pairs).toHaveLength(3);
         expect(pairs.filter(({ dca, ttp }) =>
           ttp!.candleIndex === dca.candleIndex)).toHaveLength(0);
@@ -348,4 +421,8 @@ describe('real archived intrabar job recovery across processes', () => {
   const marketIt = process.env.RUN_BACKTEST_REAL_MARKET_SEQUENCE_PROBE === '1' ? it : it.skip;
   marketIt('records separate-candle DCA and TTP for the predeclared public tape',
     async () => runProcessCase('market-sequence', false), 120_000);
+  const adjacentIt = process.env.RUN_BACKTEST_ADJACENT_MARKET_SEQUENCE_PROBE === '1'
+    ? it : it.skip;
+  adjacentIt('records DCA without TTP on predeclared adjacent public tape',
+    async () => runProcessCase('adjacent-sequence', false), 120_000);
 });
