@@ -198,3 +198,12 @@ Test RED odtworzył wcześniejsze utworzenie zlecenia bez pozycji. Po poprawce
 147/147 testów pięciu powiązanych plików oraz typecheck przeszły na osobnej
 bazie PostgreSQL `_test`. Nadal brak dowodu rzeczywistego Gate LIVE i pełnego
 cyklu dla `contractSize≠1`.
+
+Niezależny odbiór tego commitu wykrył dwie luki PAPER: runtime CLOSE nie ustawia
+`reduceOnly=true`, więc bramka rozpoznawała przeciwne `SELL` dla LONG jako
+błędne DCA; ponadto dla pozycji bota PAPER nie wymagała `walletId=NULL`.
+Korekta rozpoznaje CLOSE po stronie przeciwnej do pozycji w PAPER i zawsze
+porównuje właściwy zakres portfela (`NULL` dla pozycji bota PAPER). Test RED
+odtworzył oba błędy, a test GREEN przeszedł przez prawdziwą lokalną ścieżkę
+orkiestrator → Order → wypełnienie PAPER → Trade/Position. To nadal nie jest
+dowód zachowania giełdy ani produkcji.

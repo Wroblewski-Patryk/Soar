@@ -12,6 +12,8 @@ import {
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
+import { resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
+import { orchestrateRuntimeSignal } from '../engine/executionOrchestrator.service';
 import { ensureSubscriptionCatalog, SUBSCRIPTION_PLAN_SEED } from '../subscriptions/subscriptions.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createExternalClientGrant } from '../externalClientGrants/externalClientGrants.service';
@@ -1133,6 +1135,61 @@ describe('durable LIVE order intent', () => {
     expect(executeLiveOrder).not.toHaveBeenCalled();
     expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
     expect(await prisma.position.count({ where: { userId: user.id } })).toBe(0);
+  });
+
+  it('closes a Gate PAPER position through the real runtime and order path', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-paper-runtime-close@example.com', password: 'hashed',
+    } });
+    const { bot, wallet, strategy } = await createGateLiveBot(user.id, 'Gate PAPER runtime close');
+    await prisma.bot.update({ where: { id: bot.id }, data: { mode: 'PAPER' } });
+    await prisma.wallet.update({ where: { id: wallet.id }, data: { mode: 'PAPER' } });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: null, strategyId: strategy.id,
+      symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', entryPrice: 100,
+      quantity: 1, contractSize: 1, leverage: 5, origin: 'BOT',
+      managementMode: 'BOT_MANAGED', syncState: 'IN_SYNC',
+      continuityState: 'CONFIRMED',
+    } });
+
+    const result = await orchestrateRuntimeSignal({
+      userId: user.id, botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+      symbol: 'BTCUSDT', direction: 'EXIT', quantity: 1, markPrice: 101,
+      mode: 'PAPER', reason: 'take_profit',
+    });
+    expect(result).toMatchObject({ status: 'closed', positionId: position.id });
+    const orders = await prisma.order.findMany({ where: { userId: user.id, positionId: position.id } });
+    expect(orders).toHaveLength(1);
+    expect(orders[0]).toMatchObject({ side: 'SELL', status: 'FILLED', contractSize: 1 });
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ status: 'CLOSED' });
+    expect(await prisma.trade.findMany({ where: { userId: user.id, positionId: position.id } }))
+      .toEqual([expect.objectContaining({ orderId: orders[0].id, lifecycleAction: 'CLOSE',
+        executionMode: 'PAPER' })]);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+  });
+
+  it('requires the PAPER bot position to have its expected null wallet binding', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-paper-wallet-scope@example.com', password: 'hashed',
+    } });
+    const { bot, wallet, strategy } = await createGateLiveBot(user.id, 'Gate PAPER wallet scope');
+    await prisma.bot.update({ where: { id: bot.id }, data: { mode: 'PAPER' } });
+    await prisma.wallet.update({ where: { id: wallet.id }, data: { mode: 'PAPER' } });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: null, strategyId: strategy.id,
+      symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', entryPrice: 100,
+      quantity: 1, contractSize: 1, leverage: 5, origin: 'BOT',
+      managementMode: 'BOT_MANAGED', syncState: 'IN_SYNC',
+      continuityState: 'CONFIRMED',
+    } });
+    const scope = { db: prisma, userId: user.id, positionId: position.id,
+      botId: bot.id, walletId: null, mode: 'PAPER' as const,
+      symbol: 'BTCUSDT', side: 'SELL' as const, quantity: 1, reduceOnly: true };
+    await expect(resolveVerifiedGateLinkedPositionUnit(scope)).resolves.toBe(1);
+    await prisma.position.update({ where: { id: position.id }, data: { walletId: wallet.id } });
+    await expect(resolveVerifiedGateLinkedPositionUnit(scope))
+      .rejects.toMatchObject({ code: 'GATE_POSITION_SCOPE_UNVERIFIED' });
   });
 
   it('rejects Gate reduce-only without a linked Position before intent or submit', async () => {

@@ -21,15 +21,17 @@ export const resolveVerifiedGateLinkedPositionUnit = async (params: {
     select: { botId: true, walletId: true, symbol: true, side: true,
       quantity: true, contractSize: true },
   });
-  const entrySide = position?.side === 'LONG' ? 'BUY' : 'SELL';
-  const expectedSide = params.reduceOnly ? (entrySide === 'BUY' ? 'SELL' : 'BUY') : entrySide;
-  if (!position || position.symbol !== params.symbol.toUpperCase() ||
+  if (!position) throw orderErrors.gatePositionScopeUnverified();
+  const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
+  const closesPosition = params.reduceOnly || (params.mode === 'PAPER' && params.side !== entrySide);
+  const expectedSide = closesPosition ? (entrySide === 'BUY' ? 'SELL' : 'BUY') : entrySide;
+  const expectedWalletId = params.mode === 'PAPER' && params.botId ? null : params.walletId;
+  if (position.symbol !== params.symbol.toUpperCase() ||
       position.botId !== params.botId ||
-      (params.mode === 'LIVE' && position.walletId !== params.walletId) ||
-      (params.botId == null && position.walletId !== params.walletId) ||
+      position.walletId !== expectedWalletId ||
       params.side !== expectedSide ||
       !Number.isFinite(position.quantity) || position.quantity <= 0 ||
-      (params.reduceOnly && params.quantity > position.quantity + 1e-9)) {
+      (closesPosition && params.quantity > position.quantity + 1e-9)) {
     throw orderErrors.gatePositionScopeUnverified();
   }
   if (position.contractSize !== 1) throw orderErrors.gatePositionUnitUnsafe();
