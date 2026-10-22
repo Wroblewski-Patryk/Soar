@@ -79,4 +79,34 @@ Weryfikacja: API typecheck, docs parity, guardrails i graph drift `951/951`
 `PASS`; `git diff --check` bez błędów. Po teście własna baza miała 88
 ukończonych migracji, `User=0`, `BacktestRun=0`, `Trade=0`; Redis `DBSIZE=0`.
 Usunięto wyłącznie własne kontenery na portach 5585 i 6425. Odbiór niezależny
-pozostaje otwarty; ten test nie obejmuje realnej giełdy ani produkcji.
+na tym etapie pozostawał otwarty; ten test nie obejmuje realnej giełdy ani
+produkcji.
+
+## Niezależny odbiór ograniczonego scenariusza 012
+
+Niezależny reviewer dał ograniczony statyczny `PASS` dla końcowego
+SHA kodu `66da64559686b188f9ff19624445706703fa053b` i dokumentacyjnego
+HEAD `a4a4ef1f78e9b36c1db05f8be929a3d6bf0d8929`. API typecheck,
+docs parity i diff check przeszły. Reviewer nie uruchomił guardrails:
+generator zmieniał pliki grafu w zastanym brudnym checkoutcie. Ten brak
+nie jest wynikiem `PASS` guardrails w niezależnym odbiorze.
+
+Niezależny QA uruchomił ten sam test na dokładnym HEAD (tree
+`09e23f1b0c32ddb1e1f89f0766e862f167a47fad`, blob testu
+`c448fb54a5db1ec8503e99522dd8a33484304951`) we własnej świeżej
+PostgreSQL `_test` po 88 migracjach i osobnym Redisie. Proces nadrzędny
+dał `1 PASS / 1` celowy `SKIP`; zaliczony test wymagał `resume` w drugim
+procesie, gdzie przeszedł `1/1`. Test potwierdził zwykły LONG, po zaniku
+wejścia HOLD bez EXIT, DCA 80 kontraktów przy 1,25 przed TTP 180 przy
+1,13 po restarcie, jeden `COMPLETED` BACKTEST, trwałe ENTRY/DCA/CLOSE
+w PAPER i Gate.io FUTURES internal mock LIVE oraz zgodne fee `0,16136`
+i net PnL `+3,23864` USDT bez duplikatu po retry. Log QA SHA-256:
+`6291fa1756817bcb1a42c7ac565b2ab8af32765fc0d836d23fefa1da9b951217`
+(`%LOCALAPPDATA%/Soar/local-ci/diagnostics/qa-gate012-a4a4-20261022/vitest.log`).
+QA usunął wyłącznie własne kontenery i anonimowe woluminy, nie zmienił
+śledzonych plików ani zachowanych zasobów innych prób.
+
+To niezależny lokalny `PASS` dla jednego syntetycznego scenariusza Gate
+FUTURES z `contractSize=1`. Reguły rzeczywistej giełdy, inne
+`contractSize`, transport i fille real LIVE oraz produkcja nie zostały
+odebrane. Pełny `POSITION-CYCLE` pozostaje `OPEN`, wydanie `NO-GO`.
