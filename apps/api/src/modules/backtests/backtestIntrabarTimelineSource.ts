@@ -1,4 +1,4 @@
-import type { Exchange } from '@prisma/client';
+import { Exchange } from '@prisma/client';
 import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 import { fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   type BacktestKlineCandle, type BacktestMarketType } from './backtestDataGateway';
@@ -34,12 +34,29 @@ export const fetchVerifiedIntrabarTimelineCandles = async (input: {
 
   try {
     if (input.rawTradeV4Budget) {
-      if (typeof input.startTimeMs !== 'number' ||
-          typeof input.endTimeMs !== 'number')
+      const { startTimeMs, endTimeMs, maxCandles } = input;
+      if (typeof startTimeMs !== 'number' ||
+          typeof endTimeMs !== 'number')
+        throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
+      const requestedCandles = (endTimeMs - startTimeMs) / 60_000;
+      // Match the Binance USD-M 1m archived-source request contract before
+      // touching a v4 snapshot. A valid digest alone cannot authorize a
+      // different exchange, market, timeframe or wider requested window.
+      if (input.exchange !== Exchange.BINANCE ||
+          input.marketType !== 'FUTURES' || input.timeframe !== '1m' ||
+          !Number.isSafeInteger(maxCandles) || maxCandles < 1 ||
+          !Number.isSafeInteger(startTimeMs) ||
+          !Number.isSafeInteger(endTimeMs) ||
+          startTimeMs % 60_000 !== 0 || endTimeMs % 60_000 !== 0 ||
+          !Number.isSafeInteger(requestedCandles) ||
+          requestedCandles < 1 || requestedCandles > 120 ||
+          requestedCandles > maxCandles ||
+          Math.floor(startTimeMs / 86_400_000) !==
+            Math.floor((endTimeMs - 1) / 86_400_000))
         throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
       const raw = await readVerifiedRawTradeSnapshotV4ForRun({
         runId: input.runId, symbol: input.symbol,
-        startTimeMs: input.startTimeMs, endTimeMs: input.endTimeMs,
+        startTimeMs, endTimeMs,
         budget: input.rawTradeV4Budget,
         expectedDigest: input.expectedDigest,
       });

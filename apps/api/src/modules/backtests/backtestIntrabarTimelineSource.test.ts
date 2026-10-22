@@ -6,6 +6,7 @@ import type { BacktestKlineCandle } from './backtestDataGateway';
 
 const sourceMocks = vi.hoisted(() => ({
   readArchive: vi.fn(),
+  readRawV4: vi.fn(),
   fetchRecent: vi.fn(),
 }));
 vi.mock('./backtestBinanceFuturesIntrabarArchive', () => ({
@@ -13,6 +14,9 @@ vi.mock('./backtestBinanceFuturesIntrabarArchive', () => ({
 }));
 vi.mock('./backtestDataGateway', () => ({
   fetchKlinesWithVerifiedBinanceFuturesIntrabar: sourceMocks.fetchRecent,
+}));
+vi.mock('./backtestRawTradeSource.repository', () => ({
+  readVerifiedRawTradeSnapshotV4ForRun: sourceMocks.readRawV4,
 }));
 
 const minute = 60_000;
@@ -44,6 +48,7 @@ const query = (startTimeMs: number, expectedDigest: string) => ({
 describe('strict intrabar timeline source', () => {
   beforeEach(() => {
     sourceMocks.readArchive.mockReset();
+    sourceMocks.readRawV4.mockReset();
     sourceMocks.fetchRecent.mockReset();
   });
 
@@ -93,5 +98,50 @@ describe('strict intrabar timeline source', () => {
       digestVerifiedBinanceFuturesIntrabar(restCandles, 'ALICEUSDT'))))
       .resolves.toEqual(restCandles);
     expect(sourceMocks.fetchRecent).toHaveBeenCalledOnce();
+  });
+
+  const rawBudget = { maxZipBytes: 1, maxCsvBytes: 1,
+    maxSelectedTrades: 1, maxElapsedMs: 1 };
+  const rawQuery = () => ({ ...query(historicalStart, 'a'.repeat(64)),
+    rawTradeV4Budget: rawBudget });
+
+  it.each([
+    ['another exchange', { exchange: Exchange.GATEIO }],
+    ['SPOT', { marketType: 'SPOT' as const }],
+    ['another timeframe', { timeframe: '5m' }],
+    ['too few allowed candles', { maxCandles: 1 }],
+    ['zero allowed candles', { maxCandles: 0 }],
+    ['fractional candle limit', { maxCandles: 2.5 }],
+    ['misaligned start', { startTimeMs: historicalStart + 1 }],
+    ['window wider than limit', { endTimeMs: historicalStart + 3 * minute }],
+    ['window above 120', { maxCandles: 121,
+      endTimeMs: historicalStart + 121 * minute }],
+    ['missing start', { startTimeMs: undefined }],
+    ['missing end', { endTimeMs: undefined }],
+    ['cross-day window', { startTimeMs: Date.parse('2026-10-17T23:59:00Z'),
+      endTimeMs: Date.parse('2026-10-18T00:01:00Z') }],
+  ] as Array<[string, Partial<ReturnType<typeof rawQuery>>]>)
+  ('refuses raw v4 %s before reading any source', async (_name, override) => {
+    sourceMocks.readRawV4.mockResolvedValue({ candles: candles(historicalStart, true) });
+    await expect(fetchVerifiedIntrabarTimelineCandles({
+      ...rawQuery(), ...override,
+    })).rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE' });
+    expect(sourceMocks.readRawV4).not.toHaveBeenCalled();
+    expect(sourceMocks.readArchive).not.toHaveBeenCalled();
+    expect(sourceMocks.fetchRecent).not.toHaveBeenCalled();
+  });
+
+  it('accepts exactly bounded Binance USD-M 1m v4 and keeps it offline', async () => {
+    const rawCandles = candles(historicalStart, true);
+    sourceMocks.readRawV4.mockResolvedValue({ candles: rawCandles });
+    await expect(fetchVerifiedIntrabarTimelineCandles(rawQuery()))
+      .resolves.toEqual(rawCandles);
+    expect(sourceMocks.readRawV4).toHaveBeenCalledExactlyOnceWith({
+      runId: 'historical-run', symbol: 'ALICEUSDT',
+      startTimeMs: historicalStart, endTimeMs: historicalStart + 2 * minute,
+      budget: rawBudget, expectedDigest: 'a'.repeat(64),
+    });
+    expect(sourceMocks.readArchive).not.toHaveBeenCalled();
+    expect(sourceMocks.fetchRecent).not.toHaveBeenCalled();
   });
 });
