@@ -122,3 +122,26 @@ minimum notional Gate pozostaje niepotwierdzone, a osobnych asercji
 `contractSize!=1` nadal odmawia fail-closed; ledger fee/PnL po DCA,
 rzeczywisty LIVE, produkcja i pełny `POSITION-CYCLE` pozostają bez odbioru.
 Wydanie `NO-GO`.
+
+## Zamrożony odbiór uzupełniający metadanych (HEAD wejściowy `f49968a14b6f0b0050571bf0d441fea459e5a773`)
+
+Test pozostaje lokalny i bez sieci. Dwa rynki są syntetycznymi liniowymi
+Gate `swap`, rozliczanymi w USDT; `amount`, `size`, `filled` i trade `amount`
+oznaczają **kontrakty**, nie bazową ilość. Wartości liczbowe są ustalone
+przed zmianą testów:
+
+| Rynek | Surowe Gate | Oczekiwane market/rules | Submit i odczyt offline | Baza i USDT |
+| --- | --- | --- | --- | --- |
+| `BTC_USDT` integer | `quanto_multiplier="0.0001"`, `order_size_min="1"`, `enable_decimal=false` | `contractSize=0.0001`, min=1, step=1, TICK_SIZE, `minNotional=null` | request `amount=2` → `size=2` (number), futures header `X-Gate-Size-Decimal: 1`; `fetchOrder.filled=2`, `fetchMyTrades.amount=2`, `cost=10` | 2 kontrakty × 0,0001 = 0,0002 BTC; × 50000 = 10 USDT |
+| `ETH_USDT` fractional | `quanto_multiplier="0.01"`, `order_size_min="0.1"`, `enable_decimal=true` | `contractSize=0.01`, min=0.1, step=0.1, TICK_SIZE, `minNotional=null` | request `amount=1.7` → `size="1.7"`, ten sam futures header; order `size=1.7`, `left=0.4` → `filled=1.3`; trade `size=-0.3` → `amount=0.3`, `cost=6` | request 0,017 ETH / 34 USDT; filled 0,013 ETH / 26 USDT; trade 0,003 ETH / 6 USDT |
+
+Ujemne fixture: surowe `quanto_multiplier` brak/0/NaN/Infinity oraz
+rozbieżność z `market.contractSize` dają `rules.contractSize=null`.
+Surowe `order_size_min` brak/0/NaN, różnica względem
+`market.limits.amount.min`, brak `enable_decimal`, `enable_decimal=false`
+z ułamkowym minimum/krokiem oraz `enable_decimal=true` z krokiem różnym
+od dodatniego `order_size_min` dają niekompletne reguły (`minAmount` lub
+`amountPrecision=null`). Wszystkie takie przypadki mają zatrzymać DCA
+przed intentem i `createOrder`; test może podać wyłącznie syntetyczny
+`minNotional=1` do izolacji powodu odmowy. Rzeczywistego minimum Gate
+nie wolno wyprowadzać z ceny ani tej fixture.
