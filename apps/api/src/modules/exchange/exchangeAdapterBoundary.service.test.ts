@@ -536,6 +536,37 @@ describe('exchangeAdapterBoundary.service', () => {
       expect(connector.hasOpenPosition).toHaveBeenCalledTimes(reduceOnly ? 0 : 1);
     });
 
+  it('blocks the manual-context Gate tick fixture before venue submit', async () => {
+    const connector = { ...createConnector(),
+      getSymbolTradingRules: vi.fn(async () => ({
+        minAmount: 1, minNotional: 5.1, amountPrecision: 1,
+        amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 10,
+      })),
+      fetchMarkPrice: vi.fn(async () => 0.25),
+    };
+    const placeLiveOrderWithFees = vi.fn();
+    const convergeLiveMarginAndLeverageIfNeeded = vi.fn(async () => undefined);
+    await expect(submitLiveOrderThroughBoundary({
+      userId: 'user-gate-context-parity-003',
+      bot: { exchange: 'GATEIO', marketType: 'FUTURES', positionMode: 'ONE_WAY',
+        apiKeyId: 'key-gate-context-parity-003', walletId: 'wallet-gate-context-parity-003' },
+      order: { symbol: 'ADATICKPARITYUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 60.5, price: 0.25, reduceOnly: false },
+      targetLeverage: 5,
+    }, {
+      createAuthenticatedConnector: vi.fn(() => connector),
+      fetchBalanceRaw: vi.fn(),
+      resolveLiveExecutionApiKey: vi.fn(async () => ({ id: 'key-gate-context-parity-003',
+        exchange: 'GATEIO' as const, apiKey: 'local-fake', apiSecret: 'local-fake' })),
+      createLiveOrderAdapter: vi.fn(() => ({ placeLiveOrderWithFees })),
+      enforceLivePretradeGuards,
+      convergeLiveMarginAndLeverageIfNeeded,
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
+    expect(placeLiveOrderWithFees).not.toHaveBeenCalled();
+    expect(connector.disconnect).toHaveBeenCalledOnce();
+  });
+
   it.each([false, true])('rejects unknown Gate Futures contract size before submit (reduceOnly=%s)',
     async (reduceOnly) => {
       const connector = { ...createConnector(),

@@ -125,6 +125,39 @@ describe('orders.quantityRules', () => {
     } })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
   });
 
+  it('matches the Gate manual context fixture for tick and decimal pretrade', async () => {
+    const rules = {
+      minAmount: 1, minNotional: 5.1, amountPrecision: 1, contractSize: 10,
+    };
+    const connector = {
+      hasOpenPosition: vi.fn(async () => false),
+      getSymbolTradingRules: vi.fn(async () => ({
+        ...rules, amountPrecisionMode: 'TICK_SIZE' as const,
+      })),
+      fetchMarkPrice: vi.fn(async () => 0.25),
+    };
+    const base = {
+      apiKeyId: 'gate-manual-context-parity-003', exchange: 'GATEIO' as const,
+      marketType: 'FUTURES' as const,
+    };
+    await expect(enforceLivePretradeGuards({
+      ...base, connector,
+      payload: { symbol: 'ADATICKPARITYUSDT', quantity: 60.5, price: 0.25 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    expect(connector.fetchMarkPrice).not.toHaveBeenCalled();
+
+    const decimalConnector = {
+      ...connector,
+      getSymbolTradingRules: vi.fn(async () => ({
+        ...rules, amountPrecisionMode: 'DECIMAL_PLACES' as const,
+      })),
+    };
+    await expect(enforceLivePretradeGuards({
+      ...base, connector: decimalConnector,
+      payload: { symbol: 'ADADECPARITYUSDT', quantity: 60.5, price: 0.25 },
+    })).resolves.toBeUndefined();
+  });
+
   it('requires a known positive contract size for FUTURES before LIVE submit', async () => {
     const fetchMarkPrice = vi.fn(async () => 3.305);
     for (const [index, contractSize] of [null, 0, -1, NaN, Infinity].entries()) {

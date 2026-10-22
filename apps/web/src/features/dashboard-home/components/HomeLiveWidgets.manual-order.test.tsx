@@ -216,13 +216,13 @@ describe("HomeLiveWidgets manual order", () => {
       isActive: true,
       liveOptIn: false,
       maxOpenPositions: 2,
-      symbolGroup: { id: "grid-group", name: "Grid", symbols: ["NGUSDT"] },
+      symbolGroup: { id: "grid-group", name: "Grid", symbols: ["ADAUSDT"] },
     }]);
     listBotRuntimeSessionsMock.mockResolvedValue([]);
     getBotRuntimeGraphMock.mockResolvedValue({ marketGroups: [] });
     getDashboardManualOrderContextMock.mockResolvedValue({
       botId: "bot-grid-form",
-      symbol: "NGUSDT",
+      symbol: "ADAUSDT",
       mode: "PAPER",
       orderType: "MARKET",
       marginMode: "ISOLATED",
@@ -231,7 +231,8 @@ describe("HomeLiveWidgets manual order", () => {
       quantityConstraints: {
         minAmount: 1,
         minNotional: 5.1,
-        minExecutableQty: 60,
+        // The DB-backed API context test derives 3 / 2.1 from these same rules.
+        minExecutableQty: quantityConstraints.amountPrecisionMode === "TICK_SIZE" ? 3 : 2.1,
         contractSize: 10,
         ...quantityConstraints,
       },
@@ -243,9 +244,12 @@ describe("HomeLiveWidgets manual order", () => {
     await renderSubjectSettled(locale);
     await waitFor(() => {
       expect(screen.getByTestId("manual-order-price-input")).toHaveValue(0.25);
-      expect(screen.getByTestId("manual-order-quantity-input")).toHaveAttribute(
-        "step", String(quantityConstraints.amountStep)
-      );
+      const quantity = screen.getByTestId("manual-order-quantity-input");
+      const minimum = quantityConstraints.amountPrecisionMode === "TICK_SIZE" ? 3 : 2.1;
+      expect(quantity).toHaveAttribute("step", String(quantityConstraints.amountStep));
+      expect(quantity).toHaveAttribute("min", String(minimum));
+      expect(quantity).toHaveValue(minimum);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(minimum * 0.25 * 10 / 5);
     });
   };
 
@@ -271,6 +275,22 @@ describe("HomeLiveWidgets manual order", () => {
         name: /Otworz zlecenie reczne|Open manual order/i,
       })).toBeDisabled();
       expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+
+      fireEvent.change(screen.getByTestId("manual-order-budget-input"), {
+        target: { value: "30.25" },
+      });
+      await waitFor(() => {
+        expect(quantity).toHaveValue(60);
+        expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(30);
+      });
+      fireEvent.click(screen.getByRole("button", {
+        name: /Otworz zlecenie reczne|Open manual order/i,
+      }));
+      await waitFor(() => {
+        expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+          botId: "bot-grid-form", symbol: "ADAUSDT", quantity: 60, price: 0.25,
+        }));
+      });
     }
   );
 
@@ -284,12 +304,19 @@ describe("HomeLiveWidgets manual order", () => {
       expect(quantity).toHaveAttribute("aria-invalid", "false");
       expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(30.25);
     });
+    fireEvent.change(screen.getByTestId("manual-order-budget-input"), {
+      target: { value: "30.26" },
+    });
+    await waitFor(() => {
+      expect(quantity).toHaveValue(60.5);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(30.25);
+    });
     const submit = screen.getByRole("button", { name: /Open manual order/i });
     expect(submit).toBeEnabled();
     fireEvent.click(submit);
     await waitFor(() => {
       expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
-        botId: "bot-grid-form", symbol: "NGUSDT", quantity: 60.5, price: 0.25,
+        botId: "bot-grid-form", symbol: "ADAUSDT", quantity: 60.5, price: 0.25,
       }));
     });
   });

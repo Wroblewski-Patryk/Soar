@@ -145,6 +145,22 @@ describe('getManualOrderContext contract-size rules', () => {
     expect(offGrid?.sideAwarePreview.estimatedNotional).toBeNull();
     expect(offGrid?.sideAwarePreview.estimatedMargin).toBeNull();
 
+    const tickOffGrid60 = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 60.5 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(tickOffGrid60?.quantityConstraints.minExecutableQty).toBe(3);
+    expect(tickOffGrid60?.quantityConstraints.amountStep).toBe(1);
+    expect(tickOffGrid60?.sideAwarePreview.estimatedNotional).toBeNull();
+    expect(tickOffGrid60?.sideAwarePreview.estimatedMargin).toBeNull();
+
+    const tickOnGrid60 = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 60 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(tickOnGrid60?.sideAwarePreview.estimatedNotional).toBe(150);
+    expect(tickOnGrid60?.sideAwarePreview.estimatedMargin).toBe(30);
+
     const belowMinimum = await getManualOrderContext(
       user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 2 },
       { createPublicConnector: connectorFactory }
@@ -162,6 +178,15 @@ describe('getManualOrderContext contract-size rules', () => {
     expect(decimal?.quantityConstraints.minExecutableQty).toBe(2.1);
     expect(decimal?.sideAwarePreview.estimatedNotional).toBe(8.75);
     expect(decimal?.sideAwarePreview.estimatedMargin).toBe(1.75);
+
+    const decimal60 = await getManualOrderContext(
+      user.id, { botId: bot.id, symbol: 'ADAUSDT', side: 'SELL', quantity: 60.5 },
+      { createPublicConnector: connectorFactory }
+    );
+    expect(decimal60?.quantityConstraints.minExecutableQty).toBe(2.1);
+    expect(decimal60?.quantityConstraints.amountStep).toBe(0.1);
+    expect(decimal60?.sideAwarePreview.estimatedNotional).toBe(151.25);
+    expect(decimal60?.sideAwarePreview.estimatedMargin).toBe(30.25);
 
     amountPrecisionMode = 'TICK_SIZE';
     amountPrecision = 5;
