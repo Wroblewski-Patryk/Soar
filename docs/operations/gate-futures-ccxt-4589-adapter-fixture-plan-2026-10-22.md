@@ -82,7 +82,8 @@ zlecenia ani testu rzeczywistej giełdy.
 Niezależny review pierwszego SHA `1c7283c2224c95a80072f50e8e2156077b9cc5c4`
 wykrył drugą osiągalną fabrykę CCXT: próba klucza API nadal szukała
 `ccxtModule['gateio']` i zwracała `UNKNOWN` z oboma uprawnieniami `false`.
-Izolowany test RED przez rzeczywistą fabrykę probe odtworzył tę odmowę.
+Był to niezależny `FAIL` probe; izolowany test RED przez rzeczywistą
+fabrykę probe odtworzył tę odmowę.
 Poprawka mapuje publiczne `GATEIO` na wewnętrzne `gate` także tutaj;
 test GREEN sprawdza SPOT i FUTURES (`defaultType` i parametry balance)
 bez sieci oraz kontrolnie obie ścieżki Binance. To nadal nie dowodzi
@@ -93,3 +94,31 @@ Manifest pakietu w `apps/api/package.json` i lock wskazują dokładnie
 zwraca wewnętrzne `ccxt.version="4.5.88"`. To rozbieżność metadanych
 wewnątrz wydanego pakietu; dowodem użytej wersji są package/lock i
 sprawdzone zachowanie `createOrderRequest` oraz `sign`, nie sam `ccxt.version`.
+
+## Odbiór końcowego adaptera
+
+Autor na dokładnym kodowym SHA `75a4035dbb1edbc83d52dd33dac73266b3c6d964`
+potwierdził `18` plików i `152 PASS`, API typecheck, docs parity oraz diff
+check. Manifest i lock przypinają `ccxt@4.5.89`; registry i próba klucza API
+mapują publiczne `GATEIO` na konstruktor `gate`, a surowy Gate FUTURES
+`quanto_multiplier` równy zero, brakujący lub `NaN` daje odmowę
+zamiast domyślnego `contractSize=1`. Wewnętrzne `ccxt.version` nadal podaje
+`4.5.88`; wersję pakietu identyfikują manifest, lock, npm integrity i
+sprawdzone zachowanie. Wcześniejszy `FAIL` probe na `1c7283c2224c95a80072f50e8e2156077b9cc5c4`
+pozostaje historycznym wynikiem przed tą korektą.
+
+Niezależny reviewer dał ograniczony statyczny `PASS` na tym samym
+końcowym SHA: `57/57` testów w 3 plikach, API typecheck, docs parity i
+diff check `PASS`. Odrębny niezależny QA dał ograniczony lokalny `PASS`:
+`89/89` testów w 6 plikach, API typecheck i docs parity `PASS`;
+SHA-256 logu QA
+`0f2be3d8da269cefeb796e2ce047345ca60c248c189b7efe209c16eac92795ce`.
+To testy offline na fixture i mock transporcie, bez zlecenia w realnym Gate.
+
+Ten odbiór dotyczy adaptera, nie odblokowuje nonunit DCA. `contractSize`
+nie jest jeszcze trwale zapisany przy pozycji i zleceniu, rzeczywiste
+minimum notional Gate pozostaje niepotwierdzone, a osobnych asercji
+`order_size_min` oraz zgodności `enable_decimal` ze step nie ma. DCA dla
+`contractSize!=1` nadal odmawia fail-closed; ledger fee/PnL po DCA,
+rzeczywisty LIVE, produkcja i pełny `POSITION-CYCLE` pozostają bez odbioru.
+Wydanie `NO-GO`.
