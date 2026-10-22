@@ -69,12 +69,14 @@ type WalletCreateEditFormProps = {
   editId?: string | null;
   formId?: string;
   onSubmittingChange?: (submitting: boolean) => void;
+  onMetadataLoadingChange?: (loading: boolean) => void;
 };
 
 export default function WalletCreateEditForm({
   editId = null,
   formId = 'wallet-form',
   onSubmittingChange,
+  onMetadataLoadingChange,
 }: WalletCreateEditFormProps) {
   const { t } = useI18n();
   const router = useRouter();
@@ -104,6 +106,10 @@ export default function WalletCreateEditForm({
   useEffect(() => {
     onSubmittingChange?.(submitting);
   }, [onSubmittingChange, submitting]);
+
+  useEffect(() => {
+    onMetadataLoadingChange?.(walletMetadataLoading);
+  }, [onMetadataLoadingChange, walletMetadataLoading]);
 
   const walletText = useCallback((key: string) => t(`dashboard.wallets.form.${key}`), [t]);
 
@@ -400,7 +406,7 @@ export default function WalletCreateEditForm({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting) return;
+    if (submitting || walletMetadataLoading) return;
     setShowValidation(true);
 
     if (!canSaveMode || hasValidationErrors) {
@@ -454,7 +460,12 @@ export default function WalletCreateEditForm({
 
   return (
     <>
-      <form id={formId} onSubmit={handleSubmit} className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'>
+      <form
+        id={formId}
+        onSubmit={handleSubmit}
+        aria-busy={walletMetadataLoading}
+        className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'
+      >
         <div className='space-y-4'>
           {showValidation && hasValidationErrors ? (
             <FormValidationSummary title={walletText('validationSummaryTitle')} errors={validationSummaryErrors} />
@@ -473,7 +484,12 @@ export default function WalletCreateEditForm({
             fieldErrors={fieldErrors}
             onNameChange={(value) => setForm((prev) => ({ ...prev, name: value }))}
             onModeChange={setMode}
-            onExchangeChange={(value) => setForm((prev) => ({ ...prev, exchange: value }))}
+            onExchangeChange={(value) => {
+              if (value === form.exchange) return;
+              setWalletMetadataLoading(true);
+              onMetadataLoadingChange?.(true);
+              setForm((prev) => ({ ...prev, exchange: value }));
+            }}
             onMarketTypeChange={(value) => setForm((prev) => ({ ...prev, marketType: value }))}
             onBaseCurrencyChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
           />
@@ -535,7 +551,7 @@ export default function WalletCreateEditForm({
           ) : null}
         </aside>
 
-        <button type='submit' className='sr-only' disabled={submitting}>
+        <button type='submit' className='sr-only' disabled={submitting || walletMetadataLoading}>
           {walletText('hiddenSubmit')}
         </button>
       </form>

@@ -20,6 +20,7 @@ export default function WalletFormPageContent({ mode, editId }: WalletFormPageCo
   const { t } = useI18n();
   const isEditMode = mode === 'edit';
   const [submitting, setSubmitting] = useState(false);
+  const [metadataLoading, setMetadataLoading] = useState(false);
   const saveLabel = t('dashboard.wallets.saveLabel');
   const savingLabel = t('dashboard.wallets.savingLabel');
 
@@ -41,7 +42,7 @@ export default function WalletFormPageContent({ mode, editId }: WalletFormPageCo
             type='submit'
             form={WALLET_FORM_ID}
             className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}
-            disabled={submitting}
+            disabled={submitting || metadataLoading}
           >
             <LuSave className='h-4 w-4' />
             {submitting ? savingLabel : saveLabel}
@@ -53,9 +54,15 @@ export default function WalletFormPageContent({ mode, editId }: WalletFormPageCo
         formId={WALLET_FORM_ID}
         editId={isEditMode ? editId ?? null : null}
         onSubmittingChange={setSubmitting}
+        onMetadataLoadingChange={setMetadataLoading}
       />
       <FormMobileActionBar>
-        <button type='submit' form={WALLET_FORM_ID} className='btn btn-primary w-full' disabled={submitting}>
+        <button
+          type='submit'
+          form={WALLET_FORM_ID}
+          className='btn btn-primary w-full'
+          disabled={submitting || metadataLoading}
+        >
           <LuSave className='h-4 w-4' />
           {submitting ? savingLabel : saveLabel}
         </button>
