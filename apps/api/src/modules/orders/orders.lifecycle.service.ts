@@ -58,6 +58,7 @@ type ReusableOpenPosition = {
   side: PositionSide;
   entryPrice: number;
   quantity: number;
+  contractSize: number | null;
 };
 
 type PositionScopeOrder = {
@@ -214,6 +215,7 @@ const findOwnedLiveImportedOpenPositionForFill = async (
       side: true,
       entryPrice: true,
       quantity: true,
+      contractSize: true,
     },
   });
 };
@@ -223,6 +225,7 @@ const applyFillToReusableOpenPosition = async (
   params: {
     orderId: string;
     position: ReusableOpenPosition;
+    contractSize: number | null;
     targetPositionSide: PositionSide;
     targetQuantity: number;
     fillPrice: number;
@@ -230,6 +233,9 @@ const applyFillToReusableOpenPosition = async (
 ) => {
   if (params.position.side !== params.targetPositionSide) {
     throw orderErrors.openPositionSideConflict();
+  }
+  if (params.contractSize != null && params.position.contractSize !== params.contractSize) {
+    throw orderErrors.openPositionContractUnitMismatch();
   }
 
   const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
@@ -333,6 +339,7 @@ export const applyOrderFillLifecycleInTransaction = async (
         side: true,
         entryPrice: true,
         quantity: true,
+        contractSize: true,
       },
     });
 
@@ -340,6 +347,7 @@ export const applyOrderFillLifecycleInTransaction = async (
       return applyFillToReusableOpenPosition(tx, {
         orderId: updatedOrder.id,
         position: existingOpenPosition,
+        contractSize: updatedOrder.contractSize,
         targetPositionSide,
         targetQuantity,
         fillPrice,
@@ -358,6 +366,7 @@ export const applyOrderFillLifecycleInTransaction = async (
       return applyFillToReusableOpenPosition(tx, {
         orderId: updatedOrder.id,
         position: ownedImportedPosition,
+        contractSize: updatedOrder.contractSize,
         targetPositionSide,
         targetQuantity,
         fillPrice,
@@ -396,6 +405,7 @@ export const applyOrderFillLifecycleInTransaction = async (
         status: 'OPEN',
         entryPrice: fillPrice,
         quantity: Math.max(0, targetQuantity),
+        contractSize: updatedOrder.contractSize,
         leverage,
         origin: updatedOrder.origin,
         managementMode: updatedOrder.managementMode,

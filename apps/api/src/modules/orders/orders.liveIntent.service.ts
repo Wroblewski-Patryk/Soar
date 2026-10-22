@@ -24,6 +24,7 @@ export type LiveOrderPayload = Omit<OpenOrderDto, 'clientOrderId'> & {
   positionId?: string | null;
   origin?: 'USER' | 'BOT';
   clientOrderId?: string | null;
+  contractSize?: number;
   runtimeSessionId?: string;
   runtimeDedupeKey?: string | null;
 };
@@ -73,6 +74,7 @@ export const fingerprintLiveOrderIntentPayload = (userId: string, bot: LiveBotCo
     side: payload.side,
     type: payload.type,
     quantity: payload.quantity,
+    contractSize: payload.contractSize ?? null,
     price: payload.price ?? null,
     reduceOnly: payload.reduceOnly ?? false,
   })).digest('hex');
@@ -97,6 +99,12 @@ export const persistOrReuseLiveOrderIntent = async (params: {
 }): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
+  if (bot.exchange === 'GATEIO' && bot.marketType === 'FUTURES' &&
+      !payload.positionId && payload.reduceOnly !== true) {
+    if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
+      || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
+    if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  }
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
   const payloadHash = fingerprintLiveOrderIntentPayload(userId, bot, payload);
   let createdIntent = false;

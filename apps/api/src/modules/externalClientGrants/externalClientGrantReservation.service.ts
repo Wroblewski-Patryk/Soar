@@ -16,7 +16,8 @@ import { delegatedMockScenarios, fixedMockSymbolRules,
 import { resolveDispatchClaimKey } from './externalClientGrantDispatchClaimKey';
 import { intentMatchesCommand, intentMatchesCommandAndScope,
   recordVerifiedMockTransportStart, verifyDispatchClaimInTransaction } from './externalClientGrantDispatchClaimProof';
-import { deny, GrantReservationError, hasAtomicIntentBinding, representableNumber } from './externalClientGrantReservation.helpers';
+import { deny, exactMockNumber, GrantReservationError, hasAtomicIntentBinding,
+  mockAuditMetadata, positiveDecimal, representableNumber } from './externalClientGrantReservation.helpers';
 export { GrantReservationError } from './externalClientGrantReservation.helpers';
 import { captureMockResult, decodeMockResult, hashMockResult, mockNotionalRepresentable,
   retryMockFinalizationConflict } from './externalClientGrantMockResult';
@@ -45,14 +46,6 @@ const commandSchema = z.strictObject({
   positionId: z.uuid().nullable(),
 });
 export type GrantLimitCommand = z.infer<typeof commandSchema>;
-
-const decimalPattern = /^(?:0|[1-9]\d{0,11})(?:\.\d{1,8})?$/;
-const positiveDecimal = (value: string) => {
-  if (!decimalPattern.test(value)) return deny('INVALID_COMMAND_PRECISION');
-  const parsed = new Prisma.Decimal(value);
-  if (parsed.lte(0)) return deny('INVALID_COMMAND_AMOUNT');
-  return parsed;
-};
 
 const canonicalize = (value: unknown) => {
   const parsed = commandSchema.safeParse(value);
@@ -102,7 +95,7 @@ const resolveQuoteAmount = async (command: GrantLimitCommand, reader: SymbolRule
       exact.lt(rules.minNotional.toString())) return deny('BELOW_MIN_NOTIONAL');
   const roundedUp = exact.toDecimalPlaces(8, Prisma.Decimal.ROUND_CEIL);
   if (roundedUp.lte(0) || roundedUp.gte('1000000000000')) return deny('INVALID_QUOTE_NOTIONAL');
-  return { amount: roundedUp, currencyProof: {
+  return { amount: roundedUp, contractSize: multiplier, currencyProof: {
     quote: rules.quoteCurrency,
     settle: command.marketType === 'FUTURES' ? rules.settleCurrency : null,
     contract: command.marketType === 'FUTURES',
@@ -142,7 +135,7 @@ const assertCurrentScope = async (
 const transactionOptions = { maxWait: 10_000, timeout: 20_000 };
 type Deps = { db?: DbClient; getSymbolRules?: SymbolRulesReader; bindIntent?: true };
 
-const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
+const bindNewIntent = async (tx: Tx, command: GrantLimitCommand, contractSize: number) => {
   const bot = await tx.bot.findFirst({ where: { id: command.botId, userId: command.userId },
     select: { id: true, exchange: true, marketType: true, positionMode: true,
       apiKeyId: true, walletId: true } });
@@ -156,6 +149,8 @@ const bindNewIntent = async (tx: Tx, command: GrantLimitCommand) => {
     quantity: representableNumber(command.quantity), price: representableNumber(command.limitPrice),
     reduceOnly: command.reduceOnly, mode: 'LIVE' as const, riskAck: true,
     clientOrderId: command.clientOrderId,
+    ...(command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
+      !command.positionId && !command.reduceOnly ? { contractSize } : {}),
   };
   let prepared;
   try {
@@ -250,7 +245,7 @@ export const reserveExternalClientGrantOrder = async (
         ...(boundKey ? { boundApiKeyId: boundKey.id,
           boundApiKeyCredentialVersion: boundKey.credentialVersion } : {}) },
     });
-    const intentId = deps.bindIntent ? await bindNewIntent(tx, command) : undefined;
+    const intentId = deps.bindIntent ? await bindNewIntent(tx, command, marketProof.contractSize) : undefined;
     await tx.externalClientGrant.update({
       where: { id: grant.id },
       data: { usedActions: { increment: 1 }, usedQuoteAmount: { increment: quoteAmount } },
@@ -390,6 +385,12 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
     }
     await assertCurrentScope(tx, grant, input.secret, command);
     if (!marketProof || !marketProof.amount.eq(current.quoteAmount)) return deny('MARKET_EVIDENCE_CHANGED');
+    if (command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
+        !command.positionId && !command.reduceOnly &&
+        (marketProof.contractSize !== 1 ||
+          (intentPayload as Record<string, unknown>).contractSize !== marketProof.contractSize)) {
+      return deny('MARKET_EVIDENCE_CHANGED');
+    }
     // Grant row first, then the same shared key used by the global pause writer.
     // Delegated admission is blocked while paused even for reduce-only exits.
     const marketType = command.marketType === 'SPOT' ? 'spot'
@@ -742,12 +743,6 @@ export async function recoverBoundExternalClientGrantMockResult(
   return { ...finalized, clientOrderId: command.clientOrderId,
     lookupOnly: true, dispatchEnabled: false } as const;
 }
-const mockAuditMetadata = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown> : null;
-const exactMockNumber = (value: number | null, expected: Prisma.Decimal.Value) =>
-  value != null && Number.isFinite(value) && new Prisma.Decimal(value.toString()).eq(expected);
-
 // Only a fully durable fixed-mock result can retire an orphaned blocker.
 // The grant row and shared pause key serialize this readback and marker delete
 // with human revoke and pause. No transport or adapter is called on recovery.
@@ -802,10 +797,13 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         !payload || typeof payload !== 'object' || Array.isArray(payload) ||
         Object.keys(payload).some((key) => !['botId', 'walletId', 'strategyId', 'positionId',
           'symbol', 'side', 'type', 'quantity', 'price', 'reduceOnly', 'mode', 'riskAck',
-          'clientOrderId'].includes(key)) ||
+          'clientOrderId', 'contractSize'].includes(key)) ||
         (payload as Record<string, unknown>).mode !== 'LIVE' ||
         (payload as Record<string, unknown>).riskAck !== true ||
         (payload as Record<string, unknown>).clientOrderId !== command.clientOrderId ||
+        (command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
+          !command.positionId && !command.reduceOnly &&
+          (payload as Record<string, unknown>).contractSize !== 1) ||
         intent.payloadHash !== fingerprintLiveOrderIntentPayload(command.userId, {
           id: command.botId, exchange: command.exchange, marketType: command.marketType,
           positionMode: 'ONE_WAY', apiKeyId: null, walletId: command.walletId,
@@ -823,7 +821,8 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         !exactMockNumber(order.quantity, command.quantity) ||
         !exactMockNumber(order.filledQuantity, command.quantity) ||
         !exactMockNumber(order.price, command.limitPrice) ||
-        !exactMockNumber(order.averageFillPrice, command.limitPrice)) {
+        !exactMockNumber(order.averageFillPrice, command.limitPrice) ||
+        (command.exchange === 'GATEIO' && order.contractSize !== 1)) {
       return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
     }
     const fills = await tx.orderFill.findMany({ where: { orderId: order.id } });
@@ -843,6 +842,7 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         position.walletId !== command.walletId || position.strategyId !== command.strategyId ||
         position.symbol !== command.symbol || position.side !== (command.side === 'BUY' ? 'LONG' : 'SHORT') ||
         position.status !== 'OPEN' || !Number.isFinite(position.quantity) ||
+        (command.exchange === 'GATEIO' && position.contractSize !== order.contractSize) ||
         new Prisma.Decimal(position.quantity.toString()).lt(command.quantity))) {
       return deny('DELEGATED_MOCK_ORPHAN_UNKNOWN');
     }

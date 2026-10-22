@@ -3,6 +3,11 @@ import { DomainError } from '../../lib/errors';
 export const ORDER_ERROR_CODES = {
   botContextNotFound: 'BOT_CONTEXT_NOT_FOUND',
   openPositionSideConflict: 'OPEN_POSITION_SIDE_CONFLICT',
+  openPositionContractUnitMismatch: 'OPEN_POSITION_CONTRACT_UNIT_MISMATCH',
+  openOrderContractUnitMismatch: 'OPEN_ORDER_CONTRACT_UNIT_MISMATCH',
+  entryContractUnitUnavailable: 'ENTRY_CONTRACT_UNIT_UNAVAILABLE',
+  entryNonunitContractUnsupported: 'ENTRY_NONUNIT_CONTRACT_UNSUPPORTED',
+  livePretradeGateNonunitUnsupported: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED',
   paperMarketPriceUnavailable: 'PAPER_MARKET_PRICE_UNAVAILABLE',
   liveRiskAckRequired: 'LIVE_RISK_ACK_REQUIRED',
   liveBotRequired: 'LIVE_BOT_REQUIRED',
@@ -50,6 +55,16 @@ export const orderErrors = {
   botContextNotFound: () => new OrderDomainError(ORDER_ERROR_CODES.botContextNotFound, 404),
   openPositionSideConflict: () =>
     new OrderDomainError(ORDER_ERROR_CODES.openPositionSideConflict, 409),
+  openPositionContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.openPositionContractUnitMismatch, 409),
+  openOrderContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.openOrderContractUnitMismatch, 409),
+  entryContractUnitUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.entryContractUnitUnavailable, 409),
+  entryNonunitContractUnsupported: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.entryNonunitContractUnsupported, 409),
+  livePretradeGateNonunitUnsupported: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeGateNonunitUnsupported, 409),
   paperMarketPriceUnavailable: () =>
     new OrderDomainError(ORDER_ERROR_CODES.paperMarketPriceUnavailable, 400),
   liveRiskAckRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveRiskAckRequired, 400),

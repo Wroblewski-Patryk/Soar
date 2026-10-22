@@ -3,13 +3,14 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
-import { openOrder } from './orders.service';
+import { listOrders, openOrder } from './orders.service';
 import {
   createOrderForLiveIntent, executeDurableLiveOrder, materializeLiveOrderInTransaction,
   persistOrReuseLiveOrderIntent, resolveLiveClientOrderId,
 } from './orders.liveIntent.service';
 import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
+import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { ensureSubscriptionCatalog, SUBSCRIPTION_PLAN_SEED } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
@@ -218,6 +219,17 @@ const createLiveScopedBotContext = async (params: {
   });
 
   return { bot, strategy, wallet, universe, symbolGroup };
+};
+
+const createGateLiveBot = async (userId: string, name: string, symbol = 'BTCUSDT') => {
+  const context = await createLiveScopedBotContext({
+    userId, botName: name, strategyName: `${name} strategy`, symbol,
+  });
+  await prisma.wallet.update({ where: { id: context.wallet.id }, data: { exchange: 'GATEIO' } });
+  await prisma.marketUniverse.update({ where: { id: context.universe.id }, data: { exchange: 'GATEIO' } });
+  await prisma.bot.update({ where: { id: context.bot.id }, data: { exchange: 'GATEIO' } });
+  await prisma.apiKey.update({ where: { id: context.bot.apiKeyId! }, data: { exchange: 'GATEIO' } });
+  return context;
 };
 
 describe('durable LIVE order intent', () => {
@@ -1024,6 +1036,267 @@ describe('durable LIVE order intent', () => {
     }
   });
 
+  it('persists a verified Gate unit through intent, filled Order and Position, then reuses it on retry', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-unit-snapshot@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate unit snapshot');
+    const resolveGateEntryContractSize = vi.fn().mockResolvedValueOnce(1);
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'gate-unit-order-1', status: 'FILLED' as const,
+      exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+      fee: 0, feeSource: 'EXCHANGE_FILL' as const, feePending: false,
+    });
+    const payload = {
+      botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'LIMIT' as const, quantity: 1, price: 100,
+      mode: 'LIVE' as const, riskAck: true,
+      clientOrderId: 'soar_gate_unit_snapshot',
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const order = await openOrder(user.id, payload, {
+        executeLiveOrder, resolveGateEntryContractSize,
+      });
+      expect(order.contractSize).toBe(1);
+      expect(order.positionId).toBeTruthy();
+      const intent = await prisma.liveOrderIntent.findUniqueOrThrow({
+        where: { id: order.id },
+      });
+      expect((intent.payload as Record<string, unknown>).contractSize).toBe(1);
+      expect((await prisma.order.findUniqueOrThrow({ where: { id: order.id } })).contractSize).toBe(1);
+      expect((await prisma.position.findUniqueOrThrow({
+        where: { id: order.positionId! },
+      })).contractSize).toBe(1);
+
+      const retry = await openOrder(user.id, payload, {
+        executeLiveOrder,
+        resolveGateEntryContractSize: vi.fn().mockResolvedValue(0.01),
+      });
+      expect(retry.id).toBe(order.id);
+      expect(retry.contractSize).toBe(1);
+      expect(resolveGateEntryContractSize).toHaveBeenCalledTimes(1);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('rejects missing and nonunit Gate ENTRY before intent or exchange submit', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-unit-reject@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate unit reject');
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      for (const [index, contractSize] of [null, 0, NaN, Infinity, 0.01].entries()) {
+        await expect(openOrder(user.id, {
+          botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+          quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+          clientOrderId: `soar_gate_unit_reject_${index}`,
+        }, {
+          executeLiveOrder,
+          resolveGateEntryContractSize: vi.fn().mockResolvedValue(contractSize),
+        })).rejects.toMatchObject({ code: contractSize === 0.01
+          ? ORDER_ERROR_CODES.entryNonunitContractUnsupported
+          : ORDER_ERROR_CODES.entryContractUnitUnavailable });
+      }
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+      expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('rejects nonunit Gate PAPER ENTRY before creating an Order or Position', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-paper-nonunit@example.com', password: 'hashed',
+    } });
+    const { bot, wallet } = await createGateLiveBot(user.id, 'Gate PAPER nonunit');
+    await prisma.bot.update({ where: { id: bot.id }, data: { mode: 'PAPER' } });
+    await prisma.wallet.update({ where: { id: wallet.id }, data: { mode: 'PAPER' } });
+    const executeLiveOrder = vi.fn();
+    await expect(openOrder(user.id, {
+      botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+      quantity: 1, price: 100, mode: 'PAPER', riskAck: false,
+    }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(0.01) }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryNonunitContractUnsupported });
+    expect(executeLiveOrder).not.toHaveBeenCalled();
+    expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
+    expect(await prisma.position.count({ where: { userId: user.id } })).toBe(0);
+  });
+
+  it('rejects an existing Gate Position with missing or different unit before a new intent', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-position-unit-mismatch@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate unit mismatch');
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'gate-unit-base', status: 'FILLED' as const,
+      exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+      fee: 0, feeSource: 'EXCHANGE_FILL' as const, feePending: false,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const base = await openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_gate_unit_base',
+      }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) });
+      for (const [index, contractSize] of [null, 0.01].entries()) {
+        await prisma.position.update({ where: { id: base.positionId! }, data: { contractSize } });
+        await expect(openOrder(user.id, {
+          botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+          quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+          clientOrderId: `soar_gate_unit_mismatch_${index}`,
+        }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) }))
+          .rejects.toMatchObject({ code: ORDER_ERROR_CODES.openPositionContractUnitMismatch });
+      }
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('rejects a legacy active Gate Order with missing or different unit before a new intent', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-old-order-unit@example.com', password: 'hashed',
+    } });
+    const { bot, wallet } = await createGateLiveBot(user.id, 'Gate old order unit');
+    const legacy = await prisma.order.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, symbol: 'BTCUSDT',
+      side: 'BUY', type: 'LIMIT', status: 'OPEN', quantity: 1, price: 100,
+    } });
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      for (const [index, contractSize] of [null, 0.01].entries()) {
+        await prisma.order.update({ where: { id: legacy.id }, data: { contractSize } });
+        await expect(openOrder(user.id, {
+          botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+          quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+          clientOrderId: `soar_gate_old_order_unit_${index}`,
+        }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) }))
+          .rejects.toMatchObject({ code: ORDER_ERROR_CODES.openOrderContractUnitMismatch });
+      }
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('carries the Gate ENTRY unit from an OPEN Order into a later fill after a read', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-delayed-fill-unit@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate delayed fill unit');
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'gate-delayed-unit', status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const pending = await openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_gate_delayed_unit',
+      }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) });
+      expect(pending.status).toBe('OPEN');
+      expect(pending.contractSize).toBe(1);
+      expect(pending.positionId).toBeNull();
+      expect((await listOrders(user.id, { page: 1, limit: 10 }))[0]?.contractSize).toBe(1);
+
+      const settled = await applyOrderFillLifecycle({
+        userId: user.id, orderId: pending.id, mode: 'LIVE',
+        fillPrice: 100, fillQuantity: 1,
+      });
+      expect(settled?.order.contractSize).toBe(1);
+      expect(settled?.positionId).toBeTruthy();
+      expect((await prisma.position.findUniqueOrThrow({
+        where: { id: settled!.positionId! },
+      })).contractSize).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('blocks a legacy Gate intent without a saved unit before another submit', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-old-intent-unit@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate old intent unit');
+    const clientOrderId = resolveLiveClientOrderId('soar_gate_old_intent_unit', 'GATEIO');
+    await prisma.liveOrderIntent.create({ data: {
+      userId: user.id, clientOrderId, payloadHash: 'legacy-without-unit',
+      payload: { botId: bot.id, symbol: 'BTCUSDT', side: 'BUY',
+        type: 'LIMIT', quantity: 1, price: 100, mode: 'LIVE', riskAck: true },
+      exchange: 'GATEIO', marketType: 'FUTURES', symbol: 'BTCUSDT',
+    } });
+    const executeLiveOrder = vi.fn();
+    const resolveGateEntryContractSize = vi.fn().mockResolvedValue(1);
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_gate_old_intent_unit',
+      }, { executeLiveOrder, resolveGateEntryContractSize }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryContractUnitUnavailable });
+      expect(resolveGateEntryContractSize).not.toHaveBeenCalled();
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('keeps Binance SPOT base-unit additions compatible with a legacy null snapshot', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-spot-legacy-unit@example.com', password: 'hashed',
+    } });
+    const { bot, wallet, universe } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'Spot unit', strategyName: 'Spot unit strategy', symbol: 'BTCUSDT',
+    });
+    await prisma.wallet.update({ where: { id: wallet.id }, data: { marketType: 'SPOT' } });
+    await prisma.marketUniverse.update({ where: { id: universe.id }, data: { marketType: 'SPOT' } });
+    await prisma.bot.update({ where: { id: bot.id }, data: { marketType: 'SPOT' } });
+    const executeLiveOrder = vi.fn()
+      .mockResolvedValueOnce({ exchangeOrderId: 'spot-unit-1', status: 'FILLED',
+        exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+        fee: 0, feeSource: 'EXCHANGE_FILL', feePending: false })
+      .mockResolvedValueOnce({ exchangeOrderId: 'spot-unit-2', status: 'FILLED',
+        exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+        fee: 0, feeSource: 'EXCHANGE_FILL', feePending: false });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const basePayload = { botId: bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+        type: 'LIMIT' as const, quantity: 1, price: 100,
+        mode: 'LIVE' as const, riskAck: true };
+      const first = await openOrder(user.id, { ...basePayload,
+        clientOrderId: 'soar_spot_unit_1' }, { executeLiveOrder });
+      const second = await openOrder(user.id, { ...basePayload,
+        clientOrderId: 'soar_spot_unit_2' }, { executeLiveOrder });
+      expect(first.positionId).toBe(second.positionId);
+      expect(first.contractSize).toBeNull();
+      expect((await prisma.position.findUniqueOrThrow({
+        where: { id: first.positionId! },
+      })).quantity).toBe(2);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(2);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('derives a stable Gate.io client ID within the venue limit', async () => {
     const user = await createEntitledUser({
       data: { email: 'orders-gate-client-id@example.com', password: 'hashed' },
@@ -1049,10 +1322,13 @@ describe('durable LIVE order intent', () => {
         quantity: 1, price: 100, mode: 'LIVE' as const, riskAck: true,
         clientOrderId: runtimeId,
       };
-      const first = await openOrder(user.id, payload, { executeLiveOrder });
-      const retried = await openOrder(user.id, payload, { executeLiveOrder });
+      const resolveGateEntryContractSize = vi.fn().mockResolvedValue(1);
+      const first = await openOrder(user.id, payload, { executeLiveOrder, resolveGateEntryContractSize });
+      const retried = await openOrder(user.id, payload, { executeLiveOrder, resolveGateEntryContractSize });
       expect(retried.id).toBe(first.id);
       expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(resolveGateEntryContractSize).toHaveBeenCalledTimes(1);
+      expect(first.contractSize).toBe(1);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

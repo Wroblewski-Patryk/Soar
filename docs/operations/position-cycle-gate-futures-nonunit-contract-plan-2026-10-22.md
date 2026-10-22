@@ -164,3 +164,20 @@ przechowuje jednostki. Zmiana kolejności walidacji, utrwalenie snapshotu i
 ochrona starszych intencji są konieczne przed jakimkolwiek nonunit submitem.
 Jeżeli nie da się tego spójnie zamknąć bez ruszania fee/PnL w bieżącym
 ograniczonym etapie, pozostawić nonunit ENTRY z odmową i zgłosić blocker.
+
+### Wynik ograniczonego etapu ENTRY
+
+Migracja dodaje nullable `contractSize` do `Order` i `Position`, bez backfillu
+historycznych FUTURES. Nowy Gate.io linear USDT FUTURES ENTRY pobiera jednostkę
+potwierdzoną przez surowe `quanto_multiplier`, zgodny rozmiar CCXT oraz typ,
+walutę kwotowaną i rozliczeniową rynku. Jednostka 1 trafia do trwałego intentu,
+Order i Position także przy odroczonym fillu. Retry używa zapisu intentu, nie
+bieżących metadanych. Stary intent bez jednostki, aktywny Order lub Position z
+`NULL` albo odmienną jednostką blokują nowy intent i submit. Finalny pretrade
+odmawia niejednostkowego Gate FUTURES otwarcia. SPOT zachowuje semantykę
+jednostki bazowej 1; stare `NULL` nie jest automatycznie przepisywane.
+
+Gate FUTURES `contractSize≠1` nadal pozostaje zablokowany dla ENTRY. DCA,
+CLOSE, fee i PnL nie były przeliczane w tym etapie, więc nie ma podstaw do
+odblokowania pełnego cyklu. Lokalny test na osobnej PostgreSQL `_test` oraz
+typecheck nie są dowodem LIVE ani zachowania produkcji.

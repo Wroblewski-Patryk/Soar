@@ -5,6 +5,20 @@ export class GrantReservationError extends Error {
 }
 export const deny = (code: string): never => { throw new GrantReservationError(code); };
 
+const decimalPattern = /^(?:0|[1-9]\d{0,11})(?:\.\d{1,8})?$/;
+export const positiveDecimal = (value: string) => {
+  if (!decimalPattern.test(value)) return deny('INVALID_COMMAND_PRECISION');
+  const parsed = new Prisma.Decimal(value);
+  if (parsed.lte(0)) return deny('INVALID_COMMAND_AMOUNT');
+  return parsed;
+};
+
+export const mockAuditMetadata = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown> : null;
+export const exactMockNumber = (value: number | null, expected: Prisma.Decimal.Value) =>
+  value != null && Number.isFinite(value) && new Prisma.Decimal(value.toString()).eq(expected);
+
 export const representableNumber = (value: string) => {
   const numeric = Number(value);
   if (!Number.isFinite(numeric) || !new Prisma.Decimal(numeric.toString()).eq(value)) {

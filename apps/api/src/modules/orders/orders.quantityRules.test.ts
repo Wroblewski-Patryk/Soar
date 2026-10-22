@@ -125,7 +125,7 @@ describe('orders.quantityRules', () => {
     } })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
   });
 
-  it('matches the Gate manual context fixture for tick and decimal pretrade', async () => {
+  it('matches the manual context fixture for tick and decimal pretrade', async () => {
     const rules = {
       minAmount: 1, minNotional: 5.1, amountPrecision: 1, contractSize: 10,
     };
@@ -137,7 +137,7 @@ describe('orders.quantityRules', () => {
       fetchMarkPrice: vi.fn(async () => 0.25),
     };
     const base = {
-      apiKeyId: 'gate-manual-context-parity-003', exchange: 'GATEIO' as const,
+      apiKeyId: 'manual-context-parity-003', exchange: 'BINANCE' as const,
       marketType: 'FUTURES' as const,
     };
     await expect(enforceLivePretradeGuards({
@@ -218,7 +218,7 @@ describe('orders.quantityRules', () => {
     await expect(
       enforceLivePretradeGuards({
         apiKeyId: 'key-2',
-        exchange: 'GATEIO',
+        exchange: 'BINANCE',
         marketType: 'FUTURES',
         connector: {
           hasOpenPosition: async () => false,
@@ -236,5 +236,26 @@ describe('orders.quantityRules', () => {
         },
       })
     ).resolves.toBeUndefined();
+  });
+
+  it('blocks a nonunit Gate Futures order at the final pretrade boundary', async () => {
+    const connector = {
+      hasOpenPosition: async () => false,
+      getSymbolTradingRules: async () => ({
+        minAmount: 1, minNotional: null, amountPrecision: 1,
+        amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 0.01,
+      }),
+      fetchMarkPrice: async () => 100,
+    };
+    await expect(enforceLivePretradeGuards({
+      apiKeyId: 'gate-nonunit', exchange: 'GATEIO', marketType: 'FUTURES',
+      connector,
+      payload: { symbol: 'BTCUSDT', quantity: 1 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
+    await expect(enforceLivePretradeGuards({
+      apiKeyId: 'gate-nonunit-close', exchange: 'GATEIO', marketType: 'FUTURES',
+      connector,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true },
+    })).resolves.toBeUndefined();
   });
 });

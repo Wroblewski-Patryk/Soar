@@ -319,8 +319,10 @@ export class CcxtFuturesConnector {
     // Gate's CCXT parser can turn a raw zero multiplier into contractSize=1.
     const isGateDerivative = (this.config.exchangeId === 'gateio' || this.config.exchangeId === 'gate')
       && this.config.marketType !== 'spot';
+    const verifiedGateLinearUsdt = market?.contract === true && market?.linear === true &&
+      market?.inverse === false && market?.quote === 'USDT' && market?.settle === 'USDT';
     const contractSize = isGateDerivative
-      ? rawGateContractSize != null && rawGateContractSize > 0
+      ? verifiedGateLinearUsdt && rawGateContractSize != null && rawGateContractSize > 0
         && normalizedContractSize === rawGateContractSize ? normalizedContractSize : null
       : normalizedContractSize;
     const validGateMin = rawGateMinAmount != null && rawGateMinAmount > 0

@@ -1,7 +1,82 @@
-import { Exchange } from '@prisma/client';
+import { Exchange, Prisma } from '@prisma/client';
 
 import { liveOrderingConfig } from '../../config/runtimeExecution';
+import { prisma } from '../../prisma/client';
+import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
+import { resolveLiveClientOrderId, type LiveBotContext,
+  type LiveOrderPayload } from './orders.liveIntent.service';
+
+export const defaultResolveGateEntryContractSize = async (symbol: string): Promise<number | null> => {
+  const connector = createPublicExchangeConnector({ exchange: 'GATEIO', marketType: 'FUTURES' });
+  try {
+    return (await connector.getSymbolTradingRules(symbol)).contractSize ?? null;
+  } catch {
+    return null;
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const resolveEntryContractUnit = async (params: {
+  userId: string;
+  payload: LiveOrderPayload;
+  botVenue: Pick<LiveBotContext, 'exchange' | 'marketType'> | null;
+  resolveGateEntryContractSize: (symbol: string) => Promise<number | null>;
+}) => {
+  const walletVenue = !params.botVenue && params.payload.walletId
+    ? await prisma.wallet.findFirst({ where: { id: params.payload.walletId, userId: params.userId },
+        select: { exchange: true, marketType: true } }) : null;
+  const venue = params.botVenue ?? walletVenue;
+  const isGateFuturesEntry = !params.payload.positionId && params.payload.reduceOnly !== true &&
+    venue?.exchange === 'GATEIO' && venue.marketType === 'FUTURES';
+  if (!isGateFuturesEntry) return { isGateFuturesEntry: false, contractSize: undefined } as const;
+  const clientOrderId = params.payload.mode === 'LIVE' && params.payload.clientOrderId
+    ? resolveLiveClientOrderId(params.payload.clientOrderId, 'GATEIO') : null;
+  const intent = clientOrderId ? await prisma.liveOrderIntent.findUnique({
+    where: { clientOrderId }, select: { payload: true },
+  }) : null;
+  const intentPayload = intent?.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
+    ? intent.payload as Record<string, unknown> : null;
+  const observed = intent ? intentPayload?.contractSize
+    : await params.resolveGateEntryContractSize(params.payload.symbol);
+  if (typeof observed !== 'number' || !Number.isFinite(observed) || observed <= 0) {
+    throw orderErrors.entryContractUnitUnavailable();
+  }
+  if (observed !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  return { isGateFuturesEntry: true, contractSize: observed } as const;
+};
+
+export const assertPreparedGateEntryContractUnit = (
+  payload: LiveOrderPayload, bot: LiveBotContext | null,
+) => {
+  if (payload.contractSize != null &&
+      (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize) ||
+        payload.contractSize <= 0)) throw orderErrors.entryContractUnitUnavailable();
+  if (bot?.exchange === 'GATEIO' && bot.marketType === 'FUTURES' &&
+      !payload.positionId && payload.reduceOnly !== true) {
+    if (payload.contractSize == null) throw orderErrors.entryContractUnitUnavailable();
+    if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  }
+};
+
+export const assertExistingEntryOrderContractUnit = async (
+  userId: string, payload: LiveOrderPayload, contractSize: number,
+) => {
+  const where: Prisma.OrderWhereInput = {
+    userId, symbol: payload.symbol.toUpperCase(), syncState: 'IN_SYNC',
+    status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+    ...(payload.botId ? { botId: payload.botId }
+      : payload.walletId ? { walletId: payload.walletId } : { botId: null, walletId: null }),
+  };
+  const existing = await prisma.order.findFirst({
+    where: { ...where, OR: [{ contractSize: null }, { contractSize: { not: contractSize } }] },
+    select: { id: true },
+  });
+  if (existing) {
+    throw orderErrors.openOrderContractUnitMismatch();
+  }
+};
 
 type SymbolTradingRules = {
   minAmount: number | null;
@@ -289,6 +364,10 @@ export const enforceLivePretradeGuards = async (params: {
   const contractSize = resolveQuantityContractSize(rules.contractSize, params.marketType);
   if (contractSize == null) {
     throw orderErrors.livePretradeContractSizeUnavailable();
+  }
+  if (params.exchange === 'GATEIO' && params.marketType === 'FUTURES' &&
+      params.payload.reduceOnly !== true && contractSize !== 1) {
+    throw orderErrors.livePretradeGateNonunitUnsupported();
   }
 
   if (typeof rules.minAmount === 'number' && approxLessThan(quantity, rules.minAmount)) {

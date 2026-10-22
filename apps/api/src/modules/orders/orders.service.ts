@@ -50,6 +50,7 @@ import {
 } from '../positions/livePositionReconciliation.helpers';
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
+import { assertExistingEntryOrderContractUnit, assertPreparedGateEntryContractUnit, defaultResolveGateEntryContractSize, resolveEntryContractUnit } from './orders.quantityRules';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 export { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
 
@@ -120,6 +121,7 @@ type OpenOrderDeps = {
     credentialBinding?: LiveExecutionCredentialBinding | null;
   }) => Promise<LiveExecutionResult>;
   manualOrderContextDeps?: ManualOrderContextDeps;
+  resolveGateEntryContractSize?: (symbol: string) => Promise<number | null>;
 };
 
 type CancelOrderDeps = {
@@ -463,6 +465,7 @@ const findOwnedLiveImportedOpenPositionForOrderConflict = async (params: {
     select: {
       id: true,
       side: true,
+      contractSize: true,
     },
     orderBy: {
       openedAt: 'desc',
@@ -474,6 +477,7 @@ const assertNoImplicitReverseOpenConflict = async (params: {
   userId: string;
   payload: OpenOrderInput;
   botContext: CanonicalOrderBotContext | null;
+  contractSize?: number;
 }) => {
   if (params.payload.positionId) return;
   const requestedSide = resolveRequestedPositionSide(params.payload.side);
@@ -489,6 +493,7 @@ const assertNoImplicitReverseOpenConflict = async (params: {
     select: {
       id: true,
       side: true,
+      contractSize: true,
     },
     orderBy: {
       openedAt: 'desc',
@@ -498,10 +503,18 @@ const assertNoImplicitReverseOpenConflict = async (params: {
   if (existingOpenPosition && existingOpenPosition.side !== requestedSide) {
     throw orderErrors.openPositionSideConflict();
   }
+  if (existingOpenPosition && params.contractSize != null &&
+      existingOpenPosition.contractSize !== params.contractSize) {
+    throw orderErrors.openPositionContractUnitMismatch();
+  }
 
   const ownedImportedPosition = await findOwnedLiveImportedOpenPositionForOrderConflict(params);
   if (ownedImportedPosition && ownedImportedPosition.side !== requestedSide) {
     throw orderErrors.openPositionSideConflict();
+  }
+  if (ownedImportedPosition && params.contractSize != null &&
+      ownedImportedPosition.contractSize !== params.contractSize) {
+    throw orderErrors.openPositionContractUnitMismatch();
   }
 };
 
@@ -569,12 +582,24 @@ const resolveExchangeCancelContext = (order: {
 
 // Shared read-only domain gate for human orders and delegated preparation.
 // Its checks must run before a delegated admission; they are not submit authority.
-export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenOrderInput) => {
-  const { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
+export const prepareOpenOrderRiskContext = async (
+  userId: string,
+  payload: OpenOrderInput,
+  resolveGateEntryContractSize: (symbol: string) => Promise<number | null> = defaultResolveGateEntryContractSize,
+) => {
+  const resolved = await resolveCanonicalBotContext(userId, payload);
+  let canonicalPayload = resolved.payload;
+  const { botContext } = resolved;
+  const { isGateFuturesEntry, contractSize } = await resolveEntryContractUnit({
+    userId, payload: canonicalPayload, botVenue: botContext?.inheritedExecutionContext ?? null,
+    resolveGateEntryContractSize });
+  if (contractSize != null) canonicalPayload = { ...canonicalPayload, contractSize };
+  if (isGateFuturesEntry) await assertExistingEntryOrderContractUnit(userId, canonicalPayload, contractSize!);
   await assertNoImplicitReverseOpenConflict({
     userId,
     payload: canonicalPayload,
     botContext,
+    ...(isGateFuturesEntry ? { contractSize } : {}),
   });
   const liveBot = ensureLiveOrderAllowed(canonicalPayload, botContext);
   if (canonicalPayload.mode === 'LIVE') {
@@ -593,6 +618,7 @@ const persistPreparedOpenOrder = async (
   admittedMock?: AdmittedMockLiveResult,
 ) => {
   let canonicalPayload = initialPayload;
+  assertPreparedGateEntryContractUnit(canonicalPayload, liveBot);
 
   const now = new Date();
   let exchangeOrderId: string | null = null;
@@ -720,6 +746,7 @@ const persistPreparedOpenOrder = async (
       closeInitiator: null,
       status: orderPersistenceDecision.persistedStatus,
       quantity: canonicalPayload.quantity,
+      contractSize: canonicalPayload.contractSize ?? null,
       filledQuantity: orderPersistenceDecision.persistedFilledQuantity,
       price: canonicalPayload.price,
       fee,
@@ -796,7 +823,8 @@ export const openOrder = async (
   payload: OpenOrderInput,
   deps: OpenOrderDeps = defaultOpenOrderDeps
 ) => {
-  const prepared = await prepareOpenOrderRiskContext(userId, payload);
+  const prepared = await prepareOpenOrderRiskContext(userId, payload,
+    deps.resolveGateEntryContractSize ?? defaultResolveGateEntryContractSize);
   return persistPreparedOpenOrder(userId, prepared.canonicalPayload, prepared.liveBot, deps);
 };
 

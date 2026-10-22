@@ -96,7 +96,9 @@ export const verifyDispatchClaimInTransaction = async (tx: Tx, input: Input) => 
       payload.clientOrderId !== command.clientOrderId ||
       Object.keys(payload).some((key) => !['botId', 'walletId', 'strategyId', 'positionId',
         'symbol', 'side', 'type', 'quantity', 'price', 'reduceOnly', 'mode', 'riskAck',
-        'clientOrderId'].includes(key))) return unknown;
+        'clientOrderId', 'contractSize'].includes(key)) ||
+      (command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
+        !command.positionId && !command.reduceOnly && payload.contractSize !== 1)) return unknown;
   await tx.$queryRaw`SELECT "id" FROM "Log"
     WHERE "entityType" = 'ExternalClientGrantReservation'
       AND "entityId" = ${reservation.id}

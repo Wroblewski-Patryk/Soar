@@ -536,7 +536,7 @@ describe('exchangeAdapterBoundary.service', () => {
       expect(connector.hasOpenPosition).toHaveBeenCalledTimes(reduceOnly ? 0 : 1);
     });
 
-  it('blocks the manual-context Gate tick fixture before venue submit', async () => {
+  it('blocks the nonunit Gate fixture before venue submit', async () => {
     const connector = { ...createConnector(),
       getSymbolTradingRules: vi.fn(async () => ({
         minAmount: 1, minNotional: 5.1, amountPrecision: 1,
@@ -561,7 +561,7 @@ describe('exchangeAdapterBoundary.service', () => {
       createLiveOrderAdapter: vi.fn(() => ({ placeLiveOrderWithFees })),
       enforceLivePretradeGuards,
       convergeLiveMarginAndLeverageIfNeeded,
-    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
     expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
     expect(placeLiveOrderWithFees).not.toHaveBeenCalled();
     expect(connector.disconnect).toHaveBeenCalledOnce();

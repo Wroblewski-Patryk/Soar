@@ -291,6 +291,7 @@ describe('CcxtFuturesConnector scaffold', () => {
         id: 'ADA_USDT',
         type: 'swap',
         swap: true,
+        contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
         contractSize: 10,
         info: { quanto_multiplier: '10', order_size_min: '1', enable_decimal: false },
         limits: { amount: { min: 1 }, cost: {} },
@@ -367,6 +368,7 @@ describe('CcxtFuturesConnector scaffold', () => {
         id: 'ADA_USDT',
         type: 'swap',
         swap: true,
+        contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
         contractSize: 10,
         info: { quanto_multiplier: '10', order_size_min: '1', enable_decimal: false },
         limits: { amount: { min: 1 }, cost: {} },
@@ -389,6 +391,9 @@ describe('CcxtFuturesConnector scaffold', () => {
       amountPrecisionMode: 'TICK_SIZE',
       contractSize: 10,
     });
+    markets['ADA/USDT:USDT'].settle = 'USD';
+    await expect(connector.getSymbolTradingRules('ADAUSDT')).resolves.toMatchObject({ contractSize: null });
+    markets['ADA/USDT:USDT'].settle = 'USDT';
     client.precisionMode = 2;
     await expect(connector.getSymbolTradingRules('ADAUSDT')).resolves.toMatchObject({
       amountPrecision: 1, amountPrecisionMode: 'DECIMAL_PLACES',

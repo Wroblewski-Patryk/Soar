@@ -835,6 +835,7 @@ model Position {
   status        PositionStatus @default(OPEN)
   entryPrice    Float
   quantity      Float
+  contractSize  Float?
   leverage      Int            @default(1)
   closeReason   PositionCloseReason?
   closeInitiator PositionCloseInitiator?
@@ -904,6 +905,7 @@ model Order {
   closeInitiator   PositionCloseInitiator?
   status           OrderStatus @default(PENDING)
   quantity         Float
+  contractSize     Float?
   price            Float?
   stopPrice        Float?
   filledQuantity   Float       @default(0)
