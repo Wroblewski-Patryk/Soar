@@ -24,6 +24,11 @@ assert.ok(!existsSync(issuerPath), 'Test-only permit issuer must be absent from 
 
 const forbidden = /BEGIN PRIVATE KEY|createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|\bissuePermit\b|internalGateNonunitMockAdmission/;
 const forbiddenExportName = /createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|^issuePermit$|internalGateNonunitMockAdmission/;
+// A computed object key passed to __exportStar can create a forbidden export.
+// Match the compiler helper exactly so edits to its binding behavior need review.
+const emittedExportStarHelper = `var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};`;
 // Check every emitted JavaScript file as data. Permit the CommonJS forms emitted
 // by this build, but fail closed on computed export names and export aliases.
 // This is a static artifact check, not a proof about arbitrarily obfuscated code.
@@ -34,7 +39,30 @@ const checkJavaScriptExports = (path, content, location) => {
   const reject = () => {
     throw new Error(`Gate nonunit artifact has an unsupported export form: ${location}`);
   };
+  const helperStatements = source.statements.filter((statement) =>
+    ts.isVariableStatement(statement) && statement.declarationList.declarations.some((declaration) =>
+      ts.isIdentifier(declaration.name) && declaration.name.text === '__exportStar'));
+  if (helperStatements.length > 1 ||
+      (helperStatements.length === 1 &&
+       helperStatements[0].getText(source).replace(/\r\n/g, '\n') !== emittedExportStarHelper)) reject();
+  const helper = helperStatements[0];
+  const inHelper = (node) => helper && node.pos >= helper.pos && node.end <= helper.end;
   const visit = (node) => {
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
+        node.name.text === '__exportStar' && node.parent.parent !== helper) reject();
+    if (ts.isFunctionDeclaration(node) && node.name?.text === '__exportStar') reject();
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) &&
+        node.expression.text === '__exportStar') {
+      const imported = node.arguments[0];
+      const canonicalReexport = helper && node.arguments.length === 2 &&
+        ts.isIdentifier(node.arguments[1]) && node.arguments[1].text === 'exports' &&
+        ts.isCallExpression(imported) && ts.isIdentifier(imported.expression) &&
+        imported.expression.text === 'require' && imported.arguments.length === 1 &&
+        ts.isStringLiteral(imported.arguments[0]) &&
+        imported.arguments[0].text.startsWith('./') &&
+        !imported.arguments[0].text.includes('..');
+      if (!canonicalReexport) reject();
+    }
     if (ts.isPropertyAccessExpression(node) &&
         ts.isIdentifier(node.expression) && node.expression.text === 'module' &&
         node.name.text === 'exports') reject();
@@ -55,19 +83,19 @@ const checkJavaScriptExports = (path, content, location) => {
           ts.isStringLiteral(parent.arguments[1]);
         const compilerReexport = argumentIndex === 1 &&
           ts.isIdentifier(parent.expression) && parent.expression.text === '__exportStar' &&
-          parent.arguments.length === 2;
+          parent.arguments.length === 2 && helper;
         const compilerBinding = argumentIndex === 0 &&
           ts.isIdentifier(parent.expression) && parent.expression.text === '__createBinding' &&
-          parent.arguments.length === 3;
+          parent.arguments.length === 3 && inHelper(node);
         const compilerOwnPropertyCheck = argumentIndex === 0 &&
           parent.expression.getText(source) === 'Object.prototype.hasOwnProperty.call' &&
-          parent.arguments.length === 2;
+          parent.arguments.length === 2 && inHelper(node);
         if (staticDefinition) {
           if (forbiddenExportName.test(parent.arguments[1].text)) reject();
         } else if (!compilerReexport && !compilerBinding && !compilerOwnPropertyCheck) reject();
       } else if (!(ts.isPropertyAccessExpression(parent) && parent.name === node) &&
                  !(ts.isPropertyAssignment(parent) && parent.name === node) &&
-                 !(ts.isParameter(parent) && parent.name === node)) reject();
+                 !(ts.isParameter(parent) && parent.name === node && inHelper(node))) reject();
     }
     ts.forEachChild(node, visit);
   };
