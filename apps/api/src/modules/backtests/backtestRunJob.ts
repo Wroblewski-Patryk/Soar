@@ -179,6 +179,12 @@ export type BacktestRunJobDeps = {
     marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
     startTimeMs?: number, expectedDigest?: string, executionToken?: string,
   ) => Promise<BacktestKlineCandle[]>;
+  // Test-only v4 source. The production dependency graph does not supply it.
+  fetchVerifiedRawTradeV4ForRun?: (
+    runId: string, exchange: Exchange, symbol: string, timeframe: string,
+    marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
+    startTimeMs?: number, expectedDigest?: string, executionToken?: string,
+  ) => Promise<{ candles: BacktestKlineCandle[]; digest: string }>;
   fetchSupplementalSeries: (
     exchange: Exchange,
     symbol: string,
@@ -330,11 +336,12 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       : Exchange.BINANCE;
     const marketType = (seed.marketType === 'SPOT' ? 'SPOT' : 'FUTURES') as BacktestMarketType;
     const requireVerifiedIntrabar = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED';
-    if (seed.intrabarSource !== undefined && !requireVerifiedIntrabar) {
-      await deps.safeUpdateRun(runId, { status: 'FAILED', finishedAt: new Date(),
-        seedConfig: { ...seed, failureReason: 'BACKTEST_INTRABAR_SOURCE_UNSUPPORTED' } });
-      return;
-    }
+    const requireRawTradeV4 = seed.intrabarSource === 'BINANCE_USDM_TRADES_V4_TEST_ONLY' &&
+      process.env.RUN_011A_RAW_V4_JOB_PROOF === '1' &&
+      Boolean(deps.fetchVerifiedRawTradeV4ForRun);
+    const requireStrictIntrabar = requireVerifiedIntrabar || requireRawTradeV4;
+    const unsupportedIntrabarSource = seed.intrabarSource !== undefined &&
+      !requireStrictIntrabar;
     const leverageCandidate = Number((seed as { leverage?: unknown }).leverage);
     const leverage = Number.isFinite(leverageCandidate) ? leverageCandidate : 1;
     const marginMode =
@@ -488,6 +495,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     }> = [];
 
     try {
+      if (unsupportedIntrabarSource)
+        throw new Error('BACKTEST_INTRABAR_SOURCE_UNSUPPORTED');
       const candlesBySymbol = new Map<string, BacktestKlineCandle[]>();
       const supplementalBySymbol = new Map<string, BacktestSupplementalSeries>();
 
@@ -505,7 +514,27 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             maxCandlesPerSymbol + indicatorWarmupCandles,
             fetchEndTimeMs, fetchStartTimeMs] as const;
           let candles: BacktestKlineCandle[];
-          if (archivedWindow) {
+          let rawDigest: string | undefined;
+          if (requireRawTradeV4) {
+            const requestedCandles = typeof fetchStartTimeMs === 'number' &&
+              typeof fetchEndTimeMs === 'number'
+              ? (fetchEndTimeMs - fetchStartTimeMs) / 60_000 : NaN;
+            if (exchange !== Exchange.BINANCE || marketType !== 'FUTURES' ||
+                run.timeframe !== '1m' || symbols.length !== 1 ||
+                !Number.isSafeInteger(requestedCandles) || requestedCandles < 1 ||
+                requestedCandles > 120 || requestedCandles > fetchArgs[4] ||
+                Math.floor(fetchStartTimeMs! / 86_400_000) !==
+                  Math.floor((fetchEndTimeMs! - 1) / 86_400_000))
+              throw new Error('BACKTEST_RAW_SOURCE_INVALID_MARKET_WINDOW');
+            const priorDigest = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? (seed.intrabarSourceDigestBySymbol as Record<string, unknown>)[symbol]
+              : undefined;
+            const raw = await deps.fetchVerifiedRawTradeV4ForRun!(runId, ...fetchArgs,
+              typeof priorDigest === 'string' ? priorDigest : undefined);
+            candles = raw.candles;
+            rawDigest = raw.digest;
+          } else if (archivedWindow) {
             if (!deps.fetchVerifiedArchivedIntrabarForRun)
               throw new Error('BACKTEST_INTRABAR_ARCHIVE_UNAVAILABLE');
             const priorDigest = seed.intrabarSourceDigestBySymbol &&
@@ -523,10 +552,13 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           if (candles.length === 0) {
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
           }
-          if (requireVerifiedIntrabar) {
+          if (requireStrictIntrabar) {
             if (candles.length <= indicatorWarmupCandles)
               throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
-            const digest = digestVerifiedBinanceFuturesIntrabar(candles, symbol);
+            const digest = requireRawTradeV4 ? rawDigest :
+              digestVerifiedBinanceFuturesIntrabar(candles, symbol);
+            if (!digest || !/^[0-9a-f]{64}$/.test(digest))
+              throw new Error('BACKTEST_INTRABAR_SOURCE_DIGEST_INVALID');
             const priorDigests = seed.intrabarSourceDigestBySymbol &&
               typeof seed.intrabarSourceDigestBySymbol === 'object'
               ? seed.intrabarSourceDigestBySymbol as Record<string, string> : {};
@@ -594,7 +626,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
       }
 
-      if (requireVerifiedIntrabar && progress.failedSymbols.length > 0)
+      if (requireStrictIntrabar && progress.failedSymbols.length > 0)
         throw new Error(`BACKTEST_INTRABAR_SOURCE_INCOMPLETE:${parityDiagnostics
           .filter((diagnostic) => diagnostic.status === 'FAILED')
           .map((diagnostic) => `${diagnostic.symbol}=${diagnostic.error}`).join(',')}`);
@@ -612,7 +644,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           analysisStartIndexBySymbol: new Map(
             loadedSymbols.map((symbol) => {
               const symbolCandles = candlesBySymbol.get(symbol) ?? [];
-              const startIndex = Math.max(1, requireVerifiedIntrabar ? indicatorWarmupCandles : 0,
+              const startIndex = Math.max(1, requireStrictIntrabar ? indicatorWarmupCandles : 0,
                 symbolCandles.length - maxCandlesPerSymbol);
               return [symbol, startIndex];
             }),

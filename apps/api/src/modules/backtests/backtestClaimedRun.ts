@@ -151,6 +151,16 @@ export const createClaimedBacktestRunJob = (
           assertActive();
           return result;
         } : undefined,
+      fetchVerifiedRawTradeV4ForRun: deps.fetchVerifiedRawTradeV4ForRun
+        ? async (id, exchange, symbol, timeframe, marketType, maxCandles,
+          endTimeMs, startTimeMs, expectedDigest) => {
+          assertActive();
+          const result = await deps.fetchVerifiedRawTradeV4ForRun!(id,
+            exchange, symbol, timeframe, marketType, maxCandles,
+            endTimeMs, startTimeMs, expectedDigest, token);
+          assertActive();
+          return result;
+        } : undefined,
     });
     await job(runId);
   } catch (error) {
