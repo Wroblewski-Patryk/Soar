@@ -561,13 +561,14 @@ const resolveExchangeCancelContext = (order: {
 // Its checks must run before a delegated admission; they are not submit authority.
 export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenOrderInput,
   resolveGateEntryContractSize: (symbol: string) => Promise<GateEntryContractEvidence> = defaultResolveGateEntryContractSize,
+  internalMockPermit?: unknown,
 ) => {
   const resolved = await resolveCanonicalBotContext(userId, payload);
   let canonicalPayload = resolved.payload;
   const { botContext } = resolved;
   const { isGateFuturesEntry, contractSize, gateFuturesEconomics, hasExistingIntent } = await resolveEntryContractUnit({
     userId, payload: canonicalPayload, botVenue: botContext?.inheritedExecutionContext ?? null,
-    resolveGateEntryContractSize });
+    resolveGateEntryContractSize, internalMockPermit });
   if (contractSize != null) canonicalPayload = { ...canonicalPayload, contractSize };
   if (gateFuturesEconomics) canonicalPayload = { ...canonicalPayload, gateFuturesEconomics };
   if (canonicalPayload.gateFuturesEconomics && !isMatchingGateFuturesEconomics(

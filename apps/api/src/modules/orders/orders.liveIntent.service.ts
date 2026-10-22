@@ -14,6 +14,7 @@ import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.
 import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
 import { isMatchingGateFuturesEconomics, normalizedFillCostEvidence,
   type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
+import { matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
 
 export type LiveBotContext = {
   id: string;
@@ -112,6 +113,7 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   payload: LiveOrderPayload;
   tx?: Prisma.TransactionClient;
   credentialBinding?: LiveExecutionCredentialBinding | null;
+  internalMockPermit?: unknown;
 }): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
@@ -148,7 +150,15 @@ export const persistOrReuseLiveOrderIntent = async (params: {
     } else {
       if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
         || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
-      if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+      if (payload.contractSize !== 1 && !(payload.mode === 'LIVE' &&
+        isMatchingGateFuturesEconomics(
+        payload.gateFuturesEconomics, payload.contractSize, payload.symbol) &&
+        matchesInternalGateNonunitMockPermit(params.internalMockPermit, {
+          userId, botId: payload.botId ?? '', symbol: payload.symbol,
+          side: payload.side, clientOrderId: payload.clientOrderId ?? '',
+          quantity: payload.quantity, price: payload.price ?? NaN,
+          contractSize: payload.contractSize,
+        }, true))) throw orderErrors.entryNonunitContractUnsupported();
       if (!existingIntent) await assertExistingGateEntryOrderContractUnit({ db,
         userId, botId: payload.botId ?? null, walletId: payload.walletId ?? null,
         symbol: payload.symbol, contractSize: payload.contractSize });

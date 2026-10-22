@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
+import request from 'supertest';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
 import { hashPassword } from '../../utils/hash';
@@ -8,13 +10,20 @@ import { bindExternalClientGrantReservationIntent } from '../externalClientGrant
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createLiveScopedBotContext } from './orders.service.fixture';
 import { openOrder, prepareOpenOrderRiskContext } from './orders.service';
+import * as ordersService from './orders.service';
 import { createOrderForLiveIntent, executeDurableLiveOrder, fingerprintLiveOrderIntentPayload,
   materializeLiveOrderInTransaction, persistOrReuseLiveOrderIntent } from './orders.liveIntent.service';
 import { assertExistingGateEntryOrderContractUnit } from './orders.positionScope';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 import type { GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
+import { gateFuturesEconomicsFromMarket } from '../exchange/gateFuturesEconomics';
 import type { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
+import { assertPreparedGateEntryContractUnit, enforceLivePretradeGuards,
+  type SymbolTradingRules } from './orders.quantityRules';
+import { admitInternalGateNonunitMockEntry } from '../../test/internalGateNonunitMockAdmission';
+import { createInternalGateNonunitMockPermit,
+  matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
 
 const users: string[] = [];
 const password = 'GateEntryTest1234';
@@ -63,6 +72,191 @@ afterEach(async () => {
     await prisma.userSubscription.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { id: userId } });
   }
+});
+
+describe('Gate nonunit internal mock admission boundary', () => {
+  const market = {
+    contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+    contractSize: 0.01,
+    info: { type: 'direct', name: 'BTC_USDT', settle_currency: 'USDT',
+      quanto_multiplier: '0.01' },
+  };
+  const economics = gateFuturesEconomicsFromMarket(market);
+  if (!economics) throw new Error('valid test market economics missing');
+  const rules = { minAmount: 1, minNotional: null, amountPrecision: 1,
+    amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 0.01,
+    gateFuturesEconomics: economics };
+  const connector = (override: Partial<SymbolTradingRules> = {}) => ({
+    hasOpenPosition: vi.fn().mockResolvedValue(false),
+    getSymbolTradingRules: vi.fn().mockResolvedValue({ ...rules, ...override }),
+    fetchMarkPrice: vi.fn().mockResolvedValue(100),
+  });
+  const payloadFor = (botId: string) => ({ botId, symbol: 'BTCUSDT',
+    side: 'BUY' as const, type: 'LIMIT' as const, quantity: 100, price: 100,
+    mode: 'LIVE' as const, riskAck: true,
+    clientOrderId: `soar_${randomUUID().replace(/-/g, '').slice(0, 22)}` });
+
+  it('cannot mint the test permit from a runtime database or NODE_ENV alone', () => {
+    const databaseUrl = process.env.DATABASE_URL;
+    const nodeEnv = process.env.NODE_ENV;
+    const scope = { userId: 'user', botId: 'bot', symbol: 'BTCUSDT',
+      side: 'BUY', clientOrderId: 'soar_test_scope', quantity: 100,
+      price: 100, contractSize: 0.01 };
+    try {
+      const permit = createInternalGateNonunitMockPermit(scope);
+      const otherDatabase = new URL(databaseUrl!);
+      otherDatabase.pathname = '/other_local_test';
+      process.env.DATABASE_URL = otherDatabase.toString();
+      expect(matchesInternalGateNonunitMockPermit(permit, scope)).toBe(false);
+      process.env.DATABASE_URL = 'postgresql://test:test@127.0.0.1:15463/soar_runtime';
+      expect(() => createInternalGateNonunitMockPermit(scope)).toThrow(
+        'INTERNAL_GATE_NONUNIT_MOCK_UNAVAILABLE');
+      process.env.DATABASE_URL = databaseUrl;
+      process.env.NODE_ENV = 'development';
+      expect(() => createInternalGateNonunitMockPermit(scope)).toThrow(
+        'INTERNAL_GATE_NONUNIT_MOCK_UNAVAILABLE');
+    } finally {
+      process.env.DATABASE_URL = databaseUrl;
+      process.env.NODE_ENV = nodeEnv;
+    }
+  });
+
+  it('keeps ordinary LIVE/API entry, direct intent and pretrade closed before transport', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const payload = payloadFor(f.bot.id);
+    const executeLiveOrder = vi.fn();
+    await expect(openOrder(f.user.id, payload, { executeLiveOrder,
+      resolveGateEntryContractSize: async () => economics }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryNonunitContractUnsupported });
+    const bot = { id: f.bot.id, exchange: 'GATEIO' as const,
+      marketType: 'FUTURES' as const, positionMode: 'ONE_WAY' as const,
+      apiKeyId: f.bot.apiKeyId, walletId: f.wallet.id };
+    expect(() => assertPreparedGateEntryContractUnit({ ...payload,
+      walletId: f.wallet.id, contractSize: 0.01,
+      gateFuturesEconomics: economics }, bot))
+      .toThrowError(ORDER_ERROR_CODES.entryNonunitContractUnsupported);
+    await expect(persistOrReuseLiveOrderIntent({ userId: f.user.id, bot,
+      payload: { ...payload, walletId: f.wallet.id, contractSize: 0.01,
+        gateFuturesEconomics: economics }, internalMockPermit: {} }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryNonunitContractUnsupported });
+    await expect(enforceLivePretradeGuards({ connector: connector(),
+      apiKeyId: f.bot.apiKeyId!, exchange: 'GATEIO', marketType: 'FUTURES',
+      payload: { symbol: payload.symbol, quantity: 100, price: 100,
+        expectedContractSize: 0.01 },
+      internalMock: { permit: {}, userId: f.user.id, botId: f.bot.id,
+        side: 'BUY', clientOrderId: payload.clientOrderId } }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.livePretradeGateNonunitUnsupported });
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(executeLiveOrder).not.toHaveBeenCalled();
+  });
+
+  it('rolls back delegated nonunit bind without allowance, intent or submit marker', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const { grant, secret } = await createExternalClientGrant(f.user.id, {
+      botId: f.bot.id, clientLabel: 'Nonunit mock boundary', exchange: 'GATEIO',
+      marketType: 'FUTURES', symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
+      maxActionQuoteAmount: '200', maxTotalQuoteAmount: '500', maxActions: 2,
+      ttlSeconds: 3600, password,
+    });
+    const command = { userId: f.user.id, botId: f.bot.id, exchange: 'GATEIO',
+      marketType: 'FUTURES', symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
+      clientOrderId: `soar_${randomUUID().replace(/-/g, '').slice(0, 22)}`,
+      side: 'BUY', type: 'LIMIT', quantity: '100', limitPrice: '100',
+      reduceOnly: false, walletId: f.wallet.id, strategyId: f.strategy.id,
+      positionId: null };
+    await expect(bindExternalClientGrantReservationIntent({ grantId: grant.id,
+      secret, command }, { getSymbolRules: async () => ({ ...await symbolRules(),
+        minQuantity: 1, quantityStep: 1, contractSize: 0.01 }) }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryNonunitContractUnsupported });
+    expect(await prisma.externalClientGrantReservation.count({ where: { grantId: grant.id } })).toBe(0);
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
+    expect(await prisma.liveCreateOrderSubmission.count({ where: { grantId: grant.id } })).toBe(0);
+    const unchanged = await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: grant.id } });
+    expect(unchanged.usedActions).toBe(0);
+    expect(unchanged.usedQuoteAmount.toString()).toBe('0');
+  });
+
+  it('does not accept a mock permit from the HTTP order request', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const agent = request.agent(app);
+    expect((await agent.post('/auth/login').send({ email: f.user.email,
+      password })).status).toBe(200);
+    const executeLiveOrder = vi.fn();
+    const realOpenOrder = ordersService.openOrder;
+    const serviceSpy = vi.spyOn(ordersService, 'openOrder').mockImplementation((userId, payload) =>
+      realOpenOrder(userId, payload, { executeLiveOrder,
+        resolveGateEntryContractSize: async () => economics }));
+    try {
+      const result = await agent.post('/dashboard/orders/open').send({
+        ...payloadFor(f.bot.id), contractSize: 0.01,
+        gateFuturesEconomics: economics, internalMockPermit: {},
+      });
+      expect(result.status).toBe(409);
+      expect(serviceSpy).toHaveBeenCalledOnce();
+      expect(serviceSpy.mock.calls[0]).toHaveLength(2);
+      expect(serviceSpy.mock.calls[0]?.[1]).not.toHaveProperty('internalMockPermit');
+      expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+    } finally {
+      serviceSpy.mockRestore();
+    }
+  });
+
+  it('admits verified linear metadata only through injected local mock validation, stopping at intent', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const payload = payloadFor(f.bot.id);
+    const fake = connector();
+    const intent = await admitInternalGateNonunitMockEntry({ userId: f.user.id,
+      payload, economics, apiKeyId: f.bot.apiKeyId!, connector: fake });
+    expect(intent.created).toBe(true);
+    expect(intent.payload.contractSize).toBe(0.01);
+    expect(intent.payload.gateFuturesEconomics).toEqual(economics);
+    expect(fake.getSymbolTradingRules).toHaveBeenCalledOnce();
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(await prisma.position.count({ where: { userId: f.user.id } })).toBe(0);
+    expect(await prisma.orderFill.count({ where: { userId: f.user.id } })).toBe(0);
+    await expect(openOrder(f.user.id, payload, { executeLiveOrder: vi.fn(),
+      resolveGateEntryContractSize: async () => null }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.entryNonunitContractUnsupported });
+  });
+
+  it('rejects raw inverse, missing and mismatched units and pretrade rules before any intent', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const invalidEconomics = [
+      gateFuturesEconomicsFromMarket({ ...market, inverse: true }),
+      gateFuturesEconomicsFromMarket({ ...market,
+        info: { ...market.info, quanto_multiplier: undefined } }),
+      gateFuturesEconomicsFromMarket({ ...market, contractSize: 0.02 }),
+    ];
+    for (const evidence of invalidEconomics) {
+      expect(evidence).toBeNull();
+      await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
+        payload: payloadFor(f.bot.id), economics: evidence,
+        apiKeyId: f.bot.apiKeyId!, connector: connector() }))
+        .rejects.toThrow();
+    }
+    for (const badRules of [
+      { contractSize: 0.02 },
+      { gateFuturesEconomics: null },
+      { minAmount: null },
+      { amountPrecisionMode: null },
+      { amountPrecisionMode: undefined },
+    ]) {
+      await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
+        payload: payloadFor(f.bot.id), economics,
+        apiKeyId: f.bot.apiKeyId!, connector: connector(badRules) }))
+        .rejects.toThrow();
+    }
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+  });
 });
 
 describe('Gate FUTURES ENTRY active Order unit', () => {

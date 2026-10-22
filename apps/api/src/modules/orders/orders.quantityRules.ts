@@ -4,6 +4,7 @@ import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { isMatchingGateFuturesEconomics, type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
+import { markInternalGateNonunitMockPretrade, matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
 import { orderErrors } from './orders.errors';
 import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
   resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
@@ -29,6 +30,7 @@ export const resolveEntryContractUnit = async (params: {
   payload: LiveOrderPayload;
   botVenue: Pick<LiveBotContext, 'exchange' | 'marketType'> | null;
   resolveGateEntryContractSize: (symbol: string) => Promise<GateEntryContractEvidence>;
+  internalMockPermit?: unknown;
 }) => {
   const walletVenue = !params.botVenue && params.payload.walletId
     ? await prisma.wallet.findFirst({ where: { id: params.payload.walletId, userId: params.userId },
@@ -78,7 +80,14 @@ export const resolveEntryContractUnit = async (params: {
   if (typeof contractSize !== 'number' || !Number.isFinite(contractSize) || contractSize <= 0) {
     throw orderErrors.entryContractUnitUnavailable();
   }
-  if (contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  if (contractSize !== 1 && !(params.payload.mode === 'LIVE' &&
+    isMatchingGateFuturesEconomics(proof, contractSize,
+    params.payload.symbol) && matchesInternalGateNonunitMockPermit(params.internalMockPermit, {
+      userId: params.userId, botId: params.payload.botId ?? '',
+      symbol: params.payload.symbol, side: params.payload.side,
+      clientOrderId: params.payload.clientOrderId ?? '', quantity: params.payload.quantity,
+      price: params.payload.price ?? NaN, contractSize,
+    }))) throw orderErrors.entryNonunitContractUnsupported();
   if (proof != null && !isMatchingGateFuturesEconomics(proof, contractSize,
     params.payload.symbol)) throw orderErrors.entryContractUnitUnavailable();
   const gateFuturesEconomics = isMatchingGateFuturesEconomics(proof, contractSize,
@@ -89,6 +98,7 @@ export const resolveEntryContractUnit = async (params: {
 
 export const assertPreparedGateEntryContractUnit = (
   payload: LiveOrderPayload, bot: LiveBotContext | null,
+  internalMock?: { permit: unknown; userId: string },
 ) => {
   if (payload.contractSize != null &&
       (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize) ||
@@ -97,7 +107,16 @@ export const assertPreparedGateEntryContractUnit = (
     if (payload.reduceOnly === true && !payload.positionId) throw orderErrors.reduceOnlyPositionRequired();
     if (payload.contractSize == null) throw payload.positionId
       ? orderErrors.gatePositionUnitUnsafe() : orderErrors.entryContractUnitUnavailable();
-    if (payload.contractSize !== 1) throw payload.positionId
+    if (payload.contractSize !== 1 && !(payload.mode === 'LIVE' &&
+        payload.positionId == null &&
+        isMatchingGateFuturesEconomics(payload.gateFuturesEconomics,
+          payload.contractSize, payload.symbol) &&
+        matchesInternalGateNonunitMockPermit(internalMock?.permit, {
+          userId: internalMock?.userId ?? '', botId: payload.botId ?? '',
+          symbol: payload.symbol, side: payload.side,
+          clientOrderId: payload.clientOrderId ?? '', quantity: payload.quantity,
+          price: payload.price ?? NaN, contractSize: payload.contractSize,
+        }))) throw payload.positionId
       ? orderErrors.gatePositionUnitUnsafe() : orderErrors.entryNonunitContractUnsupported();
   }
 };
@@ -115,6 +134,7 @@ type SymbolTradingRules = {
   // Omitted by legacy synthetic rules; live CCXT metadata supplies a mode or null.
   amountPrecisionMode?: 'TICK_SIZE' | 'DECIMAL_PLACES' | null;
   contractSize?: number | null;
+  gateFuturesEconomics?: GateFuturesEconomicsSnapshot | null;
 };
 
 type CachedRules = {
@@ -367,6 +387,8 @@ export const enforceLivePretradeGuards = async (params: {
     reduceOnly?: boolean;
     expectedContractSize?: number;
   };
+  internalMock?: { permit: unknown; userId: string; botId: string;
+    side: 'BUY' | 'SELL'; clientOrderId: string };
 }) => {
   const normalizedSymbol = params.payload.symbol.toUpperCase();
   const quantity = Number(params.payload.quantity);
@@ -403,7 +425,25 @@ export const enforceLivePretradeGuards = async (params: {
     if (contractSize !== params.payload.expectedContractSize) {
       throw orderErrors.livePretradeContractUnitMismatch();
     }
-    if (contractSize !== 1) throw orderErrors.livePretradeGateNonunitUnsupported();
+    if (contractSize !== 1) {
+      const mockScope = {
+        userId: params.internalMock?.userId ?? '', botId: params.internalMock?.botId ?? '',
+        symbol: normalizedSymbol, side: params.internalMock?.side ?? '',
+        clientOrderId: params.internalMock?.clientOrderId ?? '',
+        quantity, price: params.payload.price ?? NaN,
+        contractSize,
+      };
+      if (!matchesInternalGateNonunitMockPermit(params.internalMock?.permit, mockScope) ||
+          !isMatchingGateFuturesEconomics(rules.gateFuturesEconomics, contractSize,
+            normalizedSymbol) ||
+          rules.minAmount == null || !Number.isFinite(rules.minAmount) ||
+          rules.minAmount <= 0 ||
+          (rules.amountPrecisionMode !== 'TICK_SIZE' &&
+            rules.amountPrecisionMode !== 'DECIMAL_PLACES') ||
+          resolvePrecisionStep(rules.amountPrecision, rules.amountPrecisionMode) == null) {
+        throw orderErrors.livePretradeGateNonunitUnsupported();
+      }
+    }
   }
 
   if (typeof rules.minAmount === 'number' && approxLessThan(quantity, rules.minAmount)) {
@@ -432,6 +472,16 @@ export const enforceLivePretradeGuards = async (params: {
     if (approxLessThan(notional, rules.minNotional)) {
       throw orderErrors.livePretradeNotionalBelowMin();
     }
+  }
+  if (isGateFutures && contractSize !== 1) {
+    const marked = markInternalGateNonunitMockPretrade(params.internalMock?.permit, {
+      userId: params.internalMock?.userId ?? '', botId: params.internalMock?.botId ?? '',
+      symbol: normalizedSymbol, side: params.internalMock?.side ?? '',
+      clientOrderId: params.internalMock?.clientOrderId ?? '',
+      quantity, price: params.payload.price ?? NaN,
+      contractSize,
+    });
+    if (!marked) throw orderErrors.livePretradeGateNonunitUnsupported();
   }
 };
 
