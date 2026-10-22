@@ -1,12 +1,14 @@
 # 011A: projekt trwałego źródła surowych transakcji USD-M
 
-**Status: projekt do decyzji, bez implementacji i bez runtime PASS.**
+**Status: wariant A wybrany przez właściciela; fundament lokalnie wdrożony
+i przetestowany, bez produkcyjnego writera ani pełnego runtime PASS.**
 Punkt bazowy `d227021dacad4a1f155cb4c0c4cd291c6c2a2252`.
 Niezależnie odebrane lokalne dowody: [granice `aggTrades`](position-parity-011a-120-minute-source-reconciliation-2026-10-22.md)
 na `4d8650f03a147f24f35098f13fd463bace5c9760` i [surowy ETH](position-parity-011a-raw-trades-boundary-feasibility-2026-10-22.md)
 na `ba338c03ad425a7ed242c330456b042134d8b7b1`. Pełne 011A
-pozostaje `REVIEW`, wydanie `NO-GO`. Nie ma dowodu trwałego raw
-BACKTEST, produkcyjnego workera ani LIVE.
+pozostaje `REVIEW`, wydanie `NO-GO`. [Ograniczony lokalny odbiór fundamentu](position-parity-011a-raw-trade-foundation-evidence-2026-10-22.md)
+potwierdza trwały blob/ref i odczyt offline dwóch runów. Nie ma dowodu
+ukończonego raw BACKTEST, produkcyjnego workera ani LIVE.
 
 ## Twarde dane do budżetu
 
@@ -56,14 +58,15 @@ checksumy pozwala audytować pochodzenie z publicznego endpointu; sam
 offline hash nie poświadcza tożsamości zdalnego wydawcy. Żaden wariant
 nie uprawnia do rozluźnienia walidacji OHLCV/trade count.
 
-## Proponowany kontrakt A do zatwierdzenia
+## Docelowy kontrakt A; obecnie zaimplementowano tylko fundament
 
 1. Dodać wersjonowany typ źródła `BINANCE_USDM_TRADES_DAILY` i osobny
    content-addressed store PostgreSQL: jeden niezmienny blob na
    `(sourceType, symbol, UTC day, zipSha256)` z dokładnymi bajtami ZIP,
    `.CHECKSUM`, rozmiarami i URL. Osobna relacja `(runId, symbol, day)`
    wskazuje blob; FK chroni go przed usunięciem, gdy jest referencja.
-   To propozycja modelu, nie migracja. SQL/rola aplikacji mają odmawiać
+   Addytywna migracja 88 tworzy blob/ref; pozostałe punkty są nadal planem.
+   SQL/rola aplikacji mają odmawiać
    nadpisania bajtów/metadanych; deduplikacja wymaga porównania całej
    tożsamości, nie tylko nazwy dnia. Inny SHA zdalnego ZIP oznacza nowy
    blob dla nowych runów; istniejących referencji nie wolno przepinać.
@@ -139,7 +142,8 @@ Na własnej PostgreSQL `_test` i Redisie, bez produkcji/LIVE:
   nie z ekstrapolacji. Wszystko ponad zatwierdzony budżet kończy się
   jawnie `LIMIT`/`FAILED`, nigdy częściowym PnL.
 
-Ten plan nie jest dowodem wykonania żadnego z tych testów. Decyzje
+Lista powyżej jest planem pełnego odbioru; ograniczony wynik samego
+fundamentu zapisano [osobno](position-parity-011a-raw-trade-foundation-evidence-2026-10-22.md). Decyzje
 otwarte: budżet per źródło i globalnie, retencja/karencja GC,
 PostgreSQL vs zatwierdzony immutable object store oraz procedura
 backup/rollback. Do ich zatwierdzenia nie uruchamiać writera v4.

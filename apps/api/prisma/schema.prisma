@@ -1225,6 +1225,7 @@ model BacktestRun {
   contributions BacktestContribution[]
   report   BacktestReport?
   intrabarArchives BacktestIntrabarArchive[]
+  rawTradeSourceRefs BacktestRawTradeSourceRef[]
 
   @@index([userId])
   @@index([userId, createdAt])
@@ -1257,6 +1258,43 @@ model BacktestIntrabarArchiveRaw {
   createdAt DateTime @default(now())
 
   archive BacktestIntrabarArchive @relation(fields: [runId, symbol], references: [runId, symbol], onDelete: Cascade)
+
+  @@id([runId, symbol, day])
+}
+
+// Additive raw-trade foundation. The production backtest path does not write
+// these tables until a separate source-budget and runtime acceptance gate.
+model BacktestRawTradeSourceBlob {
+  zipSha256 String @id
+  sourceType String
+  symbol String
+  day String
+  sourceUrl String
+  zipBytes Bytes
+  checksumBytes Bytes
+  csvBytes Int
+  createdAt DateTime @default(now())
+
+  refs BacktestRawTradeSourceRef[]
+
+  @@unique([zipSha256, symbol, day])
+}
+
+model BacktestRawTradeSourceRef {
+  runId String
+  symbol String
+  day String
+  zipSha256 String
+  windowStartMs BigInt
+  windowEndMs BigInt
+  candles Json
+  candlesSha256 String
+  tapeSha256 String
+  selectedTradeCount Int
+  createdAt DateTime @default(now())
+
+  run BacktestRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  blob BacktestRawTradeSourceBlob @relation(fields: [zipSha256, symbol, day], references: [zipSha256, symbol, day], onDelete: Restrict, onUpdate: Restrict)
 
   @@id([runId, symbol, day])
 }
