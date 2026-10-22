@@ -1,16 +1,24 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
-const distPath = fileURLToPath(new URL('../dist/', import.meta.url));
+// Strip the trailing separator before lstat: lstat("link/") can follow a link.
+const distPath = resolve(fileURLToPath(new URL('../dist/', import.meta.url)));
 const verifierPath = fileURLToPath(new URL(
   '../dist/modules/orders/orders.internalGateNonunitMock.js', import.meta.url,
 ));
 const issuerPath = fileURLToPath(new URL(
   '../dist/test/internalGateNonunitMockAdmission.js', import.meta.url,
 ));
+assert.ok(existsSync(distPath), 'Build the API before checking the production artifact');
+for (let path = distPath; ; path = dirname(path)) {
+  const entry = lstatSync(path);
+  assert.ok(!entry.isSymbolicLink(), `Gate nonunit artifact path contains a symlink or junction: ${path}`);
+  assert.ok(entry.isDirectory(), `Gate nonunit artifact path is not a directory: ${path}`);
+  if (dirname(path) === path) break;
+}
 assert.ok(existsSync(verifierPath), 'Build the API before checking the production artifact');
 assert.ok(!existsSync(issuerPath), 'Test-only permit issuer must be absent from dist');
 
