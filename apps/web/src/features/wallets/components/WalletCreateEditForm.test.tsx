@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import WalletCreateEditForm from './WalletCreateEditForm';
 
@@ -29,6 +29,8 @@ const translations = vi.hoisted<Record<string, string>>(() => ({
   'dashboard.wallets.form.exchange': 'Gielda',
   'dashboard.wallets.form.marketType': 'Rynek',
   'dashboard.wallets.form.baseCurrency': 'Waluta bazowa',
+  'dashboard.wallets.form.baseCurrencyLoading': 'Wczytywanie walut...',
+  'dashboard.wallets.form.baseCurrencyCatalogError': 'Nie udało się pobrać walut.',
   'dashboard.wallets.form.resetPaperAction': 'Resetuj portfel PAPER',
   'dashboard.wallets.form.resetPaperConfirm': 'Resetowac kapital PAPER?',
   'dashboard.wallets.form.resetPaperLoading': 'Resetowanie...',
@@ -310,7 +312,7 @@ describe('WalletCreateEditForm', () => {
 
   it('uses wallet metadata endpoint to resolve market type options', async () => {
     fetchApiKeysMock.mockResolvedValue([]);
-    fetchWalletMetadataMock.mockResolvedValue({
+    const coinbaseMetadata = {
       exchange: 'COINBASE',
       marketTypes: ['SPOT'],
       marketType: 'SPOT',
@@ -331,7 +333,7 @@ describe('WalletCreateEditForm', () => {
           source: 'EXCHANGE_CAPABILITIES',
         },
       },
-    });
+    };
 
     render(<WalletCreateEditForm />);
 
@@ -339,6 +341,15 @@ describe('WalletCreateEditForm', () => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
     await waitForFormReady();
+    await waitFor(() => {
+      expect(fetchWalletMetadataMock).toHaveBeenLastCalledWith({ exchange: 'BINANCE' });
+      expect(screen.getByLabelText('Waluta bazowa')).not.toBeDisabled();
+    });
+
+    let resolveCoinbaseMetadata!: (value: typeof coinbaseMetadata) => void;
+    fetchWalletMetadataMock.mockReturnValueOnce(new Promise<typeof coinbaseMetadata>((resolve) => {
+      resolveCoinbaseMetadata = resolve;
+    }));
 
     fireEvent.change(screen.getByLabelText('Gielda'), {
       target: { value: 'COINBASE' },
@@ -348,15 +359,60 @@ describe('WalletCreateEditForm', () => {
       expect(fetchWalletMetadataMock).toHaveBeenLastCalledWith(
         expect.objectContaining({ exchange: 'COINBASE' })
       );
+      expect(screen.getByLabelText('Rynek')).toBeDisabled();
+      expect(screen.getByLabelText('Waluta bazowa')).toBeDisabled();
+      expect(screen.getByText('Wczytywanie walut...')).toBeInTheDocument();
     });
 
-    const marketTypeSelect = screen.getByLabelText('Rynek');
-    const marketTypeOptions = Array.from(marketTypeSelect.querySelectorAll('option')).map((option) => option.value);
-    expect(marketTypeOptions).toEqual(['SPOT']);
+    await act(async () => resolveCoinbaseMetadata(coinbaseMetadata));
 
-    const baseCurrencySelect = screen.getByLabelText('Waluta bazowa');
-    const baseCurrencyOptions = Array.from(baseCurrencySelect.querySelectorAll('option')).map((option) => option.value);
-    expect(baseCurrencyOptions).toEqual(expect.arrayContaining(['USD', 'USDC']));
+    await waitFor(() => {
+      const marketTypeSelect = screen.getByLabelText('Rynek');
+      const marketTypeOptions = Array.from(marketTypeSelect.querySelectorAll('option')).map((option) => option.value);
+      expect(marketTypeOptions).toEqual(['SPOT']);
+      expect(marketTypeSelect).toHaveValue('SPOT');
+      expect(marketTypeSelect).not.toBeDisabled();
+
+      const baseCurrencySelect = screen.getByLabelText('Waluta bazowa');
+      const baseCurrencyOptions = Array.from(baseCurrencySelect.querySelectorAll('option')).map((option) => option.value);
+      expect(baseCurrencyOptions).toEqual(['USD', 'USDC']);
+      expect(baseCurrencySelect).toHaveValue('USD');
+      expect(baseCurrencySelect).not.toBeDisabled();
+      expect(screen.queryByText('Wczytywanie walut...')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows metadata failure and restores default options after an exchange change', async () => {
+    fetchApiKeysMock.mockResolvedValue([]);
+    render(<WalletCreateEditForm />);
+    await waitForFormReady();
+    await waitFor(() => {
+      expect(fetchWalletMetadataMock).toHaveBeenLastCalledWith({ exchange: 'BINANCE' });
+      expect(screen.getByLabelText('Waluta bazowa')).not.toBeDisabled();
+    });
+
+    let rejectCoinbaseMetadata!: (error: Error) => void;
+    fetchWalletMetadataMock.mockReturnValueOnce(new Promise((_, reject) => {
+      rejectCoinbaseMetadata = reject;
+    }));
+    fireEvent.change(screen.getByLabelText('Gielda'), { target: { value: 'COINBASE' } });
+    await waitFor(() => {
+      expect(fetchWalletMetadataMock).toHaveBeenLastCalledWith({ exchange: 'COINBASE' });
+      expect(screen.getByLabelText('Waluta bazowa')).toBeDisabled();
+    });
+
+    await act(async () => rejectCoinbaseMetadata(new Error('catalog offline')));
+    await waitFor(() => {
+      expect(screen.getByText('catalog offline')).toBeInTheDocument();
+      const marketTypeSelect = screen.getByLabelText('Rynek');
+      expect(Array.from(marketTypeSelect.querySelectorAll('option')).map((option) => option.value))
+        .toEqual(['FUTURES', 'SPOT']);
+      const baseCurrencySelect = screen.getByLabelText('Waluta bazowa');
+      expect(Array.from(baseCurrencySelect.querySelectorAll('option')).map((option) => option.value))
+        .toEqual(['USDT']);
+      expect(baseCurrencySelect).toHaveValue('USDT');
+      expect(baseCurrencySelect).not.toBeDisabled();
+    });
   });
 
   it('submits Gate.io PAPER wallet when public paper pricing is supported', async () => {
