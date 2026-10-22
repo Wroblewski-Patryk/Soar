@@ -7,7 +7,7 @@ import type { OpenOrderDto } from './orders.types';
 import { orderErrors } from './orders.errors';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
-import { assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
+import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
   resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
@@ -106,11 +106,15 @@ export const persistOrReuseLiveOrderIntent = async (params: {
       throw orderErrors.gatePositionScopeUnverified();
     }
     if (payload.reduceOnly === true && !payload.positionId) throw orderErrors.reduceOnlyPositionRequired();
+    const clientOrderId = payload.clientOrderId
+      ? resolveLiveClientOrderId(payload.clientOrderId, bot.exchange) : null;
+    const existingIntent = clientOrderId ? await db.liveOrderIntent.findUnique({
+      where: { clientOrderId }, select: { id: true },
+    }) : null;
     if (payload.positionId) {
       const allowClosedReplay = await canReplayClosedGatePosition({
         db, userId, positionId: payload.positionId,
-        clientOrderId: payload.clientOrderId
-          ? resolveLiveClientOrderId(payload.clientOrderId, bot.exchange) : null,
+        clientOrderId,
       });
       const saved = await resolveVerifiedGateLinkedPositionUnit({
         db, userId, positionId: payload.positionId, botId: payload.botId ?? null,
@@ -120,11 +124,6 @@ export const persistOrReuseLiveOrderIntent = async (params: {
         allowClosedReplay,
       });
       if (payload.contractSize !== saved) throw orderErrors.gatePositionUnitUnsafe();
-      const clientOrderId = payload.clientOrderId
-        ? resolveLiveClientOrderId(payload.clientOrderId, bot.exchange) : null;
-      const existingIntent = clientOrderId ? await db.liveOrderIntent.findUnique({
-        where: { clientOrderId }, select: { id: true },
-      }) : null;
       if (!existingIntent) await assertExistingGateLinkedOrderContractUnit({ db,
         userId, botId: payload.botId ?? null, positionId: payload.positionId,
         symbol: payload.symbol, contractSize: saved });
@@ -132,6 +131,9 @@ export const persistOrReuseLiveOrderIntent = async (params: {
       if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
         || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
       if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+      if (!existingIntent) await assertExistingGateEntryOrderContractUnit({ db,
+        userId, botId: payload.botId ?? null, walletId: payload.walletId ?? null,
+        symbol: payload.symbol, contractSize: payload.contractSize });
     }
   }
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);

@@ -214,9 +214,20 @@ z `contractSize=NULL` lub inną jednostką mógł więc poprzedzać nowy intent 
 submit. Bramki `openOrder` oraz bezpośredniego trwałego intentu odmawiają teraz
 nowej akcji przy takim Order (`PENDING`, `OPEN` lub `PARTIALLY_FILLED`),
 niezależnie od `syncState`. Istniejący intent pozostaje lookup-only przy
-dokładnym retry;
-ten wyjątek nie tworzy nowego intentu ani drugiego submita. Test RED
+dokładnym retry; ten wyjątek nie tworzy nowego intentu ani drugiego submita.
+Test RED
 odtworzył oba wejścia, w tym próbę z atrapą submitu bez sieci.
 Ponowny QA wykazał obejście przez `syncState=DRIFT`; filtr stanu synchronizacji
 usunięto także z bramki ENTRY. Test obejmuje `IN_SYNC`, `DRIFT` i oba stany
 `ORPHAN` dla trzech aktywnych statusów Order, jednostek `NULL` i `0,01`.
+
+Kolejny odbiór wykazał brak tej samej bramki w bezpośrednim zapisie intentu
+ENTRY. Delegowany bind wykonywał go wewnątrz transakcji po utworzeniu
+rezerwacji, przez co wadliwa komenda mogła zużyć allowance. Wspólny guard
+ENTRY działa teraz przed nowym intentem także w tej ścieżce; wyjątek cofa
+cały delegowany bind, łącznie z rezerwacją i użyciem limitu. Zwykły ENTRY
+pomija kontrolę później powstałego starego Order tylko przy dokładnym retry
+istniejącego intentu, który pozostaje lookup-only. Osobne
+`reserveExternalClientGrantOrder` bez bind może rezerwować allowance bez
+tworzenia intentu; ta ścieżka nie daje prawa submitu i nie należy do tej
+korekty. Lokalny test nie stanowi dowodu produkcyjnego LIVE.

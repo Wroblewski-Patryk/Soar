@@ -589,11 +589,12 @@ export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenO
   const resolved = await resolveCanonicalBotContext(userId, payload);
   let canonicalPayload = resolved.payload;
   const { botContext } = resolved;
-  const { isGateFuturesEntry, contractSize } = await resolveEntryContractUnit({
+  const { isGateFuturesEntry, contractSize, hasExistingIntent } = await resolveEntryContractUnit({
     userId, payload: canonicalPayload, botVenue: botContext?.inheritedExecutionContext ?? null,
     resolveGateEntryContractSize });
   if (contractSize != null) canonicalPayload = { ...canonicalPayload, contractSize };
-  if (isGateFuturesEntry) await assertExistingEntryOrderContractUnit(userId, canonicalPayload, contractSize!);
+  if (isGateFuturesEntry && !hasExistingIntent)
+    await assertExistingEntryOrderContractUnit(userId, canonicalPayload, contractSize!);
   await assertNoImplicitReverseOpenConflict({
     userId,
     payload: canonicalPayload,

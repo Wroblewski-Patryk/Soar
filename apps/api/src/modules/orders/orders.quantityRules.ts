@@ -1,10 +1,10 @@
-import { Exchange, Prisma } from '@prisma/client';
+import { Exchange } from '@prisma/client';
 
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
-import { assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
+import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
   resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { resolveLiveClientOrderId, type LiveBotContext,
   type LiveOrderPayload } from './orders.liveIntent.service';
@@ -31,7 +31,7 @@ export const resolveEntryContractUnit = async (params: {
         select: { exchange: true, marketType: true } }) : null;
   const venue = params.botVenue ?? walletVenue;
   if (venue?.exchange !== 'GATEIO' || venue.marketType !== 'FUTURES') {
-    return { isGateFuturesEntry: false, contractSize: undefined } as const;
+    return { isGateFuturesEntry: false, contractSize: undefined, hasExistingIntent: false } as const;
   }
   if (params.payload.reduceOnly === true && !params.payload.positionId) {
     throw orderErrors.reduceOnlyPositionRequired();
@@ -60,7 +60,7 @@ export const resolveEntryContractUnit = async (params: {
       userId: params.userId, botId: params.payload.botId ?? null,
       positionId: params.payload.positionId, symbol: params.payload.symbol,
       contractSize });
-    return { isGateFuturesEntry: false, contractSize } as const;
+    return { isGateFuturesEntry: false, contractSize, hasExistingIntent: Boolean(intent) } as const;
   }
   const observed = intent ? intentPayload?.contractSize
     : await params.resolveGateEntryContractSize(params.payload.symbol);
@@ -68,7 +68,7 @@ export const resolveEntryContractUnit = async (params: {
     throw orderErrors.entryContractUnitUnavailable();
   }
   if (observed !== 1) throw orderErrors.entryNonunitContractUnsupported();
-  return { isGateFuturesEntry: true, contractSize: observed } as const;
+  return { isGateFuturesEntry: true, contractSize: observed, hasExistingIntent: Boolean(intent) } as const;
 };
 
 export const assertPreparedGateEntryContractUnit = (
@@ -88,21 +88,9 @@ export const assertPreparedGateEntryContractUnit = (
 
 export const assertExistingEntryOrderContractUnit = async (
   userId: string, payload: LiveOrderPayload, contractSize: number,
-) => {
-  const where: Prisma.OrderWhereInput = {
-    userId, symbol: payload.symbol.toUpperCase(),
-    status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
-    ...(payload.botId ? { botId: payload.botId }
-      : payload.walletId ? { walletId: payload.walletId } : { botId: null, walletId: null }),
-  };
-  const existing = await prisma.order.findFirst({
-    where: { ...where, OR: [{ contractSize: null }, { contractSize: { not: contractSize } }] },
-    select: { id: true },
-  });
-  if (existing) {
-    throw orderErrors.openOrderContractUnitMismatch();
-  }
-};
+) => assertExistingGateEntryOrderContractUnit({ db: prisma, userId,
+  botId: payload.botId ?? null, walletId: payload.walletId ?? null,
+  symbol: payload.symbol, contractSize });
 
 type SymbolTradingRules = {
   minAmount: number | null;

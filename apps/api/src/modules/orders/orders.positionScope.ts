@@ -1,6 +1,25 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { orderErrors } from './orders.errors';
 
+export const assertExistingGateEntryOrderContractUnit = async (params: {
+  db: PrismaClient | Prisma.TransactionClient;
+  userId: string;
+  botId: string | null;
+  walletId: string | null;
+  symbol: string;
+  contractSize: number;
+}) => {
+  const scope: Prisma.OrderWhereInput = params.botId ? { botId: params.botId }
+    : params.walletId ? { walletId: params.walletId } : { botId: null, walletId: null };
+  const unsafe = await params.db.order.findFirst({
+    where: { userId: params.userId, symbol: params.symbol.toUpperCase(), ...scope,
+      status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+      OR: [{ contractSize: null }, { contractSize: { not: params.contractSize } }] },
+    select: { id: true },
+  });
+  if (unsafe) throw orderErrors.openOrderContractUnitMismatch();
+};
+
 export const resolveVerifiedGateLinkedPositionUnit = async (params: {
   db: PrismaClient | Prisma.TransactionClient;
   userId: string;
