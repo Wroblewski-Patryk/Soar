@@ -23,6 +23,56 @@ assert.ok(existsSync(verifierPath), 'Build the API before checking the productio
 assert.ok(!existsSync(issuerPath), 'Test-only permit issuer must be absent from dist');
 
 const forbidden = /BEGIN PRIVATE KEY|createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|\bissuePermit\b|internalGateNonunitMockAdmission/;
+const forbiddenExportName = /createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|^issuePermit$|internalGateNonunitMockAdmission/;
+// Check every emitted JavaScript file as data. Permit the CommonJS forms emitted
+// by this build, but fail closed on computed export names and export aliases.
+// This is a static artifact check, not a proof about arbitrarily obfuscated code.
+const checkJavaScriptExports = (path, content, location) => {
+  const source = ts.createSourceFile(path, content, ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
+  assert.equal(source.parseDiagnostics.length, 0,
+    `Gate nonunit artifact has invalid JavaScript: ${location}`);
+  const reject = () => {
+    throw new Error(`Gate nonunit artifact has an unsupported export form: ${location}`);
+  };
+  const visit = (node) => {
+    if (ts.isPropertyAccessExpression(node) &&
+        ts.isIdentifier(node.expression) && node.expression.text === 'module' &&
+        node.name.text === 'exports') reject();
+    if (ts.isElementAccessExpression(node) &&
+        ts.isIdentifier(node.expression) && node.expression.text === 'module') reject();
+    if (ts.isIdentifier(node) && node.text === 'exports') {
+      const parent = node.parent;
+      if (ts.isPropertyAccessExpression(parent) && parent.expression === node) {
+        if (forbiddenExportName.test(parent.name.text)) reject();
+      } else if (ts.isCallExpression(parent) && parent.arguments.includes(node)) {
+        const argumentIndex = parent.arguments.indexOf(node);
+        const staticDefinition = argumentIndex === 0 &&
+          ts.isPropertyAccessExpression(parent.expression) &&
+          ts.isIdentifier(parent.expression.expression) &&
+          parent.expression.expression.text === 'Object' &&
+          parent.expression.name.text === 'defineProperty' &&
+          parent.arguments.length === 3 &&
+          ts.isStringLiteral(parent.arguments[1]);
+        const compilerReexport = argumentIndex === 1 &&
+          ts.isIdentifier(parent.expression) && parent.expression.text === '__exportStar' &&
+          parent.arguments.length === 2;
+        const compilerBinding = argumentIndex === 0 &&
+          ts.isIdentifier(parent.expression) && parent.expression.text === '__createBinding' &&
+          parent.arguments.length === 3;
+        const compilerOwnPropertyCheck = argumentIndex === 0 &&
+          parent.expression.getText(source) === 'Object.prototype.hasOwnProperty.call' &&
+          parent.arguments.length === 2;
+        if (staticDefinition) {
+          if (forbiddenExportName.test(parent.arguments[1].text)) reject();
+        } else if (!compilerReexport && !compilerBinding && !compilerOwnPropertyCheck) reject();
+      } else if (!(ts.isPropertyAccessExpression(parent) && parent.name === node) &&
+                 !(ts.isPropertyAssignment(parent) && parent.name === node) &&
+                 !(ts.isParameter(parent) && parent.name === node)) reject();
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+};
 const checkDirectory = (directory) => {
   for (const entry of readdirSync(directory, { withFileTypes: true }).sort((a, b) =>
     a.name.localeCompare(b.name))) {
@@ -34,9 +84,11 @@ const checkDirectory = (directory) => {
       continue;
     }
     assert.ok(entry.isFile(), `Gate nonunit artifact contains an unexpected entry: ${location}`);
-    if (forbidden.test(readFileSync(path, 'utf8'))) {
+    const content = readFileSync(path, 'utf8');
+    if (forbidden.test(content)) {
       throw new Error(`Gate nonunit artifact contains a test permit issuer, marker or private key: ${location}`);
     }
+    if (/\.(?:c|m)?js$/.test(entry.name)) checkJavaScriptExports(path, content, location);
   }
 };
 checkDirectory(distPath);
