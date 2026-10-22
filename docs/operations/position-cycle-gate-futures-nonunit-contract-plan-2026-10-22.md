@@ -89,3 +89,34 @@ zdarzeń giełdy i refreshu finansów liczą `price×contracts`. Sama zmiana
 i test po restarcie. Jeżeli utrwalenie jednostki oraz pewne metadane
 `enable_decimal`/typu kontraktu okażą się niemożliwe w obecnym adapterze,
 pozostawić odmowę DCA i zgłosić dokładny blocker do koordynatora.
+
+## Wynik analizy i blocker przed implementacją
+
+Pełna ścieżka pozostaje zablokowana w bieżącej zależności. Pinned CCXT
+`4.5.43` w `js/src/gate.js` wystawia dla Gate FUTURES stałe
+`precision.amount=1`, nie odczytuje `enable_decimal` do kroku, a w
+`createOrder` przesyła `size` jako liczbę. Gate API odróżnia rynki z
+`enable_decimal=true`; według [poprawki CCXT #30911](https://github.com/ccxt/ccxt/pull/30911),
+scalonej 2026-10-19 i wydanej w `4.5.89`, wcześniejsza wersja potrafi
+uciąć ułamkową ilość także w odczycie WS bez nagłówka
+`X-Gate-Size-Decimal: 1`. Dla takiego rynku nie da się na podstawie
+bieżącego adaptera potwierdzić liczby kontraktów zlecenia, fillu i pozycji.
+Nie wolno dodać obsługi tylko dla nominalnie całkowitych kontraktów i
+nazywać jej pełnym Gate FUTURES `contractSize≠1`.
+
+Drugi niezależny warunek: CCXT `4.5.43` dla Gate FUTURES wystawia
+`limits.cost.min=undefined`, podczas gdy bieżący resolver DCA wymaga
+`minNotional>0`. Gate podaje `order_size_min`, lecz dokumentacja nie
+określa ogólnego dodatniego minimum notional. Wprowadzanie arbitralnej
+wartości lub użycie `price×contracts` bez `contractSize` byłoby zgadywaniem.
+
+Dlatego ten etap kończy się na planie; fail-closed
+`DCA_ORDER_RULES_INVALID` dla `contractSize≠1` pozostaje aktywny. Test
+odblokowujący: po osobno ocenionej aktualizacji CCXT zweryfikować w
+izolowanym adapterze fixture Gate dla `enable_decimal=false` i `true`
+(kontrakt, krok, min, `createOrder` amount, `fetchOrder` filled,
+`fetchMyTrades` amount/cost i pozycja po restarcie), łącznie z wartościami
+ułamkowymi i brakującymi metadanymi. Następnie utrwalić jednostkę przy
+ENTRY i przejść opisany wyżej opt-in test trzech trybów na świeżej `_test`
+oraz własnym Redisie, w tym fee/PnL/reconcile po retry. Do tego czasu
+rzeczywisty venue i produkcja pozostają bez dowodu.
