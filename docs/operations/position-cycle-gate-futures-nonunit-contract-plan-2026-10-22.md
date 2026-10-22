@@ -181,3 +181,20 @@ Gate FUTURES `contractSize≠1` nadal pozostaje zablokowany dla ENTRY. DCA,
 CLOSE, fee i PnL nie były przeliczane w tym etapie, więc nie ma podstaw do
 odblokowania pełnego cyklu. Lokalny test na osobnej PostgreSQL `_test` oraz
 typecheck nie są dowodem LIVE ani zachowania produkcji.
+
+### Domknięcie bramki akcji powiązanych z pozycją
+
+Późniejsza kontrola wykazała obejście: `reduceOnly=true` bez `positionId`
+omijało sprawdzenie jednostki Gate FUTURES i mogło utworzyć LIVE intent oraz
+wejść do submit. Teraz taka komenda jest odrzucana przed intentem. DCA i CLOSE
+z `positionId` wymagają pozycji tego użytkownika, bota, portfela i symbolu,
+potwierdzonej jako `IN_SYNC`, z `contractSize=1` zapisanym w Position.
+Jednostka zostaje przypięta do intentu; finalny pretrade sprawdza ją ponownie
+wobec świeżych reguł rynku przed submit. Stare `NULL`, rozbieżność lub
+`contractSize≠1` nie dostają nowego intentu/submita. Dokładne ponowienie
+wypełnionego CLOSE korzysta z zapisanego intentu bez ponownego submit.
+
+Test RED odtworzył wcześniejsze utworzenie zlecenia bez pozycji. Po poprawce
+147/147 testów pięciu powiązanych plików oraz typecheck przeszły na osobnej
+bazie PostgreSQL `_test`. Nadal brak dowodu rzeczywistego Gate LIVE i pełnego
+cyklu dla `contractSize≠1`.

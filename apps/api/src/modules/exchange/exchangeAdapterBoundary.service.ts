@@ -59,6 +59,7 @@ export type SubmitLiveExchangeOrderInput = {
     price?: number;
     strategyId?: string | null;
     reduceOnly?: boolean;
+    contractSize?: number;
     clientOrderId?: string;
   };
   targetLeverage: number | null;
@@ -522,6 +523,7 @@ export const submitLiveOrderThroughBoundary = async (
         quantity: params.order.quantity,
         price: params.order.price,
         reduceOnly: params.order.reduceOnly,
+        expectedContractSize: params.order.contractSize,
       },
     });
     await deps.convergeLiveMarginAndLeverageIfNeeded({

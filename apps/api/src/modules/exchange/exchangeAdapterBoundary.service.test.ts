@@ -518,7 +518,7 @@ describe('exchangeAdapterBoundary.service', () => {
         bot: { exchange: 'GATEIO', marketType: 'FUTURES', positionMode: 'ONE_WAY',
           apiKeyId: 'key-gate-tick-002', walletId: 'wallet-gate-tick-002' },
         order: { symbol: `NGTICK${reduceOnly ? 'CLOSE' : 'OPEN'}USDT`, side: 'BUY',
-          type: 'LIMIT', quantity: 60.5, price: 3.305, reduceOnly },
+          type: 'LIMIT', quantity: 60.5, price: 3.305, reduceOnly, contractSize: 1 },
         targetLeverage: 100,
       }, {
         createAuthenticatedConnector: vi.fn(() => connector),
@@ -551,7 +551,7 @@ describe('exchangeAdapterBoundary.service', () => {
       bot: { exchange: 'GATEIO', marketType: 'FUTURES', positionMode: 'ONE_WAY',
         apiKeyId: 'key-gate-context-parity-003', walletId: 'wallet-gate-context-parity-003' },
       order: { symbol: 'ADATICKPARITYUSDT', side: 'BUY', type: 'LIMIT',
-        quantity: 60.5, price: 0.25, reduceOnly: false },
+        quantity: 60.5, price: 0.25, reduceOnly: false, contractSize: 10 },
       targetLeverage: 5,
     }, {
       createAuthenticatedConnector: vi.fn(() => connector),

@@ -149,8 +149,8 @@ const bindNewIntent = async (tx: Tx, command: GrantLimitCommand, contractSize: n
     quantity: representableNumber(command.quantity), price: representableNumber(command.limitPrice),
     reduceOnly: command.reduceOnly, mode: 'LIVE' as const, riskAck: true,
     clientOrderId: command.clientOrderId,
-    ...(command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
-      !command.positionId && !command.reduceOnly ? { contractSize } : {}),
+    ...(command.exchange === 'GATEIO' && command.marketType === 'FUTURES'
+      ? { contractSize } : {}),
   };
   let prepared;
   try {
@@ -386,7 +386,6 @@ export const admitBoundExternalClientGrantSubmissionInternal = async (
     await assertCurrentScope(tx, grant, input.secret, command);
     if (!marketProof || !marketProof.amount.eq(current.quoteAmount)) return deny('MARKET_EVIDENCE_CHANGED');
     if (command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
-        !command.positionId && !command.reduceOnly &&
         (marketProof.contractSize !== 1 ||
           (intentPayload as Record<string, unknown>).contractSize !== marketProof.contractSize)) {
       return deny('MARKET_EVIDENCE_CHANGED');
@@ -802,7 +801,6 @@ export async function finalizeBoundExternalClientGrantMockOrphan(
         (payload as Record<string, unknown>).riskAck !== true ||
         (payload as Record<string, unknown>).clientOrderId !== command.clientOrderId ||
         (command.exchange === 'GATEIO' && command.marketType === 'FUTURES' &&
-          !command.positionId && !command.reduceOnly &&
           (payload as Record<string, unknown>).contractSize !== 1) ||
         intent.payloadHash !== fingerprintLiveOrderIntentPayload(command.userId, {
           id: command.botId, exchange: command.exchange, marketType: command.marketType,

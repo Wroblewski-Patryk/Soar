@@ -7,6 +7,9 @@ export const ORDER_ERROR_CODES = {
   openOrderContractUnitMismatch: 'OPEN_ORDER_CONTRACT_UNIT_MISMATCH',
   entryContractUnitUnavailable: 'ENTRY_CONTRACT_UNIT_UNAVAILABLE',
   entryNonunitContractUnsupported: 'ENTRY_NONUNIT_CONTRACT_UNSUPPORTED',
+  reduceOnlyPositionRequired: 'REDUCE_ONLY_POSITION_REQUIRED',
+  gatePositionScopeUnverified: 'GATE_POSITION_SCOPE_UNVERIFIED',
+  gatePositionUnitUnsafe: 'GATE_POSITION_UNIT_UNSAFE',
   livePretradeGateNonunitUnsupported: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED',
   paperMarketPriceUnavailable: 'PAPER_MARKET_PRICE_UNAVAILABLE',
   liveRiskAckRequired: 'LIVE_RISK_ACK_REQUIRED',
@@ -29,6 +32,7 @@ export const ORDER_ERROR_CODES = {
   livePretradeAmountBelowMin: 'LIVE_PRETRADE_AMOUNT_BELOW_MIN',
   livePretradeAmountPrecision: 'LIVE_PRETRADE_AMOUNT_PRECISION',
   livePretradeContractSizeUnavailable: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE',
+  livePretradeContractUnitMismatch: 'LIVE_PRETRADE_CONTRACT_UNIT_MISMATCH',
   livePretradeNotionalBelowMin: 'LIVE_PRETRADE_NOTIONAL_BELOW_MIN',
   livePretradeNotionalPriceUnavailable: 'LIVE_PRETRADE_NOTIONAL_PRICE_UNAVAILABLE',
   livePretradePaused: 'LIVE_PRETRADE_PAUSED',
@@ -63,6 +67,12 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.entryContractUnitUnavailable, 409),
   entryNonunitContractUnsupported: () =>
     new OrderDomainError(ORDER_ERROR_CODES.entryNonunitContractUnsupported, 409),
+  reduceOnlyPositionRequired: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.reduceOnlyPositionRequired, 409),
+  gatePositionScopeUnverified: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.gatePositionScopeUnverified, 409),
+  gatePositionUnitUnsafe: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.gatePositionUnitUnsafe, 409),
   livePretradeGateNonunitUnsupported: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeGateNonunitUnsupported, 409),
   paperMarketPriceUnavailable: () =>
@@ -97,6 +107,8 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountPrecision, 400),
   livePretradeContractSizeUnavailable: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeContractSizeUnavailable, 400),
+  livePretradeContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeContractUnitMismatch, 409),
   livePretradeNotionalBelowMin: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalBelowMin, 400),
   livePretradeNotionalPriceUnavailable: () =>

@@ -3,6 +3,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
+import { hashPassword } from '../../utils/hash';
 import { listOrders, openOrder } from './orders.service';
 import {
   createOrderForLiveIntent, executeDurableLiveOrder, materializeLiveOrderInTransaction,
@@ -12,6 +13,10 @@ import { findLiveFillCandidatePage } from './orders.liveFillCandidates.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { ensureSubscriptionCatalog, SUBSCRIPTION_PLAN_SEED } from '../subscriptions/subscriptions.service';
+import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+import { createExternalClientGrant } from '../externalClientGrants/externalClientGrants.service';
+import { bindExternalClientGrantReservationIntent,
+  type GrantLimitCommand } from '../externalClientGrants/externalClientGrantReservation.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from '../engine/runtimeExecutionClientOrderId';
@@ -1128,6 +1133,145 @@ describe('durable LIVE order intent', () => {
     expect(executeLiveOrder).not.toHaveBeenCalled();
     expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
     expect(await prisma.position.count({ where: { userId: user.id } })).toBe(0);
+  });
+
+  it('rejects Gate reduce-only without a linked Position before intent or submit', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-reduce-only-unlinked@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate reduce-only unlinked');
+    const executeLiveOrder = vi.fn().mockResolvedValue({ exchangeOrderId: 'unsafe-reduce-only',
+      status: 'OPEN' as const });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'SELL', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        reduceOnly: true, clientOrderId: 'soar_reduce_only_unlinked',
+      }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) }))
+        .rejects.toMatchObject({ code: 'REDUCE_ONLY_POSITION_REQUIRED' });
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('rejects a delegated Gate reduce-only command without Position before charging allowance', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'delegated-gate-unlinked-close@example.com',
+      password: await hashPassword('GateReduceTest1234'),
+    } });
+    await setActiveSubscriptionForUser(prisma, { userId: user.id, planCode: 'ADVANCED',
+      source: 'ADMIN_OVERRIDE', autoRenew: false });
+    const { bot, wallet, strategy } = await createGateLiveBot(user.id, 'Delegated Gate unlinked');
+    const { grant, secret } = await createExternalClientGrant(user.id, {
+      botId: bot.id, clientLabel: 'Gate delegated test', exchange: 'GATEIO',
+      marketType: 'FUTURES', symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
+      maxActionQuoteAmount: '100', maxTotalQuoteAmount: '100', maxActions: 1,
+      ttlSeconds: 3600, password: 'GateReduceTest1234',
+    });
+    const command: GrantLimitCommand = {
+      userId: user.id, botId: bot.id, exchange: 'GATEIO', marketType: 'FUTURES',
+      symbol: 'BTCUSDT', action: 'PLACE_LIVE_ORDER',
+      clientOrderId: 'soar_delegated_unlinked_close', side: 'SELL', type: 'LIMIT',
+      quantity: '1', limitPrice: '100', reduceOnly: true,
+      walletId: wallet.id, strategyId: strategy.id, positionId: null,
+    };
+    try {
+      await expect(bindExternalClientGrantReservationIntent({
+        grantId: grant.id, secret, command,
+      }, { getSymbolRules: async () => ({ minQuantity: 1, minNotional: 1,
+        quantityStep: 1, priceStep: 0.01, contractSize: 1,
+        quoteCurrency: 'USDT', settleCurrency: 'USDT', isContract: true,
+        isLinear: true, isInverse: false }) }))
+        .rejects.toMatchObject({ code: 'REDUCE_ONLY_POSITION_REQUIRED' });
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+      expect(await prisma.externalClientGrantReservation.count({ where: { grantId: grant.id } })).toBe(0);
+      expect((await prisma.externalClientGrant.findUniqueOrThrow({ where: { id: grant.id } })).usedActions).toBe(0);
+    } finally {
+      await prisma.externalClientGrant.delete({ where: { id: grant.id } });
+    }
+  });
+
+  it('uses the saved unit for a verified Gate reduce-only CLOSE', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-reduce-only-linked@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate reduce-only linked');
+    const executeLiveOrder = vi.fn()
+      .mockResolvedValueOnce({ exchangeOrderId: 'gate-linked-entry', status: 'FILLED',
+        exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+        fee: 0, feeSource: 'EXCHANGE_FILL', feePending: false })
+      .mockResolvedValueOnce({ exchangeOrderId: 'gate-linked-close', status: 'OPEN' });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const entry = await openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_gate_linked_entry',
+      }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) });
+      const resolveGateEntryContractSize = vi.fn().mockResolvedValue(0.01);
+      const closePayload = {
+        botId: bot.id, positionId: entry.positionId!, symbol: 'BTCUSDT',
+        side: 'SELL' as const, type: 'LIMIT' as const, quantity: 1, price: 101,
+        mode: 'LIVE' as const, riskAck: true, reduceOnly: true,
+        clientOrderId: 'soar_gate_linked_close',
+      };
+      const close = await openOrder(user.id, closePayload,
+        { executeLiveOrder, resolveGateEntryContractSize });
+      expect(close.contractSize).toBe(1);
+      expect(close.positionId).toBe(entry.positionId);
+      expect((await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: close.id } })).payload)
+        .toMatchObject({ contractSize: 1 });
+      expect(resolveGateEntryContractSize).not.toHaveBeenCalled();
+      expect(executeLiveOrder).toHaveBeenCalledTimes(2);
+      await prisma.order.update({ where: { id: close.id }, data: { status: 'FILLED' } });
+      await prisma.position.update({ where: { id: entry.positionId! }, data: { status: 'CLOSED' } });
+      const replay = await openOrder(user.id, closePayload,
+        { executeLiveOrder, resolveGateEntryContractSize });
+      expect(replay.id).toBe(close.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(2);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('blocks Gate reduce-only CLOSE for null or mismatched Position unit before intent', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-reduce-only-unsafe@example.com', password: 'hashed',
+    } });
+    const { bot } = await createGateLiveBot(user.id, 'Gate reduce-only unsafe');
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'gate-unsafe-entry', status: 'FILLED' as const,
+      exchangeFilledQuantity: 1, exchangeAverageFillPrice: 100,
+      fee: 0, feeSource: 'EXCHANGE_FILL' as const, feePending: false,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      const entry = await openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 1, price: 100, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_gate_unsafe_entry',
+      }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) });
+      for (const [index, contractSize] of [null, 0.01].entries()) {
+        await prisma.position.update({ where: { id: entry.positionId! }, data: { contractSize } });
+        await expect(openOrder(user.id, {
+          botId: bot.id, positionId: entry.positionId!, symbol: 'BTCUSDT',
+          side: 'SELL', type: 'LIMIT', quantity: 1, price: 101,
+          mode: 'LIVE', riskAck: true, reduceOnly: true,
+          clientOrderId: `soar_gate_unsafe_close_${index}`,
+        }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) }))
+          .rejects.toMatchObject({ code: 'GATE_POSITION_UNIT_UNSAFE' });
+      }
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
   });
 
   it('rejects an existing Gate Position with missing or different unit before a new intent', async () => {

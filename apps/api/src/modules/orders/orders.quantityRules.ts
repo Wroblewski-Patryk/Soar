@@ -4,6 +4,7 @@ import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
+import { canReplayClosedGatePosition, resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { resolveLiveClientOrderId, type LiveBotContext,
   type LiveOrderPayload } from './orders.liveIntent.service';
 
@@ -28,9 +29,12 @@ export const resolveEntryContractUnit = async (params: {
     ? await prisma.wallet.findFirst({ where: { id: params.payload.walletId, userId: params.userId },
         select: { exchange: true, marketType: true } }) : null;
   const venue = params.botVenue ?? walletVenue;
-  const isGateFuturesEntry = !params.payload.positionId && params.payload.reduceOnly !== true &&
-    venue?.exchange === 'GATEIO' && venue.marketType === 'FUTURES';
-  if (!isGateFuturesEntry) return { isGateFuturesEntry: false, contractSize: undefined } as const;
+  if (venue?.exchange !== 'GATEIO' || venue.marketType !== 'FUTURES') {
+    return { isGateFuturesEntry: false, contractSize: undefined } as const;
+  }
+  if (params.payload.reduceOnly === true && !params.payload.positionId) {
+    throw orderErrors.reduceOnlyPositionRequired();
+  }
   const clientOrderId = params.payload.mode === 'LIVE' && params.payload.clientOrderId
     ? resolveLiveClientOrderId(params.payload.clientOrderId, 'GATEIO') : null;
   const intent = clientOrderId ? await prisma.liveOrderIntent.findUnique({
@@ -38,6 +42,21 @@ export const resolveEntryContractUnit = async (params: {
   }) : null;
   const intentPayload = intent?.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
     ? intent.payload as Record<string, unknown> : null;
+  if (params.payload.positionId) {
+    const allowClosedReplay = await canReplayClosedGatePosition({ db: prisma,
+      userId: params.userId, clientOrderId, positionId: params.payload.positionId });
+    const contractSize = await resolveVerifiedGateLinkedPositionUnit({
+      db: prisma, userId: params.userId, positionId: params.payload.positionId,
+      botId: params.payload.botId ?? null, walletId: params.payload.walletId ?? null,
+      mode: params.payload.mode, symbol: params.payload.symbol, side: params.payload.side,
+      quantity: params.payload.quantity, reduceOnly: params.payload.reduceOnly === true,
+      allowClosedReplay,
+    });
+    if (intent && intentPayload?.contractSize !== contractSize) {
+      throw orderErrors.gatePositionUnitUnsafe();
+    }
+    return { isGateFuturesEntry: false, contractSize } as const;
+  }
   const observed = intent ? intentPayload?.contractSize
     : await params.resolveGateEntryContractSize(params.payload.symbol);
   if (typeof observed !== 'number' || !Number.isFinite(observed) || observed <= 0) {
@@ -53,10 +72,12 @@ export const assertPreparedGateEntryContractUnit = (
   if (payload.contractSize != null &&
       (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize) ||
         payload.contractSize <= 0)) throw orderErrors.entryContractUnitUnavailable();
-  if (bot?.exchange === 'GATEIO' && bot.marketType === 'FUTURES' &&
-      !payload.positionId && payload.reduceOnly !== true) {
-    if (payload.contractSize == null) throw orderErrors.entryContractUnitUnavailable();
-    if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  if (bot?.exchange === 'GATEIO' && bot.marketType === 'FUTURES') {
+    if (payload.reduceOnly === true && !payload.positionId) throw orderErrors.reduceOnlyPositionRequired();
+    if (payload.contractSize == null) throw payload.positionId
+      ? orderErrors.gatePositionUnitUnsafe() : orderErrors.entryContractUnitUnavailable();
+    if (payload.contractSize !== 1) throw payload.positionId
+      ? orderErrors.gatePositionUnitUnsafe() : orderErrors.entryNonunitContractUnsupported();
   }
 };
 
@@ -335,6 +356,7 @@ export const enforceLivePretradeGuards = async (params: {
     quantity: number;
     price?: number;
     reduceOnly?: boolean;
+    expectedContractSize?: number;
   };
 }) => {
   const normalizedSymbol = params.payload.symbol.toUpperCase();
@@ -354,20 +376,25 @@ export const enforceLivePretradeGuards = async (params: {
     }
   }
 
-  const rules = await getSymbolTradingRulesCached({
-    connector: params.connector,
-    exchange: params.exchange,
-    marketType: params.marketType,
-    symbol: normalizedSymbol,
-  });
+  const isGateFutures = params.exchange === 'GATEIO' && params.marketType === 'FUTURES';
+  const rules = isGateFutures ? await params.connector.getSymbolTradingRules(normalizedSymbol)
+    : await getSymbolTradingRulesCached({ connector: params.connector,
+        exchange: params.exchange, marketType: params.marketType, symbol: normalizedSymbol });
 
   const contractSize = resolveQuantityContractSize(rules.contractSize, params.marketType);
   if (contractSize == null) {
     throw orderErrors.livePretradeContractSizeUnavailable();
   }
-  if (params.exchange === 'GATEIO' && params.marketType === 'FUTURES' &&
-      params.payload.reduceOnly !== true && contractSize !== 1) {
-    throw orderErrors.livePretradeGateNonunitUnsupported();
+  if (isGateFutures) {
+    if (typeof params.payload.expectedContractSize !== 'number' ||
+        !Number.isFinite(params.payload.expectedContractSize) ||
+        params.payload.expectedContractSize <= 0) {
+      throw orderErrors.livePretradeContractSizeUnavailable();
+    }
+    if (contractSize !== params.payload.expectedContractSize) {
+      throw orderErrors.livePretradeContractUnitMismatch();
+    }
+    if (contractSize !== 1) throw orderErrors.livePretradeGateNonunitUnsupported();
   }
 
   if (typeof rules.minAmount === 'number' && approxLessThan(quantity, rules.minAmount)) {

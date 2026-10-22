@@ -75,7 +75,7 @@ describe('orders.quantityRules', () => {
       contractSize: 1 };
     const input = { apiKeyId: 'gate-precision-002', exchange: 'GATEIO' as const,
       marketType: 'FUTURES' as const, payload: { symbol: 'NGUSDT', quantity: 60.5,
-        price: 3.305, reduceOnly: true } };
+        price: 3.305, reduceOnly: true, expectedContractSize: 1 } };
     const connector = { hasOpenPosition, fetchMarkPrice,
       getSymbolTradingRules: vi.fn(async () => ({ ...rules,
         amountPrecisionMode: 'TICK_SIZE' as const })) };
@@ -250,12 +250,35 @@ describe('orders.quantityRules', () => {
     await expect(enforceLivePretradeGuards({
       apiKeyId: 'gate-nonunit', exchange: 'GATEIO', marketType: 'FUTURES',
       connector,
-      payload: { symbol: 'BTCUSDT', quantity: 1 },
+      payload: { symbol: 'BTCUSDT', quantity: 1, expectedContractSize: 0.01 },
     })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
     await expect(enforceLivePretradeGuards({
       apiKeyId: 'gate-nonunit-close', exchange: 'GATEIO', marketType: 'FUTURES',
       connector,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 0.01 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
+  });
+
+  it('requires the saved Gate unit to match fresh pretrade metadata for reduce-only', async () => {
+    const connector = {
+      hasOpenPosition: async () => false,
+      getSymbolTradingRules: async () => ({ minAmount: 1, minNotional: null,
+        amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 1 }),
+      fetchMarkPrice: async () => 100,
+    };
+    const base = { apiKeyId: 'gate-close-snapshot', exchange: 'GATEIO' as const,
+      marketType: 'FUTURES' as const, connector };
+    await expect(enforceLivePretradeGuards({ ...base,
       payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE' });
+    await expect(enforceLivePretradeGuards({ ...base,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 0.01 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_UNIT_MISMATCH' });
+    await expect(enforceLivePretradeGuards({ ...base,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 1 },
     })).resolves.toBeUndefined();
   });
 });

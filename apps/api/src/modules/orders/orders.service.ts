@@ -348,6 +348,7 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
       price: params.payload.price,
       strategyId: params.payload.strategyId,
       reduceOnly: params.payload.reduceOnly,
+      contractSize: params.payload.contractSize,
       ...(params.payload.clientOrderId ? { clientOrderId: params.payload.clientOrderId } : {}),
     },
     targetLeverage,
@@ -582,9 +583,7 @@ const resolveExchangeCancelContext = (order: {
 
 // Shared read-only domain gate for human orders and delegated preparation.
 // Its checks must run before a delegated admission; they are not submit authority.
-export const prepareOpenOrderRiskContext = async (
-  userId: string,
-  payload: OpenOrderInput,
+export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenOrderInput,
   resolveGateEntryContractSize: (symbol: string) => Promise<number | null> = defaultResolveGateEntryContractSize,
 ) => {
   const resolved = await resolveCanonicalBotContext(userId, payload);

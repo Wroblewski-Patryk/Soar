@@ -1,4 +1,62 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { orderErrors } from './orders.errors';
+
+export const resolveVerifiedGateLinkedPositionUnit = async (params: {
+  db: PrismaClient | Prisma.TransactionClient;
+  userId: string;
+  positionId: string;
+  botId: string | null;
+  walletId: string | null;
+  mode: 'LIVE' | 'PAPER';
+  symbol: string;
+  side: 'BUY' | 'SELL';
+  quantity: number;
+  reduceOnly: boolean;
+  allowClosedReplay?: boolean;
+}) => {
+  const position = await params.db.position.findFirst({
+    where: { id: params.positionId, userId: params.userId,
+      status: params.allowClosedReplay ? { in: ['OPEN', 'CLOSED'] } : 'OPEN',
+      syncState: 'IN_SYNC', continuityState: 'CONFIRMED' },
+    select: { botId: true, walletId: true, symbol: true, side: true,
+      quantity: true, contractSize: true },
+  });
+  const entrySide = position?.side === 'LONG' ? 'BUY' : 'SELL';
+  const expectedSide = params.reduceOnly ? (entrySide === 'BUY' ? 'SELL' : 'BUY') : entrySide;
+  if (!position || position.symbol !== params.symbol.toUpperCase() ||
+      position.botId !== params.botId ||
+      (params.mode === 'LIVE' && position.walletId !== params.walletId) ||
+      (params.botId == null && position.walletId !== params.walletId) ||
+      params.side !== expectedSide ||
+      !Number.isFinite(position.quantity) || position.quantity <= 0 ||
+      (params.reduceOnly && params.quantity > position.quantity + 1e-9)) {
+    throw orderErrors.gatePositionScopeUnverified();
+  }
+  if (position.contractSize !== 1) throw orderErrors.gatePositionUnitUnsafe();
+  return position.contractSize;
+};
+
+export const canReplayClosedGatePosition = async (params: {
+  db: PrismaClient | Prisma.TransactionClient;
+  userId: string;
+  clientOrderId: string | null;
+  positionId: string;
+}) => {
+  if (!params.clientOrderId) return false;
+  const intent = await params.db.liveOrderIntent.findUnique({
+    where: { clientOrderId: params.clientOrderId },
+    select: { id: true, userId: true, payload: true },
+  });
+  const payload = intent?.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
+    ? intent.payload as Record<string, unknown> : null;
+  if (intent?.userId !== params.userId || payload?.positionId !== params.positionId ||
+      payload.reduceOnly !== true || payload.contractSize !== 1) return false;
+  const order = await params.db.order.findUnique({ where: { id: intent.id },
+    select: { userId: true, positionId: true, status: true, syncState: true,
+      contractSize: true } });
+  return order?.userId === params.userId && order.positionId === params.positionId &&
+    order.status === 'FILLED' && order.syncState === 'IN_SYNC' && order.contractSize === 1;
+};
 
 type OpenPositionScopeParams = {
   userId: string;

@@ -7,6 +7,7 @@ import type { OpenOrderDto } from './orders.types';
 import { orderErrors } from './orders.errors';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
+import { canReplayClosedGatePosition, resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
@@ -99,11 +100,30 @@ export const persistOrReuseLiveOrderIntent = async (params: {
 }): Promise<PreparedLiveOrderIntent> => {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
-  if (bot.exchange === 'GATEIO' && bot.marketType === 'FUTURES' &&
-      !payload.positionId && payload.reduceOnly !== true) {
-    if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
-      || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
-    if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  if (bot.exchange === 'GATEIO' && bot.marketType === 'FUTURES') {
+    if (payload.botId !== bot.id || (payload.walletId ?? null) !== bot.walletId) {
+      throw orderErrors.gatePositionScopeUnverified();
+    }
+    if (payload.reduceOnly === true && !payload.positionId) throw orderErrors.reduceOnlyPositionRequired();
+    if (payload.positionId) {
+      const allowClosedReplay = await canReplayClosedGatePosition({
+        db, userId, positionId: payload.positionId,
+        clientOrderId: payload.clientOrderId
+          ? resolveLiveClientOrderId(payload.clientOrderId, bot.exchange) : null,
+      });
+      const saved = await resolveVerifiedGateLinkedPositionUnit({
+        db, userId, positionId: payload.positionId, botId: payload.botId ?? null,
+        walletId: payload.walletId ?? null, mode: payload.mode,
+        symbol: payload.symbol, side: payload.side, quantity: payload.quantity,
+        reduceOnly: payload.reduceOnly === true,
+        allowClosedReplay,
+      });
+      if (payload.contractSize !== saved) throw orderErrors.gatePositionUnitUnsafe();
+    } else {
+      if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
+        || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
+      if (payload.contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+    }
   }
   payload.clientOrderId = resolveLiveClientOrderId(payload.clientOrderId, bot.exchange);
   const payloadHash = fingerprintLiveOrderIntentPayload(userId, bot, payload);
