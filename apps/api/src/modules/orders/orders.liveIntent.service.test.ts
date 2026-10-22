@@ -1394,6 +1394,93 @@ describe('durable LIVE order intent', () => {
     }
   });
 
+  it('blocks linked Gate CLOSE and DCA on an unsafe active Order, but replays a saved intent', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-linked-old-order@example.com', password: 'hashed',
+    } });
+    const { bot, wallet, strategy } = await createGateLiveBot(user.id, 'Gate linked old order');
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+      symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', entryPrice: 100,
+      quantity: 1, contractSize: 1, leverage: 5, origin: 'BOT',
+      managementMode: 'BOT_MANAGED', syncState: 'IN_SYNC',
+      continuityState: 'CONFIRMED',
+    } });
+    const legacy = await prisma.order.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, positionId: position.id,
+      symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT', status: 'OPEN',
+      quantity: 1, price: 100,
+    } });
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'gate-linked-safe-close', status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      for (const [unitIndex, contractSize] of [null, 0.01].entries()) {
+        await prisma.order.update({ where: { id: legacy.id }, data: { contractSize } });
+        for (const [action, side, reduceOnly] of [
+          ['close', 'SELL', true], ['dca', 'BUY', false],
+        ] as const) {
+          await expect(openOrder(user.id, {
+            botId: bot.id, positionId: position.id, symbol: 'BTCUSDT', side,
+            type: 'LIMIT', quantity: 1, price: 101, mode: 'LIVE', riskAck: true,
+            reduceOnly, clientOrderId: `soar_linked_old_${unitIndex}_${action}`,
+          }, { executeLiveOrder, resolveGateEntryContractSize: vi.fn().mockResolvedValue(1) }))
+            .rejects.toMatchObject({ code: ORDER_ERROR_CODES.openOrderContractUnitMismatch });
+        }
+      }
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+
+      await prisma.order.update({ where: { id: legacy.id }, data: { contractSize: 1 } });
+      const closePayload = { botId: bot.id, positionId: position.id, symbol: 'BTCUSDT',
+        side: 'SELL' as const, type: 'LIMIT' as const, quantity: 1, price: 101,
+        mode: 'LIVE' as const, riskAck: true, reduceOnly: true,
+        clientOrderId: 'soar_linked_valid_close' };
+      const close = await openOrder(user.id, closePayload, { executeLiveOrder });
+      expect(close.contractSize).toBe(1);
+      await prisma.order.update({ where: { id: legacy.id }, data: { contractSize: null } });
+      const retry = await openOrder(user.id, closePayload, { executeLiveOrder });
+      expect(retry.id).toBe(close.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('rejects a direct linked Gate intent when an active Order unit is unsafe', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-gate-linked-direct-old-order@example.com', password: 'hashed',
+    } });
+    const { bot, wallet, strategy } = await createGateLiveBot(user.id, 'Gate linked direct old order');
+    const position = await prisma.position.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+      symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', entryPrice: 100,
+      quantity: 1, contractSize: 1, leverage: 5, origin: 'BOT',
+      managementMode: 'BOT_MANAGED', syncState: 'IN_SYNC',
+      continuityState: 'CONFIRMED',
+    } });
+    const legacy = await prisma.order.create({ data: {
+      userId: user.id, botId: bot.id, walletId: wallet.id, positionId: position.id,
+      symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT', status: 'OPEN',
+      quantity: 1, price: 100,
+    } });
+    for (const [index, contractSize] of [null, 0.01].entries()) {
+      await prisma.order.update({ where: { id: legacy.id }, data: { contractSize } });
+      await expect(persistOrReuseLiveOrderIntent({ userId: user.id,
+        bot: { id: bot.id, exchange: 'GATEIO', marketType: 'FUTURES',
+          positionMode: 'ONE_WAY', apiKeyId: bot.apiKeyId, walletId: wallet.id },
+        payload: { botId: bot.id, walletId: wallet.id, strategyId: strategy.id,
+          positionId: position.id, symbol: 'BTCUSDT', side: 'SELL', type: 'LIMIT',
+          quantity: 1, price: 101, mode: 'LIVE', riskAck: true, reduceOnly: true,
+          contractSize: 1, clientOrderId: `soar_direct_linked_old_${index}` },
+      })).rejects.toMatchObject({ code: ORDER_ERROR_CODES.openOrderContractUnitMismatch });
+    }
+    expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+  });
+
   it('carries the Gate ENTRY unit from an OPEN Order into a later fill after a read', async () => {
     const user = await createEntitledUser({ data: {
       email: 'orders-gate-delayed-fill-unit@example.com', password: 'hashed',

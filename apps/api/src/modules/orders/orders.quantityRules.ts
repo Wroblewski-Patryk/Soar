@@ -4,7 +4,8 @@ import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
-import { canReplayClosedGatePosition, resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
+import { assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
+  resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { resolveLiveClientOrderId, type LiveBotContext,
   type LiveOrderPayload } from './orders.liveIntent.service';
 
@@ -55,6 +56,10 @@ export const resolveEntryContractUnit = async (params: {
     if (intent && intentPayload?.contractSize !== contractSize) {
       throw orderErrors.gatePositionUnitUnsafe();
     }
+    if (!intent) await assertExistingGateLinkedOrderContractUnit({ db: prisma,
+      userId: params.userId, botId: params.payload.botId ?? null,
+      positionId: params.payload.positionId, symbol: params.payload.symbol,
+      contractSize });
     return { isGateFuturesEntry: false, contractSize } as const;
   }
   const observed = intent ? intentPayload?.contractSize

@@ -38,6 +38,24 @@ export const resolveVerifiedGateLinkedPositionUnit = async (params: {
   return position.contractSize;
 };
 
+export const assertExistingGateLinkedOrderContractUnit = async (params: {
+  db: PrismaClient | Prisma.TransactionClient;
+  userId: string;
+  botId: string | null;
+  positionId: string;
+  symbol: string;
+  contractSize: number;
+}) => {
+  const unsafe = await params.db.order.findFirst({
+    where: { userId: params.userId, botId: params.botId,
+      positionId: params.positionId, symbol: params.symbol.toUpperCase(),
+      syncState: 'IN_SYNC', status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+      OR: [{ contractSize: null }, { contractSize: { not: params.contractSize } }] },
+    select: { id: true },
+  });
+  if (unsafe) throw orderErrors.openOrderContractUnitMismatch();
+};
+
 export const canReplayClosedGatePosition = async (params: {
   db: PrismaClient | Prisma.TransactionClient;
   userId: string;

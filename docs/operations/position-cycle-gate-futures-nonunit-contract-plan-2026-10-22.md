@@ -207,3 +207,12 @@ porównuje właściwy zakres portfela (`NULL` dla pozycji bota PAPER). Test RED
 odtworzył oba błędy, a test GREEN przeszedł przez prawdziwą lokalną ścieżkę
 orkiestrator → Order → wypełnienie PAPER → Trade/Position. To nadal nie jest
 dowód zachowania giełdy ani produkcji.
+
+Następny niezależny odbiór wykazał, że powiązany LIVE CLOSE/DCA sprawdzał
+jednostkę Position, ale pomijał aktywny Order tej samej pozycji. Stary Order
+z `contractSize=NULL` lub inną jednostką mógł więc poprzedzać nowy intent i
+submit. Bramki `openOrder` oraz bezpośredniego trwałego intentu odmawiają teraz
+nowej akcji przy takim Order (`PENDING`, `OPEN` lub `PARTIALLY_FILLED` w stanie
+`IN_SYNC`). Istniejący intent pozostaje lookup-only przy dokładnym retry;
+ten wyjątek nie tworzy nowego intentu ani drugiego submita. Test RED
+odtworzył oba wejścia, w tym próbę z atrapą submitu bez sieci.

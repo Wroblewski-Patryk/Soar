@@ -7,7 +7,8 @@ import type { OpenOrderDto } from './orders.types';
 import { orderErrors } from './orders.errors';
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
-import { canReplayClosedGatePosition, resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
+import { assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
+  resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
@@ -119,6 +120,14 @@ export const persistOrReuseLiveOrderIntent = async (params: {
         allowClosedReplay,
       });
       if (payload.contractSize !== saved) throw orderErrors.gatePositionUnitUnsafe();
+      const clientOrderId = payload.clientOrderId
+        ? resolveLiveClientOrderId(payload.clientOrderId, bot.exchange) : null;
+      const existingIntent = clientOrderId ? await db.liveOrderIntent.findUnique({
+        where: { clientOrderId }, select: { id: true },
+      }) : null;
+      if (!existingIntent) await assertExistingGateLinkedOrderContractUnit({ db,
+        userId, botId: payload.botId ?? null, positionId: payload.positionId,
+        symbol: payload.symbol, contractSize: saved });
     } else {
       if (typeof payload.contractSize !== 'number' || !Number.isFinite(payload.contractSize)
         || payload.contractSize <= 0) throw orderErrors.entryContractUnitUnavailable();
