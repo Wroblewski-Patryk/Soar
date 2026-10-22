@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { createEntitledUser } from '../../test/createEntitledUser';
 import {
@@ -19,6 +19,7 @@ const cleanupDb = async () => {
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();
+  await prisma.backtestContribution.deleteMany();
   await prisma.backtestRun.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();
@@ -60,6 +61,10 @@ const allowLive = async () => {
     },
   });
 };
+
+afterAll(async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+});
 
 describe('listOrders active order contract', () => {
   beforeEach(async () => {

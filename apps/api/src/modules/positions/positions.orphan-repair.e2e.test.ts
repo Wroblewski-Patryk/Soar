@@ -31,6 +31,7 @@ describe('Positions orphan repair API', () => {
     await prisma.botRuntimeSession.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestReport.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.log.deleteMany();
     await prisma.botStrategy.deleteMany();

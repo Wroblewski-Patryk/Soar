@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { clearRuntimeSignalMarketDataStore } from '../engine/runtimeSignalMarketDataGateway';
@@ -121,6 +121,9 @@ const allowLiveTradingForOrdersContract = async () => {
 };
 
 describe('Orders and positions read contract', () => {
+  afterEach(async () => {
+    await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  });
   beforeEach(async () => {
     manualContextConnectorOverride.current = null;
     clearRuntimeTickerStore();
@@ -128,6 +131,7 @@ describe('Orders and positions read contract', () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();

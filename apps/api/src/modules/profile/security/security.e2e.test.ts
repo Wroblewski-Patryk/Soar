@@ -171,26 +171,32 @@ describe('Profile security contract', () => {
       contributionUsdt: 1, timestamp: new Date('2026-01-01T00:00:00.000Z'), candleIndex: 1,
     } });
 
-    const invalidDeleteRes = await agent.delete('/dashboard/profile/security/account').send({
-      password: 'wrong1234',
-    });
-    expect(invalidDeleteRes.status).toBe(400);
-    expect(invalidDeleteRes.body.error.message).toBe('Invalid password');
-    expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(3);
+    try {
+      const invalidDeleteRes = await agent.delete('/dashboard/profile/security/account').send({
+        password: 'wrong1234',
+      });
+      expect(invalidDeleteRes.status).toBe(400);
+      expect(invalidDeleteRes.body.error.message).toBe('Invalid password');
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(3);
 
-    const deleteRes = await agent.delete('/dashboard/profile/security/account').send({
-      password: 'start1234',
-    });
-    expect(deleteRes.status).toBe(204);
+      const deleteRes = await agent.delete('/dashboard/profile/security/account').send({
+        password: 'start1234',
+      });
+      expect(deleteRes.status).toBe(204);
 
-    const meRes = await agent.get('/auth/me');
-    expect(meRes.status).toBe(401);
+      const meRes = await agent.get('/auth/me');
+      expect(meRes.status).toBe(401);
 
-    const deletedUser = await prisma.user.findUnique({ where: { email } });
-    expect(deletedUser).toBeNull();
-    expect(await prisma.backtestRun.findUnique({ where: { id: ownerRun.id } })).toBeNull();
-    expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(0);
-    expect(await prisma.user.findUnique({ where: { id: otherUser.id } })).not.toBeNull();
-    expect(await prisma.backtestContribution.count({ where: { backtestRunId: otherRun.id } })).toBe(1);
+      const deletedUser = await prisma.user.findUnique({ where: { email } });
+      expect(deletedUser).toBeNull();
+      expect(await prisma.backtestRun.findUnique({ where: { id: ownerRun.id } })).toBeNull();
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(0);
+      expect(await prisma.user.findUnique({ where: { id: otherUser.id } })).not.toBeNull();
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: otherRun.id } })).toBe(1);
+    } finally {
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: otherRun.id } });
+      await prisma.backtestRun.deleteMany({ where: { id: otherRun.id } });
+      await prisma.user.deleteMany({ where: { id: otherUser.id } });
+    }
   });
 });

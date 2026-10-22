@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { hashPassword } from '../../utils/hash';
@@ -10,6 +10,10 @@ import { inspectExternalClientGrant } from './externalClientGrants.service';
 const createdUserIds: string[] = [];
 const password = 'GrantTest1234';
 const path = '/dashboard/external-client-grants';
+
+beforeEach(async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+});
 
 afterEach(async () => {
   for (const id of createdUserIds.splice(0)) {

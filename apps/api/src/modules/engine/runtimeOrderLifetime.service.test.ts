@@ -214,6 +214,10 @@ describe('enforceRuntimeOrderLifetimes', () => {
     await prisma.wallet.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.strategy.deleteMany();
+    await prisma.backtestContribution.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestRun.deleteMany();
     await prisma.user.deleteMany();
 
     const user = await prisma.user.create({

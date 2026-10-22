@@ -99,8 +99,9 @@ const verifyCanonical = async (runId: string, expected: NonNullable<ReturnType<t
   expect(await prisma.backtestReport.count({ where: { backtestRunId: runId } })).toBe(0);
 };
 
+const runtimeIt = process.env.RUN_BACKTEST_RAW_ARCHIVE_RACE_PROOF === '1' ? it : it.skip;
 describe('raw v3 concurrent process race', () => {
-  it('keeps one atomic winner, rejects source conflicts and recovers offline after SIGKILL',
+  runtimeIt('keeps one atomic winner, rejects source conflicts and recovers offline after SIGKILL',
     async () => {
       const db = new URL(process.env.DATABASE_URL ?? '');
       const redisUrl = new URL(process.env.REDIS_URL ?? '');

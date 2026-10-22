@@ -31,6 +31,7 @@ describe('Icons lookup module contract', () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
