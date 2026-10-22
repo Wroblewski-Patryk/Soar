@@ -4,7 +4,7 @@ import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { isMatchingGateFuturesEconomics, type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
-import { markInternalGateNonunitMockPretrade, matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
+import { matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
 import { orderErrors } from './orders.errors';
 import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
   resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
@@ -472,16 +472,6 @@ export const enforceLivePretradeGuards = async (params: {
     if (approxLessThan(notional, rules.minNotional)) {
       throw orderErrors.livePretradeNotionalBelowMin();
     }
-  }
-  if (isGateFutures && contractSize !== 1) {
-    const marked = markInternalGateNonunitMockPretrade(params.internalMock?.permit, {
-      userId: params.internalMock?.userId ?? '', botId: params.internalMock?.botId ?? '',
-      symbol: normalizedSymbol, side: params.internalMock?.side ?? '',
-      clientOrderId: params.internalMock?.clientOrderId ?? '',
-      quantity, price: params.payload.price ?? NaN,
-      contractSize,
-    });
-    if (!marked) throw orderErrors.livePretradeGateNonunitUnsupported();
   }
 };
 

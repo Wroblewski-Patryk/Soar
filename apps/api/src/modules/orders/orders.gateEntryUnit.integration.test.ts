@@ -22,8 +22,7 @@ import type { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.type
 import { assertPreparedGateEntryContractUnit, enforceLivePretradeGuards,
   type SymbolTradingRules } from './orders.quantityRules';
 import { admitInternalGateNonunitMockEntry } from '../../test/internalGateNonunitMockAdmission';
-import { createInternalGateNonunitMockPermit,
-  matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
+import { matchesInternalGateNonunitMockPermit } from './orders.internalGateNonunitMock';
 
 const users: string[] = [];
 const password = 'GateEntryTest1234';
@@ -77,10 +76,11 @@ afterEach(async () => {
 describe('Gate nonunit internal mock admission boundary', () => {
   const market = {
     contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
-    contractSize: 0.01,
+    id: 'BTC_USDT', symbol: 'BTC/USDT:USDT', contractSize: 0.01,
     info: { type: 'direct', name: 'BTC_USDT', settle_currency: 'USDT',
       quanto_multiplier: '0.01' },
   };
+  const rawGateContract = { ...market.info };
   const economics = gateFuturesEconomicsFromMarket(market);
   if (!economics) throw new Error('valid test market economics missing');
   const rules = { minAmount: 1, minNotional: null, amountPrecision: 1,
@@ -96,25 +96,25 @@ describe('Gate nonunit internal mock admission boundary', () => {
     mode: 'LIVE' as const, riskAck: true,
     clientOrderId: `soar_${randomUUID().replace(/-/g, '').slice(0, 22)}` });
 
-  it('cannot mint the test permit from a runtime database or NODE_ENV alone', () => {
+  it('does not treat a forged permit or test environment as admission', () => {
     const databaseUrl = process.env.DATABASE_URL;
     const nodeEnv = process.env.NODE_ENV;
     const scope = { userId: 'user', botId: 'bot', symbol: 'BTCUSDT',
       side: 'BUY', clientOrderId: 'soar_test_scope', quantity: 100,
       price: 100, contractSize: 0.01 };
     try {
-      const permit = createInternalGateNonunitMockPermit(scope);
+      const permit = { payload: Buffer.from(JSON.stringify(scope)).toString('base64url'),
+        signature: Buffer.alloc(64).toString('base64url') };
+      expect(matchesInternalGateNonunitMockPermit(permit, scope)).toBe(false);
       const otherDatabase = new URL(databaseUrl!);
       otherDatabase.pathname = '/other_local_test';
       process.env.DATABASE_URL = otherDatabase.toString();
       expect(matchesInternalGateNonunitMockPermit(permit, scope)).toBe(false);
       process.env.DATABASE_URL = 'postgresql://test:test@127.0.0.1:15463/soar_runtime';
-      expect(() => createInternalGateNonunitMockPermit(scope)).toThrow(
-        'INTERNAL_GATE_NONUNIT_MOCK_UNAVAILABLE');
+      expect(matchesInternalGateNonunitMockPermit(permit, scope)).toBe(false);
       process.env.DATABASE_URL = databaseUrl;
       process.env.NODE_ENV = 'development';
-      expect(() => createInternalGateNonunitMockPermit(scope)).toThrow(
-        'INTERNAL_GATE_NONUNIT_MOCK_UNAVAILABLE');
+      expect(matchesInternalGateNonunitMockPermit(permit, scope)).toBe(false);
     } finally {
       process.env.DATABASE_URL = databaseUrl;
       process.env.NODE_ENV = nodeEnv;
@@ -212,7 +212,8 @@ describe('Gate nonunit internal mock admission boundary', () => {
     const payload = payloadFor(f.bot.id);
     const fake = connector();
     const intent = await admitInternalGateNonunitMockEntry({ userId: f.user.id,
-      payload, economics, apiKeyId: f.bot.apiKeyId!, connector: fake });
+      payload, rawGateContract, ccxtMarket: market,
+      apiKeyId: f.bot.apiKeyId!, connector: fake });
     expect(intent.created).toBe(true);
     expect(intent.payload.contractSize).toBe(0.01);
     expect(intent.payload.gateFuturesEconomics).toEqual(economics);
@@ -229,16 +230,29 @@ describe('Gate nonunit internal mock admission boundary', () => {
   it('rejects raw inverse, missing and mismatched units and pretrade rules before any intent', async () => {
     const f = await fixture();
     await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
-    const invalidEconomics = [
-      gateFuturesEconomicsFromMarket({ ...market, inverse: true }),
-      gateFuturesEconomicsFromMarket({ ...market,
-        info: { ...market.info, quanto_multiplier: undefined } }),
-      gateFuturesEconomicsFromMarket({ ...market, contractSize: 0.02 }),
+    const forged = { ...economics, contract: 'BTC_USDT', contractSize: 0.01 };
+    await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
+      payload: payloadFor(f.bot.id), economics: forged,
+      apiKeyId: f.bot.apiKeyId!, connector: connector(),
+    } as unknown as Parameters<typeof admitInternalGateNonunitMockEntry>[0]))
+      .rejects.toThrow('INTERNAL_GATE_NONUNIT_MOCK_ENTRY_ONLY');
+    await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
+      payload: payloadFor(f.bot.id), rawGateContract, ccxtMarket: market,
+      economics: forged, apiKeyId: f.bot.apiKeyId!, connector: connector(),
+    } as unknown as Parameters<typeof admitInternalGateNonunitMockEntry>[0]))
+      .rejects.toThrow('INTERNAL_GATE_NONUNIT_MOCK_ENTRY_ONLY');
+    const invalidSources = [
+      { rawGateContract: { ...rawGateContract, type: 'inverse' }, ccxtMarket: market },
+      { rawGateContract: { ...rawGateContract, quanto_multiplier: undefined }, ccxtMarket: market },
+      { rawGateContract, ccxtMarket: { ...market, contractSize: 0.02 } },
+      { rawGateContract, ccxtMarket: { ...market, symbol: 'ETH/USDT:USDT' } },
+      { rawGateContract, ccxtMarket: { ...market, id: 'ETH_USDT' } },
+      { rawGateContract, ccxtMarket: { ...market,
+        info: { ...market.info, quanto_multiplier: '0.02' } } },
     ];
-    for (const evidence of invalidEconomics) {
-      expect(evidence).toBeNull();
+    for (const evidence of invalidSources) {
       await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
-        payload: payloadFor(f.bot.id), economics: evidence,
+        payload: payloadFor(f.bot.id), ...evidence,
         apiKeyId: f.bot.apiKeyId!, connector: connector() }))
         .rejects.toThrow();
     }
@@ -250,7 +264,7 @@ describe('Gate nonunit internal mock admission boundary', () => {
       { amountPrecisionMode: undefined },
     ]) {
       await expect(admitInternalGateNonunitMockEntry({ userId: f.user.id,
-        payload: payloadFor(f.bot.id), economics,
+        payload: payloadFor(f.bot.id), rawGateContract, ccxtMarket: market,
         apiKeyId: f.bot.apiKeyId!, connector: connector(badRules) }))
         .rejects.toThrow();
     }
