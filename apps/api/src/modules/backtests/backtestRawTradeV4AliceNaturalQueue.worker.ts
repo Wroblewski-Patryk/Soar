@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeSync } from 'node:fs';
 import { join } from 'node:path';
 import { normalizeSymbols } from '../../lib/symbols';
 import { normalizeWalletRiskPercent } from '../engine/positionSizing';
@@ -36,11 +36,22 @@ const redis = new URL(process.env.REDIS_URL ?? '');
 if (process.env.RUN_011A_ALICE_RAW_V4_NATURAL_QUEUE_PROOF !== '1' ||
     process.env.RUN_011A_RAW_V4_JOB_PROOF !== '1' || !runId ||
     !['hold', 'resume', 'retry'].includes(role ?? '') ||
-    db.hostname !== '127.0.0.1' || db.port !== '62436' ||
+    db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
     db.pathname !== '/soar_011a_alice_raw_natural_test' ||
-    redis.hostname !== '127.0.0.1' || redis.port !== '62439' ||
+    redis.hostname !== '127.0.0.1' || !redis.port || redis.port === '6379' ||
     !queueName?.startsWith('backtest-011a-alice-raw-v4-natural-'))
   throw new Error('ALICE v4 queue proof requires own opt-in _test/Redis/queue');
+
+// A process-level contract for QA ports. This test-only worker prints no
+// credentials and exits before connecting to either service.
+if (process.env.SOAR_011A_ALICE_RAW_QUEUE_PORT_PROBE === '1') {
+  writeSync(1, `PORT_PROBE_JSON ${JSON.stringify({
+    databaseHost: db.hostname, databasePort: db.port,
+    databaseName: db.pathname.slice(1),
+    redisHost: redis.hostname, redisPort: redis.port,
+  })}\nPORT_PROBE_READY\n`);
+  process.exit(0);
+}
 
 globalThis.fetch = (() => {
   throw new Error('NETWORK_FORBIDDEN_IN_ALICE_RAW_QUEUE_PROOF');

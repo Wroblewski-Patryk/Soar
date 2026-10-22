@@ -44,7 +44,8 @@ type ProofProcess = {
   waitFor: (line: string, timeoutMs?: number) => Promise<number>;
 };
 const startWorker = (role: 'hold' | 'resume' | 'retry',
-  queueName: string, runId: string, releaseFile?: string): ProofProcess => {
+  queueName: string, runId: string, releaseFile?: string,
+  connectionProbe?: { databaseUrl: string; redisUrl: string }): ProofProcess => {
   const child = spawn(process.execPath, ['--import', 'tsx',
     resolve(process.cwd(),
       'src/modules/backtests/backtestRawTradeV4AliceNaturalQueue.worker.ts'),
@@ -53,6 +54,11 @@ const startWorker = (role: 'hold' | 'resume' | 'retry',
     SOAR_011A_ALICE_RAW_QUEUE_RUN_ID: runId,
     SOAR_011A_ALICE_RAW_QUEUE_ROLE: role,
     ...(releaseFile ? { SOAR_011A_ALICE_RAW_QUEUE_RELEASE_FILE: releaseFile } : {}),
+    ...(connectionProbe ? { DATABASE_URL: connectionProbe.databaseUrl,
+      REDIS_URL: connectionProbe.redisUrl,
+      SOAR_011A_ALICE_RAW_QUEUE_PORT_PROBE: '1',
+      RUN_011A_RAW_V4_JOB_PROOF: '1',
+      RUN_011A_ALICE_RAW_V4_NATURAL_QUEUE_PROOF: '1' } : {}),
   }, stdio: ['pipe', 'pipe', 'pipe'] });
   const events: ProofProcess['events'] = [];
   let buffer = '';
@@ -91,13 +97,37 @@ const killOwnWorker = async (proof: ProofProcess) => {
 };
 
 describe('011A public ALICE raw v4 natural queue recovery (opt-in)', () => {
+  it('passes distinct QA loopback ports into the actual child worker', async () => {
+    const worker = startWorker('retry',
+      `backtest-011a-alice-raw-v4-natural-port-${randomUUID()}`,
+      randomUUID(), undefined, {
+        databaseUrl: 'postgresql://probe:probe@127.0.0.1:65136/soar_011a_alice_raw_natural_test',
+        redisUrl: 'redis://127.0.0.1:65139',
+      });
+    try {
+      await worker.waitFor('PORT_PROBE_READY');
+      const line = worker.events.find((event) =>
+        event.line.startsWith('PORT_PROBE_JSON '))?.line;
+      expect(line).toBeDefined();
+      expect(JSON.parse(line!.slice('PORT_PROBE_JSON '.length))).toEqual({
+        databaseHost: '127.0.0.1', databasePort: '65136',
+        databaseName: 'soar_011a_alice_raw_natural_test',
+        redisHost: '127.0.0.1', redisPort: '65139',
+      });
+      await until(async () => worker.child.exitCode !== null ||
+        worker.child.signalCode !== null, 5_000);
+      expect(worker.child.exitCode).toBe(0);
+    } finally { await killOwnWorker(worker); }
+  }, 30_000);
+
   proofIt('SIGKILL before result, automatic natural lease recovery and retry',
     async () => {
       const db = new URL(process.env.DATABASE_URL ?? '');
       const redisUrl = new URL(process.env.REDIS_URL ?? '');
-      if (db.hostname !== '127.0.0.1' || db.port !== '62436' ||
+      if (db.hostname !== '127.0.0.1' || !db.port || db.port === '5432' ||
           db.pathname !== '/soar_011a_alice_raw_natural_test' ||
-          redisUrl.hostname !== '127.0.0.1' || redisUrl.port !== '62439' ||
+          redisUrl.hostname !== '127.0.0.1' || !redisUrl.port ||
+          redisUrl.port === '6379' ||
           process.env.RUN_011A_RAW_V4_JOB_PROOF !== '1' ||
           BACKTEST_LEASE_MS !== 600_000)
         throw new Error('Requires exact own _test/Redis and default lease');
