@@ -63,6 +63,10 @@ export const finalizeExchangeDcaFillInTransaction = async (
     });
     await lockLivePosition(tx, input.userId, input.positionId);
     const position = await tx.position.findUniqueOrThrow({ where: { id: input.positionId } });
+    if ((order.contractSize != null && order.contractSize !== 1) ||
+        (position.contractSize != null && position.contractSize !== 1)) {
+      throw new Error('EXCHANGE_FUTURES_NONUNIT_FINANCIALS_UNSUPPORTED');
+    }
     const existingTrade = await tx.trade.findFirst({
       where: { orderId: order.id, lifecycleAction: 'DCA' }, select: { id: true },
     });
@@ -190,6 +194,10 @@ export const finalizeExchangeCloseFillInTransaction = async (
   });
   await lockLivePosition(tx, input.userId, input.positionId);
   const position = await tx.position.findUniqueOrThrow({ where: { id: input.positionId } });
+  if ((order.contractSize != null && order.contractSize !== 1) ||
+      (position.contractSize != null && position.contractSize !== 1)) {
+    throw new Error('EXCHANGE_FUTURES_NONUNIT_FINANCIALS_UNSUPPORTED');
+  }
   const existingTrade = await tx.trade.findFirst({
     where: { orderId: order.id, lifecycleAction: 'CLOSE' }, select: { id: true },
   });

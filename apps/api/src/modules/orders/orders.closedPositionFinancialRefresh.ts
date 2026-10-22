@@ -11,10 +11,12 @@ export const computeCloseRealizedPnl = async (input: {
   entryPrice: number;
   closePrice: number;
   closeQuantity: number;
+  contractSize: number | null;
   exitFee: number;
   exitFeePending: boolean;
   imported: boolean;
 }) => {
+  if (input.contractSize != null && input.contractSize !== 1) return null;
   const entryLegSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
   const entryFees = await resolveKnownEntryFeesInTransaction(input.tx, {
     userId: input.userId, positionId: input.positionId,
@@ -48,7 +50,7 @@ export const refreshClosedPositionPnlAfterEntryFee = async (input: {
     await input.tx.$queryRaw(Prisma.sql`SELECT "id" FROM "Position" WHERE "id" = ${positionId} FOR UPDATE`);
     const position = await input.tx.position.findFirst({
       where: { id: positionId, userId: input.userId, status: 'CLOSED' },
-      select: { side: true, entryPrice: true, origin: true },
+      select: { side: true, entryPrice: true, origin: true, contractSize: true },
     });
     if (!position) continue;
     const closeTrades = await input.tx.trade.findMany({
@@ -65,6 +67,7 @@ export const refreshClosedPositionPnlAfterEntryFee = async (input: {
       tx: input.tx, userId: input.userId, positionId,
       positionSide: position.side, entryPrice: position.entryPrice,
       closePrice: close.price, closeQuantity: close.quantity,
+      contractSize: position.contractSize,
       exitFee: close.fee!, exitFeePending: false, imported: position.origin === 'EXCHANGE_SYNC',
     });
     if (realizedPnl == null) continue;

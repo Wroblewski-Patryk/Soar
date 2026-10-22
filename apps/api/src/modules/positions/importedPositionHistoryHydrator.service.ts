@@ -36,6 +36,18 @@ type ExistingImportedTradeRow = {
 
 const nearlyEqual = (left: number, right: number) => Math.abs(left - right) <= EPSILON;
 
+const hasUnsafeImportedContractUnit = (position: {
+  contractSize: number | null;
+  wallet: { exchange: string; marketType: string } | null;
+  bot: { exchange: string; marketType: string } | null;
+}) => {
+  // This hydrator still derives notional and PnL from price times quantity.
+  const gateFutures = [position.wallet, position.bot].some((owner) =>
+    owner?.exchange === 'GATEIO' && owner.marketType === 'FUTURES');
+  return (position.contractSize != null && position.contractSize !== 1) ||
+    (gateFutures && position.contractSize !== 1);
+};
+
 const isSyntheticImportedOpenAnchorTrade = (trade: ExistingImportedTradeRow) =>
   trade.exchangeTradeId == null && trade.lifecycleAction === 'OPEN';
 
@@ -499,9 +511,13 @@ export const hydrateImportedPositionHistory = async (input: {
       openedAt: true,
       status: true,
       entryPrice: true,
+      contractSize: true,
+      wallet: { select: { exchange: true, marketType: true } },
+      bot: { select: { exchange: true, marketType: true } },
     },
   });
-  if (!position || position.status !== PositionStatus.OPEN) {
+  if (!position || position.status !== PositionStatus.OPEN ||
+      hasUnsafeImportedContractUnit(position)) {
     return { hydrated: false, openedAt: null as Date | null };
   }
 
@@ -607,9 +623,12 @@ export const backfillClosedImportedPositionHistory = async (input: {
         closedAt: true,
         status: true,
         realizedPnl: true,
+        contractSize: true,
+        wallet: { select: { exchange: true, marketType: true } },
+        bot: { select: { exchange: true, marketType: true } },
       },
     });
-    if (!position) {
+    if (!position || hasUnsafeImportedContractUnit(position)) {
       return {
         hydrated: false,
         openedAt: null as Date | null,

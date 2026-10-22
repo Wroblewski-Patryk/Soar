@@ -110,6 +110,7 @@ describe('deriveImportedLifecycleTrades', () => {
     expect(derived?.map((item) => item.lifecycleAction)).toEqual(['OPEN', 'CLOSE']);
     expect(derived?.[1]?.realizedPnl ?? 0).toBeGreaterThan(0);
   });
+
 });
 
 describe('hydrateImportedPositionHistory', () => {
@@ -912,5 +913,37 @@ describe('hydrateImportedPositionHistory', () => {
     });
     expect(updatedPosition.openedAt.toISOString()).toBe('2026-04-29T10:00:00.000Z');
     expect(updatedPosition.closedAt?.toISOString()).toBe('2026-04-29T10:07:00.000Z');
+  });
+  it.each([null, 0.01])('does not publish Gate FUTURES history with unsafe contract unit %s', async (contractSize) => {
+    const user = await prisma.user.create({ data: {
+      email: `gate-imported-unit-${contractSize ?? 'missing'}@example.com`, password: 'hashed',
+    } });
+    const wallet = await prisma.wallet.create({ data: {
+      userId: user.id, name: 'gate-imported-unit', mode: 'LIVE',
+      exchange: 'GATEIO', marketType: 'FUTURES', baseCurrency: 'USDT',
+    } });
+    const position = await prisma.position.create({ data: {
+      userId: user.id, walletId: wallet.id, symbol: 'BTCUSDT', side: 'LONG',
+      status: 'OPEN', quantity: 100, entryPrice: 100, contractSize,
+      origin: 'EXCHANGE_SYNC', managementMode: 'MANUAL_MANAGED',
+    } });
+    const input = { userId: user.id, positionId: position.id, botId: null,
+      walletId: wallet.id, strategyId: null, symbol: 'BTCUSDT',
+      positionSide: 'LONG' as const, managementMode: 'MANUAL_MANAGED' as const };
+    const entry = { exchangeTradeId: 'gate-entry', exchangeOrderId: 'gate-entry-order',
+      symbol: 'BTCUSDT', side: 'BUY', price: 100, quantity: 100, notional: 100,
+      feeCost: 0.04, feeCurrency: 'USDT', feeRate: 0.0004,
+      executedAt: '2026-10-22T10:00:00.000Z' };
+    const close = { exchangeTradeId: 'gate-close', exchangeOrderId: 'gate-close-order',
+      symbol: 'BTCUSDT', side: 'SELL', price: 110, quantity: 100, notional: 110,
+      feeCost: 0.044, feeCurrency: 'USDT', feeRate: 0.0004,
+      executedAt: '2026-10-22T10:01:00.000Z' };
+    expect(await hydrateImportedPositionHistory({ ...input, positionQuantity: 100,
+      trades: [entry] })).toMatchObject({ hydrated: false });
+    expect(await backfillClosedImportedPositionHistory({ ...input, trades: [entry, close] }))
+      .toMatchObject({ hydrated: false });
+    expect(await prisma.trade.count({ where: { positionId: position.id } })).toBe(0);
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: position.id } }))
+      .toMatchObject({ realizedPnl: null, status: 'OPEN' });
   });
 });

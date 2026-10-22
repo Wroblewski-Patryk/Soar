@@ -60,10 +60,12 @@ const fixture = async (action: 'OPEN' | 'DCA' | 'CLOSE', withOrder = true,
     marketType: context.marketType, walletId: wallet.id, apiKeyId: key.id,
     positionMode: 'ONE_WAY', isActive: true, liveOptIn: true,
   } });
+  const contractSize = context.exchange === 'GATEIO' && context.marketType === 'FUTURES'
+    ? 1 : null;
   const position = action === 'OPEN' ? null : await prisma.position.create({ data: {
     userId: user.id, botId: bot.id, walletId: wallet.id,
     symbol: 'BTCUSDT', side: 'LONG', status: 'OPEN', quantity: 1,
-    entryPrice: 100, origin: 'BOT', managementMode: 'BOT_MANAGED',
+    entryPrice: 100, contractSize, origin: 'BOT', managementMode: 'BOT_MANAGED',
   } });
   if (position) await runtimePositionStateStore.setPositionRuntimeState(position.id, {
     quantity: position.quantity, averageEntryPrice: position.entryPrice,
@@ -86,7 +88,7 @@ const fixture = async (action: 'OPEN' | 'DCA' | 'CLOSE', withOrder = true,
     id: intent.id, userId: user.id, botId: bot.id, walletId: wallet.id,
     positionId: position?.id ?? null, origin: 'BOT',
     symbol: 'BTCUSDT', side: action === 'CLOSE' ? 'SELL' : 'BUY',
-    type: 'MARKET', status: 'OPEN', quantity: 1,
+    type: 'MARKET', status: 'OPEN', quantity: 1, contractSize,
     filledQuantity: 0, feePending: true, exchangeOrderId: venueId,
   } });
   await prisma.runtimeExecutionDedupe.create({ data: {

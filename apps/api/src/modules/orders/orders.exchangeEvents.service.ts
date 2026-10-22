@@ -88,7 +88,7 @@ const refreshCloseRealizedPnlForOrder = async (input: {
         id: closeTrade.positionId, userId: input.userId,
       },
       select: {
-        id: true, side: true, entryPrice: true, origin: true,
+        id: true, side: true, entryPrice: true, origin: true, contractSize: true,
       },
     });
     if (!position) continue;
@@ -103,6 +103,7 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       entryPrice: position.entryPrice,
       closePrice: closeTrade.price,
       closeQuantity: closeTrade.quantity,
+      contractSize: position.contractSize,
       exitFee: hasCanonicalImportedCloseFee ? closeTrade.fee! : input.exitFee,
       exitFeePending: hasCanonicalImportedCloseFee ? false : closeOrder.feePending,
       imported: position.origin === 'EXCHANGE_SYNC',
@@ -139,6 +140,7 @@ const ensureOrderFillRecord = async (input: {
   exchangeTradeId: string;
   price: number;
   quantity: number;
+  contractSize: number;
   feeCost: number | null;
   feeCurrency: string | null;
   executedAt: Date;
@@ -164,7 +166,7 @@ const ensureOrderFillRecord = async (input: {
       exchangeTradeId: input.exchangeTradeId,
       price: input.price,
       quantity: input.quantity,
-      notional: input.price * input.quantity,
+      notional: input.price * input.quantity * input.contractSize,
       feeCost: input.feeCost,
       feeCurrency: input.feeCurrency,
       feeRate: null,
@@ -413,6 +415,21 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
       : null,
     requestedQuantity: existingOrder.quantity,
   });
+  const gateFutures = input.sourceExchange === 'GATEIO' && input.event.marketType === 'FUTURES';
+  if (gateFutures && !isPositiveFiniteNumber(existingOrder.contractSize)) {
+    throw new Error('GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE');
+  }
+  if (gateFutures && existingOrder.position &&
+      existingOrder.position.contractSize !== existingOrder.contractSize) {
+    throw new Error('GATE_FUTURES_CONTRACT_UNIT_MISMATCH');
+  }
+  // The fill ledger may record a partial nonunit fill, but terminal lifecycle,
+  // estimated fees and realized PnL still use contract counts as base quantity.
+  if (input.event.marketType === 'FUTURES' &&
+      isPositiveFiniteNumber(existingOrder.contractSize) && existingOrder.contractSize !== 1 &&
+      (fillProgress.persistedStatus === 'FILLED' || existingOrder.status === 'FILLED')) {
+    throw new Error('EXCHANGE_FUTURES_NONUNIT_FINANCIALS_UNSUPPORTED');
+  }
   const cumulativeFilledQuantity = fillProgress.filledQuantity;
   const averageFillPrice =
     isPositiveFiniteNumber(input.event.averagePrice)
@@ -584,6 +601,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
       exchangeTradeId: input.event.exchangeTradeId,
       price: lastFillPrice,
       quantity: recordableLastFillQuantity,
+      contractSize: input.event.marketType === 'SPOT' ? 1 : existingOrder.contractSize ?? 1,
       feeCost: recordableEventFee,
       feeCurrency: input.event.feeCurrency,
       executedAt: eventAt,
