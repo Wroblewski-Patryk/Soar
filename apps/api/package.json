@@ -18,7 +18,7 @@
     "test:load:baseline": "node scripts/load-test.mjs baseline",
     "test:load:assistant-profile": "tsx scripts/assistant-load-benchmark.ts",
     "test:load:stress": "node scripts/load-test.mjs stress",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/assert-gate-nonunit-mock-dist.mjs",
     "run": "node dist/index.js",
     "start": "node scripts/start-with-migrate.mjs",
     "db:reset:local": "pnpm exec prisma migrate reset --force --skip-seed && pnpm exec prisma db seed"
