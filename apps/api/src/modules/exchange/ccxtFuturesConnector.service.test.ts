@@ -529,6 +529,27 @@ describe('CcxtFuturesConnector scaffold', () => {
       notionalCurrency: null, feeCurrency: 'USDT', feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
   });
 
+  it.each([
+    ['USDT', 'VENUE_FIELD', 0.04, 'USDT'],
+    ['BTC', 'CURRENCY_CONFLICT', null, null],
+    [undefined, 'CCXT_SETTLE_INFERRED', 0.04, 'USDT'],
+  ] as const)('checks Gate raw fee currency %s before normalizing a fill', async (
+    rawCurrency, source, feeCost, feeCurrency,
+  ) => {
+    const client = createMockClient();
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'BTC/USDT:USDT', amount: 100, price: 100,
+      fee: { cost: 0.04, currency: 'USDT' },
+      info: { size: '100', price: '100', trade_value: '100', fee_currency: rawCurrency },
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    const [fill] = await connector.fetchTradesForOrder({ symbol: 'BTCUSDT', orderId: 'o1' });
+    expect(fill).toMatchObject({ notional: 0, notionalSource: 'UNKNOWN',
+      feeCurrencySource: source, feeCost, feeCurrency });
+    expect(fill.raw).toMatchObject({ info: { trade_value: '100' } });
+  });
+
   it('rejects missing, zero and invalid raw Gate contract sizes before DCA transport', async () => {
     const ccxt = (await import('ccxt')).default;
     for (const rawMultiplier of [undefined, '0', 'NaN', 'Infinity']) {

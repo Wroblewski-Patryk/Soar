@@ -1,3 +1,5 @@
+import type { CcxtFuturesOrderFill } from './ccxtFuturesConnector.types';
+
 export type GateFuturesEconomicsSnapshot = {
   source: 'GATE_API_V4_CONTRACT_CCXT_MARKET';
   contract: string;
@@ -67,16 +69,43 @@ export const resolveCcxtFillCostEvidence = (input: {
   feeCost: number | null; feeCurrency: string | null;
 }) => {
   const reportedCost = finiteNumber(input.ccxtCost);
-  const notional = reportedCost ?? finiteNumber(input.quoteQty) ??
-    (input.price > 0 && input.quantity > 0 ? input.price * input.quantity : 0);
+  const quoteQtyField = finiteNumber(input.quoteQty);
+  const hasCcxtCost = reportedCost != null && reportedCost > 0;
+  const hasQuoteQtyField = quoteQtyField != null && quoteQtyField > 0;
+  // A Gate amount is contracts. Without a proven contract unit, price * amount
+  // has no reliable quote value; zero here is an unknown-value sentinel.
+  const notional = hasCcxtCost ? reportedCost : hasQuoteQtyField ? quoteQtyField :
+    input.gateDerivative ? 0 :
+      input.price > 0 && input.quantity > 0 ? input.price * input.quantity : 0;
   // Gate CCXT 4.5.89 derives trade.cost through safeTrade; raw trade_value's
   // currency is unspecified in Gate API v4, so this is never quote-cost proof.
-  const notionalSource = input.gateDerivative ? 'CCXT_DERIVED_UNVERIFIED' as const
-    : reportedCost != null ? 'CCXT_REPORTED_UNVERIFIED' as const
-    : 'LOCAL_FALLBACK_UNVERIFIED' as const;
-  const feeCurrencySource = input.feeCost == null || !input.feeCurrency
+  const notionalSource = hasCcxtCost
+    ? input.gateDerivative ? 'CCXT_DERIVED_UNVERIFIED' as const
+      : 'CCXT_REPORTED_UNVERIFIED' as const
+    : hasQuoteQtyField ? 'QUOTE_QTY_FIELD_UNVERIFIED' as const
+    : input.gateDerivative ? 'UNKNOWN' as const : 'LOCAL_FALLBACK_UNVERIFIED' as const;
+  const rawFeeCurrency = typeof input.rawFeeCurrency === 'string'
+    ? input.rawFeeCurrency.trim().toUpperCase() : null;
+  const normalizedFeeCurrency = input.feeCurrency?.trim().toUpperCase() ?? null;
+  const feeCurrencySource = input.feeCost == null || !normalizedFeeCurrency
     ? 'UNVERIFIED' as const
-    : input.rawFeeCurrency != null ? 'VENUE_FIELD' as const
+    : input.rawFeeCurrency != null && rawFeeCurrency !== normalizedFeeCurrency
+      ? 'CURRENCY_CONFLICT' as const
+    : rawFeeCurrency ? 'VENUE_FIELD' as const
     : input.gateDerivative ? 'CCXT_SETTLE_INFERRED' as const : 'UNVERIFIED' as const;
   return { notional, notionalSource, notionalCurrency: null, feeCurrencySource };
+};
+
+export const normalizedFillCostEvidence = (fill: CcxtFuturesOrderFill) => {
+  if (!fill.notionalSource && !fill.feeCurrencySource) return null;
+  const positiveNotional = Number.isFinite(fill.notional) && fill.notional > 0
+    ? fill.notional : null;
+  return {
+    ccxtNotional: fill.notionalSource === 'CCXT_DERIVED_UNVERIFIED' ||
+      fill.notionalSource === 'CCXT_REPORTED_UNVERIFIED' ? positiveNotional : null,
+    quoteQtyField: fill.notionalSource === 'QUOTE_QTY_FIELD_UNVERIFIED' ? positiveNotional : null,
+    notionalSource: fill.notionalSource ?? 'UNKNOWN',
+    notionalCurrency: fill.notionalCurrency ?? null,
+    feeCurrencySource: fill.feeCurrencySource ?? 'UNVERIFIED',
+  };
 };

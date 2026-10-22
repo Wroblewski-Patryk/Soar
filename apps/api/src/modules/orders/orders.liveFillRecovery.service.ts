@@ -13,7 +13,7 @@ import { reconcileSettledExchangeDcaContinuityInTransaction } from
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
-import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
+import { isMatchingGateFuturesEconomics, normalizedFillCostEvidence } from '../exchange/gateFuturesEconomics';
 
 type RecoveryResult =
   | { kind: 'APPLIED'; orderId: string; status: Order['status']; fillCount: number }
@@ -384,12 +384,7 @@ export const recoverLiveFillCandidateOnce = async (input: {
           averagePrice: snapshot.averagePrice, cumulativeFilledQuantity: cumulative,
           lastFilledQuantity: fill.quantity, lastFilledPrice: fill.price,
           fee: fill.feeCost, feeCurrency: fill.feeCurrency,
-          fillCostEvidence: fill.notionalSource && fill.feeCurrencySource ? {
-            ccxtNotional: fill.notional,
-            notionalSource: fill.notionalSource,
-            notionalCurrency: fill.notionalCurrency ?? null,
-            feeCurrencySource: fill.feeCurrencySource,
-          } : undefined,
+          fillCostEvidence: normalizedFillCostEvidence(fill) ?? undefined,
           exchangeTradeId: fill.exchangeTradeId, raw: fill.raw,
         };
         const applied = await applyLiveExchangeOrderTradeUpdateInTransaction(tx, {

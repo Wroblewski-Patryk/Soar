@@ -12,7 +12,8 @@ import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrder
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
-import { isMatchingGateFuturesEconomics, type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
+import { isMatchingGateFuturesEconomics, normalizedFillCostEvidence,
+  type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
 
 export type LiveBotContext = {
   id: string;
@@ -386,25 +387,39 @@ export const materializeLiveOrderInTransaction = async (params: {
   if (fills.length > 0) {
     const exchangeTradeIds = resolveLiveFillTradeIds(fills, payload.symbol, payload.side);
     await tx.orderFill.createMany({
-      data: fills.map((fill, index) => ({
-        userId,
-        botId: payload.botId ?? null,
-        strategyId: payload.strategyId ?? null,
-        orderId: order.id,
-        tradeId: null,
-        positionId: materializedOrder.positionId ?? null,
-        symbol: fill.symbol,
-        side: payload.side,
-        exchangeTradeId: exchangeTradeIds[index],
-        price: fill.price,
-        quantity: fill.quantity,
-        notional: fill.notional,
-        feeCost: typeof fill.feeCost === 'number' ? fill.feeCost : null,
-        feeCurrency: fill.feeCurrency,
-        feeRate: fill.feeRate,
-        executedAt: fill.executedAt ?? now,
-        raw: (fill.raw ?? {}) as Prisma.InputJsonValue,
-      })),
+      data: fills.map((fill, index) => {
+        const unit = materializedOrder.contractSize;
+        const verifiedSnapshot = isMatchingGateFuturesEconomics(
+          materializedOrder.gateFuturesEconomics, unit ?? NaN, fill.symbol);
+        const deriveLocally = verifiedSnapshot || fill.notionalSource === 'UNKNOWN';
+        if (deriveLocally && (!Number.isFinite(unit) || unit == null || unit <= 0 ||
+            (unit !== 1 && !verifiedSnapshot) || !Number.isFinite(fill.price) || fill.price <= 0 ||
+            !Number.isFinite(fill.quantity) || fill.quantity <= 0)) {
+          throw orderErrors.liveExecutionUnknown({
+            orderId: order.id, clientOrderId: payload.clientOrderId ?? '',
+          });
+        }
+        return {
+          userId,
+          botId: payload.botId ?? null,
+          strategyId: payload.strategyId ?? null,
+          orderId: order.id,
+          tradeId: null,
+          positionId: materializedOrder.positionId ?? null,
+          symbol: fill.symbol,
+          side: payload.side,
+          exchangeTradeId: exchangeTradeIds[index],
+          price: fill.price,
+          quantity: fill.quantity,
+          notional: deriveLocally ? fill.price * fill.quantity * unit! : fill.notional,
+          costEvidence: normalizedFillCostEvidence(fill) ?? Prisma.JsonNull,
+          feeCost: typeof fill.feeCost === 'number' ? fill.feeCost : null,
+          feeCurrency: fill.feeCurrency,
+          feeRate: fill.feeRate,
+          executedAt: fill.executedAt ?? now,
+          raw: (fill.raw ?? {}) as Prisma.InputJsonValue,
+        };
+      }),
     });
   }
   if (materializedOrder.status === 'FILLED' && materializedOrder.positionId &&

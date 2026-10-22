@@ -1112,7 +1112,9 @@ describe('explicit LIVE fill recovery', () => {
 
   it('rebuilds a missing Gate unit-size Order only from its saved intent snapshot', async () => {
     const fx = await fixture('OPEN', false, { exchange: 'GATEIO', marketType: 'FUTURES' });
-    const one = fill(fx.venueId, 'gate-intent-snapshot', 1, 0.04);
+    const one = { ...fill(fx.venueId, 'gate-intent-snapshot', 1, 0.04),
+      notional: 0, notionalSource: 'UNKNOWN' as const,
+      feeCurrencySource: 'CCXT_SETTLE_INFERRED' as const };
     const lookup = useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1, [one]));
     await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup }))
       .resolves.toMatchObject({ kind: 'UNKNOWN', reason: 'GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE' });
@@ -1130,6 +1132,10 @@ describe('explicit LIVE fill recovery', () => {
     const position = await prisma.position.findUniqueOrThrow({ where: { id: order.positionId! } });
     expect(order.gateFuturesEconomics).toEqual(proof);
     expect(position.gateFuturesEconomics).toEqual(proof);
+    const savedFill = await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } });
+    expect(savedFill.notional).toBe(100);
+    expect(savedFill.costEvidence).toMatchObject({ ccxtNotional: null,
+      notionalSource: 'UNKNOWN', feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
     await recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup });
     expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
   });

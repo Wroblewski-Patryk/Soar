@@ -765,6 +765,7 @@ export class CcxtFuturesConnector {
       price, quantity, feeCost, feeCurrency, rawFeeCurrency: info.fee_currency,
       gateDerivative: ['gateio', 'gate'].includes(this.config.exchangeId) && this.config.marketType !== 'spot',
     });
+    const feeCurrencyConflict = costEvidence.feeCurrencySource === 'CURRENCY_CONFLICT';
     const executedAtMs =
       this.readNumber(trade.timestamp) ??
       this.readNumber(topLevel.time) ??
@@ -801,9 +802,9 @@ export class CcxtFuturesConnector {
       price,
       quantity,
       ...costEvidence,
-      feeCost,
-      feeCurrency,
-      feeRate,
+      feeCost: feeCurrencyConflict ? null : feeCost,
+      feeCurrency: feeCurrencyConflict ? null : feeCurrency,
+      feeRate: feeCurrencyConflict ? null : feeRate,
       executedAt: typeof executedAtMs === 'number' ? new Date(executedAtMs) : null,
       source,
       raw: tradeRaw,
