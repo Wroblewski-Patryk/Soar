@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-10-22",
+  "total": {
+    "total": 945,
+    "covered": 945,
+    "missing": 0
+  },
+  "categories": {
+    "apiRoutes": {
+      "total": 27,
+      "covered": 27,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "apiServices": {
+      "total": 137,
+      "covered": 137,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "apiTests": {
+      "total": 288,
+      "covered": 288,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "webPages": {
+      "total": 38,
+      "covered": 38,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "webComponents": {
+      "total": 118,
+      "covered": 118,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "webHooksAndServices": {
+      "total": 42,
+      "covered": 42,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "webTests": {
+      "total": 160,
+      "covered": 160,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "moduleDocs": {
+      "total": 48,
+      "covered": 48,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "architectureDocs": {
+      "total": 74,
+      "covered": 74,
+      "missing": 0,
+      "missingSamples": []
+    },
+    "configAndPipelines": {
+      "total": 13,
+      "covered": 13,
+      "missing": 0,
+      "missingSamples": []
+    }
+  }
+}
