@@ -10,6 +10,43 @@ bazy). Dokładny kod i test: SHA
 Niezależny odbiór tego SHA pozostaje otwarty; pełne 011A `REVIEW`,
 wydanie `NO-GO`.
 
+## Niezależny review i korekta portów QA
+
+Koordynator przekazał ograniczony **statyczny PASS** niezależnego
+reviewera dla końcowego SHA `91ab6a05064465205b3efe66e37912c576f7cc29`.
+Niezależny runtime QA tego wyniku jest **BLOCKED przed 10-minutową
+próbą**: test i jego proces potomny wymuszały porty autora
+`127.0.0.1:62436/62439`, zajęte przez zachowane własne kontenery.
+Nie ma niezależnego `1/1 PASS` procesu i nie należy przenosić
+autorskiego wyniku z SHA `78cf2ac89890d52116bb7abac4d1c56d146c2023`
+na odbiór QA.
+
+Minimalna korekta na kodowym SHA
+`dbf3a53e18474317b65c9fce44bf1c6feb6d945b`, tree
+`760f034d27d3539e7c71b13a9b530f95ec9b7d57`, dopuszcza jawne
+niestandardowe porty PostgreSQL i Redis na `127.0.0.1`, nadal wymaga
+osobnej bazy `soar_011a_alice_raw_natural_test`, opt-in oraz
+domyślnego `BACKTEST_LEASE_MS=600000`. Rodzic przekazuje swoje adresy
+przez środowisko do child workera. Nowa mała kontrola uruchamia **ten
+sam proces potomny** z portami `65136/65139`, odczytuje jego widok
+hostów, portów i nazwy bazy, po czym proces kończy się przed
+połączeniem z DB/Redis. Nie wypisuje danych uwierzytelniających.
+Na tym exact SHA API typecheck i celowany Vitest: `1 PASS / 1 SKIP`
+(`SKIP` to pełna naturalna próba), exit `0`. Log
+`%TEMP%/soar-011a-alice-raw-v4-qa-ports-dbf3a53e-20261022.log`,
+SHA-256
+`2e24b4eea60118b8fa9d084e87b46ee239f1e05fc06f33af01bed499c97cfd7d`.
+Pełnego 10-minutowego proof nie uruchamiano ponownie na tym SHA.
+
+Następny krok to niezależny QA na **własnej świeżej** `_test` i Redis
+pod własnymi portami loopback: ustawić odpowiednio `TEST_DATABASE_URL`
+i `REDIS_URL`, oba opt-in `RUN_011A_RAW_V4_JOB_PROOF=1` i
+`RUN_011A_ALICE_RAW_V4_NATURAL_QUEUE_PROOF=1`, oraz ścieżkę do
+zamrożonych plików `RUN_011A_ALICE_RAW_SOURCE_DIR`. Runtime Vitest
+przekazuje wybrany `TEST_DATABASE_URL` jako `DATABASE_URL` procesowi
+potomnemu. Dopiero niezależny pełny wynik może zamknąć tę blokadę QA;
+produkcja, rzeczywiste LIVE i pełne 011A pozostają bez odbioru.
+
 ## Źródło i środowisko
 
 Zachowano publiczny Binance USD-M `ALICEUSDT-trades-2026-10-18.zip`
