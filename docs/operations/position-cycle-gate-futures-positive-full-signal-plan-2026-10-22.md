@@ -10,7 +10,7 @@ sygnałem, a 011 obejmuje Binance FUTURES dodatnie DCA/TTP z pełnym sygnałem.
 
 - Jedna zapisana strategia, jeden bot na jedną aktywną grupę dla każdego
   trybu, ten sam indeksowany ciąg świec dla BACKTEST, PAPER i wewnętrznego
-  Gate.io FUTURES mock LIVE. Zwykłe `MOMENTUM(1) > 0,5` daje LONG na świecy
+  Gate.io FUTURES mock LIVE. Zwykłe `MOMENTUM(2) > 0,5` daje LONG na świecy
   2; późniejszy brak wejścia daje HOLD bez EXIT mimo zapisanego
   `noMatchAction=EXIT`.
 - Taśma zamknięć: `0,2 → 1 → 1 → 0,99 → 1,24 → 1,13 → 1,13`.
@@ -33,6 +33,12 @@ sygnałem, a 011 obejmuje Binance FUTURES dodatnie DCA/TTP z pełnym sygnałem.
 - Osobny replay tego samego OHLC bez kolejności ticków ma zachowawczo
   odroczyć TTP do kolejnej świecy. Fixture nie może zaszczepiać stanu
   ochrony ani podawać bezpośredniego ENTRY lub wymuszonego HOLD.
+
+Errata planu przed ponowną próbą: bieżący endpoint zapisu strategii odrzucił
+`MOMENTUM(1)` kodem 400, zgodnie z kontraktem okresu `2..255`. Okres 2 daje
+LONG na świecy 2 względem świecy 0 i zanikanie wejścia na świecy 3; pozostała
+taśma, strategia i kryteria są bez zmian. Nie traktować tego odrzucenia jako
+wyniku odbioru trzech trybów.
 
 ## Wykonanie i granice
 
