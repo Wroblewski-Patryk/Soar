@@ -376,6 +376,31 @@ export const materializeLiveOrderInTransaction = async (params: {
       !payload.runtimeSessionId) {
     throw new Error('Runtime OPEN session missing from filled intent');
   }
+  const savedIntent = await tx.liveOrderIntent.findUnique({
+    where: { id: order.id }, select: { userId: true, symbol: true,
+      exchange: true, marketType: true, payload: true },
+  });
+  if (fills.length > 0 && (!savedIntent || savedIntent.userId !== userId ||
+      savedIntent.symbol !== order.symbol)) {
+    throw orderErrors.liveExecutionUnknown({
+      orderId: order.id, clientOrderId: payload.clientOrderId ?? '',
+    });
+  }
+  const gateFutures = savedIntent?.exchange === 'GATEIO' && savedIntent.marketType === 'FUTURES';
+  const intentPayload = savedIntent?.payload && typeof savedIntent.payload === 'object' &&
+    !Array.isArray(savedIntent.payload) ? savedIntent.payload as Record<string, unknown> : null;
+  const savedUnit = order.contractSize;
+  const savedUnitValid = typeof savedUnit === 'number' && Number.isFinite(savedUnit) && savedUnit > 0;
+  const verifiedGateEconomics = savedUnitValid && intentPayload?.contractSize === savedUnit &&
+    isMatchingGateFuturesEconomics(order.gateFuturesEconomics, savedUnit ?? NaN, order.symbol) &&
+    isMatchingGateFuturesEconomics(intentPayload?.gateFuturesEconomics, savedUnit ?? NaN, order.symbol);
+  if (gateFutures && (!savedUnitValid ||
+      (savedUnit !== 1 && (!verifiedGateEconomics || order.status === 'FILLED' ||
+        params.applyFillLifecycle)))) {
+    throw orderErrors.liveExecutionUnknown({
+      orderId: order.id, clientOrderId: payload.clientOrderId ?? '',
+    });
+  }
   const lifecycle = params.applyFillLifecycle
     ? await applyOrderFillLifecycleInTransaction(tx, {
         userId, orderId: order.id, mode: 'LIVE', fillPrice, fillQuantity, filledAt: now,
@@ -389,12 +414,14 @@ export const materializeLiveOrderInTransaction = async (params: {
     await tx.orderFill.createMany({
       data: fills.map((fill, index) => {
         const unit = materializedOrder.contractSize;
-        const verifiedSnapshot = isMatchingGateFuturesEconomics(
+        const verifiedSnapshot = verifiedGateEconomics && isMatchingGateFuturesEconomics(
           materializedOrder.gateFuturesEconomics, unit ?? NaN, fill.symbol);
         const deriveLocally = verifiedSnapshot || fill.notionalSource === 'UNKNOWN';
-        if (deriveLocally && (!Number.isFinite(unit) || unit == null || unit <= 0 ||
+        const invalidLocalCalculation = deriveLocally &&
+          (!Number.isFinite(unit) || unit == null || unit <= 0 ||
             (unit !== 1 && !verifiedSnapshot) || !Number.isFinite(fill.price) || fill.price <= 0 ||
-            !Number.isFinite(fill.quantity) || fill.quantity <= 0)) {
+            !Number.isFinite(fill.quantity) || fill.quantity <= 0);
+        if ((gateFutures && unit !== 1 && !verifiedSnapshot) || invalidLocalCalculation) {
           throw orderErrors.liveExecutionUnknown({
             orderId: order.id, clientOrderId: payload.clientOrderId ?? '',
           });

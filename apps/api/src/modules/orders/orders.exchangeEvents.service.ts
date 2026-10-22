@@ -25,6 +25,7 @@ import { tryRebasePositionManagementProtection } from '../engine/positionManagem
 import { protectionMatchesEvidence, readRuntimeProtectionEvidence } from '../engine/runtimePositionProtectionEvidence.service';
 import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
+import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
 import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
 import { writeRuntimeTelemetryFromExchangeFill } from './orders.runtimeTelemetryFromFill';
 import {
@@ -420,6 +421,11 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
   const gateFutures = input.sourceExchange === 'GATEIO' && input.event.marketType === 'FUTURES';
   if (gateFutures && !isPositiveFiniteNumber(existingOrder.contractSize)) {
     throw new Error('GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE');
+  }
+  if (gateFutures && existingOrder.contractSize !== 1 &&
+      !isMatchingGateFuturesEconomics(existingOrder.gateFuturesEconomics,
+        existingOrder.contractSize ?? NaN, existingOrder.symbol)) {
+    throw new Error('GATE_FUTURES_ECONOMICS_SNAPSHOT_UNAVAILABLE');
   }
   if (gateFutures && existingOrder.position &&
       existingOrder.position.contractSize !== existingOrder.contractSize) {

@@ -14,6 +14,7 @@ import { assertExistingGateEntryOrderContractUnit } from './orders.positionScope
 import { ORDER_ERROR_CODES } from './orders.errors';
 import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
 import type { GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
+import type { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
 
 const users: string[] = [];
 const password = 'GateEntryTest1234';
@@ -276,27 +277,48 @@ describe('Gate FUTURES ENTRY active Order unit', () => {
         contractSize: 0.01, gateFuturesEconomics: proof,
         exchangeOrderId: 'gate-snapshot-fill-venue',
       } };
-    const fills = [{ exchangeTradeId: 'gate-snapshot-fill-trade',
+    const fill: CcxtFuturesOrderFill = { exchangeTradeId: 'gate-snapshot-fill-trade',
       exchangeOrderId: input.exchangeOrderId, symbol: 'BTCUSDT', side: 'buy',
-      price: 100, quantity: 100, notional: 0, notionalSource: 'UNKNOWN' as const,
+      price: 100, quantity: 100, notional: 10000,
+      notionalSource: 'CCXT_DERIVED_UNVERIFIED',
       notionalCurrency: null, feeCost: 0.04, feeCurrency: 'USDT',
-      feeCurrencySource: 'CCXT_SETTLE_INFERRED' as const, feeRate: null,
-      executedAt: now, source: 'fetchMyTrades' as const, raw: { trade_value: '100' } }];
-    const materialize = (tx: Parameters<NonNullable<Parameters<typeof createOrderForLiveIntent>[0]['materialize']>>[0],
+      feeCurrencySource: 'CCXT_SETTLE_INFERRED', feeRate: null,
+      executedAt: now, source: 'fetchMyTrades', raw: { trade_value: '100' } };
+    const materialize = (fillRow: CcxtFuturesOrderFill) => (tx: Parameters<NonNullable<Parameters<typeof createOrderForLiveIntent>[0]['materialize']>>[0],
       order: Parameters<NonNullable<Parameters<typeof createOrderForLiveIntent>[0]['materialize']>>[1]) =>
       materializeLiveOrderInTransaction({ tx, order, userId: user.id, payload,
-        fillPrice: 100, fillQuantity: 100, applyFillLifecycle: false, fills, now });
+        fillPrice: 100, fillQuantity: 100, applyFillLifecycle: false, fills: [fillRow], now });
+    for (const source of ['UNKNOWN', 'CCXT_DERIVED_UNVERIFIED',
+      'QUOTE_QTY_FIELD_UNVERIFIED', 'CCXT_REPORTED_UNVERIFIED',
+      'LOCAL_FALLBACK_UNVERIFIED', undefined] as const) {
+      await expect(createOrderForLiveIntent({ ...input,
+        data: { ...input.data, gateFuturesEconomics: undefined },
+        materialize: materialize({ ...fill, notionalSource: source }) }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      expect(await prisma.order.count({ where: { id: intent.id } })).toBe(0);
+      expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(0);
+    }
     await expect(createOrderForLiveIntent({ ...input,
-      data: { ...input.data, gateFuturesEconomics: undefined }, materialize }))
+      data: { ...input.data, gateFuturesEconomics: { ...proof, contractType: 'inverse' } },
+      materialize: materialize(fill) }))
       .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
-    expect(await prisma.order.count({ where: { id: intent.id } })).toBe(0);
-    await expect(createOrderForLiveIntent({ ...input, materialize }))
+    await prisma.liveOrderIntent.update({ where: { id: intent.id },
+      data: { payload: { contractSize: 0.01 } } });
+    await expect(createOrderForLiveIntent({ ...input, materialize: materialize(fill) }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+    await prisma.liveOrderIntent.update({ where: { id: intent.id },
+      data: { payload: { contractSize: 0.01, gateFuturesEconomics: proof } } });
+    await expect(createOrderForLiveIntent({ ...input,
+      data: { ...input.data, status: 'FILLED' }, materialize: materialize(fill) }))
+      .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+    expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(0);
+    await expect(createOrderForLiveIntent({ ...input, materialize: materialize(fill) }))
       .resolves.toMatchObject({ reused: false });
     const saved = await prisma.orderFill.findFirstOrThrow({ where: { orderId: intent.id } });
     expect(saved.notional).toBe(100);
-    expect(saved.costEvidence).toMatchObject({ ccxtNotional: null,
-      notionalSource: 'UNKNOWN', feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
-    await expect(createOrderForLiveIntent({ ...input, materialize }))
+    expect(saved.costEvidence).toMatchObject({ ccxtNotional: 10000,
+      notionalSource: 'CCXT_DERIVED_UNVERIFIED', feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
+    await expect(createOrderForLiveIntent({ ...input, materialize: materialize(fill) }))
       .resolves.toMatchObject({ reused: true });
     expect(await prisma.orderFill.count({ where: { orderId: intent.id } })).toBe(1);
   });

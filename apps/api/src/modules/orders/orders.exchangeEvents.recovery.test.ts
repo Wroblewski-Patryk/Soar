@@ -228,6 +228,24 @@ describe('full exchange fill handler recovery', () => {
       userId: user.id, sourceExchange: 'GATEIO', event,
     });
 
+    for (const source of ['UNKNOWN', 'CCXT_DERIVED_UNVERIFIED',
+      'QUOTE_QTY_FIELD_UNVERIFIED'] as const) {
+      await expect(apply({ ...partial, fillCostEvidence: {
+        ccxtNotional: source === 'UNKNOWN' ? null : 10000,
+        notionalSource: source, notionalCurrency: null,
+        feeCurrencySource: 'CCXT_SETTLE_INFERRED',
+      } })).rejects.toThrow('GATE_FUTURES_ECONOMICS_SNAPSHOT_UNAVAILABLE');
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(0);
+    }
+    const proof = { source: 'GATE_API_V4_CONTRACT_CCXT_MARKET',
+      contract: 'BTC_USDT', contractType: 'direct', linear: true, inverse: false,
+      quote: 'USDT', settle: 'USDT', quantoMultiplier: 0.01, contractSize: 0.01 };
+    await prisma.order.update({ where: { id: order.id }, data: {
+      gateFuturesEconomics: { ...proof, contractType: 'inverse' },
+    } });
+    await expect(apply(partial)).rejects.toThrow('GATE_FUTURES_ECONOMICS_SNAPSHOT_UNAVAILABLE');
+    expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(0);
+    await prisma.order.update({ where: { id: order.id }, data: { gateFuturesEconomics: proof } });
     await apply(partial);
     await apply(partial);
     const fills = await prisma.orderFill.findMany({ where: { orderId: order.id } });
