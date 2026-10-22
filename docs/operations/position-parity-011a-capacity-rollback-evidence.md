@@ -31,6 +31,9 @@ klines. Walidator zwrócił `BACKTEST_INTRABAR_SOURCE_OHLC_MISMATCH`
 bez snapshotu i PnL. Test celowo użył potem spójnych podokien z tych
 samych dużych ZIP: BTCUSDT 02:18–03:48 UTC (90 świec, 41 022 agregaty)
 oraz ETHUSDT 03:14–04:00 UTC (46 świec, 19 383 agregaty).
+Powtórny odczyt na SHA `c82a63746ec2ff07656049944b0053fe28def08c`
+pokazał dokładne różnice na ośmiu parach sąsiednich minut i zgodność
+oficjalnego archiwum klines z REST: [protokół 120 minut](position-parity-011a-120-minute-source-reconciliation-2026-10-22.md).
 Oba przeszły checksum, sekwencję, OHLCV, v3 i odczyt offline z DB;
 snapshot zawierał po jednym rekordzie brzegowym z każdej strony.
 Wybór spójnych podokien jest celowany i nie szacuje częstości sukcesu.
