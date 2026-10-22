@@ -1,6 +1,9 @@
 # 011A: lokalny odbiór opt-in snapshotu v4/raw-trades
 
-**Status:** ograniczony lokalny PASS kodu i odczytu offline. Pełne 011A
+**Status:** historyczny lokalny PASS źródła i odczytu offline na podanym
+niżej SHA; niezależny odbiór adaptera wykazał brak walidacji giełdy,
+rynku, timeframe i limitu żądania. [Korekta granicy adaptera](position-parity-011a-v4-timeline-market-fence-evidence-2026-10-22.md)
+ma osobny lokalny dowód i czeka na ponowny niezależny odbiór. Pełne 011A
 pozostaje `REVIEW`, wydanie, produkcyjny BACKTEST writer i LIVE `NO-GO`.
 Kodowy commit testowany na czystym śledzonym drzewie:
 `08f9a5e7dccff6bec807ae00394662a3f7615556`, tree
