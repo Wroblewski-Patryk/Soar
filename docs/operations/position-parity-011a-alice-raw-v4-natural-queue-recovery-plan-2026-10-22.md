@@ -31,11 +31,14 @@ Oczekiwany rachunek trwały z poprzedniego pełnego joba: 5 trades,
 9 wkładów (5 ENTRY, 4 DCA), fee `0,72035` USDT, net PnL
 `-0,16687` USDT, jeden gotowy raport.
 
-Wykorzystać wyłącznie własną PostgreSQL
-`soar_011a_raw_foundation_test` na `127.0.0.1:62436` i własny Redis
+Wykorzystać wyłącznie nową pustą bazę PostgreSQL
+`soar_011a_alice_raw_natural_test` na istniejącym własnym kontenerze
+`127.0.0.1:62436` i własny Redis
 `127.0.0.1:62439`, z nową unikalną nazwą kolejki. Źródłowe pliki
 pozostają w `%TEMP%/soar-011a-alice-raw-20261022/`; żaden worker
-nie używa sieci. Nie resetować bazy/Redis ani cudzych rekordów.
+nie używa sieci. Przed startem blob o zamrożonym ZIP SHA musi mieć
+licznik 0, po zapisie pierwszego workera 1; test nie może korzystać z
+bloba poprzedniego joba. Nie resetować bazy/Redis ani cudzych rekordów.
 
 ## Jedna próba naturalnego lease
 
