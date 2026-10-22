@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { createRequire } from 'node:module';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import ts from 'typescript';
 
 const distPath = fileURLToPath(new URL('../dist/', import.meta.url));
 const verifierPath = fileURLToPath(new URL(
@@ -14,9 +14,6 @@ const issuerPath = fileURLToPath(new URL(
 assert.ok(existsSync(verifierPath), 'Build the API before checking the production artifact');
 assert.ok(!existsSync(issuerPath), 'Test-only permit issuer must be absent from dist');
 
-const exported = Object.keys(createRequire(import.meta.url)(verifierPath));
-assert.deepEqual(exported, ['matchesInternalGateNonunitMockPermit'],
-  'Gate nonunit production verifier may export only the permit check');
 const forbidden = /BEGIN PRIVATE KEY|createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|\bissuePermit\b|internalGateNonunitMockAdmission/;
 const checkDirectory = (directory) => {
   for (const entry of readdirSync(directory, { withFileTypes: true }).sort((a, b) =>
@@ -35,4 +32,46 @@ const checkDirectory = (directory) => {
   }
 };
 checkDirectory(distPath);
+
+// Parse the emitted CommonJS module without loading or executing it. Any new
+// top-level statement or export requires review before this build can pass.
+const source = ts.createSourceFile(verifierPath, readFileSync(verifierPath, 'utf8'),
+  ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
+assert.equal(source.parseDiagnostics.length, 0, 'Gate nonunit verifier must parse as JavaScript');
+const describeStatement = (statement) => {
+  if (ts.isExpressionStatement(statement)) {
+    const expression = statement.expression;
+    if (ts.isStringLiteral(expression) && expression.text === 'use strict') return 'strict';
+    if (statement.getText(source) ===
+        'Object.defineProperty(exports, "__esModule", { value: true });') return 'es-module';
+    if (ts.isBinaryExpression(expression) &&
+        expression.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+        ts.isPropertyAccessExpression(expression.left) &&
+        ts.isIdentifier(expression.left.expression) &&
+        expression.left.expression.text === 'exports' &&
+        expression.left.name.text === 'matchesInternalGateNonunitMockPermit') {
+      if (expression.right.getText(source) === 'void 0') return 'export-init';
+      if (ts.isIdentifier(expression.right) &&
+          expression.right.text === 'matchesInternalGateNonunitMockPermit') return 'export-final';
+    }
+  }
+  if (ts.isVariableStatement(statement) && statement.declarationList.declarations.length === 1) {
+    const declaration = statement.declarationList.declarations[0];
+    if (ts.isIdentifier(declaration.name)) {
+      const { text: name } = declaration.name;
+      if (name === 'node_crypto_1' &&
+          declaration.initializer?.getText(source) === 'require("node:crypto")') return 'crypto';
+      if (name === 'publicKey' && declaration.initializer &&
+          ts.isNoSubstitutionTemplateLiteral(declaration.initializer))
+        return 'public-key';
+      if ((name === 'localTestDatabase' || name === 'matchesInternalGateNonunitMockPermit') &&
+          declaration.initializer && ts.isArrowFunction(declaration.initializer)) return name;
+    }
+  }
+  return 'unexpected';
+};
+assert.deepEqual(source.statements.map(describeStatement), [
+  'strict', 'es-module', 'export-init', 'crypto', 'public-key',
+  'localTestDatabase', 'matchesInternalGateNonunitMockPermit', 'export-final',
+], 'Gate nonunit verifier has unexpected top-level code or exports');
 process.stdout.write('Gate nonunit production artifact: verification only\n');
