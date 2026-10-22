@@ -197,6 +197,103 @@ describe("HomeLiveWidgets manual order", () => {
     return view!;
   };
 
+  const renderQuantityGridForm = async (
+    locale: "pl" | "en",
+    quantityConstraints: {
+      amountPrecision: number;
+      amountPrecisionMode: "TICK_SIZE" | "DECIMAL_PLACES";
+      amountStep: number;
+    }
+  ) => {
+    listBotsMock.mockResolvedValue([{
+      id: "bot-grid-form",
+      name: "Grid form bot",
+      mode: "PAPER",
+      exchange: "GATEIO",
+      marketType: "FUTURES",
+      paperStartBalance: 1000,
+      positionMode: "ONE_WAY",
+      isActive: true,
+      liveOptIn: false,
+      maxOpenPositions: 2,
+      symbolGroup: { id: "grid-group", name: "Grid", symbols: ["NGUSDT"] },
+    }]);
+    listBotRuntimeSessionsMock.mockResolvedValue([]);
+    getBotRuntimeGraphMock.mockResolvedValue({ marketGroups: [] });
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-grid-form",
+      symbol: "NGUSDT",
+      mode: "PAPER",
+      orderType: "MARKET",
+      marginMode: "ISOLATED",
+      leverage: 5,
+      priceReference: { markPrice: 0.25, source: "exchange_mark" },
+      quantityConstraints: {
+        minAmount: 1,
+        minNotional: 5.1,
+        minExecutableQty: 60,
+        contractSize: 10,
+        ...quantityConstraints,
+      },
+      sideAwarePreview: {
+        side: "BUY", requestedQuantity: null, estimatedNotional: null,
+        estimatedMargin: null, maxOpenPositions: 2,
+      },
+    });
+    await renderSubjectSettled(locale);
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-price-input")).toHaveValue(0.25);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveAttribute(
+        "step", String(quantityConstraints.amountStep)
+      );
+    });
+  };
+
+  it.each(["pl", "en"] as const)(
+    "blocks an off-grid integer contract in the %s manual form with an accessible error",
+    async (locale) => {
+      await renderQuantityGridForm(locale, {
+        amountPrecision: 1, amountPrecisionMode: "TICK_SIZE", amountStep: 1,
+      });
+      const quantity = screen.getByTestId("manual-order-quantity-input");
+      fireEvent.change(quantity, { target: { value: "60.5" } });
+      await waitFor(() => {
+        expect(quantity).toHaveAttribute("aria-invalid", "true");
+        expect(screen.getByTestId("manual-order-min-qty-helper")).toHaveTextContent(
+          locale === "pl" ? "Ilość musi odpowiadać krokowi giełdy 1." :
+            "Quantity must match the exchange step of 1."
+        );
+        expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(null);
+      });
+      expect(quantity).toHaveAttribute("aria-describedby", "manual-order-quantity-helper");
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByRole("button", {
+        name: /Otworz zlecenie reczne|Open manual order/i,
+      })).toBeDisabled();
+      expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+    }
+  );
+
+  it("accepts 60.5 for decimal-places metadata in the manual form and quotes contract margin", async () => {
+    await renderQuantityGridForm("en", {
+      amountPrecision: 1, amountPrecisionMode: "DECIMAL_PLACES", amountStep: 0.1,
+    });
+    const quantity = screen.getByTestId("manual-order-quantity-input");
+    fireEvent.change(quantity, { target: { value: "60.5" } });
+    await waitFor(() => {
+      expect(quantity).toHaveAttribute("aria-invalid", "false");
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(30.25);
+    });
+    const submit = screen.getByRole("button", { name: /Open manual order/i });
+    expect(submit).toBeEnabled();
+    fireEvent.click(submit);
+    await waitFor(() => {
+      expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+        botId: "bot-grid-form", symbol: "NGUSDT", quantity: 60.5, price: 0.25,
+      }));
+    });
+  });
+
   it("opens manual dashboard order through shared order endpoint contract", async () => {
     listBotsMock.mockResolvedValue([
       {
