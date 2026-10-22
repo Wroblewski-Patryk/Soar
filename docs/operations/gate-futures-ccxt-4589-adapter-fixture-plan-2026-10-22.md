@@ -145,3 +145,21 @@ od dodatniego `order_size_min` dają niekompletne reguły (`minAmount` lub
 przed intentem i `createOrder`; test może podać wyłącznie syntetyczny
 `minNotional=1` do izolacji powodu odmowy. Rzeczywistego minimum Gate
 nie wolno wyprowadzać z ceny ani tej fixture.
+
+## Wynik uzupełniającego testu offline
+
+Test RED wykazał, że CCXT przy brakującym `order_size_min` raportuje
+domyślny `precision.amount=1`, a Soar przyjmował ten krok jako wiarygodny.
+Adapter porównuje teraz surowe `order_size_min` z `market.limits.amount.min`
+oraz `enable_decimal` z krokiem: dla rynku integer wymagany jest krok 1 i
+całkowite dodatnie minimum, dla rynku decimal krok równy dodatniemu minimum.
+Brak, zero, niepoprawna lub niespójna wartość daje `minAmount` albo
+`amountPrecision=null`, zanim resolver DCA może dopuścić zlecenie.
+
+Izolowane wywołania CCXT z atrapą transportu potwierdziły oba wiersze
+fixture: integer `2` kontrakty → `0,0002` BTC i `10` USDT, fractional
+`1,7` kontraktu → `0,017` ETH i `34` USDT, fill `1,3` → `26` USDT,
+trade `0,3` → `6` USDT. `fetchOrder` i `fetchMyTrades` zachowały kontrakty
+i cost; nagłówek decimal występuje na obu podpisanych requestach FUTURES.
+`limits.cost.min` pozostaje `null`; runtime nonunit DCA nadal odmawia,
+bez realnego submitu i bez dowodu Gate lub produkcji.

@@ -292,7 +292,7 @@ describe('CcxtFuturesConnector scaffold', () => {
         type: 'swap',
         swap: true,
         contractSize: 10,
-        info: { quanto_multiplier: '10' },
+        info: { quanto_multiplier: '10', order_size_min: '1', enable_decimal: false },
         limits: { amount: { min: 1 }, cost: {} },
         precision: { amount: 1 },
       },
@@ -368,7 +368,7 @@ describe('CcxtFuturesConnector scaffold', () => {
         type: 'swap',
         swap: true,
         contractSize: 10,
-        info: { quanto_multiplier: '10' },
+        info: { quanto_multiplier: '10', order_size_min: '1', enable_decimal: false },
         limits: { amount: { min: 1 }, cost: {} },
         precision: { amount: 1 },
       },
@@ -414,6 +414,9 @@ describe('CcxtFuturesConnector scaffold', () => {
       name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01',
       order_size_min: '0.1', enable_decimal: true, order_price_round: '0.1', status: 'trading',
     }, 'USDT');
+    if (!btc || !eth || btc.contractSize == null || eth.contractSize == null) {
+      throw new Error('Offline Gate market fixture did not parse');
+    }
     gate.setMarkets([btc, eth]);
     await gate.loadMarkets();
 
@@ -445,6 +448,9 @@ describe('CcxtFuturesConnector scaffold', () => {
     expect(gate.sign('usdt/orders', ['private', 'futures'], 'POST', {
       contract: 'ETH_USDT', size: '1.7', price: '0', tif: 'ioc',
     }).headers?.['X-Gate-Size-Decimal']).toBe('1');
+    expect(gate.sign('usdt/orders', ['private', 'futures'], 'POST', {
+      contract: 'BTC_USDT', size: 2, price: '0', tif: 'ioc',
+    }).headers?.['X-Gate-Size-Decimal']).toBe('1');
     expect(gate.sign('orders', ['private', 'spot'], 'POST', {
       currency_pair: 'ETH_USDT', amount: '1.7', price: '2000', side: 'buy',
     }).headers?.['X-Gate-Size-Decimal']).toBeUndefined();
@@ -457,9 +463,20 @@ describe('CcxtFuturesConnector scaffold', () => {
       id: 'offline-trade', contract: 'ETH_USDT', size: '-0.3', price: '2000',
       order_id: 'offline-order', create_time: '1',
     };
-    gate.privateFuturesPostSettleOrders = vi.fn().mockResolvedValue(rawOrder);
-    gate.privateFuturesGetSettleOrdersOrderId = vi.fn().mockResolvedValue(rawOrder);
-    gate.privateFuturesGetSettleMyTradesTimerange = vi.fn().mockResolvedValue([rawTrade]);
+    const integerOrder = {
+      id: 'integer-order', contract: 'BTC_USDT', size: '2', left: '0',
+      price: '50000', fill_price: '50000', finish_as: 'ioc', status: 'finished', tif: 'ioc',
+    };
+    const integerTrade = {
+      id: 'integer-trade', contract: 'BTC_USDT', size: '-2', price: '50000',
+      order_id: 'integer-order', create_time: '1',
+    };
+    gate.privateFuturesPostSettleOrders = vi.fn()
+      .mockResolvedValueOnce(rawOrder).mockResolvedValueOnce(integerOrder);
+    gate.privateFuturesGetSettleOrdersOrderId = vi.fn()
+      .mockResolvedValueOnce(rawOrder).mockResolvedValueOnce(integerOrder);
+    gate.privateFuturesGetSettleMyTradesTimerange = vi.fn()
+      .mockResolvedValueOnce([rawTrade]).mockResolvedValueOnce([integerTrade]);
     const created = await gate.createOrder('ETH/USDT:USDT', 'market', 'buy', 1.7);
     expect(gate.privateFuturesPostSettleOrders).toHaveBeenCalledWith(
       expect.objectContaining({ size: '1.7' })
@@ -471,14 +488,21 @@ describe('CcxtFuturesConnector scaffold', () => {
     await expect(gate.fetchMyTrades('ETH/USDT:USDT')).resolves.toEqual([
       expect.objectContaining({ amount: 0.3, cost: 6 }),
     ]);
-    expect(gate.parseOrder({
-      id: 'integer-order', contract: 'BTC_USDT', size: '2', left: '0',
-      price: '50000', fill_price: '50000', finish_as: 'ioc', status: 'finished', tif: 'ioc',
-    }, btc)).toMatchObject({ amount: 2, filled: 2, remaining: 0 });
-    expect(gate.parseTrade({
-      id: 'integer-trade', contract: 'BTC_USDT', size: '-2', price: '50000',
-      order_id: 'integer-order', create_time: '1',
-    }, btc)).toMatchObject({ amount: 2, cost: 10 });
+    const integerCreated = await gate.createOrder('BTC/USDT:USDT', 'market', 'buy', 2);
+    expect(gate.privateFuturesPostSettleOrders).toHaveBeenLastCalledWith(
+      expect.objectContaining({ size: 2 })
+    );
+    expect(integerCreated).toMatchObject({ amount: 2, filled: 2, remaining: 0 });
+    await expect(gate.fetchOrder('integer-order', 'BTC/USDT:USDT')).resolves.toMatchObject({
+      amount: 2, filled: 2, remaining: 0,
+    });
+    await expect(gate.fetchMyTrades('BTC/USDT:USDT')).resolves.toEqual([
+      expect.objectContaining({ amount: 2, cost: 10 }),
+    ]);
+    expect(2 * btc.contractSize * 50000).toBeCloseTo(10, 12);
+    expect(1.7 * eth.contractSize * 2000).toBeCloseTo(34, 12);
+    expect(1.3 * eth.contractSize * 2000).toBeCloseTo(26, 12);
+    expect(0.3 * eth.contractSize * 2000).toBeCloseTo(6, 12);
   });
 
   it('rejects missing, zero and invalid raw Gate contract sizes before DCA transport', async () => {
@@ -503,6 +527,69 @@ describe('CcxtFuturesConnector scaffold', () => {
         rules: { ...rules, minNotional: 1 },
       })).toThrowError(/Runtime USDT DCA quantity cannot be confirmed/);
       expect(createOrder).not.toHaveBeenCalled();
+    }
+  });
+
+  it('rejects conflicting normalized Gate contract size before DCA transport', async () => {
+    const ccxt = (await import('ccxt')).default;
+    const gate = new ccxt.gate({ options: { defaultType: 'swap', unifiedAccount: false } });
+    const market = gate.parseContractMarket({
+      name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01',
+      order_size_min: '0.1', enable_decimal: true,
+      order_price_round: '0.1', status: 'trading',
+    }, 'USDT');
+    if (!market) throw new Error('Offline Gate market fixture did not parse');
+    market.contractSize = 0.02;
+    gate.setMarkets([market]);
+    const createOrder = vi.spyOn(gate, 'createOrder');
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(gate)
+    );
+    const rules = await connector.getSymbolTradingRules('ETH_USDT');
+    expect(rules.contractSize).toBeNull();
+    expect(() => resolveRuntimeDcaOrderQuantity({
+      quantity: 1, markPrice: 10, marketType: 'FUTURES',
+      rules: { ...rules, minNotional: 1 },
+    })).toThrowError(/Runtime USDT DCA quantity cannot be confirmed/);
+    expect(createOrder).not.toHaveBeenCalled();
+  });
+
+  it('rejects invalid Gate minimum and decimal step metadata before DCA transport', async () => {
+    const ccxt = (await import('ccxt')).default;
+    const fixtures = [
+      { name: 'missing minimum', min: undefined, decimal: true },
+      { name: 'zero minimum', min: '0', decimal: true },
+      { name: 'invalid minimum', min: 'NaN', decimal: true },
+      { name: 'missing decimal flag', min: '0.1', decimal: undefined },
+      { name: 'fractional minimum on integer market', min: '0.1', decimal: false },
+      { name: 'fractional step on integer market', min: '1', decimal: false, normalizedStep: 0.1 },
+      { name: 'normalized minimum differs', min: '0.1', decimal: true, normalizedMin: 0.2 },
+      { name: 'normalized step differs', min: '0.1', decimal: true, normalizedStep: 1 },
+    ] as const;
+    for (const fixture of fixtures) {
+      const gate = new ccxt.gate({ options: { defaultType: 'swap', unifiedAccount: false } });
+      const market = gate.parseContractMarket({
+        name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01',
+        order_size_min: fixture.min, enable_decimal: fixture.decimal,
+        order_price_round: '0.1', status: 'trading',
+      }, 'USDT');
+      if (!market || !market.limits.amount) {
+        throw new Error(`Offline Gate market fixture did not parse: ${fixture.name}`);
+      }
+      if ('normalizedMin' in fixture) market.limits.amount.min = fixture.normalizedMin;
+      if ('normalizedStep' in fixture) market.precision.amount = fixture.normalizedStep;
+      gate.setMarkets([market]);
+      const createOrder = vi.spyOn(gate, 'createOrder');
+      const connector = new CcxtFuturesConnector(
+        { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(gate)
+      );
+      const rules = await connector.getSymbolTradingRules('ETH_USDT');
+      expect(rules.amountPrecision, fixture.name).toBeNull();
+      expect(() => resolveRuntimeDcaOrderQuantity({
+        quantity: 1, markPrice: 10, marketType: 'FUTURES',
+        rules: { ...rules, minNotional: 1 },
+      }), fixture.name).toThrowError(/Runtime USDT DCA quantity cannot be confirmed/);
+      expect(createOrder, fixture.name).not.toHaveBeenCalled();
     }
   });
 

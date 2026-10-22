@@ -310,9 +310,12 @@ export class CcxtFuturesConnector {
     const amountLimits = (limits.amount as Record<string, unknown> | undefined) ?? {};
     const costLimits = (limits.cost as Record<string, unknown> | undefined) ?? {};
     const precision = (market?.precision as Record<string, unknown> | undefined) ?? {};
+    const normalizedMinAmount = readNumber(amountLimits.min);
+    const normalizedAmountPrecision = readNumber(precision.amount);
     const normalizedContractSize = readNumber(market?.contractSize);
     const rawGateInfo = market?.info as Record<string, unknown> | undefined;
     const rawGateContractSize = readNumber(rawGateInfo?.quanto_multiplier);
+    const rawGateMinAmount = readNumber(rawGateInfo?.order_size_min);
     // Gate's CCXT parser can turn a raw zero multiplier into contractSize=1.
     const isGateDerivative = (this.config.exchangeId === 'gateio' || this.config.exchangeId === 'gate')
       && this.config.marketType !== 'spot';
@@ -320,11 +323,20 @@ export class CcxtFuturesConnector {
       ? rawGateContractSize != null && rawGateContractSize > 0
         && normalizedContractSize === rawGateContractSize ? normalizedContractSize : null
       : normalizedContractSize;
+    const validGateMin = rawGateMinAmount != null && rawGateMinAmount > 0
+      && normalizedMinAmount === rawGateMinAmount;
+    const decimalFlag = rawGateInfo?.enable_decimal;
+    const validGateStep = typeof decimalFlag === 'boolean' && validGateMin
+      && normalizedAmountPrecision === (decimalFlag ? rawGateMinAmount : 1)
+      && (decimalFlag || Number.isInteger(rawGateMinAmount));
+    // CCXT defaults the step to 1 when Gate's decimal metadata is missing or invalid.
+    const minAmount = isGateDerivative && !validGateMin ? null : normalizedMinAmount;
+    const amountPrecision = isGateDerivative && !validGateStep ? null : normalizedAmountPrecision;
 
     return {
-      minAmount: readNumber(amountLimits.min),
+      minAmount,
       minNotional: readNumber(costLimits.min),
-      amountPrecision: readNumber(precision.amount),
+      amountPrecision,
       // CCXT precision modes: 4 = TICK_SIZE, 2 = DECIMAL_PLACES.
       // Do not guess when the client reports another mode or no mode.
       amountPrecisionMode: client.precisionMode === 4 ? 'TICK_SIZE'
