@@ -6,8 +6,11 @@
 `9b6f593b893286abc3b82b0e3730d52ef013956c`. Kod selektora
 `37ec3051ff77e7acbb37e53654a6ee060fee097a`; pełny test joba
 `5de00b2ac4e63383f860f4ca9df79e2b491cf491`, tree
-`80b1c2cf4eb030f1659798c923c4cc58c21a87eb`. Niezależny odbiór
-tego SHA pozostaje otwarty. Pełne 011A `REVIEW`, wydanie `NO-GO`.
+`80b1c2cf4eb030f1659798c923c4cc58c21a87eb`. Niezależny statyczny
+review i runtime QA dały osobne, ograniczone `PASS` na końcowym SHA
+`df72c5c40ac8203fd064164a89f3bdef7dbed72c`, tree
+`e0916dc0d1115a2acf9cea994237f445da577740`. Pełne 011A
+`REVIEW`, wydanie `NO-GO`.
 
 ## Źródło i selekcja przed jobem
 
@@ -92,15 +95,38 @@ API typecheck, `quality:guardrails`, `docs:parity:check` i
 `git diff --check` przeszły; graph drift `949/949`, brak brakujących
 ścieżek.
 
+## Niezależny odbiór końcowego SHA
+
+Niezależny statyczny reviewer potwierdził `PASS` na dokładnym SHA
+`df72c5c40ac8203fd064164a89f3bdef7dbed72c`, tree
+`e0916dc0d1115a2acf9cea994237f445da577740`, w tym oryginalną
+`.CHECKSUM` i identyfikatory źródłowych raw transakcji. To odrębny wynik
+od autorskiego testu na `5de00b2ac4e63383f860f4ca9df79e2b491cf491`.
+
+Niezależny QA uruchomił **raz, bez zmiany testu**, pełny opt-in job na tym
+samym końcowym SHA/tree we własnej izolowanej `_test` i Redisie:
+`1/1 PASS`, 100/100 świec względem klines i 1730 raw transakcji. DCA raw ID
+`394796061` poprzedziło TTP raw ID `394796067` na tej samej świecy.
+Jeden run osiągnął `COMPLETED` z jednym raportem, 5 trades i 9 wkładami;
+fee `0,72035` i net PnL `-0,16687` USDT. Odczyt źródła/timeline i
+retry ukończonego runu działały offline bez ponownego fetch i bez
+duplikatów. Odczyt SQL przed→po: run `0→1`, raport `0→1`, trades
+`0→5`, wkłady `0→9`; Redis `DBSIZE=0→0`. SHA-256 logu QA:
+`55ab3b045f104eefff4ce964abd87969e919270ec8346cd7f6bd09edb30706e9`.
+QA usunął wyłącznie swoje dwa kontenery i anonimowe woluminy; autorskie
+zasoby opisane wyżej pozostały poza zakresem jego cleanupu.
+
 ## Granica dowodu i następny odbiór
 
 To jeden lokalny BACKTEST na publicznych **raw trades** i trwały
 rachunek pierwszego DCA→późniejszego TTP. Nie dowodzi PAPER/LIVE,
 rzeczywistych filli, produkcji ani tego, że worker sam przejmie
 **niedokończony** run po `SIGKILL` i naturalnym wygaśnięciu lease.
-Ponowienie już zakończonego runu nie zastępuje tego testu. Produkcyjna
-iniekcja v4 pozostaje wyłączona; brak zatwierdzonych budżetów,
-retencji/GC, backupu i produkcyjnego readbacku.
+Ponowienie już zakończonego runu nie zastępuje tego testu. Niezależny
+`PASS` na końcowym SHA przyjmuje tylko opisany lokalny job i jego retry;
+nie zamyka procesowego `SIGKILL` ani automatycznego przejęcia po
+naturalnym lease. Produkcyjna iniekcja v4 pozostaje wyłączona; brak
+zatwierdzonych budżetów, retencji/GC, backupu i produkcyjnego readbacku.
 
 Proponowany niezależny odbiór następnego etapu: na tym samym źródle i
 strategii zatrzymać własny worker po trwałym snapshot v4, lecz przed
@@ -109,5 +135,4 @@ ręcznego enqueue/claim. Potwierdzić ten sam run ID, dokładnie jeden
 raport, 5 trades i 9 wkładów, zgodne raw ID/czas/fee/PnL, zero drugiego
 fetch ZIP/.CHECKSUM, brak duplikatów w Redis i odmowę zapisu starego
 tokenu. Zmiana/brak źródła musi dać jawne `FAILED` bez częściowego
-raportu/trades. Dopiero niezależny QA na dokładnym SHA może przyjąć
-wynik lokalny; pełne 011A pozostaje `REVIEW` i `NO-GO`.
+raportu/trades. Pełne 011A pozostaje `REVIEW` i `NO-GO`.
