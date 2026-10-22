@@ -146,6 +146,7 @@ const ensureOrderFillRecord = async (input: {
   executedAt: Date;
   venueExecutedAt: Date | null;
   raw: Prisma.InputJsonValue;
+  costEvidence?: Prisma.InputJsonValue;
 }) => {
   const existing = await input.tx.orderFill.findFirst({
     where: {
@@ -167,6 +168,7 @@ const ensureOrderFillRecord = async (input: {
       price: input.price,
       quantity: input.quantity,
       notional: input.price * input.quantity * input.contractSize,
+      costEvidence: input.costEvidence ?? Prisma.JsonNull,
       feeCost: input.feeCost,
       feeCurrency: input.feeCurrency,
       feeRate: null,
@@ -607,6 +609,7 @@ export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
       executedAt: eventAt,
       venueExecutedAt: eventTimeFromVenue ? eventAt : null,
       raw: input.event.raw as Prisma.InputJsonValue,
+      costEvidence: input.event.fillCostEvidence as Prisma.InputJsonValue | undefined,
     });
   }
 

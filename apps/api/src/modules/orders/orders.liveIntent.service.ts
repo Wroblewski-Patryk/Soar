@@ -12,6 +12,7 @@ import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrder
 import { writeRuntimeTradeTelemetry } from '../engine/runtimeTradeTelemetry.transaction';
 import { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 import type { LiveExecutionCredentialBinding } from '../exchange/exchangeAdapterBoundary.service';
+import { isMatchingGateFuturesEconomics, type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
 
 export type LiveBotContext = {
   id: string;
@@ -27,6 +28,7 @@ export type LiveOrderPayload = Omit<OpenOrderDto, 'clientOrderId'> & {
   origin?: 'USER' | 'BOT';
   clientOrderId?: string | null;
   contractSize?: number;
+  gateFuturesEconomics?: GateFuturesEconomicsSnapshot | null;
   runtimeSessionId?: string;
   runtimeDedupeKey?: string | null;
 };
@@ -77,6 +79,17 @@ export const fingerprintLiveOrderIntentPayload = (userId: string, bot: LiveBotCo
     type: payload.type,
     quantity: payload.quantity,
     contractSize: payload.contractSize ?? null,
+    gateFuturesEconomics: payload.gateFuturesEconomics ? {
+      source: payload.gateFuturesEconomics.source,
+      contract: payload.gateFuturesEconomics.contract,
+      contractType: payload.gateFuturesEconomics.contractType,
+      linear: payload.gateFuturesEconomics.linear,
+      inverse: payload.gateFuturesEconomics.inverse,
+      quote: payload.gateFuturesEconomics.quote,
+      settle: payload.gateFuturesEconomics.settle,
+      quantoMultiplier: payload.gateFuturesEconomics.quantoMultiplier,
+      contractSize: payload.gateFuturesEconomics.contractSize,
+    } : null,
     price: payload.price ?? null,
     reduceOnly: payload.reduceOnly ?? false,
   })).digest('hex');
@@ -102,6 +115,10 @@ export const persistOrReuseLiveOrderIntent = async (params: {
   const { userId, bot, payload } = params;
   const db = params.tx ?? prisma;
   if (bot.exchange === 'GATEIO' && bot.marketType === 'FUTURES') {
+    if (payload.gateFuturesEconomics && !isMatchingGateFuturesEconomics(
+      payload.gateFuturesEconomics, payload.contractSize ?? NaN, payload.symbol)) {
+      throw orderErrors.entryContractUnitUnavailable();
+    }
     if (payload.botId !== bot.id || (payload.walletId ?? null) !== bot.walletId) {
       throw orderErrors.gatePositionScopeUnverified();
     }

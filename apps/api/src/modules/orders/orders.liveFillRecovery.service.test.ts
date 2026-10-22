@@ -1093,6 +1093,47 @@ describe('explicit LIVE fill recovery', () => {
     expect((await prisma.position.findUniqueOrThrow({ where: { id: fx.position!.id } })).quantity).toBe(2);
   });
 
+  it('retains unverified Gate fill-cost provenance through recovery and replay', async () => {
+    const fx = await fixture('OPEN', true, { exchange: 'GATEIO', marketType: 'FUTURES' });
+    const one = { ...fill(fx.venueId, 'gate-cost-provenance', 1, 0.04),
+      notionalSource: 'CCXT_DERIVED_UNVERIFIED' as const, notionalCurrency: null,
+      feeCurrencySource: 'CCXT_SETTLE_INFERRED' as const,
+      raw: { trade_value: '100', fee: '0.04' } };
+    const lookup = useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1, [one]));
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup }))
+      .resolves.toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+    const saved = await prisma.orderFill.findFirstOrThrow({ where: { orderId: fx.intent.id } });
+    expect(saved.costEvidence).toMatchObject({ ccxtNotional: 100,
+      notionalSource: 'CCXT_DERIVED_UNVERIFIED', notionalCurrency: null,
+      feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup });
+    expect(await prisma.orderFill.count({ where: { orderId: fx.intent.id } })).toBe(1);
+  });
+
+  it('rebuilds a missing Gate unit-size Order only from its saved intent snapshot', async () => {
+    const fx = await fixture('OPEN', false, { exchange: 'GATEIO', marketType: 'FUTURES' });
+    const one = fill(fx.venueId, 'gate-intent-snapshot', 1, 0.04);
+    const lookup = useLookup(found(fx.candidate, fx.key.id, fx.venueId, 1, [one]));
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup }))
+      .resolves.toMatchObject({ kind: 'UNKNOWN', reason: 'GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE' });
+    expect(await prisma.order.count({ where: { id: fx.intent.id } })).toBe(0);
+    const proof = { source: 'GATE_API_V4_CONTRACT_CCXT_MARKET', contract: 'BTC_USDT',
+      contractType: 'direct', linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      quantoMultiplier: 1, contractSize: 1 };
+    await prisma.liveOrderIntent.update({ where: { id: fx.intent.id }, data: {
+      payload: { ...(fx.intent.payload as Record<string, unknown>),
+        contractSize: 1, gateFuturesEconomics: proof },
+    } });
+    await expect(recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup }))
+      .resolves.toMatchObject({ kind: 'APPLIED', status: 'FILLED' });
+    const order = await prisma.order.findUniqueOrThrow({ where: { id: fx.intent.id } });
+    const position = await prisma.position.findUniqueOrThrow({ where: { id: order.positionId! } });
+    expect(order.gateFuturesEconomics).toEqual(proof);
+    expect(position.gateFuturesEconomics).toEqual(proof);
+    await recoverLiveFillCandidateOnce({ candidate: fx.candidate, lookup });
+    expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
+  });
+
   it('recovers a finished Gate Spot intent from bounded history and order trades', async () => {
     const fx = await fixture('OPEN', false, { exchange: 'GATEIO', marketType: 'SPOT' });
     const venueOrder: CcxtFuturesOrderResult = {

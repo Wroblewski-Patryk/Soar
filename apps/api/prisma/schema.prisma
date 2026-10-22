@@ -836,6 +836,7 @@ model Position {
   entryPrice    Float
   quantity      Float
   contractSize  Float?
+  gateFuturesEconomics Json?
   leverage      Int            @default(1)
   closeReason   PositionCloseReason?
   closeInitiator PositionCloseInitiator?
@@ -906,6 +907,7 @@ model Order {
   status           OrderStatus @default(PENDING)
   quantity         Float
   contractSize     Float?
+  gateFuturesEconomics Json?
   price            Float?
   stopPrice        Float?
   filledQuantity   Float       @default(0)
@@ -1043,6 +1045,7 @@ model OrderFill {
   price           Float
   quantity        Float
   notional        Float
+  costEvidence    Json?
   feeCost         Float?
   feeCurrency     String?
   feeRate         Float?

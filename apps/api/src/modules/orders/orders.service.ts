@@ -51,7 +51,8 @@ import {
 import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
 import { writeOrderAudit } from './orders.audit';
-import { assertExistingEntryOrderContractUnit, assertPreparedGateEntryContractUnit, defaultResolveGateEntryContractSize, resolveEntryContractUnit } from './orders.quantityRules';
+import { assertExistingEntryOrderContractUnit, assertPreparedGateEntryContractUnit, defaultResolveGateEntryContractSize, resolveEntryContractUnit, type GateEntryContractEvidence } from './orders.quantityRules';
+import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 export { resolveOpenOrderPersistenceDecision, resolvePersistedLiveOrderFill } from './orders.persistenceDecision';
 
@@ -122,7 +123,7 @@ type OpenOrderDeps = {
     credentialBinding?: LiveExecutionCredentialBinding | null;
   }) => Promise<LiveExecutionResult>;
   manualOrderContextDeps?: ManualOrderContextDeps;
-  resolveGateEntryContractSize?: (symbol: string) => Promise<number | null>;
+  resolveGateEntryContractSize?: (symbol: string) => Promise<GateEntryContractEvidence>;
 };
 
 type CancelOrderDeps = {
@@ -559,15 +560,20 @@ const resolveExchangeCancelContext = (order: {
 // Shared read-only domain gate for human orders and delegated preparation.
 // Its checks must run before a delegated admission; they are not submit authority.
 export const prepareOpenOrderRiskContext = async (userId: string, payload: OpenOrderInput,
-  resolveGateEntryContractSize: (symbol: string) => Promise<number | null> = defaultResolveGateEntryContractSize,
+  resolveGateEntryContractSize: (symbol: string) => Promise<GateEntryContractEvidence> = defaultResolveGateEntryContractSize,
 ) => {
   const resolved = await resolveCanonicalBotContext(userId, payload);
   let canonicalPayload = resolved.payload;
   const { botContext } = resolved;
-  const { isGateFuturesEntry, contractSize, hasExistingIntent } = await resolveEntryContractUnit({
+  const { isGateFuturesEntry, contractSize, gateFuturesEconomics, hasExistingIntent } = await resolveEntryContractUnit({
     userId, payload: canonicalPayload, botVenue: botContext?.inheritedExecutionContext ?? null,
     resolveGateEntryContractSize });
   if (contractSize != null) canonicalPayload = { ...canonicalPayload, contractSize };
+  if (gateFuturesEconomics) canonicalPayload = { ...canonicalPayload, gateFuturesEconomics };
+  if (canonicalPayload.gateFuturesEconomics && !isMatchingGateFuturesEconomics(
+    canonicalPayload.gateFuturesEconomics, contractSize ?? NaN, canonicalPayload.symbol)) {
+    throw orderErrors.entryContractUnitUnavailable();
+  }
   if (isGateFuturesEntry && !hasExistingIntent)
     await assertExistingEntryOrderContractUnit(userId, canonicalPayload, contractSize!);
   await assertNoImplicitReverseOpenConflict({
@@ -722,6 +728,7 @@ const persistPreparedOpenOrder = async (
       status: orderPersistenceDecision.persistedStatus,
       quantity: canonicalPayload.quantity,
       contractSize: canonicalPayload.contractSize ?? null,
+      gateFuturesEconomics: canonicalPayload.gateFuturesEconomics ?? Prisma.JsonNull,
       filledQuantity: orderPersistenceDecision.persistedFilledQuantity,
       price: canonicalPayload.price,
       fee,

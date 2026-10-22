@@ -131,6 +131,13 @@ export type NormalizedBinanceOrderTradeUpdateEvent = {
   lastFilledPrice: number | null;
   fee: number | null;
   feeCurrency: string | null;
+  fillCostEvidence?: {
+    ccxtNotional: number;
+    notionalSource: 'CCXT_DERIVED_UNVERIFIED' | 'CCXT_REPORTED_UNVERIFIED' |
+      'LOCAL_FALLBACK_UNVERIFIED';
+    notionalCurrency: string | null;
+    feeCurrencySource: 'VENUE_FIELD' | 'CCXT_SETTLE_INFERRED' | 'UNVERIFIED';
+  };
   exchangeTradeId: string | null;
   raw: unknown;
 };

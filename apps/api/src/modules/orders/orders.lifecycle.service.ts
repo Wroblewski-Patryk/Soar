@@ -406,6 +406,7 @@ export const applyOrderFillLifecycleInTransaction = async (
         entryPrice: fillPrice,
         quantity: Math.max(0, targetQuantity),
         contractSize: updatedOrder.contractSize,
+        gateFuturesEconomics: updatedOrder.gateFuturesEconomics ?? Prisma.JsonNull,
         leverage,
         origin: updatedOrder.origin,
         managementMode: updatedOrder.managementMode,

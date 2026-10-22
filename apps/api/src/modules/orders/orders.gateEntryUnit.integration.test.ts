@@ -7,10 +7,12 @@ import { createExternalClientGrant } from '../externalClientGrants/externalClien
 import { bindExternalClientGrantReservationIntent } from '../externalClientGrants/externalClientGrantReservation.service';
 import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { createLiveScopedBotContext } from './orders.service.fixture';
-import { openOrder } from './orders.service';
-import { executeDurableLiveOrder, persistOrReuseLiveOrderIntent } from './orders.liveIntent.service';
+import { openOrder, prepareOpenOrderRiskContext } from './orders.service';
+import { executeDurableLiveOrder, persistOrReuseLiveOrderIntent, fingerprintLiveOrderIntentPayload } from './orders.liveIntent.service';
 import { assertExistingGateEntryOrderContractUnit } from './orders.positionScope';
 import { ORDER_ERROR_CODES } from './orders.errors';
+import { applyLiveExchangeOrderTradeUpdateEvent } from './orders.exchangeEvents.service';
+import type { GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
 
 const users: string[] = [];
 const password = 'GateEntryTest1234';
@@ -62,6 +64,89 @@ afterEach(async () => {
 });
 
 describe('Gate FUTURES ENTRY active Order unit', () => {
+  it('rejects missing, inverse and mismatched economics before intent or transport', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const payload = { botId: f.bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'LIMIT' as const, quantity: 1, price: 100, mode: 'LIVE' as const,
+      riskAck: true };
+    const direct: GateFuturesEconomicsSnapshot = {
+      source: 'GATE_API_V4_CONTRACT_CCXT_MARKET', contract: 'BTC_USDT',
+      contractType: 'direct', linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      quantoMultiplier: 1, contractSize: 1,
+    };
+    const executeLiveOrder = vi.fn();
+    for (const evidence of [null,
+      { ...direct, contractType: 'inverse' } as unknown as GateFuturesEconomicsSnapshot,
+      { ...direct, quantoMultiplier: 0.01 }]) {
+      await expect(openOrder(f.user.id, payload, { executeLiveOrder,
+        resolveGateEntryContractSize: async () => evidence })).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.entryContractUnitUnavailable,
+      });
+    }
+    expect(await prisma.liveOrderIntent.count({ where: { userId: f.user.id } })).toBe(0);
+    expect(await prisma.order.count({ where: { userId: f.user.id } })).toBe(1);
+    expect(executeLiveOrder).not.toHaveBeenCalled();
+  });
+  it('persists the direct USDT economics snapshot from intent through Order and Position', async () => {
+    const f = await fixture();
+    await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });
+    const proof: GateFuturesEconomicsSnapshot = {
+      source: 'GATE_API_V4_CONTRACT_CCXT_MARKET', contract: 'BTC_USDT',
+      contractType: 'direct', linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      quantoMultiplier: 1, contractSize: 1,
+    };
+    const payload = { botId: f.bot.id, symbol: 'BTCUSDT', side: 'BUY' as const,
+      type: 'LIMIT' as const, quantity: 1, price: 100, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: `soar_${randomUUID().replace(/-/g, '').slice(0, 22)}` };
+    const executeLiveOrder = vi.fn().mockResolvedValue({ exchangeOrderId: 'gate-proof-entry',
+      status: 'OPEN' as const });
+    const priorEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    let order;
+    try {
+      order = await openOrder(f.user.id, payload, { executeLiveOrder,
+        resolveGateEntryContractSize: async () => proof });
+    } finally { process.env.NODE_ENV = priorEnv; }
+    expect(order.gateFuturesEconomics).toEqual(proof);
+    const intent = await prisma.liveOrderIntent.findUniqueOrThrow({ where: { id: order.id } });
+    expect((intent.payload as Record<string, unknown>).gateFuturesEconomics).toEqual(proof);
+    const event = { eventType: 'ORDER_TRADE_UPDATE' as const, marketType: 'FUTURES' as const,
+      eventTime: Date.now(), transactionTime: Date.now(), symbol: 'BTCUSDT', side: 'BUY',
+      orderType: 'LIMIT', orderStatus: 'FILLED', executionType: 'TRADE',
+      exchangeOrderId: 'gate-proof-entry', clientOrderId: payload.clientOrderId,
+      averagePrice: 100, cumulativeFilledQuantity: 1, lastFilledQuantity: 1,
+      lastFilledPrice: 100, fee: 0.04, feeCurrency: 'USDT', exchangeTradeId: 'gate-proof-fill',
+      fillCostEvidence: { ccxtNotional: 100, notionalSource: 'CCXT_DERIVED_UNVERIFIED' as const,
+        notionalCurrency: null, feeCurrencySource: 'CCXT_SETTLE_INFERRED' as const }, raw: {},
+    };
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: f.user.id, event,
+      sourceExchange: 'GATEIO' });
+    const persisted = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    const position = await prisma.position.findUniqueOrThrow({ where: { id: persisted.positionId! } });
+    const fill = await prisma.orderFill.findFirstOrThrow({ where: { orderId: order.id } });
+    expect(position.gateFuturesEconomics).toEqual(proof);
+    expect(fill.costEvidence).toMatchObject({ notionalSource: 'CCXT_DERIVED_UNVERIFIED',
+      notionalCurrency: null, feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
+    const retryResolver = vi.fn().mockResolvedValue(null);
+    const preparedRetry = await prepareOpenOrderRiskContext(f.user.id, payload, retryResolver);
+    expect(preparedRetry.canonicalPayload).toMatchObject({ gateFuturesEconomics: proof });
+    expect(fingerprintLiveOrderIntentPayload(f.user.id, preparedRetry.liveBot!,
+      preparedRetry.canonicalPayload)).toBe(intent.payloadHash);
+    process.env.NODE_ENV = 'development';
+    try {
+      const retried = await openOrder(f.user.id, payload, { executeLiveOrder,
+        resolveGateEntryContractSize: retryResolver });
+      expect(retried.id).toBe(order.id);
+      expect(retried.gateFuturesEconomics).toEqual(proof);
+    } finally { process.env.NODE_ENV = priorEnv; }
+    expect(retryResolver).not.toHaveBeenCalled();
+    expect(executeLiveOrder).toHaveBeenCalledOnce();
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: f.user.id, event,
+      sourceExchange: 'GATEIO' });
+    expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(1);
+    expect(await prisma.trade.count({ where: { orderId: order.id } })).toBe(1);
+  });
   it('uses the wallet scope when no bot is supplied', async () => {
     const f = await fixture();
     await prisma.order.update({ where: { id: f.legacy.id }, data: { botId: null } });

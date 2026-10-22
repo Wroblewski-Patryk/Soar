@@ -7,6 +7,7 @@ import type {
 } from './ccxtFuturesConnector.client';
 import { normalizeCcxtFundingRatePoint, normalizeCcxtOpenInterestPoint, normalizeCcxtOrderBookPoint, normalizeCcxtPublicCandle } from './ccxtPublicMarketDataNormalizer';
 import { withLiveCreateOrderPermit } from '../orders/liveExecutionPause.service';
+import { gateFuturesEconomicsFromMarket, resolveCcxtFillCostEvidence } from './gateFuturesEconomics';
 import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicFundingRatePoint, CcxtPublicOpenInterestPoint, CcxtPublicOrderBookPoint, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
 export type { CcxtExchangeLikeClient } from './ccxtFuturesConnector.client';
@@ -283,6 +284,7 @@ export class CcxtFuturesConnector {
     amountPrecision: number | null;
     amountPrecisionMode: 'TICK_SIZE' | 'DECIMAL_PLACES' | null;
     contractSize: number | null;
+    gateFuturesEconomics: ReturnType<typeof gateFuturesEconomicsFromMarket>;
   }> {
     const client = await this.getOrCreateClient();
     const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
@@ -314,17 +316,14 @@ export class CcxtFuturesConnector {
     const normalizedAmountPrecision = readNumber(precision.amount);
     const normalizedContractSize = readNumber(market?.contractSize);
     const rawGateInfo = market?.info as Record<string, unknown> | undefined;
-    const rawGateContractSize = readNumber(rawGateInfo?.quanto_multiplier);
     const rawGateMinAmount = readNumber(rawGateInfo?.order_size_min);
     // Gate's CCXT parser can turn a raw zero multiplier into contractSize=1.
     const isGateDerivative = (this.config.exchangeId === 'gateio' || this.config.exchangeId === 'gate')
       && this.config.marketType !== 'spot';
-    const verifiedGateLinearUsdt = market?.contract === true && market?.linear === true &&
-      market?.inverse === false && market?.quote === 'USDT' && market?.settle === 'USDT';
+    const gateFuturesEconomics = isGateDerivative
+      ? gateFuturesEconomicsFromMarket(market) : null;
     const contractSize = isGateDerivative
-      ? verifiedGateLinearUsdt && rawGateContractSize != null && rawGateContractSize > 0
-        && normalizedContractSize === rawGateContractSize ? normalizedContractSize : null
-      : normalizedContractSize;
+      ? gateFuturesEconomics?.contractSize ?? null : normalizedContractSize;
     const validGateMin = rawGateMinAmount != null && rawGateMinAmount > 0
       && normalizedMinAmount === rawGateMinAmount;
     const decimalFlag = rawGateInfo?.enable_decimal;
@@ -344,6 +343,7 @@ export class CcxtFuturesConnector {
       amountPrecisionMode: client.precisionMode === 4 ? 'TICK_SIZE'
         : client.precisionMode === 2 ? 'DECIMAL_PLACES' : null,
       contractSize,
+      gateFuturesEconomics,
     };
   }
 
@@ -756,14 +756,14 @@ export class CcxtFuturesConnector {
       0;
     const price =
       this.readNumber(trade.price) ?? this.readNumber(topLevel.price) ?? this.readNumber(info.price) ?? 0;
-    const notional =
-      this.readNumber(trade.cost) ??
-      this.readNumber(topLevel.quoteQty) ??
-      this.readNumber(info.quoteQty) ??
-      (price > 0 && quantity > 0 ? price * quantity : 0);
     const { feeCost, feeCurrency, feeRate } = this.extractFee({
       ...trade,
       info,
+    });
+    const costEvidence = resolveCcxtFillCostEvidence({
+      ccxtCost: trade.cost, quoteQty: topLevel.quoteQty ?? info.quoteQty,
+      price, quantity, feeCost, feeCurrency, rawFeeCurrency: info.fee_currency,
+      gateDerivative: ['gateio', 'gate'].includes(this.config.exchangeId) && this.config.marketType !== 'spot',
     });
     const executedAtMs =
       this.readNumber(trade.timestamp) ??
@@ -800,7 +800,7 @@ export class CcxtFuturesConnector {
         null,
       price,
       quantity,
-      notional,
+      ...costEvidence,
       feeCost,
       feeCurrency,
       feeRate,

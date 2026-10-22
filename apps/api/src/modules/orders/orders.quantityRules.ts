@@ -3,16 +3,20 @@ import { Exchange } from '@prisma/client';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { prisma } from '../../prisma/client';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
+import { isMatchingGateFuturesEconomics, type GateFuturesEconomicsSnapshot } from '../exchange/gateFuturesEconomics';
 import { orderErrors } from './orders.errors';
 import { assertExistingGateEntryOrderContractUnit, assertExistingGateLinkedOrderContractUnit, canReplayClosedGatePosition,
   resolveVerifiedGateLinkedPositionUnit } from './orders.positionScope';
 import { resolveLiveClientOrderId, type LiveBotContext,
   type LiveOrderPayload } from './orders.liveIntent.service';
 
-export const defaultResolveGateEntryContractSize = async (symbol: string): Promise<number | null> => {
+export type GateEntryContractEvidence = number | GateFuturesEconomicsSnapshot | null;
+
+export const defaultResolveGateEntryContractSize = async (symbol: string): Promise<GateEntryContractEvidence> => {
   const connector = createPublicExchangeConnector({ exchange: 'GATEIO', marketType: 'FUTURES' });
   try {
-    return (await connector.getSymbolTradingRules(symbol)).contractSize ?? null;
+    const rules = await connector.getSymbolTradingRules(symbol);
+    return rules.gateFuturesEconomics ?? null;
   } catch {
     return null;
   } finally {
@@ -24,14 +28,15 @@ export const resolveEntryContractUnit = async (params: {
   userId: string;
   payload: LiveOrderPayload;
   botVenue: Pick<LiveBotContext, 'exchange' | 'marketType'> | null;
-  resolveGateEntryContractSize: (symbol: string) => Promise<number | null>;
+  resolveGateEntryContractSize: (symbol: string) => Promise<GateEntryContractEvidence>;
 }) => {
   const walletVenue = !params.botVenue && params.payload.walletId
     ? await prisma.wallet.findFirst({ where: { id: params.payload.walletId, userId: params.userId },
         select: { exchange: true, marketType: true } }) : null;
   const venue = params.botVenue ?? walletVenue;
   if (venue?.exchange !== 'GATEIO' || venue.marketType !== 'FUTURES') {
-    return { isGateFuturesEntry: false, contractSize: undefined, hasExistingIntent: false } as const;
+    return { isGateFuturesEntry: false, contractSize: undefined,
+      gateFuturesEconomics: null, hasExistingIntent: false } as const;
   }
   if (params.payload.reduceOnly === true && !params.payload.positionId) {
     throw orderErrors.reduceOnlyPositionRequired();
@@ -60,15 +65,26 @@ export const resolveEntryContractUnit = async (params: {
       userId: params.userId, botId: params.payload.botId ?? null,
       positionId: params.payload.positionId, symbol: params.payload.symbol,
       contractSize });
-    return { isGateFuturesEntry: false, contractSize, hasExistingIntent: Boolean(intent) } as const;
+    return { isGateFuturesEntry: false, contractSize,
+      gateFuturesEconomics: null, hasExistingIntent: Boolean(intent) } as const;
   }
   const observed = intent ? intentPayload?.contractSize
     : await params.resolveGateEntryContractSize(params.payload.symbol);
-  if (typeof observed !== 'number' || !Number.isFinite(observed) || observed <= 0) {
+  const contractSize = typeof observed === 'number' ? observed
+    : observed && typeof observed === 'object' && 'contractSize' in observed
+      ? observed.contractSize : null;
+  const proof = intent ? intentPayload?.gateFuturesEconomics
+    : observed && typeof observed === 'object' ? observed : null;
+  if (typeof contractSize !== 'number' || !Number.isFinite(contractSize) || contractSize <= 0) {
     throw orderErrors.entryContractUnitUnavailable();
   }
-  if (observed !== 1) throw orderErrors.entryNonunitContractUnsupported();
-  return { isGateFuturesEntry: true, contractSize: observed, hasExistingIntent: Boolean(intent) } as const;
+  if (contractSize !== 1) throw orderErrors.entryNonunitContractUnsupported();
+  if (proof != null && !isMatchingGateFuturesEconomics(proof, contractSize,
+    params.payload.symbol)) throw orderErrors.entryContractUnitUnavailable();
+  const gateFuturesEconomics = isMatchingGateFuturesEconomics(proof, contractSize,
+    params.payload.symbol) ? proof : null;
+  return { isGateFuturesEntry: true, contractSize,
+    gateFuturesEconomics, hasExistingIntent: Boolean(intent) } as const;
 };
 
 export const assertPreparedGateEntryContractUnit = (

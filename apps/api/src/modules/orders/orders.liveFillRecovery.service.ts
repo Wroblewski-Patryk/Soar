@@ -13,6 +13,7 @@ import { reconcileSettledExchangeDcaContinuityInTransaction } from
 import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
 import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
 import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
+import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
 
 type RecoveryResult =
   | { kind: 'APPLIED'; orderId: string; status: Order['status']; fillCount: number }
@@ -141,6 +142,15 @@ const createOrderFromIntent = async (
 ) => {
   const intent = await tx.liveOrderIntent.findUnique({ where: { id: candidate.intentId! } });
   if (!intent) return unknown('INTENT_MISSING');
+  const payload = intent.payload && typeof intent.payload === 'object' && !Array.isArray(intent.payload)
+    ? intent.payload as Record<string, unknown> : null;
+  const contractSize = typeof payload?.contractSize === 'number' &&
+    Number.isFinite(payload.contractSize) && payload.contractSize > 0 ? payload.contractSize : null;
+  if (candidate.exchange === 'GATEIO' && candidate.marketType === 'FUTURES' &&
+      contractSize !== 1) return unknown('GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE');
+  const gateFuturesEconomics = isMatchingGateFuturesEconomics(
+    payload?.gateFuturesEconomics, contractSize ?? NaN, candidate.symbol)
+    ? payload!.gateFuturesEconomics as Prisma.InputJsonValue : Prisma.JsonNull;
   const submission = readSubmission(intent, candidate);
   if (submission.positionId) {
     const position = await tx.position.findFirst({ where: {
@@ -155,6 +165,8 @@ const createOrderFromIntent = async (
     positionId: submission.positionId, origin: submission.origin,
     symbol: candidate.symbol, side: submission.side, type: submission.type,
     status: 'OPEN', quantity: submission.quantity, price: submission.price,
+    contractSize,
+    gateFuturesEconomics,
     filledQuantity: 0, fee: null, feeSource: 'ESTIMATED', feePending: true,
     exchangeOrderId: result.order.id, submittedAt: intent.createdAt,
   } });
@@ -372,6 +384,12 @@ export const recoverLiveFillCandidateOnce = async (input: {
           averagePrice: snapshot.averagePrice, cumulativeFilledQuantity: cumulative,
           lastFilledQuantity: fill.quantity, lastFilledPrice: fill.price,
           fee: fill.feeCost, feeCurrency: fill.feeCurrency,
+          fillCostEvidence: fill.notionalSource && fill.feeCurrencySource ? {
+            ccxtNotional: fill.notional,
+            notionalSource: fill.notionalSource,
+            notionalCurrency: fill.notionalCurrency ?? null,
+            feeCurrencySource: fill.feeCurrencySource,
+          } : undefined,
           exchangeTradeId: fill.exchangeTradeId, raw: fill.raw,
         };
         const applied = await applyLiveExchangeOrderTradeUpdateInTransaction(tx, {
