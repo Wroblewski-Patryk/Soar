@@ -23,7 +23,10 @@ export type VerifiedRawTradeSource = {
   zipSha256: string; checksumSha256: string;
   csvBytes: number; selectedTradeCount: number;
   tapeSha256: string; candlesSha256: string;
+  candleTapeSha256: string[];
   candles: RawTradeCandle[];
+  intrabarTicks?: Array<Array<{ eventTime: number; price: number;
+    sequenceId: number }>>;
   observed: Array<{ open: number; high: number; low: number;
     close: number; volume: number; tradeCount: number;
     firstTradeId: number; lastTradeId: number }>;
@@ -43,6 +46,7 @@ const canonical = (value: unknown): string => {
   }
   return JSON.stringify(value);
 };
+export const digestRawTradeCanonical = (value: unknown) => sha256(canonical(value));
 const positiveInteger = (value: unknown) => Number.isSafeInteger(value) &&
   (value as number) > 0;
 const closeEnough = (actual: number, expected: number) =>
@@ -148,6 +152,7 @@ export const verifyBinanceUsdMRawTradeSource = async (input: {
   symbol: string; day: string; candles: RawTradeCandle[];
   zipBytes?: Uint8Array; checksumBytes?: Uint8Array;
   expectedZipSha256?: string; budget?: RawTradeBudget;
+  collectTicks?: boolean;
 }): Promise<VerifiedRawTradeSource> => {
   const budget = checkBudget(input.budget);
   const { symbol, day, candles } = input;
@@ -177,6 +182,9 @@ export const verifyBinanceUsdMRawTradeSource = async (input: {
     close: NaN, volume: 0, compensation: 0, tradeCount: 0,
     firstTradeId: -1, lastTradeId: -1 }));
   const tape = createHash('sha256');
+  const candleTapes = candles.map(() => createHash('sha256'));
+  const intrabarTicks = input.collectTicks ? candles.map(() => [] as Array<{
+    eventTime: number; price: number; sequenceId: number }>) : undefined;
   let previousId = -1;
   let previousTime = -1;
   let selectedTradeCount = 0;
@@ -212,7 +220,8 @@ export const verifyBinanceUsdMRawTradeSource = async (input: {
     if (time < start || time >= end) return;
     selectedTradeCount += 1;
     if (selectedTradeCount > budget.maxSelectedTrades) fail('LIMIT');
-    const state = states[Math.floor((time - start) / 60_000)];
+    const candleIndex = Math.floor((time - start) / 60_000);
+    const state = states[candleIndex];
     if (state.tradeCount === 0) { state.open = price; state.firstTradeId = id; }
     state.high = Math.max(state.high, price);
     state.low = Math.min(state.low, price);
@@ -225,6 +234,9 @@ export const verifyBinanceUsdMRawTradeSource = async (input: {
     state.volume = next;
     state.tradeCount += 1;
     tape.update(line).update('\n');
+    candleTapes[candleIndex].update(line).update('\n');
+    intrabarTicks?.[candleIndex].push({ eventTime: time, price,
+      sequenceId: id });
   };
   let csvBytes = 0;
   let crc = 0xffffffff;
@@ -273,7 +285,9 @@ export const verifyBinanceUsdMRawTradeSource = async (input: {
   return { sourceType: RAW_TRADE_SOURCE_TYPE, symbol, day, sourceUrl,
     zipSha256, checksumSha256: sha256(checksum), csvBytes,
     selectedTradeCount, tapeSha256: tape.digest('hex'),
-    candlesSha256: sha256(canonical(candles)), candles,
+    candlesSha256: digestRawTradeCanonical(candles),
+    candleTapeSha256: candleTapes.map((hash) => hash.digest('hex')),
+    candles, intrabarTicks,
     observed: states.map(({ compensation: _compensation, ...state }) => state),
   };
 };

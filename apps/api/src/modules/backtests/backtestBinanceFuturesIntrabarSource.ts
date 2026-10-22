@@ -16,12 +16,18 @@ type AggregateTrade = {
   a: number; p: string; q: string; f: number; l: number; T: number; m: boolean;
 };
 
-export type VerifiedIntrabarProvenance = {
+export type VerifiedIntrabarProvenance = ({
   source: 'BINANCE_USDM_AGGTRADES' | 'BINANCE_USDM_AGGTRADES_ARCHIVE';
   endpoint: '/fapi/v1/aggTrades' | 'data.binance.vision';
-  symbol: string;
   firstAggregateId: number;
   lastAggregateId: number;
+} | {
+  source: 'BINANCE_USDM_TRADES_ARCHIVE';
+  endpoint: 'data.binance.vision';
+  firstAggregateId?: undefined;
+  lastAggregateId?: undefined;
+}) & {
+  symbol: string;
   firstTradeId: number;
   lastTradeId: number;
   sha256: string;
