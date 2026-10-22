@@ -7,17 +7,19 @@ commity `370d19e15f71c048409290126c22251b5635bba5` oraz
 bazy). Dokładny kod i test: SHA
 `78cf2ac89890d52116bb7abac4d1c56d146c2023`, tree
 `e9fd982cf1abbb54ad3268bc8c3517ca9c16c93c`.
-Niezależny odbiór tego SHA pozostaje otwarty; pełne 011A `REVIEW`,
-wydanie `NO-GO`.
+Niezależny statyczny i runtime QA dały osobne, ograniczone lokalne
+`PASS` na końcowym SHA kodu/dokumentacji
+`d376298e3d5cd3aa893af413c2fdf14575ec041a`. Pełne 011A
+`REVIEW`, wydanie `NO-GO`.
 
-## Niezależny review i korekta portów QA
+## Wcześniejszy blocker portów QA i korekta
 
-Koordynator przekazał ograniczony **statyczny PASS** niezależnego
-reviewera dla końcowego SHA `91ab6a05064465205b3efe66e37912c576f7cc29`.
-Niezależny runtime QA tego wyniku jest **BLOCKED przed 10-minutową
+Koordynator przekazał wcześniejszy ograniczony **statyczny PASS** niezależnego
+reviewera dla ówczesnego SHA `91ab6a05064465205b3efe66e37912c576f7cc29`.
+Niezależny runtime QA tej wcześniejszej wersji był **BLOCKED przed 10-minutową
 próbą**: test i jego proces potomny wymuszały porty autora
 `127.0.0.1:62436/62439`, zajęte przez zachowane własne kontenery.
-Nie ma niezależnego `1/1 PASS` procesu i nie należy przenosić
+Na tym SHA nie było niezależnego `1/1 PASS` procesu i nie należy przenosić
 autorskiego wyniku z SHA `78cf2ac89890d52116bb7abac4d1c56d146c2023`
 na odbiór QA.
 
@@ -38,14 +40,29 @@ SHA-256
 `2e24b4eea60118b8fa9d084e87b46ee239f1e05fc06f33af01bed499c97cfd7d`.
 Pełnego 10-minutowego proof nie uruchamiano ponownie na tym SHA.
 
-Następny krok to niezależny QA na **własnej świeżej** `_test` i Redis
-pod własnymi portami loopback: ustawić odpowiednio `TEST_DATABASE_URL`
-i `REDIS_URL`, oba opt-in `RUN_011A_RAW_V4_JOB_PROOF=1` i
-`RUN_011A_ALICE_RAW_V4_NATURAL_QUEUE_PROOF=1`, oraz ścieżkę do
-zamrożonych plików `RUN_011A_ALICE_RAW_SOURCE_DIR`. Runtime Vitest
-przekazuje wybrany `TEST_DATABASE_URL` jako `DATABASE_URL` procesowi
-potomnemu. Dopiero niezależny pełny wynik może zamknąć tę blokadę QA;
-produkcja, rzeczywiste LIVE i pełne 011A pozostają bez odbioru.
+## Niezależny odbiór końcowego SHA
+
+Niezależny statyczny reviewer dał ograniczony `PASS` na finalnym
+SHA kodu/dokumentacji `d376298e3d5cd3aa893af413c2fdf14575ec041a`
+(kod portów `dbf3a53e18474317b65c9fce44bf1c6feb6d945b`, kod pełnego
+odzyskania `78cf2ac89890d52116bb7abac4d1c56d146c2023`).
+Niezależny runtime QA użył własnej świeżej `_test` i Redis pod własnymi
+portami loopback. Na tym samym SHA uzyskał `2/2 PASS`, w tym `1/1 PASS`
+pełnego procesu z naturalnym `BACKTEST_LEASE_MS=600000`.
+
+Pierwszy worker QA PID `97116` utrwalił zimny ZIP z oryginalną
+`.CHECKSUM` i snapshot, po czym został zabity przez `SIGKILL` przed
+wynikiem. Drugi PID `49656` przejął run zwykłą kolejką `8741 ms` po
+naturalnym wygaśnięciu lease, bez ręcznego claim/enqueue ani ponownego
+fetch. Trzeci PID `114432` wykonał retry bez duplikatów. QA odczytał
+100 świec i 1730 raw transakcji, DCA raw ID `394796061` przed TTP raw
+ID `394796067` na tej samej świecy, jeden `COMPLETED` run i raport,
+5 trades oraz 9 wkładów. Fee `0,72035` i net PnL `-0,16687` USDT;
+Redis `DBSIZE=0→0`. SHA-256 logu QA:
+`c8f96f4eb6bbe13fb62d409f927a2b4648bff8caa2404e4c1213930cb5f5bc48`.
+QA posprzątał wyłącznie własne dwa kontenery i anonimowe
+woluminy. Zasoby autora oraz zasoby wcześniejszej próby zablokowanej
+przez policy review pozostały nietknięte.
 
 ## Źródło i środowisko
 
@@ -147,8 +164,10 @@ To lokalny dowód **automatycznego wznowienia niezakończonego pełnego
 BACKTEST raw v4 bez duplikatu trwałego wyniku**, po naturalnym lease
 i z rzeczywistym `SIGKILL` własnego workera. Po restarcie drugi worker
 przelicza symulację od początku zapisanej taśmy; wynik nie dowodzi
-jednokrotnego wykonania samych obliczeń. Produkcyjna iniekcja v4
-pozostaje wyłączona. Brak niezależnego QA na tym SHA, zatwierdzonych
-budżetów i retencji/GC, backupu, PAPER/LIVE, realnych filli oraz
+jednokrotnego wykonania samych obliczeń. Niezależny QA na końcowym SHA
+potwierdził ten ograniczony lokalny wynik; wcześniejsza blokada portów
+nie jest już bieżącą blokadą QA. Produkcyjna iniekcja v4 pozostaje
+wyłączona. Brak zatwierdzonych budżetów i retencji/GC, backupu,
+PAPER/LIVE, realnych filli oraz
 uwierzytelnionego produkcyjnego readbacku. Pełne 011A nadal `REVIEW`,
 wydanie `NO-GO`.
