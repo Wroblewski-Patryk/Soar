@@ -22,7 +22,8 @@ export type CcxtClientFactory = (
 
 const defaultCcxtClientFactory: CcxtClientFactory = async (exchangeId, config) => {
   const ccxtModule = (await import('ccxt')) as unknown as CcxtModuleLike;
-  const ExchangeCtor = ccxtModule[exchangeId];
+  const ccxtExchangeId = exchangeId === 'gateio' ? 'gate' : exchangeId;
+  const ExchangeCtor = ccxtModule[ccxtExchangeId];
   if (!ExchangeCtor) {
     throw new Error(`Unsupported CCXT exchange: ${exchangeId}`);
   }
@@ -309,16 +310,26 @@ export class CcxtFuturesConnector {
     const amountLimits = (limits.amount as Record<string, unknown> | undefined) ?? {};
     const costLimits = (limits.cost as Record<string, unknown> | undefined) ?? {};
     const precision = (market?.precision as Record<string, unknown> | undefined) ?? {};
+    const normalizedContractSize = readNumber(market?.contractSize);
+    const rawGateInfo = market?.info as Record<string, unknown> | undefined;
+    const rawGateContractSize = readNumber(rawGateInfo?.quanto_multiplier);
+    // Gate's CCXT parser can turn a raw zero multiplier into contractSize=1.
+    const isGateDerivative = (this.config.exchangeId === 'gateio' || this.config.exchangeId === 'gate')
+      && this.config.marketType !== 'spot';
+    const contractSize = isGateDerivative
+      ? rawGateContractSize != null && rawGateContractSize > 0
+        && normalizedContractSize === rawGateContractSize ? normalizedContractSize : null
+      : normalizedContractSize;
 
     return {
       minAmount: readNumber(amountLimits.min),
       minNotional: readNumber(costLimits.min),
       amountPrecision: readNumber(precision.amount),
-      // CCXT 4.5.43 precision modes: 4 = TICK_SIZE, 2 = DECIMAL_PLACES.
+      // CCXT precision modes: 4 = TICK_SIZE, 2 = DECIMAL_PLACES.
       // Do not guess when the client reports another mode or no mode.
       amountPrecisionMode: client.precisionMode === 4 ? 'TICK_SIZE'
         : client.precisionMode === 2 ? 'DECIMAL_PLACES' : null,
-      contractSize: readNumber(market?.contractSize),
+      contractSize,
     };
   }
 

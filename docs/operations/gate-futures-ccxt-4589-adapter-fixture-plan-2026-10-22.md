@@ -37,6 +37,21 @@ wykonanie zablokowane przed wysłaniem zlecenia. Nie podstawiać fikcyjnego
 `minNotional`: CCXT Gate FUTURES nie podaje `limits.cost.min`; tę lukę
 rejestrować jawnie do późniejszego etapu reguł venue.
 
+## Odtworzone luki P0 i oczekiwany fail-closed
+
+Registry przekazuje publiczne `GATEIO` jako `gateio` do dynamicznej fabryki
+`ccxtModule[exchangeId]`, lecz CCXT `4.5.89` eksportuje konstruktor `gate`,
+nie `gateio`. Test bez sieci ma przejść przez prawdziwą fabrykę dla Gate
+SPOT i FUTURES, potwierdzić `loadMarkets` i brak submitu. Publiczna nazwa
+`GATEIO` pozostaje bez zmian; wewnętrzna nazwa konstruktora to `gate`.
+
+CCXT `parseContractMarket` przy surowym Gate `quanto_multiplier="0"`
+zwraca `contractSize=1`; brak lub niefinitywna wartość daje wartość
+nieokreśloną. Soar musi odczytać surową wartość dla reguł Gate FUTURES:
+zero, brak i niefinitywna wartość mają dać `contractSize=null`, a DCA musi
+odmówić przed intentem i transportem. Nie używać domyślnego `1` z CCXT jako
+dowodu poprawnej wielkości kontraktu.
+
 ## Odbiór etapu
 
 Najpierw porównanie `4.5.43`/`4.5.89` bez sieciowego zapisu. Gdy nowa
@@ -47,3 +62,19 @@ istniejące testy adaptera Binance/Gate SPOT/FUTURES, API typecheck,
 docs parity i diff. Nie uruchamiać generatora grafu ani graph drift w
 brudnym wspólnym checkoutcie. `runtimeDcaOrderRules.ts` ma nadal odmawiać
 `contractSize!=1`; fee/PnL/pozycja i rzeczywisty Gate pozostają `OPEN`.
+
+## Wynik lokalny adaptera
+
+Porównanie offline `4.5.43` i `4.5.89` na tych samych syntetycznych
+kontraktach: stara wersja zaokrąglała decimal `1.7` do `1` i nie wysyłała
+nagłówka; nowa zachowuje `size="1.7"`, `precision.amount=0.1` oraz
+`X-Gate-Size-Decimal: 1`. Odczyt order `filled=1.3` i trade `amount=0.3`,
+`cost=6` zachowuje liczbę kontraktów i kwotę. Integer fixture pozostał
+`size=2`, trade `amount=2`, `cost=10`; SPOT nie ma decimal header.
+
+Przed poprawką dwa izolowane testy wykazały `Unsupported CCXT exchange:
+gateio` i przekształcenie surowego `quanto_multiplier="0"` w regułę
+`contractSize=1`. Po poprawce registry otwiera Gate SPOT/FUTURES przez
+rzeczywisty konstruktor CCXT z atrapą `loadMarkets`, a reguły dla 0/braku/NaN
+zwracają `contractSize=null` i resolver DCA odmawia. Nie było transportu
+zlecenia ani testu rzeczywistej giełdy.
