@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-10-22",
   "total": {
-    "total": 947,
-    "covered": 947,
+    "total": 948,
+    "covered": 948,
     "missing": 0
   },
   "categories": {
@@ -19,8 +19,8 @@
       "missingSamples": []
     },
     "apiTests": {
-      "total": 290,
-      "covered": 290,
+      "total": 291,
+      "covered": 291,
       "missing": 0,
       "missingSamples": []
     },
