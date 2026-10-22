@@ -1,13 +1,14 @@
 # 011A: projekt trwałego źródła surowych transakcji USD-M
 
-**Status: wariant A wybrany przez właściciela; fundament lokalnie wdrożony
-i przetestowany, bez produkcyjnego writera ani pełnego runtime PASS.**
+**Status: wariant A wybrany przez właściciela; fundament i opt-in v4
+lokalnie przetestowane, bez produkcyjnego writera ani pełnego runtime PASS.**
 Punkt bazowy `d227021dacad4a1f155cb4c0c4cd291c6c2a2252`.
 Niezależnie odebrane lokalne dowody: [granice `aggTrades`](position-parity-011a-120-minute-source-reconciliation-2026-10-22.md)
 na `4d8650f03a147f24f35098f13fd463bace5c9760` i [surowy ETH](position-parity-011a-raw-trades-boundary-feasibility-2026-10-22.md)
 na `ba338c03ad425a7ed242c330456b042134d8b7b1`. Pełne 011A
 pozostaje `REVIEW`, wydanie `NO-GO`. [Ograniczony lokalny odbiór fundamentu](position-parity-011a-raw-trade-foundation-evidence-2026-10-22.md)
-potwierdza trwały blob/ref i odczyt offline dwóch runów. Nie ma dowodu
+potwierdza trwały blob/ref. [Ograniczony odbiór opt-in v4](position-parity-011a-v4-raw-trade-offline-evidence-2026-10-22.md)
+potwierdza snapshot i odczyt offline dwóch runów. Nie ma dowodu
 ukończonego raw BACKTEST, produkcyjnego workera ani LIVE.
 
 ## Twarde dane do budżetu
@@ -58,7 +59,7 @@ checksumy pozwala audytować pochodzenie z publicznego endpointu; sam
 offline hash nie poświadcza tożsamości zdalnego wydawcy. Żaden wariant
 nie uprawnia do rozluźnienia walidacji OHLCV/trade count.
 
-## Docelowy kontrakt A; obecnie zaimplementowano tylko fundament
+## Docelowy kontrakt A; fundament i opt-in v4 są zaimplementowane
 
 1. Dodać wersjonowany typ źródła `BINANCE_USDM_TRADES_DAILY` i osobny
    content-addressed store PostgreSQL: jeden niezmienny blob na
@@ -76,7 +77,8 @@ nie uprawnia do rozluźnienia walidacji OHLCV/trade count.
    199 tys. skopiowanych wierszy. Pełny ZIP pozostaje referowany tak
    długo, jak istnieje run. v1/v2/v3 oraz ich dotychczasowy odczyt i
    historyczne raporty pozostają bez zmiany; v3 `aggTrades` nigdy nie
-   jest reinterpretowany jako raw.
+   jest reinterpretowany jako raw. Ten punkt ma opt-in implementację
+   dla jednej doby UTC i lokalny test; nie jest podłączony do joba.
 3. Pierwszy worker pobiera tylko do zatwierdzonego budżetu, weryfikuje
    `.CHECKSUM`, strukturę ZIP, właściwą dobę, rosnące ID/czas i
    120/120 OHLCV oraz **trade count** względem zweryfikowanych klines.
