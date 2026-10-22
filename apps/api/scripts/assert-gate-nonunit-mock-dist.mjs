@@ -24,11 +24,24 @@ assert.ok(!existsSync(issuerPath), 'Test-only permit issuer must be absent from 
 
 const forbidden = /BEGIN PRIVATE KEY|createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|\bissuePermit\b|internalGateNonunitMockAdmission/;
 const forbiddenExportName = /createInternalGateNonunitMockPermit|markInternalGateNonunitMockPretrade|^issuePermit$|internalGateNonunitMockAdmission/;
-// A computed object key passed to __exportStar can create a forbidden export.
-// Match the compiler helper exactly so edits to its binding behavior need review.
-const emittedExportStarHelper = `var __exportStar = (this && this.__exportStar) || function(m, exports) {
+// Treat the compiler helpers as one closed export path: their full definitions,
+// direct calls and every other reference must match the reviewed emit.
+const emittedHelpers = new Map([
+  ['__createBinding', `var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));`],
+  ['__exportStar', `var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};`;
+};`],
+]);
 // Check every emitted JavaScript file as data. Permit the CommonJS forms emitted
 // by this build, but fail closed on computed export names and export aliases.
 // This is a static artifact check, not a proof about arbitrarily obfuscated code.
@@ -39,30 +52,56 @@ const checkJavaScriptExports = (path, content, location) => {
   const reject = () => {
     throw new Error(`Gate nonunit artifact has an unsupported export form: ${location}`);
   };
-  const helperStatements = source.statements.filter((statement) =>
-    ts.isVariableStatement(statement) && statement.declarationList.declarations.some((declaration) =>
-      ts.isIdentifier(declaration.name) && declaration.name.text === '__exportStar'));
-  if (helperStatements.length > 1 ||
-      (helperStatements.length === 1 &&
-       helperStatements[0].getText(source).replace(/\r\n/g, '\n') !== emittedExportStarHelper)) reject();
-  const helper = helperStatements[0];
-  const inHelper = (node) => helper && node.pos >= helper.pos && node.end <= helper.end;
-  const visit = (node) => {
-    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
-        node.name.text === '__exportStar' && node.parent.parent !== helper) reject();
-    if (ts.isFunctionDeclaration(node) && node.name?.text === '__exportStar') reject();
-    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) &&
-        node.expression.text === '__exportStar') {
-      const imported = node.arguments[0];
-      const canonicalReexport = helper && node.arguments.length === 2 &&
-        ts.isIdentifier(node.arguments[1]) && node.arguments[1].text === 'exports' &&
-        ts.isCallExpression(imported) && ts.isIdentifier(imported.expression) &&
-        imported.expression.text === 'require' && imported.arguments.length === 1 &&
-        ts.isStringLiteral(imported.arguments[0]) &&
-        imported.arguments[0].text.startsWith('./') &&
-        !imported.arguments[0].text.includes('..');
-      if (!canonicalReexport) reject();
+  const helpers = new Map();
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || !emittedHelpers.has(declaration.name.text)) continue;
+      const name = declaration.name.text;
+      if (helpers.has(name) || statement.declarationList.declarations.length !== 1 ||
+          statement.getText(source).replace(/\r\n/g, '\n') !== emittedHelpers.get(name)) reject();
+      helpers.set(name, statement);
     }
+  }
+  const within = (node, statement) => statement && node.pos >= statement.pos && node.end <= statement.end;
+  const topLevel = (node) => {
+    while (node.parent && node.parent !== source) node = node.parent;
+    return node;
+  };
+  const compilerImportStarCall = (node) => {
+    const statement = topLevel(node);
+    return ts.isVariableStatement(statement) &&
+      statement.declarationList.declarations.length === 1 &&
+      ts.isIdentifier(statement.declarationList.declarations[0].name) &&
+      statement.declarationList.declarations[0].name.text === '__importStar' &&
+      node.getText(source) === '__createBinding(result, mod, k[i])';
+  };
+  const checkHelperReference = (node) => {
+    const name = node.text;
+    const declaration = helpers.get(name);
+    if (!declaration) reject();
+    if (within(node, declaration)) return;
+    const call = node.parent;
+    if (!ts.isCallExpression(call) || call.expression !== node) reject();
+    if (name === '__createBinding') {
+      if (within(call, helpers.get('__exportStar')) &&
+          call.getText(source) === '__createBinding(exports, m, p)') return;
+      if (compilerImportStarCall(call)) return;
+      reject();
+    }
+    const imported = call.arguments[0];
+    const canonicalReexport = ts.isExpressionStatement(call.parent) &&
+      call.parent.parent === source && call.arguments.length === 2 &&
+      ts.isIdentifier(call.arguments[1]) && call.arguments[1].text === 'exports' &&
+      ts.isCallExpression(imported) && ts.isIdentifier(imported.expression) &&
+      imported.expression.text === 'require' && imported.arguments.length === 1 &&
+      ts.isStringLiteral(imported.arguments[0]) &&
+      imported.arguments[0].text.startsWith('./') &&
+      !imported.arguments[0].text.includes('..');
+    if (!canonicalReexport) reject();
+  };
+  const visit = (node) => {
+    if (ts.isIdentifier(node) && emittedHelpers.has(node.text)) checkHelperReference(node);
     if (ts.isPropertyAccessExpression(node) &&
         ts.isIdentifier(node.expression) && node.expression.text === 'module' &&
         node.name.text === 'exports') reject();
@@ -83,19 +122,20 @@ const checkJavaScriptExports = (path, content, location) => {
           ts.isStringLiteral(parent.arguments[1]);
         const compilerReexport = argumentIndex === 1 &&
           ts.isIdentifier(parent.expression) && parent.expression.text === '__exportStar' &&
-          parent.arguments.length === 2 && helper;
+          parent.arguments.length === 2 && helpers.has('__exportStar');
         const compilerBinding = argumentIndex === 0 &&
           ts.isIdentifier(parent.expression) && parent.expression.text === '__createBinding' &&
-          parent.arguments.length === 3 && inHelper(node);
+          parent.arguments.length === 3 && within(node, helpers.get('__exportStar'));
         const compilerOwnPropertyCheck = argumentIndex === 0 &&
           parent.expression.getText(source) === 'Object.prototype.hasOwnProperty.call' &&
-          parent.arguments.length === 2 && inHelper(node);
+          parent.arguments.length === 2 && within(node, helpers.get('__exportStar'));
         if (staticDefinition) {
           if (forbiddenExportName.test(parent.arguments[1].text)) reject();
         } else if (!compilerReexport && !compilerBinding && !compilerOwnPropertyCheck) reject();
       } else if (!(ts.isPropertyAccessExpression(parent) && parent.name === node) &&
                  !(ts.isPropertyAssignment(parent) && parent.name === node) &&
-                 !(ts.isParameter(parent) && parent.name === node && inHelper(node))) reject();
+                 !(ts.isParameter(parent) && parent.name === node &&
+                   within(node, helpers.get('__exportStar')))) reject();
     }
     ts.forEachChild(node, visit);
   };
