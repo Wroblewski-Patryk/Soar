@@ -19,7 +19,8 @@ export type ExchangeApiKeyProbeClientFactory = (
   input: ExchangeApiKeyProbeClientInput
 ) => Promise<ExchangeApiKeyProbeClientLike>;
 
-const resolveCcxtExchangeId = (exchange: Exchange) => exchange.toLowerCase();
+const resolveCcxtExchangeId = (exchange: Exchange) =>
+  exchange === 'GATEIO' ? 'gate' : exchange.toLowerCase();
 
 export const resolveApiKeyProbeCcxtDefaultType = (
   exchange: Exchange,

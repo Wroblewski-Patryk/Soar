@@ -2,6 +2,7 @@ import type { Exchange } from "@prisma/client";
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  createExchangeApiKeyProbeClient,
   probeExchangeApiKeyPermissions,
   resolveApiKeyProbeCcxtDefaultType,
   resolveApiKeyProbeFetchBalanceParams,
@@ -23,6 +24,54 @@ const withFactory = (
 };
 
 describe("probeExchangeApiKeyPermissions", () => {
+  it("probes Gate SPOT and FUTURES with the real CCXT factory offline", async () => {
+    const ccxt = (await import("ccxt")).default;
+    const fetchBalance = vi.spyOn(ccxt.gate.prototype, "fetchBalance")
+      .mockResolvedValue({} as Awaited<ReturnType<typeof ccxt.gate.prototype.fetchBalance>>);
+    const close = vi.spyOn(ccxt.gate.prototype, "close").mockResolvedValue(undefined);
+    try {
+      const result = await withFactory("GATEIO", createExchangeApiKeyProbeClient);
+      expect(result).toMatchObject({
+        ok: true, code: "OK", permissions: { spot: true, futures: true },
+      });
+      expect(fetchBalance).toHaveBeenNthCalledWith(1, { type: "spot" });
+      expect(fetchBalance).toHaveBeenNthCalledWith(2, { type: "swap" });
+      const clients = fetchBalance.mock.instances as unknown as Array<{
+        options: { defaultType: string };
+      }>;
+      expect(clients.map((client) => client.options.defaultType))
+        .toEqual(["spot", "swap"]);
+      expect(close).toHaveBeenCalledTimes(2);
+    } finally {
+      fetchBalance.mockRestore();
+      close.mockRestore();
+    }
+  });
+
+  it("keeps the Binance SPOT and FUTURES real CCXT probe factory offline", async () => {
+    const ccxt = (await import("ccxt")).default;
+    const fetchBalance = vi.spyOn(ccxt.binance.prototype, "fetchBalance")
+      .mockResolvedValue({} as Awaited<ReturnType<typeof ccxt.binance.prototype.fetchBalance>>);
+    const close = vi.spyOn(ccxt.binance.prototype, "close").mockResolvedValue(undefined);
+    try {
+      const result = await withFactory("BINANCE", createExchangeApiKeyProbeClient);
+      expect(result).toMatchObject({
+        ok: true, code: "OK", permissions: { spot: true, futures: true },
+      });
+      expect(fetchBalance).toHaveBeenNthCalledWith(1, { type: "spot" });
+      expect(fetchBalance).toHaveBeenNthCalledWith(2, { type: "future", useV2: true });
+      const clients = fetchBalance.mock.instances as unknown as Array<{
+        options: { defaultType: string };
+      }>;
+      expect(clients.map((client) => client.options.defaultType))
+        .toEqual(["spot", "future"]);
+      expect(close).toHaveBeenCalledTimes(2);
+    } finally {
+      fetchBalance.mockRestore();
+      close.mockRestore();
+    }
+  });
+
   it("returns exchange-specific OK when spot and futures probes pass", async () => {
     const close = vi.fn(async () => undefined);
     const calls: string[] = [];

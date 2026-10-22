@@ -78,3 +78,18 @@ gateio` i przekształcenie surowego `quanto_multiplier="0"` w regułę
 rzeczywisty konstruktor CCXT z atrapą `loadMarkets`, a reguły dla 0/braku/NaN
 zwracają `contractSize=null` i resolver DCA odmawia. Nie było transportu
 zlecenia ani testu rzeczywistej giełdy.
+
+Niezależny review pierwszego SHA `1c7283c2224c95a80072f50e8e2156077b9cc5c4`
+wykrył drugą osiągalną fabrykę CCXT: próba klucza API nadal szukała
+`ccxtModule['gateio']` i zwracała `UNKNOWN` z oboma uprawnieniami `false`.
+Izolowany test RED przez rzeczywistą fabrykę probe odtworzył tę odmowę.
+Poprawka mapuje publiczne `GATEIO` na wewnętrzne `gate` także tutaj;
+test GREEN sprawdza SPOT i FUTURES (`defaultType` i parametry balance)
+bez sieci oraz kontrolnie obie ścieżki Binance. To nadal nie dowodzi
+rzeczywistych uprawnień żadnego klucza.
+
+Manifest pakietu w `apps/api/package.json` i lock wskazują dokładnie
+`ccxt@4.5.89` z przypiętą integralnością npm, a załadowana biblioteka
+zwraca wewnętrzne `ccxt.version="4.5.88"`. To rozbieżność metadanych
+wewnątrz wydanego pakietu; dowodem użytej wersji są package/lock i
+sprawdzone zachowanie `createOrderRequest` oraz `sign`, nie sam `ccxt.version`.
