@@ -55,3 +55,28 @@ Metadane kontraktu, saldo, fille i fee są syntetyczne; `contractSize≠1`,
 rzeczywiste reguły Gate, transport, real LIVE, uwierzytelniona produkcja i
 deploy pozostają poza tym odbiorem. Lokalny PASS nie zamyka pełnego
 `POSITION-CYCLE` ani bramki wydania.
+
+## Wynik autorski 2026-10-22
+
+Celowany test [Gate FUTURES full signal](../../apps/api/src/modules/engine/runtimeGateFuturesThreeModePositiveDcaTtpParity.e2e.test.ts)
+przeszedł `1/1` (`resume` uruchomiony w odrębnym procesie; jego test jest
+pominięty tylko w nadrzędnym procesie). Pierwsza próba odrzuciła konfigurację
+`MOMENTUM(1)` przy zapisie HTTP 400; po zapisanej wyżej erracie okresu 2
+test przeszedł. To nie jest osobny wynik pozytywnego odbioru.
+
+BACKTEST, PAPER i Gate.io FUTURES internal mock LIVE użyły tej samej zapisanej
+strategii i taśmy: jeden LONG, później HOLD bez EXIT, DCA 80 kontraktów przy
+1,25 przed restartem i pojedynczy TTP 180 kontraktów przy 1,13 po restarcie.
+W obu botach była jedna aktywna grupa. BACKTEST miał jeden `COMPLETED` run,
+trade i raport, ENTRY/DCA z poziomem 0 i mnożnikiem 1. PAPER i mock LIVE
+zapisały ENTRY/DCA/CLOSE, a mock LIVE trzy unikalne intenty, trzy `FILLED`
+orders, trzy fille i jedną deduplikację DCA. Fille, średnia `200/180`, fee
+`0,16136` i net PnL `+3,23864` USDT zgadzały się w trzech trybach. Ponowienie
+ticku i BACKTEST nie dodało rekordów. Osobny BACKTEST bez uporządkowanych
+ticków odroczył TTP do świecy 6.
+
+Weryfikacja: API typecheck, docs parity, guardrails i graph drift `951/951`
+`PASS`; `git diff --check` bez błędów. Po teście własna baza miała 88
+ukończonych migracji, `User=0`, `BacktestRun=0`, `Trade=0`; Redis `DBSIZE=0`.
+Usunięto wyłącznie własne kontenery na portach 5585 i 6425. Odbiór niezależny
+pozostaje otwarty; ten test nie obejmuje realnej giełdy ani produkcji.
