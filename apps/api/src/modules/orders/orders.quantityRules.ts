@@ -90,7 +90,7 @@ export const assertExistingEntryOrderContractUnit = async (
   userId: string, payload: LiveOrderPayload, contractSize: number,
 ) => {
   const where: Prisma.OrderWhereInput = {
-    userId, symbol: payload.symbol.toUpperCase(), syncState: 'IN_SYNC',
+    userId, symbol: payload.symbol.toUpperCase(),
     status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
     ...(payload.botId ? { botId: payload.botId }
       : payload.walletId ? { walletId: payload.walletId } : { botId: null, walletId: null }),

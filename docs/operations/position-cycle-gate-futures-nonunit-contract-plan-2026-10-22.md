@@ -212,7 +212,11 @@ Następny niezależny odbiór wykazał, że powiązany LIVE CLOSE/DCA sprawdzał
 jednostkę Position, ale pomijał aktywny Order tej samej pozycji. Stary Order
 z `contractSize=NULL` lub inną jednostką mógł więc poprzedzać nowy intent i
 submit. Bramki `openOrder` oraz bezpośredniego trwałego intentu odmawiają teraz
-nowej akcji przy takim Order (`PENDING`, `OPEN` lub `PARTIALLY_FILLED` w stanie
-`IN_SYNC`). Istniejący intent pozostaje lookup-only przy dokładnym retry;
+nowej akcji przy takim Order (`PENDING`, `OPEN` lub `PARTIALLY_FILLED`),
+niezależnie od `syncState`. Istniejący intent pozostaje lookup-only przy
+dokładnym retry;
 ten wyjątek nie tworzy nowego intentu ani drugiego submita. Test RED
 odtworzył oba wejścia, w tym próbę z atrapą submitu bez sieci.
+Ponowny QA wykazał obejście przez `syncState=DRIFT`; filtr stanu synchronizacji
+usunięto także z bramki ENTRY. Test obejmuje `IN_SYNC`, `DRIFT` i oba stany
+`ORPHAN` dla trzech aktywnych statusów Order, jednostek `NULL` i `0,01`.
