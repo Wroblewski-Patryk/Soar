@@ -120,3 +120,47 @@ ułamkowymi i brakującymi metadanymi. Następnie utrwalić jednostkę przy
 ENTRY i przejść opisany wyżej opt-in test trzech trybów na świeżej `_test`
 oraz własnym Redisie, w tym fee/PnL/reconcile po retry. Do tego czasu
 rzeczywisty venue i produkcja pozostają bez dowodu.
+
+## Zamrożony etap trwałej jednostki ENTRY (HEAD `f401ed19ab73f655ca329d1397615bb413c3026c`)
+
+Zapisana jednostka `contractSize` oznacza aktywo bazowe na **jeden kontrakt**;
+FUTURES `Order.quantity`, `Order.filledQuantity` i `Position.quantity`
+pozostają kontraktami. Nie wolno wyprowadzać zapisanej jednostki z obecnej
+ceny ani późniejszego `market.contractSize`. Zamrożone przypadki:
+
+| ENTRY | Kontrakty | Zapisana jednostka | Baza | Notional przy cenie ENTRY |
+| --- | ---: | ---: | ---: | ---: |
+| Gate USDT linear integer | 100 | 0,01 | 1 | 100 USDT przy cenie 100 |
+| Gate USDT linear decimal | 1,7 | 0,01 | 0,017 | 34 USDT przy cenie 2000 |
+| SPOT | 1 bazowa jednostka | 1 | 1 | cena × 1 |
+
+Po restarcie, odczycie order/position, odroczonym fillu i refreshu ma zostać
+ta sama zapisana dodatnia, skończona jednostka. Brak lub różnica między
+Order, Position i trwałym intentem dla jednego ENTRY wymaga odmowy nowego
+intentu/submita przed użyciem bieżących metadanych rynku. Replay istniejącego
+intentu pozostaje lookup-only; nie wolno nadpisywać snapshotu wynikiem
+nowego `loadMarkets`.
+
+### Matryca migracji i starych rekordów
+
+| Rekord / przypadek | Oczekiwane postępowanie |
+| --- | --- |
+| Nowy Order i Position Gate FUTURES | Snapshot dodatniego finite `quanto_multiplier` ze zweryfikowanych surowych reguł ENTRY; ten sam snapshot przy późniejszym fillu. Nonunit ENTRY ma pozostać zablokowany, dopóki ledger nie używa tej jednostki. |
+| Nowy LIVE intent przed submit | Jednostka musi być zweryfikowana i trwale przypięta przed intentem; ponowienie korzysta z zapisanego snapshotu. Stary intent bez snapshotu nie może dać nowego submitu. |
+| Stary Order/Position FUTURES z `NULL` | Kolumna nullable, bez automatycznego backfill `1` i bez pobrania aktualnego rynku jako substytutu historii. Nie dopuszczać nowej akcji wymagającej jednostki, dopóki nie ma niezależnego dowodu/naprawy. |
+| Order z jednostką, Position `NULL`, lub dwie różne wartości | Stan niespójny; odmowa nowego intentu/submita, jawna diagnoza, bez cichej korekty. |
+| Importowana pozycja bez oryginalnego ENTRY | `NULL` do osobnego reconcile; bieżące metadata mogą służyć diagnostyce, lecz nie są historią ENTRY. |
+| SPOT | Jednostka 1 wynika z definicji ilości bazowej; stary `NULL` można czytać jako SPOT unit 1 tylko po potwierdzeniu typu rynku, bez dopisania w bazie. |
+
+### Warunek bezpieczeństwa i granica etapu
+
+Aktualny `executionOrchestrator` liczy fee jako `price×contracts×rate`, a
+ścieżki finalizacji/refreshu PnL również używają `price×contracts`. Dla
+przykładu 100 kontraktów × 0,01 × 100 to 100 USDT, podczas gdy obecny
+rachunek bez mnożnika dałby 10000 USDT. Sam zapis `contractSize` nie pozwala
+bezpiecznie uruchomić nonunit ENTRY ani DCA/CLOSE. Dodatkowo LIVE tworzy
+`LiveOrderIntent` przed pretrade w adapterze, a obecny payload intentu nie
+przechowuje jednostki. Zmiana kolejności walidacji, utrwalenie snapshotu i
+ochrona starszych intencji są konieczne przed jakimkolwiek nonunit submitem.
+Jeżeli nie da się tego spójnie zamknąć bez ruszania fee/PnL w bieżącym
+ograniczonym etapie, pozostawić nonunit ENTRY z odmową i zgłosić blocker.
