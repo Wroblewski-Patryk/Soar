@@ -11,9 +11,16 @@ Zakres jest dokładnie wcześniej wybranym [świadkiem ALICEUSDT](position-parit
 Binance USD-M, 2026-10-18 02:41–04:21 UTC, oryginalny
 `ALICEUSDT-aggTrades-2026-10-18.zip` oraz odpowiadający mu `.CHECKSUM`,
 SHA-256 ZIP `4d0a9b007ae6b7a94073680ab37a968bb592c4529bffec1d68de8ef8f9db151b`.
-Strategia pozostaje tą z zamrożonego modułu
-`backtest011aMarketWitness.config.ts` (w kodzie `MOMENTUM(period=2)`);
-okna, źródła i parametrów nie wolno wybierać ponownie po wyniku.
+Pierwotny plan wyboru zadeklarował `MOMENTUM(period=1)`.
+Późniejszy commit `ab2652da29f2580d5454be4a50584bf400087089` zmienił
+`backtest011aMarketWitness.config.ts` na jawne `period=2`, więc nie jest to
+niezmieniona deklarowana konfiguracja. Kernel wcześniej efektywnie klamrował
+`1` do `2`; [lokalny dowód polityki okresu](strategy-momentum-period-001-plan.md)
+porównał decyzje dla starego `1` i jawnego `2` na finalnych świecach oraz
+potwierdził zachowanie `[null,null,LONG,null,null]` po migracji strategii na
+publicznym źródle ALICEUSDT. To ograniczony dowód równoważności zachowania,
+nie ponowny odbiór niniejszego joba. Nie zmieniamy wybranego okna, pary
+źródłowej ani obecnych parametrów po wyniku preflight.
 
 Planowany test na własnej PostgreSQL `_test` i Redisie miał najpierw
 zweryfikować oryginalny ZIP i checksum z mierzonym budżetem, następnie
