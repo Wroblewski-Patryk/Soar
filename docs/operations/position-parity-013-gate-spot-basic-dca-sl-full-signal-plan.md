@@ -67,3 +67,49 @@ all real exchange and public network seams must be tripwires.
 No real Gate.io, production, or LIVE order is authorized. This
 test can close only local parity 013; the parent POSITION-CYCLE and
 release remain OPEN/NO-GO pending independent review and other gates.
+
+## Author-local result on plan SHA `e40942fc8bd2ae33b14b6c561d5c2813fefd2cfd`
+
+`runtimeGateSpotThreeModeBasicDcaSlParity.e2e.test.ts` passed its
+opt-in `open` stage (1 PASS / 1 intentionally skipped). The outer
+stage required a separate `resume` PID to pass its filtered test;
+failure of that child exits the outer stage nonzero. The test
+asserted one natural LONG per runtime bot, no strategy EXIT after
+signal loss, two DCA fills before any close, a single SL after
+resumption, and unchanged records on repeated ticks and BACKTEST
+retry. The mock venue saw four unique submits and no lookup. The
+same saved strategy produced one BACKTEST `COMPLETED` run, one trade,
+one ready report, and ENTRY/DCA/DCA contribution rows at candle
+indices 2/4/5. BACKTEST settlement recorded net PnL `-1.93721`
+USDT; PAPER and internal mock LIVE recorded fee `0.006285388` and
+net PnL `-1.901755388` USDT, reflecting Gate fixture lot rounding.
+
+Environment: a fresh, dedicated `soar_position_parity_013_test`
+PostgreSQL database on loopback port 5579 with 88 migrations and
+Redis on loopback port 6419. Final dedicated SQL counts
+`User/BacktestRun/Trade/LiveOrderIntent = 0/0/0/0` and Redis
+`DBSIZE = 0`. Adjacent DCA policy, USDT contribution and position
+protection/TP tests passed `56/56`; API typecheck and docs parity
+passed. The first author attempts stopped on floating-point
+assertion precision, then on BACKTEST five-decimal settlement
+precision; the production paths had already reached those assertions.
+The final passing test uses explicit numeric tolerances and pins
+the stored BACKTEST value.
+
+Run from `apps/api` with only the named disposable local resources:
+
+```powershell
+$env:TEST_DATABASE_URL='postgresql://soar013:soar013@127.0.0.1:5579/soar_position_parity_013_test'
+$env:DATABASE_URL='postgresql://soar013:soar013@127.0.0.1:5579/postgres'
+$env:REDIS_URL='redis://127.0.0.1:6419'
+$env:JWT_SECRET='local-test-only-position-parity-013-secret-64-characters-000000000000'
+$env:RUN_GATEIO_SPOT_BASIC_DCA_SL_THREE_MODE_PROOF='1'
+$env:GATEIO_SPOT_BASIC_DCA_SL_THREE_MODE_STAGE='open'
+pnpm exec vitest run src/modules/engine/runtimeGateSpotThreeModeBasicDcaSlParity.e2e.test.ts --reporter=dot
+```
+
+These results are author-local. A second PID here demonstrates
+durable resumption and no duplicate for this fixture; it does not
+demonstrate a killed worker, automatic supervisor restart, natural
+BACKTEST queue recovery, or actual Gate.io execution. Independent
+runtime review on the exact code SHA is still required.
