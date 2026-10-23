@@ -631,15 +631,17 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
-  it('hydrates owned LIVE automation from fresh exchange-sync truth after creating a managed imported position', async () => {
+  it.each(['BINANCE', 'GATEIO'] as const)('%s create automation uses account venue', async (exchange) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
 
     await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
         {
           id: 'key-live-automation-create-1',
           userId: 'user-live-automation-create-1',
-          exchange: 'BINANCE' as const,
+          exchange,
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -675,8 +677,8 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-live-automation-create-1',
         strategyId: 'strategy-live-automation-create-1',
       })),
-      updateSyncedPosition: vi.fn(async () => undefined),
-      createSyncedPosition: vi.fn(async () => undefined),
+      updateSyncedPosition,
+      createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
       markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
@@ -684,8 +686,11 @@ describe('reconcileExternalPositionsFromExchange', () => {
       now: () => new Date('2026-03-23T00:05:01.000Z'),
     });
 
+    expect(createSyncedPosition).toHaveBeenCalledOnce();
+    expect(updateSyncedPosition).not.toHaveBeenCalled();
+    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
     expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange: 'BINANCE',
+      exchange,
       marketType: 'FUTURES',
       symbol: 'DOGEUSDT',
       markPrice: 0.1069,
@@ -693,15 +698,17 @@ describe('reconcileExternalPositionsFromExchange', () => {
     });
   });
 
-  it('hydrates owned LIVE automation from fresh exchange-sync truth after updating an existing managed imported position', async () => {
+  it.each(['BINANCE', 'GATEIO'] as const)('%s update automation uses account venue', async (exchange) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
 
     await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
         {
           id: 'key-live-automation-update-1',
           userId: 'user-live-automation-update-1',
-          exchange: 'BINANCE' as const,
+          exchange,
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -746,8 +753,8 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-live-automation-update-1',
         strategyId: 'strategy-live-automation-update-1',
       })),
-      updateSyncedPosition: vi.fn(async () => undefined),
-      createSyncedPosition: vi.fn(async () => undefined),
+      updateSyncedPosition,
+      createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
       markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
@@ -755,8 +762,11 @@ describe('reconcileExternalPositionsFromExchange', () => {
       now: () => new Date('2026-03-23T00:06:01.000Z'),
     });
 
+    expect(updateSyncedPosition).toHaveBeenCalledOnce();
+    expect(createSyncedPosition).not.toHaveBeenCalled();
+    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
     expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange: 'BINANCE',
+      exchange,
       marketType: 'FUTURES',
       symbol: 'DOGEUSDT',
       markPrice: 0.1069,
