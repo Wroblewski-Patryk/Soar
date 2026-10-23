@@ -497,7 +497,22 @@ export class CcxtFuturesConnector {
     }
 
     const positions = await client.fetchPositions(input?.symbols);
-    return Array.isArray(positions) ? positions : [];
+    if (!Array.isArray(positions)) return [];
+    if (!['gateio', 'gate'].includes(this.config.exchangeId) || this.config.marketType === 'spot') {
+      return positions;
+    }
+    return Promise.all(positions.map(async (position) => {
+      const symbol = this.readString(position.symbol);
+      const rawContract = this.readString(position.info?.contract);
+      const { exchangeSymbol, gateFuturesEconomics } = symbol
+        ? await this.resolveExchangeMarket(symbol) : { exchangeSymbol: null, gateFuturesEconomics: null };
+      if (!symbol || exchangeSymbol !== symbol || !gateFuturesEconomics ||
+          rawContract !== gateFuturesEconomics.contract ||
+          this.readNumber(position.contractSize) !== gateFuturesEconomics.contractSize) {
+        throw new Error('GATE_FUTURES_POSITION_UNIT_UNVERIFIED');
+      }
+      return { ...position, gateFuturesEconomics };
+    }));
   }
 
   async fetchBalance(params?: Record<string, unknown>): Promise<unknown> {

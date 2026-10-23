@@ -1471,3 +1471,50 @@ describe('CcxtFuturesConnector scaffold', () => {
     });
   });
 });
+
+
+describe('Gate FUTURES position unit snapshot proof', () => {
+  const position = {
+    symbol: 'BTC/USDT:USDT', contracts: 1, contractSize: 0.0001,
+    info: { contract: 'BTC_USDT', size: 1 },
+  };
+
+  it('binds the CCXT position unit to matching raw direct market metadata', async () => {
+    const client = createMockClient();
+    setGateDirectMarket(client, 'BTC_USDT', 0.0001);
+    client.fetchPositions = vi.fn().mockResolvedValue([position]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchPositions()).resolves.toMatchObject([{
+      contractSize: 0.0001,
+      gateFuturesEconomics: { contract: 'BTC_USDT', contractSize: 0.0001,
+        quantoMultiplier: 0.0001, marketSymbol: 'BTC/USDT:USDT' },
+    }]);
+  });
+
+  it.each([
+    { name: 'missing CCXT position unit', change: { contractSize: undefined } },
+    { name: 'mismatched CCXT position unit', change: { contractSize: 1 } },
+    { name: 'mismatched raw contract', change: { info: { contract: 'ETH_USDT', size: 1 } } },
+  ])('refuses $name before handing a position to normalization', async ({ change }) => {
+    const client = createMockClient();
+    setGateDirectMarket(client, 'BTC_USDT', 0.0001);
+    client.fetchPositions = vi.fn().mockResolvedValue([{ ...position, ...change }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchPositions()).rejects.toThrow('GATE_FUTURES_POSITION_UNIT_UNVERIFIED');
+  });
+
+  it('refuses a CCXT market with an invalid raw multiplier even when the parsed unit is one', async () => {
+    const client = createMockClient();
+    const market = setGateDirectMarket(client, 'BTC_USDT', 1);
+    market.info.quanto_multiplier = '0';
+    client.fetchPositions = vi.fn().mockResolvedValue([{ ...position, contractSize: 1 }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client)
+    );
+    await expect(connector.fetchPositions()).rejects.toThrow('GATE_FUTURES_POSITION_UNIT_UNVERIFIED');
+  });
+});

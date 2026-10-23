@@ -61,6 +61,8 @@ export type CcxtWalletCashflowLike = {
 export type CcxtPositionLike = {
   symbol?: string;
   contracts?: number;
+  contractSize?: number;
+  gateFuturesEconomics?: unknown;
   amount?: number;
   positionAmt?: number;
   info?: Record<string, unknown>;
