@@ -529,6 +529,119 @@ describe('CcxtFuturesConnector scaffold', () => {
       notionalCurrency: null, feeCurrency: 'USDT', feeCurrencySource: 'CCXT_SETTLE_INFERRED' });
   });
 
+  it('preserves an explicit Gate quoteQty when the contract unit is unavailable', async () => {
+    const client = createMockClient();
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETH/USDT:USDT', amount: 1.3, price: 2000,
+      info: { quoteQty: '26' },
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    const [fill] = await connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' });
+    expect(fill).toMatchObject({ notional: 26,
+      notionalSource: 'QUOTE_QTY_FIELD_UNVERIFIED' });
+  });
+
+  it.each([1.3, 0.3])('uses proven Gate contract units for missing-cost decimal fill %s', async (amount) => {
+    const client = createMockClient();
+    const market = { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true,
+      contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.01, info: { name: 'ETH_USDT', type: 'direct',
+        settle_currency: 'USDT', quanto_multiplier: '0.01' } };
+    client.loadMarkets = vi.fn().mockResolvedValue({ 'ETH/USDT:USDT': market });
+    (client as CcxtExchangeLikeClient & { market: (symbol: string) => unknown }).market =
+      vi.fn().mockReturnValue(market);
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETH/USDT:USDT', amount, price: 2000,
+      info: { contract: 'ETH_USDT', size: String(amount), price: '2000' },
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    await expect(connector.getSymbolTradingRules('ETHUSDT')).resolves.toMatchObject({
+      contractSize: 0.01, gateFuturesEconomics: { contract: 'ETH_USDT', contractSize: 0.01 },
+    });
+    const [fill] = await connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' });
+    expect(fill).toMatchObject({ quantity: amount, notional: amount * 2000 * 0.01,
+      notionalSource: 'GATE_CONTRACT_UNIT_VERIFIED', notionalCurrency: 'USDT' });
+    client.fetchOrder = vi.fn().mockResolvedValue({ id: 'o1', symbol: 'ETH/USDT:USDT',
+      amount, filled: amount, trades: [{ id: 't1', order: 'o1',
+        symbol: 'ETH/USDT:USDT', amount, price: 2000 }],
+    });
+    const snapshot = await connector.fetchOrderWithFills({ symbol: 'ETHUSDT', orderId: 'o1' });
+    expect(snapshot.fills[0]).toMatchObject({ notional: amount * 2000 * 0.01,
+      notionalSource: 'GATE_CONTRACT_UNIT_VERIFIED' });
+  });
+
+  it.each([
+    null,
+    { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true, contract: true,
+      linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.01, info: { name: 'ETH_USDT', type: 'direct' } },
+    { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true, contract: true,
+      linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.02, info: { name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01' } },
+    { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true, contract: true,
+      linear: true, inverse: true, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.01, info: { name: 'ETH_USDT', type: 'inverse', quanto_multiplier: '0.01' } },
+  ])('refuses missing-cost Gate fill without a verified matching unit (%#)', async (market) => {
+    const client = createMockClient();
+    client.loadMarkets = vi.fn().mockResolvedValue(market ? { 'ETH/USDT:USDT': market } : {});
+    (client as CcxtExchangeLikeClient & { market: (symbol: string) => unknown }).market =
+      vi.fn().mockReturnValue(market ?? undefined);
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETH/USDT:USDT', amount: 1.3, price: 2000,
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    await expect(connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' }))
+      .rejects.toThrow('GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED');
+  });
+
+  it('rejects a loaded Gate unit that conflicts with rule-market metadata', async () => {
+    const client = createMockClient();
+    const market = { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true,
+      contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.01, info: { name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01' } };
+    client.loadMarkets = vi.fn().mockResolvedValue({ 'ETH/USDT:USDT': market });
+    (client as CcxtExchangeLikeClient & { market: (symbol: string) => unknown }).market =
+      vi.fn().mockReturnValue({ ...market, contractSize: 0.02 });
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETH/USDT:USDT', amount: 1.3, price: 2000,
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    await expect(connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' }))
+      .rejects.toThrow('GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED');
+  });
+
+  it('refuses a loaded Gate unit when rule-market metadata cannot be read', async () => {
+    const client = createMockClient();
+    const market = { id: 'ETH_USDT', symbol: 'ETH/USDT:USDT', swap: true,
+      contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+      contractSize: 0.01, info: { name: 'ETH_USDT', type: 'direct', quanto_multiplier: '0.01' } };
+    client.loadMarkets = vi.fn().mockResolvedValue({ 'ETH/USDT:USDT': market });
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETH/USDT:USDT', amount: 1.3, price: 2000,
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
+    await expect(connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' }))
+      .rejects.toThrow('GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED');
+  });
+
+  it.each([
+    ['binance', 'future'], ['gateio', 'spot'],
+  ] as const)('retains %s %s missing-cost base-asset fallback', async (exchangeId, marketType) => {
+    const client = createMockClient();
+    client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
+      symbol: 'ETHUSDT', amount: 1.3, price: 2000,
+    }]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId, marketType }, vi.fn().mockResolvedValue(client));
+    const [fill] = await connector.fetchTradesForOrder({ symbol: 'ETHUSDT', orderId: 'o1' });
+    expect(fill).toMatchObject({ notional: 2600, notionalSource: 'LOCAL_FALLBACK_UNVERIFIED' });
+  });
+
   it.each([
     ['USDT', 'VENUE_FIELD', 0.04, 'USDT'],
     ['BTC', 'CURRENCY_CONFLICT', null, null],
@@ -538,14 +651,14 @@ describe('CcxtFuturesConnector scaffold', () => {
   ) => {
     const client = createMockClient();
     client.fetchMyTrades = vi.fn().mockResolvedValue([{ id: 't1', order: 'o1',
-      symbol: 'BTC/USDT:USDT', amount: 100, price: 100,
+      symbol: 'BTC/USDT:USDT', amount: 100, price: 100, cost: 100,
       fee: { cost: 0.04, currency: 'USDT' },
       info: { size: '100', price: '100', trade_value: '100', fee_currency: rawCurrency },
     }]);
     const connector = new CcxtFuturesConnector(
       { exchangeId: 'gateio', marketType: 'swap' }, vi.fn().mockResolvedValue(client));
     const [fill] = await connector.fetchTradesForOrder({ symbol: 'BTCUSDT', orderId: 'o1' });
-    expect(fill).toMatchObject({ notional: 0, notionalSource: 'UNKNOWN',
+    expect(fill).toMatchObject({ notional: 100, notionalSource: 'CCXT_DERIVED_UNVERIFIED',
       feeCurrencySource: source, feeCost, feeCurrency });
     expect(fill.raw).toMatchObject({ info: { trade_value: '100' } });
   });

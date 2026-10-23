@@ -20,6 +20,16 @@ describe('Gate fill cost and fee provenance', () => {
     expect(100 * 100 * 0.01).toBe(100);
   });
 
+  it('values a decimal Gate fill only with a proven contract unit', () => {
+    expect(resolveCcxtFillCostEvidence({ ...input, price: 2000, quantity: 1.3,
+      gateContractSize: 0.01 })).toMatchObject({
+      notional: 26, notionalSource: 'GATE_CONTRACT_UNIT_VERIFIED',
+      notionalCurrency: 'USDT',
+    });
+    expect(resolveCcxtFillCostEvidence({ ...input, price: 2000, quantity: 1.3,
+      gateContractSize: 0 })).toMatchObject({ notional: 0, notionalSource: 'UNKNOWN' });
+  });
+
   it('distinguishes raw quote quantity from CCXT cost', () => {
     expect(resolveCcxtFillCostEvidence({ ...input, quoteQty: '100' })).toMatchObject({
       notional: 100, notionalSource: 'QUOTE_QTY_FIELD_UNVERIFIED',

@@ -65,16 +65,21 @@ const finiteNumber = (value: unknown): number | null => {
 
 export const resolveCcxtFillCostEvidence = (input: {
   ccxtCost: unknown; quoteQty: unknown; price: number; quantity: number;
-  gateDerivative: boolean; rawFeeCurrency: unknown;
+  gateDerivative: boolean; gateContractSize?: number | null; rawFeeCurrency: unknown;
   feeCost: number | null; feeCurrency: string | null;
 }) => {
   const reportedCost = finiteNumber(input.ccxtCost);
   const quoteQtyField = finiteNumber(input.quoteQty);
   const hasCcxtCost = reportedCost != null && reportedCost > 0;
   const hasQuoteQtyField = quoteQtyField != null && quoteQtyField > 0;
-  // A Gate amount is contracts. Without a proven contract unit, price * amount
-  // has no reliable quote value; zero here is an unknown-value sentinel.
+  const gateUnitFallback = input.gateDerivative &&
+    positiveFinite(input.gateContractSize) != null &&
+    Number.isFinite(input.price) && input.price > 0 &&
+    Number.isFinite(input.quantity) && input.quantity > 0;
+  // Gate amount is contracts. Only a verified raw/CCXT unit converts it to
+  // quote value; otherwise the adapter refuses the fill before persistence.
   const notional = hasCcxtCost ? reportedCost : hasQuoteQtyField ? quoteQtyField :
+    gateUnitFallback ? input.price * input.quantity * input.gateContractSize! :
     input.gateDerivative ? 0 :
       input.price > 0 && input.quantity > 0 ? input.price * input.quantity : 0;
   // Gate CCXT 4.5.89 derives trade.cost through safeTrade; raw trade_value's
@@ -83,6 +88,7 @@ export const resolveCcxtFillCostEvidence = (input: {
     ? input.gateDerivative ? 'CCXT_DERIVED_UNVERIFIED' as const
       : 'CCXT_REPORTED_UNVERIFIED' as const
     : hasQuoteQtyField ? 'QUOTE_QTY_FIELD_UNVERIFIED' as const
+    : gateUnitFallback ? 'GATE_CONTRACT_UNIT_VERIFIED' as const
     : input.gateDerivative ? 'UNKNOWN' as const : 'LOCAL_FALLBACK_UNVERIFIED' as const;
   const rawFeeCurrency = typeof input.rawFeeCurrency === 'string'
     ? input.rawFeeCurrency.trim().toUpperCase() : null;
@@ -93,7 +99,9 @@ export const resolveCcxtFillCostEvidence = (input: {
       ? 'CURRENCY_CONFLICT' as const
     : rawFeeCurrency ? 'VENUE_FIELD' as const
     : input.gateDerivative ? 'CCXT_SETTLE_INFERRED' as const : 'UNVERIFIED' as const;
-  return { notional, notionalSource, notionalCurrency: null, feeCurrencySource };
+  return { notional, notionalSource,
+    notionalCurrency: notionalSource === 'GATE_CONTRACT_UNIT_VERIFIED' ? 'USDT' as const : null,
+    feeCurrencySource };
 };
 
 export const normalizedFillCostEvidence = (fill: CcxtFuturesOrderFill) => {

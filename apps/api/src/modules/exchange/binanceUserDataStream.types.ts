@@ -135,7 +135,8 @@ export type NormalizedBinanceOrderTradeUpdateEvent = {
     ccxtNotional: number | null;
     quoteQtyField?: number | null;
     notionalSource: 'CCXT_DERIVED_UNVERIFIED' | 'CCXT_REPORTED_UNVERIFIED' |
-      'QUOTE_QTY_FIELD_UNVERIFIED' | 'LOCAL_FALLBACK_UNVERIFIED' | 'UNKNOWN';
+      'QUOTE_QTY_FIELD_UNVERIFIED' | 'GATE_CONTRACT_UNIT_VERIFIED' |
+      'LOCAL_FALLBACK_UNVERIFIED' | 'UNKNOWN';
     notionalCurrency: string | null;
     feeCurrencySource: 'VENUE_FIELD' | 'CCXT_SETTLE_INFERRED' | 'CURRENCY_CONFLICT' | 'UNVERIFIED';
   };

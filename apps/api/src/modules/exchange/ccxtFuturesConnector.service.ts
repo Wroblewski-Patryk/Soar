@@ -7,7 +7,8 @@ import type {
 } from './ccxtFuturesConnector.client';
 import { normalizeCcxtFundingRatePoint, normalizeCcxtOpenInterestPoint, normalizeCcxtOrderBookPoint, normalizeCcxtPublicCandle } from './ccxtPublicMarketDataNormalizer';
 import { withLiveCreateOrderPermit } from '../orders/liveExecutionPause.service';
-import { gateFuturesEconomicsFromMarket, resolveCcxtFillCostEvidence } from './gateFuturesEconomics';
+import { gateFuturesEconomicsFromMarket, isMatchingGateFuturesEconomics,
+  resolveCcxtFillCostEvidence, type GateFuturesEconomicsSnapshot } from './gateFuturesEconomics';
 import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicFundingRatePoint, CcxtPublicOpenInterestPoint, CcxtPublicOrderBookPoint, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
 export type { CcxtExchangeLikeClient } from './ccxtFuturesConnector.client';
@@ -87,7 +88,26 @@ export class CcxtFuturesConnector {
     );
   }
 
-  private async resolveExchangeSymbol(symbol: string) {
+  private normalizeGateContractSymbol(symbol: string) {
+    return this.normalizeSymbolKey(symbol.split(':', 1)[0]);
+  }
+
+  private gateFillEconomics(symbol: string, market: Record<string, unknown> | null) {
+    if (!['gateio', 'gate'].includes(this.config.exchangeId) ||
+        this.config.marketType === 'spot') return null;
+    const snapshot = gateFuturesEconomicsFromMarket(market);
+    const expectedSymbol = this.normalizeGateContractSymbol(symbol);
+    return snapshot && market?.id === snapshot.contract &&
+      typeof market.symbol === 'string' &&
+      this.normalizeGateContractSymbol(market.symbol) === expectedSymbol &&
+      isMatchingGateFuturesEconomics(snapshot, snapshot.contractSize, expectedSymbol)
+      ? snapshot : null;
+  }
+
+  private async resolveExchangeMarket(symbol: string, includeGateFillProof = true): Promise<{
+    exchangeSymbol: string;
+    gateFuturesEconomics: GateFuturesEconomicsSnapshot | null;
+  }> {
     const client = await this.getOrCreateClient();
     const marketsRaw = await client.loadMarkets();
     const markets =
@@ -95,7 +115,28 @@ export class CcxtFuturesConnector {
         ? (marketsRaw as Record<string, Record<string, unknown>>)
         : {};
     const normalizedTarget = this.normalizeSymbolKey(symbol);
-    if (!normalizedTarget) return symbol;
+    const resolved = (exchangeSymbol: string, market: Record<string, unknown> | null) => {
+      if (!includeGateFillProof || !['gateio', 'gate'].includes(this.config.exchangeId) ||
+          this.config.marketType === 'spot') {
+        return { exchangeSymbol, gateFuturesEconomics: null };
+      }
+      const anyClient = client as unknown as {
+        market?: (id: string) => Record<string, unknown> | undefined;
+        markets?: Record<string, Record<string, unknown>>;
+      };
+      let rulesMarket: Record<string, unknown> | null = null;
+      try {
+        rulesMarket = (typeof anyClient.market === 'function'
+          ? anyClient.market(exchangeSymbol) : undefined) ??
+          anyClient.markets?.[exchangeSymbol] ?? null;
+      } catch { /* Missing rule metadata leaves the cost fallback closed. */ }
+      const loadedProof = this.gateFillEconomics(symbol, market);
+      const rulesProof = this.gateFillEconomics(symbol, rulesMarket);
+      return { exchangeSymbol, gateFuturesEconomics: loadedProof && rulesProof &&
+        loadedProof.contract === rulesProof.contract &&
+        loadedProof.contractSize === rulesProof.contractSize ? loadedProof : null };
+    };
+    if (!normalizedTarget) return resolved(symbol, null);
 
     const directMarket = markets[symbol];
     if (
@@ -104,7 +145,7 @@ export class CcxtFuturesConnector {
       typeof directMarket.symbol === 'string' &&
       directMarket.symbol.trim().length > 0
     ) {
-      return directMarket.symbol;
+      return resolved(directMarket.symbol, directMarket);
     }
 
     let fallbackSymbol: string | null = null;
@@ -112,12 +153,16 @@ export class CcxtFuturesConnector {
       if (!this.marketMatchesSymbol(marketKey, market, normalizedTarget)) continue;
       const marketSymbol = this.getMarketSymbol(marketKey, market);
       if (this.isConfiguredMarketType(market)) {
-        return marketSymbol;
+        return resolved(marketSymbol, market);
       }
       fallbackSymbol ??= marketSymbol;
     }
 
-    return fallbackSymbol ?? symbol;
+    return resolved(fallbackSymbol ?? symbol, null);
+  }
+
+  private async resolveExchangeSymbol(symbol: string) {
+    return (await this.resolveExchangeMarket(symbol, false)).exchangeSymbol;
   }
 
   async fetchMarkPrice(symbol: string) {
@@ -375,7 +420,7 @@ export class CcxtFuturesConnector {
       params.clientOrderId = request.clientOrderId;
     }
 
-    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(request.symbol);
     const order = await this.createOrderPermit({
       marketType: this.config.marketType === 'spot' || this.config.marketType === 'SPOT'
         ? 'spot' : this.config.marketType === 'swap' ? 'swap' : 'future',
@@ -387,7 +432,7 @@ export class CcxtFuturesConnector {
       exchangeSymbol, request.type, request.side, request.amount, request.price, params
     ));
 
-    const fills = this.normalizeOrderFills(order, request.symbol, 'createOrder');
+    const fills = this.normalizeOrderFills(order, request.symbol, 'createOrder', gateFuturesEconomics);
 
     return {
       id: order.id ?? '',
@@ -428,9 +473,9 @@ export class CcxtFuturesConnector {
       throw new Error('fetchOrder is not supported by this CCXT connector');
     }
 
-    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(request.symbol);
     const order = await client.fetchOrder(request.orderId, exchangeSymbol);
-    const fills = this.normalizeOrderFills(order, request.symbol, 'fetchOrder');
+    const fills = this.normalizeOrderFills(order, request.symbol, 'fetchOrder', gateFuturesEconomics);
 
     return {
       order: this.normalizeOrderResult(order, fills),
@@ -443,7 +488,7 @@ export class CcxtFuturesConnector {
     if (typeof client.fetchOrder !== 'function') {
       throw new Error('fetchOrder is not supported by this CCXT connector');
     }
-    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(input.symbol);
     // CCXT maps clientOrderId to Binance origClientOrderId and Gate text.
     const order = await client.fetchOrder('', exchangeSymbol, { clientOrderId: input.clientOrderId });
     if (!order.id) throw new Error('Exchange lookup returned no order identity');
@@ -460,7 +505,7 @@ export class CcxtFuturesConnector {
     if (!returnedClientId || returnedClientId.replace(/^t-/, '') !== input.clientOrderId) {
       throw new Error('Exchange lookup returned a missing or different client order identity');
     }
-    const fills = this.normalizeOrderFills(order, input.symbol, 'fetchOrder');
+    const fills = this.normalizeOrderFills(order, input.symbol, 'fetchOrder', gateFuturesEconomics);
     return { ...this.normalizeOrderResult(order, fills), clientOrderId: input.clientOrderId };
   }
 
@@ -479,7 +524,7 @@ export class CcxtFuturesConnector {
     if (typeof client.fetchClosedOrders !== 'function') {
       throw new Error('fetchClosedOrders is not supported by this CCXT connector');
     }
-    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(input.symbol);
     const params = input.marketType === 'FUTURES'
       ? { historical: true, from: Math.floor(input.since / 1000),
           until: input.until, offset: (input.page - 1) * input.limit }
@@ -488,7 +533,7 @@ export class CcxtFuturesConnector {
     // uses creation time, while Gate's finished-order range uses end time.
     const orders = await client.fetchClosedOrders(exchangeSymbol, undefined, input.limit, params);
     return orders.map((order) => this.normalizeOrderResult(
-      order, this.normalizeOrderFills(order, input.symbol, 'fetchOrder')
+      order, this.normalizeOrderFills(order, input.symbol, 'fetchOrder', gateFuturesEconomics)
     ));
   }
 
@@ -499,7 +544,7 @@ export class CcxtFuturesConnector {
       throw new Error('fetchMyTrades is not supported by this CCXT connector');
     }
 
-    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(request.symbol);
     const trades = await client.fetchMyTrades(exchangeSymbol, request.since, request.limit, {
       orderId: request.orderId,
     });
@@ -510,7 +555,8 @@ export class CcxtFuturesConnector {
           trade.order ?? trade.orderId ?? this.readString(trade.info?.orderId);
         return orderIdFromTrade === request.orderId;
       })
-      .map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades'));
+      .map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades',
+        undefined, gateFuturesEconomics));
   }
 
   async fetchTradesForWindow(input: {
@@ -524,10 +570,11 @@ export class CcxtFuturesConnector {
       throw new Error('fetchMyTrades is not supported by this CCXT connector');
     }
 
-    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const { exchangeSymbol, gateFuturesEconomics } = await this.resolveExchangeMarket(request.symbol);
     const trades = await client.fetchMyTrades(exchangeSymbol, request.since, request.limit);
 
-    return trades.map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades'));
+    return trades.map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades',
+      undefined, gateFuturesEconomics));
   }
 
   async fetchOpenOrders(input?: { symbol?: string }): Promise<CcxtFuturesOpenOrder[]> {
@@ -697,7 +744,8 @@ export class CcxtFuturesConnector {
   private normalizeOrderFills(
     order: CcxtOrderLike,
     fallbackSymbol: string,
-    source: CcxtFuturesOrderFill['source']
+    source: CcxtFuturesOrderFill['source'],
+    gateFuturesEconomics: GateFuturesEconomicsSnapshot | null,
   ): CcxtFuturesOrderFill[] {
     const directTrades = Array.isArray(order.trades) ? order.trades : [];
     const directFills = Array.isArray(order.fills) ? order.fills : [];
@@ -705,7 +753,8 @@ export class CcxtFuturesConnector {
     const merged = [...directTrades, ...directFills, ...binanceInfoFills];
 
     return merged
-      .map((entry) => this.normalizeTradeFill(entry, order.symbol ?? fallbackSymbol, source, order.id))
+      .map((entry) => this.normalizeTradeFill(entry, order.symbol ?? fallbackSymbol,
+        source, order.id, gateFuturesEconomics))
       .filter((fill) => fill.quantity > 0);
   }
 
@@ -742,7 +791,8 @@ export class CcxtFuturesConnector {
     tradeRaw: unknown,
     fallbackSymbol: string,
     source: CcxtFuturesOrderFill['source'],
-    fallbackOrderId?: string
+    fallbackOrderId?: string,
+    gateFuturesEconomics?: GateFuturesEconomicsSnapshot | null,
   ): CcxtFuturesOrderFill {
     const trade = (tradeRaw as CcxtTradeLike | undefined) ?? {};
     const topLevel = this.readRecord(tradeRaw) ?? {};
@@ -760,11 +810,24 @@ export class CcxtFuturesConnector {
       ...trade,
       info,
     });
+    const gateDerivative = ['gateio', 'gate'].includes(this.config.exchangeId) &&
+      this.config.marketType !== 'spot';
+    const fillSymbol = this.readString(trade.symbol) ??
+      this.readString(topLevel.symbol) ?? this.readString(info.symbol) ?? fallbackSymbol;
+    const expectedSymbol = this.normalizeGateContractSymbol(fallbackSymbol);
+    const verifiedUnit = gateDerivative && gateFuturesEconomics &&
+      this.normalizeGateContractSymbol(fillSymbol) === expectedSymbol &&
+      isMatchingGateFuturesEconomics(gateFuturesEconomics,
+        gateFuturesEconomics.contractSize, expectedSymbol)
+      ? gateFuturesEconomics.contractSize : null;
     const costEvidence = resolveCcxtFillCostEvidence({
       ccxtCost: trade.cost, quoteQty: topLevel.quoteQty ?? info.quoteQty,
       price, quantity, feeCost, feeCurrency, rawFeeCurrency: info.fee_currency,
-      gateDerivative: ['gateio', 'gate'].includes(this.config.exchangeId) && this.config.marketType !== 'spot',
+      gateDerivative, gateContractSize: verifiedUnit,
     });
+    if (gateDerivative && costEvidence.notionalSource === 'UNKNOWN') {
+      throw new Error('GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED');
+    }
     const feeCurrencyConflict = costEvidence.feeCurrencySource === 'CURRENCY_CONFLICT';
     const executedAtMs =
       this.readNumber(trade.timestamp) ??
@@ -787,11 +850,7 @@ export class CcxtFuturesConnector {
         this.readString(info.orderId) ??
         fallbackOrderId ??
         null,
-      symbol:
-        this.readString(trade.symbol) ??
-        this.readString(topLevel.symbol) ??
-        this.readString(info.symbol) ??
-        fallbackSymbol,
+      symbol: fillSymbol,
       side:
         this.readString(trade.side) ??
         this.readString(topLevel.side) ??
