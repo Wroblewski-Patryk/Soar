@@ -611,26 +611,39 @@ Quick verification checklist:
 4. `curl -I https://<web-env-domain>/_next/static/...` should be cacheable (`public, max-age` or equivalent immutable policy)
 5. Dashboard runtime data should update after hard refresh without stale payload replay.
 
-## Step 7: Migrations Before Go-Live
+## Step 7: Local Migration Proof (Windows)
 
-Before the owner-approved production release on the exact candidate SHA:
-1. Run DB migration job against target DB.
-2. Confirm Prisma schema is up to date.
-3. Confirm API starts without migration drift errors.
+Before requesting a production window, validate the exact candidate SHA on an
+isolated local PostgreSQL `_test` database and Redis as described in the
+[deployment migration strategy](deployment-migration-strategy.md). Run migration
+status and `prisma migrate deploy` against `_test`; record the migration list,
+exit status, SHA and local API compatibility when a local start is authorized.
+This is local evidence only. Do not connect this step to production data or
+start the candidate API against PROD: API startup itself runs
+`prisma migrate deploy` unless `API_AUTO_MIGRATE=false`.
 
-If migration fails, do not continue deployment.
+## Step 8: Owner-Approved Production Rollout
 
-Note:
-- API startup runs `prisma migrate deploy` automatically (safe/idempotent path).
-- Do **not** use destructive commands like `prisma migrate reset` or reseeding in production.
-
-## Step 8: Production Rollout
-
-1. Obtain separate owner approval for the selected exact SHA and controlled window; verify local acceptance, backup/restore, rollback and migration compatibility.
-2. Complete the stop-before-start worker-switch preflight before any candidate worker starts.
-3. Deploy the approved SHA to the existing Coolify PROD environment and read back the actual API/Web/worker image revisions.
-4. Run production health and protected signed-in user/admin smoke from `docs/operations/post-deploy-smoke-checklist.md` and `docs/operations/v1-ops-runbook.md`.
-5. Record production evidence separately from local tests; missing proof keeps release `NO-GO`.
+1. Obtain separate owner approval for the exact SHA and controlled production
+   window. Verify local acceptance, production backup/restore checkpoint,
+   rollback path and migration compatibility before touching PROD.
+2. Complete the stop-before-start worker-switch preflight and stop old worker
+   consumers; read back that they are stopped **before any production migration
+   deploy or candidate API start**. If old API can consume jobs inline, include
+   it in the stop/readback gate. A one-click start that bypasses this pause is
+   not an approved cutover.
+3. Only after steps 1–2, run the approved production migration sequence on the
+   existing Coolify database. If candidate API startup performs
+   `prisma migrate deploy`, that API start also waits until steps 1–2 are complete. Confirm
+   migration/schema readback; failure is STOP/NO-GO and must not start new
+   workers. Never use `prisma migrate reset` or reseed production.
+4. After migration succeeds, complete API/Web readiness and start candidate
+   workers in controlled order; verify their image revisions match the exact
+   SHA and old consumers remain stopped.
+5. Run production health and protected signed-in user/admin smoke from
+   [post-deploy smoke](post-deploy-smoke-checklist.md) and
+   `docs/operations/v1-ops-runbook.md`. Record production proof separately
+   from local tests; missing proof keeps release `NO-GO`.
 
 ## Rollback Baseline
 
