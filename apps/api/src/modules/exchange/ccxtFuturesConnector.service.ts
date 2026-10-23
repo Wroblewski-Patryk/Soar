@@ -8,7 +8,9 @@ import type {
 import { normalizeCcxtFundingRatePoint, normalizeCcxtOpenInterestPoint, normalizeCcxtOrderBookPoint, normalizeCcxtPublicCandle } from './ccxtPublicMarketDataNormalizer';
 import { withLiveCreateOrderPermit } from '../orders/liveExecutionPause.service';
 import { gateFuturesEconomicsFromMarket, isMatchingGateFuturesEconomics,
-  resolveCcxtFillCostEvidence, type GateFuturesEconomicsSnapshot } from './gateFuturesEconomics';
+  resolveCcxtFillCostEvidence } from './gateFuturesEconomics';
+import { isConfiguredMarketType, normalizeGateContractSymbol, normalizeSymbolKey, resolveCcxtExchangeMarket,
+  type GateFillMarketProof } from './ccxtExchangeMarketResolver';
 import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicFundingRatePoint, CcxtPublicOpenInterestPoint, CcxtPublicOrderBookPoint, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
 export type { CcxtExchangeLikeClient } from './ccxtFuturesConnector.client';
@@ -21,8 +23,6 @@ export type CcxtClientFactory = (
   exchangeId: string,
   config: Record<string, unknown>
 ) => Promise<CcxtExchangeLikeClient>;
-
-type GateFillMarketProof = GateFuturesEconomicsSnapshot & { marketSymbol: string };
 
 const defaultCcxtClientFactory: CcxtClientFactory = async (exchangeId, config) => {
   const ccxtModule = (await import('ccxt')) as unknown as CcxtModuleLike;
@@ -52,118 +52,9 @@ export class CcxtFuturesConnector {
     await client.loadMarkets();
   }
 
-  private normalizeSymbolKey(value: string) {
-    return value
-      .trim()
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '');
-  }
-
-  private isConfiguredMarketType(market: Record<string, unknown>) {
-    const type = typeof market.type === 'string' ? market.type.toLowerCase() : null;
-    if (this.config.marketType === 'spot') {
-      return market.spot === true || type === 'spot';
-    }
-    if (this.config.marketType === 'swap') {
-      return market.swap === true || type === 'swap';
-    }
-    return market.future === true || market.swap === true || type === 'future' || type === 'swap';
-  }
-
-  private getMarketSymbol(marketKey: string, market: Record<string, unknown>) {
-    return typeof market.symbol === 'string' && market.symbol.trim().length > 0
-      ? market.symbol
-      : marketKey;
-  }
-
-  private getMarketId(marketKey: string, market: Record<string, unknown>) {
-    return typeof market.id === 'string' && market.id.trim().length > 0 ? market.id : marketKey;
-  }
-
-  private marketMatchesSymbol(marketKey: string, market: Record<string, unknown>, normalizedTarget: string) {
-    const marketSymbol = this.getMarketSymbol(marketKey, market);
-    const marketId = this.getMarketId(marketKey, market);
-    return (
-      this.normalizeSymbolKey(marketKey) === normalizedTarget ||
-      this.normalizeSymbolKey(marketSymbol) === normalizedTarget ||
-      this.normalizeSymbolKey(marketId) === normalizedTarget
-    );
-  }
-
-  private normalizeGateContractSymbol(symbol: string) {
-    return this.normalizeSymbolKey(symbol.split(':', 1)[0]);
-  }
-
-  private gateFillEconomics(symbol: string, market: Record<string, unknown> | null) {
-    if (!['gateio', 'gate'].includes(this.config.exchangeId) ||
-        this.config.marketType === 'spot') return null;
-    const snapshot = gateFuturesEconomicsFromMarket(market);
-    const expectedSymbol = this.normalizeGateContractSymbol(symbol);
-    const expectedMarketSymbol = snapshot
-      ? `${snapshot.contract.slice(0, -5)}/USDT:USDT` : null;
-    return snapshot && market?.id === snapshot.contract &&
-      typeof market.symbol === 'string' &&
-      market.symbol.toUpperCase() === expectedMarketSymbol &&
-      isMatchingGateFuturesEconomics(snapshot, snapshot.contractSize, expectedSymbol)
-      ? snapshot : null;
-  }
-
-  private async resolveExchangeMarket(symbol: string, includeGateFillProof = true): Promise<{
-    exchangeSymbol: string;
-    gateFuturesEconomics: GateFillMarketProof | null;
-  }> {
+  private async resolveExchangeMarket(symbol: string, includeGateFillProof = true) {
     const client = await this.getOrCreateClient();
-    const marketsRaw = await client.loadMarkets();
-    const markets =
-      marketsRaw && typeof marketsRaw === 'object'
-        ? (marketsRaw as Record<string, Record<string, unknown>>)
-        : {};
-    const normalizedTarget = this.normalizeSymbolKey(symbol);
-    const resolved = (exchangeSymbol: string, market: Record<string, unknown> | null) => {
-      if (!includeGateFillProof || !['gateio', 'gate'].includes(this.config.exchangeId) ||
-          this.config.marketType === 'spot') {
-        return { exchangeSymbol, gateFuturesEconomics: null };
-      }
-      const anyClient = client as unknown as {
-        market?: (id: string) => Record<string, unknown> | undefined;
-        markets?: Record<string, Record<string, unknown>>;
-      };
-      let rulesMarket: Record<string, unknown> | null = null;
-      try {
-        rulesMarket = (typeof anyClient.market === 'function'
-          ? anyClient.market(exchangeSymbol) : undefined) ??
-          anyClient.markets?.[exchangeSymbol] ?? null;
-      } catch { /* Missing rule metadata leaves the cost fallback closed. */ }
-      const loadedProof = this.gateFillEconomics(symbol, market);
-      const rulesProof = this.gateFillEconomics(symbol, rulesMarket);
-      return { exchangeSymbol, gateFuturesEconomics: loadedProof && rulesProof &&
-        loadedProof.contract === rulesProof.contract &&
-        loadedProof.contractSize === rulesProof.contractSize
-        ? { ...loadedProof, marketSymbol: exchangeSymbol } : null };
-    };
-    if (!normalizedTarget) return resolved(symbol, null);
-
-    const directMarket = markets[symbol];
-    if (
-      directMarket &&
-      this.isConfiguredMarketType(directMarket) &&
-      typeof directMarket.symbol === 'string' &&
-      directMarket.symbol.trim().length > 0
-    ) {
-      return resolved(directMarket.symbol, directMarket);
-    }
-
-    let fallbackSymbol: string | null = null;
-    for (const [marketKey, market] of Object.entries(markets)) {
-      if (!this.marketMatchesSymbol(marketKey, market, normalizedTarget)) continue;
-      const marketSymbol = this.getMarketSymbol(marketKey, market);
-      if (this.isConfiguredMarketType(market)) {
-        return resolved(marketSymbol, market);
-      }
-      fallbackSymbol ??= marketSymbol;
-    }
-
-    return resolved(fallbackSymbol ?? symbol, null);
+    return resolveCcxtExchangeMarket(client, this.config, symbol, includeGateFillProof);
   }
 
   private async resolveExchangeSymbol(symbol: string) {
@@ -504,9 +395,9 @@ export class CcxtFuturesConnector {
     const order = await client.fetchOrder('', exchangeSymbol, { clientOrderId: input.clientOrderId });
     if (!order.id) throw new Error('Exchange lookup returned no order identity');
     const returnedSymbol = this.readString(order.symbol);
-    const normalizedReturnedSymbol = returnedSymbol ? this.normalizeSymbolKey(returnedSymbol) : null;
+    const normalizedReturnedSymbol = returnedSymbol ? normalizeSymbolKey(returnedSymbol) : null;
     if (!normalizedReturnedSymbol ||
-        normalizedReturnedSymbol !== this.normalizeSymbolKey(exchangeSymbol)) {
+        normalizedReturnedSymbol !== normalizeSymbolKey(exchangeSymbol)) {
       throw new Error('Exchange lookup returned a different symbol');
     }
     const returnedClientId =
@@ -655,7 +546,7 @@ export class CcxtFuturesConnector {
     if (!marketMap || typeof marketMap !== 'object') return {};
     return Object.fromEntries(
       Object.entries(marketMap as Record<string, Record<string, unknown>>).filter(([, market]) =>
-        this.isConfiguredMarketType(market)
+        isConfiguredMarketType(market, this.config.marketType)
       )
     );
   }
@@ -825,7 +716,7 @@ export class CcxtFuturesConnector {
       this.config.marketType !== 'spot';
     const fillSymbol = this.readString(trade.symbol) ??
       this.readString(topLevel.symbol) ?? this.readString(info.symbol) ?? fallbackSymbol;
-    const expectedSymbol = this.normalizeGateContractSymbol(fallbackSymbol);
+    const expectedSymbol = normalizeGateContractSymbol(fallbackSymbol);
     const rawContractMatches = [topLevel.contract, info.contract].every((contract) =>
       contract === undefined || contract === gateFuturesEconomics?.contract);
     const rawSettleMatches = [topLevel.settle, info.settle,
@@ -835,7 +726,7 @@ export class CcxtFuturesConnector {
       trade.symbol.trim().toUpperCase() === gateFuturesEconomics?.marketSymbol.toUpperCase();
     const verifiedUnit = gateDerivative && gateFuturesEconomics &&
       tradeSymbolMatches && rawContractMatches && rawSettleMatches &&
-      this.normalizeGateContractSymbol(fillSymbol) === expectedSymbol &&
+      normalizeGateContractSymbol(fillSymbol) === expectedSymbol &&
       isMatchingGateFuturesEconomics(gateFuturesEconomics,
         gateFuturesEconomics.contractSize, expectedSymbol)
       ? gateFuturesEconomics.contractSize : null;
