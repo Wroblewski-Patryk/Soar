@@ -658,7 +658,7 @@ export const reconcileExternalPositionsFromExchange = async (
             openedAt: reusablePosition.openedAt ?? openedAtFallback,
           });
           if (
-            deps.processOwnedSyncedPositionAutomation &&
+            deps.processOwnedSyncedPositionAutomation && (apiKey.exchange === 'BINANCE' || apiKey.exchange === 'GATEIO') &&
             shouldTriggerOwnedSyncedPositionAutomation({
               managementMode,
               continuityState,
@@ -666,7 +666,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange,
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
@@ -739,7 +739,7 @@ export const reconcileExternalPositionsFromExchange = async (
             });
           }
           if (
-            deps.processOwnedSyncedPositionAutomation &&
+            deps.processOwnedSyncedPositionAutomation && (apiKey.exchange === 'BINANCE' || apiKey.exchange === 'GATEIO') &&
             shouldTriggerOwnedSyncedPositionAutomation({
               managementMode,
               continuityState,
@@ -747,7 +747,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange,
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
