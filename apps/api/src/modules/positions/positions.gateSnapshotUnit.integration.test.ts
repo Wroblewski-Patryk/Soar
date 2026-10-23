@@ -156,6 +156,54 @@ describe('Gate direct USDT snapshot unit through durable reconciliation', () => 
     expect(automation).not.toHaveBeenCalled();
   });
 
+  it('persists explicit Gate cross leverage without deriving margin from the contract value', async () => {
+    vi.stubEnv('NODE_ENV', 'snapshot-unit');
+    const { user, apiKey } = await createFixture('cross');
+    const automation = vi.fn();
+    const zeroMargin = installOfflineGate([rawPosition('BTC', {
+      leverage: '0', lever: '10', cross_leverage_limit: '10', pos_margin_mode: 'cross',
+      initial_margin: '0', margin: '1',
+    })]);
+    const snapshot = await fetchExchangePositionsSnapshotByApiKeyId(user.id, apiKey.id);
+    expect(snapshot.positions).toMatchObject([{
+      leverage: 10, marginUsed: null, contractSize: 0.0001, marginMode: 'cross',
+    }]);
+    await reconcileFixture(user.id, apiKey.id, automation);
+    const persisted = await prisma.position.findMany({ where: { userId: user.id } });
+    expect(persisted).toHaveLength(1);
+    expect(persisted[0]).toMatchObject({
+      origin: 'EXCHANGE_SYNC', status: 'OPEN', leverage: 10, marginUsed: null,
+      contractSize: 0.0001,
+    });
+    expect(zeroMargin.http).not.toHaveBeenCalled();
+
+    const feeMargin = installOfflineGate([rawPosition('BTC', {
+      leverage: '0', lever: '50', cross_leverage_limit: '50', pos_margin_mode: 'cross',
+      initial_margin: '0.2075', margin: '0.2',
+    })]);
+    await reconcileFixture(user.id, apiKey.id, automation);
+    expect(await prisma.position.count({ where: { userId: user.id } })).toBe(1);
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: persisted[0].id } }))
+      .toMatchObject({ leverage: 50, marginUsed: 0.2075, contractSize: 0.0001 });
+    expect(feeMargin.http).not.toHaveBeenCalled();
+
+    const unverified = installOfflineGate([rawPosition('BTC', {
+      leverage: '0', pos_margin_mode: 'cross', initial_margin: '0', margin: '1',
+    })]);
+    await expect(fetchExchangePositionsSnapshotByApiKeyId(user.id, apiKey.id))
+      .rejects.toMatchObject({ code: 'EXCHANGE_FETCH_FAILED' });
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      expect((await reconcileFixture(user.id, apiKey.id, automation)).openPositionsSeen).toBe(0);
+    } finally {
+      errorLog.mockRestore();
+    }
+    expect(await prisma.position.findUniqueOrThrow({ where: { id: persisted[0].id } }))
+      .toMatchObject({ status: 'OPEN', leverage: 50, marginUsed: 0.2075 });
+    expect(unverified.http).not.toHaveBeenCalled();
+    expect(automation).not.toHaveBeenCalled();
+  });
+
   it('rejects the entire mixed batch before lastUsed, Position, or automation', async () => {
     vi.stubEnv('NODE_ENV', 'snapshot-unit');
     const { user, apiKey } = await createFixture('mixed');

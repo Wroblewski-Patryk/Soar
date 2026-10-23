@@ -258,6 +258,28 @@ describe('Gate cross margin through installed CCXT parser and snapshot normalize
     });
     expect(normalizeImportedLeverage(normalized.leverage)).toBe(50);
   });
+
+  it.each([
+    ['lever', { lever: '25' }],
+    ['cross_leverage_limit', { cross_leverage_limit: '25' }],
+  ])('accepts explicit current cross leverage from %s alone', (_field, explicit) => {
+    const { normalized } = parseAndNormalize({
+      leverage: '0', pos_margin_mode: 'cross', initial_margin: '0', ...explicit,
+    });
+    expect(normalized).toMatchObject({ leverage: 25, marginUsed: null, marginMode: 'cross' });
+  });
+
+  it.each([
+    ['missing', {}],
+    ['conflicting', { lever: '10', cross_leverage_limit: '20' }],
+    ['invalid', { lever: '0' }],
+    ['fractional', { lever: '10.5' }],
+    ['mode conflict', { lever: '10', pos_margin_mode: 'isolated' }],
+  ])('fails closed for %s cross leverage evidence', (_case, fields) => {
+    expect(() => parseAndNormalize({
+      leverage: '0', pos_margin_mode: 'cross', initial_margin: '0', ...fields,
+    })).toThrow('EXCHANGE_GATE_CROSS_LEVERAGE_UNVERIFIED');
+  });
 });
 
 describe('Gate FUTURES contract unit snapshot', () => {

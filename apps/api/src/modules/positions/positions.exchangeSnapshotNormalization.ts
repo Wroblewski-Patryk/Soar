@@ -122,6 +122,34 @@ const deriveExchangePositionLeverage = (
   return notional != null && margin > 0 ? notional / margin : null;
 };
 
+const isGateCrossPosition = (
+  position: ExchangePositionLike, info: Record<string, unknown>, context: PositionMarketContext,
+) => context.exchange === 'GATEIO' && context.marketType === 'FUTURES' && (
+  readNumber(info.leverage) === 0 || position.marginMode?.trim().toLowerCase() === 'cross' ||
+  readString(info.pos_margin_mode)?.toLowerCase() === 'cross'
+);
+
+const resolveGateCrossLeverage = (position: ExchangePositionLike, info: Record<string, unknown>): number => {
+  const parsedMode = position.marginMode?.trim().toLowerCase();
+  const rawMode = readString(info.pos_margin_mode)?.toLowerCase();
+  if (readNumber(info.leverage) !== 0 ||
+      (position.leverage != null && readNumber(position.leverage) !== 0) ||
+      (parsedMode != null && parsedMode !== 'cross') ||
+      (rawMode != null && rawMode !== 'cross')) {
+    throw new Error('EXCHANGE_GATE_CROSS_LEVERAGE_UNVERIFIED');
+  }
+  const values = [info.lever, info.cross_leverage_limit]
+    .filter((value) => value !== undefined && value !== null)
+    .map(readNumber);
+  if (values.length === 0 || values.some((value) => value == null || value <= 0 || !Number.isInteger(value)) ||
+      (values.length === 2 && values[0] !== values[1])) {
+    throw new Error('EXCHANGE_GATE_CROSS_LEVERAGE_UNVERIFIED');
+  }
+  const leverage = values[0];
+  if (leverage == null) throw new Error('EXCHANGE_GATE_CROSS_LEVERAGE_UNVERIFIED');
+  return leverage;
+};
+
 const deriveExchangePositionMarginUsed = (
   position: ExchangePositionLike, info: Record<string, unknown>,
   notional: number | null, leverage: number | null,
@@ -154,7 +182,9 @@ export const normalizeExchangePosition = (
   const info = (position.info ?? {}) as Record<string, unknown>;
   const contractSize = resolvePositionContractSize(position, info, context);
   const notional = deriveExchangePositionNotional(position, info, contractSize);
-  const leverage = deriveExchangePositionLeverage(position, info, notional);
+  const gateCross = isGateCrossPosition(position, info, context);
+  const leverage = gateCross ? resolveGateCrossLeverage(position, info) :
+    deriveExchangePositionLeverage(position, info, notional);
   const timestampMs = readNumber(position.timestamp) ?? readNumber(info.updateTime) ?? readNumber(info.time);
   return {
     symbol: position.symbol ?? readString(info.symbol) ?? 'UNKNOWN',
@@ -163,7 +193,9 @@ export const normalizeExchangePosition = (
     entryPrice: readNumber(position.entryPrice) ?? readNumber(info.entryPrice),
     markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
     unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),
-    marginUsed: deriveExchangePositionMarginUsed(position, info, notional, leverage),
+    // CCXT omits zero Gate initialMargin; it is not evidence for a notional/leverage fallback.
+    marginUsed: gateCross ? readNumber(position.initialMargin) :
+      deriveExchangePositionMarginUsed(position, info, notional, leverage),
     contractSize: context.marketType === 'FUTURES' ? contractSize : null,
     gateFuturesEconomics: context.exchange === 'GATEIO' && context.marketType === 'FUTURES'
       ? position.gateFuturesEconomics as GateFillMarketProof : null,
