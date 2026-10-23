@@ -1,6 +1,7 @@
 import { Exchange, TradeMarket } from '@prisma/client';
 import { ExternalPositionOwnershipIndex } from '../bots/runtimeExternalPositionOwner.service';
 import { ExchangeTradeHistoryItem } from './positions.exchangeSnapshot.types';
+import type { GateFillMarketProof } from '../exchange/ccxtExchangeMarketResolver';
 
 export type ReconciliationStatus = {
   running: boolean;
@@ -70,6 +71,8 @@ export type ExternalSnapshotPosition = {
   markPrice: number | null;
   unrealizedPnl: number | null;
   marginUsed?: number | null;
+  contractSize?: number | null;
+  gateFuturesEconomics?: GateFillMarketProof | null;
   leverage: number | null;
   timestamp: string | null;
 };
@@ -167,6 +170,8 @@ export type ReconcileDeps = {
       entryPrice: number;
       unrealizedPnl: number | null;
       marginUsed: number | null;
+      contractSize?: number | null;
+      gateFuturesEconomics?: GateFillMarketProof | null;
       leverage: number;
       managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
       syncState: 'IN_SYNC' | 'DRIFT';
@@ -194,6 +199,8 @@ export type ReconcileDeps = {
     entryPrice: number;
     unrealizedPnl: number | null;
     marginUsed: number | null;
+    contractSize?: number | null;
+    gateFuturesEconomics?: GateFillMarketProof | null;
     leverage: number;
     managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
     syncState: 'IN_SYNC' | 'DRIFT';

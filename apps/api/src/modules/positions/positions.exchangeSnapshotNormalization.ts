@@ -1,6 +1,7 @@
 import type { Exchange, TradeMarket } from '@prisma/client';
 import { fetchSupportedExchangeTradeHistoryRaw } from '../exchange/exchangeAdapterBoundary.service';
 import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
+import type { GateFillMarketProof } from '../exchange/ccxtExchangeMarketResolver';
 import {
   ExchangeOpenOrderSnapshotItem,
   ExchangePositionSnapshotItem,
@@ -163,6 +164,9 @@ export const normalizeExchangePosition = (
     markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
     unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),
     marginUsed: deriveExchangePositionMarginUsed(position, info, notional, leverage),
+    contractSize: context.marketType === 'FUTURES' ? contractSize : null,
+    gateFuturesEconomics: context.exchange === 'GATEIO' && context.marketType === 'FUTURES'
+      ? position.gateFuturesEconomics as GateFillMarketProof : null,
     leverage,
     marginMode: position.marginMode ?? readString(info.marginType),
     liquidationPrice: readNumber(position.liquidationPrice) ?? readNumber(info.liquidationPrice),

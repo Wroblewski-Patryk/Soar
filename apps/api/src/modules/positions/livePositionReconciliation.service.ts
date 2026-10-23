@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { lockExchangeOrderIdentity } from '../orders/orders.exchangeIdentityLock';
 import {
@@ -143,6 +144,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         entryPrice: input.entryPrice,
         unrealizedPnl: input.unrealizedPnl,
         marginUsed: input.marginUsed,
+        contractSize: input.contractSize ?? null,
+        gateFuturesEconomics: input.gateFuturesEconomics ? { ...input.gateFuturesEconomics } : Prisma.DbNull,
         leverage: input.leverage,
         managementMode: input.managementMode,
         origin: 'EXCHANGE_SYNC',
@@ -178,6 +181,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         leverage: input.leverage,
         unrealizedPnl: input.unrealizedPnl,
         marginUsed: input.marginUsed,
+        contractSize: input.contractSize ?? null,
+        gateFuturesEconomics: input.gateFuturesEconomics ? { ...input.gateFuturesEconomics } : Prisma.DbNull,
         openedAt: input.openedAt,
         lastExchangeSeenAt: input.lastExchangeSeenAt,
         lastExchangeSyncAt: input.lastExchangeSyncAt,
@@ -609,6 +614,8 @@ export const reconcileExternalPositionsFromExchange = async (
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             marginUsed: position.marginUsed ?? null,
+            contractSize: position.contractSize ?? null,
+            gateFuturesEconomics: position.gateFuturesEconomics ?? null,
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
@@ -695,6 +702,8 @@ export const reconcileExternalPositionsFromExchange = async (
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             marginUsed: position.marginUsed ?? null,
+            contractSize: position.contractSize ?? null,
+            gateFuturesEconomics: position.gateFuturesEconomics ?? null,
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
