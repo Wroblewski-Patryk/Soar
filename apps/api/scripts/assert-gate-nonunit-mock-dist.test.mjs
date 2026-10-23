@@ -1,74 +1,100 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import { copyFileSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { assertArtifact, compileExpectedArtifact } from './assert-gate-nonunit-mock-dist.mjs';
 
 const apiPath = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const productionDist = join(apiPath, 'dist');
 const tempParent = join(apiPath, 'tmp');
-const checkerSource = join(apiPath, 'scripts', 'assert-gate-nonunit-mock-dist.mjs');
-const verifierSource = join(apiPath, 'dist', 'modules', 'orders', 'orders.internalGateNonunitMock.js');
-const reexportSource = readFileSync(join(apiPath, 'dist', 'modules', 'bots', 'bots.service.js'), 'utf8');
+const botsName = join('modules', 'bots', 'bots.service.js');
+const verifierName = join('modules', 'orders', 'orders.internalGateNonunitMock.js');
 const bindingLine = 'Object.defineProperty(o, k2, desc);';
-assert.ok(reexportSource.includes(bindingLine), 'Fixture needs the emitted __createBinding helper');
-assert.ok(reexportSource.includes('var __exportStar ='), 'Fixture needs the emitted __exportStar helper');
 
-test('gate nonunit artifact rejects export helper mutations without loading the artifact', () => {
+test('gate nonunit artifact matches a fresh compiler emit without loading the artifact', (t) => {
+  const expected = compileExpectedArtifact();
   mkdirSync(tempParent, { recursive: true });
   const tempPath = mkdtempSync(join(tempParent, 'gate-nonunit-fixture-'));
   try {
-    const scriptsPath = join(tempPath, 'scripts');
-    const ordersPath = join(tempPath, 'dist', 'modules', 'orders');
-    const unrelatedPath = join(tempPath, 'dist', 'unrelated');
-    for (const directory of [scriptsPath, ordersPath, unrelatedPath])
-      mkdirSync(directory, { recursive: true });
-    const checker = join(scriptsPath, basename(checkerSource));
-    const verifier = join(ordersPath, basename(verifierSource));
-    const injection = join(unrelatedPath, 'injection.js');
-    copyFileSync(checkerSource, checker);
-    copyFileSync(verifierSource, verifier);
-    const verifierContent = readFileSync(verifierSource, 'utf8');
+    const candidateDist = join(tempPath, 'dist');
+    cpSync(productionDist, candidateDist, { recursive: true });
+    const botsPath = join(candidateDist, botsName);
+    const verifierPath = join(candidateDist, verifierName);
+    const injection = join(candidateDist, 'injection.js');
+    const botsContent = readFileSync(botsPath, 'utf8');
+    const verifierContent = readFileSync(verifierPath, 'utf8');
+    assert.ok(botsContent.includes(bindingLine), 'Fixture needs emitted __createBinding');
+    assert.ok(botsContent.includes('var __exportStar ='), 'Fixture needs emitted __exportStar');
+
     const cases = [
-      { name: 'clean artifact', code: '', expected: 0 },
+      { name: 'clean artifact', expected: 'pass' },
       {
-        name: 'computed export',
-        code: 'exports["markInternalGateNonunitMock" + "Pretrade"] = () => true;',
-        expected: 1,
+        name: 'unexpected computed export file',
+        injection: 'exports["markInternalGateNonunitMock" + "Pretrade"] = () => true;',
+        expected: 'file count differs',
       },
       {
         name: 'computed re-export',
-        code: `${reexportSource}\n__exportStar({ ["markInternalGateNonunitMock" + "Pretrade"]: () => true }, exports);`,
-        expected: 1,
+        bots: `${botsContent}\n__exportStar({ ["markInternalGateNonunitMock" + "Pretrade"]: () => true }, exports);`,
+        expected: 'differs from the compiler output',
       },
       {
         name: 'mutated __createBinding',
-        code: reexportSource.replace(bindingLine,
+        bots: botsContent.replace(bindingLine,
           'Object.defineProperty(o, "markInternalGateNonunitMock" + "Pretrade", { value: true });'),
-        expected: 1,
+        expected: 'differs from the compiler output',
       },
       {
         name: 'reassigned __exportStar',
-        code: `${reexportSource}\n__exportStar = (m, o) => Object.defineProperty(o, "markInternalGateNonunitMock" + "Pretrade", { value: true });`,
-        expected: 1,
+        bots: `${botsContent}\n__exportStar = (m, o) => Object.defineProperty(o, "markInternalGateNonunitMock" + "Pretrade", { value: true });`,
+        expected: 'differs from the compiler output',
       },
-      { name: 'private key', code: '-----BEGIN PRIVATE KEY-----\nQA_PRIVATE_SENTINEL', expected: 1 },
-      { name: 'pretrade marker', code: 'markInternalGateNonunitMockPretrade', expected: 1 },
+      {
+        name: 'injected this.__createBinding before canonical helper',
+        bots: botsContent.replace('var __createBinding =',
+          'this["__createBinding"] = (o,m,k) => { o["markInternalGateNonunitMock" + "Pretrade"] = m[k]; };\nvar __createBinding ='),
+        expected: 'differs from the compiler output',
+      },
+      {
+        name: 'changed unrelated emitted content',
+        bots: `${botsContent}\n// unexpected content`,
+        expected: 'differs from the compiler output',
+      },
+      { name: 'missing emitted file', missingBots: true, expected: 'file count differs' },
+      {
+        name: 'private key',
+        injection: '-----BEGIN PRIVATE KEY-----\nQA_PRIVATE_SENTINEL',
+        expected: 'test permit issuer, marker or private key',
+      },
+      {
+        name: 'pretrade marker',
+        injection: 'markInternalGateNonunitMockPretrade',
+        expected: 'test permit issuer, marker or private key',
+      },
       {
         name: 'verifier is never executed',
-        code: '',
-        verifierSuffix: '\nconsole.log("QA_PRIVATE_SENTINEL");\n',
-        expected: 1,
+        verifier: `${verifierContent}\nconsole.log("QA_PRIVATE_SENTINEL");\n`,
+        expected: 'differs from the compiler output',
       },
     ];
     for (const fixture of cases) {
-      writeFileSync(injection, fixture.code);
-      writeFileSync(verifier, verifierContent + (fixture.verifierSuffix ?? ''));
-      const result = spawnSync(process.execPath, [checker], { encoding: 'utf8', timeout: 10_000 });
-      assert.ifError(result.error);
-      assert.equal(result.status, fixture.expected, fixture.name);
-      assert.ok(!(result.stdout + result.stderr).includes('QA_PRIVATE_SENTINEL'),
-        `${fixture.name}: secret sentinel must not be printed`);
+      writeFileSync(botsPath, fixture.bots ?? botsContent);
+      writeFileSync(verifierPath, fixture.verifier ?? verifierContent);
+      if (fixture.missingBots) rmSync(botsPath);
+      if (fixture.injection) writeFileSync(injection, fixture.injection);
+      else rmSync(injection, { force: true });
+      if (fixture.expected === 'pass') {
+        assert.doesNotThrow(() => assertArtifact(candidateDist, expected), fixture.name);
+      } else {
+        assert.throws(() => assertArtifact(candidateDist, expected), (error) => {
+          assert.ok(error.message.includes(fixture.expected), fixture.name);
+          assert.ok(!error.message.includes('QA_PRIVATE_SENTINEL'),
+            `${fixture.name}: secret sentinel must not be printed`);
+          return true;
+        }, fixture.name);
+      }
+      t.diagnostic(`${fixture.name}: ${fixture.expected === 'pass' ? 'accepted' : 'rejected'}`);
     }
   } finally {
     const entry = lstatSync(tempPath);
