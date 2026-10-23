@@ -631,7 +631,12 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
-  it.each(['BINANCE', 'GATEIO'] as const)('%s create automation uses account venue', async (exchange) => {
+  it.each([
+    { name: 'BINANCE create venue routed', exchange: 'BINANCE', supported: true },
+    { name: 'GATEIO create venue routed', exchange: 'GATEIO', supported: true },
+    { name: 'missing create venue blocked', exchange: undefined, supported: false },
+    { name: 'BYBIT create venue blocked', exchange: 'BYBIT', supported: false },
+  ] as const)('$name', async ({ exchange, supported }) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
     const createSyncedPosition = vi.fn(async () => undefined);
     const updateSyncedPosition = vi.fn(async () => undefined);
@@ -641,7 +646,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-live-automation-create-1',
           userId: 'user-live-automation-create-1',
-          exchange,
+          ...(exchange === undefined ? {} : { exchange }),
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -688,17 +693,29 @@ describe('reconcileExternalPositionsFromExchange', () => {
 
     expect(createSyncedPosition).toHaveBeenCalledOnce();
     expect(updateSyncedPosition).not.toHaveBeenCalled();
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange,
-      marketType: 'FUTURES',
-      symbol: 'DOGEUSDT',
-      markPrice: 0.1069,
-      eventTime: new Date('2026-03-23T00:05:01.000Z'),
-    });
+    if (supported) {
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: 'DOGEUSDT',
+        markPrice: 0.1069,
+        eventTime: new Date('2026-03-23T00:05:01.000Z'),
+      });
+    } else {
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalled();
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalledWith(
+        expect.objectContaining({ exchange: 'BINANCE' })
+      );
+    }
   });
 
-  it.each(['BINANCE', 'GATEIO'] as const)('%s update automation uses account venue', async (exchange) => {
+  it.each([
+    { name: 'BINANCE update venue routed', exchange: 'BINANCE', supported: true },
+    { name: 'GATEIO update venue routed', exchange: 'GATEIO', supported: true },
+    { name: 'missing update venue blocked', exchange: undefined, supported: false },
+    { name: 'BYBIT update venue blocked', exchange: 'BYBIT', supported: false },
+  ] as const)('$name', async ({ exchange, supported }) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
     const createSyncedPosition = vi.fn(async () => undefined);
     const updateSyncedPosition = vi.fn(async () => undefined);
@@ -708,7 +725,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-live-automation-update-1',
           userId: 'user-live-automation-update-1',
-          exchange,
+          ...(exchange === undefined ? {} : { exchange }),
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -764,14 +781,21 @@ describe('reconcileExternalPositionsFromExchange', () => {
 
     expect(updateSyncedPosition).toHaveBeenCalledOnce();
     expect(createSyncedPosition).not.toHaveBeenCalled();
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange,
-      marketType: 'FUTURES',
-      symbol: 'DOGEUSDT',
-      markPrice: 0.1069,
-      eventTime: new Date('2026-03-23T00:06:01.000Z'),
-    });
+    if (supported) {
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: 'DOGEUSDT',
+        markPrice: 0.1069,
+        eventTime: new Date('2026-03-23T00:06:01.000Z'),
+      });
+    } else {
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalled();
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalledWith(
+        expect.objectContaining({ exchange: 'BINANCE' })
+      );
+    }
   });
 
   it('requires repeated missing confirmations before classifying external close', async () => {
