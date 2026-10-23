@@ -155,9 +155,6 @@ const total = Object.values(categories).reduce(
   { total: 0, covered: 0, missing: 0 },
 );
 
-fs.mkdirSync(path.dirname(outputMarkdown), { recursive: true });
-fs.mkdirSync(path.dirname(outputJson), { recursive: true });
-
 const markdown = [
   "# Architecture Graph Drift Audit",
   "",
@@ -192,15 +189,21 @@ const markdown = [
   ]),
 ].join("\n");
 
-fs.writeFileSync(outputMarkdown, `${markdown}\n`, "utf8");
-fs.writeFileSync(
-  outputJson,
-  `${JSON.stringify({ generatedAt, total, categories }, null, 2)}\n`,
-  "utf8",
-);
+// Strict mode is a read-only gate: evaluate the current graph without rewriting
+// tracked reports with today's date. The report command still emits both files.
+if (!failOnDrift) {
+  fs.mkdirSync(path.dirname(outputMarkdown), { recursive: true });
+  fs.mkdirSync(path.dirname(outputJson), { recursive: true });
+  fs.writeFileSync(outputMarkdown, `${markdown}\n`, "utf8");
+  fs.writeFileSync(
+    outputJson,
+    `${JSON.stringify({ generatedAt, total, categories }, null, 2)}\n`,
+    "utf8",
+  );
+}
 
 console.log(
-  `Architecture graph drift audit generated: ${total.covered}/${total.total} covered, ${total.missing} missing.`,
+  `Architecture graph drift audit ${failOnDrift ? "checked" : "generated"}: ${total.covered}/${total.total} covered, ${total.missing} missing.`,
 );
 
 if (failOnDrift && total.missing > 0) {
