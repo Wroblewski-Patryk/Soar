@@ -121,6 +121,46 @@ describe('Gate nonunit internal mock admission boundary', () => {
     }
   });
 
+  it('rejects non-CI Docker URLs and non-test environments before connector or persistence', async () => {
+    const databaseUrl = process.env.DATABASE_URL;
+    const explicitTestUrl = process.env.TEST_DATABASE_URL;
+    const nodeEnv = process.env.NODE_ENV;
+    const dockerTestUrl = 'postgresql://ci:fixture@postgres:5432/soar_local_test?schema=public';
+    const invalid = [
+      { name: 'production environment', url: dockerTestUrl, testUrl: dockerTestUrl, env: 'production' },
+      { name: 'foreign host', url: dockerTestUrl.replace('@postgres:', '@foreign:'), testUrl: dockerTestUrl },
+      { name: 'wrong port', url: dockerTestUrl.replace(':5432/', ':6432/'), testUrl: dockerTestUrl },
+      { name: 'runtime database', url: dockerTestUrl.replace('/soar_local_test', '/soar_local_runtime'), testUrl: dockerTestUrl },
+      { name: 'other test database', url: dockerTestUrl.replace('/soar_local_test', '/other_test'), testUrl: dockerTestUrl },
+      { name: 'wrong user', url: dockerTestUrl.replace('://ci:', '://operator:'), testUrl: dockerTestUrl },
+      { name: 'mismatched test URL', url: dockerTestUrl, testUrl: dockerTestUrl.replace('/soar_local_test', '/other_test') },
+      { name: 'missing test URL', url: dockerTestUrl, testUrl: undefined },
+      { name: 'non-Postgres scheme', url: dockerTestUrl.replace('postgresql:', 'https:'), testUrl: dockerTestUrl },
+      { name: 'loopback default port', url: 'postgresql://ci:fixture@127.0.0.1:5432/soar_local_test', testUrl: dockerTestUrl },
+    ];
+    try {
+      for (const entry of invalid) {
+        process.env.NODE_ENV = entry.env ?? 'test';
+        process.env.DATABASE_URL = entry.url;
+        if (entry.testUrl === undefined) delete process.env.TEST_DATABASE_URL;
+        else process.env.TEST_DATABASE_URL = entry.testUrl;
+        const fake = connector();
+        await expect(admitInternalGateNonunitMockEntry({ userId: 'local-test-user',
+          payload: payloadFor('local-test-bot'), rawGateContract, ccxtMarket: market,
+          apiKeyId: 'local-test-key', connector: fake }))
+          .rejects.toThrow('INTERNAL_GATE_NONUNIT_MOCK_UNAVAILABLE');
+        expect(fake.hasOpenPosition, entry.name).not.toHaveBeenCalled();
+        expect(fake.getSymbolTradingRules, entry.name).not.toHaveBeenCalled();
+        expect(fake.fetchMarkPrice, entry.name).not.toHaveBeenCalled();
+      }
+    } finally {
+      process.env.DATABASE_URL = databaseUrl;
+      if (explicitTestUrl === undefined) delete process.env.TEST_DATABASE_URL;
+      else process.env.TEST_DATABASE_URL = explicitTestUrl;
+      process.env.NODE_ENV = nodeEnv;
+    }
+  });
+
   it('keeps ordinary LIVE/API entry, direct intent and pretrade closed before transport', async () => {
     const f = await fixture();
     await prisma.order.update({ where: { id: f.legacy.id }, data: { status: 'CANCELED' } });

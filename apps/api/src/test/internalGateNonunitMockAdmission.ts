@@ -26,9 +26,16 @@ const positiveFinite = (value: unknown): number | null => {
 const localTestDatabase = () => {
   try {
     const database = new URL(process.env.DATABASE_URL ?? '');
-    return process.env.NODE_ENV === 'test' && database.hostname === '127.0.0.1' &&
+    const loopbackTest = database.hostname === '127.0.0.1' &&
       database.port !== '' && database.port !== '5432' &&
-      decodeURIComponent(database.pathname).endsWith('_test')
+      decodeURIComponent(database.pathname).endsWith('_test');
+    const dockerCiTest = database.hostname === 'postgres' && database.port === '5432' &&
+      database.username === 'ci' && database.password !== '' &&
+      database.pathname === '/soar_local_test' && database.search === '?schema=public' &&
+      process.env.TEST_DATABASE_URL === database.toString();
+    return process.env.NODE_ENV === 'test' &&
+      ['postgres:', 'postgresql:'].includes(database.protocol) &&
+      (loopbackTest || dockerCiTest)
       ? database.toString() : null;
   } catch {
     return null;
