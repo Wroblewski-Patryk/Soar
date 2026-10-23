@@ -144,6 +144,7 @@ describe('runtime crash/retry regression', () => {
 
     const createGateways = (): { orderGateway: OrderFlowGateway; positionGateway: PositionFlowGateway } => ({
       orderGateway: {
+        resolveFeeMarket: async () => ({ exchange: 'BINANCE', marketType: 'FUTURES' }),
         openOrder: vi.fn(async (_userId, input): Promise<OpenOrderResult> => {
           openOrderCalls += 1;
           const order: OpenOrderResult = {
@@ -264,6 +265,7 @@ describe('runtime crash/retry regression', () => {
 
     const createGateways = (): { orderGateway: OrderFlowGateway; positionGateway: PositionFlowGateway } => ({
       orderGateway: {
+        resolveFeeMarket: async () => ({ exchange: 'BINANCE', marketType: 'FUTURES' }),
         openOrder: vi.fn(async (_userId, input): Promise<OpenOrderResult> => {
           closeOpenOrderCalls += 1;
           const order: OpenOrderResult = {
@@ -424,6 +426,7 @@ describe('runtime crash/retry regression', () => {
     let openOrderCalls = 0;
 
     const orderGateway: OrderFlowGateway = {
+      resolveFeeMarket: async () => ({ exchange: 'BINANCE', marketType: 'FUTURES' }),
       openOrder: vi.fn(async (_userId, input): Promise<OpenOrderResult> => {
         openOrderCalls += 1;
         return {

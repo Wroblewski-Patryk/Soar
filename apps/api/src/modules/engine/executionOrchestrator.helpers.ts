@@ -1,4 +1,5 @@
-import { Order } from '@prisma/client';
+import { Exchange, Order, TradeMarket } from '@prisma/client';
+import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
 
 const parseFeeRate = (value: string | undefined) => {
   const parsed = Number(value);
@@ -16,10 +17,37 @@ export const resolveRuntimeTakerFeeRate = (mode: 'PAPER' | 'LIVE') => {
   return 0.0004;
 };
 
-export const computeTradeFee = (price: number, quantity: number, feeRate: number) => {
-  if (!Number.isFinite(price) || !Number.isFinite(quantity) || !Number.isFinite(feeRate)) return 0;
-  if (price <= 0 || quantity <= 0 || feeRate <= 0) return 0;
-  return price * quantity * feeRate;
+export const computeTradeFee = (price: number, quantity: number, feeRate: number, contractSize: number) => {
+  if (!Number.isFinite(price) || !Number.isFinite(quantity) || !Number.isFinite(feeRate) ||
+      !Number.isFinite(contractSize)) return 0;
+  if (price <= 0 || quantity <= 0 || feeRate <= 0 || contractSize <= 0) return 0;
+  return price * quantity * contractSize * feeRate;
+};
+
+type FeeUnitEvidence = Pick<Order, 'symbol' | 'contractSize' | 'gateFuturesEconomics'>;
+
+export const resolveEstimatedFeeContractSize = (input: {
+  market: { exchange: Exchange | 'UNSCOPED_PAPER'; marketType: TradeMarket };
+  order: FeeUnitEvidence;
+  position?: FeeUnitEvidence;
+}): number => {
+  if (input.market.exchange !== 'GATEIO') return 1;
+  if (input.market.marketType !== 'FUTURES') return 1;
+  const requireVerifiedUnit = (evidence: FeeUnitEvidence): number => {
+    const unit = evidence.contractSize;
+    if (typeof unit !== 'number' || !Number.isFinite(unit) || unit <= 0 ||
+        evidence.symbol !== input.order.symbol ||
+        (unit !== 1 || evidence.gateFuturesEconomics != null) &&
+          !isMatchingGateFuturesEconomics(evidence.gateFuturesEconomics, unit, evidence.symbol)) {
+      throw new Error('RUNTIME_GATE_FUTURES_FEE_UNIT_UNSAFE');
+    }
+    return unit;
+  };
+  const orderUnit = requireVerifiedUnit(input.order);
+  if (input.position && requireVerifiedUnit(input.position) !== orderUnit) {
+    throw new Error('RUNTIME_GATE_FUTURES_FEE_UNIT_UNSAFE');
+  }
+  return orderUnit;
 };
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>

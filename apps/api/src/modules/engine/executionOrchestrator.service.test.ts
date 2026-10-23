@@ -20,6 +20,7 @@ vi.spyOn(prisma.trade, 'aggregate').mockResolvedValue({
 });
 
 const createOrderGateway = (): OrderFlowGateway => ({
+  resolveFeeMarket: vi.fn().mockResolvedValue({ exchange: 'BINANCE', marketType: 'FUTURES' }),
   openOrder: vi.fn().mockResolvedValue({
     id: 'order-1',
     userId: 'u1',
@@ -98,6 +99,12 @@ const createDedupeGateway = (): RuntimeExecutionDedupeGateway => ({
   markFailed: vi.fn().mockResolvedValue(undefined),
 });
 
+const gateEconomics = (contractSize: number) => ({
+  source: 'GATE_API_V4_CONTRACT_CCXT_MARKET', contract: 'BTC_USDT',
+  contractType: 'direct', linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+  quantoMultiplier: contractSize, contractSize,
+});
+
 describe('buildOpenPositionLookupWhere', () => {
   it('scopes LIVE lookup by wallet when walletId is available', () => {
     const where = buildOpenPositionLookupWhere({
@@ -137,6 +144,70 @@ describe('buildOpenPositionLookupWhere', () => {
 });
 
 describe('orchestrateRuntimeSignal', () => {
+  it('uses durable Gate contract notional for a PAPER OPEN fee after order admission', async () => {
+    const orderGateway = createOrderGateway();
+    (orderGateway.resolveFeeMarket as ReturnType<typeof vi.fn>).mockResolvedValue({
+      exchange: 'GATEIO', marketType: 'FUTURES',
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'gate-order', userId: 'u1', symbol: 'BTCUSDT', status: 'FILLED',
+      positionId: 'gate-position', quantity: 100, filledQuantity: 100,
+      price: 100, averageFillPrice: 100, contractSize: 0.01,
+      gateFuturesEconomics: gateEconomics(0.01), fee: null, feeSource: 'ESTIMATED',
+      feePending: false, walletId: 'gate-wallet',
+    });
+    const tradeGateway = createTradeGateway();
+    const result = await orchestrateRuntimeSignal({
+      userId: 'u1', walletId: 'gate-wallet', symbol: 'BTCUSDT',
+      direction: 'LONG', quantity: 100, markPrice: 100, mode: 'PAPER',
+    }, orderGateway, createPositionGateway(), createEventGateway(), tradeGateway);
+    expect(result.status).toBe('opened');
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(expect.objectContaining({ fee: 0.04 }));
+  });
+
+  it('does not persist an estimated Gate fee from an old NULL unit', async () => {
+    const orderGateway = createOrderGateway();
+    (orderGateway.resolveFeeMarket as ReturnType<typeof vi.fn>).mockResolvedValue({
+      exchange: 'GATEIO', marketType: 'FUTURES',
+    });
+    const tradeGateway = createTradeGateway();
+    await expect(orchestrateRuntimeSignal({
+      userId: 'u1', symbol: 'BTCUSDT', direction: 'LONG', quantity: 0.1,
+      markPrice: 100, mode: 'PAPER',
+    }, orderGateway, createPositionGateway(), createEventGateway(), tradeGateway))
+      .rejects.toThrow('RUNTIME_GATE_FUTURES_FEE_UNIT_UNSAFE');
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+  });
+
+  it('keeps nonunit Gate CLOSE blocked before the remaining PnL ledger', async () => {
+    const orderGateway = createOrderGateway();
+    (orderGateway.resolveFeeMarket as ReturnType<typeof vi.fn>).mockResolvedValue({
+      exchange: 'GATEIO', marketType: 'FUTURES',
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'gate-close', userId: 'u1', symbol: 'BTCUSDT', status: 'FILLED',
+      positionId: 'gate-position', quantity: 176, filledQuantity: 176,
+      price: 120, averageFillPrice: 120, contractSize: 0.01,
+      gateFuturesEconomics: gateEconomics(0.01), fee: null, feeSource: 'ESTIMATED',
+      feePending: false, walletId: 'gate-wallet',
+    });
+    const positionGateway = createPositionGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'gate-position', userId: 'u1', symbol: 'BTCUSDT', side: 'LONG',
+      managementMode: 'BOT_MANAGED', quantity: 176, entryPrice: 100,
+      walletId: 'gate-wallet', contractSize: 0.01,
+      gateFuturesEconomics: gateEconomics(0.01),
+    });
+    const tradeGateway = createTradeGateway();
+    await expect(orchestrateRuntimeSignal({
+      userId: 'u1', walletId: 'gate-wallet', symbol: 'BTCUSDT',
+      direction: 'EXIT', quantity: 176, markPrice: 120, mode: 'PAPER',
+    }, orderGateway, positionGateway, createEventGateway(), tradeGateway, createDedupeGateway()))
+      .rejects.toThrow('RUNTIME_GATE_FUTURES_NONUNIT_CLOSE_LEDGER_UNSAFE');
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+    expect(positionGateway.closePosition).not.toHaveBeenCalled();
+  });
+
   it('records a filled LIVE OPEN fee as unknown until canonical fee truth arrives', async () => {
     const orderGateway = createOrderGateway();
     const positionGateway = createPositionGateway();

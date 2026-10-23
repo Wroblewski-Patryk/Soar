@@ -10,6 +10,7 @@ import { processPaperLifecycleTick } from './paperLifecycle.service';
 import { orderSideToPositionSide } from './sharedExecutionCore';
 
 const createOrderGateway = (): OrderFlowGateway => ({
+  resolveFeeMarket: vi.fn().mockResolvedValue({ exchange: 'BINANCE', marketType: 'FUTURES' }),
   openOrder: vi.fn().mockResolvedValue({
     id: 'order-1',
     userId: 'u1',

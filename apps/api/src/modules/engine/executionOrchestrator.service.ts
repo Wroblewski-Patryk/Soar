@@ -1,4 +1,4 @@
-import { Order, Position, PositionSide, Prisma } from '@prisma/client';
+import { Exchange, Order, Position, PositionSide, Prisma, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { normalizeSymbol } from '../../lib/symbols';
 import { closeOrder as closeOrderLifecycle, openOrder as openOrderLifecycle } from '../orders/orders.service';
@@ -17,7 +17,7 @@ import {
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 import { buildImportedExternalPositionMarketPrefix, buildLegacyImportedExternalPositionSymbolPrefix } from '../positions/livePositionReconciliation.helpers';
-import { computeTradeFee, isCloseQuantityComplete, resolveOrderExecutionPrice, resolveOrderExecutionQuantity, resolveRuntimeTakerFeeRate } from './executionOrchestrator.helpers';
+import { computeTradeFee, isCloseQuantityComplete, resolveEstimatedFeeContractSize, resolveOrderExecutionPrice, resolveOrderExecutionQuantity, resolveRuntimeTakerFeeRate } from './executionOrchestrator.helpers';
 
 export type RuntimeSignalDirection = 'LONG' | 'SHORT' | 'EXIT';
 export type RuntimeExecutionMode = 'PAPER' | 'LIVE';
@@ -57,6 +57,9 @@ type OrchestrationResult =
     };
 
 export interface OrderFlowGateway {
+  resolveFeeMarket(userId: string, order: Order, mode: RuntimeExecutionMode, position?: Position): Promise<{
+    exchange: Exchange | 'UNSCOPED_PAPER'; marketType: TradeMarket;
+  }>;
   openOrder(userId: string, input: {
     botId?: string;
     walletId?: string;
@@ -330,6 +333,35 @@ export interface RuntimeExecutionDedupeGateway {
 }
 
 const defaultOrderGateway: OrderFlowGateway = {
+  resolveFeeMarket: async (userId, order, mode, position) => {
+    if (order.userId !== userId || (position && position.userId !== userId) ||
+        (position?.walletId && order.walletId && position.walletId !== order.walletId) ||
+        (position?.botId && order.botId && position.botId !== order.botId)) {
+      throw new Error('RUNTIME_FEE_MARKET_SCOPE_UNSAFE');
+    }
+    const walletId = order.walletId ?? position?.walletId;
+    if (walletId) {
+      const wallet = await prisma.wallet.findFirst({
+        where: { id: walletId, userId }, select: { exchange: true, marketType: true },
+      });
+      if (!wallet) throw new Error('RUNTIME_FEE_MARKET_SCOPE_UNSAFE');
+      return wallet;
+    }
+    const botId = order.botId ?? position?.botId;
+    if (botId) {
+      const bot = await prisma.bot.findFirst({
+        where: { id: botId, userId }, select: { exchange: true, marketType: true },
+      });
+      if (!bot) throw new Error('RUNTIME_FEE_MARKET_SCOPE_UNSAFE');
+      return bot;
+    }
+    // Unscoped legacy PAPER orders have base-asset quantity and no venue binding.
+    if (mode === 'PAPER' && order.contractSize == null && order.gateFuturesEconomics == null &&
+        (!position || (position.contractSize == null && position.gateFuturesEconomics == null))) {
+      return { exchange: 'UNSCOPED_PAPER', marketType: 'SPOT' };
+    }
+    throw new Error('RUNTIME_FEE_MARKET_SCOPE_UNSAFE');
+  },
   openOrder: (userId, input) =>
     openOrderLifecycle(userId, {
       ...input,
@@ -682,7 +714,14 @@ export const orchestrateRuntimeSignal = async (
         orderId: closeOrder.id,
       };
     }
-    const estimatedExitFee = computeTradeFee(closeExecutionPrice, closeExecutionQuantity, feeRate);
+    const closeFeeMarket = await orderGateway.resolveFeeMarket(input.userId, closeOrder, input.mode, openPosition);
+    const closeContractSize = resolveEstimatedFeeContractSize({
+      market: closeFeeMarket, order: closeOrder, position: openPosition,
+    });
+    const estimatedExitFee = computeTradeFee(closeExecutionPrice, closeExecutionQuantity, feeRate, closeContractSize);
+    // The local PnL path below still uses contract count as base quantity.
+    // Keep nonunit CLOSE blocked until its entire financial ledger is unit-aware.
+    if (closeContractSize !== 1) throw new Error('RUNTIME_GATE_FUTURES_NONUNIT_CLOSE_LEDGER_UNSAFE');
     const exitFee = input.mode === 'LIVE' ? (closeOrder.fee ?? estimatedExitFee) : estimatedExitFee;
     let realizedPnl: number | null;
     let telemetryRecorded = false;
@@ -911,7 +950,9 @@ export const orchestrateRuntimeSignal = async (
 
   const openExecutionPrice = resolveOrderExecutionPrice(openOrder, input.markPrice);
   const openExecutionQuantity = resolveOrderExecutionQuantity(openOrder, input.quantity);
-  const estimatedOpenFee = computeTradeFee(openExecutionPrice, openExecutionQuantity, feeRate);
+  const openFeeMarket = await orderGateway.resolveFeeMarket(input.userId, openOrder, input.mode);
+  const openContractSize = resolveEstimatedFeeContractSize({ market: openFeeMarket, order: openOrder });
+  const estimatedOpenFee = computeTradeFee(openExecutionPrice, openExecutionQuantity, feeRate, openContractSize);
   const openFeePending = input.mode === 'LIVE' && (openOrder.feePending || openOrder.fee == null || openOrder.feeSource !== 'EXCHANGE_FILL');
   const openFee = input.mode === 'LIVE' ? (openFeePending ? null : openOrder.fee) : estimatedOpenFee;
   const openTradeResult = await runtimeTradeGateway.createTrade({

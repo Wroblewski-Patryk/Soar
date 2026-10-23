@@ -30,6 +30,7 @@ const createInMemoryGateways = (
   let positionCounter = 0;
 
   const orderGateway: OrderFlowGateway = {
+    resolveFeeMarket: async () => ({ exchange: 'BINANCE', marketType: 'FUTURES' }),
     openOrder: async (_userId, input) => {
       orderCounter += 1;
       const orderStatus = mode === 'LIVE' ? liveOrderStatus : 'FILLED';
