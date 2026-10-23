@@ -99,13 +99,13 @@ Health checks:
 - `/health`
 - `/ready`
 
-Container liveness for the Coolify Service Stack uses `/health`. Do not use
-`/ready` as the Docker healthcheck because it is a dependency/readiness gate
-and can block Web/workers from starting during a parallel-stack rollout. Always
-verify `/ready` separately in the post-deploy smoke before accepting traffic.
-Web and worker services depend on API `service_started`, not `service_healthy`,
-so `docker compose up -d` can finish while readiness is still being verified by
-explicit smoke checks.
+Container liveness for the Coolify Service Stack uses `/health`; verify the
+dependency/readiness gate `/ready` separately before starting Web or workers.
+Web and worker services depend on API `service_started`, not migration success
+or API readiness. A full `docker compose up -d` can start workers before
+`prisma migrate deploy` finishes, so the production cutover must follow the
+selective start and migration/schema readback order in Step 5B (or the
+separately controlled Applications in Step 8).
 
 Required environment variables:
 - `NODE_ENV=production`
@@ -187,8 +187,10 @@ On the 8 GiB production VPS, configure Coolify **Resource Limits** for each
 separate application before redeploying: API memory `2g` and memory+swap `3g`,
 web `1g` and memory+swap `1536m`, each worker `768m` and memory+swap `1g`.
 Only after the mandatory production gate and Step 8 approval, old-consumer
-stop/readback and preflight may the operator save and restart/redeploy these
-applications. Then verify the recreated containers with
+stop/readback and preflight may the operator save/redeploy these applications
+in Step 8 order: API first, migration/schema readback, Web, then workers one at
+a time. A save or bulk redeploy that starts workers sooner is **STOP/NO-GO**.
+Verify the recreated containers with
 `docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' <container>`.
 These values are initial host-protection limits after the 2026-10-17 global OOM;
 adjust only against measured peak usage and keep capacity for Coolify,
@@ -251,7 +253,9 @@ Coolify Service Stack using `docker-compose.coolify.yml`. This Step 5B
 implements the approved Step 8 rollout; preparing a Compose/resource plan is
 not permission to create or start it. If Coolify creates and starts a resource
 as one action, defer that action until the owner/backup/local proof and
-old-consumer stop/readback/preflight gates above have passed.
+old-consumer stop/readback/preflight gates above have passed. Creation that
+starts the whole stack is **STOP/NO-GO** even after those gates; the API must
+run and finish migration before any candidate worker starts.
 
 Why this exists:
 - the previous production shape used six separate Coolify Applications for API,
@@ -301,7 +305,8 @@ Before step 1, record the owner's separate approval for the exact SHA and
 window, local acceptance, backup/restore and rollback readiness, and migration
 compatibility. No production migration or candidate API/worker start is allowed
 until the old consumers are stopped and read back in step 5 and the preflight
-passes in step 6. A resource-creation action that auto-starts must wait too.
+passes in step 6. A resource-creation action that auto-starts must wait too,
+and it must start only API, never the whole stack.
 
 1. Freeze normal deploy promotion.
 2. Record current stable SHA and current Coolify resource list.
@@ -326,7 +331,7 @@ passes in step 6. A resource-creation action that auto-starts must wait too.
    and do not delete their data.
 6. Capture a fresh, complete, no-secret Coolify resource inventory and run the
    [worker switch preflight](#worker-switch-preflight) **before** starting the
-   new stack on the target VPS with the same resolved `SOURCE_COMMIT` and
+   candidate API on the target VPS with the same resolved `SOURCE_COMMIT` and
    `API_STACK_IMAGE` values intended for Compose. It checks local Git HEAD and
    clean status, builder metadata, the pinned OCI index/platform/config and
    attestation digests, the API image ID and the rendered references of all five roles in both
@@ -334,30 +339,46 @@ passes in step 6. A resource-creation action that auto-starts must wait too.
    enumeration of all Docker containers. A FAIL,
    missing or additional Soar container, unknown state, stale snapshot, source
    mismatch, or image mismatch blocks the start. Its local procedural PASS is
-   not deployed proof: separately bind the actual Coolify resource/deployment
-   ID and running image digest to the Buildx record. If that readback is
-   unavailable or does not match, **NO-GO**.
-7. Only after the approval/prerequisites above and the stop/readback and
-   preflight in steps 5–6 (Step 8 items 1–2), start the new stack from the
-   verified immutable candidate image. The API default command runs
-   `prisma migrate deploy`, so this start is a production migration gate too.
-   Do not rebuild from a moving branch; if the deployment mechanism rebuilds
-   or changes the image ID, stop acceptance and investigate.
-8. Confirm API health:
+   not deployed proof. After starting the candidate API in step 7, bind the
+   actual Coolify resource/deployment ID and running image digest to the Buildx
+   record before starting workers. Missing or mismatched readback is
+   **STOP/NO-GO**; stop the candidate and follow the rollback guard.
+7. Before any candidate start, verify Coolify can enforce separate starts for
+   API, Web, and each worker while the remaining services stay stopped.
+   `depends_on: condition: service_started` in `docker-compose.coolify.yml`
+   does not wait for migration success. If separate starts cannot be enforced,
+   the Service Stack cutover is **STOP/NO-GO**; use the separately controlled
+   Applications in Steps 3–5 under the Step 8 sequence instead. Never use a
+   one-click full-stack start to bypass this order. Only after the
+   approval/prerequisites above and the stop/readback and preflight in steps
+   5–6 (Step 8 items 1–2), start **only the candidate API** from the verified
+   immutable image. Keep Web and all four candidate workers stopped. The API
+   default command runs `prisma migrate deploy`, so its start is the controlled
+   production migration step. Do not rebuild from a moving branch; if the
+   deployment mechanism rebuilds or changes the image ID, stop acceptance and
+   investigate.
+8. Confirm successful `prisma migrate deploy` from the API startup log and
+   read back migration status and the expected schema on the existing
+   production database. Record the result for the exact SHA. A failed or
+   uncertain migration/readback is **STOP/NO-GO**; keep all candidate workers
+   stopped and follow the rollback guard. Confirm the API image readback from
+   step 6 and API health:
    - stack `api` is healthy through the container liveness `/health` check;
    - public `https://api.soar.luckysparrow.ch/health` returns `200`;
    - public `https://api.soar.luckysparrow.ch/ready` returns `200`.
-9. Confirm Web health:
+9. Only after step 8, start Web and confirm its health:
    - stack `web` is healthy;
    - public `https://soar.luckysparrow.ch/` returns `200`;
    - `https://soar.luckysparrow.ch/api/build-info` reports the expected
      `SOURCE_COMMIT`.
-10. Confirm worker state:
-   - all four worker containers are running;
-    - the running API and all four workers have the preflight image ID and
-      revision label; no old worker container is running;
-   - no crash-loop or restart storm is visible in stack logs;
-   - worker readiness/runtime freshness proof passes.
+10. Only after migration/schema and API/Web readiness are confirmed, start
+    the four candidate workers in controlled order, one at a time. Confirm
+    worker state:
+     - all four worker containers are running;
+     - the running API and all four workers have the preflight image ID and
+       revision label; no old worker container is running;
+     - no crash-loop or restart storm is visible in stack logs;
+     - worker readiness/runtime freshness proof passes.
 11. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
    candidate.
 12. Only after the stack is accepted, detach old API/Web domains if needed.
