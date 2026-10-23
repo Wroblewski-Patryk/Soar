@@ -179,8 +179,8 @@ const validateLockfilePolicy = (trackedFiles) => {
   return errors;
 };
 
-const countSourceBytesWithLfEndings = (absolute) => {
-  const content = fs.readFileSync(absolute);
+const countSourceBytesWithLfEndings = (absolute, readSourceFile) => {
+  const content = readSourceFile(absolute);
   let size = content.length;
   for (let index = 1; index < content.length; index += 1) {
     if (content[index - 1] === 13 && content[index] === 10) size -= 1;
@@ -188,7 +188,10 @@ const countSourceBytesWithLfEndings = (absolute) => {
   return size;
 };
 
-export const validateSourceFileBudgets = (trackedFiles, { rootDir = ROOT_DIR } = {}) => {
+export const validateSourceFileBudgets = (
+  trackedFiles,
+  { rootDir = ROOT_DIR, readSourceFile = fs.readFileSync } = {},
+) => {
   const oversize = [];
   for (const filePath of trackedFiles) {
     if (!SOURCE_FILE_RE.test(filePath)) continue;
@@ -204,9 +207,10 @@ export const validateSourceFileBudgets = (trackedFiles, { rootDir = ROOT_DIR } =
     if (size > budget) {
       try {
         // A Windows checkout may expand tracked LF to CRLF without changing the source.
-        size = countSourceBytesWithLfEndings(absolute);
+        size = countSourceBytesWithLfEndings(absolute, readSourceFile);
       } catch {
-        continue;
+        // Without a readable source, the raw over-budget size must still fail.
+        size = stats.size;
       }
     }
     if (size > budget) {
