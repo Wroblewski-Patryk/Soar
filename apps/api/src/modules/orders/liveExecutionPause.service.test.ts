@@ -116,8 +116,15 @@ describe('shared LIVE submission pause', () => {
         const { CcxtFuturesConnector } = require('./src/modules/exchange/ccxtFuturesConnector.service.ts');
         const { prisma } = require('./src/prisma/client.ts');
         void (async () => {
+          const gateMarket = ${JSON.stringify(exchangeId)} === 'gateio' ? {
+            id: 'BTC_USDT', symbol: 'BTC/USDT:USDT', type: 'swap', swap: true,
+            contract: true, linear: true, inverse: false, quote: 'USDT', settle: 'USDT',
+            contractSize: 1,
+            info: { name: 'BTC_USDT', type: 'direct', quanto_multiplier: '1' },
+          } : null;
           const client = {
-            loadMarkets: async () => ({}),
+            loadMarkets: async () => gateMarket ? { [gateMarket.symbol]: gateMarket } : {},
+            market: (symbol) => symbol === gateMarket?.symbol ? gateMarket : undefined,
             createOrder: async (symbol, type, side, amount, price, params) => {
               process.stdout.write('STARTED\\n');
               await new Promise((resolve) => {
@@ -152,7 +159,12 @@ describe('shared LIVE submission pause', () => {
       child.stderr!.on('data', (chunk) => { errors += chunk.toString(); });
       try {
         for (let attempt = 0; attempt < 100 && !output.includes('STARTED'); attempt += 1) {
-          if (child.exitCode !== null) throw new Error(errors || 'Connector child exited');
+          if (child.exitCode !== null) {
+            const protocolError = output.match(/(?:^|\r?\n)(ERROR:[A-Z][A-Z0-9_]{0,79})(?=\r?\n|$)/)?.[1];
+            const stdout = protocolError ?? (output ? '<non-protocol output>' : '<empty>');
+            const stderr = errors ? '<non-empty>' : '<empty>';
+            throw new Error(`Connector child exited (code ${child.exitCode}; stdout=${stdout}; stderr=${stderr})`);
+          }
           await new Promise((resolve) => setTimeout(resolve, 50));
         }
         expect(output, errors).toContain('STARTED');
