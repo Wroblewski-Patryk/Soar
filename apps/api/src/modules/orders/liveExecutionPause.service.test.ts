@@ -12,6 +12,36 @@ const assertTestDatabase = () => {
   }
 };
 
+const safeChildDiagnostic = (output: string, errors: string, exitCode: number | null) => {
+  const protocol = output.includes('ERROR:GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED')
+    ? 'ERROR:GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED'
+    : output.includes('ERROR:mock venue timeout') ? 'ERROR:mock venue timeout'
+    : output.includes('DONE:mock-order') ? 'DONE:mock-order'
+    : output.includes('STARTED') ? 'STARTED'
+    : output ? '<unrecognized output>' : '<empty>';
+  return `Connector child exited (code ${exitCode ?? 'pending'}; stdout=${protocol}; stderr=${errors ? '<non-empty>' : '<empty>'})`;
+};
+
+describe('connector child diagnostics', () => {
+  it('keeps a fictitious secret out of timeout and exit assertion failures', () => {
+    const secret = 'TEST_ONLY_FAKE_SECRET_001B';
+    const output = `ERROR:${secret}\nERROR:GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED\n`;
+    const diagnostic = safeChildDiagnostic(output, `stderr: ${secret}`, 7);
+    expect(diagnostic).toContain('GATE_FUTURES_FILL_CONTRACT_UNIT_UNVERIFIED');
+    expect(diagnostic).toContain('code 7');
+    expect(diagnostic).toContain('stderr=<non-empty>');
+    for (const assertion of [
+      () => expect(output.includes('STARTED'), diagnostic).toBe(true),
+      () => expect(7, diagnostic).toBe(0),
+    ]) {
+      let failure = '';
+      try { assertion(); } catch (error) { failure = String(error); }
+      expect(failure).toContain('Connector child exited');
+      expect(failure).not.toContain(secret);
+    }
+  });
+});
+
 describe('shared LIVE submission pause', () => {
   const workerA = new PrismaClient();
   const workerB = new PrismaClient();
@@ -160,14 +190,11 @@ describe('shared LIVE submission pause', () => {
       try {
         for (let attempt = 0; attempt < 100 && !output.includes('STARTED'); attempt += 1) {
           if (child.exitCode !== null) {
-            const protocolError = output.match(/(?:^|\r?\n)(ERROR:[A-Z][A-Z0-9_]{0,79})(?=\r?\n|$)/)?.[1];
-            const stdout = protocolError ?? (output ? '<non-protocol output>' : '<empty>');
-            const stderr = errors ? '<non-empty>' : '<empty>';
-            throw new Error(`Connector child exited (code ${child.exitCode}; stdout=${stdout}; stderr=${stderr})`);
+            throw new Error(safeChildDiagnostic(output, errors, child.exitCode));
           }
           await new Promise((resolve) => setTimeout(resolve, 50));
         }
-        expect(output, errors).toContain('STARTED');
+        expect(output.includes('STARTED'), safeChildDiagnostic(output, errors, child.exitCode)).toBe(true);
         expect(await workerA.liveCreateOrderSubmission.findFirst({ where: {
           exchangeId, clientOrderId: `pause-test-${exchangeId}`,
         } })).toMatchObject({ marketType: 'swap', reduceOnly: false, symbol: 'BTCUSDT' });
@@ -178,8 +205,9 @@ describe('shared LIVE submission pause', () => {
         expect((await readLiveExecutionPause(workerB)).paused).toBe(false);
         child.send('RELEASE');
         const code = await new Promise<number | null>((resolve) => child.on('close', resolve));
-        expect(code, errors).toBe(0);
-        expect(output).toContain(rejectAfterRelease ? 'ERROR:mock venue timeout' : 'DONE:mock-order');
+        expect(code, safeChildDiagnostic(output, errors, code)).toBe(0);
+        expect(output.includes(rejectAfterRelease ? 'ERROR:mock venue timeout' : 'DONE:mock-order'),
+          safeChildDiagnostic(output, errors, code)).toBe(true);
         const paused = await setLiveExecutionPause({ actorUserId: actorId, paused: true,
           reason: 'completed connector submit permits pause', expectedVersion: state.version! }, workerB);
         expect(paused.paused).toBe(true);
@@ -264,7 +292,7 @@ describe('shared LIVE submission pause', () => {
     child.stdout.on('data', (chunk) => { output += chunk.toString(); });
     child.stderr.on('data', (chunk) => { errors += chunk.toString(); });
     const code = await new Promise<number | null>((resolve) => child.on('close', resolve));
-    expect(code, errors).toBe(0);
+    expect(code, safeChildDiagnostic(output, errors, code)).toBe(0);
     expect(JSON.parse(output)).toEqual({ paused: true, version: state.version,
       deniedCode: 'LIVE_PRETRADE_PAUSED', reduceOnly: 'allowed-close' });
   });
