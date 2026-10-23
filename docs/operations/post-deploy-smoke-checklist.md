@@ -1,4 +1,4 @@
-# Post-Deploy Smoke Checklist (Stage/Prod)
+# Post-Deploy Smoke Checklist (Coolify Production)
 
 Date: 2026-04-03  
 Scope: Manual + scripted smoke checks after deployment on target domains.
@@ -7,14 +7,16 @@ Scope: Manual + scripted smoke checks after deployment on target domains.
 - Web: `https://soar.luckysparrow.ch`
 - API: `https://api.soar.luckysparrow.ch`
 
-For STAGE use corresponding stage domains (`stage-soar` / `stage-api.soar`) when provisioned.
+Soar has no separate STAGE. Local Windows validation uses isolated test data and is recorded separately from this production smoke.
 
 ## Purpose
 Quickly confirm that the deployed revision is operational for critical user flows before declaring rollout healthy.
 
 ## Preconditions
-- Deployment finished with green build/migration/health gates.
-- Candidate SHA and environment are known.
+- Owner separately approved deployment of the exact candidate SHA to the existing Coolify production environment.
+- Local candidate gates, backup/restore and rollback path, migration compatibility, and protected signed-in acceptance plan are recorded; they are not production proof.
+- Deployment finished with green build/migration/health gates and deployed SHA readback.
+- Stop-before-start worker switch preflight passed before candidate workers started.
 - Worker services are running.
 - For the Coolify Service Stack topology, API and Web stack healthchecks are
   green and all four worker containers are running after the API liveness gate.
@@ -48,8 +50,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - valid login works,
 - login must not return `Rate limit temporarily unavailable`; that indicates a
   Redis dependency failure and the rollout is degraded.
-- protected route access works with active session,
-- logout returns to expected public route.
+- protected user and administrator routes work with active sessions in EN/PL, including plan/role boundaries,
+- logout returns to expected public route. Record account/role, SHA and result without exposing credentials.
 
 ### 4) Dashboard baseline
 - `/dashboard` renders successfully,
@@ -101,7 +103,7 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ## Evidence Recording
 Record for each smoke run:
-- environment (`stage`/`prod`),
+- environment (`prod`; local test results are a separate record),
 - candidate SHA,
 - checklist status per section,
 - timestamp,

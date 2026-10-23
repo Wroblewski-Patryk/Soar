@@ -10,9 +10,7 @@ Provide one repeatable setup path for hosting CryptoSparrow on a Linux VPS with 
 - domain routing,
 - deployment checks.
 
-This guide is for the active PROD environment. Stage is intentionally parked as
-of 2026-04-29 to avoid unused redeploy queues and duplicated VPS resource usage.
-Reintroduce it only when the project again needs pre-production validation.
+This guide operates the existing Coolify production VPS. Owner decision (2026-10-23): development and isolated testing run on local Windows; there is no separate STAGE or second VPS. Local validation is not production proof, and production deployment needs a separate owner decision.
 
 ## Target Topology
 
@@ -36,11 +34,7 @@ Production:
 - Web: `soar.luckysparrow.ch`
 - API: `api.soar.luckysparrow.ch`
 
-Stage:
-- currently disabled/removed from active Coolify deployment
-- previous pattern, if reintroduced later:
-  - Web: `stage.soar.luckysparrow.ch`
-  - API: `stage-api.soar.luckysparrow.ch`
+No STAGE domains or services are required for the current Soar release path.
 
 ## Prerequisites
 
@@ -57,9 +51,8 @@ Repository requirements:
 ## Step 1: Create Coolify Project and Environment
 
 1. In Coolify, create project: `cryptosparrow`.
-2. Create or keep only the `production` environment active.
-3. If stage is reintroduced later, keep stage and prod resources separate and
-   disable auto-deploy until the stage workflow is intentionally restored.
+2. Keep only the existing `production` environment active; do not provision a second VPS or STAGE for this release.
+3. Keep local Windows test resources isolated from production data and credentials.
 
 ## Step 2: Provision Data Services
 
@@ -620,7 +613,7 @@ Quick verification checklist:
 
 ## Step 7: Migrations Before Go-Live
 
-Before first stage/prod release:
+Before the owner-approved production release on the exact candidate SHA:
 1. Run DB migration job against target DB.
 2. Confirm Prisma schema is up to date.
 3. Confirm API starts without migration drift errors.
@@ -633,11 +626,11 @@ Note:
 
 ## Step 8: Production Rollout
 
-1. Deploy the selected SHA to PROD during a controlled window.
-2. Run same health checks.
-3. Run smoke checks from runbook:
-   - `docs/operations/v1-ops-runbook.md`
-4. Record deployment evidence.
+1. Obtain separate owner approval for the selected exact SHA and controlled window; verify local acceptance, backup/restore, rollback and migration compatibility.
+2. Complete the stop-before-start worker-switch preflight before any candidate worker starts.
+3. Deploy the approved SHA to the existing Coolify PROD environment and read back the actual API/Web/worker image revisions.
+4. Run production health and protected signed-in user/admin smoke from `docs/operations/post-deploy-smoke-checklist.md` and `docs/operations/v1-ops-runbook.md`.
+5. Record production evidence separately from local tests; missing proof keeps release `NO-GO`.
 
 ## Rollback Baseline
 
@@ -653,7 +646,7 @@ If post-deploy health fails:
 ## Common Failure Points
 
 1. Wrong `NEXT_PUBLIC_API_BASE_URL` -> web cannot reach API.
-2. Reintroduced stage using prod DB/Redis by mistake.
+2. Local test configuration points to production DB/Redis by mistake.
 3. Missing worker service -> runtime data stale.
 4. Wrong/missing cookie session config (`COOKIE_DOMAIN`, `COOKIE_SAME_SITE`) for deployed domains.
 5. API CORS not matching web domain.

@@ -1,5 +1,7 @@
 # V1 Release Candidate Checklist
 
+The checked items and dated results below describe the historical May 2026 candidate. For the current PR #2, use the [release board](../status/current-release-board.md), local Windows evidence on the exact SHA, and separate production proof after owner approval. STAGE and a second VPS are not required.
+
 ## Build and Test Gates
 - [x] `pnpm --filter api build` passes.
 - [x] `pnpm --filter web build` passes.
@@ -145,11 +147,9 @@ Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
   - `pnpm run ops:db:backup-restore:check-local`
   - profile command set:
     - `pnpm run ops:db:backup-verify:local`
-    - `pnpm run ops:db:backup-verify:stage`
     - `pnpm run ops:db:backup-verify:prod`
 - Generate restore drill evidence artifact (PASS/FAIL contract):
   - `pnpm run ops:db:restore-drill:local`
-  - `pnpm run ops:db:restore-drill:stage`
   - `pnpm run ops:db:restore-drill:prod`
 - Build RC external-gates status snapshot from latest SLO artifact:
   - `pnpm run ops:rc:gates:status`

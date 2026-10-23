@@ -8,9 +8,7 @@ Guarantee that production receives an explicit, verified code revision.
 
 Core principle: **select one immutable commit SHA, deploy it intentionally, verify it immediately**.
 
-Stage is parked as of 2026-04-29 to avoid unused Coolify redeploy queues and
-duplicated VPS resource usage. Reintroduce it only with an explicit workflow
-restoration task.
+Owner decision (2026-10-23): Soar has two environments only: local Windows for development/isolated tests and the existing Coolify production VPS. There is no separate STAGE and no second VPS in the release path. Local PASS does not constitute production proof; the owner separately approves production deployment.
 
 ## Canonical Promotion Flow
 1. Developer lands changes in the configured production branch.
@@ -42,18 +40,19 @@ Candidate is promotable only when:
 - repository quality gates are green for the selected SHA,
 - no unresolved blocking incidents are attached to candidate SHA,
 - branch protection rules are satisfied for target branch,
-- deployment evidence artifact is generated and stored.
+- deployment evidence artifact is generated and stored,
+- backup/restore viability, rollback path, migration compatibility, stop-before-start worker cutover, and protected signed-in user/admin acceptance are ready,
+- the owner has separately approved this exact-SHA production deployment.
 
 If any rule fails: promotion is blocked and `PROD` remains unchanged.
 
 ## PROD Rollout and Post-Deploy Gates
 After immutable SHA promotion:
-1. Deploy `api`, `web`, and `workers` in controlled sequence.
-2. Execute post-deploy gates:
-   - API health/readiness,
-   - web availability smoke,
-   - workers readiness + queue heartbeat.
-3. Record rollout status and timestamps in deployment evidence log.
+1. Verify backup and rollback checkpoints; run the approved migration sequence for the exact SHA.
+2. Stop old workers before candidate workers start, using the Coolify cutover preflight.
+3. Deploy `api`, `web`, and `workers` in controlled sequence.
+4. Execute production post-deploy gates: API/Web/workers readiness, queue and runtime freshness, deployed SHA readback, and protected signed-in user/admin journeys.
+5. Record rollout status, operator, timestamps and evidence in the deployment log. Local evidence remains separately labeled.
 
 ## Rollback Contract
 Rollback is triggered when any required PROD post-deploy gate fails.

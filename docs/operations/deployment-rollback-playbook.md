@@ -1,7 +1,7 @@
 # Deployment Rollback Playbook (App/Env/Workers)
 
 Date: 2026-04-03  
-Scope: Controlled rollback procedure for failed STAGE/PROD rollout.
+Scope: Controlled rollback procedure for the existing Coolify production rollout. Local Windows failures block the candidate before deployment.
 
 ## Goal
 Restore stable service quickly when deployment or post-deploy health gates fail.
@@ -115,7 +115,7 @@ routine application rollback. See
 
 ## Communication Template
 Minimum incident update includes:
-- environment (`stage`/`prod`),
+- environment (`prod`; local failures are separate candidate evidence),
 - failing SHA,
 - rollback target SHA/tag,
 - affected services,
@@ -137,4 +137,4 @@ Attach evidence to release records and postmortem workflow.
 Incident may be closed only when:
 1. rollback target is stable,
 2. required health/smoke gates are green,
-3. promotion pipeline remains blocked until fix SHA is validated on STAGE.
+3. further production deployment remains blocked until a fix SHA passes isolated local gates, backup/rollback and migration compatibility are reviewed, protected acceptance is planned, and the owner separately approves another attempt.

@@ -13,6 +13,8 @@ templates. Dated proof lives in [Evidence History](../../history/evidence/eviden
 release packets live in [Release History](../../history/releases/release-history.md),
 and raw generated output lives in [Raw Artifacts](../../history/artifacts/raw-artifact-history.md).
 
+Current Soar environment decision (2026-10-23): local Windows for development and isolated acceptance, plus the existing Coolify production VPS. No separate STAGE or second VPS is a release prerequisite. The [environment matrix](./dev-stage-prod-environment-matrix.md) and [current release board](../status/current-release-board.md) govern current evidence; dated V1 reports remain historical.
+
 ## Start Here
 
 | File | Use when |
@@ -33,9 +35,9 @@ and raw generated output lives in [Raw Artifacts](../../history/artifacts/raw-ar
 | [Deployment rollback playbook](./deployment-rollback-playbook.md) | Rolling back or deciding not to roll back. |
 | [Deployment incident playbook](./deployment-incident-playbook.md) | Handling a deploy incident. |
 | [Deployment migration strategy](./deployment-migration-strategy.md) | Understanding deployment migration sequencing. |
-| [Deployment template local/stage/production](./deployment-template-local-stage-production.md) | Comparing environment deployment templates. |
-| [Dev/stage/prod environment matrix](./dev-stage-prod-environment-matrix.md) | Checking environment ownership and differences. |
-| [Dev/stage/prod promotion contract](./dev-stage-prod-promotion-contract.md) | Promoting across environments. |
+| [Deployment template local/stage/production](./deployment-template-local-stage-production.md) | Generic legacy template only; not a Soar release gate. |
+| [Local/production environment matrix](./dev-stage-prod-environment-matrix.md) | Checking the two current environments and secrets. |
+| [Local-to-production deployment contract](./dev-stage-prod-promotion-contract.md) | Selecting and verifying an exact SHA on existing Coolify. |
 | [Post-deploy smoke checklist](./post-deploy-smoke-checklist.md) | Running post-deploy checks. |
 | [Post-release monitoring](./post-release-monitoring.md) | Watching a release after deployment. |
 | [Release candidate checklist](./release-candidate-checklist.md) | Preparing a release candidate. |

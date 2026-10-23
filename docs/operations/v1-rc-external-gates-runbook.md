@@ -1,6 +1,6 @@
 # V1 RC External Gates Runbook
 
-Purpose: close the remaining release-candidate gates that require target-environment evidence and formal approvals.
+Purpose: close release-candidate gates using local Windows validation and separate evidence from the existing Coolify production environment. No STAGE or second VPS is required. Dated examples below are historical evidence, not proof for a new SHA.
 
 ## Production Prerequisites
 Before final closure run, set/verify:
@@ -36,9 +36,7 @@ Recommended one-command production closure pipeline:
      - `pnpm run ops:db:backup-restore:check-local`
    - Profiled command set (repeatable by deployment target):
      - `pnpm run ops:db:backup-verify:local`
-     - `pnpm run ops:db:backup-verify:stage`
      - `pnpm run ops:db:backup-verify:prod`
-     - optional overrides: `pnpm run ops:db:backup-verify -- --profile stage --container <name> --db-user <user> --db-name <name>`
 2. Record snapshot id, timestamp (UTC), and operator.
 3. Restore snapshot into isolated restore target (never production primary).
 4. Run minimum restore checks:
@@ -47,7 +45,6 @@ Recommended one-command production closure pipeline:
    - row counts are non-zero where expected.
    - evidence automation (PASS/FAIL contract artifact):
      - `pnpm run ops:db:restore-drill:local`
-     - `pnpm run ops:db:restore-drill:stage`
      - `pnpm run ops:db:restore-drill:prod`
 5. Mark gate complete in RC checklist only after restore checks pass.
 
@@ -60,7 +57,6 @@ Evidence to record:
 
 Profile env contract:
 - `DB_CHECK_CONTAINER`, `DB_CHECK_USER`, `DB_CHECK_NAME` for `local`
-- `STAGE_DB_CHECK_CONTAINER`, `STAGE_DB_CHECK_USER`, `STAGE_DB_CHECK_NAME` for `stage`
 - `PROD_DB_CHECK_CONTAINER`, `PROD_DB_CHECK_USER`, `PROD_DB_CHECK_NAME` for `prod`
 
 ## Gate 2: Queue-Lag Baseline Review

@@ -8,17 +8,13 @@ Document the accepted production deployment control path for Coolify services:
 - PROD deploy through Coolify/manual operator controls,
 - PROD rollback through Coolify/manual operator controls.
 
-Stage is intentionally parked for now. Do not keep stage Coolify resources or
-unused automation active while the project is in production-only mode. This
-prevents every push from creating duplicate redeploy queues for unused
-services.
+Owner decision (2026-10-23): Soar has local Windows validation and the existing Coolify production environment only. Do not create STAGE resources, a second VPS, or stage deploy triggers. Production deploy remains a separately approved operator action for an exact SHA.
 
 ## GitHub Actions Policy
 
 GitHub Actions is not used for production deployment in the active project
 setup. Do not add or dispatch GitHub Actions workflows for production promote
-or rollback unless the operator explicitly approves a new paid/available
-GitHub Actions setup.
+or rollback unless the owner explicitly approves a separate workflow change.
 
 ## Coolify Side Setup
 For each target service/app in Coolify:
@@ -30,12 +26,7 @@ For each target service/app in Coolify:
 4. Keep webhook URLs out of the repository. If webhooks are used manually, they
    remain operator-held secrets and are not wired through GitHub Actions.
 
-Stage cleanup checklist:
-1. Remove or stop stage applications/services/databases in the Soar Coolify project.
-2. Remove stage GitHub App/manual webhooks if Coolify created them.
-3. Remove stage-only GitHub secrets after confirming no workflow references remain:
-   `COOLIFY_STAGE_DEPLOY_HOOK_URL`, `STAGE_API_BASE_URL`, `STAGE_WEB_BASE_URL`,
-   `STAGE_DATABASE_URL`.
+Legacy STAGE resources, if any are discovered, require a separate owner-reviewed inventory and cleanup decision. Do not remove resources or secrets automatically while documenting the current deployment path.
 
 ## Manual Coolify Chain Contract
 1. Operator selects the intended repository SHA in Coolify.
@@ -69,4 +60,4 @@ operator tooling supports it:
 ## Security Notes
 - Webhook URLs are secrets; never store in repo.
 - Restrict who can run `workflow_dispatch` on production workflows.
-- Use protected environments (`stage`, `production`) with required reviewers where appropriate.
+- Protect production controls with required owner/operator review; no STAGE environment is part of the current path.
