@@ -126,12 +126,16 @@ describe('Gate nonunit internal mock admission boundary', () => {
     const explicitTestUrl = process.env.TEST_DATABASE_URL;
     const nodeEnv = process.env.NODE_ENV;
     const dockerTestUrl = 'postgresql://ci:fixture@postgres:5432/soar_local_test?schema=public';
+    const otherSchemaUrl = dockerTestUrl.replace('schema=public', 'schema=private');
+    const missingSchemaUrl = dockerTestUrl.replace('?schema=public', '');
     const invalid = [
       { name: 'production environment', url: dockerTestUrl, testUrl: dockerTestUrl, env: 'production' },
       { name: 'foreign host', url: dockerTestUrl.replace('@postgres:', '@foreign:'), testUrl: dockerTestUrl },
       { name: 'wrong port', url: dockerTestUrl.replace(':5432/', ':6432/'), testUrl: dockerTestUrl },
       { name: 'runtime database', url: dockerTestUrl.replace('/soar_local_test', '/soar_local_runtime'), testUrl: dockerTestUrl },
       { name: 'other test database', url: dockerTestUrl.replace('/soar_local_test', '/other_test'), testUrl: dockerTestUrl },
+      { name: 'non-public schema', url: otherSchemaUrl, testUrl: otherSchemaUrl },
+      { name: 'missing schema', url: missingSchemaUrl, testUrl: missingSchemaUrl },
       { name: 'wrong user', url: dockerTestUrl.replace('://ci:', '://operator:'), testUrl: dockerTestUrl },
       { name: 'mismatched test URL', url: dockerTestUrl, testUrl: dockerTestUrl.replace('/soar_local_test', '/other_test') },
       { name: 'missing test URL', url: dockerTestUrl, testUrl: undefined },
@@ -159,6 +163,8 @@ describe('Gate nonunit internal mock admission boundary', () => {
       else process.env.TEST_DATABASE_URL = explicitTestUrl;
       process.env.NODE_ENV = nodeEnv;
     }
+    expect(await prisma.orderFill.count({ where: { userId: 'local-test-user' } })).toBe(0);
+    expect(await prisma.position.count({ where: { userId: 'local-test-user' } })).toBe(0);
   });
 
   it('keeps ordinary LIVE/API entry, direct intent and pretrade closed before transport', async () => {
