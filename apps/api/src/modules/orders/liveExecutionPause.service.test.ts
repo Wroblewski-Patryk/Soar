@@ -22,6 +22,19 @@ const safeChildDiagnostic = (output: string, errors: string, exitCode: number | 
   return `Connector child exited (code ${exitCode ?? 'pending'}; stdout=${protocol}; stderr=${errors ? '<non-empty>' : '<empty>'})`;
 };
 
+const assertPauseChildSnapshot = (output: string, errors: string, exitCode: number | null,
+  expected: { paused: boolean; version: number | null; deniedCode: string; reduceOnly: string }) => {
+  let value: unknown;
+  try { value = JSON.parse(output); }
+  catch { throw new Error(`Connector child returned invalid JSON; ${safeChildDiagnostic(output, errors, exitCode)}`); }
+  const snapshot = value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown> : null;
+  const matches = snapshot !== null && Object.keys(snapshot).length === 4 &&
+    snapshot.paused === expected.paused && snapshot.version === expected.version &&
+    snapshot.deniedCode === expected.deniedCode && snapshot.reduceOnly === expected.reduceOnly;
+  expect(matches, safeChildDiagnostic(output, errors, exitCode)).toBe(true);
+};
+
 describe('connector child diagnostics', () => {
   it('keeps a fictitious secret out of timeout and exit assertion failures', () => {
     const secret = 'TEST_ONLY_FAKE_SECRET_001B';
@@ -37,6 +50,24 @@ describe('connector child diagnostics', () => {
       let failure = '';
       try { assertion(); } catch (error) { failure = String(error); }
       expect(failure).toContain('Connector child exited');
+      expect(failure).not.toContain(secret);
+    }
+  });
+
+  it('redacts malformed JSON and an extra secret field from pause child failures', () => {
+    const secret = 'TEST_ONLY_FAKE_SECRET_JSON_001B';
+    const expected = { paused: true, version: 7, deniedCode: 'LIVE_PRETRADE_PAUSED',
+      reduceOnly: 'allowed-close' };
+    const outputs = [
+      `{"paused":${secret}}`,
+      JSON.stringify({ ...expected, [secret]: secret }),
+    ];
+    for (const output of outputs) {
+      let failure = '';
+      try { assertPauseChildSnapshot(output, `stderr: ${secret}`, 0, expected); }
+      catch (error) { failure = String(error); }
+      expect(failure).toContain('Connector child');
+      expect(failure).toContain('stderr=<non-empty>');
       expect(failure).not.toContain(secret);
     }
   });
@@ -293,7 +324,7 @@ describe('shared LIVE submission pause', () => {
     child.stderr.on('data', (chunk) => { errors += chunk.toString(); });
     const code = await new Promise<number | null>((resolve) => child.on('close', resolve));
     expect(code, safeChildDiagnostic(output, errors, code)).toBe(0);
-    expect(JSON.parse(output)).toEqual({ paused: true, version: state.version,
+    assertPauseChildSnapshot(output, errors, code, { paused: true, version: state.version,
       deniedCode: 'LIVE_PRETRADE_PAUSED', reduceOnly: 'allowed-close' });
   });
 });
