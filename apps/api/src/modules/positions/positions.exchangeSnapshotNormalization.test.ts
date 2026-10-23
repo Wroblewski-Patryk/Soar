@@ -1,5 +1,7 @@
+import ccxt from 'ccxt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { normalizeExchangePosition } from './positions.exchangeSnapshotNormalization';
+import { normalizeImportedLeverage } from './livePositionReconciliation.helpers';
 import { fetchExchangePositionsSnapshotByApiKeyId } from './positions.service';
 import { reconcileExternalPositionsFromExchange } from './livePositionReconciliation.service';
 
@@ -179,6 +181,82 @@ describe('positions exchange snapshot normalization', () => {
     });
 
     expect(normalized.marginUsed).toBe(4.1);
+  });
+});
+
+describe('Gate cross margin through installed CCXT parser and snapshot normalizer', () => {
+  // Gate API v4 defines leverage=0 as cross; CCXT #29104 documents that
+  // initial_margin includes the taker-fee buffer and zero means unavailable.
+  const market = {
+    id: 'BTC_USDT', symbol: 'BTC/USDT:USDT', base: 'BTC', quote: 'USDT', settle: 'USDT',
+    type: 'swap', swap: true, contract: true, linear: true, inverse: false,
+    contractSize: 0.0001,
+    info: { name: 'BTC_USDT', type: 'direct', quanto_multiplier: '0.0001', taker_fee_rate: '0.00075' },
+  };
+  const parseAndNormalize = (fields: Record<string, unknown>) => {
+    const gate = new ccxt.gate({ enableRateLimit: false });
+    gate.setMarkets({ [market.symbol]: market } as Parameters<typeof gate.setMarkets>[0]);
+    const parsed = gate.parsePosition({
+      contract: 'BTC_USDT', size: 1, value: '10', entry_price: '100000',
+      mark_price: '100000', unrealised_pnl: '0', open_time: 1792770000,
+      ...fields,
+    }, gate.market(market.symbol));
+    const normalized = normalizeExchangePosition({ ...parsed, gateFuturesEconomics: gateProof },
+      { exchange: 'GATEIO', marketType: 'FUTURES' });
+    return { parsed, normalized };
+  };
+
+  it('keeps verified contract unit and explicit isolated leverage with fee-inclusive margin', () => {
+    const { parsed, normalized } = parseAndNormalize({
+      leverage: '10', initial_margin: '1.0075', margin: '1',
+    });
+    expect(parsed).toMatchObject({ leverage: 10, marginMode: 'isolated', initialMargin: 1.0075 });
+    expect(normalized).toMatchObject({
+      contracts: 1, contractSize: 0.0001, leverage: 10,
+      marginMode: 'isolated', marginUsed: 1.0075,
+    });
+  });
+
+  it('does not silently persist 1x when cross leverage is 0 and initial_margin is zero', async () => {
+    const { parsed, normalized } = parseAndNormalize({
+      leverage: '0', cross_leverage_limit: '10', lever: '10', pos_margin_mode: 'cross',
+      initial_margin: '0', margin: '1',
+    });
+    expect(parsed).toMatchObject({ leverage: 0, marginMode: 'cross', contractSize: 0.0001 });
+    expect(parsed.initialMargin).toBeUndefined();
+    expect(normalized).toMatchObject({ contractSize: 0.0001, marginMode: 'cross' });
+    const createSyncedPosition = vi.fn(async () => undefined);
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: async () => [{
+        id: 'gate-cross-key', userId: 'gate-cross-user', exchange: 'GATEIO', marketType: 'FUTURES',
+      }],
+      resolveOwnershipIndexForUser: async () => new Map(),
+      fetchPositionsForApiKey: async () => ({ positions: [normalized] }),
+      findOpenSyncedPositionByExternalId: async () => null,
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: async () => [],
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-10-23T12:00:00.000Z'),
+    });
+    expect(createSyncedPosition).toHaveBeenCalledOnce();
+    expect(createSyncedPosition).toHaveBeenCalledWith(expect.objectContaining({
+      contractSize: 0.0001, marginUsed: null, leverage: 10,
+    }));
+  });
+
+  it('does not persist cross leverage inferred from fee-inclusive initial_margin', () => {
+    const { parsed, normalized } = parseAndNormalize({
+      leverage: '0', cross_leverage_limit: '50', lever: '50', pos_margin_mode: 'cross',
+      initial_margin: '0.2075', margin: '0.2',
+    });
+    expect(parsed).toMatchObject({ leverage: 0, marginMode: 'cross', initialMargin: 0.2075 });
+    expect(normalized).toMatchObject({
+      contracts: 1, contractSize: 0.0001, marginMode: 'cross',
+      marginUsed: 0.2075,
+    });
+    expect(normalizeImportedLeverage(normalized.leverage)).toBe(50);
   });
 });
 
