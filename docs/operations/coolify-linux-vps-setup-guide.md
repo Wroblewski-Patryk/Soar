@@ -48,6 +48,19 @@ Repository requirements:
 - monorepo available to Coolify
 - lockfile present (`pnpm-lock.yaml`)
 
+## Mandatory Gate Before Production Actions
+
+Steps 1–5 describe configuration; they do not authorize creating, restarting
+or redeploying production resources. Before any such mutation, record separate
+owner approval for the exact SHA and window, local Windows acceptance, the
+production backup/restore and rollback path, and migration compatibility.
+Before any production migration or candidate API/worker/stack start, stop the
+old workers and old API (which may consume work inline), read back
+`Running=false` and `Pid=0`, and pass the worker-switch preflight. If Coolify
+would auto-start a resource before this gate, defer its creation or return
+**STOP/NO-GO**. Step 5B is the detailed Service Stack cutover under Step 8,
+not an alternate route around this gate.
+
 ## Step 1: Create Coolify Project and Environment
 
 1. In Coolify, create project: `cryptosparrow`.
@@ -173,8 +186,10 @@ Each worker service config:
 On the 8 GiB production VPS, configure Coolify **Resource Limits** for each
 separate application before redeploying: API memory `2g` and memory+swap `3g`,
 web `1g` and memory+swap `1536m`, each worker `768m` and memory+swap `1g`.
-Save and restart/redeploy the applications, then verify the recreated containers
-with `docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' <container>`.
+Only after the mandatory production gate and Step 8 approval, old-consumer
+stop/readback and preflight may the operator save and restart/redeploy these
+applications. Then verify the recreated containers with
+`docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' <container>`.
 These values are initial host-protection limits after the 2026-10-17 global OOM;
 adjust only against measured peak usage and keep capacity for Coolify,
 PostgreSQL, Redis, other applications, and builds. A direct `docker update` on
@@ -232,7 +247,11 @@ proof has been explicitly authorized for the current task.
 ## Step 5B: Preferred Coolify Service Stack Migration
 
 As of 2026-05-25, the preferred production shape for app processes is a single
-Coolify Service Stack using `docker-compose.coolify.yml`.
+Coolify Service Stack using `docker-compose.coolify.yml`. This Step 5B
+implements the approved Step 8 rollout; preparing a Compose/resource plan is
+not permission to create or start it. If Coolify creates and starts a resource
+as one action, defer that action until the owner/backup/local proof and
+old-consumer stop/readback/preflight gates above have passed.
 
 Why this exists:
 - the previous production shape used six separate Coolify Applications for API,
@@ -278,6 +297,12 @@ Required Coolify setup:
    processes must not overlap the new stack workers.
 
 Cutover order:
+Before step 1, record the owner's separate approval for the exact SHA and
+window, local acceptance, backup/restore and rollback readiness, and migration
+compatibility. No production migration or candidate API/worker start is allowed
+until the old consumers are stopped and read back in step 5 and the preflight
+passes in step 6. A resource-creation action that auto-starts must wait too.
+
 1. Freeze normal deploy promotion.
 2. Record current stable SHA and current Coolify resource list.
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
@@ -312,9 +337,12 @@ Cutover order:
    not deployed proof: separately bind the actual Coolify resource/deployment
    ID and running image digest to the Buildx record. If that readback is
    unavailable or does not match, **NO-GO**.
-7. Start the new stack from the verified immutable candidate image. Do not
-   rebuild from a moving branch between preflight and start. If the deployment
-   mechanism rebuilds or changes the image ID, stop acceptance and investigate.
+7. Only after the approval/prerequisites above and the stop/readback and
+   preflight in steps 5–6 (Step 8 items 1–2), start the new stack from the
+   verified immutable candidate image. The API default command runs
+   `prisma migrate deploy`, so this start is a production migration gate too.
+   Do not rebuild from a moving branch; if the deployment mechanism rebuilds
+   or changes the image ID, stop acceptance and investigate.
 8. Confirm API health:
    - stack `api` is healthy through the container liveness `/health` check;
    - public `https://api.soar.luckysparrow.ch/health` returns `200`;
