@@ -15,11 +15,16 @@ import { readRuntimeSignalLoopConfig } from '../config/runtimeExecution';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
 import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 import { workerHeartbeatClient, type WorkerHeartbeatName } from '../workers/workerHeartbeat';
+import { readLiveExecutionOperationalStatus } from '../observability/liveExecutionOperationalStatus';
+import externalClientGrantSelfStatusRouter from '../modules/externalClientGrants/externalClientGrantSelfStatus.routes';
+import externalClientBotStatusRouter from '../modules/externalClientGrants/externalClientBotStatus.routes';
 
 const router = Router();
 
 router.use('/auth', applyNoStoreHeaders, authRoutes);
 router.use('/dashboard', applyNoStoreHeaders, dashboardRoutes);
+router.use('/external-client/grants', applyNoStoreHeaders, externalClientGrantSelfStatusRouter);
+router.use('/external-client/bots', applyNoStoreHeaders, externalClientBotStatusRouter);
 router.use('/admin', applyNoStoreHeaders, adminRoutes);
 
 router.get('/', (_req, res) => {
@@ -88,6 +93,12 @@ router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
 
 router.get('/metrics', ...requireOpsAccess, (_req, res) => {
   return res.status(200).json(metricsStore.snapshot());
+});
+
+router.get('/workers/live-execution', ...requireOpsAccess, async (_req, res) => {
+  const liveExecution = await readLiveExecutionOperationalStatus().catch(() => null);
+  if (!liveExecution) return res.status(503).json({ status: 'unavailable' });
+  return res.status(liveExecution.status === 'healthy' ? 200 : 503).json(liveExecution);
 });
 
 router.get('/alerts', ...requireOpsAccess, (_req, res) => {
@@ -223,6 +234,18 @@ router.get('/workers/ready', ...requireOpsAccess, async (_req, res) => {
     });
   }
 
+  const liveExecution = await readLiveExecutionOperationalStatus().catch(() => null);
+  if (!liveExecution || liveExecution.status !== 'healthy') {
+    return res.status(503).json({
+      status: 'not_ready', service: 'workers', mode: topology.mode,
+      environment: topology.environment, ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
+      heartbeats, liveExecution: liveExecution ?? { status: 'unavailable' },
+      details: 'LIVE execution stream or recovery state is unavailable',
+    });
+  }
+
   return res.status(200).json({
     status: 'ready',
     service: 'workers',
@@ -234,6 +257,7 @@ router.get('/workers/ready', ...requireOpsAccess, async (_req, res) => {
     requiredQueues: topology.requiredQueues,
     requiredWorkerFamilies: topology.requiredWorkerFamilies,
     heartbeats,
+    liveExecution,
   });
 });
 

@@ -126,6 +126,9 @@ export const estimateNextDcaAddedQuantity = (
   const index = orderedCandidates[0]?.index ?? Math.max(0, state.currentAdds);
   const addFraction = input.dca.addSizeFractions?.[index] ?? input.dca.addSizeFraction ?? 0;
   if (!Number.isFinite(addFraction) || addFraction <= 0) return 0;
+  if (input.dca.sizingBasis === 'usdt_contribution_v1') {
+    return state.averageEntryPrice * state.quantity * addFraction / input.currentPrice;
+  }
   return state.quantity * addFraction;
 };
 

@@ -515,17 +515,18 @@ export const resolveRuntimeWalletFundsExhausted = async (
       ? input.contractSize
       : 1;
   const requiredMargin =
-    (input.markPrice * Math.max(0, input.addedQuantity) * contractSize) / Math.max(1, input.leverage);
-  if (!Number.isFinite(requiredMargin) || requiredMargin <= 0) return false;
+    (input.markPrice * Math.max(0, input.addedQuantity) * contractSize) /
+    (input.marketType === 'SPOT' ? 1 : Math.max(1, input.leverage));
+  if (!Number.isFinite(requiredMargin) || requiredMargin <= 0) return true;
 
   if (input.mode === 'PAPER') {
     const snapshot = await resolveRuntimeCapitalSnapshot(input, deps);
-    return requiredMargin > snapshot.freeCash;
+    return !(Number.isFinite(snapshot.freeCash) && requiredMargin <= snapshot.freeCash);
   }
 
   const snapshot = await resolveRuntimeCapitalSnapshot(input, deps);
 
-  return requiredMargin > snapshot.freeCash;
+  return !(Number.isFinite(snapshot.freeCash) && requiredMargin <= snapshot.freeCash);
 };
 
 export const resolveRuntimeDcaFundsExhausted = async (

@@ -1,4 +1,5 @@
 import { Exchange, PositionSide } from '@prisma/client';
+import { digestVerifiedBinanceFuturesIntrabar } from './backtestBinanceFuturesIntrabarSource';
 import { BacktestFillModelConfig } from './backtestFillModel';
 import {
   BacktestKlineCandle,
@@ -6,6 +7,7 @@ import {
   BacktestSupplementalSeries,
 } from './backtestDataGateway';
 import type { BacktestStrategyLinkSnapshot } from './backtestPortfolioSimulation.service';
+import type { ReplayEventDraft } from './backtestReplayCore';
 import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
 import {
   requiresAnyDerivativeInput,
@@ -61,7 +63,7 @@ type SimulationTrade = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated: boolean;
 };
 
@@ -84,7 +86,16 @@ type SimulationPerSymbol = {
   trades: SimulationTrade[];
   liquidations: number;
   eventCounts: LifecycleEventCounts;
+  events: ReplayEventDraft[];
   decisionTrace: SimulationTrace[];
+  dcaFundsExhaustedCount?: number;
+  dcaFundsExhaustedSamples?: Array<{
+    timestamp: Date;
+    candleIndex: number;
+    side: PositionSide;
+    levelIndex: number;
+    price: number;
+  }>;
 };
 
 type SimulationResult = {
@@ -106,7 +117,7 @@ type StrategySignalConfigRecord = {
   walletRisk: number | null;
 };
 
-type CreateTradeInput = {
+export type CreateTradeInput = {
   userId: string;
   strategyId: string | null;
   backtestRunId: string;
@@ -119,11 +130,29 @@ type CreateTradeInput = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated: boolean;
 };
 
-type BacktestRunJobDeps = {
+export type CreateContributionInput = {
+  userId: string;
+  backtestRunId: string;
+  symbol: string;
+  side: PositionSide;
+  tradeSequence: number;
+  addSequence: number;
+  kind: 'ENTRY' | 'DCA';
+  levelIndex: number | null;
+  triggerPercent: number | null;
+  multiplier: number | null;
+  price: number;
+  quantity: number;
+  contributionUsdt: number;
+  timestamp: Date;
+  candleIndex: number;
+};
+
+export type BacktestRunJobDeps = {
   findBacktestRunById: (runId: string) => Promise<BacktestRunRecord | null>;
   safeUpdateRun: (runId: string, data: Record<string, unknown>) => Promise<boolean>;
   uniqueSorted: (values: string[]) => string[];
@@ -144,6 +173,18 @@ type BacktestRunJobDeps = {
     endTimeMs?: number,
     startTimeMs?: number,
   ) => Promise<BacktestKlineCandle[]>;
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar?: BacktestRunJobDeps['fetchKlines'];
+  fetchVerifiedArchivedIntrabarForRun?: (
+    runId: string, exchange: Exchange, symbol: string, timeframe: string,
+    marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
+    startTimeMs?: number, expectedDigest?: string, executionToken?: string,
+  ) => Promise<BacktestKlineCandle[]>;
+  // Test-only v4 source. The production dependency graph does not supply it.
+  fetchVerifiedRawTradeV4ForRun?: (
+    runId: string, exchange: Exchange, symbol: string, timeframe: string,
+    marketType: BacktestMarketType, maxCandles: number, endTimeMs?: number,
+    startTimeMs?: number, expectedDigest?: string, executionToken?: string,
+  ) => Promise<{ candles: BacktestKlineCandle[]; digest: string }>;
   fetchSupplementalSeries: (
     exchange: Exchange,
     symbol: string,
@@ -170,6 +211,7 @@ type BacktestRunJobDeps = {
     initialBalance: number;
   }) => SimulationResult;
   createBacktestTrades: (trades: CreateTradeInput[]) => Promise<unknown>;
+  createBacktestContributions: (contributions: CreateContributionInput[]) => Promise<unknown>;
   deleteBacktestTradesForRun: (userId: string, runId: string) => Promise<unknown>;
   countWinningBacktestTrades: (userId: string, runId: string) => Promise<number>;
   countLosingBacktestTrades: (userId: string, runId: string) => Promise<number>;
@@ -293,6 +335,13 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       ? (seed.exchange as Exchange)
       : Exchange.BINANCE;
     const marketType = (seed.marketType === 'SPOT' ? 'SPOT' : 'FUTURES') as BacktestMarketType;
+    const requireVerifiedIntrabar = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED';
+    const requireRawTradeV4 = seed.intrabarSource === 'BINANCE_USDM_TRADES_V4_TEST_ONLY' &&
+      process.env.RUN_011A_RAW_V4_JOB_PROOF === '1' &&
+      Boolean(deps.fetchVerifiedRawTradeV4ForRun);
+    const requireStrictIntrabar = requireVerifiedIntrabar || requireRawTradeV4;
+    const unsupportedIntrabarSource = seed.intrabarSource !== undefined &&
+      !requireStrictIntrabar;
     const leverageCandidate = Number((seed as { leverage?: unknown }).leverage);
     const leverage = Number.isFinite(leverageCandidate) ? leverageCandidate : 1;
     const marginMode =
@@ -357,6 +406,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     await deps.deleteBacktestTradesForRun(run.userId, run.id);
 
     const pnlSeries: number[] = [];
+    const contributions: CreateContributionInput[] = [];
     const lifecycleEventCounts = emptyLifecycleEventCounts();
     const strategy = run.strategyId
       ? await deps.findOwnedStrategySignalConfig(run.userId, run.strategyId)
@@ -410,6 +460,14 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       entryEvents: number;
       closeEvents: number;
       liquidationEvents: number;
+      dcaFundsExhaustedCount: number;
+      dcaFundsExhaustedSamples: Array<{
+        timestamp: string;
+        candleIndex: number;
+        side: PositionSide;
+        levelIndex: number;
+        price: number;
+      }>;
       mismatchCount: number;
       mismatchSamples: Array<{
         timestamp: string;
@@ -437,6 +495,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     }> = [];
 
     try {
+      if (unsupportedIntrabarSource)
+        throw new Error('BACKTEST_INTRABAR_SOURCE_UNSUPPORTED');
       const candlesBySymbol = new Map<string, BacktestKlineCandle[]>();
       const supplementalBySymbol = new Map<string, BacktestSupplementalSeries>();
 
@@ -447,17 +507,64 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
 
         try {
-          const candles = await deps.fetchKlines(
-            exchange,
-            symbol,
-            run.timeframe,
-            marketType,
+          const archivedWindow = requireVerifiedIntrabar &&
+            typeof fetchStartTimeMs === 'number' &&
+            fetchStartTimeMs < Date.now() - 48 * 60 * 60_000 + 1_000;
+          const fetchArgs = [exchange, symbol, run.timeframe, marketType,
             maxCandlesPerSymbol + indicatorWarmupCandles,
-            fetchEndTimeMs,
-            fetchStartTimeMs,
-          );
+            fetchEndTimeMs, fetchStartTimeMs] as const;
+          let candles: BacktestKlineCandle[];
+          let rawDigest: string | undefined;
+          if (requireRawTradeV4) {
+            const requestedCandles = typeof fetchStartTimeMs === 'number' &&
+              typeof fetchEndTimeMs === 'number'
+              ? (fetchEndTimeMs - fetchStartTimeMs) / 60_000 : NaN;
+            if (exchange !== Exchange.BINANCE || marketType !== 'FUTURES' ||
+                run.timeframe !== '1m' || symbols.length !== 1 ||
+                !Number.isSafeInteger(requestedCandles) || requestedCandles < 1 ||
+                requestedCandles > 120 || requestedCandles > fetchArgs[4] ||
+                Math.floor(fetchStartTimeMs! / 86_400_000) !==
+                  Math.floor((fetchEndTimeMs! - 1) / 86_400_000))
+              throw new Error('BACKTEST_RAW_SOURCE_INVALID_MARKET_WINDOW');
+            const priorDigest = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? (seed.intrabarSourceDigestBySymbol as Record<string, unknown>)[symbol]
+              : undefined;
+            const raw = await deps.fetchVerifiedRawTradeV4ForRun!(runId, ...fetchArgs,
+              typeof priorDigest === 'string' ? priorDigest : undefined);
+            candles = raw.candles;
+            rawDigest = raw.digest;
+          } else if (archivedWindow) {
+            if (!deps.fetchVerifiedArchivedIntrabarForRun)
+              throw new Error('BACKTEST_INTRABAR_ARCHIVE_UNAVAILABLE');
+            const priorDigest = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? (seed.intrabarSourceDigestBySymbol as Record<string, unknown>)[symbol]
+              : undefined;
+            candles = await deps.fetchVerifiedArchivedIntrabarForRun(runId, ...fetchArgs,
+              typeof priorDigest === 'string' ? priorDigest : undefined);
+          } else {
+            const candleFetcher = requireVerifiedIntrabar
+              ? deps.fetchKlinesWithVerifiedBinanceFuturesIntrabar : deps.fetchKlines;
+            if (!candleFetcher) throw new Error('BACKTEST_INTRABAR_SOURCE_UNAVAILABLE');
+            candles = await candleFetcher(...fetchArgs);
+          }
           if (candles.length === 0) {
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
+          }
+          if (requireStrictIntrabar) {
+            if (candles.length <= indicatorWarmupCandles)
+              throw new Error('BACKTEST_INTRABAR_SOURCE_WARMUP_EXHAUSTS_WINDOW');
+            const digest = requireRawTradeV4 ? rawDigest :
+              digestVerifiedBinanceFuturesIntrabar(candles, symbol);
+            if (!digest || !/^[0-9a-f]{64}$/.test(digest))
+              throw new Error('BACKTEST_INTRABAR_SOURCE_DIGEST_INVALID');
+            const priorDigests = seed.intrabarSourceDigestBySymbol &&
+              typeof seed.intrabarSourceDigestBySymbol === 'object'
+              ? seed.intrabarSourceDigestBySymbol as Record<string, string> : {};
+            if (priorDigests[symbol] && priorDigests[symbol] !== digest)
+              throw new Error('BACKTEST_INTRABAR_SOURCE_CHANGED_ON_RETRY');
+            seed.intrabarSourceDigestBySymbol = { ...priorDigests, [symbol]: digest };
           }
           const supplemental = await deps.fetchSupplementalSeries(
             exchange,
@@ -501,6 +608,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             entryEvents: 0,
             closeEvents: 0,
             liquidationEvents: 0,
+            dcaFundsExhaustedCount: 0,
+            dcaFundsExhaustedSamples: [],
             mismatchCount: 0,
             mismatchSamples: [],
             mergeSamples: [],
@@ -517,6 +626,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         await updateRunProgress(deps, runId, seed, progress);
       }
 
+      if (requireStrictIntrabar && progress.failedSymbols.length > 0)
+        throw new Error(`BACKTEST_INTRABAR_SOURCE_INCOMPLETE:${parityDiagnostics
+          .filter((diagnostic) => diagnostic.status === 'FAILED')
+          .map((diagnostic) => `${diagnostic.symbol}=${diagnostic.error}`).join(',')}`);
       const loadedSymbols = symbols.filter((symbol) => candlesBySymbol.has(symbol));
       if (loadedSymbols.length > 0) {
         progress.currentSymbol = 'INTERLEAVED_PORTFOLIO_CLOCK';
@@ -531,7 +644,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           analysisStartIndexBySymbol: new Map(
             loadedSymbols.map((symbol) => {
               const symbolCandles = candlesBySymbol.get(symbol) ?? [];
-              const startIndex = Math.max(1, symbolCandles.length - maxCandlesPerSymbol);
+              const startIndex = Math.max(1, requireStrictIntrabar ? indicatorWarmupCandles : 0,
+                symbolCandles.length - maxCandlesPerSymbol);
               return [symbol, startIndex];
             }),
           ),
@@ -562,6 +676,30 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           for (const [key, value] of Object.entries(symbolSimulation.eventCounts)) {
             lifecycleEventCounts[key as keyof LifecycleEventCounts] += value;
           }
+          if (symbolSimulation.events.filter((event) => event.type === 'DCA').length !==
+              symbolSimulation.eventCounts.DCA) {
+            throw new Error('Confirmed BACKTEST DCA events are incomplete');
+          }
+          for (const event of symbolSimulation.events) {
+            if (event.type !== 'ENTRY' && event.type !== 'DCA') continue;
+            const fill = event.contribution;
+            if (!fill || !Number.isFinite(fill.quantity) || fill.quantity <= 0 ||
+                !Number.isFinite(fill.contributionUsdt) || fill.contributionUsdt <= 0 ||
+                (event.type === 'DCA' && (fill.levelIndex === null ||
+                  fill.triggerPercent === null || fill.multiplier === null))) {
+              throw new Error('Confirmed BACKTEST contribution is incomplete');
+            }
+            contributions.push({
+              userId: run.userId, backtestRunId: run.id,
+              symbol: event.symbol, side: event.side,
+              tradeSequence: event.tradeSequence, addSequence: fill.addSequence,
+              kind: event.type, levelIndex: fill.levelIndex,
+              triggerPercent: fill.triggerPercent, multiplier: fill.multiplier,
+              price: event.price, quantity: fill.quantity,
+              contributionUsdt: fill.contributionUsdt,
+              timestamp: event.timestamp, candleIndex: event.candleIndex,
+            });
+          }
           parityDiagnostics.push({
             symbol,
             status: 'PROCESSED',
@@ -574,6 +712,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
               symbolSimulation.eventCounts.SL +
               symbolSimulation.eventCounts.TSL,
             liquidationEvents: symbolSimulation.eventCounts.LIQUIDATION,
+            dcaFundsExhaustedCount: symbolSimulation.dcaFundsExhaustedCount ?? 0,
+            dcaFundsExhaustedSamples: (symbolSimulation.dcaFundsExhaustedSamples ?? []).map((sample) => ({
+              ...sample, timestamp: sample.timestamp.toISOString(),
+            })),
             mismatchCount: decisionTrace.filter((entry) => entry.mismatchReason !== null).length,
             mismatchSamples: decisionTrace
               .filter((entry) => entry.mismatchReason !== null)
@@ -650,6 +792,13 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       );
       const finalRunStatus = progress.failedSymbols.length === symbols.length ? 'FAILED' : 'COMPLETED';
       const reportGeneratedAt = new Date().toISOString();
+      if (contributions.length > 0) await deps.createBacktestContributions(contributions);
+      const entryContributionUsdtTotal = contributions
+        .filter((contribution) => contribution.kind === 'ENTRY')
+        .reduce((total, contribution) => total + contribution.contributionUsdt, 0);
+      const dcaContributionUsdtTotal = contributions
+        .filter((contribution) => contribution.kind === 'DCA')
+        .reduce((total, contribution) => total + contribution.contributionUsdt, 0);
 
       await deps.upsertBacktestReportForRun({
         backtestRunId: run.id,
@@ -678,6 +827,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             marginMode: progress.marginMode,
             liquidations: progress.liquidations,
             lifecycleEventCounts,
+            positionContributionCount: contributions.length,
+            entryContributionUsdtTotal,
+            dcaContributionUsdtTotal,
+            positionContributionUsdtTotal: entryContributionUsdtTotal + dcaContributionUsdtTotal,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
             runLifecycle: {
@@ -710,6 +863,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             marginMode: progress.marginMode,
             liquidations: progress.liquidations,
             lifecycleEventCounts,
+            positionContributionCount: contributions.length,
+            entryContributionUsdtTotal,
+            dcaContributionUsdtTotal,
+            positionContributionUsdtTotal: entryContributionUsdtTotal + dcaContributionUsdtTotal,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
             runLifecycle: {
@@ -736,20 +893,26 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         },
       });
     } catch (error) {
+      // Discard trades from a partially processed attempt before publishing a
+      // diagnostic report. The claimed worker also clears its trade buffer.
+      await deps.deleteBacktestTradesForRun(run.userId, run.id);
+      const unreadyReportTotals = {
+        totalTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        winRate: null,
+        netPnl: null,
+        grossProfit: null,
+        grossLoss: null,
+        maxDrawdown: null,
+        sharpe: null,
+      };
       await deps.upsertBacktestReportForRun({
         backtestRunId: run.id,
         create: {
           userId: run.userId,
           backtestRunId: run.id,
-          totalTrades: progress.totalTrades,
-          winningTrades: 0,
-          losingTrades: 0,
-          winRate: null,
-          netPnl: progress.netPnl,
-          grossProfit: progress.grossProfit,
-          grossLoss: progress.grossLoss,
-          maxDrawdown: progress.maxDrawdown,
-          sharpe: null,
+          ...unreadyReportTotals,
           metrics: {
             runLifecycle: {
               state: 'FAILED',
@@ -762,6 +925,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           },
         },
         update: {
+          ...unreadyReportTotals,
           metrics: {
             runLifecycle: {
               state: 'FAILED',
@@ -774,16 +938,23 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           },
         },
       });
+      const failedProgress = {
+        ...progress,
+        totalTrades: 0,
+        netPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        maxDrawdown: 0,
+        liquidations: 0,
+        lastUpdate: 'failed',
+        updatedAt: new Date().toISOString(),
+      };
       await deps.safeUpdateRun(run.id, {
         status: 'FAILED',
         finishedAt: new Date(),
         seedConfig: {
           ...seed,
-          liveProgress: {
-            ...progress,
-            lastUpdate: 'failed',
-            updatedAt: new Date().toISOString(),
-          },
+          liveProgress: failedProgress,
           error: error instanceof Error ? error.message : 'Unknown error',
         },
       });

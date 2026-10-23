@@ -83,6 +83,15 @@ scope define the ordered evaluation set for the bot.
 - `NO_TRADE`
 
 `NO_TRADE` is a valid and often preferred outcome.
+When an entry signal disappears while a position is open, the position is
+held. No entry match yields `NO_TRADE`/HOLD and does not emit `EXIT`; a separate
+strategy `EXIT` signal is not required. Normal closes follow configured
+`TP`/`SL` (simple) or `TTP`/`TSL`
+(advanced) lifecycle rules and DCA ordering; manual, liquidation, and other
+risk closes remain possible. The shared evaluator applies this rule to legacy
+no-match `EXIT` settings in local code, and the runtime condition summary does
+not attribute an `EXIT` event to those settings. Acceptance evidence is tracked in the
+[strategy evaluation parity contract](./reference/strategy-evaluation-parity-contract.md).
 
 ## Signal Merge
 When several strategies attached to the same runtime partition emit outputs for the same symbol/window:

@@ -4,7 +4,12 @@ import { livePositionReconciliationLoop } from '../modules/positions/livePositio
 import { runtimeSignalLoop } from '../modules/engine/runtimeSignalLoop.service';
 import { runtimeScanLoop } from '../modules/engine/runtimeScanLoop.service';
 import { metricsStore } from '../observability/metrics';
+import { assertDeployedWorkerOwnership } from './workerOwnership';
+import { liveFillRecoveryLoop } from './liveFillRecoveryLoop';
+import { liveBinanceStreamLoop } from './liveBinanceStreamLoop';
+import { prisma } from '../prisma/client';
 
+assertDeployedWorkerOwnership('execution');
 const runtimeSignalLoopBootstrapIntervalMs = Math.max(
   5_000,
   Number.parseInt(process.env.RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS ?? '15000', 10)
@@ -32,3 +37,21 @@ const runtimeSignalLoopBootstrapTimer = setInterval(() => {
 }, runtimeSignalLoopBootstrapIntervalMs);
 runtimeSignalLoopBootstrapTimer.unref?.();
 runtimeScanLoop.start();
+liveFillRecoveryLoop.start();
+liveBinanceStreamLoop.start();
+
+let stopping = false;
+const shutdown = async () => {
+  if (stopping) return;
+  stopping = true;
+  clearInterval(runtimeSignalLoopBootstrapTimer);
+  livePositionReconciliationLoop.stop();
+  runtimeScanLoop.stop();
+  await liveBinanceStreamLoop.stop();
+  await liveFillRecoveryLoop.stop();
+  await runtimeSignalLoop.stop();
+  await prisma.$disconnect();
+  process.exit(0);
+};
+process.on('SIGINT', () => { void shutdown(); });
+process.on('SIGTERM', () => { void shutdown(); });

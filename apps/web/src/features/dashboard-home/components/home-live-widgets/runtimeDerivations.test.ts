@@ -1,12 +1,21 @@
 import { describe, expect, it } from "vitest";
 
 import type { OpenPositionWithLive } from "./types";
+import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import {
   buildLiveOpenPositions,
+  maxDrawdown,
   resolveDynamicTslDisplay,
   resolveDynamicTtpDisplay,
   resolveDynamicTtpDisplaySource,
 } from "./runtimeDerivations";
+
+it("keeps drawdown unknown when an imported close has no settled PnL", () => {
+  expect(maxDrawdown([
+    { id: "pending-close", executedAt: "2026-04-29T11:00:00.000Z",
+      realizedPnl: null } as BotRuntimeTrade,
+  ])).toEqual({ abs: null, pct: null });
+});
 
 const dynamicStopRow = {
   id: "pos-dynamic",

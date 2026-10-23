@@ -31,6 +31,7 @@ import {
 import {
   type BacktestFundingRatePoint as FundingRatePoint,
   fetchKlines,
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar,
   type BacktestKlineCandle as KlineCandle,
   type BacktestMarketType as MarketType,
   type BacktestOpenInterestPoint as OpenInterestPoint,
@@ -38,19 +39,18 @@ import {
   type BacktestSupplementalSeries as SupplementalSeries,
   fetchSupplementalSeries,
 } from './backtestDataGateway';
+import { BacktestTimelineSourceError,
+  fetchVerifiedIntrabarTimelineCandles } from './backtestIntrabarTimelineSource';
+import { fetchVerifiedArchivedIntrabarForRun } from './backtestBinanceFuturesIntrabarArchive';
 import {
   simulateInterleavedPortfolio,
 } from './backtestPortfolioSimulation.service';
 import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
-import { createBacktestRunJob } from './backtestRunJob';
+import { createClaimedBacktestRunJob } from './backtestClaimedRun';
 import { BacktestRunQueue } from './backtestRunQueue';
 import { resolveWorkerOwnershipConfig } from '../../workers/workerOwnership';
 import {
-  countLosingBacktestTrades,
-  countWinningBacktestTrades,
   createBacktestRun,
-  createBacktestTrades,
-  deleteBacktestTradesForRun,
   deleteOwnedBacktestRunCascade,
   findBacktestRunById,
   findOwnedBacktestReport,
@@ -61,8 +61,11 @@ import {
   findOwnedStrategySignalConfig,
   listOwnedBacktestRuns,
   listOwnedBacktestTrades,
-  upsertBacktestReportForRun,
 } from './backtests.repository';
+import {
+  listDiscardableBacktestRunIds,
+  listRecoverableBacktestRunIds,
+} from './backtestRunOwnership.repository';
 import {
   computeAdaptiveMaxCandles,
   computeSourceWindowMs,
@@ -78,7 +81,6 @@ import {
 import {
   buildRunLifecyclePayload,
   isTerminalBacktestStatus,
-  safeUpsertBacktestReportForRun,
   safeUpdateRun,
 } from './backtestReportLifecycle.service';
 
@@ -89,6 +91,13 @@ export {
   resolveReplaySymbolsForTimeline,
   resolveTimelineEndTimeMs,
 } from './backtestRange.service';
+
+export class BacktestQueueUnavailableError extends Error {
+  constructor(cause: unknown, readonly runId: string) {
+    super('Backtest queue unavailable', { cause });
+    this.name = 'BacktestQueueUnavailableError';
+  }
+}
 
 type MarginMode = 'CROSSED' | 'ISOLATED';
 type ReplayContext = 'isolated' | 'portfolio';
@@ -414,9 +423,8 @@ export const buildIndicatorSeriesForTests = (
       : undefined) as SupplementalSeries | undefined,
   );
 
-const runBacktestAsync = createBacktestRunJob({
+const runBacktestAsync = createClaimedBacktestRunJob({
   findBacktestRunById,
-  safeUpdateRun,
   uniqueSorted: normalizeSymbols,
   computeAdaptiveMaxCandles,
   resolveIndicatorWarmupCandles,
@@ -424,13 +432,10 @@ const runBacktestAsync = createBacktestRunJob({
   parseStrategySignalRules,
   findOwnedStrategySignalConfig,
   fetchKlines,
+  fetchKlinesWithVerifiedBinanceFuturesIntrabar,
+  fetchVerifiedArchivedIntrabarForRun,
   fetchSupplementalSeries,
   simulateInterleavedPortfolio,
-  createBacktestTrades,
-  deleteBacktestTradesForRun,
-  countWinningBacktestTrades,
-  countLosingBacktestTrades,
-  upsertBacktestReportForRun: safeUpsertBacktestReportForRun,
   computeSourceWindowMs,
   maxDrawdownFromPnlSeries,
 });
@@ -438,6 +443,8 @@ const backtestWorkerOwnership = resolveWorkerOwnershipConfig().backtest;
 export const backtestRunQueue = new BacktestRunQueue(runBacktestAsync, {
   backend: backtestWorkerOwnership === 'worker' ? 'redis' : 'inline',
   queueName: process.env.WORKER_BACKTEST_QUEUE ?? 'backtest',
+  recoverPendingRunIds: listRecoverableBacktestRunIds,
+  discardProcessingRunIds: listDiscardableBacktestRunIds,
 });
 
 export const listRuns = async (userId: string, query: ListBacktestRunsQuery) => {
@@ -531,47 +538,21 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     },
     notes: data.notes,
     status: 'PENDING',
-  });
-  const pendingLifecycle = buildRunLifecyclePayload({
-    status: 'PENDING',
-    reportReady: false,
-    generatedAt: null,
-  });
-  await upsertBacktestReportForRun({
-    backtestRunId: created.id,
-    create: {
-      userId,
-      backtestRunId: created.id,
-      totalTrades: 0,
-      winningTrades: 0,
-      losingTrades: 0,
-      winRate: null,
-      netPnl: null,
-      grossProfit: null,
-      grossLoss: null,
-      maxDrawdown: null,
-      sharpe: null,
-      metrics: {
-        runLifecycle: pendingLifecycle,
-      },
-    },
-    update: {
-      totalTrades: 0,
-      winningTrades: 0,
-      losingTrades: 0,
-      winRate: null,
-      netPnl: null,
-      grossProfit: null,
-      grossLoss: null,
-      maxDrawdown: null,
-      sharpe: null,
-      metrics: {
-        runLifecycle: pendingLifecycle,
-      },
-    },
+  }, {
+    runLifecycle: buildRunLifecyclePayload({
+      status: 'PENDING',
+      reportReady: false,
+      generatedAt: null,
+    }),
   });
 
-  await backtestRunQueue.enqueue(created.id);
+  try {
+    await backtestRunQueue.enqueue(created.id);
+  } catch (error) {
+    // Redis may have accepted the job before the connection failed. The
+    // durable PENDING run is reconciled by workers without declaring it failed.
+    throw new BacktestQueueUnavailableError(error, created.id);
+  }
 
   return created;
 };
@@ -636,7 +617,11 @@ export const getRunReport = async (userId: string, runId: string) => {
         reportReady,
         generatedAt: reportReady ? report.updatedAt.toISOString() : null,
         degraded,
-        reason: degraded ? 'report_missing_after_terminal_run' : undefined,
+        reason: degraded
+          ? typeof reportLifecycle?.reason === 'string'
+            ? reportLifecycle.reason
+            : 'report_missing_after_terminal_run'
+          : undefined,
       }),
     },
   };
@@ -651,6 +636,8 @@ export const getRunTimeline = async (
   if (!run) return null;
 
   const seed = ((run.seedConfig ?? {}) as Record<string, unknown>) ?? {};
+  if (seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED' && run.status !== 'COMPLETED')
+    throw new BacktestTimelineSourceError('RUN_NOT_COMPLETED');
   const runSymbols = Array.isArray(seed.symbols)
     ? normalizeSymbols(seed.symbols as string[])
     : [];
@@ -707,19 +694,19 @@ export const getRunTimeline = async (
       : undefined;
   const candlesBySymbol = new Map<string, KlineCandle[]>();
   const supplementalBySymbol = new Map<string, SupplementalSeries>();
+  const requireVerifiedIntrabar = seed.intrabarSource === 'BINANCE_USDM_AGGTRADES_REQUIRED';
+  const storedDigests = asRecord(seed.intrabarSourceDigestBySymbol);
   for (const replaySymbol of replaySymbols) {
-    candlesBySymbol.set(
-      replaySymbol,
-      await fetchKlines(
-        exchange,
-        replaySymbol,
-        run.timeframe,
-        marketType,
-        maxCandles + indicatorWarmupCandles,
-        timelineEndTimeMs,
-        timelineStartTimeMs,
-      ),
-    );
+    const sourceCandles = requireVerifiedIntrabar
+      ? await fetchVerifiedIntrabarTimelineCandles({ exchange, symbol: replaySymbol,
+        runId,
+        timeframe: run.timeframe, marketType,
+        maxCandles: maxCandles + indicatorWarmupCandles,
+        endTimeMs: timelineEndTimeMs, startTimeMs: timelineStartTimeMs,
+        expectedDigest: storedDigests?.[replaySymbol] })
+      : await fetchKlines(exchange, replaySymbol, run.timeframe, marketType,
+        maxCandles + indicatorWarmupCandles, timelineEndTimeMs, timelineStartTimeMs);
+    candlesBySymbol.set(replaySymbol, sourceCandles);
     supplementalBySymbol.set(
       replaySymbol,
       await fetchSupplementalSeries(
@@ -736,7 +723,13 @@ export const getRunTimeline = async (
   const visibleStartBySymbol = new Map<string, number>();
   for (const replaySymbol of replaySymbols) {
     const symbolCandles = candlesBySymbol.get(replaySymbol) ?? [];
-    visibleStartBySymbol.set(replaySymbol, Math.max(0, symbolCandles.length - maxCandles));
+    if (requireVerifiedIntrabar &&
+        symbolCandles.length <= indicatorWarmupCandles)
+      throw new BacktestTimelineSourceError('SOURCE_UNAVAILABLE');
+    visibleStartBySymbol.set(replaySymbol, Math.max(
+      requireVerifiedIntrabar ? indicatorWarmupCandles : 0,
+      symbolCandles.length - maxCandles,
+    ));
   }
   const fullCandles = candlesBySymbol.get(symbol) ?? [];
   const visibleStart = visibleStartBySymbol.get(symbol) ?? 0;
@@ -826,6 +819,8 @@ export const getRunTimeline = async (
       LIQUIDATION: 0,
     } as Record<ReplayEventType, number>,
     decisionTrace: [],
+    dcaFundsExhaustedCount: 0,
+    dcaFundsExhaustedSamples: [],
   };
 
   const chunkGlobalStart = visibleStart + start;
@@ -893,6 +888,11 @@ export const getRunTimeline = async (
         parseStrategySignalRules(strategyConfig),
       ),
       eventCounts: symbolReplay.eventCounts,
+      dcaFundsExhaustedCount: symbolReplay.dcaFundsExhaustedCount,
+      dcaFundsExhaustedSamples: symbolReplay.dcaFundsExhaustedSamples
+        .filter((sample) => sample.candleIndex >= chunkGlobalStart && sample.candleIndex < chunkGlobalEnd)
+        .map((sample) => ({ ...sample, timestamp: sample.timestamp.toISOString(),
+          candleIndex: sample.candleIndex - visibleStart })),
       mismatchCount: symbolReplay.decisionTrace.filter((entry) => entry.mismatchReason !== null).length,
       mismatchSamples: symbolReplay.decisionTrace
         .filter(

@@ -111,7 +111,7 @@ const resolveAutoRefreshIntervalMs = () => {
     : AUTO_REFRESH_VISIBLE_INTERVAL_MS;
 };
 
-const toComparableTradeValue = (trade: BotRuntimeTrade, sortBy: TradeSortBy): number | string => {
+const toComparableTradeValue = (trade: BotRuntimeTrade, sortBy: TradeSortBy): number | string | null => {
   if (sortBy === "executedAt") return toTimestamp(trade.executedAt);
   if (sortBy === "symbol") return normalizeSymbol(trade.symbol);
   if (sortBy === "side") return trade.side;
@@ -162,7 +162,9 @@ const applyAggregateTradeQuery = ({
       const left = toComparableTradeValue(a, tradeSortBy);
       const right = toComparableTradeValue(b, tradeSortBy);
       let baseCompare = 0;
-      if (typeof left === "number" && typeof right === "number") {
+      if (left == null || right == null) {
+        baseCompare = left == null ? (right == null ? 0 : 1) : -1;
+      } else if (typeof left === "number" && typeof right === "number") {
         baseCompare = left - right;
       } else {
         baseCompare = String(left).localeCompare(String(right));
@@ -173,7 +175,7 @@ const applyAggregateTradeQuery = ({
       if (baseCompare === 0) {
         baseCompare = a.id.localeCompare(b.id);
       }
-      return tradeSortDir === "asc" ? baseCompare : -baseCompare;
+      return left == null || right == null || tradeSortDir === "asc" ? baseCompare : -baseCompare;
     });
   }
 

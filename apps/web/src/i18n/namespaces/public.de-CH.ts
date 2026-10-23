@@ -29,7 +29,8 @@ export const publicDeCh = {
   },
   "offline": {
     "title": "Offline-Modus",
-    "description": "Soar ist vorübergehend offline. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+    "description": "Soar ist vorübergehend offline. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "retry": "Erneut versuchen"
   },
   "sharedUi": {
     "loadingTitle": "Daten werden geladen",

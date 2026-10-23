@@ -33,6 +33,7 @@ describe('Profile security contract', () => {
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
     await prisma.signal.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestRun.deleteMany();
@@ -137,22 +138,65 @@ describe('Profile security contract', () => {
         blacklist: [],
       },
     });
+    const ownerRun = await prisma.backtestRun.create({ data: {
+      userId: user.id, name: 'Delete account run', symbol: 'BTCUSDT', timeframe: '1m',
+      status: 'COMPLETED', finishedAt: new Date(),
+    } });
+    await prisma.backtestContribution.createMany({ data: [
+      { userId: user.id, backtestRunId: ownerRun.id, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 0, kind: 'ENTRY', levelIndex: null,
+        triggerPercent: null, multiplier: null, price: 1, quantity: 1,
+        contributionUsdt: 1, timestamp: new Date('2026-01-01T00:00:00.000Z'), candleIndex: 1 },
+      { userId: user.id, backtestRunId: ownerRun.id, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 1, kind: 'DCA', levelIndex: 0,
+        triggerPercent: -30.5, multiplier: 2, price: 0.6949, quantity: 2 / 0.6949,
+        contributionUsdt: 2, timestamp: new Date('2026-01-01T00:01:00.000Z'), candleIndex: 2 },
+      { userId: user.id, backtestRunId: ownerRun.id, symbol: 'BTCUSDT', side: 'LONG',
+        tradeSequence: 1, addSequence: 2, kind: 'DCA', levelIndex: 1,
+        triggerPercent: -30.5, multiplier: 2, price: 0.5375, quantity: 6 / 0.5375,
+        contributionUsdt: 6, timestamp: new Date('2026-01-01T00:02:00.000Z'), candleIndex: 3 },
+    ] });
+    const otherUser = await prisma.user.create({ data: {
+      email: `security-delete-other-${Date.now()}@example.test`,
+      password: await hashPassword('other1234'),
+    } });
+    const otherRun = await prisma.backtestRun.create({ data: {
+      userId: otherUser.id, name: 'Other account run', symbol: 'BTCUSDT', timeframe: '1m',
+      status: 'COMPLETED', finishedAt: new Date(),
+    } });
+    await prisma.backtestContribution.create({ data: {
+      userId: otherUser.id, backtestRunId: otherRun.id, symbol: 'BTCUSDT', side: 'LONG',
+      tradeSequence: 1, addSequence: 0, kind: 'ENTRY', levelIndex: null,
+      triggerPercent: null, multiplier: null, price: 1, quantity: 1,
+      contributionUsdt: 1, timestamp: new Date('2026-01-01T00:00:00.000Z'), candleIndex: 1,
+    } });
 
-    const invalidDeleteRes = await agent.delete('/dashboard/profile/security/account').send({
-      password: 'wrong1234',
-    });
-    expect(invalidDeleteRes.status).toBe(400);
-    expect(invalidDeleteRes.body.error.message).toBe('Invalid password');
+    try {
+      const invalidDeleteRes = await agent.delete('/dashboard/profile/security/account').send({
+        password: 'wrong1234',
+      });
+      expect(invalidDeleteRes.status).toBe(400);
+      expect(invalidDeleteRes.body.error.message).toBe('Invalid password');
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(3);
 
-    const deleteRes = await agent.delete('/dashboard/profile/security/account').send({
-      password: 'start1234',
-    });
-    expect(deleteRes.status).toBe(204);
+      const deleteRes = await agent.delete('/dashboard/profile/security/account').send({
+        password: 'start1234',
+      });
+      expect(deleteRes.status).toBe(204);
 
-    const meRes = await agent.get('/auth/me');
-    expect(meRes.status).toBe(401);
+      const meRes = await agent.get('/auth/me');
+      expect(meRes.status).toBe(401);
 
-    const deletedUser = await prisma.user.findUnique({ where: { email } });
-    expect(deletedUser).toBeNull();
+      const deletedUser = await prisma.user.findUnique({ where: { email } });
+      expect(deletedUser).toBeNull();
+      expect(await prisma.backtestRun.findUnique({ where: { id: ownerRun.id } })).toBeNull();
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: ownerRun.id } })).toBe(0);
+      expect(await prisma.user.findUnique({ where: { id: otherUser.id } })).not.toBeNull();
+      expect(await prisma.backtestContribution.count({ where: { backtestRunId: otherRun.id } })).toBe(1);
+    } finally {
+      await prisma.backtestContribution.deleteMany({ where: { backtestRunId: otherRun.id } });
+      await prisma.backtestRun.deleteMany({ where: { id: otherRun.id } });
+      await prisma.user.deleteMany({ where: { id: otherUser.id } });
+    }
   });
 });

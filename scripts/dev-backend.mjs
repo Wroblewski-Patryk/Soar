@@ -73,6 +73,7 @@ const runPrisma = (args, options = {}) => {
 };
 
 const withWorkersByDefault = process.env.BACKEND_DEV_START_WORKERS !== 'false';
+const resetDatabase = process.env.BACKEND_DEV_RESET_DB === 'true';
 
 const checkTcpPort = (host, port, timeoutMs = 2000) =>
   new Promise((resolve) => {
@@ -157,8 +158,10 @@ const main = async () => {
     }
   }
 
-  console.log('[backend/dev] Resetting database (prisma migrate reset --force)...');
-  runPrisma(['migrate', 'reset', '--force']);
+  if (resetDatabase) {
+    console.log('[backend/dev] Resetting database (prisma migrate reset --force)...');
+    runPrisma(['migrate', 'reset', '--force']);
+  }
   console.log('[backend/dev] Running Prisma generate...');
   runPrisma(['generate'], { allowEngineLockFallback: true });
   console.log('[backend/dev] Running Prisma migrations...');

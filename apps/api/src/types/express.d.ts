@@ -10,6 +10,8 @@ declare global {
   namespace Express {
     interface Request {
       user?: AuthUser;
+      authSource?: 'cookie' | 'bearer';
+      authKind?: 'human' | 'legacy';
     }
   }
 }

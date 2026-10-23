@@ -77,6 +77,28 @@ describe('runtimeSymbolStatsReadModel.service', () => {
     ]),
   };
 
+  it('does not publish partial financial sums while a close or fee is unresolved', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      aggregateSummary: {
+        ...baseParams.aggregateSummary,
+        closedTrades: 2, winningTrades: 1, realizedPnl: 12, grossProfit: 12, feesPaid: 1,
+      },
+      pendingPnlSymbols: new Set(['BTCUSDT']),
+      pendingFeeSymbols: new Set(['BTCUSDT']),
+      latestSignalBySymbol: new Map(),
+      configuredStrategyBySymbol: new Map(),
+      strategiesById: new Map(),
+    });
+    expect(readModel.items[0]).toMatchObject({
+      realizedPnl: null, feesPaid: null, winningTrades: null, grossProfit: null,
+    });
+    expect(readModel.summary).toMatchObject({
+      closedTrades: 2, realizedPnl: null, totalPnl: null,
+      winningTrades: null, grossProfit: null, feesPaid: null,
+    });
+  });
+
   it('keeps configured fallback strategy separate from accepted runtime signal truth', () => {
     const readModel = composeRuntimeSymbolStatsReadModel({
       ...baseParams,
@@ -431,5 +453,41 @@ describe('runtimeSymbolStatsReadModel.service', () => {
         }),
       ])
     );
+  });
+
+  it.each([
+    ['Strategy EXIT signal recorded (trace-only)', 'Exit priority'],
+    ['Runtime protection close decision', null],
+  ] as const)('composes a historical %s projection without inventing a no-match cause', (message, mergeReason) => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      latestSignalBySymbol: new Map([['BTCUSDT', {
+        signalDirection: 'EXIT' as const,
+        eventAt: new Date('2026-04-23T10:04:00.000Z'),
+        message,
+        mergeReason,
+        strategyId: 'strategy-legacy',
+        scoreLong: null,
+        scoreShort: null,
+        analysisByStrategy: {},
+      }]]),
+      configuredStrategyBySymbol: new Map([['BTCUSDT', 'strategy-legacy']]),
+      strategiesById: new Map([['strategy-legacy', {
+        name: 'Legacy Strategy',
+        interval: '5m',
+        config: { open: {
+          noMatchAction: 'EXIT',
+          indicatorsLong: [{ name: 'MOMENTUM', condition: '>', value: 0, params: { period: 1 } }],
+          indicatorsShort: [],
+        } },
+      }]]),
+    });
+
+    expect(readModel.items[0]).toMatchObject({
+      lastSignalDirection: 'EXIT',
+      lastSignalContextSource: 'latest_signal',
+      lastSignalMessage: message,
+      lastSignalConditionSummary: null,
+    });
   });
 });

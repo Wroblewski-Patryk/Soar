@@ -20,6 +20,11 @@ type CcxtMarket = {
   id?: string;
   symbol?: string;
   active?: boolean;
+  quote?: string;
+  settle?: string;
+  contract?: boolean;
+  linear?: boolean;
+  inverse?: boolean;
   contractSize?: number;
   limits?: CcxtMarketLimits;
   precision?: CcxtMarketPrecision;
@@ -43,7 +48,13 @@ export type ExchangeSymbolRules = {
   minQuantity: number | null;
   minNotional: number | null;
   quantityStep: number | null;
+  priceStep?: number | null;
   contractSize: number | null;
+  quoteCurrency?: string | null;
+  settleCurrency?: string | null;
+  isContract?: boolean | null;
+  isLinear?: boolean | null;
+  isInverse?: boolean | null;
 };
 
 const parsedCacheTtlMs = Number.parseInt(
@@ -59,12 +70,15 @@ const rulesCache = new Map<
   string,
   {
     fetchedAt: number;
-    rulesBySymbol: Map<string, ExchangeSymbolRules>;
+    rulesBySymbol: Map<string, ExchangeSymbolRules | null>;
   }
 >();
-const inflightLoads = new Map<string, Promise<Map<string, ExchangeSymbolRules>>>();
+const inflightLoads = new Map<string, Promise<Map<string, ExchangeSymbolRules | null>>>();
 
 const normalizeSymbol = (value?: string | null) => (value ?? '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+const normalizeCurrency = (value: unknown): string | null =>
+  typeof value === 'string' && /^[A-Z0-9]{2,15}$/.test(value.trim().toUpperCase())
+    ? value.trim().toUpperCase() : null;
 
 const resolveSymbolKey = (market: CcxtMarket) => {
   const id = normalizeSymbol(market.id);
@@ -91,6 +105,7 @@ const parseFilterRules = (filters: unknown) => {
       minQuantity: null as number | null,
       minNotional: null as number | null,
       quantityStep: null as number | null,
+      priceStep: null as number | null,
       contractSize: null as number | null,
     };
   }
@@ -98,6 +113,7 @@ const parseFilterRules = (filters: unknown) => {
   const minQtyCandidates: Array<number | null> = [];
   const minNotionalCandidates: Array<number | null> = [];
   const quantityStepCandidates: Array<number | null> = [];
+  const priceStepCandidates: Array<number | null> = [];
 
   for (const rawFilter of filters) {
     if (!rawFilter || typeof rawFilter !== 'object') continue;
@@ -107,6 +123,10 @@ const parseFilterRules = (filters: unknown) => {
     if (filterType === 'LOT_SIZE' || filterType === 'MARKET_LOT_SIZE') {
       minQtyCandidates.push(asPositiveNumber(filter.minQty));
       quantityStepCandidates.push(asPositiveNumber(filter.stepSize));
+    }
+
+    if (filterType === 'PRICE_FILTER') {
+      priceStepCandidates.push(asPositiveNumber(filter.tickSize));
     }
 
     if (filterType === 'MIN_NOTIONAL' || filterType === 'NOTIONAL') {
@@ -119,6 +139,7 @@ const parseFilterRules = (filters: unknown) => {
     minQuantity: pickMaxPositive(minQtyCandidates),
     minNotional: pickMaxPositive(minNotionalCandidates),
     quantityStep: pickMaxPositive(quantityStepCandidates),
+    priceStep: pickMaxPositive(priceStepCandidates),
   };
 };
 
@@ -138,7 +159,13 @@ const toSymbolRules = (market: CcxtMarket): ExchangeSymbolRules => {
     minQuantity,
     minNotional,
     quantityStep,
+    priceStep: filterRules.priceStep,
     contractSize: asPositiveNumber(market.contractSize),
+    quoteCurrency: normalizeCurrency(market.quote),
+    settleCurrency: normalizeCurrency(market.settle),
+    isContract: typeof market.contract === 'boolean' ? market.contract : null,
+    isLinear: typeof market.linear === 'boolean' ? market.linear : null,
+    isInverse: typeof market.inverse === 'boolean' ? market.inverse : null,
   };
 };
 
@@ -158,16 +185,18 @@ const loadRulesBySymbol = async (
     exchange: Exchange;
     marketType: TradeMarket;
   },
-  deps: ExchangeSymbolRulesDeps
+  deps: ExchangeSymbolRulesDeps,
+  requireCurrentMetadata = false,
 ) => {
   const cacheKey = resolveCacheKey(input);
+  const inflightKey = `${cacheKey}|${requireCurrentMetadata ? 'current' : 'ordinary'}`;
   const now = deps.nowMs();
   const cached = rulesCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < EXCHANGE_SYMBOL_RULES_CACHE_TTL_MS) {
     return cached.rulesBySymbol;
   }
 
-  const inflight = inflightLoads.get(cacheKey);
+  const inflight = inflightLoads.get(inflightKey);
   if (inflight) {
     return inflight;
   }
@@ -178,12 +207,14 @@ const loadRulesBySymbol = async (
         exchange: input.exchange,
         marketType: input.marketType,
       });
-      const rulesBySymbol = new Map<string, ExchangeSymbolRules>();
+      const rulesBySymbol = new Map<string, ExchangeSymbolRules | null>();
       for (const market of Object.values(markets)) {
         if (market.active === false) continue;
         const symbolKey = resolveSymbolKey(market);
         if (!symbolKey) continue;
-        rulesBySymbol.set(symbolKey, toSymbolRules(market));
+        // Distinct raw markets can collapse to the same normalized ID. Never
+        // select whichever one the exchange happened to list last.
+        rulesBySymbol.set(symbolKey, rulesBySymbol.has(symbolKey) ? null : toSymbolRules(market));
       }
       rulesCache.set(cacheKey, {
         fetchedAt: deps.nowMs(),
@@ -191,13 +222,15 @@ const loadRulesBySymbol = async (
       });
       return rulesBySymbol;
     } catch {
-      return cached?.rulesBySymbol ?? new Map<string, ExchangeSymbolRules>();
+      // Reservation callers cannot use an expired cache as currency proof.
+      return requireCurrentMetadata ? new Map<string, ExchangeSymbolRules | null>()
+        : (cached?.rulesBySymbol ?? new Map<string, ExchangeSymbolRules | null>());
     } finally {
-      inflightLoads.delete(cacheKey);
+      inflightLoads.delete(inflightKey);
     }
   })();
 
-  inflightLoads.set(cacheKey, loadPromise);
+  inflightLoads.set(inflightKey, loadPromise);
   return loadPromise;
 };
 
@@ -206,6 +239,7 @@ export const getExchangeSymbolRules = async (
     exchange: Exchange;
     marketType: TradeMarket;
     symbol: string;
+    requireCurrentMetadata?: boolean;
   },
   deps: ExchangeSymbolRulesDeps = defaultDeps
 ): Promise<ExchangeSymbolRules | null> => {
@@ -221,7 +255,8 @@ export const getExchangeSymbolRules = async (
       exchange: input.exchange,
       marketType: input.marketType,
     },
-    deps
+    deps,
+    input.requireCurrentMetadata === true,
   );
 
   return rulesBySymbol.get(normalizedSymbol) ?? null;

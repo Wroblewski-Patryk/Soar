@@ -66,8 +66,13 @@ export type CcxtFuturesOrderFill = {
   price: number;
   quantity: number;
   notional: number;
-  feeCost: number;
+  notionalSource?: 'CCXT_DERIVED_UNVERIFIED' | 'CCXT_REPORTED_UNVERIFIED' |
+    'QUOTE_QTY_FIELD_UNVERIFIED' | 'GATE_CONTRACT_UNIT_VERIFIED' |
+    'LOCAL_FALLBACK_UNVERIFIED' | 'UNKNOWN';
+  notionalCurrency?: string | null;
+  feeCost: number | null;
   feeCurrency: string | null;
+  feeCurrencySource?: 'VENUE_FIELD' | 'CCXT_SETTLE_INFERRED' | 'CURRENCY_CONFLICT' | 'UNVERIFIED';
   feeRate: number | null;
   executedAt: Date | null;
   source: 'createOrder' | 'fetchOrder' | 'fetchMyTrades';
@@ -90,6 +95,7 @@ export type CcxtFuturesOpenOrder = {
 
 export type CcxtFuturesOrderResult = {
   id: string;
+  clientOrderId?: string;
   status?: string;
   symbol?: string;
   side?: string;

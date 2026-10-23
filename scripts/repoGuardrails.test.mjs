@@ -9,8 +9,69 @@ import {
   validateArchitectureGraphDriftCoverage,
   validateOpsScriptsDoNotAcceptSecretCliArgs,
   validateRuntimeDockerfilesRunAsNonRoot,
+  validateSourceFileBudgets,
   validateTrackedEnvFilePolicy,
 } from "./repoGuardrails.mjs";
+
+test("source byte budgets give the same decision for LF and CRLF near each limit", (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-size-"));
+  assert.equal(path.dirname(rootDir), os.tmpdir());
+  assert.match(path.basename(rootDir), /^soar-guardrails-size-/);
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+
+  const cases = [
+    ["apps/api/src/modules/engine/runtimePositionAutomation.service.test.ts", 88_000],
+    ["apps/api/src/modules/externalClientGrants/externalClientGrantReservation.service.test.ts", 88_000],
+    ["apps/api/src/modules/orders/orders.service.test.ts", 92_000],
+  ];
+
+  for (const [filePath, budget] of cases) {
+    const absolute = path.join(rootDir, filePath);
+    fs.mkdirSync(path.dirname(absolute), { recursive: true });
+
+    for (const [offset, shouldFail] of [[-1, false], [1, true]]) {
+      const lf = `${"a".repeat(budget + offset - 2)}\n\n`;
+      const crlf = lf.replace(/\n/g, "\r\n");
+      fs.writeFileSync(absolute, lf);
+      const lfErrors = validateSourceFileBudgets([filePath], { rootDir });
+      fs.writeFileSync(absolute, crlf);
+      const crlfErrors = validateSourceFileBudgets([filePath], { rootDir });
+
+      assert.deepEqual(crlfErrors, lfErrors, `${filePath} at budget ${budget + offset}`);
+      assert.equal(lfErrors.length, shouldFail ? 1 : 0);
+      if (shouldFail) {
+        assert.match(lfErrors[0], new RegExp(`${budget + 1} bytes \\(budget ${budget} bytes\\)`));
+      } else {
+        assert.ok(Buffer.byteLength(crlf) > budget, "raw CRLF size must exceed the limit");
+      }
+    }
+  }
+});
+
+test("source byte budget fails closed when an oversized file cannot be read", (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-unreadable-"));
+  assert.equal(path.dirname(rootDir), os.tmpdir());
+  assert.match(path.basename(rootDir), /^soar-guardrails-unreadable-/);
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+
+  const filePath = "apps/api/src/modules/example/large.test.ts";
+  const absolute = path.join(rootDir, filePath);
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(absolute, "x".repeat(88_001));
+
+  let reads = 0;
+  const errors = validateSourceFileBudgets([filePath], {
+    rootDir,
+    readSourceFile: () => {
+      reads += 1;
+      throw Object.assign(new Error("access denied"), { code: "EACCES" });
+    },
+  });
+
+  assert.equal(reads, 1);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /large\.test\.ts: 88001 bytes \(budget 88000 bytes\)/);
+});
 
 const writeApiPackage = (rootDir, startScript) => {
   const apiDir = path.join(rootDir, "apps", "api");

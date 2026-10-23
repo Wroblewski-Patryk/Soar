@@ -1557,9 +1557,9 @@ describe('RuntimeSignalLoop', () => {
 
   it('avoids duplicate side effects for shared BTCUSDT/5m across 5 users x 3 bots', async () => {
     const { deps, emit } = createDeps();
-    const sharedExitStrategy = {
-      ...strategyExit,
-      strategyId: 'strategy-exit-5m',
+    const sharedLongStrategy = {
+      ...strategyLong,
+      strategyId: 'strategy-long-5m',
       strategyInterval: '5m',
     };
     const activeBots = Array.from({ length: 15 }, (_, index) => {
@@ -1574,7 +1574,7 @@ describe('RuntimeSignalLoop', () => {
         marketType: 'FUTURES' as const,
         runtimeContext: createRuntimeContext({
           symbolGroupId: `symbol-group-${userSlot}-${botSlot}`,
-          strategy: sharedExitStrategy,
+          strategy: sharedLongStrategy,
         }),
       };
     });
@@ -1619,7 +1619,20 @@ describe('RuntimeSignalLoop', () => {
     await loop.stop();
   });
 
-  it('merges final-candle multi-strategy votes with EXIT priority and trace-only behavior', async () => {
+  it.each(['PAPER', 'LIVE'] as const)(
+    '%s holds an open position when saved no-match EXIT has no entry vote', async (mode) => {
+      const { deps, emit } = createDeps();
+      withStrategyBot(deps, { mode, strategies: [strategyExit] });
+      deps.countOpenPositionsForBotAndSymbols = vi.fn(async () => 1);
+      const loop = new RuntimeSignalLoop(deps);
+      await loop.start();
+      await emitFinalCandleSeries(emit);
+      expect(deps.createSignal).not.toHaveBeenCalled();
+      expect(deps.orchestrateFn).not.toHaveBeenCalled();
+      await loop.stop();
+    });
+
+  it('does not let saved no-match EXIT override a matched LONG vote', async () => {
     const { deps, emit } = createDeps();
     withStrategyBot(deps, { strategies: [strategyExit, strategyLong] });
     const loop = new RuntimeSignalLoop(deps);
@@ -1630,14 +1643,15 @@ describe('RuntimeSignalLoop', () => {
     expect(deps.createSignal).toHaveBeenCalledWith(
       expect.objectContaining({
         botId: 'bot-1',
-        strategyId: 'strategy-exit',
-        direction: 'EXIT',
-        payload: expect.objectContaining({
-          strategyExitTraceOnly: true,
-        }),
+        strategyId: 'strategy-1',
+        direction: 'LONG',
       })
     );
-    expect(deps.orchestrateFn).not.toHaveBeenCalled();
+    expect(deps.createSignal).not.toHaveBeenCalledWith(
+      expect.objectContaining({ direction: 'EXIT' }),
+    );
+    expect(deps.orchestrateFn).toHaveBeenCalled();
+    await loop.stop();
   });
 
   it('ignores final-candle decisions when bot marketType does not match stream marketType', async () => {

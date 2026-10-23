@@ -1,6 +1,7 @@
 # Runtime Signal Merge Contract (Post-V1 BOTMULTI)
 
-Status: canonical, refreshed for `BOTMULTI-01` on 2026-05-03.
+Status: canonical merge target, updated for the 2026-10-19 local evaluator fix.
+Deployed cross-mode acceptance remains pending.
 
 ## Purpose
 Define deterministic action resolution when multiple strategies attached to one
@@ -29,8 +30,9 @@ window.
 4. Global/bot/group risk caps breached -> forced `NO_TRADE` or forced `EXIT` (if required by risk policy).
 
 ## Deterministic Merge Order
-1. `EXIT` priority:
-   - if any enabled strategy emits `EXIT`, choose `EXIT`.
+1. Explicit `EXIT` priority:
+   - if any enabled strategy emits a separate, valid exit signal, choose `EXIT`.
+   - loss of an entry signal contributes `NO_TRADE`/HOLD, never `EXIT`.
    - tie-break for `EXIT` metadata uses lowest numeric `priority`, then lowest
      `strategyLinkId`.
 2. Directional vote:
@@ -48,8 +50,12 @@ Order is always deterministic:
 4. If still tied, lower lexical `marketGroupStrategyLinkId` wins.
 
 ## Safety Overrides
-- `EXIT` can close existing position even when directional vote indicates opposite action.
+- An explicit `EXIT` proposal may win the merge, but it does not bypass the
+  lifecycle manager or make a separate strategy exit signal mandatory.
 - `NO_TRADE` is valid and preferred when certainty is insufficient.
+- An existing position is held when entry signals disappear; normal closes
+  follow configured DCA and `TP`/`SL` or `TTP`/`TSL` lifecycle rules, with
+  applicable manual, liquidation, and other risk closures.
 - Runtime must never "guess" by random selection.
 
 ## Audit Requirements

@@ -13,7 +13,14 @@ export const getStrategy = async (id: string) => {
 };
 
 export const createStrategy = async (form: StrategyFormState) => {
-    const payload = formToPayload(form);
+    // A clone of an unversioned strategy remains quantity based; fresh forms and presets opt into USDT.
+    const payload = formToPayload({
+        ...form,
+        additional: {
+            ...form.additional,
+            dcaSizingBasis: form.additional.dcaSizingBasis ?? "quantity_v1",
+        },
+    });
     const { data } = await api.post<StrategyDto>("/dashboard/strategies", payload);
     return data;
 };

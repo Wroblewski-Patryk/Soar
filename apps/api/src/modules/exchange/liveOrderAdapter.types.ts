@@ -20,6 +20,8 @@ export type PlaceLiveOrderInput = z.input<typeof PlaceLiveOrderInputSchema>;
 export type PlaceLiveOrderWithFeesResult = {
   exchangeOrderId: string | null;
   status: string | undefined;
+  exchangeFilledQuantity?: number;
+  exchangeAverageFillPrice?: number;
   fee: LiveFeeReconciliationResult['fee'];
   feeSource: LiveFeeReconciliationResult['feeSource'];
   feePending: LiveFeeReconciliationResult['feePending'];

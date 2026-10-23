@@ -37,6 +37,7 @@ const baseForm: StrategyFormState = {
   },
   additional: {
     dcaEnabled: false,
+    dcaSizingBasis: "usdt_contribution_v1",
     dcaMode: "basic",
     dcaTimes: 1,
     dcaMultiplier: 2,
@@ -366,6 +367,7 @@ export const strategyPresets: StrategyPreset[] = [
         dcaMode: "basic",
         dcaTimes: 2,
         dcaMultiplier: 1.5,
+        dcaLevels: [{ percent: -1, multiplier: 1.5 }],
       },
     },
   },

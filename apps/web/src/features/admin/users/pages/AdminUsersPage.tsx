@@ -36,6 +36,9 @@ export default function AdminUsersPage() {
     allRoles: t("admin.users.allRoles"),
     apply: t("admin.users.apply"),
     totalUsers: t("admin.users.totalUsers"),
+    previousPage: t("admin.users.previousPage"),
+    nextPage: t("admin.users.nextPage"),
+    pageOf: t("admin.users.pageOf"),
     loadingUsers: t("admin.users.loadingUsers"),
     tableUser: t("admin.users.tableUser"),
     tableRole: t("admin.users.tableRole"),
@@ -66,6 +69,8 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"ALL" | AdminUserRole>("ALL");
   const [totalUsers, setTotalUsers] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [planCodes, setPlanCodes] = useState<AdminSubscriptionPlanCode[]>([]);
   const [planDraftByUserId, setPlanDraftByUserId] = useState<Record<string, AdminSubscriptionPlanCode>>({});
@@ -75,13 +80,14 @@ export default function AdminUsersPage() {
     setError(null);
     try {
       const payload = await getAdminUsers({
-        page: 1,
+        page,
         pageSize: 100,
         search: search || undefined,
         role: roleFilter === "ALL" ? undefined : roleFilter,
       });
       setUsers(payload.users);
       setTotalUsers(payload.meta.total);
+      setTotalPages(Math.max(1, payload.meta.totalPages));
       setPlanDraftByUserId((prev) => {
         const next = { ...prev };
         for (const item of payload.users) {
@@ -128,10 +134,11 @@ export default function AdminUsersPage() {
   useEffect(() => {
     void loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, roleFilter]);
+  }, [search, roleFilter, page]);
 
   const onApplyFilters = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setPage(1);
     setSearch(searchDraft.trim());
   };
 
@@ -221,23 +228,26 @@ export default function AdminUsersPage() {
         </button>
       </div>
 
-      <form className="mb-4 grid gap-3 rounded-box border border-base-300/70 p-3 md:grid-cols-[2fr_1fr_auto]" onSubmit={onApplyFilters}>
-        <label className="form-control">
+      <form className="mb-4 grid gap-3 rounded-box border border-base-300/70 p-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto]" onSubmit={onApplyFilters}>
+        <label className="flex min-w-0 flex-col gap-1">
           <span className="label-text">{labels.searchLabel}</span>
           <input
-            className="input input-bordered"
+            className="input input-bordered w-full"
             value={searchDraft}
             onChange={(event) => setSearchDraft(event.target.value)}
             placeholder={labels.searchPlaceholder}
           />
         </label>
 
-        <label className="form-control">
+        <label className="flex min-w-0 flex-col gap-1">
           <span className="label-text">{labels.roleLabel}</span>
           <select
-            className="select select-bordered"
+            className="select select-bordered w-full"
             value={roleFilter}
-            onChange={(event) => setRoleFilter(event.target.value as "ALL" | AdminUserRole)}
+            onChange={(event) => {
+              setPage(1);
+              setRoleFilter(event.target.value as "ALL" | AdminUserRole);
+            }}
           >
             <option value="ALL">{labels.allRoles}</option>
             <option value="USER">USER</option>
@@ -352,6 +362,17 @@ export default function AdminUsersPage() {
             </tbody>
           </table>
         </div>
+      )}
+      {!error && totalPages > 1 && (
+        <nav aria-label={labels.pageOf.replace("{page}", String(page)).replace("{total}", String(totalPages))} className="mt-4 flex items-center justify-end gap-3">
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => setPage((current) => Math.max(1, current - 1))} disabled={loading || page <= 1}>
+            {labels.previousPage}
+          </button>
+          <span className="text-sm" aria-live="polite">{labels.pageOf.replace("{page}", String(page)).replace("{total}", String(totalPages))}</span>
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => setPage((current) => Math.min(totalPages, current + 1))} disabled={loading || page >= totalPages}>
+            {labels.nextPage}
+          </button>
+        </nav>
       )}
       {confirmModal}
     </section>

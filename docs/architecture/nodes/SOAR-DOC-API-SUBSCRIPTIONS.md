@@ -17,7 +17,7 @@ tags: [soar-map, documentation, documentation, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Subscriptions API documentation covering catalog entitlement checkout profile and admin contracts. |
+| Description | Subscriptions API documentation covering catalog, fail-closed entitlements, profile reads, and admin contracts. |
 | File path | docs/modules/api-subscriptions.md |
 | Related files | docs/modules/api-admin.md, docs/modules/api-bots.md |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

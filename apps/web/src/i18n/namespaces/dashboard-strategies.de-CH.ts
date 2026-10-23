@@ -78,6 +78,7 @@ export const dashboardStrategiesDeCh = {
       "marginIsolated": "Isoliert"
     },
     "open": {
+      "momentumPeriodValidation": "Der MOMENTUM-Zeitraum muss eine ganze Zahl von 2 bis 255 sein. Passen Sie den Indikator vor dem Speichern an.",
       "title": "Teilnahmebedingungen",
       "loadIndicatorsFailed": "Die Indikatorenliste konnte nicht geladen werden",
       "direction": "Richtung",
@@ -118,6 +119,13 @@ export const dashboardStrategiesDeCh = {
       "times": "Wie oft",
       "triggerLevel": "Triggerpegel (%)",
       "multiplier": "Multiplikator",
+      "usdtBasis": "Multiplikator des aktuellen USDT-Beitrags. Nach 1 USDT Start und 2× folgen 2 USDT, dann 6 USDT; insgesamt 9 USDT.",
+      "legacyBasis": "Alte Mengenbasis: Der Multiplikator bezieht sich auf die aktuelle Asset-Menge. Beim Bearbeiten bleibt diese Bedeutung erhalten.",
+      "legacyCreate": "Neue Strategie mit USDT-Beitrag erstellen",
+      "dcaPriority": "Ein erreichtes DCA-Level wird vor einem Exit auf derselben Seite geprüft. Fehlen nach Überschreiten des Stop Loss Mittel, schliesst Stop Loss die Position.",
+      "plannedOnly": "Nur geplante Level. Ausführung hängt von Preis, verfügbaren Mitteln und Orderregeln ab.",
+      "contributionExample": "Geplante Zugaben ab 1 USDT Startbeitrag",
+      "dcaValidation": "USDT-DCA braucht im Basic-Modus 1–10 Wiederholungen und vorzeichenbehaftete Level ungleich null mit Multiplikatoren über 0 bis 10.",
       "levelPercent": "Ebene (%)",
       "removeLevel": "Ebene entfernen",
       "addLevel": "+ Level hinzufügen"

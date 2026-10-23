@@ -13,6 +13,10 @@ Non-negotiable rules:
 2. Restarting workers must not require API restart.
 3. Runtime incident handling can target worker scope without taking down web/api paths.
 
+These are target-runtime rules. They do not prove that an older API build lacks
+inline work consumption; the Service Stack rollback mode D treats it as a
+possible consumer until the full stop/readback and compatibility gates pass.
+
 Production-safe worker start command (repo root):
 ```bash
 pnpm run workers/prod
@@ -66,21 +70,27 @@ Recommended Coolify/Traefik practice:
 
 ## Rollback Checklist
 1. Identify last known good release tag.
-2. Re-deploy previous API, web, and worker artifacts (same stable SHA across services).
-3. Ensure runtime ownership split remains intact after rollback:
+2. For a Coolify Service Stack cutover, follow the
+   [rollback mode-selection guard](deployment-rollback-playbook.md#rollback-modes).
+   After any new stack process starts, or if that history is uncertain, complete
+   [mode D stop-before-start](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   before starting an old API or worker. A proven never-started candidate may
+   use mode A after compatibility and in-flight checks.
+3. Re-deploy previous API, web, and worker artifacts (same compatible SHA across services).
+4. Ensure runtime ownership split remains intact after rollback:
    - API alive
    - web alive
    - all four workers alive
-4. Re-run probes:
+5. Re-run probes:
    - `GET /health`
    - `GET /ready`
    - `pnpm run ops:deploy:smoke`
-5. Validate critical flows:
+6. Validate critical flows:
    - auth login/logout
    - dashboard list pages
    - exchange order path in paper mode
-6. Record rollback reason and owner in incident log.
-7. Validate incident against RTO/RPO targets:
+7. Record rollback reason and owner in incident log.
+8. Validate incident against RTO/RPO targets:
    - `docs/operations/v1-rto-rpo-targets.md`
 
 ## Incident Playbook

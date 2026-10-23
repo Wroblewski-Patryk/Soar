@@ -1,10 +1,10 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { clearRuntimeSignalMarketDataStore } from '../engine/runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
-import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 
 const manualContextConnectorOverride = vi.hoisted(() => ({
@@ -43,6 +43,13 @@ const registerAndLogin = async (email: string) => {
     password: 'test1234',
   });
   expect(res.status).toBe(201);
+  await setActiveSubscriptionForUser(prisma, {
+    userId: res.body.user.id as string,
+    planCode: 'FREE',
+    source: 'ADMIN_OVERRIDE',
+    autoRenew: false,
+    metadata: { reason: 'orders_test_fixture' },
+  });
   return agent;
 };
 
@@ -114,6 +121,9 @@ const allowLiveTradingForOrdersContract = async () => {
 };
 
 describe('Orders and positions read contract', () => {
+  afterEach(async () => {
+    await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  });
   beforeEach(async () => {
     manualContextConnectorOverride.current = null;
     clearRuntimeTickerStore();
@@ -121,6 +131,7 @@ describe('Orders and positions read contract', () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
@@ -1159,25 +1170,13 @@ describe('Orders and positions read contract', () => {
     ).toBe(true);
     expect(submittedRuntimeRes.body.openItems).toHaveLength(0);
 
-    await prisma.order.create({
+    await prisma.order.update({
+      where: { id: submittedOrder.id },
       data: {
-        userId: ownerId,
         botId: null,
-        walletId: liveWallet.id,
         strategyId: null,
-        symbol: 'BTCUSDT',
-        side: 'BUY',
-        type: 'MARKET',
-        status: 'OPEN',
-        quantity: 0.03,
-        filledQuantity: 0,
-        price: null,
         origin: 'EXCHANGE_SYNC',
-        managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
-        exchangeOrderId: 'manual-live-market-1',
-        submittedAt: new Date('2026-04-24T22:00:18.000Z'),
-        createdAt: new Date('2026-04-24T22:00:18.000Z'),
       },
     });
 

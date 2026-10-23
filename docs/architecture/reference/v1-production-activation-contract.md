@@ -23,9 +23,9 @@ production-activatable release candidate.
    If an artifact or probe is outdated, missing, or ambiguous, activation stays
    blocked.
 
-3. Stage and production truth must stay explicit.
-   A successful local or stage-only check cannot be reported as production
-   readiness.
+3. Local Windows and existing Coolify production truth must stay explicit.
+   A successful local check cannot be reported as production readiness. There
+   is no separate STAGE or second VPS in the current Soar release path.
 
 4. Release readiness must remain fail-closed.
    Missing secrets, stale evidence, unhealthy workers, or incomplete rollback
@@ -43,7 +43,7 @@ production-activatable release candidate.
 - post-deploy smoke,
 - rollback rehearsal or rollback proof pack,
 - worker/runtime health visibility,
-- sign-off summary.
+- sign-off summary with separate owner approval for the exact production SHA.
 
 ## Proof Truth Rules
 
@@ -63,7 +63,7 @@ production-activatable release candidate.
 ## Future-Agent Rules
 
 - Do not mark V1 activation done from unit/integration tests alone.
-- Do not collapse stage and prod evidence into one generic success claim.
+- Do not collapse local test and production evidence into one generic success claim.
 - Do not treat legacy compatibility envs or local-only passes as production
   sign-off.
 - Do not treat public prod smoke or internal prod diagnostics as a substitute

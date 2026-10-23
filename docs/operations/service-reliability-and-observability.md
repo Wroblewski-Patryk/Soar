@@ -51,6 +51,12 @@ Every meaningful runtime path should provide:
 - operator-readable error messages
 - smoke command or manual verification path
 
+API `http_request.path` records only the declared Express route pattern. For a
+request rejected before a route is reached or a 404, it records `[UNMATCHED]`.
+Raw URLs, path parameters, and query strings are not logged. Nested routes may
+therefore show only their local pattern; use method, status, and duration for
+aggregate diagnostics without reconstructing client-supplied URL text.
+
 ## Incident Learning
 
 After a production incident, failed deploy, or serious smoke failure:

@@ -30,6 +30,7 @@ export const publicEn = {
   offline: {
     title: "Offline Mode",
     description: "Soar is temporarily offline. Check your connection and try again.",
+    retry: "Try again",
   },
   sharedUi: {
     loadingTitle: "Loading data",

@@ -1,19 +1,23 @@
 import { Position, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
+import { isAppErrorLike } from '../../lib/errors';
+import { readLiveExecutionPause } from '../orders/liveExecutionPause.service';
+import { buildManagementPassInput, classifyRuntimeDcaFailure, guardPausedFundsExhaustion, resolvePauseAwareManagementInput } from './runtimePositionAutomationManagementInput';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
 import { openOrder as openOrderLifecycle } from '../orders/orders.service';
-import { evaluatePositionManagement } from './positionManagement.service';
+import { evaluatePositionManagement, rebasePositionManagementProtection,
+  tryRebasePositionManagementProtection } from './positionManagement.service';
+import { clonePositionManagementState, positionManagementStatesEqual } from './positionManagementState.utils';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
-import {
-  buildDcaExecutionDedupeKey,
-  runtimeExecutionDedupeService,
-} from './runtimeExecutionDedupe.service';
+import { confirmProtectionBeforeAutomationActions, readPositionStateForAutomation } from './runtimePositionAutomationProtectionGuard';
+import { buildDcaExecutionDedupeKey, runtimeExecutionDedupeService } from './runtimeExecutionDedupe.service';
 import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
-import { computePositionAddUpdate } from '../orders/positionFillMath';
+import { finalizeRuntimeDcaFill, recordUnknownRuntimeOrderOutcome } from './runtimeImmediateFillFinalizer.service';
+import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
 import {
   recordRuntimeAutomationSkipTelemetry,
   RuntimeAutomationSkipReason,
@@ -37,6 +41,10 @@ import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSy
 import { normalizeSymbols } from '../bots/runtimeSymbolUniverse.service';
 import { listRuntimeAutomationOpenPositionsBySymbol } from './runtimePositionAutomationDefaultPositionDeps';
 import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
+import { assertRuntimeDcaPolicy, assertRuntimeDcaOrderAllowed, resolveRuntimeDcaPolicyBlock,
+  RuntimeDcaPolicyError, RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT } from './runtimeDcaPolicy';
+import { resolveRuntimeDcaOrderQuantity, getRuntimeDcaOrderRules } from './runtimeDcaOrderRules';
+import { loadDurableDcaProgress } from './runtimeDurableDcaProgress';
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
   dcaMaxAdds: number;
@@ -46,7 +54,6 @@ export type RuntimeFallbackConfig = {
   trailingType: 'percent' | 'absolute';
   trailingValue: number;
 };
-
 const envBoolean = (value: string | undefined, fallback: boolean) => {
   if (value == null) return fallback;
   return value.trim().toLowerCase() === 'true';
@@ -109,69 +116,6 @@ const loadCanonicalPositionExecutionState = async (positionId: string) => {
   };
 };
 
-const loadDurableDcaProgress = async (input: {
-  userId: string;
-  positionId: string;
-  botId?: string | null;
-  walletId?: string | null;
-  strategyId?: string | null;
-  symbol: string;
-  positionSide: PositionSide;
-}) => {
-  const entrySide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const scopedLifecycleWhere =
-    input.botId || input.walletId || input.strategyId
-      ? {
-          AND: [
-            {
-              userId: input.userId,
-              symbol: input.symbol,
-              managementMode: 'BOT_MANAGED' as const,
-            },
-            ...(input.botId ? [{ botId: input.botId }] : []),
-            ...(input.walletId ? [{ OR: [{ walletId: input.walletId }, { walletId: null }] }] : []),
-            ...(input.strategyId ? [{ OR: [{ strategyId: input.strategyId }, { strategyId: null }] }] : []),
-          ],
-        }
-      : null;
-  const trades = await prisma.trade.findMany({
-    where: {
-      lifecycleAction: { in: ['OPEN', 'DCA', 'CLOSE'] },
-      OR: [
-        { positionId: input.positionId },
-        ...(scopedLifecycleWhere ? [scopedLifecycleWhere] : []),
-      ],
-    },
-    select: {
-      id: true,
-      lifecycleAction: true,
-      price: true,
-      side: true,
-      executedAt: true,
-    },
-    orderBy: { executedAt: 'asc' },
-  });
-  const dedupedTrades = [...new Map(trades.map((trade) => [trade.id, trade])).values()]
-    .sort((left, right) => left.executedAt.getTime() - right.executedAt.getTime());
-  const latestCloseIndex = dedupedTrades.findLastIndex(
-    (trade) => trade.side !== entrySide && trade.lifecycleAction === 'CLOSE'
-  );
-  const lifecycleTrades = latestCloseIndex >= 0
-    ? dedupedTrades.slice(latestCloseIndex + 1)
-    : dedupedTrades;
-  const entryTrades = lifecycleTrades.filter(
-    (trade) => trade.side === entrySide && (trade.lifecycleAction === 'OPEN' || trade.lifecycleAction === 'DCA')
-  );
-  const entryLegAdds = Math.max(0, entryTrades.length - 1);
-  const dcaTrades = entryTrades.filter((trade) => trade.lifecycleAction === 'DCA');
-  const explicitDcaAdds = dcaTrades.length;
-  const lastDcaTrade = dcaTrades.at(-1);
-  return {
-    currentAdds: Math.max(entryLegAdds, explicitDcaAdds),
-    lastDcaPrice: lastDcaTrade?.price,
-  };
-};
-
 export const executeRuntimeDca = async (input: {
   userId: string;
   botId?: string | null;
@@ -186,9 +130,31 @@ export const executeRuntimeDca = async (input: {
   addedQuantity: number;
   currentQuantity: number;
   currentEntryPrice: number;
-}) => {
-  const dcaQuantity = Math.max(0, input.addedQuantity);
+  eventAt?: Date;
+}, deps: { getOrderRules?: typeof getRuntimeDcaOrderRules;
+  resolveFundsExhausted?: typeof resolveRuntimeDcaFundsExhausted } = {}) => {
+  let dcaQuantity = Math.max(0, input.addedQuantity);
   if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
+  const usdtContext = await assertRuntimeDcaOrderAllowed(input);
+  if (usdtContext) {
+    if (usdtContext.mode !== input.mode) throw new RuntimeDcaPolicyError({
+      code: 'DCA_CONTRIBUTION_UNCONFIRMED', message: 'DCA mode does not match the canonical wallet',
+    });
+    const rules = await (deps.getOrderRules ?? getRuntimeDcaOrderRules)({
+      exchange: usdtContext.exchange, marketType: usdtContext.marketType, symbol: input.symbol,
+    });
+    dcaQuantity = resolveRuntimeDcaOrderQuantity({ quantity: dcaQuantity,
+      markPrice: input.markPrice, marketType: usdtContext.marketType, rules });
+    const exhausted = await (deps.resolveFundsExhausted ?? resolveRuntimeDcaFundsExhausted)({
+      userId: input.userId, botId: input.botId, walletId: usdtContext.walletId,
+      mode: input.mode, exchange: usdtContext.exchange, marketType: usdtContext.marketType,
+      paperStartBalance: usdtContext.paperStartBalance, markPrice: input.markPrice,
+      addedQuantity: dcaQuantity, leverage: usdtContext.leverage, nowMs: Date.now(),
+    });
+    if (exhausted) throw new RuntimeDcaPolicyError({
+      code: 'DCA_FUNDS_EXHAUSTED', message: 'Runtime USDT DCA requires more free USDT than the wallet has',
+    });
+  }
   const dedupeKey = buildDcaExecutionDedupeKey({
     userId: input.userId,
     botId: input.botId,
@@ -213,9 +179,17 @@ export const executeRuntimeDca = async (input: {
     if (dedupe.reuseStatus !== 'completed') {
       return { feePaid: 0, executed: false };
     }
+    if (!dedupe.orderId || !await prisma.trade.findFirst({
+      where: { orderId: dedupe.orderId, positionId: input.positionId, lifecycleAction: 'DCA' },
+      select: { id: true },
+    })) {
+      return { feePaid: 0, executed: false };
+    }
     const canonicalState = await loadCanonicalPositionExecutionState(input.positionId);
     return {
       feePaid: 0,
+      orderId: dedupe.orderId,
+      replayed: true,
       executed: canonicalState != null,
       nextQuantity: canonicalState?.quantity,
       nextEntryPrice: canonicalState?.averageEntryPrice,
@@ -226,13 +200,18 @@ export const executeRuntimeDca = async (input: {
   }
 
   const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
+  const runtimeSessionId = input.mode === 'LIVE' && input.botId
+    ? await runtimeTelemetryService.ensureRuntimeSession({
+        userId: input.userId, botId: input.botId, mode: 'LIVE',
+      }) : undefined;
+  let openedOrderId: string | null = null;
   try {
     const opened = await openOrderLifecycle(input.userId, {
       botId: input.botId ?? undefined,
       walletId: input.walletId ?? undefined,
       strategyId: input.strategyId ?? undefined,
       positionId: input.positionId,
+      origin: 'BOT',
       symbol: input.symbol,
       side: orderSide,
       type: 'MARKET',
@@ -242,6 +221,7 @@ export const executeRuntimeDca = async (input: {
       riskAck: true,
       clientOrderId: buildRuntimeClientOrderId(dedupeKey),
     });
+    openedOrderId = opened.id;
 
     if (opened.status !== 'FILLED') {
       await runtimeExecutionDedupeService.markSubmitted({
@@ -252,99 +232,48 @@ export const executeRuntimeDca = async (input: {
       return { feePaid: 0, executed: false };
     }
 
+    if (usdtContext && input.mode === 'LIVE'
+      && (!isPositiveFiniteNumber(opened.averageFillPrice)
+        || !isPositiveFiniteNumber(opened.filledQuantity))) {
+      throw Object.assign(new Error('Confirmed LIVE DCA fill price and quantity are unavailable'),
+        { code: 'LIVE_EXECUTION_UNKNOWN' });
+    }
     const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
     const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
-    const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
-      currentQuantity: input.currentQuantity,
-      currentEntryPrice: input.currentEntryPrice,
-      addedQuantity: executedQuantity,
-      fillPrice: executedPrice,
+    const feePending = input.mode === 'LIVE' && (opened.feePending || opened.fee == null || opened.feeSource !== 'EXCHANGE_FILL');
+    const feePaid = input.mode === 'LIVE' ? (feePending ? null : opened.fee)
+      : executedPrice * executedQuantity * resolveRuntimeTakerFeeRate(input.mode);
+    const finalized = await finalizeRuntimeDcaFill({
+      userId: input.userId, botId: input.botId, walletId: input.walletId,
+      strategyId: input.strategyId, positionId: input.positionId,
+      order: opened, dedupeKey, fillPrice: executedPrice,
+      fillQuantity: executedQuantity, feePaid, mode: input.mode,
+      runtimeSessionId, eventAt: input.eventAt,
     });
-    const feePaid = input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee;
-
-    await prisma.$transaction(async (tx) => {
-      await tx.position.update({
-        where: { id: input.positionId },
-        data: {
-          quantity: nextQuantity,
-          entryPrice: nextEntryPrice,
-        },
-      });
-
-      await tx.order.update({
-        where: { id: opened.id },
-        data: { positionId: input.positionId },
-      });
-
-      await tx.trade.create({
-        data: {
-          userId: input.userId,
-          botId: input.botId ?? undefined,
-          walletId: input.walletId ?? undefined,
-          strategyId: input.strategyId ?? undefined,
-          orderId: opened.id,
-          positionId: input.positionId,
-          symbol: input.symbol,
-          side: orderSide,
-          lifecycleAction: 'DCA',
-          price: executedPrice,
-          quantity: executedQuantity,
-          fee: feePaid,
-          feeSource: opened.feeSource,
-          feePending: opened.feePending,
-          feeCurrency: opened.feeCurrency,
-          effectiveFeeRate: opened.effectiveFeeRate,
-          exchangeTradeId: opened.exchangeTradeId,
-          realizedPnl: 0,
-          origin: 'BOT',
-          managementMode: 'BOT_MANAGED',
-          executionMode: input.mode,
-        },
-      });
-
-      await tx.log.create({
-        data: {
-          userId: input.userId,
-          botId: input.botId ?? undefined,
-          strategyId: input.strategyId ?? undefined,
-          action: 'runtime.dca',
-          level: 'INFO',
-          source: 'engine.runtimePositionAutomation',
-          message: `Runtime DCA executed for ${input.symbol}`,
-          category: 'runtime',
-          entityType: 'position',
-          entityId: input.positionId,
-          actor: 'runtime',
-          metadata: {
-            symbol: input.symbol,
-            side: input.positionSide,
-            mode: input.mode,
-            orderId: opened.id,
-            addedQuantity: executedQuantity,
-            fillPrice: executedPrice,
-            fee: feePaid,
-            nextQuantity,
-            nextEntryPrice,
-          } as Prisma.InputJsonValue,
-        },
-      });
-    });
-    await runtimeExecutionDedupeService.markSucceeded({
-      dedupeKey,
-      orderId: opened.id,
-      positionId: input.positionId,
-    });
-    return { feePaid, executed: true, nextQuantity, nextEntryPrice };
+    return {
+      feePaid: finalized.feePaid, feePending, orderId: opened.id, executed: true,
+      telemetryRecorded: finalized.telemetryRecorded,
+      nextQuantity: finalized.nextQuantity, nextEntryPrice: finalized.nextEntryPrice,
+    };
   } catch (error) {
+    const unknownAfterSubmission = input.mode === 'LIVE' && (
+      (error as { code?: string } | null)?.code === 'LIVE_EXECUTION_UNKNOWN' || openedOrderId !== null
+    );
     await runtimeExecutionDedupeService.markFailed({
-      dedupeKey,
-      errorClass: error instanceof Error && error.name ? error.name : 'runtime_dca_error',
+      dedupeKey, errorClass: classifyRuntimeDcaFailure(error, unknownAfterSubmission),
     });
+    if (unknownAfterSubmission) {
+      await recordUnknownRuntimeOrderOutcome({
+        userId: input.userId, botId: input.botId, positionId: input.positionId,
+        symbol: input.symbol, dedupeKey, orderId: openedOrderId, commandType: 'DCA',
+      });
+    }
     throw error;
   }
 };
 
 const defaultDeps: RuntimePositionAutomationDeps = {
+  readLiveExecutionPause,
   listOpenPositionsBySymbol: listRuntimeAutomationOpenPositionsBySymbol,
   getStrategyConfigById: async (strategyId) => {
     const strategy = await prisma.strategy.findUnique({
@@ -421,6 +350,7 @@ export const buildPositionManagementInput = (
   strategyConfig: Record<string, unknown> | null,
   fallback: RuntimeFallbackConfig
 ): PositionManagementInput => {
+  assertRuntimeDcaPolicy(strategyConfig);
   const closeConfig =
     strategyConfig && typeof strategyConfig === 'object'
       ? ((strategyConfig.close as Record<string, unknown> | undefined) ?? undefined)
@@ -467,10 +397,15 @@ export const buildPositionManagementInput = (
     }))
     .filter((level) => level.armPercent > 0 && level.value > 0)
     .sort((left, right) => left.armPercent - right.armPercent);
-  const hasConfiguredTrailingLoss =
-    Number.isFinite(trailingLossStartPercent) &&
-    trailingLossStartPercent < 0 &&
-    trailingLossStepPercent > 0;
+  const trailingLossLevels = (closeMode === 'advanced' ? tslConfig : [])
+    .map((level) => ({
+      startPercent: toSignedPercent(level.percent, Number.NaN),
+      stepPercent: toPercent(level.arm),
+    }))
+    .filter((level) => Number.isFinite(level.startPercent) && level.startPercent < 0 &&
+      level.stepPercent > 0)
+    .sort((left, right) => left.startPercent - right.startPercent);
+  const hasConfiguredTrailingLoss = trailingLossLevels.length > 0;
   const dcaEnabled = Boolean(additionalConfig?.dcaEnabled ?? fallback.dcaEnabled);
   const configuredMaxAdds = Math.floor(toPositive(additionalConfig?.dcaTimes, fallback.dcaMaxAdds));
   const dcaMaxAdds =
@@ -479,7 +414,10 @@ export const buildPositionManagementInput = (
       : configuredMaxAdds;
   const dcaStepPercent = Math.abs(toSignedPercent(dcaLevels[0]?.percent, -(fallback.dcaStepPercent)));
   const dcaMultiplier = toPositive(dcaLevels[0]?.multiplier ?? additionalConfig?.dcaMultiplier, 1 + fallback.dcaAddSizeFraction);
-  const dcaAddSizeFraction = Math.max(0.01, Math.min(10, dcaMultiplier));
+  const sizingBasis = additionalConfig?.dcaSizingBasis === 'usdt_contribution_v1'
+    ? 'usdt_contribution_v1' as const : 'quantity_v1' as const;
+  const dcaAddSizeFraction = Math.max(0.01, sizingBasis === 'quantity_v1'
+    ? Math.min(RUNTIME_DCA_QUANTITY_MULTIPLIER_LIMIT, dcaMultiplier) : dcaMultiplier);
   const dcaLevelPercents =
     dcaMode === 'advanced'
       ? configuredDcaLevelPercents
@@ -514,6 +452,7 @@ export const buildPositionManagementInput = (
     side: position.side,
     currentPrice: markPrice,
     leverage: Math.max(1, position.leverage || 1),
+    dcaSizingBasis: sizingBasis,
     stopLossPrice,
     takeProfitPrice,
     trailingTakeProfit:
@@ -527,7 +466,8 @@ export const buildPositionManagementInput = (
     trailingTakeProfitLevels:
       trailingTakeProfitLevels.length > 0 ? trailingTakeProfitLevels : undefined,
     trailingStop:
-      !hasConfiguredTrailingLoss && closeMode === 'advanced' && fallback.trailingEnabled
+      !hasConfiguredTrailingLoss && closeMode === 'advanced' &&
+        sizingBasis !== 'usdt_contribution_v1' && fallback.trailingEnabled
           ? {
               enabled: true,
               type: fallback.trailingType,
@@ -546,6 +486,9 @@ export const buildPositionManagementInput = (
             stepPercent: trailingLossStepPercent,
           }
         : undefined,
+    trailingLossLevels:
+      (sizingBasis === 'usdt_contribution_v1' || trailingLossLevels.length > 1) &&
+      trailingLossLevels.length > 0 ? trailingLossLevels : undefined,
     dca:
       dcaEnabled && dcaMaxAdds > 0
         ? {
@@ -553,6 +496,7 @@ export const buildPositionManagementInput = (
             maxAdds: dcaMaxAdds,
             stepPercent: Math.max(0.0001, dcaStepPercent),
             addSizeFraction: dcaAddSizeFraction,
+            sizingBasis,
             levelPercents: dcaLevelPercents.length > 0 ? dcaLevelPercents : undefined,
             addSizeFractions: dcaLevelFractions.length > 0 ? dcaLevelFractions : undefined,
           }
@@ -573,6 +517,7 @@ export class RuntimePositionAutomationService {
             getCanonicalPositionState: async () => null,
             getDurableDcaProgress: async () => null,
             hasPendingSubmittedDcaForPosition: async () => false,
+            readLiveExecutionPause: async () => ({ available: true, paused: false }),
             recordRuntimeEvent: async () => undefined,
             upsertRuntimeSymbolStat: async () => undefined,
           };
@@ -582,35 +527,7 @@ export class RuntimePositionAutomationService {
     };
   }
 
-  private cloneState(state: PositionManagementState): PositionManagementState {
-    return {
-      quantity: state.quantity,
-      averageEntryPrice: state.averageEntryPrice,
-      currentAdds: state.currentAdds,
-      executedDcaLevelIndices: state.executedDcaLevelIndices ? [...state.executedDcaLevelIndices] : undefined,
-      trailingAnchorPrice: state.trailingAnchorPrice,
-      trailingLossLimitPercent: state.trailingLossLimitPercent,
-      trailingTakeProfitHighPercent: state.trailingTakeProfitHighPercent,
-      trailingTakeProfitStepPercent: state.trailingTakeProfitStepPercent,
-      lastDcaPrice: state.lastDcaPrice,
-    };
-  }
-
-  private statesEqual(left: PositionManagementState, right: PositionManagementState) {
-    return (
-      left.quantity === right.quantity &&
-      left.averageEntryPrice === right.averageEntryPrice &&
-      left.currentAdds === right.currentAdds &&
-      JSON.stringify(left.executedDcaLevelIndices ?? []) === JSON.stringify(right.executedDcaLevelIndices ?? []) &&
-      left.trailingAnchorPrice === right.trailingAnchorPrice &&
-      left.trailingLossLimitPercent === right.trailingLossLimitPercent &&
-      left.trailingTakeProfitHighPercent === right.trailingTakeProfitHighPercent &&
-      left.trailingTakeProfitStepPercent === right.trailingTakeProfitStepPercent &&
-      left.lastDcaPrice === right.lastDcaPrice
-    );
-  }
-
-  getPositionStateSnapshot(positionId: string): PositionManagementState | null { const state = this.positionStates.get(positionId); return state ? this.cloneState(state) : null; }
+  getPositionStateSnapshot(positionId: string): PositionManagementState | null { const state = this.positionStates.get(positionId); return state ? clonePositionManagementState(state) : null; }
 
   async handleTickerEvent(event: StreamTickerEvent) {
     await Promise.all((await this.deps.listOpenPositionsBySymbol(event.symbol)).map((position) => this.processPosition(event, position)));
@@ -729,6 +646,25 @@ export class RuntimePositionAutomationService {
 
     const runtimeConfig = getRuntimeConfig();
     const strategyConfig = await this.getStrategyConfig(effectiveStrategyId);
+    const dcaPolicyBlock = resolveRuntimeDcaPolicyBlock(strategyConfig);
+    if (dcaPolicyBlock) {
+      if (position.botId) {
+        await this.deps.recordRuntimeEvent?.({
+          userId: position.userId,
+          botId: position.botId,
+          mode,
+          eventType: 'PRETRADE_BLOCKED',
+          level: 'WARN',
+          symbol: position.symbol,
+          strategyId: effectiveStrategyId ?? undefined,
+          message: dcaPolicyBlock.message,
+          payload: { positionId: position.id, reason: dcaPolicyBlock.code,
+            ...(dcaPolicyBlock.multiplier == null ? {} : { multiplier: dcaPolicyBlock.multiplier }) },
+          eventAt: new Date(event.eventTime),
+        });
+      }
+      return;
+    }
     const lifecyclePrice =
       (await this.deps.resolveLifecyclePrice?.({
         exchange,
@@ -755,7 +691,11 @@ export class RuntimePositionAutomationService {
           },
         ],
       }) ?? (Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice);
-    const input = buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig);
+    const pauseManagement = await resolvePauseAwareManagementInput({ mode, marketType,
+      input: buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig),
+      readLiveExecutionPause: this.deps.readLiveExecutionPause });
+    if (!pauseManagement) return;
+    const { input, paused: livePaused } = pauseManagement;
     const defaultState = {
       quantity: position.quantity,
       averageEntryPrice: position.entryPrice,
@@ -764,7 +704,11 @@ export class RuntimePositionAutomationService {
       trailingAnchorPrice: position.entryPrice,
       lastDcaPrice: undefined,
     } as PositionManagementState;
-    const persistedState = this.positionStates.get(position.id) ?? (await runtimePositionStateStore.getPositionRuntimeState(position.id));
+    const stateRead = await readPositionStateForAutomation({ position, mode, event,
+      strategyId: effectiveStrategyId, memoryState: this.positionStates.get(position.id),
+      recordRuntimeEvent: this.deps.recordRuntimeEvent });
+    if (!stateRead.actionable) return;
+    const persistedState = stateRead.state;
     const durableDcaProgress = await this.deps.getDurableDcaProgress({
       userId: position.userId,
       positionId: position.id,
@@ -773,19 +717,49 @@ export class RuntimePositionAutomationService {
       strategyId: effectiveStrategyId,
       symbol: position.symbol,
       positionSide: position.side,
+      sizingBasis: input.dca?.sizingBasis,
     });
+    if (input.dca?.sizingBasis === 'usdt_contribution_v1'
+      && (!durableDcaProgress
+        || durableDcaProgress.currentAdds < (persistedState?.currentAdds ?? 0)
+        || (durableDcaProgress.currentAdds > 0
+          && durableDcaProgress.executedDcaLevelIndices?.length !== durableDcaProgress.currentAdds))) {
+      if (position.botId) await this.deps.recordRuntimeEvent?.({
+        userId: position.userId, botId: position.botId, mode,
+        eventType: 'PRETRADE_BLOCKED', level: 'WARN', symbol: position.symbol,
+        strategyId: effectiveStrategyId ?? undefined,
+        message: 'Runtime USDT DCA progress cannot be reconciled with durable fills',
+        payload: { positionId: position.id, reason: 'DCA_PROGRESS_UNCONFIRMED' },
+        eventAt: new Date(event.eventTime),
+      });
+      return;
+    }
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
-    const basePreviousState = stateRebasedToCanonical ? defaultState : persistedState ?? defaultState;
+    const canonicalRebase = stateRebasedToCanonical && position.origin === 'BOT' && persistedState
+      ? tryRebasePositionManagementProtection(persistedState, position.entryPrice,
+          position.side, position.leverage || 1) : null;
+    if (stateRebasedToCanonical && position.origin === 'BOT' && persistedState && !canonicalRebase) {
+      console.warn(`[RuntimePositionAutomation] position=${position.id} skipped: trailing protection cannot be rebased`);
+      return;
+    }
+    const basePreviousState = stateRebasedToCanonical
+      ? position.origin === 'BOT' && persistedState
+        ? { ...canonicalRebase!, quantity: position.quantity, averageEntryPrice: position.entryPrice }
+        : defaultState
+      : persistedState ?? defaultState;
     const previousState =
-      durableDcaProgress && durableDcaProgress.currentAdds > basePreviousState.currentAdds
+      durableDcaProgress && (durableDcaProgress.currentAdds > basePreviousState.currentAdds
+        || (durableDcaProgress.currentAdds === basePreviousState.currentAdds
+          && (durableDcaProgress.executedDcaLevelIndices?.length ?? 0) > 0))
         ? {
             ...basePreviousState,
             currentAdds: durableDcaProgress.currentAdds,
-            executedDcaLevelIndices: undefined,
+            executedDcaLevelIndices: durableDcaProgress.executedDcaLevelIndices
+              ?? basePreviousState.executedDcaLevelIndices,
             lastDcaPrice: durableDcaProgress.lastDcaPrice ?? basePreviousState.lastDcaPrice,
           }
         : basePreviousState;
-    const previousStateSnapshot = this.cloneState(previousState);
+    const previousStateSnapshot = clonePositionManagementState(previousState);
     const currentPnlFraction = resolveRuntimeCurrentPnlFraction({
       side: position.side,
       currentPrice: effectiveLifecyclePrice,
@@ -805,8 +779,8 @@ export class RuntimePositionAutomationService {
     const estimatedAddedQuantity = hasPendingDca
       ? estimateNextDcaAddedQuantity(input, previousState, currentPnlFraction ?? undefined)
       : 0;
-    const dcaFundsExhausted =
-      hasPendingDca && estimatedAddedQuantity > 0
+    let dcaFundsExhausted =
+      input.dca?.sizingBasis !== 'usdt_contribution_v1' && hasPendingDca && estimatedAddedQuantity > 0
         ? await this.deps.resolveDcaFundsExhausted({
             userId: position.userId,
             botId: position.botId,
@@ -838,45 +812,59 @@ export class RuntimePositionAutomationService {
         leverage: Math.max(1, position.leverage || 1),
       });
     }
-
-    const managementInput: PositionManagementInput = dcaFundsExhausted
-      ? {
-          ...input,
-          currentPnlFraction: currentPnlFraction ?? undefined,
-          dca: undefined,
-          dcaFundsExhausted: true,
-        }
-      : {
-          ...input,
-          currentPnlFraction: currentPnlFraction ?? undefined,
-          dcaFundsExhausted: false,
-        };
-
-    const result = evaluatePositionManagement(managementInput, previousState);
-    let effectiveState = this.cloneState(result.nextState);
-    let dcaPendingExchangeFill = false;
-
-    if (result.dcaExecuted) {
+    const managementInput = buildManagementPassInput(input, currentPnlFraction, dcaFundsExhausted);
+    let result = guardPausedFundsExhaustion({ paused: livePaused, fundsExhausted: dcaFundsExhausted,
+      input: { ...input, currentPnlFraction: currentPnlFraction ?? undefined }, state: previousState,
+      result: evaluatePositionManagement(managementInput, previousState) });
+    let effectiveState = clonePositionManagementState(result.nextState);
+    let dcaPendingExchangeFill = livePaused && result.dcaExecuted;
+    if (dcaPendingExchangeFill) effectiveState = previousStateSnapshot;
+    if (!await confirmProtectionBeforeAutomationActions({ position, event, strategyId: effectiveStrategyId, recordRuntimeEvent: this.deps.recordRuntimeEvent, evidence: stateRead.evidence, nextState: effectiveState })) return;
+    if (result.dcaExecuted && !livePaused) {
       const dcaAddedQuantity = Number.isFinite(result.dcaAddedQuantity)
         ? Math.max(0, result.dcaAddedQuantity)
         : Math.max(0, result.nextState.quantity - previousState.quantity);
       if (dcaAddedQuantity > 0) {
-        const dcaResult = await this.deps.executeDca({
-          userId: position.userId,
-          botId: position.botId,
-          walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
-          strategyId: effectiveStrategyId,
-          positionId: position.id,
-          symbol: position.symbol,
-          positionSide: position.side,
-          dcaLevelIndex: result.dcaLevelIndex ?? previousState.currentAdds,
-          markPrice: effectiveLifecyclePrice,
-          mode,
-          addedQuantity: dcaAddedQuantity,
-          currentQuantity: previousState.quantity,
-          currentEntryPrice: previousState.averageEntryPrice,
-        });
-        if (dcaResult.executed) {
+        let dcaResult: Awaited<ReturnType<RuntimePositionAutomationDeps['executeDca']>> | null = null;
+        try {
+          dcaResult = await this.deps.executeDca({
+            userId: position.userId, botId: position.botId,
+            walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+            strategyId: effectiveStrategyId, positionId: position.id,
+            symbol: position.symbol, positionSide: position.side,
+            dcaLevelIndex: result.dcaLevelIndex ?? previousState.currentAdds,
+            markPrice: effectiveLifecyclePrice, mode, addedQuantity: dcaAddedQuantity,
+            currentQuantity: previousState.quantity, currentEntryPrice: previousState.averageEntryPrice,
+            eventAt: new Date(event.eventTime),
+          });
+        } catch (error) {
+          if (mode === 'LIVE' && isAppErrorLike(error) && error.code === 'LIVE_PRETRADE_PAUSED') {
+            // Pause may have committed after the first read and before DCA's final gate.
+            // A denied DCA is still pending and continues to guard SL/TSL.
+            effectiveState = previousStateSnapshot;
+            dcaPendingExchangeFill = true;
+          } else {
+            if (!(error instanceof RuntimeDcaPolicyError) || error.code !== 'DCA_FUNDS_EXHAUSTED' ||
+              input.dca?.sizingBasis !== 'usdt_contribution_v1') throw error;
+            dcaFundsExhausted = true;
+            await recordRuntimeDcaFundsExhaustedTelemetry({
+              recordRuntimeEvent: this.deps.recordRuntimeEvent, userId: position.userId,
+              botId: position.botId, mode, symbol: position.symbol,
+              strategyId: effectiveStrategyId, side: position.side, eventAt: new Date(event.eventTime),
+              currentAdds: previousState.currentAdds, dcaLevelCount, estimatedAddedQuantity: dcaAddedQuantity,
+              markPrice: effectiveLifecyclePrice, leverage: Math.max(1, position.leverage || 1),
+            });
+            const fallback = evaluatePositionManagement({ ...input,
+              currentPnlFraction: currentPnlFraction ?? undefined, dcaFundsExhausted: true,
+            }, previousStateSnapshot);
+            if (fallback.shouldClose && fallback.closeReason === 'stop_loss') {
+              result = fallback; effectiveState = clonePositionManagementState(fallback.nextState);
+            } else {
+              effectiveState = previousStateSnapshot; dcaPendingExchangeFill = true;
+            }
+          }
+        }
+        if (dcaResult?.executed) {
           const canonicalState =
             dcaResult.nextQuantity != null && dcaResult.nextEntryPrice != null
               ? {
@@ -887,17 +875,22 @@ export class RuntimePositionAutomationService {
           if (!canonicalState) {
             effectiveState = previousStateSnapshot;
           } else {
+            const rebasedProtection = input.dca?.sizingBasis === 'usdt_contribution_v1'
+              ? rebasePositionManagementProtection({ ...result.nextState,
+                  averageEntryPrice: previousStateSnapshot.averageEntryPrice },
+                canonicalState.averageEntryPrice, position.side, position.leverage || 1)
+              : result.nextState;
             effectiveState = {
-              ...result.nextState,
+              ...rebasedProtection,
               quantity: canonicalState.quantity,
               averageEntryPrice: canonicalState.averageEntryPrice,
             };
           }
-        } else {
+        } else if (dcaResult) {
           effectiveState = previousStateSnapshot;
           dcaPendingExchangeFill = true;
         }
-        if (position.botId && dcaResult.executed) {
+        if (position.botId && dcaResult?.executed && !dcaResult.replayed && !dcaResult.telemetryRecorded) {
           const eventAt = new Date(event.eventTime);
           await this.deps.recordRuntimeEvent?.({
             userId: position.userId,
@@ -911,6 +904,9 @@ export class RuntimePositionAutomationService {
             message: 'Runtime DCA executed',
             payload: {
               addedQuantity: dcaAddedQuantity,
+              orderId: dcaResult.orderId ?? null,
+              positionId: position.id,
+              financialFeePending: mode === 'LIVE',
               nextQuantity: effectiveState.quantity,
               nextEntryPrice: effectiveState.averageEntryPrice,
             },
@@ -923,28 +919,33 @@ export class RuntimePositionAutomationService {
             symbol: position.symbol,
             increments: {
               dcaCount: 1,
-              feesPaid: dcaResult.feePaid,
+              ...(mode === 'LIVE' ? {} : { feesPaid: dcaResult.feePaid }),
             },
             lastPrice: effectiveLifecyclePrice,
             lastTradeAt: eventAt,
             openPositionQty: effectiveState.quantity,
           });
+          if (mode === 'LIVE' && dcaResult.orderId) {
+            await prisma.$transaction((tx) => settleRuntimeOrderFee({
+              tx, userId: position.userId, orderId: dcaResult.orderId!,
+            }));
+          }
         }
       }
     }
     this.positionStates.set(position.id, effectiveState);
 
     if (dcaPendingExchangeFill) {
-      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
     }
 
-    const hasPendingSubmittedDca =
-      (await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false;
+    const hasPendingSubmittedDca = result.shouldClose &&
+      ((await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false);
     if (result.shouldClose && hasPendingSubmittedDca) {
-      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
@@ -983,13 +984,13 @@ export class RuntimePositionAutomationService {
       if (closeResult.status === 'closed') {
         await runtimePositionStateStore.deletePositionRuntimeState(position.id);
         this.positionStates.delete(position.id);
-      } else if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+      } else if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
     }
 
-    if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+    if (stateRebasedToCanonical || !positionManagementStatesEqual(previousStateSnapshot, effectiveState)) {
       await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
     }
   }

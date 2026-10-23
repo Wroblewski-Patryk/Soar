@@ -195,18 +195,3 @@ export const setActiveSubscriptionForUser = async (db: DbClient, input: SetActiv
     },
   });
 };
-
-export const ensureDefaultSubscriptionForUser = async (db: DbClient, userId: string) => {
-  const active = await db.userSubscription.findFirst({
-    where: { userId, status: 'ACTIVE' },
-    select: { id: true },
-  });
-  if (active) return active;
-
-  return setActiveSubscriptionForUser(db, {
-    userId,
-    planCode: 'FREE',
-    source: 'DEFAULT',
-    autoRenew: true,
-  });
-};

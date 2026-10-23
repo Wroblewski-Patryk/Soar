@@ -2,193 +2,78 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../index';
 import { prisma } from '../../../prisma/client';
-import { appUrl, clientUrl } from '../../../config/runtime';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../../subscriptions/subscriptions.service';
 
-const registerAndLogin = async (email: string) => {
+const register = async (email: string) => {
   const agent = request.agent(app);
-  const res = await agent.post('/auth/register').send({
-    email,
-    password: 'test1234',
-  });
-  expect(res.status).toBe(201);
-  return {
-    agent,
-    userId: res.body.user.id as string,
-  };
+  const response = await agent.post('/auth/register').send({ email, password: 'test1234' });
+  expect(response.status).toBe(201);
+  return { agent, userId: response.body.user.id as string };
 };
 
 describe('Profile subscription contract', () => {
   beforeEach(async () => {
-    await prisma.orderFill.deleteMany();
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.backtestReport.deleteMany();
-    await prisma.backtestTrade.deleteMany();
-    await prisma.backtestRun.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.paymentIntent.deleteMany();
-    await prisma.userSubscription.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.subscriptionPlan.deleteMany();
+    await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
   });
 
-  it('returns subscription catalog and active subscription for current user', async () => {
-    const { agent } = await registerAndLogin('profile-subscription@example.com');
+  it('shows the catalog without assigning a plan to a newly registered user', async () => {
+    const { agent, userId } = await register('subscription-unassigned@example.com');
+    expect(await prisma.userSubscription.count({ where: { userId } })).toBe(0);
 
-    const response = await agent.get('/dashboard/profile/subscription');
+    for (let read = 0; read < 2; read += 1) {
+      const response = await agent.get('/dashboard/profile/subscription');
+      expect(response.status).toBe(200);
+      expect(response.body.catalog.map((item: { code: string }) => item.code)).toEqual([
+        'FREE', 'ADVANCED', 'PROFESSIONAL',
+      ]);
+      expect(response.body.activeSubscription).toBeNull();
+      expect(response.body.activePlanCode).toBeNull();
+    }
+    expect(await prisma.userSubscription.count({ where: { userId } })).toBe(0);
+  });
 
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body.catalog)).toBe(true);
-    expect(response.body.catalog).toHaveLength(3);
-    expect(response.body.catalog.map((item: { code: string }) => item.code)).toEqual([
-      'FREE',
-      'ADVANCED',
-      'PROFESSIONAL',
-    ]);
-    expect(response.body.activePlanCode).toBe('FREE');
-    expect(response.body.activeSubscription).toMatchObject({
+  it('shows only the plan assigned by an administrator', async () => {
+    const { agent, userId } = await register('subscription-admin-assigned@example.com');
+    await setActiveSubscriptionForUser(prisma, {
+      userId,
       planCode: 'FREE',
-      source: 'DEFAULT',
-      status: 'ACTIVE',
-    });
-  });
-
-  it('restores FREE assignment for legacy user without active subscription', async () => {
-    const { agent, userId } = await registerAndLogin('profile-subscription-legacy@example.com');
-
-    await prisma.userSubscription.deleteMany({
-      where: { userId },
+      source: 'ADMIN_OVERRIDE',
+      autoRenew: false,
+      metadata: { reason: 'test_admin_assignment' },
     });
 
     const response = await agent.get('/dashboard/profile/subscription');
-
     expect(response.status).toBe(200);
     expect(response.body.activePlanCode).toBe('FREE');
     expect(response.body.activeSubscription).toMatchObject({
-      planCode: 'FREE',
-      status: 'ACTIVE',
+      planCode: 'FREE', source: 'ADMIN_OVERRIDE', status: 'ACTIVE',
     });
   });
 
-  it('requires authentication', async () => {
-    const response = await request(app).get('/dashboard/profile/subscription');
-    expect(response.status).toBe(401);
-  });
-
-  it('creates provider-agnostic checkout intent and persists payment intent record', async () => {
-    const { agent, userId } = await registerAndLogin('profile-subscription-checkout@example.com');
-    const successUrl = `${clientUrl}/dashboard/profile/subscription-success`;
-    const cancelUrl = `${clientUrl}/dashboard/profile/subscription-cancel`;
-
-    const response = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
-      planCode: 'ADVANCED',
-      successUrl,
-      cancelUrl,
-    });
-
-    expect(response.status).toBe(201);
-    expect(response.body).toMatchObject({
-      planCode: 'ADVANCED',
-      provider: 'MANUAL',
-      status: 'REQUIRES_ACTION',
-      amountMinor: 4900,
-      currency: 'USD',
-    });
-    expect(typeof response.body.id).toBe('string');
-    expect(response.body.checkoutUrl).toBe(successUrl);
-
-    const storedIntent = await prisma.paymentIntent.findUniqueOrThrow({
-      where: { id: response.body.id as string },
-      include: {
-        subscriptionPlan: {
-          select: { code: true },
-        },
+  it('keeps historical payment intents while rejecting self-service checkout', async () => {
+    const { agent, userId } = await register('subscription-checkout-disabled@example.com');
+    const plan = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { code: 'ADVANCED' } });
+    await prisma.paymentIntent.create({
+      data: {
+        userId,
+        subscriptionPlanId: plan.id,
+        provider: 'MANUAL',
+        status: 'CANCELED',
+        amountMinor: plan.monthlyPriceMinor,
+        currency: plan.currency,
       },
     });
-    expect(storedIntent.userId).toBe(userId);
-    expect(storedIntent.subscriptionPlan.code).toBe('ADVANCED');
-    expect(storedIntent.provider).toBe('MANUAL');
-    expect(storedIntent.amountMinor).toBe(4900);
-    expect(storedIntent.metadata).toMatchObject({
-      successUrl,
-      cancelUrl,
-    });
-  });
-
-  it('falls back to canonical app URL when callback URLs use untrusted origin', async () => {
-    const { agent } = await registerAndLogin('profile-subscription-checkout-untrusted-origin@example.com');
 
     const response = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
       planCode: 'ADVANCED',
-      successUrl: 'https://evil.example.com/callback',
-      cancelUrl: 'https://evil.example.com/cancel',
     });
-
-    expect(response.status).toBe(201);
-    expect(response.body.checkoutUrl).toBe(`${appUrl}/dashboard/profile#subscription`);
+    expect(response.status).toBe(404);
+    expect(await prisma.paymentIntent.count({ where: { userId } })).toBe(1);
+    expect(await prisma.userSubscription.count({ where: { userId } })).toBe(0);
   });
 
-  it('rejects checkout intent creation for non-payable FREE plan', async () => {
-    const { agent } = await registerAndLogin('profile-subscription-checkout-free@example.com');
-
-    const response = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
-      planCode: 'FREE',
-    });
-
-    expect(response.status).toBe(400);
-    expect(response.body.error.message).toBe('selected subscription plan does not require checkout');
-  });
-
-  it('requires authentication for checkout intent creation', async () => {
-    const response = await request(app).post('/dashboard/profile/subscription/checkout-intents').send({
-      planCode: 'ADVANCED',
-    });
+  it('requires authentication to read the subscription profile', async () => {
+    const response = await request(app).get('/dashboard/profile/subscription');
     expect(response.status).toBe(401);
-  });
-
-  it('returns explicit config error when STRIPE provider is selected without secret key', async () => {
-    const { agent } = await registerAndLogin('profile-subscription-checkout-stripe-missing@example.com');
-    const previousProvider = process.env.SUBSCRIPTION_PAYMENT_PROVIDER;
-    const previousStripeSecret = process.env.STRIPE_SECRET_KEY;
-
-    process.env.SUBSCRIPTION_PAYMENT_PROVIDER = 'STRIPE';
-    delete process.env.STRIPE_SECRET_KEY;
-
-    try {
-      const response = await agent.post('/dashboard/profile/subscription/checkout-intents').send({
-        planCode: 'ADVANCED',
-      });
-
-      expect(response.status).toBe(503);
-      expect(response.body.error.message).toBe('stripe provider is not configured');
-    } finally {
-      if (previousProvider === undefined) {
-        delete process.env.SUBSCRIPTION_PAYMENT_PROVIDER;
-      } else {
-        process.env.SUBSCRIPTION_PAYMENT_PROVIDER = previousProvider;
-      }
-
-      if (previousStripeSecret === undefined) {
-        delete process.env.STRIPE_SECRET_KEY;
-      } else {
-        process.env.STRIPE_SECRET_KEY = previousStripeSecret;
-      }
-    }
   });
 });

@@ -14,6 +14,8 @@ import { dashboardBotsEn } from "./namespaces/dashboard-bots.en";
 import { dashboardBotsPl } from "./namespaces/dashboard-bots.pl";
 import { dashboardBotsDeCh } from "./namespaces/dashboard-bots.de-CH";
 import { dashboardBotsPt } from "./namespaces/dashboard-bots.pt";
+import { dashboardGrantsEn } from "./namespaces/dashboard-grants.en";
+import { dashboardGrantsPl } from "./namespaces/dashboard-grants.pl";
 import { dashboardHomeEn } from "./namespaces/dashboard-home.en";
 import { dashboardHomePl } from "./namespaces/dashboard-home.pl";
 import { dashboardHomeDeCh } from "./namespaces/dashboard-home.de-CH";
@@ -85,6 +87,12 @@ export const I18N_NAMESPACE_REGISTRY = {
     pt: { dashboard: { bots: dashboardBotsPt } },
     "de-CH": { dashboard: { bots: dashboardBotsDeCh } },
   },
+  dashboardGrants: {
+    en: { dashboard: { externalGrants: dashboardGrantsEn } },
+    pl: { dashboard: { externalGrants: dashboardGrantsPl } },
+    pt: { dashboard: { externalGrants: dashboardGrantsEn } },
+    "de-CH": { dashboard: { externalGrants: dashboardGrantsEn } },
+  },
   dashboardBacktests: {
     en: { dashboard: { backtests: dashboardBacktestsEn } },
     pl: { dashboard: { backtests: dashboardBacktestsPl } },
@@ -155,7 +163,7 @@ export const ROUTE_NAMESPACE_MAP: Array<{ routePrefix: string; namespaces: I18nN
   { routePrefix: "/dashboard/strategies", namespaces: ["dashboardShell", "dashboardStrategies"] },
   { routePrefix: "/dashboard/wallets", namespaces: ["dashboardShell", "dashboardWallets"] },
   { routePrefix: "/dashboard/reports", namespaces: ["dashboardShell", "dashboardReports"] },
-  { routePrefix: "/dashboard/profile", namespaces: ["dashboardShell", "auth"] },
+  { routePrefix: "/dashboard/profile", namespaces: ["dashboardShell", "dashboardGrants", "auth"] },
   { routePrefix: "/dashboard/bots", namespaces: ["dashboardShell", "dashboardBots"] },
   { routePrefix: "/dashboard", namespaces: ["dashboardShell", "dashboardHome", "dashboardBots"] },
   { routePrefix: "/", namespaces: ["public"] },

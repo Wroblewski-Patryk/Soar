@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import MarketUniverseForm from './MarketUniverseForm';
@@ -25,8 +25,45 @@ describe('MarketUniverseForm', () => {
       </I18nProvider>
     );
 
+  it('keeps the selected exchange after its catalog loads', async () => {
+    fetchCatalogMock.mockImplementation(async ({ exchange }: { exchange: string }) => ({
+      exchange,
+      source: `${exchange}_PUBLIC`,
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      baseCurrencies: ['USDT'],
+      totalAvailable: 0,
+      totalForBaseCurrency: 0,
+      markets: [],
+    }));
+
+    renderWithI18n({
+      mode: 'create',
+      submitting: false,
+      onSubmit: async () => undefined,
+    });
+
+    const exchangeSelect = await screen.findByLabelText('Gielda');
+    await waitFor(() => expect(exchangeSelect).not.toBeDisabled());
+    const callsBeforeSelection = fetchCatalogMock.mock.calls.length;
+    fireEvent.change(exchangeSelect, { target: { value: 'GATEIO' } });
+
+    await waitFor(() => {
+      expect(fetchCatalogMock).toHaveBeenCalledWith(
+        expect.objectContaining({ exchange: 'GATEIO' })
+      );
+      expect(exchangeSelect).not.toBeDisabled();
+    });
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    expect(exchangeSelect).toHaveValue('GATEIO');
+    expect(fetchCatalogMock).toHaveBeenCalledTimes(callsBeforeSelection + 1);
+  });
+
   it('loads saved volume filter value in edit mode and uses it in preview', async () => {
-    fetchCatalogMock.mockResolvedValue({
+    const catalog = {
       source: 'BINANCE_PUBLIC',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
@@ -51,7 +88,11 @@ describe('MarketUniverseForm', () => {
           lastPrice: 3600,
         },
       ],
-    });
+    };
+    let completeCatalogRequest: () => void = () => { throw new Error('Catalog request was not started'); };
+    fetchCatalogMock.mockImplementation(() => new Promise((resolve) => {
+      completeCatalogRequest = () => resolve(catalog);
+    }));
 
     renderWithI18n({
       mode: 'edit',
@@ -74,8 +115,12 @@ describe('MarketUniverseForm', () => {
 
     const slider = screen.getByRole('slider');
     expect(slider).toHaveValue('500');
+    expect(slider).toHaveAttribute('max', '500');
 
+    await act(async () => { completeCatalogRequest(); });
     await waitFor(() => {
+      expect(slider).toHaveAttribute('max', '1000');
+      expect(slider).toHaveValue('500');
       expect(screen.getByText('Liczba rynkow: 1')).toBeInTheDocument();
     });
   });

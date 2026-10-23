@@ -31,7 +31,9 @@ export const listRuntimeSessionsWithSummary = async (params: {
   if (sessions.length === 0) return [];
   const sessionIds = sessions.map((session) => session.id);
 
-  const [eventCounts, symbolCounts, symbolSums] = await Promise.all([
+  const earliestStart = new Date(Math.min(...sessions.map((session) => session.startedAt.getTime())));
+  const latestEnd = new Date(Math.max(...sessions.map((session) => resolveSessionWindowEnd(session).getTime())));
+  const [eventCounts, symbolCounts, symbolSums, pendingPnlEvents, unresolvedPositions] = await Promise.all([
     prisma.botRuntimeEvent.groupBy({
       by: ['sessionId'],
       where: { sessionId: { in: sessionIds } },
@@ -52,7 +54,19 @@ export const listRuntimeSessionsWithSummary = async (params: {
         realizedPnl: true,
       },
     }),
+    prisma.botRuntimeEvent.findMany({
+      where: { sessionId: { in: sessionIds }, payload: { path: ['financialPnlPending'], equals: true } },
+      select: { sessionId: true },
+    }),
+    prisma.position.findMany({
+      where: { userId: params.userId, botId: params.botId, status: 'CLOSED',
+        OR: [{ realizedPnl: null },
+          { trades: { some: { OR: [{ fee: null }, { feePending: true }] } } }],
+        closedAt: { gte: earliestStart, lte: latestEnd } },
+      select: { closedAt: true },
+    }),
   ]);
+  const pendingPnlSessionIds = new Set(pendingPnlEvents.map((event) => event.sessionId));
 
   const eventCountMap = new Map(eventCounts.map((entry) => [entry.sessionId, entry._count._all]));
   const symbolCountMap = new Map(symbolCounts.map((entry) => [entry.sessionId, entry._count._all]));
@@ -93,13 +107,20 @@ export const listRuntimeSessionsWithSummary = async (params: {
       durationMs,
       eventsCount: eventCountMap.get(session.id) ?? 0,
       symbolsTracked: symbolCountMap.get(session.id) ?? 0,
-      summary,
+      summary: {
+        ...summary,
+        realizedPnl: pendingPnlSessionIds.has(session.id) || unresolvedPositions.some((position) =>
+          position.closedAt != null && position.closedAt >= session.startedAt && position.closedAt <= windowEnd)
+          ? null : summary.realizedPnl,
+      },
     };
   });
 };
 
 export const getRuntimeSessionSummaryMetrics = async (sessionId: string) => {
-  const [eventCount, symbolsTracked, symbolStatsAggregate] = await Promise.all([
+  const session = await prisma.botRuntimeSession.findUniqueOrThrow({ where: { id: sessionId } });
+  const windowEnd = resolveSessionWindowEnd(session);
+  const [eventCount, symbolsTracked, symbolStatsAggregate, pendingPnlEvent, pendingFeeEvent, unresolvedPosition, unresolvedFee] = await Promise.all([
     prisma.botRuntimeEvent.count({
       where: { sessionId },
     }),
@@ -125,6 +146,27 @@ export const getRuntimeSessionSummaryMetrics = async (sessionId: string) => {
         openPositionQty: true,
       },
     }),
+    prisma.botRuntimeEvent.findFirst({
+      where: { sessionId, payload: { path: ['financialPnlPending'], equals: true } },
+      select: { id: true },
+    }),
+    prisma.botRuntimeEvent.findFirst({
+      where: { sessionId, payload: { path: ['financialFeePending'], equals: true } },
+      select: { id: true },
+    }),
+    prisma.position.findFirst({
+      where: { userId: session.userId, botId: session.botId, status: 'CLOSED',
+        OR: [{ realizedPnl: null },
+          { trades: { some: { OR: [{ fee: null }, { feePending: true }] } } }],
+        closedAt: { gte: session.startedAt, lte: windowEnd } },
+      select: { id: true },
+    }),
+    prisma.trade.findFirst({
+      where: { userId: session.userId, botId: session.botId,
+        executedAt: { gte: session.startedAt, lte: windowEnd },
+        OR: [{ fee: null }, { feePending: true }] },
+      select: { id: true },
+    }),
   ]);
 
   return {
@@ -137,12 +179,12 @@ export const getRuntimeSessionSummaryMetrics = async (sessionId: string) => {
       exits: symbolStatsAggregate._sum.exits ?? 0,
       dcaCount: symbolStatsAggregate._sum.dcaCount ?? 0,
       closedTrades: symbolStatsAggregate._sum.closedTrades ?? 0,
-      winningTrades: symbolStatsAggregate._sum.winningTrades ?? 0,
-      losingTrades: symbolStatsAggregate._sum.losingTrades ?? 0,
-      realizedPnl: symbolStatsAggregate._sum.realizedPnl ?? 0,
-      grossProfit: symbolStatsAggregate._sum.grossProfit ?? 0,
-      grossLoss: symbolStatsAggregate._sum.grossLoss ?? 0,
-      feesPaid: symbolStatsAggregate._sum.feesPaid ?? 0,
+      winningTrades: pendingPnlEvent || unresolvedPosition ? null : symbolStatsAggregate._sum.winningTrades ?? 0,
+      losingTrades: pendingPnlEvent || unresolvedPosition ? null : symbolStatsAggregate._sum.losingTrades ?? 0,
+      realizedPnl: pendingPnlEvent || unresolvedPosition ? null : symbolStatsAggregate._sum.realizedPnl ?? 0,
+      grossProfit: pendingPnlEvent || unresolvedPosition ? null : symbolStatsAggregate._sum.grossProfit ?? 0,
+      grossLoss: pendingPnlEvent || unresolvedPosition ? null : symbolStatsAggregate._sum.grossLoss ?? 0,
+      feesPaid: pendingFeeEvent || unresolvedFee ? null : symbolStatsAggregate._sum.feesPaid ?? 0,
       openPositionCount: symbolStatsAggregate._sum.openPositionCount ?? 0,
       openPositionQty: symbolStatsAggregate._sum.openPositionQty ?? 0,
     },

@@ -18,6 +18,34 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+const clearPersistedReconciliationFixtures = async () => {
+  await prisma.trade.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.position.deleteMany();
+  await prisma.signal.deleteMany();
+  await prisma.runtimeExecutionDedupe.deleteMany();
+  await prisma.botRuntimeSymbolStat.deleteMany();
+  await prisma.botRuntimeEvent.deleteMany();
+  await prisma.botRuntimeSession.deleteMany();
+  await prisma.log.deleteMany();
+  await prisma.botStrategy.deleteMany();
+  await prisma.botSubagentConfig.deleteMany();
+  await prisma.botAssistantConfig.deleteMany();
+  await prisma.marketGroupStrategyLink.deleteMany();
+  await prisma.botMarketGroup.deleteMany();
+  await prisma.bot.deleteMany();
+  await prisma.symbolGroup.deleteMany();
+  await prisma.marketUniverse.deleteMany();
+  await prisma.wallet.deleteMany();
+  await prisma.apiKey.deleteMany();
+  await prisma.backtestReport.deleteMany();
+  await prisma.backtestTrade.deleteMany();
+  await prisma.backtestContribution.deleteMany();
+  await prisma.backtestRun.deleteMany();
+  await prisma.strategy.deleteMany();
+  await prisma.user.deleteMany();
+};
+
 describe('LivePositionReconciliationLoop', () => {
   it('updates heartbeat status on run', async () => {
     const loop = new LivePositionReconciliationLoop(
@@ -603,15 +631,22 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
-  it('hydrates owned LIVE automation from fresh exchange-sync truth after creating a managed imported position', async () => {
+  it.each([
+    { name: 'BINANCE create venue routed', exchange: 'BINANCE', supported: true },
+    { name: 'GATEIO create venue routed', exchange: 'GATEIO', supported: true },
+    { name: 'missing create venue blocked', exchange: undefined, supported: false },
+    { name: 'BYBIT create venue blocked', exchange: 'BYBIT', supported: false },
+  ] as const)('$name', async ({ exchange, supported }) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
 
     await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
         {
           id: 'key-live-automation-create-1',
           userId: 'user-live-automation-create-1',
-          exchange: 'BINANCE' as const,
+          ...(exchange === undefined ? {} : { exchange }),
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -647,8 +682,8 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-live-automation-create-1',
         strategyId: 'strategy-live-automation-create-1',
       })),
-      updateSyncedPosition: vi.fn(async () => undefined),
-      createSyncedPosition: vi.fn(async () => undefined),
+      updateSyncedPosition,
+      createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
       markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
@@ -656,24 +691,41 @@ describe('reconcileExternalPositionsFromExchange', () => {
       now: () => new Date('2026-03-23T00:05:01.000Z'),
     });
 
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      symbol: 'DOGEUSDT',
-      markPrice: 0.1069,
-      eventTime: new Date('2026-03-23T00:05:01.000Z'),
-    });
+    expect(createSyncedPosition).toHaveBeenCalledOnce();
+    expect(updateSyncedPosition).not.toHaveBeenCalled();
+    if (supported) {
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: 'DOGEUSDT',
+        markPrice: 0.1069,
+        eventTime: new Date('2026-03-23T00:05:01.000Z'),
+      });
+    } else {
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalled();
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalledWith(
+        expect.objectContaining({ exchange: 'BINANCE' })
+      );
+    }
   });
 
-  it('hydrates owned LIVE automation from fresh exchange-sync truth after updating an existing managed imported position', async () => {
+  it.each([
+    { name: 'BINANCE update venue routed', exchange: 'BINANCE', supported: true },
+    { name: 'GATEIO update venue routed', exchange: 'GATEIO', supported: true },
+    { name: 'missing update venue blocked', exchange: undefined, supported: false },
+    { name: 'BYBIT update venue blocked', exchange: 'BYBIT', supported: false },
+  ] as const)('$name', async ({ exchange, supported }) => {
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
 
     await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
         {
           id: 'key-live-automation-update-1',
           userId: 'user-live-automation-update-1',
-          exchange: 'BINANCE' as const,
+          ...(exchange === undefined ? {} : { exchange }),
           marketType: 'FUTURES' as const,
         },
       ]),
@@ -718,8 +770,8 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-live-automation-update-1',
         strategyId: 'strategy-live-automation-update-1',
       })),
-      updateSyncedPosition: vi.fn(async () => undefined),
-      createSyncedPosition: vi.fn(async () => undefined),
+      updateSyncedPosition,
+      createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
       markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
@@ -727,13 +779,23 @@ describe('reconcileExternalPositionsFromExchange', () => {
       now: () => new Date('2026-03-23T00:06:01.000Z'),
     });
 
-    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      symbol: 'DOGEUSDT',
-      markPrice: 0.1069,
-      eventTime: new Date('2026-03-23T00:06:01.000Z'),
-    });
+    expect(updateSyncedPosition).toHaveBeenCalledOnce();
+    expect(createSyncedPosition).not.toHaveBeenCalled();
+    if (supported) {
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledOnce();
+      expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: 'DOGEUSDT',
+        markPrice: 0.1069,
+        eventTime: new Date('2026-03-23T00:06:01.000Z'),
+      });
+    } else {
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalled();
+      expect(processOwnedSyncedPositionAutomation).not.toHaveBeenCalledWith(
+        expect.objectContaining({ exchange: 'BINANCE' })
+      );
+    }
   });
 
   it('requires repeated missing confirmations before classifying external close', async () => {
@@ -2132,27 +2194,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
 
 describe('livePositionReconciliationDefaultDeps', () => {
   it('lists stale synced positions only for the reconciled market type', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-position-stale-market-scope@example.com', password: 'test-password' },
@@ -2219,27 +2261,7 @@ describe('livePositionReconciliationDefaultDeps', () => {
   });
 
   it('does not update unrelated botless exchange-synced open orders when exchange ids collide', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-order-upsert-owner-scope@example.com', password: 'test-password' },
@@ -2345,46 +2367,25 @@ describe('livePositionReconciliationDefaultDeps', () => {
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
       select: { id: true, botId: true, walletId: true, symbol: true, quantity: true },
     });
-    expect(orders).toHaveLength(2);
-    expect(orders.find((order) => order.id === collidingOrder.id)).toEqual({
+    expect(orders).toHaveLength(1);
+    expect(orders[0]).toEqual({
       id: collidingOrder.id,
       botId: null,
       walletId: null,
       symbol: 'ETHUSDT',
       quantity: 0.2,
     });
-    expect(orders.find((order) => order.id !== collidingOrder.id)).toEqual(
-      expect.objectContaining({
-        botId: bot.id,
-        walletId: wallet.id,
-        symbol: 'BTCUSDT',
-        quantity: 0.01,
-      })
-    );
+    await expect(prisma.order.create({
+      data: {
+        userId: user.id, botId: bot.id, walletId: wallet.id,
+        exchangeOrderId: 'shared-exchange-order', symbol: 'BTCUSDT',
+        side: 'BUY', type: 'LIMIT', status: 'OPEN', quantity: 0.01,
+      },
+    })).rejects.toMatchObject({ code: 'P2002' });
   });
 
   it('moves stale synced open orders out of active open status', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: { email: 'live-order-stale-status@example.com', password: 'test-password' },
@@ -2426,27 +2427,7 @@ describe('livePositionReconciliationDefaultDeps', () => {
 
 describe('resolveCanonicalBotContinuityContext', () => {
   it('resolves strategy from canonical bot market-group links before stale direct bot projection', async () => {
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.user.deleteMany();
+    await clearPersistedReconciliationFixtures();
 
     const user = await prisma.user.create({
       data: {

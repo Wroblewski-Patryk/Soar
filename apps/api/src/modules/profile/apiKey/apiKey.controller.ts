@@ -7,6 +7,10 @@ import { sendError } from '../../../utils/apiError';
 import { ExchangeNotImplementedError } from '../../exchange/exchangeCapabilities';
 
 const mapApiKeyPersistenceError = (error: unknown): { status: number; message: string } => {
+  if (error instanceof Error && (error.message.includes('ApiKey_delegated_claim_mutation_fence') ||
+      error.message.includes('Selected API key has a delegated submission in flight or unresolved'))) {
+    return { status: 409, message: 'API key has a delegated submission in flight or unresolved.' };
+  }
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === 'P2003') {
       return { status: 401, message: 'Session expired. Please sign in again.' };
@@ -84,7 +88,13 @@ export const remove = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
-  const deleted = await apiKeyService.deleteApiKey(userId, req.params.id);
+  let deleted: boolean;
+  try {
+    deleted = await apiKeyService.deleteApiKey(userId, req.params.id);
+  } catch (error) {
+    const mapped = mapApiKeyPersistenceError(error);
+    return sendError(res, mapped.status, mapped.message);
+  }
   if (!deleted) return sendError(res, 404, 'Not found');
   res.status(204).end();
 };
@@ -117,7 +127,13 @@ export const revoke = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
-  const revoked = await apiKeyService.revokeApiKey(userId, req.params.id);
+  let revoked: boolean;
+  try {
+    revoked = await apiKeyService.revokeApiKey(userId, req.params.id);
+  } catch (error) {
+    const mapped = mapApiKeyPersistenceError(error);
+    return sendError(res, mapped.status, mapped.message);
+  }
   if (!revoked) return sendError(res, 404, 'Not found');
 
   return res.status(204).end();

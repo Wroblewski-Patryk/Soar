@@ -228,15 +228,15 @@ const buildSnapshotForApiKey = async (
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
     });
+    const positions = rawPositions.map((position) => normalizeExchangePosition(position, { exchange: apiKey.exchange, marketType }));
     await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: { lastUsed: new Date() },
     });
-
     return {
       source: resolveExchangeAdapterSource(apiKey.exchange, marketType),
       syncedAt: new Date().toISOString(),
-      positions: rawPositions.map(normalizeExchangePosition),
+      positions,
     };
   } catch (error) {
     if (error instanceof ExchangeExecutionCapabilityUnsupportedError) throw error;

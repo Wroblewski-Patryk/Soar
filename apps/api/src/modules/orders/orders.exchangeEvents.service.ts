@@ -1,20 +1,36 @@
-import { OrderStatus, Prisma } from '@prisma/client';
+import { Exchange, Prisma, PrismaClient } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import {
-  NormalizedBinanceAccountUpdateEvent,
   NormalizedBinanceOrderTradeUpdateEvent,
   NormalizedBinanceUserDataStreamEvent,
 } from '../exchange/binanceUserDataStream.types';
 import {
   resolveExchangeConfirmedCloseAttribution,
 } from '../positions/positionCloseAttribution';
-import { applyOrderFillLifecycle } from './orders.lifecycle.service';
-import { computePositionAddUpdate } from './positionFillMath';
+import { applyOrderFillLifecycleInTransaction } from './orders.lifecycle.service';
+import {
+  finalizeExchangeCloseFillInTransaction,
+  finalizeExchangeDcaFillInTransaction,
+} from './orders.exchangeEventFinalization.service';
+import { lockExchangeOrderIdentity } from './orders.exchangeIdentityLock';
+import { applyLiveExchangeAccountUpdateEvent } from
+  './orders.exchangeEvents.accountUpdate.service';
+export { applyLiveExchangeAccountUpdateEvent } from
+  './orders.exchangeEvents.accountUpdate.service';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import { initializeNewLiveBotPositionState } from '../engine/runtimePositionOpeningState.service';
+import { tryRebasePositionManagementProtection } from '../engine/positionManagement.service';
+import { protectionMatchesEvidence, readRuntimeProtectionEvidence } from '../engine/runtimePositionProtectionEvidence.service';
+import { settleRuntimeOrderFee } from '../positions/runtimeOrderFeeSettlement';
+import { settleImportedRuntimeCloseFinancials } from '../positions/importedPositionRuntimeFinancialSettlement';
+import { isMatchingGateFuturesEconomics } from '../exchange/gateFuturesEconomics';
+import { computeCloseRealizedPnl, refreshClosedPositionPnlAfterEntryFee } from './orders.closedPositionFinancialRefresh';
+import { writeRuntimeTelemetryFromExchangeFill } from './orders.runtimeTelemetryFromFill';
 import {
   isExchangeCloseFillComplete,
+  mapExchangeOrderStatus,
   resolveExchangeFeePendingDecision,
   resolveExchangeFeeRefreshDecision,
   resolveExchangeOrderFillProgress,
@@ -25,17 +41,6 @@ const isPositiveFiniteNumber = (value: unknown): value is number =>
 
 const normalizeSymbol = (symbol: string) => symbol.trim().toUpperCase().replace(/[/:]/g, '');
 
-const mapExchangeOrderStatus = (status: string): OrderStatus => {
-  const normalized = status.trim().toUpperCase();
-  if (normalized.includes('PARTIALLY')) return 'PARTIALLY_FILLED';
-  if (normalized.includes('FILLED')) return 'FILLED';
-  if (normalized.includes('CANCELED') || normalized.includes('CANCELLED')) return 'CANCELED';
-  if (normalized.includes('REJECT')) return 'REJECTED';
-  if (normalized.includes('EXPIRE')) return 'EXPIRED';
-  if (normalized.includes('NEW') || normalized.includes('OPEN')) return 'OPEN';
-  return 'OPEN';
-};
-
 const isClosingOrderForPosition = (input: {
   orderSide: 'BUY' | 'SELL';
   positionSide: 'LONG' | 'SHORT';
@@ -43,42 +48,20 @@ const isClosingOrderForPosition = (input: {
   (input.positionSide === 'LONG' && input.orderSide === 'SELL') ||
   (input.positionSide === 'SHORT' && input.orderSide === 'BUY');
 
-const computeCloseRealizedPnl = async (input: {
-  userId: string;
-  positionId: string;
-  positionSide: 'LONG' | 'SHORT';
-  entryPrice: number;
-  closePrice: number;
-  closeQuantity: number;
-  exitFee: number;
-}) => {
-  const entryLegSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-  const entryFeeAggregate = await prisma.trade.aggregate({
-    where: {
-      userId: input.userId,
-      positionId: input.positionId,
-      side: entryLegSide,
-    },
-    _sum: {
-      fee: true,
-    },
-  });
-  const entryFees = entryFeeAggregate._sum.fee ?? 0;
-  const grossPnl =
-    input.positionSide === 'LONG'
-      ? (input.closePrice - input.entryPrice) * input.closeQuantity
-      : (input.entryPrice - input.closePrice) * input.closeQuantity;
-  return grossPnl - entryFees - input.exitFee;
-};
-
 const refreshCloseRealizedPnlForOrder = async (input: {
+  tx: Prisma.TransactionClient;
   userId: string;
   orderId: string;
   exitFee: number;
 }) => {
+  const closeOrder = await input.tx.order.findFirst({
+    where: { id: input.orderId, userId: input.userId },
+    select: { feePending: true },
+  });
+  if (!closeOrder) return;
   if (!Number.isFinite(input.exitFee)) return;
 
-  const closeTrades = await prisma.trade.findMany({
+  const closeTrades = await input.tx.trade.findMany({
     where: {
       userId: input.userId,
       orderId: input.orderId,
@@ -86,10 +69,9 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       positionId: { not: null },
     },
     select: {
-      id: true,
-      positionId: true,
-      price: true,
-      quantity: true,
+      id: true, positionId: true, symbol: true,
+      price: true, quantity: true,
+      fee: true, feeSource: true, feePending: true,
     },
   });
 
@@ -102,41 +84,53 @@ const refreshCloseRealizedPnlForOrder = async (input: {
       continue;
     }
 
-    const position = await prisma.position.findFirst({
+    const position = await input.tx.position.findFirst({
       where: {
-        id: closeTrade.positionId,
-        userId: input.userId,
+        id: closeTrade.positionId, userId: input.userId,
       },
       select: {
-        id: true,
-        side: true,
-        entryPrice: true,
+        id: true, side: true, entryPrice: true, origin: true, contractSize: true,
       },
     });
     if (!position) continue;
 
+    const hasCanonicalImportedCloseFee = position.origin === 'EXCHANGE_SYNC' &&
+      closeTrade.feeSource === 'EXCHANGE_FILL' && !closeTrade.feePending && closeTrade.fee != null && Number.isFinite(closeTrade.fee);
     const realizedPnl = await computeCloseRealizedPnl({
+      tx: input.tx,
       userId: input.userId,
       positionId: position.id,
       positionSide: position.side,
       entryPrice: position.entryPrice,
       closePrice: closeTrade.price,
       closeQuantity: closeTrade.quantity,
-      exitFee: input.exitFee,
+      contractSize: position.contractSize,
+      exitFee: hasCanonicalImportedCloseFee ? closeTrade.fee! : input.exitFee,
+      exitFeePending: hasCanonicalImportedCloseFee ? false : closeOrder.feePending,
+      imported: position.origin === 'EXCHANGE_SYNC',
     });
 
-    await prisma.trade.update({
+    await input.tx.trade.update({
       where: { id: closeTrade.id },
-      data: { realizedPnl },
+      data: { realizedPnl,
+        feePending: (!hasCanonicalImportedCloseFee && closeOrder.feePending) || realizedPnl == null },
     });
-    await prisma.position.update({
+    await input.tx.position.update({
       where: { id: position.id },
       data: { realizedPnl },
     });
+    if (realizedPnl != null && !closeOrder.feePending && closeTrade.fee != null && !closeTrade.feePending &&
+      closeTrades.filter((trade) => trade.positionId === position.id).length === 1) {
+      await settleImportedRuntimeCloseFinancials({
+        tx: input.tx, userId: input.userId, positionId: position.id,
+        symbol: closeTrade.symbol, realizedPnl, exitFees: closeTrade.fee,
+      });
+    }
   }
 };
 
 const ensureOrderFillRecord = async (input: {
+  tx: Prisma.TransactionClient;
   userId: string;
   botId: string | null;
   strategyId: string | null;
@@ -147,26 +141,26 @@ const ensureOrderFillRecord = async (input: {
   exchangeTradeId: string;
   price: number;
   quantity: number;
+  contractSize: number;
   feeCost: number | null;
   feeCurrency: string | null;
   executedAt: Date;
+  venueExecutedAt: Date | null;
   raw: Prisma.InputJsonValue;
+  costEvidence?: Prisma.InputJsonValue;
 }) => {
-  const existing = await prisma.orderFill.findFirst({
+  const existing = await input.tx.orderFill.findFirst({
     where: {
-      orderId: input.orderId,
-      exchangeTradeId: input.exchangeTradeId,
+      orderId: input.orderId, exchangeTradeId: input.exchangeTradeId,
     },
     select: { id: true },
   });
   if (existing) return;
 
-  await prisma.orderFill.create({
+  await input.tx.orderFill.create({
     data: {
-      userId: input.userId,
-      botId: input.botId,
-      strategyId: input.strategyId,
-      orderId: input.orderId,
+      userId: input.userId, botId: input.botId,
+      strategyId: input.strategyId, orderId: input.orderId,
       tradeId: null,
       positionId: input.positionId,
       symbol: input.symbol,
@@ -174,11 +168,13 @@ const ensureOrderFillRecord = async (input: {
       exchangeTradeId: input.exchangeTradeId,
       price: input.price,
       quantity: input.quantity,
-      notional: input.price * input.quantity,
+      notional: input.price * input.quantity * input.contractSize,
+      costEvidence: input.costEvidence ?? Prisma.JsonNull,
       feeCost: input.feeCost,
       feeCurrency: input.feeCurrency,
       feeRate: null,
       executedAt: input.executedAt,
+      venueExecutedAt: input.venueExecutedAt,
       raw: input.raw,
     },
   });
@@ -238,6 +234,7 @@ const resolveRecordableExchangeFillDetails = (input: {
 };
 
 const ensureTradeRecord = async (input: {
+  tx: Prisma.TransactionClient;
   userId: string;
   botId: string | null;
   walletId: string | null;
@@ -262,18 +259,13 @@ const ensureTradeRecord = async (input: {
   closeReason?: 'TP' | 'TTP' | 'SL' | 'TSL' | 'LIQUIDATION' | 'ACCOUNT_FLOOR' | 'MANUAL' | 'SIGNAL_EXIT' | 'POSITION_LIFETIME' | 'EXTERNAL_SYNC_MISSING' | 'SYSTEM_REPAIR' | null;
   closeInitiator?: 'BOT_APP' | 'USER_APP' | 'USER_EXCHANGE' | 'EXCHANGE' | 'SYSTEM_REPAIR' | null;
 }) => {
-  if (input.exchangeTradeId) {
-    const existing = await prisma.trade.findFirst({
-      where: {
-        orderId: input.orderId,
-        exchangeTradeId: input.exchangeTradeId,
-      },
-      select: { id: true },
-    });
-    if (existing) return;
-  }
+  const existing = await input.tx.trade.findFirst({
+    where: { orderId: input.orderId, lifecycleAction: input.lifecycleAction },
+    select: { id: true },
+  });
+  if (existing) return;
 
-  await prisma.trade.create({
+  await input.tx.trade.create({
     data: {
       userId: input.userId,
       botId: input.botId,
@@ -302,82 +294,29 @@ const ensureTradeRecord = async (input: {
   });
 };
 
-const resolveLiveAccountUpdateScope = async (input: {
-  userId: string;
-  symbol: string;
-  side: 'LONG' | 'SHORT';
-  marketType: 'FUTURES' | 'SPOT';
-  sourceApiKeyId: string | null;
-}) => {
-  if (!input.sourceApiKeyId) {
-    console.warn(
-      `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: missing_source_api_key`
-    );
-    return [];
-  }
-
-  const candidates = await prisma.position.findMany({
-    where: {
-      userId: input.userId,
-      symbol: input.symbol,
-      side: input.side,
-      status: 'OPEN',
-      syncState: 'IN_SYNC',
-      OR: [
-        {
-          wallet: {
-            mode: 'LIVE',
-            exchange: 'BINANCE',
-            marketType: input.marketType,
-            apiKeyId: input.sourceApiKeyId,
-          },
-        },
-        {
-          bot: {
-            mode: 'LIVE',
-            exchange: 'BINANCE',
-            marketType: input.marketType,
-            OR: [
-              { apiKeyId: input.sourceApiKeyId },
-              { wallet: { apiKeyId: input.sourceApiKeyId } },
-            ],
-          },
-        },
-      ],
-    },
-    select: {
-      id: true,
-    },
-    orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
-  });
-
-  if (candidates.length <= 1) {
-    return candidates.map((candidate) => candidate.id);
-  }
-
-  console.warn(
-    `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: ambiguous_live_scope candidates=${candidates.length}`
-  );
-  return [];
-};
-
-const syncRuntimeDcaStateFromExchangeFill = async (input: {
+export const syncRuntimeDcaStateFromExchangeFill = async (input: {
   orderId: string;
   positionId: string;
   nextQuantity: number;
   nextEntryPrice: number;
   fillPrice: number;
+  positionSide: 'LONG' | 'SHORT';
+  leverage: number;
 }) => {
   const dedupe = await runtimeExecutionDedupeService.markSucceededByOrderId({
     orderId: input.orderId,
     commandType: 'DCA',
     positionId: input.positionId,
   });
-  if (!dedupe) return;
-
   const previousState =
-    (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
-  const rawLevelIndex = dedupe.commandFingerprint?.dcaLevelIndex;
+    (await runtimePositionStateStore.getTrustedPositionRuntimeState(input.positionId)) ?? null;
+  if (!previousState) return false;
+  const evidence = await readRuntimeProtectionEvidence(input.positionId).catch(() => null);
+  if (!protectionMatchesEvidence(previousState, evidence)) return false;
+  const protection = tryRebasePositionManagementProtection(previousState, input.nextEntryPrice,
+    input.positionSide, input.leverage);
+  if (!protection) return false;
+  const rawLevelIndex = dedupe?.commandFingerprint?.dcaLevelIndex;
   const levelIndex = Number(rawLevelIndex);
   const normalizedLevelIndex = Number.isFinite(levelIndex)
     ? Math.max(0, Math.floor(levelIndex))
@@ -394,7 +333,7 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
               : Array.from({ length: normalizedLevelIndex + 1 }, (_, index) => index)
           ),
         ].sort((left, right) => left - right);
-  await runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
+  return runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
     quantity: input.nextQuantity,
     averageEntryPrice: input.nextEntryPrice,
     currentAdds: Math.max(
@@ -403,19 +342,37 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
     ),
     executedDcaLevelIndices:
       executedDcaLevelIndices.length > 0 ? executedDcaLevelIndices : undefined,
-    trailingAnchorPrice: previousState?.trailingAnchorPrice ?? input.nextEntryPrice,
-    trailingLossLimitPercent: previousState?.trailingLossLimitPercent,
-    trailingTakeProfitHighPercent: previousState?.trailingTakeProfitHighPercent,
-    trailingTakeProfitStepPercent: previousState?.trailingTakeProfitStepPercent,
+    trailingAnchorPrice: protection.trailingAnchorPrice,
+    trailingLossLimitPercent: protection.trailingLossLimitPercent,
+    trailingLossActiveLevelIndex: protection.trailingLossActiveLevelIndex,
+    trailingTakeProfitHighPercent: protection.trailingTakeProfitHighPercent,
+    trailingTakeProfitStepPercent: protection.trailingTakeProfitStepPercent,
+    trailingTakeProfitActiveLevelIndex: protection.trailingTakeProfitActiveLevelIndex,
     lastDcaPrice: input.fillPrice,
   });
 };
 
-export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
+export const invalidateRuntimePositionStateAfterExchangeClose = (positionId: string) =>
+  runtimePositionStateStore.deletePositionRuntimeState(positionId);
+
+type LiveExchangeOrderTradeUpdateInput = {
   userId: string;
   event: NormalizedBinanceOrderTradeUpdateEvent;
-}) => {
-  const existingOrder = await prisma.order.findFirst({
+  sourceApiKeyId?: string | null;
+  sourceExchange?: Exchange;
+  snapshotRecovery?: boolean;
+  fillTimeFromVenue?: boolean;
+  client?: PrismaClient;
+  afterOrderUpdate?: () => Promise<void>;
+  afterCoreCommit?: () => Promise<void>;
+};
+
+export const applyLiveExchangeOrderTradeUpdateInTransaction = async (
+  tx: Prisma.TransactionClient,
+  input: LiveExchangeOrderTradeUpdateInput
+) => {
+  await lockExchangeOrderIdentity(tx, input.userId, input.event.exchangeOrderId);
+  const existingOrder = await tx.order.findFirst({
     where: {
       userId: input.userId,
       exchangeOrderId: input.event.exchangeOrderId,
@@ -425,14 +382,14 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         {
           wallet: {
             mode: 'LIVE',
-            exchange: 'BINANCE',
+            exchange: input.sourceExchange ?? 'BINANCE',
             marketType: input.event.marketType,
           },
         },
         {
           bot: {
             mode: 'LIVE',
-            exchange: 'BINANCE',
+            exchange: input.sourceExchange ?? 'BINANCE',
             marketType: input.event.marketType,
           },
         },
@@ -441,10 +398,14 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     include: {
       position: true,
+      bot: { select: { apiKeyId: true } },
+      wallet: { select: { apiKeyId: true } },
     },
   });
-  if (!existingOrder) {
-    return { status: 'ignored' as const, reason: 'order_not_found' as const };
+  if (!existingOrder) return { status: 'ignored' as const, reason: 'order_not_found' as const };
+  if (input.sourceApiKeyId &&
+      (existingOrder.bot?.apiKeyId ?? existingOrder.wallet?.apiKeyId) !== input.sourceApiKeyId) {
+    return { status: 'ignored' as const, reason: 'account_mismatch' as const };
   }
 
   const nextStatus = mapExchangeOrderStatus(input.event.orderStatus);
@@ -457,6 +418,26 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       : null,
     requestedQuantity: existingOrder.quantity,
   });
+  const gateFutures = input.sourceExchange === 'GATEIO' && input.event.marketType === 'FUTURES';
+  if (gateFutures && !isPositiveFiniteNumber(existingOrder.contractSize)) {
+    throw new Error('GATE_FUTURES_CONTRACT_UNIT_UNAVAILABLE');
+  }
+  if (gateFutures && existingOrder.contractSize !== 1 &&
+      !isMatchingGateFuturesEconomics(existingOrder.gateFuturesEconomics,
+        existingOrder.contractSize ?? NaN, existingOrder.symbol)) {
+    throw new Error('GATE_FUTURES_ECONOMICS_SNAPSHOT_UNAVAILABLE');
+  }
+  if (gateFutures && existingOrder.position &&
+      existingOrder.position.contractSize !== existingOrder.contractSize) {
+    throw new Error('GATE_FUTURES_CONTRACT_UNIT_MISMATCH');
+  }
+  // The fill ledger may record a partial nonunit fill, but terminal lifecycle,
+  // estimated fees and realized PnL still use contract counts as base quantity.
+  if (input.event.marketType === 'FUTURES' &&
+      isPositiveFiniteNumber(existingOrder.contractSize) && existingOrder.contractSize !== 1 &&
+      (fillProgress.persistedStatus === 'FILLED' || existingOrder.status === 'FILLED')) {
+    throw new Error('EXCHANGE_FUTURES_NONUNIT_FINANCIALS_UNSUPPORTED');
+  }
   const cumulativeFilledQuantity = fillProgress.filledQuantity;
   const averageFillPrice =
     isPositiveFiniteNumber(input.event.averagePrice)
@@ -469,6 +450,10 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     ? input.event.lastFilledPrice
     : averageFillPrice;
   const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
+  const eventTimeFromVenue = input.fillTimeFromVenue ??
+    (input.event.transactionTime != null &&
+      Number.isSafeInteger(input.event.transactionTime) &&
+      input.event.transactionTime > 0);
   const eventFee =
     typeof input.event.fee === 'number' && Number.isFinite(input.event.fee)
       ? input.event.fee
@@ -480,12 +465,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     lastFillQuantity,
     fee: eventFee,
   });
-  const recordableLastFillQuantity = recordableFillDetails.quantity;
-  const recordableEventFee = recordableFillDetails.fee;
-  const hasRecordableEventFee =
-    typeof recordableEventFee === 'number' && Number.isFinite(recordableEventFee);
   const existingRecordableEventFill = input.event.exchangeTradeId
-    ? await prisma.orderFill.findFirst({
+    ? await tx.orderFill.findFirst({
         where: {
           orderId: existingOrder.id,
           exchangeTradeId: input.event.exchangeTradeId,
@@ -493,33 +474,72 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         select: { id: true, feeCost: true },
       })
     : null;
+  let recordableLastFillQuantity = recordableFillDetails.quantity;
+  let recordableEventFee = recordableFillDetails.fee;
+  if (
+    !existingRecordableEventFill && !isPositiveFiniteNumber(recordableLastFillQuantity) &&
+    existingOrder.status === 'FILLED' &&
+    (existingOrder.exchangeTradeId === input.event.exchangeTradeId || input.snapshotRecovery === true) &&
+    isPositiveFiniteNumber(lastFillQuantity)
+  ) {
+    const priorFills = await tx.orderFill.aggregate({
+      where: { orderId: existingOrder.id }, _sum: { quantity: true },
+    });
+    const remaining = Math.max(0, cumulativeFilledQuantity - (priorFills._sum.quantity ?? 0));
+    const recoveredQuantity = Math.min(lastFillQuantity, remaining);
+    if (isPositiveFiniteNumber(recoveredQuantity)) {
+      recordableLastFillQuantity = recoveredQuantity;
+      recordableEventFee = eventFee == null
+        ? null : eventFee * (recoveredQuantity / lastFillQuantity);
+    }
+  }
+  const unresolvedSyntheticFillCandidates =
+    !existingRecordableEventFill && !isPositiveFiniteNumber(recordableLastFillQuantity) &&
+    existingOrder.status === 'FILLED' && input.event.exchangeTradeId &&
+    isPositiveFiniteNumber(lastFillQuantity) && isPositiveFiniteNumber(lastFillPrice) &&
+    eventFee != null
+      ? await tx.orderFill.findMany({
+          where: {
+            orderId: existingOrder.id,
+            exchangeTradeId: { startsWith: 'soar-fill-' },
+          },
+          select: { id: true, feeCost: true, price: true, quantity: true },
+        })
+      : [];
+  const matchingSyntheticFills = unresolvedSyntheticFillCandidates.filter((fill) =>
+    Math.abs(fill.price - (lastFillPrice ?? 0)) <= 1e-9 * Math.max(1, fill.price) &&
+    Math.abs(fill.quantity - (lastFillQuantity ?? 0)) <= 1e-9 * Math.max(1, fill.quantity)
+  );
+  const feeBackfillFill = existingRecordableEventFill ??
+    (matchingSyntheticFills.length === 1 && matchingSyntheticFills[0].feeCost == null
+      ? matchingSyntheticFills[0] : null);
+  const hasRecordableEventFee =
+    typeof recordableEventFee === 'number' && Number.isFinite(recordableEventFee);
   const existingRecordableEventFillHasFee =
-    typeof existingRecordableEventFill?.feeCost === 'number' &&
-    Number.isFinite(existingRecordableEventFill.feeCost);
-  const unresolvedExistingFillFee = await prisma.orderFill.findFirst({
+    typeof feeBackfillFill?.feeCost === 'number' &&
+    Number.isFinite(feeBackfillFill.feeCost);
+  const unresolvedExistingFillFee = await tx.orderFill.findFirst({
     where: {
       orderId: existingOrder.id,
       feeCost: null,
-      ...(input.event.exchangeTradeId
-        ? { NOT: { exchangeTradeId: input.event.exchangeTradeId } }
-        : {}),
+      ...(feeBackfillFill ? { id: { not: feeBackfillFill.id } } : {}),
     },
     select: { id: true },
   });
   const existingFillFeeAggregate = hasRecordableEventFee
-    ? await prisma.orderFill.aggregate({
+    ? await tx.orderFill.aggregate({
         where: { orderId: existingOrder.id },
         _sum: { feeCost: true },
       })
     : null;
   const aggregateRecordableEventFee = hasRecordableEventFee
     ? (existingFillFeeAggregate?._sum.feeCost ?? 0) +
-      (existingRecordableEventFillHasFee ? 0 : recordableEventFee)
+      (existingRecordableEventFillHasFee ? 0 : (recordableEventFee ?? 0))
     : null;
   const feeRefreshDecision = resolveExchangeFeeRefreshDecision({
     shouldRefreshTerminalFillDetails: fillProgress.shouldRefreshTerminalFillDetails,
     hasRecordableEventFee,
-    hasExistingRecordableEventFill: existingRecordableEventFill != null,
+    hasExistingRecordableEventFill: feeBackfillFill != null,
     existingRecordableEventFillHasFee,
   });
   const hasSettledExchangeFee =
@@ -540,7 +560,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   });
   const fee = aggregateRecordableEventFee ?? existingOrder.fee;
 
-  let updatedOrder = await prisma.order.update({
+  let updatedOrder = await tx.order.update({
     where: { id: existingOrder.id },
     data: {
       status: fillProgress.persistedStatus,
@@ -570,12 +590,15 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     },
   });
 
+  await input.afterOrderUpdate?.();
+
   if (
     input.event.exchangeTradeId &&
     isPositiveFiniteNumber(recordableLastFillQuantity) &&
     isPositiveFiniteNumber(lastFillPrice)
   ) {
     await ensureOrderFillRecord({
+      tx,
       userId: input.userId,
       botId: updatedOrder.botId,
       strategyId: updatedOrder.strategyId,
@@ -586,25 +609,28 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       exchangeTradeId: input.event.exchangeTradeId,
       price: lastFillPrice,
       quantity: recordableLastFillQuantity,
+      contractSize: input.event.marketType === 'SPOT' ? 1 : existingOrder.contractSize ?? 1,
       feeCost: recordableEventFee,
       feeCurrency: input.event.feeCurrency,
       executedAt: eventAt,
+      venueExecutedAt: eventTimeFromVenue ? eventAt : null,
       raw: input.event.raw as Prisma.InputJsonValue,
+      costEvidence: input.event.fillCostEvidence as Prisma.InputJsonValue | undefined,
     });
   }
 
   if (
-    existingRecordableEventFill &&
+    feeBackfillFill &&
     feeRefreshDecision.shouldBackfillExistingFillFee
   ) {
-    await prisma.orderFill.update({
-      where: { id: existingRecordableEventFill.id },
+    await tx.orderFill.update({
+      where: { id: feeBackfillFill.id },
       data: {
         feeCost: recordableEventFee,
         feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
       },
     });
-    await prisma.trade.updateMany({
+    await tx.trade.updateMany({
       where: {
         orderId: updatedOrder.id,
         OR: [
@@ -622,6 +648,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     });
     if (typeof fee === 'number' && Number.isFinite(fee)) {
       await refreshCloseRealizedPnlForOrder({
+        tx,
         userId: input.userId,
         orderId: updatedOrder.id,
         exitFee: fee,
@@ -630,7 +657,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   }
 
   if (feePendingDecision.shouldKeepFeePending) {
-    await prisma.trade.updateMany({
+    await tx.trade.updateMany({
       where: {
         orderId: updatedOrder.id,
         feeSource: 'ESTIMATED',
@@ -640,8 +667,31 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     });
   }
 
+  const existingLifecycleTrade = await tx.trade.findFirst({
+    where: { orderId: updatedOrder.id, lifecycleAction: { in: ['OPEN', 'DCA', 'CLOSE'] } },
+    select: { lifecycleAction: true, price: true },
+  });
+  let openedPositionId: string | null = null;
+  let dcaSync: {
+    orderId: string; positionId: string; nextQuantity: number;
+    nextEntryPrice: number; fillPrice: number; positionSide: 'LONG' | 'SHORT';
+    leverage: number;
+  } | null = existingLifecycleTrade?.lifecycleAction === 'DCA' && updatedOrder.position
+    ? {
+        orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+        nextQuantity: updatedOrder.position.quantity,
+        nextEntryPrice: updatedOrder.position.entryPrice,
+        fillPrice: existingLifecycleTrade.price,
+        positionSide: updatedOrder.position.side,
+        leverage: updatedOrder.position.leverage,
+      }
+    : null;
   if (
-    fillProgress.shouldApplyFilledLifecycle &&
+    !existingLifecycleTrade &&
+    (fillProgress.shouldApplyFilledLifecycle ||
+      (existingOrder.status === 'FILLED' && nextStatus === 'FILLED' &&
+        input.event.exchangeTradeId != null &&
+        (existingOrder.exchangeTradeId === input.event.exchangeTradeId || input.snapshotRecovery === true))) &&
     isPositiveFiniteNumber(averageFillPrice) &&
     isPositiveFiniteNumber(cumulativeFilledQuantity)
   ) {
@@ -675,128 +725,109 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           orderCloseInitiator: updatedOrder.closeInitiator,
           executionType: input.event.executionType,
         });
-        const exitFee = typeof fee === 'number' && Number.isFinite(fee) ? fee : 0;
-        const realizedPnl = await computeCloseRealizedPnl({
-          userId: input.userId,
-          positionId: updatedOrder.position.id,
-          positionSide: updatedOrder.position.side,
-          entryPrice: updatedOrder.position.entryPrice,
-          closePrice: averageFillPrice,
-          closeQuantity: cumulativeFilledQuantity,
-          exitFee,
-        });
-        await prisma.position.update({
-          where: { id: updatedOrder.position.id },
-          data: {
-            status: 'CLOSED',
-            closedAt: eventAt,
-            syncState: 'ORPHAN_LOCAL',
-            continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
-            realizedPnl,
-            unrealizedPnl: 0,
-            closeReason: closeAttribution.closeReason,
-            closeInitiator: closeAttribution.closeInitiator,
-          },
-        });
-        await ensureTradeRecord({
-          userId: input.userId,
-          botId: updatedOrder.botId,
-          walletId: updatedOrder.walletId,
-          strategyId: updatedOrder.strategyId,
-          orderId: updatedOrder.id,
-          positionId: updatedOrder.position.id,
-          symbol: updatedOrder.symbol,
-          side: updatedOrder.side,
-          price: averageFillPrice,
-          quantity: cumulativeFilledQuantity,
-          fee: typeof fee === 'number' ? fee : null,
-          feeSource: updatedOrder.feeSource,
-          feePending: updatedOrder.feePending,
-          feeCurrency: updatedOrder.feeCurrency,
-          effectiveFeeRate: updatedOrder.effectiveFeeRate,
-          exchangeTradeId: input.event.exchangeTradeId ?? null,
-          lifecycleAction: 'CLOSE',
-          managementMode: updatedOrder.managementMode,
-          origin: updatedOrder.origin,
-          executionMode: 'LIVE',
-          realizedPnl,
+        await finalizeExchangeCloseFillInTransaction(tx, {
+          userId: input.userId, orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+          fillPrice: averageFillPrice, fillQuantity: cumulativeFilledQuantity,
+          exchangeTradeId: input.event.exchangeTradeId ?? null, eventAt,
+          fillTimeFromVenue: eventTimeFromVenue,
+          requiresAccountConfirmation: input.event.marketType === 'FUTURES' &&
+            (input.sourceExchange ?? 'BINANCE') === 'BINANCE',
           closeReason: closeAttribution.closeReason,
           closeInitiator: closeAttribution.closeInitiator,
         });
       } else {
-        const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
-          currentQuantity: updatedOrder.position.quantity,
-          currentEntryPrice: updatedOrder.position.entryPrice,
-          addedQuantity: cumulativeFilledQuantity,
-          fillPrice: averageFillPrice,
-        });
-        await prisma.position.update({
-          where: { id: updatedOrder.position.id },
-          data: {
-            quantity: nextQuantity,
-            entryPrice: nextEntryPrice,
-            lastExchangeSeenAt: eventAt,
-            lastExchangeSyncAt: eventAt,
-            missingSince: null,
-            missingSyncCount: 0,
-            continuityState: 'CONFIRMED',
-          },
-        });
-        await ensureTradeRecord({
-          userId: input.userId,
-          botId: updatedOrder.botId,
-          walletId: updatedOrder.walletId,
-          strategyId: updatedOrder.strategyId,
-          orderId: updatedOrder.id,
-          positionId: updatedOrder.position.id,
-          symbol: updatedOrder.symbol,
-          side: updatedOrder.side,
-          price: averageFillPrice,
-          quantity: cumulativeFilledQuantity,
-          fee: typeof fee === 'number' ? fee : null,
-          feeSource: updatedOrder.feeSource,
-          feePending: updatedOrder.feePending,
-          feeCurrency: updatedOrder.feeCurrency,
-          effectiveFeeRate: updatedOrder.effectiveFeeRate,
-          exchangeTradeId: input.event.exchangeTradeId ?? null,
-          lifecycleAction: 'DCA',
-          managementMode: updatedOrder.managementMode,
-          origin: updatedOrder.origin,
-          executionMode: 'LIVE',
-          realizedPnl: 0,
-        });
-        await syncRuntimeDcaStateFromExchangeFill({
-          orderId: updatedOrder.id,
-          positionId: updatedOrder.position.id,
-          nextQuantity,
-          nextEntryPrice,
-          fillPrice: averageFillPrice,
-        });
+        const isRecoveredOpen = existingOrder.status === 'FILLED' &&
+          updatedOrder.position.openedAt.getTime() === updatedOrder.filledAt?.getTime() &&
+          Math.abs(updatedOrder.position.quantity - cumulativeFilledQuantity) <= 1e-9 &&
+          await tx.trade.count({ where: { positionId: updatedOrder.position.id } }) === 0;
+        if (isRecoveredOpen) {
+          await ensureTradeRecord({
+            tx, userId: input.userId, botId: updatedOrder.botId,
+            walletId: updatedOrder.walletId, strategyId: updatedOrder.strategyId,
+            orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+            symbol: updatedOrder.symbol, side: updatedOrder.side,
+            price: averageFillPrice, quantity: cumulativeFilledQuantity,
+            fee: typeof fee === 'number' ? fee : null,
+            feeSource: updatedOrder.feeSource, feePending: updatedOrder.feePending,
+            feeCurrency: updatedOrder.feeCurrency,
+            effectiveFeeRate: updatedOrder.effectiveFeeRate,
+            exchangeTradeId: input.event.exchangeTradeId ?? null,
+            lifecycleAction: 'OPEN', managementMode: updatedOrder.managementMode,
+            origin: updatedOrder.origin, executionMode: 'LIVE', realizedPnl: 0,
+          });
+        } else {
+          const { nextQuantity, nextEntryPrice } = await finalizeExchangeDcaFillInTransaction(tx, {
+            userId: input.userId, orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+            fillPrice: averageFillPrice, fillQuantity: cumulativeFilledQuantity,
+            exchangeTradeId: input.event.exchangeTradeId ?? null, eventAt,
+            fillTimeFromVenue: eventTimeFromVenue,
+            requiresAccountConfirmation: input.event.marketType === 'FUTURES' &&
+              (input.sourceExchange ?? 'BINANCE') === 'BINANCE',
+          });
+          dcaSync = {
+            orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+            nextQuantity, nextEntryPrice, fillPrice: averageFillPrice,
+            positionSide: updatedOrder.position.side,
+            leverage: updatedOrder.position.leverage,
+          };
+        }
       }
-      updatedOrder = await prisma.order.findUniqueOrThrow({
+      updatedOrder = await tx.order.findUniqueOrThrow({
         where: { id: updatedOrder.id },
         include: { position: true },
       });
-    } else {
-      const lifecycleResult = await applyOrderFillLifecycle({
+    } else if (
+      updatedOrder.positionId && updatedOrder.position?.status === 'CLOSED' &&
+      existingOrder.status === 'FILLED' &&
+      typeof updatedOrder.position.realizedPnl === 'number' &&
+      Number.isFinite(updatedOrder.position.realizedPnl) &&
+      updatedOrder.position.closedAt?.getTime() === updatedOrder.filledAt?.getTime() &&
+      isClosingOrderForPosition({
+        orderSide: updatedOrder.side, positionSide: updatedOrder.position.side,
+      })
+    ) {
+      await ensureTradeRecord({
+        tx, userId: input.userId, botId: updatedOrder.botId,
+        walletId: updatedOrder.walletId, strategyId: updatedOrder.strategyId,
+        orderId: updatedOrder.id, positionId: updatedOrder.position.id,
+        symbol: updatedOrder.symbol, side: updatedOrder.side,
+        price: averageFillPrice, quantity: cumulativeFilledQuantity,
+        fee: typeof fee === 'number' ? fee : null,
+        feeSource: updatedOrder.feeSource, feePending: updatedOrder.feePending,
+        feeCurrency: updatedOrder.feeCurrency,
+        effectiveFeeRate: updatedOrder.effectiveFeeRate,
+        exchangeTradeId: input.event.exchangeTradeId ?? null,
+        lifecycleAction: 'CLOSE', managementMode: updatedOrder.managementMode,
+        origin: updatedOrder.origin, executionMode: 'LIVE',
+        realizedPnl: updatedOrder.position.realizedPnl ?? undefined,
+        closeReason: updatedOrder.position.closeReason,
+        closeInitiator: updatedOrder.position.closeInitiator,
+      });
+    } else if (!updatedOrder.positionId) {
+      const lifecycleResult = await applyOrderFillLifecycleInTransaction(tx, {
         userId: input.userId,
         orderId: updatedOrder.id,
+        mode: 'LIVE',
         fillPrice: averageFillPrice,
         fillQuantity: cumulativeFilledQuantity,
         filledAt: eventAt,
       });
+      if (lifecycleResult && 'createdPosition' in lifecycleResult &&
+          lifecycleResult.createdPosition && updatedOrder.origin === 'BOT') {
+        openedPositionId = lifecycleResult.positionId;
+      }
       if (feePendingDecision.shouldKeepFeePending) {
-        await prisma.order.update({
+        await tx.order.update({
           where: { id: updatedOrder.id },
           data: { feePending: true },
         });
       }
-      updatedOrder = await prisma.order.findUniqueOrThrow({
+      updatedOrder = await tx.order.findUniqueOrThrow({
         where: { id: updatedOrder.id },
         include: { position: true },
       });
       if (lifecycleResult?.positionId) {
-        await prisma.orderFill.updateMany({
+        await tx.orderFill.updateMany({
           where: {
             orderId: updatedOrder.id,
             positionId: null,
@@ -806,6 +837,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           },
         });
         await ensureTradeRecord({
+          tx,
           userId: input.userId,
           botId: updatedOrder.botId,
           walletId: updatedOrder.walletId,
@@ -832,84 +864,57 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     }
   }
 
+  await settleRuntimeOrderFee({ tx, userId: input.userId, orderId: updatedOrder.id });
+  await refreshClosedPositionPnlAfterEntryFee({ tx, userId: input.userId, orderId: updatedOrder.id });
+  await writeRuntimeTelemetryFromExchangeFill({ tx, userId: input.userId,
+    orderId: updatedOrder.id, eventAt });
+  const finalPosition = updatedOrder.status === 'FILLED' && updatedOrder.positionId
+    ? await tx.position.findUnique({ where: { id: updatedOrder.positionId },
+        select: { status: true } })
+    : null;
   return {
     status: 'applied' as const,
     orderId: updatedOrder.id,
     positionId: updatedOrder.positionId ?? null,
     orderStatus: updatedOrder.status,
+    dcaSync,
+    openedPositionId,
+    closedPositionId: finalPosition?.status === 'CLOSED' ? updatedOrder.positionId : null,
   };
 };
 
-export const applyLiveExchangeAccountUpdateEvent = async (input: {
-  userId: string;
-  sourceApiKeyId?: string | null;
-  event: NormalizedBinanceAccountUpdateEvent;
-}) => {
-  let updatedPositions = 0;
-  const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
-  for (const position of input.event.positions) {
-    const normalizedSymbol = normalizeSymbol(position.symbol);
-    if (!normalizedSymbol) continue;
-    const side =
-      position.positionSide === 'LONG' || position.positionSide === 'SHORT'
-        ? position.positionSide
-        : position.amount != null && position.amount < 0
-          ? 'SHORT'
-          : 'LONG';
-    const quantity =
-      typeof position.amount === 'number' && Number.isFinite(position.amount)
-        ? Math.abs(position.amount)
-        : null;
-    const scopedPositionIds = await resolveLiveAccountUpdateScope({
-      userId: input.userId,
-      symbol: normalizedSymbol,
-      side,
-      marketType: input.event.marketType,
-      sourceApiKeyId: input.sourceApiKeyId ?? null,
-    });
-    if (scopedPositionIds.length === 0) continue;
-    if (quantity === 0) {
-      const result = await prisma.position.updateMany({
-        where: {
-          id: { in: scopedPositionIds },
-        },
-        data: {
-          syncState: 'DRIFT',
-          continuityState: 'RECOVERING',
-          unrealizedPnl: 0,
-          missingSince: eventAt,
-          lastExchangeSeenAt: eventAt,
-          lastExchangeSyncAt: eventAt,
-          missingSyncCount: { increment: 1 },
-        },
-      });
-      updatedPositions += result.count;
-      continue;
-    }
-    const result = await prisma.position.updateMany({
-      where: {
-        id: { in: scopedPositionIds },
-      },
-      data: {
-        ...(typeof quantity === 'number' ? { quantity } : {}),
-        ...(typeof position.entryPrice === 'number' ? { entryPrice: position.entryPrice } : {}),
-        ...(typeof position.unrealizedPnl === 'number'
-          ? { unrealizedPnl: position.unrealizedPnl }
-          : {}),
-        lastExchangeSeenAt: eventAt,
-        lastExchangeSyncAt: eventAt,
-        missingSince: null,
-        missingSyncCount: 0,
-        continuityState: 'CONFIRMED',
-      },
-    });
-    updatedPositions += result.count;
-  }
+export const applyLiveExchangeOrderTradeUpdateEvent = async (input: LiveExchangeOrderTradeUpdateInput) => {
+  const processed = await (input.client ?? prisma).$transaction(
+    (tx) => applyLiveExchangeOrderTradeUpdateInTransaction(tx, input),
+    { timeout: 30_000, maxWait: 10_000 }
+  );
 
-  return {
-    status: 'applied' as const,
-    updatedPositions,
-  };
+  await input.afterCoreCommit?.();
+  if (processed.status === 'applied' && processed.orderStatus === 'FILLED') {
+    if ('dcaSync' in processed && processed.dcaSync) {
+      if (!await syncRuntimeDcaStateFromExchangeFill(processed.dcaSync)) {
+        throw new Error('RUNTIME_STATE_SYNC_PENDING');
+      }
+    } else {
+      if ('openedPositionId' in processed && processed.openedPositionId &&
+          !await initializeNewLiveBotPositionState({ userId: input.userId,
+            positionId: processed.openedPositionId })) {
+        throw new Error('RUNTIME_STATE_SYNC_PENDING');
+      }
+      if ('closedPositionId' in processed && processed.closedPositionId) {
+        await invalidateRuntimePositionStateAfterExchangeClose(processed.closedPositionId);
+      }
+      await runtimeExecutionDedupeService.markSucceededByOrderId({
+        orderId: processed.orderId, positionId: processed.positionId,
+      });
+    }
+  }
+  if ('dcaSync' in processed) {
+    const { dcaSync: _dcaSync, openedPositionId: _openedPositionId,
+      closedPositionId: _closedPositionId, ...result } = processed;
+    return result;
+  }
+  return processed;
 };
 
 export const applyLiveExchangeUserDataStreamEvent = async (input: {
@@ -920,6 +925,7 @@ export const applyLiveExchangeUserDataStreamEvent = async (input: {
   if (input.event.eventType === 'ORDER_TRADE_UPDATE') {
     return applyLiveExchangeOrderTradeUpdateEvent({
       userId: input.userId,
+      sourceApiKeyId: input.sourceApiKeyId,
       event: input.event,
     });
   }

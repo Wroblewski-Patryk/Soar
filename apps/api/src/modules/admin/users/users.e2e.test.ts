@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../index';
 import { prisma } from '../../../prisma/client';
 import { ensureSubscriptionCatalog } from '../../subscriptions/subscriptions.service';
+import { signAuthToken } from '../../auth/auth.jwt';
 
 const createAgent = async (role: 'USER' | 'ADMIN' = 'USER') => {
   const email = `admin-users-${role.toLowerCase()}-${Date.now()}-${Math.random()}@example.com`;
@@ -69,9 +70,7 @@ describe('Admin users API', () => {
           id: regular.user.id,
           email: regular.user.email,
           role: 'USER',
-          activeSubscription: expect.objectContaining({
-            planCode: 'FREE',
-          }),
+          activeSubscription: null,
         }),
       ]),
     );
@@ -86,6 +85,11 @@ describe('Admin users API', () => {
     });
     expect(promoteRes.status).toBe(200);
     expect(promoteRes.body.role).toBe('ADMIN');
+    const roleAudit = await prisma.log.findFirstOrThrow({
+      where: { userId: regular.user.id, action: 'admin.user.role_changed' },
+    });
+    expect(roleAudit.actor).toBe(admin.user.id);
+    expect(roleAudit.metadata).toMatchObject({ fromRole: 'USER', toRole: 'ADMIN' });
 
     const assignPlanRes = await admin.agent.patch(`/admin/users/${regular.user.id}`).send({
       subscriptionPlanCode: 'ADVANCED',
@@ -93,6 +97,82 @@ describe('Admin users API', () => {
     expect(assignPlanRes.status).toBe(200);
     expect(assignPlanRes.body.activeSubscription.planCode).toBe('ADVANCED');
     expect(assignPlanRes.body.activeSubscription.source).toBe('ADMIN_OVERRIDE');
+    const planAudit = await prisma.log.findFirstOrThrow({
+      where: { userId: regular.user.id, action: 'admin.user.plan_assigned' },
+    });
+    expect(planAudit.actor).toBe(admin.user.id);
+    expect(planAudit.metadata).toMatchObject({
+      fromPlanCode: null,
+      toPlanCode: 'ADVANCED',
+      toSource: 'ADMIN_OVERRIDE',
+    });
+  });
+
+  it('rejects role and plan writes from a regular user and a relocated legacy admin token', async () => {
+    const admin = await createAgent('ADMIN');
+    const regular = await createAgent('USER');
+    const target = await createAgent('USER');
+
+    const userWrite = await regular.agent.patch(`/admin/users/${target.user.id}`).send({
+      subscriptionPlanCode: 'ADVANCED',
+    });
+    expect(userWrite.status).toBe(403);
+
+    const adminRow = await prisma.user.findUniqueOrThrow({
+      where: { id: admin.user.id },
+      select: { sessionVersion: true },
+    });
+    const token = signAuthToken({
+      userId: admin.user.id,
+      email: admin.user.email,
+      role: 'ADMIN',
+      sessionVersion: adminRow.sessionVersion,
+    }, '1h');
+    for (const payload of [{ role: 'ADMIN' }, { subscriptionPlanCode: 'ADVANCED' }]) {
+      const externalWrite = await request(app)
+        .patch(`/admin/users/${target.user.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(payload);
+      expect(externalWrite.status).toBe(403);
+      const relocatedWrite = await request(app)
+        .patch(`/admin/users/${target.user.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', [`token=${token}`])
+        .send(payload);
+      expect(relocatedWrite.status).toBe(403);
+      const legacyCookieWrite = await request(app)
+        .patch(`/admin/users/${target.user.id}`)
+        .set('Cookie', [`token=${token}`])
+        .send(payload);
+      expect(legacyCookieWrite.status).toBe(401);
+    }
+    const humanLogin = await request(app).post('/auth/login').send({
+      email: admin.user.email, password: 'AdminUsers12#$',
+    });
+    expect(humanLogin.status).toBe(200);
+    const humanCookie = humanLogin.headers['set-cookie']?.[0] ?? '';
+    const humanToken = /^token=([^;]+)/.exec(humanCookie)?.[1];
+    expect(humanToken).toBeTruthy();
+    const mixedTransport = await request(app)
+      .patch(`/admin/users/${target.user.id}`)
+      .set('Authorization', `Bearer ${humanToken}`)
+      .set('Cookie', [humanCookie])
+      .send({ role: 'ADMIN' });
+    expect(mixedTransport.status).toBe(403);
+    expect(await prisma.userSubscription.count({ where: { userId: target.user.id } })).toBe(0);
+    const targetAfter = await prisma.user.findUniqueOrThrow({ where: { id: target.user.id } });
+    expect(targetAfter.role).toBe('USER');
+  });
+
+  it('rejects a cross-origin admin mutation under the current cookie CSRF guard', async () => {
+    const admin = await createAgent('ADMIN');
+    const target = await createAgent('USER');
+    const response = await admin.agent
+      .patch(`/admin/users/${target.user.id}`)
+      .set('Origin', 'https://untrusted.example')
+      .send({ role: 'ADMIN' });
+    expect(response.status).toBe(403);
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: target.user.id } })).role).toBe('USER');
   });
 
   it('blocks self demotion', async () => {

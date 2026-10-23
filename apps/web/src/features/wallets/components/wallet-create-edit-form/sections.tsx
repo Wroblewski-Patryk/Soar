@@ -147,7 +147,8 @@ export function WalletBasicsSection({
           error={showValidation ? fieldErrors.baseCurrency : undefined}
           hint={walletMetadataLoading ? walletText('baseCurrencyLoading') : undefined}
         />
-        {walletMetadataError ? <p className='text-xs text-warning md:col-span-2 xl:col-span-3'>{walletMetadataError}</p> : null}
+        {walletMetadataLoading ? <span className='sr-only' role='status'>{walletText('baseCurrencyLoading')}</span> : null}
+        {walletMetadataError ? <p role='alert' className='text-xs text-warning md:col-span-2 xl:col-span-3'>{walletMetadataError}</p> : null}
       </FormGrid>
     </FormSectionCard>
   );

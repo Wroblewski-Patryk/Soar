@@ -1,7 +1,22 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { I18nProvider } from "./I18nProvider";
+import { renderToString } from "react-dom/server";
+import { useEffect } from "react";
+import { I18nProvider, useI18n } from "./I18nProvider";
 import LanguageSwitcher from "../ui/layout/dashboard/LanguageSwitcher";
+
+function LocaleProbe() {
+  const { locale } = useI18n();
+  return <span data-testid="locale-probe">{locale}</span>;
+}
+
+function ProfileTimeZoneProbe() {
+  const { timeZonePreference, setTimeZonePreference } = useI18n();
+  useEffect(() => {
+    setTimeZonePreference("UTC");
+  }, [setTimeZonePreference]);
+  return <span data-testid="timezone-probe">{timeZonePreference}</span>;
+}
 
 describe("I18nProvider", () => {
   afterEach(() => {
@@ -71,5 +86,36 @@ describe("I18nProvider", () => {
     );
 
     expect(actWarnings).toHaveLength(0);
+  });
+
+  it("renders the same initial locale before and after client storage becomes available", async () => {
+    window.localStorage.setItem("cryptosparrow-locale", "pl");
+
+    const serverMarkup = renderToString(
+      <I18nProvider>
+        <LocaleProbe />
+      </I18nProvider>
+    );
+    expect(serverMarkup).toContain(">en</span>");
+
+    render(
+      <I18nProvider>
+        <LocaleProbe />
+      </I18nProvider>
+    );
+    await waitFor(() => expect(screen.getByTestId("locale-probe")).toHaveTextContent("pl"));
+  });
+
+  it("preserves a child profile preference set before storage hydration", async () => {
+    window.localStorage.setItem("cryptosparrow-timezone", "Europe/Warsaw");
+    render(
+      <I18nProvider>
+        <ProfileTimeZoneProbe />
+      </I18nProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId("timezone-probe")).toHaveTextContent("UTC");
+      expect(window.localStorage.getItem("cryptosparrow-timezone")).toBe("UTC");
+    });
   });
 });

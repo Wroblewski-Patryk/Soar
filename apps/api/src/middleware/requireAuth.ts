@@ -25,6 +25,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   }
 
   const verifiedCandidates = getVerifiedAuthTokenCandidates(req);
+  let legacyCookieSeen = false;
 
   for (const candidate of verifiedCandidates) {
     let userExists: { id: string; email: string; role: 'USER' | 'ADMIN'; sessionVersion: number } | null = null;
@@ -47,15 +48,22 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       continue;
     }
 
+    if (candidate.source === 'cookie' && candidate.kind === 'legacy') {
+      legacyCookieSeen = true;
+      continue;
+    }
+
     req.user = {
       id: userExists.id,
       email: userExists.email,
       role: userExists.role,
     };
+    req.authSource = candidate.source;
+    req.authKind = candidate.kind;
 
     return next();
   }
 
   clearSession();
-  return sendError(res, 401, 'Invalid token');
+  return sendError(res, 401, legacyCookieSeen ? 'Session expired. Please sign in again.' : 'Invalid token');
 }

@@ -22,13 +22,23 @@ RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
 
 FROM node:20-bookworm-slim AS runtime
+ARG SOURCE_COMMIT
+RUN [ "${#SOURCE_COMMIT}" -eq 40 ] && case "$SOURCE_COMMIT" in *[!0123456789abcdef]*) false ;; *) true ;; esac || { echo 'SOURCE_COMMIT must be a full lowercase 40-character git SHA' >&2; exit 1; }
+LABEL org.opencontainers.image.revision="${SOURCE_COMMIT}"
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=768"
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
-COPY --from=build --chown=node:node /app/apps/api /app/apps/api
+COPY --from=build --chown=node:node /app/apps/api/package.json /app/apps/api/
+COPY --from=build --chown=node:node /app/apps/api/node_modules /app/apps/api/node_modules
+COPY --from=build --chown=node:node /app/apps/api/dist /app/apps/api/dist
+COPY --from=build --chown=node:node /app/apps/api/prisma/schema.prisma /app/apps/api/prisma/schema.prisma
+COPY --from=build --chown=node:node /app/apps/api/prisma/migrations /app/apps/api/prisma/migrations
+COPY --from=build --chown=node:node /app/apps/api/scripts/start-with-migrate.mjs /app/apps/api/scripts/start-with-migrate.mjs
+COPY --from=build --chown=node:node /app/apps/api/public/avatars/default.png /app/apps/api/public/avatars/default.png
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
 RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars && chown -R node:node /app
 

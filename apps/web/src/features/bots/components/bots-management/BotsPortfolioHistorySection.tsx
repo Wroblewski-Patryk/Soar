@@ -80,8 +80,8 @@ export function BotsPortfolioHistorySection({
             </div>
             <div className="rounded-md border border-base-300 bg-base-200 px-3 py-2 text-sm">
               <span className="block text-xs opacity-65">{t("dashboard.bots.monitoring.realizedPnlLabel")}</span>
-              <span className={`font-semibold ${history.summary.realizedPnl >= 0 ? "text-success" : "text-error"}`}>
-                {formatCurrency(history.summary.realizedPnl)}
+              <span className={`font-semibold ${history.summary.realizedPnl == null ? "" : history.summary.realizedPnl >= 0 ? "text-success" : "text-error"}`}>
+                {history.summary.realizedPnl == null ? "-" : formatCurrency(history.summary.realizedPnl)}
               </span>
             </div>
             <div className="rounded-md border border-base-300 bg-base-200 px-3 py-2 text-sm">

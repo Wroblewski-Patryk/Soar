@@ -1,16 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   computeMinExecutableQuantity,
   enforceLivePretradeGuards,
   normalizeAmountByPrecision,
   normalizeAmountFixed,
+  resolvePrecisionStep,
 } from './orders.quantityRules';
 
 describe('orders.quantityRules', () => {
   it('derives min executable quantity from min notional and rounds up to precision', () => {
     expect(
       computeMinExecutableQuantity({
+        marketType: 'SPOT',
         minAmount: 0.001,
         minNotional: 10,
         markPrice: 19_500,
@@ -20,6 +22,7 @@ describe('orders.quantityRules', () => {
 
     expect(
       computeMinExecutableQuantity({
+        marketType: 'SPOT',
         minAmount: 0.0001,
         minNotional: 10,
         markPrice: 30_000,
@@ -31,6 +34,7 @@ describe('orders.quantityRules', () => {
   it('uses contract size when deriving executable quantity from notional rules', () => {
     expect(
       computeMinExecutableQuantity({
+        marketType: 'FUTURES',
         minAmount: 1,
         minNotional: 5,
         markPrice: 0.25,
@@ -43,7 +47,143 @@ describe('orders.quantityRules', () => {
   it('normalizes decimal and step precision deterministically', () => {
     expect(normalizeAmountByPrecision(0.1236, 3)).toBe(0.124);
     expect(normalizeAmountByPrecision(1.26, 0.25)).toBe(1.25);
+    expect(normalizeAmountByPrecision(1.26, 0.25, 'TICK_SIZE')).toBe(1.25);
     expect(normalizeAmountFixed(1.23456, 3)).toBe(1.235);
+  });
+
+  it('keeps preview minimum on the explicit CCXT quantity grid', () => {
+    expect(resolvePrecisionStep(1, 'TICK_SIZE')).toBe(1);
+    expect(resolvePrecisionStep(1, 'DECIMAL_PLACES')).toBe(0.1);
+    expect(resolvePrecisionStep(5, 'TICK_SIZE')).toBe(5);
+    expect(resolvePrecisionStep(1, null)).toBeNull();
+    const rules = { minAmount: 1, minNotional: 5.1, markPrice: 0.25,
+      amountPrecision: 1, contractSize: 10, marketType: 'FUTURES' as const };
+    expect(computeMinExecutableQuantity({ ...rules,
+      amountPrecisionMode: 'TICK_SIZE' })).toBe(3);
+    expect(computeMinExecutableQuantity({ ...rules,
+      amountPrecisionMode: 'DECIMAL_PLACES' })).toBe(2.1);
+    expect(computeMinExecutableQuantity({ ...rules, amountPrecision: 5,
+      amountPrecisionMode: 'TICK_SIZE' })).toBe(5);
+    expect(computeMinExecutableQuantity({ ...rules,
+      amountPrecisionMode: null })).toBeNull();
+  });
+
+  it('rejects fractional tick-size contracts but accepts decimal-place quantities', async () => {
+    const hasOpenPosition = vi.fn(async () => false);
+    const fetchMarkPrice = vi.fn(async () => 3.305);
+    const rules = { minAmount: 1, minNotional: 5, amountPrecision: 1,
+      contractSize: 1 };
+    const input = { apiKeyId: 'gate-precision-002', exchange: 'GATEIO' as const,
+      marketType: 'FUTURES' as const, payload: { symbol: 'NGUSDT', quantity: 60.5,
+        price: 3.305, reduceOnly: true, expectedContractSize: 1 } };
+    const connector = { hasOpenPosition, fetchMarkPrice,
+      getSymbolTradingRules: vi.fn(async () => ({ ...rules,
+        amountPrecisionMode: 'TICK_SIZE' as const })) };
+    await expect(enforceLivePretradeGuards({ ...input, connector }))
+      .rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    expect(hasOpenPosition).not.toHaveBeenCalled();
+    expect(fetchMarkPrice).not.toHaveBeenCalled();
+
+    // A separate market key avoids the short-lived rules cache from the first check.
+    await expect(enforceLivePretradeGuards({ ...input,
+      payload: { ...input.payload, symbol: 'NGDECUSDT' },
+      connector: { ...connector, getSymbolTradingRules: vi.fn(async () => ({ ...rules,
+        amountPrecisionMode: 'DECIMAL_PLACES' as const })) },
+    })).resolves.toBeUndefined();
+    await expect(enforceLivePretradeGuards({ ...input,
+      payload: { ...input.payload, symbol: 'NGUNKNOWNUSDT' },
+      connector: { ...connector, getSymbolTradingRules: vi.fn(async () => ({ ...rules,
+        amountPrecisionMode: null })) },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    const fiveContractStep = { ...connector, getSymbolTradingRules: vi.fn(async () => ({
+      ...rules, amountPrecision: 5, amountPrecisionMode: 'TICK_SIZE' as const,
+    })) };
+    await expect(enforceLivePretradeGuards({ ...input,
+      payload: { ...input.payload, symbol: 'NGSTEP5USDT', quantity: 62 },
+      connector: fiveContractStep,
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    await expect(enforceLivePretradeGuards({ ...input,
+      payload: { ...input.payload, symbol: 'NGSTEP5OKUSDT', quantity: 60 },
+      connector: fiveContractStep,
+    })).resolves.toBeUndefined();
+  });
+
+  it('preserves explicit fractional tick size for SPOT pretrade', async () => {
+    const connector = { hasOpenPosition: vi.fn(async () => false),
+      getSymbolTradingRules: vi.fn(async () => ({ minAmount: 0.25,
+        minNotional: 1, amountPrecision: 0.25,
+        amountPrecisionMode: 'TICK_SIZE' as const, contractSize: null })),
+      fetchMarkPrice: vi.fn(async () => 2),
+    };
+    const base = { connector, apiKeyId: 'spot-tick-002', exchange: 'GATEIO' as const,
+      marketType: 'SPOT' as const };
+    await expect(enforceLivePretradeGuards({ ...base, payload: {
+      symbol: 'SPOTTICKOKUSDT', quantity: 1.25, price: 2,
+    } })).resolves.toBeUndefined();
+    await expect(enforceLivePretradeGuards({ ...base, payload: {
+      symbol: 'SPOTTICKBADUSDT', quantity: 1.26, price: 2,
+    } })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+  });
+
+  it('matches the manual context fixture for tick and decimal pretrade', async () => {
+    const rules = {
+      minAmount: 1, minNotional: 5.1, amountPrecision: 1, contractSize: 10,
+    };
+    const connector = {
+      hasOpenPosition: vi.fn(async () => false),
+      getSymbolTradingRules: vi.fn(async () => ({
+        ...rules, amountPrecisionMode: 'TICK_SIZE' as const,
+      })),
+      fetchMarkPrice: vi.fn(async () => 0.25),
+    };
+    const base = {
+      apiKeyId: 'manual-context-parity-003', exchange: 'BINANCE' as const,
+      marketType: 'FUTURES' as const,
+    };
+    await expect(enforceLivePretradeGuards({
+      ...base, connector,
+      payload: { symbol: 'ADATICKPARITYUSDT', quantity: 60.5, price: 0.25 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_AMOUNT_PRECISION' });
+    expect(connector.fetchMarkPrice).not.toHaveBeenCalled();
+
+    const decimalConnector = {
+      ...connector,
+      getSymbolTradingRules: vi.fn(async () => ({
+        ...rules, amountPrecisionMode: 'DECIMAL_PLACES' as const,
+      })),
+    };
+    await expect(enforceLivePretradeGuards({
+      ...base, connector: decimalConnector,
+      payload: { symbol: 'ADADECPARITYUSDT', quantity: 60.5, price: 0.25 },
+    })).resolves.toBeUndefined();
+  });
+
+  it('requires a known positive contract size for FUTURES before LIVE submit', async () => {
+    const fetchMarkPrice = vi.fn(async () => 3.305);
+    for (const [index, contractSize] of [null, 0, -1, NaN, Infinity].entries()) {
+      const connector = {
+        hasOpenPosition: vi.fn(async () => false),
+        getSymbolTradingRules: vi.fn(async () => ({
+          minAmount: 2, minNotional: 5, amountPrecision: 1,
+          amountPrecisionMode: 'TICK_SIZE' as const, contractSize,
+        })),
+        fetchMarkPrice,
+      };
+      await expect(enforceLivePretradeGuards({
+        apiKeyId: 'gate-unknown-contract-003a', exchange: 'GATEIO', marketType: 'FUTURES',
+        connector, payload: { symbol: `NGUNKNOWNCONTRACT${index}`, quantity: 60,
+          price: 3.305, reduceOnly: true },
+      })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE' });
+      expect(fetchMarkPrice).not.toHaveBeenCalled();
+    }
+    expect(computeMinExecutableQuantity({
+      marketType: 'FUTURES', minAmount: 2, minNotional: 5, markPrice: 3.305,
+      amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE', contractSize: null,
+    })).toBeNull();
+    expect(computeMinExecutableQuantity({
+      marketType: 'SPOT', minAmount: 2, minNotional: 5, markPrice: 3.305,
+      amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE', contractSize: null,
+    })).toBe(2);
   });
 
   it('fails closed when min notional exists but price truth is unavailable', async () => {
@@ -58,7 +198,7 @@ describe('orders.quantityRules', () => {
             minAmount: null,
             minNotional: 10,
             amountPrecision: null,
-            contractSize: null,
+            contractSize: 1,
           }),
           fetchMarkPrice: async () => {
             throw new Error('price unavailable');
@@ -78,7 +218,7 @@ describe('orders.quantityRules', () => {
     await expect(
       enforceLivePretradeGuards({
         apiKeyId: 'key-2',
-        exchange: 'GATEIO',
+        exchange: 'BINANCE',
         marketType: 'FUTURES',
         connector: {
           hasOpenPosition: async () => false,
@@ -96,5 +236,49 @@ describe('orders.quantityRules', () => {
         },
       })
     ).resolves.toBeUndefined();
+  });
+
+  it('blocks a nonunit Gate Futures order at the final pretrade boundary', async () => {
+    const connector = {
+      hasOpenPosition: async () => false,
+      getSymbolTradingRules: async () => ({
+        minAmount: 1, minNotional: null, amountPrecision: 1,
+        amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 0.01,
+      }),
+      fetchMarkPrice: async () => 100,
+    };
+    await expect(enforceLivePretradeGuards({
+      apiKeyId: 'gate-nonunit', exchange: 'GATEIO', marketType: 'FUTURES',
+      connector,
+      payload: { symbol: 'BTCUSDT', quantity: 1, expectedContractSize: 0.01 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
+    await expect(enforceLivePretradeGuards({
+      apiKeyId: 'gate-nonunit-close', exchange: 'GATEIO', marketType: 'FUTURES',
+      connector,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 0.01 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED' });
+  });
+
+  it('requires the saved Gate unit to match fresh pretrade metadata for reduce-only', async () => {
+    const connector = {
+      hasOpenPosition: async () => false,
+      getSymbolTradingRules: async () => ({ minAmount: 1, minNotional: null,
+        amountPrecision: 1, amountPrecisionMode: 'TICK_SIZE' as const, contractSize: 1 }),
+      fetchMarkPrice: async () => 100,
+    };
+    const base = { apiKeyId: 'gate-close-snapshot', exchange: 'GATEIO' as const,
+      marketType: 'FUTURES' as const, connector };
+    await expect(enforceLivePretradeGuards({ ...base,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE' });
+    await expect(enforceLivePretradeGuards({ ...base,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 0.01 },
+    })).rejects.toMatchObject({ code: 'LIVE_PRETRADE_CONTRACT_UNIT_MISMATCH' });
+    await expect(enforceLivePretradeGuards({ ...base,
+      payload: { symbol: 'BTCUSDT', quantity: 1, reduceOnly: true,
+        expectedContractSize: 1 },
+    })).resolves.toBeUndefined();
   });
 });

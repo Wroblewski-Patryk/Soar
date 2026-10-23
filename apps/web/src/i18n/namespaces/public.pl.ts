@@ -30,6 +30,7 @@ export const publicPl = {
   offline: {
     title: "Tryb offline",
     description: "Soar jest chwilowo offline. Sprawdz polaczenie i sprobuj ponownie.",
+    retry: "Sprobuj ponownie",
   },
   sharedUi: {
     loadingTitle: "Ladowanie danych",

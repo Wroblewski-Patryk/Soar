@@ -8,6 +8,7 @@ const repoRoot = process.cwd();
 const ignoredDirectories = new Set([
   '.git',
   '.next',
+  '.next-dev',
   '.turbo',
   'coverage',
   'dist',

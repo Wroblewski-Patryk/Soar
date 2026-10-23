@@ -1,6 +1,8 @@
 # Strategy Evaluation Parity Contract (V1)
 
-Status: canonical, locked for `V1IND-01` on 2026-04-24.
+Status: current-version behavioral contract, corrected 2026-10-19. The shared
+evaluator now treats legacy no-match `EXIT` settings as HOLD in local code and
+targeted tests. This document does not establish deployed or whole-journey parity.
 
 ## Purpose
 Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAPER`, and `LIVE`.
@@ -10,7 +12,8 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
 - Input source of truth:
   - runtime modes (`PAPER`, `LIVE`): stream-maintained candle series,
   - backtest: historical candle series loaded from exchange/cache.
-- Signal domain: `LONG | SHORT | EXIT | NO_TRADE`.
+- Signal domain: `LONG | SHORT | EXIT | NO_TRADE`; absence of an entry signal
+  is `NO_TRADE`/HOLD, never `EXIT`.
 
 ## Canonical Strategy Input
 - Strategy evaluation reads the same shape in all modes:
@@ -34,11 +37,29 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
 2. If strategy mode is active and no valid indicator rules are produced:
    - return `NO_TRADE` (do not fallback to heuristic percent-threshold logic).
 3. Evaluate long and short rule sets at the same candle index.
-4. Resolve raw direction:
+4. Resolve entry direction:
    - `LONG` when long set matches and short does not,
    - `SHORT` when short set matches and long does not,
-   - `EXIT` when neither side matches,
+   - `NO_TRADE`/HOLD when neither side matches,
    - `NO_TRADE` when both sides match or input is insufficient.
+5. An open position remains open when entry conditions cease to match. No
+   entry match is not `EXIT`, and a separate strategy `EXIT` signal is not
+   required. Configured DCA and `TP`/`SL` (simple) or `TTP`/`TSL` (advanced)
+   govern normal closes, with manual, liquidation, and other risk closures
+   handled by the lifecycle manager.
+
+Legacy `open.noMatchAction = EXIT` and `open.exitOnNoSignal = true` do not
+constitute separate exit conditions under this contract. The shared evaluator
+accepts stored configurations with these fields but returns no signal when
+neither entry side matches. `openConditions` follows the same rule. Explicit
+`EXIT` votes from a separate valid source remain part of the merge contract.
+Stored fields remain accepted. The local runtime symbol-stats readmodel leaves
+the condition summary unset for an `EXIT` event because the entry configuration
+cannot establish whether it came from a separate strategy signal or position
+protection. UI/API migration of the stored legacy option remains separate.
+Local targeted tests cover evaluator, runtime PAPER/LIVE decisions, and both
+backtest replay paths; deployed behavior and the full lifecycle journey remain
+unverified.
 
 ## Mode Parity Requirements
 - Strategy evaluator implementation must be shared and imported by both:
@@ -62,6 +83,10 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
   - backtest replay tests,
   - runtime signal loop tests,
   - parity regression (`paper/live decision equivalence` at minimum).
+- Include a position-open sequence in which entry conditions cease to match:
+  no close command or false `EXIT` trace may result. Prove separately that
+  configured DCA and `TP`/`SL` or `TTP`/`TSL` rules close through the approved
+  lifecycle, including the applicable risk and manual-close cases.
 - Required mismatch diagnostics payload (for reports/logs):
   - `mode`, `symbol`, `timeframe`, `candleIndex`, `strategyId`,
   - expected vs actual direction,

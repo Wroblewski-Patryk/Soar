@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
-import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
 export const walletIdByMarketGroupId = new Map<string, string>();
@@ -60,6 +60,7 @@ export const registerAndLogin = async (email: string) => {
     where: { email },
     select: { id: true },
   });
+  await ensureSubscriptionCatalog(prisma);
   await setActiveSubscriptionForUser(prisma, {
     userId: user.id,
     planCode: 'PROFESSIONAL',
@@ -168,6 +169,7 @@ export const resetBotsE2eState = async () => {
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();
+  await prisma.backtestContribution.deleteMany();
   await prisma.backtestRun.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();

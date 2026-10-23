@@ -1,19 +1,14 @@
 import { Request } from 'express';
-import { verifyAuthToken } from './auth.jwt';
-import { AuthRole } from '../../types/express';
+import { isHumanSessionToken, verifyAuthToken, type AuthTokenPayload } from './auth.jwt';
 
-type AuthTokenClaims = {
-  userId: string;
-  email: string;
-  role: AuthRole;
-  sessionVersion?: number;
-  iat?: number;
-  exp?: number;
-};
+type AuthTokenClaims = AuthTokenPayload;
+export type AuthTokenSource = 'cookie' | 'bearer';
 
 export type VerifiedAuthTokenCandidate = {
   token: string;
   claims: AuthTokenClaims;
+  source: AuthTokenSource;
+  kind: 'human' | 'legacy';
 };
 
 const hasRequiredClaims = (payload: unknown): payload is AuthTokenClaims => {
@@ -35,7 +30,7 @@ const hasRequiredClaims = (payload: unknown): payload is AuthTokenClaims => {
 const tokenIssuedAt = (claims: AuthTokenClaims) =>
   typeof claims.iat === 'number' && Number.isFinite(claims.iat) ? claims.iat : 0;
 
-export const getCandidateTokensFromRequest = (req: Request): string[] => {
+const getTokenCandidatesFromRequest = (req: Request): Array<{ token: string; source: AuthTokenSource }> => {
   const authorizationHeader = Array.isArray(req.headers.authorization)
     ? req.headers.authorization[0]
     : req.headers.authorization;
@@ -52,30 +47,42 @@ export const getCandidateTokensFromRequest = (req: Request): string[] => {
     .map((part) => decodeURIComponent(part.slice('token='.length)))
     .filter((value) => value.length > 0);
 
-  return [
-    ...new Set([
-      ...(bearerToken ? [bearerToken] : []),
-      ...(parsedToken ? [parsedToken] : []),
-      ...rawTokens,
-    ]),
+  const candidates: Array<{ token: string; source: AuthTokenSource }> = [
+    ...(bearerToken ? [{ token: bearerToken, source: 'bearer' as const }] : []),
+    ...(parsedToken ? [{ token: parsedToken, source: 'cookie' as const }] : []),
+    ...rawTokens.map((token) => ({ token, source: 'cookie' as const })),
   ];
+  const seen = new Set<string>();
+  return candidates.filter(({ token }) => {
+    if (seen.has(token)) return false;
+    seen.add(token);
+    return true;
+  });
 };
 
+export const getCandidateTokensFromRequest = (req: Request): string[] =>
+  getTokenCandidatesFromRequest(req).map(({ token }) => token);
+
 export const getVerifiedAuthTokenCandidates = (req: Request): VerifiedAuthTokenCandidate[] => {
-  const candidates = getCandidateTokensFromRequest(req)
-    .map((token, index) => ({ token, index }))
-    .map(({ token, index }) => {
+  const candidates = getTokenCandidatesFromRequest(req)
+    .map(({ token, source }, index) => {
       try {
         const claims = verifyAuthToken(token);
         if (!hasRequiredClaims(claims)) {
           return null;
         }
-        return { token, claims, index };
+        return {
+          token,
+          claims,
+          source,
+          kind: isHumanSessionToken(claims) ? 'human' as const : 'legacy' as const,
+          index,
+        };
       } catch {
         return null;
       }
     })
-    .filter((item): item is { token: string; claims: AuthTokenClaims; index: number } => item !== null);
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
   candidates.sort((a, b) => {
     const iatDelta = tokenIssuedAt(b.claims) - tokenIssuedAt(a.claims);
@@ -83,5 +90,5 @@ export const getVerifiedAuthTokenCandidates = (req: Request): VerifiedAuthTokenC
     return a.index - b.index;
   });
 
-  return candidates.map(({ token, claims }) => ({ token, claims }));
+  return candidates.map(({ token, claims, source, kind }) => ({ token, claims, source, kind }));
 };

@@ -40,6 +40,7 @@ export const deleteAccount = async (userId: string, input: { password: string })
     prisma.order.deleteMany({ where: { userId } }),
     prisma.position.deleteMany({ where: { userId } }),
     prisma.signal.deleteMany({ where: { userId } }),
+    prisma.backtestContribution.deleteMany({ where: { userId } }),
     prisma.backtestReport.deleteMany({ where: { userId } }),
     prisma.backtestTrade.deleteMany({ where: { userId } }),
     prisma.backtestRun.deleteMany({ where: { userId } }),

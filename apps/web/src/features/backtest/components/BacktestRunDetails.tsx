@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LuChartLine, LuDatabase, LuListChecks, LuLoaderCircle, LuShieldCheck } from 'react-icons/lu';
 import { BacktestRun } from '../types/backtest.type';
 import { EmptyState, ErrorState } from '@/ui/components/ViewState';
@@ -53,6 +53,8 @@ type BacktestRunDetailsProps = {
   runId: string;
 };
 
+const PENDING_DELAY_MS = 30 * 60 * 1000;
+
 type LiveProgress = {
   leverage?: number;
   marginMode?: 'CROSSED' | 'ISOLATED' | 'NONE';
@@ -78,6 +80,7 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
   const { formatCurrency, formatDateTime, formatNumber, formatPercent } = useLocaleFormatting();
   const copy = useMemo(() => getBacktestRunDetailsCopy(t), [t]);
   const [activeTab, setActiveTab] = useState<BacktestRunDetailsTab>('markets');
+  const [pendingDelayed, setPendingDelayed] = useState(false);
   const symbolSectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const {
     run,
@@ -94,6 +97,15 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
     runId,
     loadErrorDefault: copy.loadErrorDefault,
   });
+
+  useEffect(() => {
+    if (run?.status !== 'PENDING') {
+      setPendingDelayed(false);
+      return;
+    }
+    const lastUpdate = Date.parse(run.updatedAt ?? run.createdAt);
+    setPendingDelayed(Number.isFinite(lastUpdate) && Date.now() - lastUpdate >= PENDING_DELAY_MS);
+  }, [run]);
 
   const liveProgress = ((run?.seedConfig as { liveProgress?: LiveProgress } | null)?.liveProgress ?? null) as LiveProgress | null;
   const seedConfig = (run?.seedConfig as {
@@ -167,12 +179,12 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
 
   const progress = useMemo(() => {
     if (!run) return 0;
+    if (run.status === 'PENDING') return 0;
     if (liveProgress?.totalSymbols && liveProgress.totalSymbols > 0) {
       const bySymbols = Math.floor(((liveProgress.processedSymbols ?? 0) / liveProgress.totalSymbols) * 85);
       if (run.status === 'COMPLETED' || run.status === 'FAILED' || run.status === 'CANCELED') return 100;
       return Math.max(5, bySymbols);
     }
-    if (run.status === 'PENDING') return 20;
     if (run.status === 'RUNNING') return 60;
     if (run.status === 'COMPLETED') return report ? 100 : 85;
     return 100;
@@ -190,7 +202,7 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
         label: copy.stageEngineRunning,
         icon: <LuLoaderCircle className='h-4 w-4' />,
         done: run?.status === 'RUNNING' || run?.status === 'COMPLETED' || run?.status === 'FAILED' || run?.status === 'CANCELED',
-        active: run?.status === 'PENDING',
+        active: false,
       },
       {
         label: copy.stageTradesReady,
@@ -284,8 +296,8 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
       <BacktestRunHeaderSection
         runName={run.name}
         runPreviewLabel={copy.runPreview}
-        runStatusClassName={runStatusBadgeClass(run.status)}
-        runStatusLabel={runStatusLabel(run.status, copy)}
+        runStatusClassName={pendingDelayed ? 'badge-error' : runStatusBadgeClass(run.status)}
+        runStatusLabel={pendingDelayed ? copy.statusDelayed : runStatusLabel(run.status, copy)}
         marketGroupLabelText={copy.marketGroup}
         marketGroupValue={marketGroupLabel}
         strategyLabelText={copy.strategy}
@@ -304,6 +316,13 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
         stagesLabel={copy.stagesTitle}
         stages={stages}
       />
+
+      {pendingDelayed && (
+        <div role='alert' className='alert alert-warning flex flex-wrap items-center justify-between gap-3'>
+          <span>{copy.pendingDelayedDescription}</span>
+          <button type='button' className='btn btn-outline btn-sm' onClick={retry}>{copy.retry}</button>
+        </div>
+      )}
 
       <BacktestRunDetailsTabPanels
         activeTab={activeTab}

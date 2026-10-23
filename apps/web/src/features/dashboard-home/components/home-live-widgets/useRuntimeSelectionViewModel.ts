@@ -53,7 +53,9 @@ export const useRuntimeSelectionViewModel = ({
   const summary = useMemo<RuntimeSummary>(() => {
     const openPositions = snapshots.reduce((acc, x) => acc + (x.positions?.openCount ?? 0), 0);
     const usedMargin = snapshots.reduce((acc, x) => acc + resolveUsedMargin(x.positions), 0);
-    const realized = snapshots.reduce((acc, x) => acc + (x.session?.summary.realizedPnl ?? 0), 0);
+    const realized = snapshots.reduce<number | null>((acc, x) =>
+      acc == null || (x.session && x.session.summary.realizedPnl == null)
+        ? null : acc + (x.session?.summary.realizedPnl ?? 0), 0);
     const streamMap = new Map<string, number>(Object.entries(liveTickerPrices));
     const buildSnapshotOpenRows = (snapshot: RuntimeSnapshot) =>
       buildLiveOpenPositions(
@@ -74,22 +76,21 @@ export const useRuntimeSelectionViewModel = ({
 
     const paper = snapshots.filter((x) => x.bot.mode === "PAPER");
     const paperStart = paper.reduce((acc, x) => acc + (resolvePaperConfigBaseline(x.bot) ?? 0), 0);
-    const paperDelta = paper.reduce((acc, x) => {
-      const net = (x.session?.summary.realizedPnl ?? 0) + resolveSnapshotUnrealized(x);
-      return acc + net;
+    const paperDelta = paper.reduce<number | null>((acc, x) => {
+      const pnl = x.session?.summary.realizedPnl;
+      return acc == null || (x.session && pnl == null)
+        ? null : acc + (pnl ?? 0) + resolveSnapshotUnrealized(x);
     }, 0);
-    const paperEquity = paper.reduce((acc, x) => {
-      const net = (x.session?.summary.realizedPnl ?? 0) + resolveSnapshotUnrealized(x);
-      return (
-        acc +
-        (resolveRuntimePortfolio({
+    const paperEquity = paper.reduce<number | null>((acc, x) => {
+      const pnl = x.session?.summary.realizedPnl;
+      const net = x.session && pnl == null ? null : (pnl ?? 0) + resolveSnapshotUnrealized(x);
+      const portfolio = resolveRuntimePortfolio({
           bot: x.bot,
           summary: x.positions?.summary ?? null,
           net,
           usedMargin: resolveUsedMargin(x.positions),
-        }) ??
-          0)
-      );
+        });
+      return acc == null || portfolio == null ? null : acc + portfolio;
     }, 0);
     return {
       openPositions,
@@ -145,11 +146,12 @@ export const useRuntimeSelectionViewModel = ({
       openWithProtectedFallback.length > 0
         ? sumRuntimeOpenPositionUnrealized(openWithProtectedFallback)
         : resolveUnrealized(selected);
-    const realized = session?.summary.realizedPnl ?? 0;
-    const net = realized + unrealized;
-    const wins = selected.symbolStats?.summary.winningTrades ?? 0;
-    const losses = selected.symbolStats?.summary.losingTrades ?? 0;
-    const winRate = wins + losses > 0 ? (wins / (wins + losses)) * 100 : null;
+    const realized = session ? session.summary.realizedPnl : 0;
+    const net = realized == null ? null : realized + unrealized;
+    const wins = selected.symbolStats?.summary.winningTrades ?? null;
+    const losses = selected.symbolStats?.summary.losingTrades ?? null;
+    const winRate = wins != null && losses != null && wins + losses > 0
+      ? (wins / (wins + losses)) * 100 : null;
     const paperInit =
       selected.bot.mode === "PAPER"
         ? selected.bot.wallet?.paperInitialBalance ?? selected.bot.paperStartBalance

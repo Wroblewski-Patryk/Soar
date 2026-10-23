@@ -3,8 +3,8 @@ import { app } from '../index';
 import { prisma } from '../prisma/client';
 import { signAuthToken } from '../modules/auth/auth.jwt';
 import {
-  ensureDefaultSubscriptionForUser,
   ensureSubscriptionCatalog,
+  setActiveSubscriptionForUser,
 } from '../modules/subscriptions/subscriptions.service';
 import { serverUrl } from '../config/runtime';
 
@@ -51,7 +51,13 @@ export const registerAndCreateAuthenticatedClient = async (
       });
 
       await ensureSubscriptionCatalog(tx);
-      await ensureDefaultSubscriptionForUser(tx, createdUser.id);
+      await setActiveSubscriptionForUser(tx, {
+        userId: createdUser.id,
+        planCode: 'FREE',
+        source: 'ADMIN_OVERRIDE',
+        autoRenew: false,
+        metadata: { reason: 'test_fixture' },
+      });
 
       return createdUser;
     }));

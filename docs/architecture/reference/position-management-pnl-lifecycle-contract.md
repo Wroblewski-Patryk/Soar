@@ -1,7 +1,7 @@
 # Position Management PnL Lifecycle Contract
 
 Status: canonical  
-Updated: 2026-05-06
+Updated: 2026-10-19
 
 ## Purpose
 
@@ -45,11 +45,27 @@ position in this order:
 4. apply liquidation and account-floor protection
 5. persist or publish updated lifecycle state for operator views
 
-If a DCA level is enabled, valid, still pending, and affordable, close
-management must not bypass it by guessing a different close path. If DCA is
-disabled, exhausted, inapplicable to the current PnL direction, or explicitly
-classified as unaffordable according to the strategy policy, close management
-continues normally.
+If a DCA level is enabled, valid, and still pending, close management must not
+bypass the protection it owns. Once the relevant levels are confirmed executed,
+or no pending level applies to the close direction, close management proceeds
+under the selected mode. Insufficient funds follow the DCA Funds Policy below;
+they are not a generic release of close protection.
+
+An operator-activated global LIVE pause blocks new DCA submission, but does
+not remove pending levels from the position-management evaluation. Runtime
+evaluates TP/SL/TTP/TSL against the last confirmed canonical quantity and
+entry basis. Pending negative DCA continues to block SL/TSL, and pending
+positive DCA continues to block TP/TTP. A reached DCA proposal is neither
+submitted nor recorded as filled while paused. Only a reached DCA that cannot
+be funded and is reported as funds-exhausted may release a crossed hard SL;
+pause alone does not release any DCA protection or release TSL. A Futures
+close may be submitted only when these protection rules permit it and the
+venue enforces `reduceOnly`. Spot closes remain held because Spot has no
+`reduceOnly` guarantee. If pause commits between DCA evaluation and its final
+submission gate, the denied add remains pending and the pre-fill state and
+close gates are preserved; runtime must not re-evaluate CLOSE with DCA removed.
+Unknown or submitted DCA outcomes still require reconciliation before any
+close. PAPER and BACKTEST retain normal DCA-first ordering.
 
 ## DCA Lanes
 
@@ -59,8 +75,78 @@ negative.
 - Positive DCA levels execute as PnL moves upward.
 - Negative DCA levels execute as PnL moves downward.
 - Each level has an execution threshold and a size multiplier.
-- A multiplier of `1` means the DCA add size equals the current position size
-  according to the runtime sizing contract for the lifecycle.
+- For Basic DCA, `dcaLevels[0].multiplier` is authoritative when present;
+  `additional.dcaMultiplier` is a fallback only when the stored level omits a
+  multiplier. The strategy builder mirrors the authoritative value into both
+  fields on save and clone. The strategy API rejects new or edited Basic
+  configs whose two supplied values conflict. An incomplete saved level is
+  not assigned a default multiplier by the builder.
+- In existing configurations and snapshots without `additional.dcaSizingBasis`,
+  the effective version is `quantity_v1`: multiplier `1` adds the current asset
+  quantity. The explicit `quantity_v1` value has the same behavior.
+- The explicit `additional.dcaSizingBasis: "usdt_contribution_v1"` opts the
+  computation engine, both BACKTEST replay paths, and PAPER/LIVE runtime into
+  USDT contribution sizing. New strategies from the strategy form and its
+  presets persist this version explicitly. Clones of unversioned strategies
+  retain quantity sizing, and edits preserve the absent version field.
+  Legacy quantity strategies retain the basic TP/SL reachability guard;
+  USDT contribution strategies can place a signed DCA level beyond the
+  same-side exit threshold because their reached DCA runs first.
+  Unknown versions fail parsing or runtime policy validation.
+- For `usdt_contribution_v1`, current book contribution is the sum of confirmed
+  fill notionals, represented by `averageEntryPrice * quantity` in the
+  position state. The next add has USDT notional `bookContribution * multiplier`
+  and asset quantity `addNotional / DCA fillPrice`; the new average uses the
+  confirmed fill price and both quantities. A multiplier of `1` therefore adds
+  the current USDT contribution. This amount excludes trading fees and funding;
+  leverage affects required margin and ROI, not the USDT notional multiplier.
+  BACKTEST uses its historical DCA probe fill price and reserves
+  `addNotional / leverage` as margin.
+- In PAPER/LIVE, SPOT contribution is confirmed quote spent and FUTURES
+  contribution is confirmed USDT margin. With a fixed position leverage, these
+  are `averageEntryPrice * quantity` for SPOT and that notional divided by
+  leverage for FUTURES. The next add uses the current contribution times its
+  multiplier, then converts the required notional at the current execution
+  price. The order fill's actual price and quantity update the canonical
+  position, so the next contribution and ROI derive from the filled average
+  after restart. The DCA count and advanced level indices are recovered from
+  confirmed DCA trades and successful execution dedupe records. If those records
+  cannot be reconciled after restart, runtime DCA stops with
+  `DCA_PROGRESS_UNCONFIRMED`. Trading fees and funding remain separate from
+  contribution.
+- Before a PAPER/LIVE USDT DCA order, runtime floors the requested asset
+  quantity to the venue amount precision or quantity step. It checks minimum
+  quantity and notional against this order quantity, then checks available
+  funds for that quantity. Rounding never increases the requested add at the
+  current mark price. A zero or too-small result blocks the add before dedupe
+  or order submission; the actual fill drives subsequent contribution and ROI.
+- Basic DCA repeats its first configured threshold and multiplier for exactly
+  `dcaTimes` executions. Advanced DCA uses each configured threshold and
+  multiplier pair once. Each later threshold is evaluated against ROI from the
+  updated average entry. The versioned BACKTEST parser rejects incomplete or
+  invalid USDT level pairs instead of silently falling back to old sizing.
+- PAPER/LIVE require a canonical, in-sync position, matching strategy and bot
+  ownership, a USDT pair, known venue minimum amount/notional and amount
+  precision, and sufficient free wallet USDT before a USDT DCA order is
+  submitted. If any of these checks fail, the add is blocked. Venues reporting
+  an unknown contract size or a contract size other than one are blocked until contract conversion is
+  represented in the runtime contribution calculation. For imported futures
+  positions, the exchange-confirmed margin must agree with the canonical
+  average, quantity, and leverage before another add. Quantity-based runtime
+  DCA retains multiplier limit `2`; larger configured values fail closed.
+  If a reached USDT DCA level is blocked specifically for insufficient funds,
+  runtime records that reason and may close the position by configured stop
+  loss only when the stop loss is exceeded. This exception does not apply to
+  venue rule, precision, or other validation failures, nor before the DCA
+  threshold is reached.
+  Direct DCA reads the position and its active bot strategy links, rejects a
+  supplied strategy or bot ID that differs from the canonical owner, and
+  refuses an order if the position or strategy configuration cannot be read.
+  Position automation blocks automatic DCA and protection closes with
+  `PRETRADE_BLOCKED` when strategy configuration is unavailable; the owner's
+  separate manual close path remains available. A full single-symbol BACKTEST replay with
+  nonzero modeled fee verifies that fee changes trade cost, not the USDT
+  contribution used by the DCA multiplier.
 
 The execution ladder must be deterministic. For normalized strategy evaluation:
 
@@ -98,17 +184,11 @@ If the next DCA cannot be funded:
 - do not silently pretend the DCA was executed
 - apply the strategy's DCA-funds policy
 
-Canonical policy options:
-
-- `block_protection`: keep close protection blocked while the DCA remains
-  pending, making the risk explicit to the operator
-- `release_protection`: classify the remaining DCA ladder as non-blocking for
-  this pass and allow `TP`/`SL` or `TTP`/`TSL` to protect the position
-
-The safer default for live automation should be `release_protection`: if the
-bot cannot add risk because funds are unavailable, it should not also block
-protective closing. Any different default must be explicit in the strategy
-contract and UI copy.
+For `usdt_contribution_v1`, an unfunded positive level remains pending and
+continues to block `TP`/`TTP`. An unfunded negative level releases only a
+crossed hard `SL` after its DCA threshold is reached and the shortage is
+reported; it does not release `TSL`. Stored `quantity_v1` keeps its existing
+funds policy.
 
 ## Basic Close Mode
 
@@ -130,24 +210,29 @@ If `SL = -10%`:
 - `-9.5%` does not close
 - `-11.3%` closes because `-11.3% < -10%`
 
-### DCA Reachability Warnings
+### DCA Before Basic Protection
 
-When `basic` mode and DCA are both enabled, configuration validation must warn
-or block unreachable DCA levels:
+For `usdt_contribution_v1`, a pending positive DCA level blocks `TP` and a
+pending negative level blocks `SL`. The corresponding trailing protection is
+blocked on the same side. A remaining negative level does not block `TP`; a
+remaining positive level does not block `SL`. Basic DCA repeats the first level
+exactly `dcaTimes`; advanced DCA executes only defined levels.
 
-- positive DCA levels above `TP` cannot execute before hard take-profit closes
-  the position
-- negative DCA levels below `SL` cannot execute before hard stop-loss closes
-  the position
+When a USDT DCA level executes, that decision does not also close the position
+using pre-fill ROI or a pre-fill protection price. After the fill is confirmed,
+the next decision uses the filled quantity, new average entry, and resulting
+ROI. For example, two basic `-30%` adds with `SL = -20%` do not close on the
+old `-20%` threshold immediately after the second add. A reached add blocked
+specifically by insufficient funds may release `SL` if the stop is exceeded;
+venue precision and validation failures do not count as exhausted funds.
+An unfunded positive level remains pending and continues to block `TP`/`TTP`.
+Funds exhaustion does not release `TSL` for a pending negative level.
+Runtime records `dca_funds_exhausted`; both replay paths expose a bounded count
+and samples of reached, unfunded DCA levels in parity diagnostics.
 
-For example, if `TP = 10%`, a positive DCA at `20%` is unreachable. If
-`SL = -10%`, a negative DCA at `-20%` is unreachable.
-
-In `LIVE`, venue-side hard `TP`/`SL` orders must not make the application claim
-that an unreachable DCA level can still execute. The implementation must either
-delay or reshape venue protection according to the approved DCA-first lifecycle
-contract, or make the unreachable DCA state explicit before the strategy can be
-treated as valid.
+Stored `quantity_v1` snapshots keep their existing sizing and same-pass exit
+behavior. Venue-side hard `TP`/`SL` orders must not bypass this application
+ordering or imply that a protected DCA level is unreachable without evidence.
 
 ## Advanced Close Mode
 
@@ -190,6 +275,9 @@ The tracked high and protected percent must ratchet only in the protective
 direction. Switching to a higher activation level with a wider trail distance
 is allowed only if the resulting protected percent is not weaker than the
 current protected percent.
+The active configured level survives a runtime snapshot and cannot downgrade
+on pullback. A confirmed DCA rebases the tracked high and protected percent to
+the filled average while preserving their market prices.
 
 It is valid for a position to close by TTP before it ever reaches later
 configured levels.
@@ -219,6 +307,11 @@ Example progression:
 
 TSL protection must move only toward lower risk as the position recovers. It
 must not loosen because the market moves back in the unfavorable direction.
+The first configured loss level arms on the adverse move; later levels replace
+its trail distance as ROI recovers through their activation thresholds. The
+active level and protected percent survive a runtime snapshot. After a
+confirmed DCA, the protected market price is retained and its ROI is rebased
+to the filled average.
 
 ### Single Effective Protection Source
 
@@ -252,6 +345,21 @@ Imported manual exchange positions are adoption-point positions:
   adoption
 - prospective DCA/TTP/TSL management may start only from the adoption point
   when strategy context is canonical
+
+An imported OPEN anchor without canonical fill history carries `fee=null` and
+`feePending=true`. A later CLOSE can record the exchange closure, but its net
+realized PnL remains unknown while an entry or exit fee is missing or pending.
+An explicit exchange fee of zero is known. This applies to both exchange-event
+and immediate runtime CLOSE finalization, including later fee-event refreshes.
+Closed imported positions with pending Trade fees remain eligible for history
+backfill. Canonical history replaces the synthetic OPEN anchor, matches an
+existing exchange-synced or bot-created CLOSE by exchange trade ID or an
+unambiguous synthetic fill identity. A runtime CLOSE representing several
+exchange fills remains one aggregate Trade with their combined fee and PnL.
+When every OrderFill matches canonical history, backfill also settles Order and
+OrderFill fees so later event replay preserves the settled result.
+Runtime trade read models preserve nullable fee and PnL values; monitoring
+tables show an unknown amount as unavailable rather than a settled zero.
 
 ## Runtime Loop Shape
 
@@ -295,8 +403,13 @@ for:
 - `advanced` mode using `TTP`/`TSL` instead of hard `TP`/`SL`
 - DCA-first gating before close management
 - positive and negative DCA lane ordering
-- unreachable DCA warnings in `basic` mode
+- signed DCA levels beyond basic TP/SL thresholds, with DCA-first ordering
+- retained basic TP/SL reachability for legacy quantity strategies
 - unaffordable DCA policy behavior
+- global LIVE pause preserving pending loss-side SL/TSL and profit-side TP/TTP
+  gates across a denied DCA submission and runtime restart
+- the reached, reported funds-exhausted exception releasing only crossed hard
+  SL; eligible Futures closes remain venue-enforced `reduceOnly`, and Spot holds
 - TTP and TSL monotonic ratcheting
 - imported `LIVE` position adoption without invented trailing history
 - exchange order/position reconciliation when user changes state outside Soar

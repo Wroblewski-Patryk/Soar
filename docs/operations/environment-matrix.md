@@ -1,5 +1,8 @@
 # Environment Matrix
 
+> Unfilled generic template, not the active Soar environment contract. The current Soar matrix has local Windows and existing Coolify production only: [environment matrix](./dev-stage-prod-environment-matrix.md).
+
+
 Last updated: YYYY-MM-DD
 
 ## Purpose

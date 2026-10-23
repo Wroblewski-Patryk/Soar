@@ -13,6 +13,7 @@ Define required handling for exchange API keys used by CryptoSparrow.
 - Keys and secrets must never be stored in plaintext.
 - API responses must never expose full key/secret values.
 - Ownership checks are required for create, rotate, and revoke actions.
+- Key lifecycle and connection-test routes require a signed human browser session. Legacy API tokens, including ones copied into a Cookie header, cannot perform these manual actions.
 - Rotation should be performed at least every 90 days.
 - Compromised key suspicion requires immediate revoke and replacement.
 

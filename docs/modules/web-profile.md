@@ -13,6 +13,7 @@
 - Provides tabbed account management:
   - basic profile + avatar + timezone preference
   - API keys/integration entry point
+  - external-client grant owner panel (see `web-external-client-grants.md`)
   - subscription plan visibility
   - security actions (password change, account delete)
 
@@ -61,6 +62,7 @@ Out of scope:
   - `Subscription`
   - `Security`
   - `ExchangeConnectionsView` (embedded from exchanges feature)
+  - `ExternalClientGrantsPanel` (embedded from external-client-grants feature)
 - Navigation contract:
   - hash-synced tabs for deep linking to profile sections.
 - Responsive contract:

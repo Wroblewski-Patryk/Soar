@@ -161,7 +161,7 @@ describe('RuntimePositionAutomationService', () => {
           id: 'pos-1',
           userId: 'user-1',
           botId: 'bot-1',
-          strategyId: null,
+          strategyId: 'strategy-tp',
           symbol: 'BTCUSDT',
           side: 'LONG' as const,
           entryPrice: 60_000,
@@ -174,7 +174,7 @@ describe('RuntimePositionAutomationService', () => {
           bot: buildBotExecutionContext(),
         },
       ]),
-      getStrategyConfigById: vi.fn(async () => null),
+      getStrategyConfigById: vi.fn(async () => ({})),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
@@ -667,7 +667,7 @@ describe('RuntimePositionAutomationService', () => {
         level: 'WARN',
         symbol: 'SOLUSDT',
         strategyId: 'strat-3b',
-        message: 'Runtime DCA funds exhausted; close protections may execute',
+        message: 'Runtime DCA blocked by insufficient funds',
         payload: expect.objectContaining({
           reason: 'dca_funds_exhausted',
           currentAdds: 0,
@@ -752,7 +752,7 @@ describe('RuntimePositionAutomationService', () => {
         level: 'WARN',
         symbol: 'ETHUSDT',
         strategyId: 'strategy-imported-dca-funds-effective',
-        message: 'Runtime DCA funds exhausted; close protections may execute',
+        message: 'Runtime DCA blocked by insufficient funds',
         payload: expect.objectContaining({
           reason: 'dca_funds_exhausted',
           currentAdds: 0,
@@ -1541,7 +1541,7 @@ describe('RuntimePositionAutomationService', () => {
           id: 'pos-9',
           userId: 'user-9',
           botId: 'bot-9',
-          strategyId: null,
+          strategyId: 'strategy-submitted-close',
           symbol: 'BTCUSDT',
           side: 'LONG' as const,
           entryPrice: 60_000,
@@ -1566,7 +1566,7 @@ describe('RuntimePositionAutomationService', () => {
           }),
         },
       ]),
-      getStrategyConfigById: vi.fn(async () => null),
+      getStrategyConfigById: vi.fn(async () => ({})),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal,
       resolveDcaFundsExhausted: vi.fn(async () => false),
@@ -2169,13 +2169,14 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
-  it('blocks LIVE trailing-stop close when durable DCA progress shows a pending affordable level', async () => {
+  it('blocks LIVE trailing-stop close during pause when durable DCA progress shows a pending affordable level', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';
 
     const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
     const resolveDcaFundsExhausted = vi.fn(async () => false);
     const deps: any = {
+      readLiveExecutionPause: vi.fn(async () => ({ available: true, paused: true })),
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
           id: 'pos-live-eth-pending-dca-tsl',
@@ -2363,13 +2364,14 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
-  it('allows runtime TTP close when remaining DCA levels are loss-side only', async () => {
+  it('allows runtime TTP close during LIVE pause when remaining DCA levels are loss-side only', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';
 
     const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
     const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {
+      readLiveExecutionPause: vi.fn(async () => ({ available: true, paused: true })),
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
           id: 'pos-ttp-loss-side-dca',
@@ -2586,12 +2588,13 @@ describe('RuntimePositionAutomationService', () => {
     expect(service.getPositionStateSnapshot('pos-live-reopen-old')).toBeNull();
   });
 
-  it('keeps runtime TTP blocked when remaining DCA levels are still profit-side', async () => {
+  it('keeps runtime TTP blocked during LIVE pause when remaining DCA levels are profit-side', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';
 
     const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
     const deps: any = {
+      readLiveExecutionPause: vi.fn(async () => ({ available: true, paused: true })),
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
           id: 'pos-ttp-profit-side-dca',

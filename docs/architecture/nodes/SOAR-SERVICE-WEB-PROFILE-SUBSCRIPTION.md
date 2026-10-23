@@ -17,7 +17,7 @@ tags: [soar-map, service, frontend, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Typed frontend API service for profile subscription read and checkout-intent calls. |
+| Description | Typed frontend API service for profile subscription reads. |
 | File path | apps/web/src/features/profile/services/subscription.service.ts |
 | Related files | apps/web/src/features/profile/types/subscription.type.ts |
 | Parent | [[SOAR-FEATURE-SUBSCRIPTIONS-ADMIN]] |

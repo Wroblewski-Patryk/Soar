@@ -7,6 +7,7 @@ import {
   mergeRuntimeSignalCandles,
 } from '../engine/runtimeSignalMarketDataGateway';
 import { normalizeSymbol } from '../../lib/symbols';
+import { prisma } from '../../prisma/client';
 import { ListBotRuntimeSymbolStatsQueryDto } from './bots.types';
 import {
   parseSignalConditionLines,
@@ -651,6 +652,51 @@ export const listBotRuntimeSessionSymbolStats = async (
     unrealizedPnl: [...unrealizedPnlBySymbol.values()].reduce((acc, value) => acc + value, 0),
   };
   const statBySymbol = new Map(statItems.map((item) => [item.symbol, item]));
+  const [pendingCloseEvents, pendingFeeEvents, unresolvedClosedPositions, unresolvedFeeTrades] = await Promise.all([
+    prisma.botRuntimeEvent.findMany({
+      where: {
+        userId, botId, sessionId, eventType: 'POSITION_CLOSED',
+        payload: { path: ['financialPnlPending'], equals: true },
+        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+      },
+      select: { symbol: true },
+    }),
+    prisma.botRuntimeEvent.findMany({
+      where: { userId, botId, sessionId,
+        payload: { path: ['financialFeePending'], equals: true },
+        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}) },
+      select: { symbol: true },
+    }),
+    prisma.position.findMany({
+      where: {
+        userId, botId, status: 'CLOSED',
+        OR: [{ realizedPnl: null },
+          { trades: { some: { OR: [{ fee: null }, { feePending: true }] } } }],
+        closedAt: { gte: session.startedAt, lte: windowEnd },
+        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+      },
+      select: { symbol: true },
+    }),
+    prisma.trade.findMany({
+      where: {
+        userId, executedAt: { gte: session.startedAt, lte: windowEnd },
+        AND: [
+          { OR: [{ botId }, { position: { botId } }] },
+          { OR: [{ fee: null }, { feePending: true }] },
+        ],
+        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+      },
+      select: { symbol: true },
+    }),
+  ]);
+  const pendingPnlSymbols = new Set([
+    ...pendingCloseEvents.map((item) => item.symbol).filter((symbol): symbol is string => symbol != null),
+    ...unresolvedClosedPositions.map((item) => item.symbol),
+  ]);
+  const pendingFeeSymbols = new Set([
+    ...pendingFeeEvents.map((item) => item.symbol).filter((symbol): symbol is string => symbol != null),
+    ...unresolvedFeeTrades.map((item) => item.symbol),
+  ]);
   const readModel = composeRuntimeSymbolStatsReadModel({
     userId,
     botId,
@@ -660,6 +706,8 @@ export const listBotRuntimeSessionSymbolStats = async (
     sessionUpdatedAt: session.updatedAt,
     symbols,
     statBySymbol,
+    pendingPnlSymbols,
+    pendingFeeSymbols,
     aggregateSummary: {
       totalSignals: summary._sum.totalSignals,
       longEntries: summary._sum.longEntries,

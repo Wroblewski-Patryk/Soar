@@ -72,13 +72,14 @@ describe('requireAuth middleware', () => {
         email: user.email,
         role: 'USER',
         sessionVersion: 1,
+        sessionKind: 'human',
       },
       'old-secret',
       {
         expiresIn: '1h',
         algorithm: 'HS256',
         issuer: 'cryptosparrow',
-        audience: 'cryptosparrow-app',
+        audience: 'cryptosparrow-human-session',
       }
     );
 
@@ -113,6 +114,25 @@ describe('requireAuth middleware', () => {
     expect(res.body.error.message).toBe('Invalid token');
   });
 
+  it('rejects a human claim under the legacy audience and an untyped human audience', async () => {
+    process.env.JWT_SECRET = 'audience-confusion-secret';
+    process.env.JWT_SECRET_PREVIOUS = '';
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
+    for (const [audience, sessionKind] of [
+      ['cryptosparrow-app', 'human'],
+      ['cryptosparrow-human-session', undefined],
+    ] as const) {
+      const token = jwt.sign({
+        userId: 'confused-user', email: 'confused@example.com', role: 'USER',
+        sessionVersion: 1, ...(sessionKind ? { sessionKind } : {}),
+      }, 'audience-confusion-secret', {
+        expiresIn: '1h', algorithm: 'HS256', issuer: 'cryptosparrow', audience,
+      });
+      const response = await request(app).get('/dashboard').set('Cookie', [`token=${token}`]);
+      expect(response.status).toBe(401);
+    }
+  });
+
   it('returns 503 when auth user lookup is temporarily unavailable', async () => {
     vi.spyOn(authJwt, 'verifyAuthToken').mockReturnValue({
       userId: 'db-down-user',
@@ -145,8 +165,9 @@ describe('requireAuth middleware', () => {
           sessionVersion: 1,
           iat: 100,
           exp: 200,
-          aud: 'cryptosparrow-app',
+          aud: 'cryptosparrow-human-session',
           iss: 'cryptosparrow',
+          sessionKind: 'human',
         };
       }
       if (token === newerToken) {
@@ -157,8 +178,9 @@ describe('requireAuth middleware', () => {
           sessionVersion: 1,
           iat: 200,
           exp: 300,
-          aud: 'cryptosparrow-app',
+          aud: 'cryptosparrow-human-session',
           iss: 'cryptosparrow',
+          sessionKind: 'human',
         };
       }
       throw new Error('Invalid token');

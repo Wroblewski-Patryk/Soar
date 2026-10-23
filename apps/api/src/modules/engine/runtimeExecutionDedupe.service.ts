@@ -71,12 +71,19 @@ const retryableErrorClasses = parseRetryableErrorClasses(
     'prisma_client_initialization_error',
     'prisma_client_unknown_request_error',
     'prisma_client_rust_panic_error',
+    'live_execution_unknown',
+    'live_pretrade_paused',
+    'live_pretrade_pause_unavailable',
   ]
 );
 
 export const isRuntimeExecutionRetryableErrorClass = (errorClass?: string | null) => {
   if (!errorClass) return false;
-  return retryableErrorClasses.has(normalizeErrorClass(errorClass));
+  const normalized = normalizeErrorClass(errorClass);
+  // Pause and shared-store outage happen before venue submission. Resuming
+  // must not strand their durable dedupe key, regardless of env overrides.
+  return normalized === 'live_pretrade_paused' ||
+    normalized === 'live_pretrade_pause_unavailable' || retryableErrorClasses.has(normalized);
 };
 
 const recordDedupeMetric = (input: {
@@ -91,6 +98,15 @@ const toPrismaJson = (value: Record<string, unknown>): Prisma.InputJsonValue =>
   value as unknown as Prisma.InputJsonValue;
 
 const isUniqueViolation = (error: unknown) => (error as { code?: string })?.code === 'P2002';
+
+const requiresMaterializedTrade = (commandType: RuntimeExecutionCommandType) =>
+  commandType === 'DCA' || commandType === 'CLOSE';
+
+const hasMaterializedTrade = async (orderId: string, commandType: RuntimeExecutionCommandType) =>
+  Boolean(await prisma.trade.findFirst({
+    where: { orderId, lifecycleAction: commandType === 'DCA' ? 'DCA' : 'CLOSE' },
+    select: { id: true },
+  }));
 
 const resolveRetentionMs = (commandType: RuntimeExecutionCommandType) =>
   commandType === 'OPEN' ? openRetentionMs : defaultRetentionMs;
@@ -248,6 +264,18 @@ type MarkFailedInput = {
 
 export class RuntimeExecutionDedupeService {
   async hasPendingSubmittedDcaForPosition(positionId: string) {
+    // An exchange outcome that is still unknown can add exposure later, even
+    // when the local order has not materialized. Never close on a guessed size.
+    const unknown = await prisma.runtimeExecutionDedupe.findFirst({
+      where: {
+        commandType: 'DCA',
+        status: { in: ['FAILED', 'PENDING'] },
+        errorClass: 'live_execution_unknown',
+        commandFingerprint: { path: ['positionId'], equals: positionId },
+      },
+      select: { id: true },
+    });
+    if (unknown) return true;
     const staleThreshold = new Date(Date.now() - pendingStaleMs);
     const pending = await prisma.runtimeExecutionDedupe.findMany({
       where: {
@@ -313,6 +341,15 @@ export class RuntimeExecutionDedupeService {
     }
 
     if (existing.status === 'SUCCEEDED') {
+      if (requiresMaterializedTrade(input.commandType) && existing.orderId &&
+          !(await hasMaterializedTrade(existing.orderId, input.commandType))) {
+        await prisma.runtimeExecutionDedupe.update({
+          where: { dedupeKey: input.dedupeKey },
+          data: { status: 'PENDING', lastSeenAt: now, errorClass: 'live_execution_unknown' },
+        });
+        recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
+        return { outcome: 'execute', dedupeKey: input.dedupeKey };
+      }
       await prisma.runtimeExecutionDedupe.update({
         where: { dedupeKey: input.dedupeKey },
         data: {
@@ -344,6 +381,11 @@ export class RuntimeExecutionDedupeService {
         if (linkedOrder) {
           const resolvedPositionId = linkedOrder.positionId ?? existing.positionId;
           if (linkedOrder.syncState === 'IN_SYNC' && linkedOrder.status === 'FILLED') {
+            if (requiresMaterializedTrade(input.commandType) &&
+                !(await hasMaterializedTrade(linkedOrder.id, input.commandType))) {
+              recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
+              return { outcome: 'execute', dedupeKey: input.dedupeKey };
+            }
             await prisma.runtimeExecutionDedupe.update({
               where: { dedupeKey: input.dedupeKey },
               data: {
@@ -575,6 +617,11 @@ export class RuntimeExecutionDedupeService {
     });
     if (!existing) return null;
 
+    if (requiresMaterializedTrade(existing.commandType) &&
+        !(await hasMaterializedTrade(input.orderId, existing.commandType))) {
+      return null;
+    }
+
     await prisma.runtimeExecutionDedupe.update({
       where: { dedupeKey: existing.dedupeKey },
       data: {
@@ -599,8 +646,8 @@ export class RuntimeExecutionDedupeService {
 
   async markFailed(input: MarkFailedInput) {
     const now = input.now ?? new Date();
-    await prisma.runtimeExecutionDedupe.update({
-      where: { dedupeKey: input.dedupeKey },
+    await prisma.runtimeExecutionDedupe.updateMany({
+      where: { dedupeKey: input.dedupeKey, status: { not: 'SUCCEEDED' } },
       data: {
         status: 'FAILED',
         lastSeenAt: now,

@@ -2,7 +2,7 @@
 type: docs_map
 status: canonical
 area: operations
-last_verified: 2026-05-23
+last_verified: 2026-10-20
 graph_role: map
 ---
 
@@ -18,15 +18,12 @@ graph_role: map
 
 ## Current State
 
-Use these paths for the current operational reality:
-
-| Path | Use |
-| --- | --- |
-| `.agents/state/current-focus.md` | Current release and proof focus. |
-| `.agents/state/active-mission.md` | Current mission router. |
-| `.agents/state/next-steps.md` | Next executable action. |
-| `.codex/context/TASK_BOARD.md` | Active queue. |
-| `.codex/context/PROJECT_STATE.md` | Current project state. |
+Use the [current release board](../status/current-release-board.md) for the
+exact candidate SHA, GO/NO-GO, evidence boundary, blockers, and single open
+defect queue. The [current product contract](../product/current-version-contract.md)
+owns required behavior; [deployment readiness gates](../operations/deployment-readiness-gates.md)
+own the production proof criteria. Historical release packets do not replace
+the board.
 
 ## Historical Evidence
 

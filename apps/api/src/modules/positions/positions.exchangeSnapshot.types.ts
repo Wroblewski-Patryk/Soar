@@ -1,4 +1,5 @@
 import { Exchange } from '@prisma/client';
+import type { GateFillMarketProof } from '../exchange/ccxtExchangeMarketResolver';
 
 export type ExchangePositionSnapshotItem = {
   symbol: string;
@@ -8,6 +9,8 @@ export type ExchangePositionSnapshotItem = {
   markPrice: number | null;
   unrealizedPnl: number | null;
   marginUsed?: number | null;
+  contractSize?: number | null;
+  gateFuturesEconomics?: GateFillMarketProof | null;
   leverage: number | null;
   marginMode: string | null;
   liquidationPrice: number | null;
@@ -47,7 +50,7 @@ export type ExchangeTradeHistoryItem = {
   price: number;
   quantity: number;
   notional: number;
-  feeCost: number;
+  feeCost: number | null;
   feeCurrency: string | null;
   feeRate: number | null;
   executedAt: string | null;

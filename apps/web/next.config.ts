@@ -50,6 +50,7 @@ const buildCsp = (nodeEnv: string | undefined) => {
 };
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   async headers() {
     const csp = buildCsp(process.env.NODE_ENV);
     const headers = [

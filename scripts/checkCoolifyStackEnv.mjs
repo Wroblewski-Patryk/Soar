@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const REQUIRED_KEYS = [
   'SOURCE_COMMIT',
+  'API_STACK_IMAGE',
   'SOURCE_BRANCH',
   'COOLIFY_BRANCH',
   'SERVICE_FQDN_API_3001',
@@ -45,6 +46,7 @@ const RECOMMENDED_KEYS = [
 const PLACEHOLDER_RE = /(?:^|[_=:])CHANGEME|CHANGEME_|_CHANGEME|example\.com|EXPECTED_GIT_SHA/i;
 const SECRETISH_RE = /(?:SECRET|PASSWORD|TOKEN|KEY|DATABASE_URL|REDIS_URL|AUTH)/i;
 const FULL_SHA_RE = /^[0-9a-f]{40}$/i;
+const PINNED_IMAGE_RE = /^[^@\s]+@sha256:[0-9a-f]{64}$/i;
 const ROUTING_KEYS = new Set([
   'SERVER_URL',
   'CLIENT_URL',
@@ -159,6 +161,12 @@ const buildValueIssues = (env, { allowPlaceholders, requiredKeys, recommendedKey
   if (requiredKeys.includes('SOURCE_COMMIT') && get('SOURCE_COMMIT') && !shouldSkipPlaceholder('SOURCE_COMMIT')) {
     if (!FULL_SHA_RE.test(get('SOURCE_COMMIT'))) {
       add('SOURCE_COMMIT', 'must be a full 40-character git SHA');
+    }
+  }
+
+  if (requiredKeys.includes('API_STACK_IMAGE') && get('API_STACK_IMAGE') && !shouldSkipPlaceholder('API_STACK_IMAGE')) {
+    if (!PINNED_IMAGE_RE.test(get('API_STACK_IMAGE'))) {
+      add('API_STACK_IMAGE', 'must be a repository@sha256:<64-character OCI index digest> reference');
     }
   }
 

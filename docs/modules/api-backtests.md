@@ -101,11 +101,33 @@ Out of scope:
 
 ## 6. Security and Risk Guardrails
 - Dashboard auth + ownership checks across run/trade/report/timeline surfaces.
+- Run detail and create responses explicitly select public fields; execution
+  tokens and lease expiry remain internal to the worker repository.
 - Timeline/report are run-scoped to user-owned runs only.
 - Safe update wrappers protect against missing-run race conditions.
 
 ## 7. Observability and Operations
-- Run queue and job modules provide controlled execution lifecycle.
+- PostgreSQL `BacktestRun.executionToken` and `executionLeaseExpiresAt` own
+  execution authority. Progress updates require an unexpired matching token.
+  Terminal status, report, and replacement trades commit in one transaction
+  under that token. The token is cleared at completion.
+- A run that fails before report assembly commits no trades. Its diagnostic
+  report has `reportReady: false`, zero trade counts, and null financial
+  aggregates; terminal `liveProgress` also clears partial result totals.
+- The Redis worker reconciles missing `PENDING` and expired `RUNNING` jobs on
+  startup and every 30 seconds. It leaves an active `RUNNING` lease alone and
+  removes terminal or missing IDs left in `processing` after an interrupted
+  acknowledgement. A crashed worker's run becomes recoverable after its
+  ten-minute lease expires.
+- Run creation persists the run and pending report atomically. An enqueue
+  failure returns HTTP 503 with `runId` and leaves the run `PENDING` for worker
+  recovery. Operators must not run old and new backtest worker code together:
+  an old worker does not honor execution tokens.
+- A client receiving that 503 must read the returned `runId` before submitting
+  another create request; the create endpoint has no request idempotency key.
+- Local process proof uses two worker processes, real Redis, and an isolated
+  `_test` database. Production worker ownership and end-to-end UI proof require
+  separate post-deployment verification.
 - Rich parity and replay tests protect deterministic behavior across strategy modes.
 - New backtest history keeps its creation-time strategy and market-universe
   context stable after later strategy or universe edits.

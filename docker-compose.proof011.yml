@@ -1,0 +1,55 @@
+# Opt-in, isolated process proof. Run only through scripts/run011-supervised-proof.mjs.
+services:
+  proof-postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: soar_position_parity_011_test
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - proof-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d soar_position_parity_011_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  proof-redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - proof-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  proof-worker:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker.execution
+      target: build
+    image: soar-011-supervised-proof:${SOAR_011_PROOF_ID:?unique proof ID required}
+    working_dir: /app/apps/api
+    command: ["node", "scripts/runtime011-supervised-proof.mjs"]
+    restart: unless-stopped
+    depends_on:
+      proof-postgres:
+        condition: service_healthy
+      proof-redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres@proof-postgres:5432/postgres
+      TEST_DATABASE_URL: postgresql://postgres@proof-postgres:5432/soar_position_parity_011_test
+      REDIS_URL: redis://proof-redis:6379
+      JWT_SECRET: ${SOAR_011_TEST_JWT:?temporary test secret required}
+      RUN_011_SUPERVISED_ID: ${SOAR_011_PROOF_ID:?unique proof ID required}
+      WORKER_MODE: inline
+      WORKER_BACKTEST_OWNERSHIP: inline
+      RUNTIME_PAPER_TAKER_FEE_RATE: "0.0004"
+
+volumes:
+  proof-postgres-data:
+  proof-redis-data:

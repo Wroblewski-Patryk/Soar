@@ -10,9 +10,7 @@ Provide one repeatable setup path for hosting CryptoSparrow on a Linux VPS with 
 - domain routing,
 - deployment checks.
 
-This guide is for the active PROD environment. Stage is intentionally parked as
-of 2026-04-29 to avoid unused redeploy queues and duplicated VPS resource usage.
-Reintroduce it only when the project again needs pre-production validation.
+This guide operates the existing Coolify production VPS. Owner decision (2026-10-23): development and isolated testing run on local Windows; there is no separate STAGE or second VPS. Local validation is not production proof, and production deployment needs a separate owner decision.
 
 ## Target Topology
 
@@ -36,11 +34,7 @@ Production:
 - Web: `soar.luckysparrow.ch`
 - API: `api.soar.luckysparrow.ch`
 
-Stage:
-- currently disabled/removed from active Coolify deployment
-- previous pattern, if reintroduced later:
-  - Web: `stage.soar.luckysparrow.ch`
-  - API: `stage-api.soar.luckysparrow.ch`
+No STAGE domains or services are required for the current Soar release path.
 
 ## Prerequisites
 
@@ -54,12 +48,24 @@ Repository requirements:
 - monorepo available to Coolify
 - lockfile present (`pnpm-lock.yaml`)
 
+## Mandatory Gate Before Production Actions
+
+Steps 1–5 describe configuration; they do not authorize creating, restarting
+or redeploying production resources. Before any such mutation, record separate
+owner approval for the exact SHA and window, local Windows acceptance, the
+production backup/restore and rollback path, and migration compatibility.
+Before any production migration or candidate API/worker/stack start, stop the
+old workers and old API (which may consume work inline), read back
+`Running=false` and `Pid=0`, and pass the worker-switch preflight. If Coolify
+would auto-start a resource before this gate, defer its creation or return
+**STOP/NO-GO**. Step 5B is the detailed Service Stack cutover under Step 8,
+not an alternate route around this gate.
+
 ## Step 1: Create Coolify Project and Environment
 
 1. In Coolify, create project: `cryptosparrow`.
-2. Create or keep only the `production` environment active.
-3. If stage is reintroduced later, keep stage and prod resources separate and
-   disable auto-deploy until the stage workflow is intentionally restored.
+2. Keep only the existing `production` environment active; do not provision a second VPS or STAGE for this release.
+3. Keep local Windows test resources isolated from production data and credentials.
 
 ## Step 2: Provision Data Services
 
@@ -93,13 +99,13 @@ Health checks:
 - `/health`
 - `/ready`
 
-Container liveness for the Coolify Service Stack uses `/health`. Do not use
-`/ready` as the Docker healthcheck because it is a dependency/readiness gate
-and can block Web/workers from starting during a parallel-stack rollout. Always
-verify `/ready` separately in the post-deploy smoke before accepting traffic.
-Web and worker services depend on API `service_started`, not `service_healthy`,
-so `docker compose up -d` can finish while readiness is still being verified by
-explicit smoke checks.
+Container liveness for the Coolify Service Stack uses `/health`; verify the
+dependency/readiness gate `/ready` separately before starting Web or workers.
+Web and worker services depend on API `service_started`, not migration success
+or API readiness. A full `docker compose up -d` can start workers before
+`prisma migrate deploy` finishes, so the production cutover must follow the
+selective start and migration/schema readback order in Step 5B (or the
+separately controlled Applications in Step 8).
 
 Required environment variables:
 - `NODE_ENV=production`
@@ -177,6 +183,20 @@ Each worker service config:
   - `workers-execution` -> `apps/api/Dockerfile.worker.execution`
 - Exposed port: none
 
+On the 8 GiB production VPS, configure Coolify **Resource Limits** for each
+separate application before redeploying: API memory `2g` and memory+swap `3g`,
+web `1g` and memory+swap `1536m`, each worker `768m` and memory+swap `1g`.
+Only after the mandatory production gate and Step 8 approval, old-consumer
+stop/readback and preflight may the operator save/redeploy these applications
+in Step 8 order: API first, migration/schema readback, Web, then workers one at
+a time. A save or bulk redeploy that starts workers sooner is **STOP/NO-GO**.
+Verify the recreated containers with
+`docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' <container>`.
+These values are initial host-protection limits after the 2026-10-17 global OOM;
+adjust only against measured peak usage and keep capacity for Coolify,
+PostgreSQL, Redis, other applications, and builds. A direct `docker update` on
+the current container does not persist through Coolify container replacement.
+
 Shared worker env:
 - `NODE_ENV=production`
 - `DATABASE_URL=<coolify-postgres-url>`
@@ -200,6 +220,10 @@ Operational rule:
 Before changing Coolify Dockerfiles, service commands, worker ownership,
 runtime env wiring, or deploy smoke scripts, run the local Docker app stack from
 the repository root:
+
+Set `SOURCE_COMMIT` in `.env.docker` to the exact lowercase 40-character
+`git rev-parse HEAD` value before the build. The API and four worker images
+reject missing or malformed values and label the accepted value as their revision.
 
 ```bash
 pnpm run docker:app:config
@@ -225,7 +249,13 @@ proof has been explicitly authorized for the current task.
 ## Step 5B: Preferred Coolify Service Stack Migration
 
 As of 2026-05-25, the preferred production shape for app processes is a single
-Coolify Service Stack using `docker-compose.coolify.yml`.
+Coolify Service Stack using `docker-compose.coolify.yml`. This Step 5B
+implements the approved Step 8 rollout; preparing a Compose/resource plan is
+not permission to create or start it. If Coolify creates and starts a resource
+as one action, defer that action until the owner/backup/local proof and
+old-consumer stop/readback/preflight gates above have passed. Creation that
+starts the whole stack is **STOP/NO-GO** even after those gates; the API must
+run and finish migration before any candidate worker starts.
 
 Why this exists:
 - the previous production shape used six separate Coolify Applications for API,
@@ -266,40 +296,301 @@ Required Coolify setup:
 6. Confirm `API_KEY_ENCRYPTION_KEYS` and
    `API_KEY_ENCRYPTION_ACTIVE_VERSION` match current production. Do not rotate
    encryption keys during this topology migration.
-7. Keep the old six Applications present until the stack passes smoke and the
-   release owner accepts cutover.
+7. Keep the old six Application resources registered for rollback until the
+   stack passes smoke and the release owner accepts cutover. Their worker
+   processes must not overlap the new stack workers.
 
 Cutover order:
+Before step 1, record the owner's separate approval for the exact SHA and
+window, local acceptance, backup/restore and rollback readiness, and migration
+compatibility. No production migration or candidate API/worker start is allowed
+until the old consumers are stopped and read back in step 5 and the preflight
+passes in step 6. A resource-creation action that auto-starts must wait too,
+and it must start only API, never the whole stack.
+
 1. Freeze normal deploy promotion.
 2. Record current stable SHA and current Coolify resource list.
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
-4. Deploy the new stack without deleting old resources.
-5. Confirm API health:
+4. Prepare the candidate API image from the selected exact Git SHA **without
+   starting any candidate process**, using the isolated Buildx path below.
+   Preserve its builder-generated metadata file. The preflight verifies the
+   registry attestation, including its resolved Git SHA, BuildKit invocation ID,
+   subject manifest and the pinned OCI index/config digest. The local Buildx
+   reference must match the image's local build identity; if Docker drops that
+   identity, this gate fails. The revision label is copied from the build ARG
+   and is only a consistency check. Both Compose files now
+   require `API_STACK_IMAGE=repository@sha256:<OCI index digest>` and have no API
+   build stanza; a missing image reference fails configuration. A tag, label or
+   web build-info alone is not provenance. Confirm separately that the actual
+   Coolify start consumes this digest without rebuilding it, or this cutover is
+   NO-GO.
+5. Stop the old four worker Applications and old API. This conservative cutover
+   does not rely on an unverified claim that the old API has no inline worker.
+   Wait for every old worker and API container to report `Running=false` and
+   `Pid=0`; do not merely request a stop. Keep the old Applications registered
+   and do not delete their data.
+6. Capture a fresh, complete, no-secret Coolify resource inventory and run the
+   [worker switch preflight](#worker-switch-preflight) **before** starting the
+   candidate API on the target VPS with the same resolved `SOURCE_COMMIT` and
+   `API_STACK_IMAGE` values intended for Compose. It checks local Git HEAD and
+   clean status, builder metadata, the pinned OCI index/platform/config and
+   attestation digests, the API image ID and the rendered references of all five roles in both
+   Compose files. It also cross-checks the snapshot against a live, read-only
+   enumeration of all Docker containers. A FAIL,
+   missing or additional Soar container, unknown state, stale snapshot, source
+   mismatch, or image mismatch blocks the start. Its local procedural PASS is
+   not deployed proof. After starting the candidate API in step 7, bind the
+   actual Coolify resource/deployment ID and running image digest to the Buildx
+   record before starting workers. Missing or mismatched readback is
+   **STOP/NO-GO**; stop the candidate and follow the rollback guard.
+7. Before any candidate start, verify Coolify can enforce separate starts for
+   API, Web, and each worker while the remaining services stay stopped.
+   `depends_on: condition: service_started` in `docker-compose.coolify.yml`
+   does not wait for migration success. If separate starts cannot be enforced,
+   the Service Stack cutover is **STOP/NO-GO**; use the separately controlled
+   Applications in Steps 3–5 under the Step 8 sequence instead. Never use a
+   one-click full-stack start to bypass this order. Only after the
+   approval/prerequisites above and the stop/readback and preflight in steps
+   5–6 (Step 8 items 1–2), start **only the candidate API** from the verified
+   immutable image. Keep Web and all four candidate workers stopped. The API
+   default command runs `prisma migrate deploy`, so its start is the controlled
+   production migration step. Do not rebuild from a moving branch; if the
+   deployment mechanism rebuilds or changes the image ID, stop acceptance and
+   investigate.
+8. Confirm successful `prisma migrate deploy` from the API startup log and
+   read back migration status and the expected schema on the existing
+   production database. Record the result for the exact SHA. A failed or
+   uncertain migration/readback is **STOP/NO-GO**; keep all candidate workers
+   stopped and follow the rollback guard. Confirm the API image readback from
+   step 6 and API health:
    - stack `api` is healthy through the container liveness `/health` check;
    - public `https://api.soar.luckysparrow.ch/health` returns `200`;
    - public `https://api.soar.luckysparrow.ch/ready` returns `200`.
-6. Confirm Web health:
+9. Only after step 8, start Web and confirm its health:
    - stack `web` is healthy;
    - public `https://soar.luckysparrow.ch/` returns `200`;
    - `https://soar.luckysparrow.ch/api/build-info` reports the expected
      `SOURCE_COMMIT`.
-7. Confirm worker state:
-   - all four worker containers are running;
-   - no crash-loop or restart storm is visible in stack logs;
-   - worker readiness/runtime freshness proof passes.
-8. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
+10. Only after migration/schema and API/Web readiness are confirmed, start
+    the four candidate workers in controlled order, one at a time. Confirm
+    worker state:
+     - all four worker containers are running;
+     - the running API and all four workers have the preflight image ID and
+       revision label; no old worker container is running;
+     - no crash-loop or restart storm is visible in stack logs;
+     - worker readiness/runtime freshness proof passes.
+11. Run the post-deploy smoke checklist and release/SLO gate appropriate for the
    candidate.
-9. Only after the stack is accepted, stop or detach domains from the old six
-   Applications. Do not delete them until at least one stable monitoring window
-   is captured.
+12. Only after the stack is accepted, detach old API/Web domains if needed.
+    Leave old worker Applications stopped. Do not delete old resources until at
+    least one stable monitoring window is captured.
 
-Rollback from stack cutover:
-- routing/app failure: reattach domains or route traffic back to the old
-  `soar-api` and `soar-web` Applications, then stop the stack app services;
-- worker-only failure: stop the stack workers and restart the old worker
-  Applications if their SHA is compatible with the current schema;
-- schema/migration failure: do not run destructive ad hoc rollback; use only a
-  schema-compatible app rollback or the approved backup/restore path.
+### Worker switch preflight
+
+Build the runtime image from a full, immutable Git commit in an isolated
+registry/builder first. This is a **build**, never a production deploy. Use a
+registry and repository authorized for candidate images; do not put credentials
+in the metadata file or repository. The example uses a shell on the isolated
+builder, with `SOURCE_COMMIT` set to the exact pushed Git SHA and `CANDIDATE_TAG`
+set to a temporary registry tag. Preserve the generated metadata alongside the
+candidate release evidence, outside the source tree:
+
+```bash
+docker buildx build --platform linux/amd64 --target runtime \
+  --attest=type=provenance,mode=min,version=v1 \
+  --metadata-file "$BUILD_METADATA" \
+  --build-arg "SOURCE_COMMIT=$SOURCE_COMMIT" \
+  -f apps/api/Dockerfile -t "$CANDIDATE_TAG" --push \
+  "https://github.com/Wroblewski-Patryk/Soar.git#$SOURCE_COMMIT"
+# Read containerimage.digest from BUILD_METADATA, then pin the registry digest.
+API_STACK_IMAGE="${CANDIDATE_TAG%:*}@$(node -p \
+  "require(process.argv[1])['containerimage.digest']" "$BUILD_METADATA")"
+docker pull "$API_STACK_IMAGE"
+pnpm run ops:worker-switch:build-record -- \
+  --build-metadata "$BUILD_METADATA" --expected-sha "$SOURCE_COMMIT"
+```
+
+The metadata must describe `target=runtime`; a base-stage probe does not pass.
+The validator hashes the registry's OCI index, platform manifest, image config,
+attestation manifest and in-toto statement against their pinned digests. It
+checks the attestation subject, resolved Git SHA, source material and BuildKit
+invocation ID. The metadata's Buildx reference must match Docker's local image
+build identity; missing identity fails. The OCI index, platform manifest and
+config digests are different identities. This local registry attestation is
+unsigned and depends on trust in the isolated builder and registry. Neither its
+PASS nor an operator-edited metadata file proves which image Coolify started;
+obtain an independent production readback before GO. The isolated registry must
+allow authorized read-only access to the config and attestation blobs; a 401 or
+missing blob fails this gate without printing credentials.
+
+Run this only after the candidate image is built and the old workers **and old
+API** have stopped, immediately before the candidate starts. The script reads
+the operator's Coolify resource snapshot and independently calls `docker ps`
+and a field-limited `docker inspect` on **all** containers on the target VPS.
+It also reads Git HEAD and clean status in this checkout, the Buildx metadata,
+OCI manifests, rendered Compose image references, and the ID and revision label
+of the immutable `API_STACK_IMAGE` reference. Export
+`SOURCE_COMMIT` and `API_STACK_IMAGE` from the same resolved build/start plan
+before running it; missing values, a mutable tag, or a dirty checkout fail.
+It reads no container environment values and performs no Docker mutation. It
+does not contact Coolify, Redis, or the database; the operator must obtain the
+Coolify resource list through authorized read-only access. Do not put an
+environment dump, credential, user data, or backtest ID in the snapshot.
+
+```bash
+git rev-parse HEAD
+git status --porcelain=v1 --untracked-files=all
+docker compose -f docker-compose.coolify.yml config --images
+pnpm run ops:worker-switch:preflight -- --snapshot <fresh-no-secret-snapshot.json> --expected-sha <full-candidate-sha> --build-metadata "$BUILD_METADATA"
+```
+
+If Compose needs an explicit environment file, pass `--compose-env-file <path>`
+to the preflight; the validator parses the rendered configuration in memory and
+never prints its environment section. Run only in an authorized environment.
+
+The snapshot has `schemaVersion: 1`, a UTC `capturedAt` no more than five
+minutes old, `inventoryComplete: true`, `coolifyProjectName` matching the
+Coolify project label on the target host, and
+`inventorySource: "coolify-and-docker-readback"`. `oldApplications` must contain
+exactly one resource entry each for `api`, `workers-market-data`,
+`workers-market-stream`, `workers-backtest`, and `workers-execution`, with all
+their container IDs and `running`/`pid` readbacks. Every old API and worker
+container must be stopped. `passiveResources` identifies the old Web resource
+and any Soar Postgres/Redis resources that may remain running; the preflight
+rejects unlisted or ambiguous Soar containers. The
+`provenance` object needs `coolifyResourceId`, `coolifyDeploymentId`, the
+Coolify-resolved source `coolifyResolvedSha`, pinned `apiImageRef`, the built
+`apiImageId`, its
+`apiImageRevision` label, and `plannedImageIds` for the API and four workers.
+All SHA fields must equal the exact candidate SHA, and every planned image ID
+must equal the candidate API image ID. The preflight compares `apiImageRef` to
+the local `API_STACK_IMAGE`, its resolved image ID and the independent Buildx
+metadata. The pasted Compose Service has no Git source. Do not infer source
+provenance from an operator-entered `coolifyResolvedSha`; verify the actual
+Coolify deployment and running image against the pinned digest before GO. Do not
+mark `inventoryComplete` until every old Soar worker resource and container on
+the host is accounted for.
+Use Coolify resource UUIDs, not numeric database IDs, for `resourceId`; use the
+exact `coolify.projectName` label for `coolifyProjectName`. If the host or
+resource labels cannot establish that mapping, the preflight must fail.
+
+The snapshot structure is:
+
+```json
+{
+  "schemaVersion": 1,
+  "capturedAt": "<current UTC ISO time>",
+  "inventoryComplete": true,
+  "inventorySource": "coolify-and-docker-readback",
+  "coolifyProjectName": "<exact Soar project label>",
+  "passiveResources": [
+    { "role": "web", "resourceId": "<old Web resource UUID>" },
+    { "role": "postgres", "resourceId": "<Soar Postgres resource UUID, if in project>" },
+    { "role": "redis", "resourceId": "<Soar Redis resource UUID, if in project>" }
+  ],
+  "provenance": {
+    "coolifyResourceId": "<candidate stack resource ID>",
+    "coolifyDeploymentId": "<candidate build record ID>",
+    "coolifyResolvedSha": "<40-character source SHA from Coolify>",
+    "apiImageRef": "<immutable sha256:image-ID or repository@sha256:digest>",
+    "apiImageId": "sha256:<64-character image ID>",
+    "apiImageRevision": "<40-character OCI revision label>",
+    "plannedImageIds": {
+      "api": "sha256:<same image ID>",
+      "workers-market-data": "sha256:<same image ID>",
+      "workers-market-stream": "sha256:<same image ID>",
+      "workers-backtest": "sha256:<same image ID>",
+      "workers-execution": "sha256:<same image ID>"
+    }
+  },
+  "oldApplications": [
+    { "role": "api", "resourceId": "<old API resource>", "containers": [
+      { "id": "<64-character container ID>", "running": false, "pid": 0 }
+    ] },
+    { "role": "workers-market-data", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-market-stream", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-backtest", "resourceId": "<old resource>", "containers": [] },
+    { "role": "workers-execution", "resourceId": "<old resource>", "containers": [] }
+  ]
+}
+```
+
+Replace every placeholder from live readbacks; omit Postgres/Redis entries only
+when those resources are outside this Coolify project. Each API/worker
+`containers` array must contain every old container, including stopped
+replicas. Empty arrays deliberately fail. Keep the filled snapshot outside the
+repository.
+
+The script reports `PASS_LOCAL_PROCEDURAL_ONLY` or failure codes and fails closed when
+Docker access is unavailable, the container set or running state changes during
+the read, an extra replica appears, or an active container cannot be attributed
+to a declared resource. On a shared VPS, an active unrelated infrastructure
+container also blocks this strict gate; investigate its ownership rather than
+guessing that it is safe to ignore. The Coolify
+resource list is still operator supplied; `inventoryComplete: true` is never
+sufficient by itself. If its completeness cannot be established or legacy
+labels leave ownership uncertain, the result is FAIL.
+The live Docker read is a point-in-time gate: keep deployments frozen and run
+it immediately before start. `PASS_LOCAL_PROCEDURAL_ONLY` is **not** deployment
+GO. Git HEAD/clean status and `docker image inspect` are separate local
+readbacks; neither binds the image contents to that Git tree. The ARG-supplied
+revision label is only a consistency check. An independent Coolify build record
+or trusted build attestation must identify the resolved Git SHA and resulting
+image ID under the same deployment/build ID, then match the pinned reference's
+Docker readback. We have no authorized production read of such a binding in
+this task; production cutover remains **NO-GO** until it is obtained and
+independently reviewed. The post-start image-ID and Web build-info checks are
+separate acceptance gates.
+Public `/health`, `/ready`, and worker heartbeats do not prove that old code
+has stopped or that a backtest moved from `PENDING` to a terminal state.
+
+### Rollback from stack cutover
+
+From the first start of **any** new stack process (including Web, before domain
+cutover), every rollback to an old API or worker follows mode D below. A
+complete Coolify deployment history and host readback may establish that no new
+stack process has ever started in this cutover; only then may the operator use
+the schema-compatible app-version mode A after resolving in-flight and
+`UNKNOWN` work. Missing or uncertain start history
+requires mode D, and missing mode D evidence is **STOP/NO-GO**, never a reason
+to fall back to mode A or a one-click restore. This order applies to routing,
+API, worker-only, and schema failures. The old API may still consume work inline.
+The operator performs these steps; a failed gate does not trigger an automatic
+destructive rollback.
+
+1. **Stop all new stack processes.** Freeze promotion, then request stop of the
+   new `api`, `web`, `workers-market-data`, `workers-market-stream`,
+   `workers-backtest`, and `workers-execution`. Keep Postgres, Redis/AOF, and
+   evidence intact. Prevent automatic restart or redeploy of these six new
+   processes during rollback. Do not start any old API or worker yet.
+2. **Verify all new processes stopped.** On the target host, enumerate every
+   container for the new `api`, `web`, `workers-market-data`,
+   `workers-market-stream`, `workers-backtest`, and `workers-execution` resources,
+   including replicas. Read back `Running=false` and `Pid=0` for each container;
+   also check for unassigned Soar consumers. A missing resource, active process,
+   incomplete inventory, or unknown state is **STOP/NO-GO** for old API or worker
+   startup. A stop request or green `/health` is not proof of exit.
+3. **Resolve in-flight and unknown work.** Inspect authorized queue, database,
+   and order-intent status readbacks before choosing a recovery version. Any
+   unresolved in-flight job or `UNKNOWN` exchange outcome is **STOP/NO-GO** for
+   restarting an older consumer until the incident owner records a safe
+   reconciliation decision. Preserve the original run/order identity; do not
+   blindly requeue backtests, replay orders, or infer completion from health.
+4. **Confirm rollback compatibility.** Record the exact old API/worker SHAs and
+   prove they are compatible with the current database schema, Redis state,
+   execution tokens, and LIVE order-intent contract. If compatibility is
+   unproven, keep the old consumers stopped and choose a compatible recovery
+   version. No ad hoc destructive schema rollback or automatic restore.
+5. **Restore old applications.** Only after steps 2–4 pass, repeat the
+   `Running=false`/`Pid=0` readback immediately before starting the old API and
+   four worker Applications as one compatible set; any changed state is
+   **STOP/NO-GO**. Then restore the old Web route if needed. Confirm the old
+   consumers' exact SHA and worker ownership, queue
+   readiness, one terminal result for any recovered backtest, and no duplicate
+   effects. Keep all six new stack processes stopped throughout this check.
+
+Run `pnpm run ops:worker-switch:rollback-order:test` to check the documented
+stop-before-start sequence. This static check does not prove target-host state.
 
 Local validation before using the stack manifest:
 
@@ -369,39 +660,55 @@ Quick verification checklist:
 4. `curl -I https://<web-env-domain>/_next/static/...` should be cacheable (`public, max-age` or equivalent immutable policy)
 5. Dashboard runtime data should update after hard refresh without stale payload replay.
 
-## Step 7: Migrations Before Go-Live
+## Step 7: Local Migration Proof (Windows)
 
-Before first stage/prod release:
-1. Run DB migration job against target DB.
-2. Confirm Prisma schema is up to date.
-3. Confirm API starts without migration drift errors.
+Before requesting a production window, validate the exact candidate SHA on an
+isolated local PostgreSQL `_test` database and Redis as described in the
+[deployment migration strategy](deployment-migration-strategy.md). Run migration
+status and `prisma migrate deploy` against `_test`; record the migration list,
+exit status, SHA and local API compatibility when a local start is authorized.
+This is local evidence only. Do not connect this step to production data or
+start the candidate API against PROD: API startup itself runs
+`prisma migrate deploy` unless `API_AUTO_MIGRATE=false`.
 
-If migration fails, do not continue deployment.
+## Step 8: Owner-Approved Production Rollout
 
-Note:
-- API startup runs `prisma migrate deploy` automatically (safe/idempotent path).
-- Do **not** use destructive commands like `prisma migrate reset` or reseeding in production.
-
-## Step 8: Production Rollout
-
-1. Deploy the selected SHA to PROD during a controlled window.
-2. Run same health checks.
-3. Run smoke checks from runbook:
-   - `docs/operations/v1-ops-runbook.md`
-4. Record deployment evidence.
+1. Obtain separate owner approval for the exact SHA and controlled production
+   window. Verify local acceptance, production backup/restore checkpoint,
+   rollback path and migration compatibility before touching PROD.
+2. Complete the stop-before-start worker-switch preflight and stop old worker
+   consumers; read back that they are stopped **before any production migration
+   deploy or candidate API start**. If old API can consume jobs inline, include
+   it in the stop/readback gate. A one-click start that bypasses this pause is
+   not an approved cutover.
+3. Only after steps 1–2, run the approved production migration sequence on the
+   existing Coolify database. If candidate API startup performs
+   `prisma migrate deploy`, that API start also waits until steps 1–2 are complete. Confirm
+   migration/schema readback; failure is STOP/NO-GO and must not start new
+   workers. Never use `prisma migrate reset` or reseed production.
+4. After migration succeeds, complete API/Web readiness and start candidate
+   workers in controlled order; verify their image revisions match the exact
+   SHA and old consumers remain stopped.
+5. Run production health and protected signed-in user/admin smoke from
+   [post-deploy smoke](post-deploy-smoke-checklist.md) and
+   `docs/operations/v1-ops-runbook.md`. Record production proof separately
+   from local tests; missing proof keeps release `NO-GO`.
 
 ## Rollback Baseline
 
 If post-deploy health fails:
-1. Roll back API/Web to previous stable release.
-2. Keep DB safety in mind (prefer backward-compatible migrations).
-3. Re-validate `/health` and `/ready`.
-4. Log incident and rollback reason.
+1. After any new Service Stack process starts, or if its start history is
+   uncertain, follow mode D in the
+   [rollback stop-before-start sequence](#rollback-from-stack-cutover) before
+   starting any old API or worker, even before domain cutover.
+2. Use a previous stable, schema-compatible release; preserve DB/Redis state.
+3. Re-validate `/health`, `/ready`, worker readiness, and queue outcomes.
+4. Log the incident, rollback decision, and exact SHAs.
 
 ## Common Failure Points
 
 1. Wrong `NEXT_PUBLIC_API_BASE_URL` -> web cannot reach API.
-2. Reintroduced stage using prod DB/Redis by mistake.
+2. Local test configuration points to production DB/Redis by mistake.
 3. Missing worker service -> runtime data stale.
 4. Wrong/missing cookie session config (`COOKIE_DOMAIN`, `COOKIE_SAME_SITE`) for deployed domains.
 5. API CORS not matching web domain.

@@ -10,6 +10,8 @@ import {
   withRuntimeMonitoringTimeout,
 } from './runtimeMonitoringAggregateCache';
 
+const sumKnownFinancial = (left: number | null, right: number | null): number | null => left == null || right == null ? null : left + right;
+
 type RuntimeSessionListItem = Awaited<ReturnType<typeof listRuntimeSessionsWithSummary>>[number];
 type RuntimeSymbolStatsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionSymbolStats>>>;
 type RuntimePositionsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionPositions>>>;
@@ -17,10 +19,7 @@ type RuntimeTradesResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntim
 
 type RuntimeAggregateCacheValue = Awaited<ReturnType<typeof getBotRuntimeMonitoringAggregateUncached>>;
 
-const runtimeAggregateCacheTtlMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_TTL_MS ?? '30000',
-  10,
-);
+const runtimeAggregateCacheTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_TTL_MS ?? '30000', 10);
 const runtimeAggregateCacheEnabled =
   process.env.NODE_ENV !== 'test' && Number.isFinite(runtimeAggregateCacheTtlMs) && runtimeAggregateCacheTtlMs > 0;
 const runtimeAggregateCache = new Map<string, { expiresAt: number; value: RuntimeAggregateCacheValue }>();
@@ -648,12 +647,12 @@ const getBotRuntimeMonitoringAggregateUncached = async (
         exits: existing.exits + item.exits,
         dcaCount: existing.dcaCount + item.dcaCount,
         closedTrades: existing.closedTrades + item.closedTrades,
-        winningTrades: existing.winningTrades + item.winningTrades,
-        losingTrades: existing.losingTrades + item.losingTrades,
-        realizedPnl: existing.realizedPnl + item.realizedPnl,
-        grossProfit: existing.grossProfit + item.grossProfit,
-        grossLoss: existing.grossLoss + item.grossLoss,
-        feesPaid: existing.feesPaid + item.feesPaid,
+        winningTrades: sumKnownFinancial(existing.winningTrades, item.winningTrades),
+        losingTrades: sumKnownFinancial(existing.losingTrades, item.losingTrades),
+        realizedPnl: sumKnownFinancial(existing.realizedPnl, item.realizedPnl),
+        grossProfit: sumKnownFinancial(existing.grossProfit, item.grossProfit),
+        grossLoss: sumKnownFinancial(existing.grossLoss, item.grossLoss),
+        feesPaid: sumKnownFinancial(existing.feesPaid, item.feesPaid),
         openPositionCount:
           currentSnapshotTs >= existingSnapshotTs ? item.openPositionCount : existing.openPositionCount,
         openPositionQty:
@@ -753,12 +752,12 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       exits: acc.exits + row.symbolStats.summary.exits,
       dcaCount: acc.dcaCount + row.symbolStats.summary.dcaCount,
       closedTrades: acc.closedTrades + row.symbolStats.summary.closedTrades,
-      winningTrades: acc.winningTrades + row.symbolStats.summary.winningTrades,
-      losingTrades: acc.losingTrades + row.symbolStats.summary.losingTrades,
-      realizedPnl: acc.realizedPnl + row.symbolStats.summary.realizedPnl,
-      grossProfit: acc.grossProfit + row.symbolStats.summary.grossProfit,
-      grossLoss: acc.grossLoss + row.symbolStats.summary.grossLoss,
-      feesPaid: acc.feesPaid + row.symbolStats.summary.feesPaid,
+      winningTrades: sumKnownFinancial(acc.winningTrades, row.symbolStats.summary.winningTrades),
+      losingTrades: sumKnownFinancial(acc.losingTrades, row.symbolStats.summary.losingTrades),
+      realizedPnl: sumKnownFinancial(acc.realizedPnl, row.symbolStats.summary.realizedPnl),
+      grossProfit: sumKnownFinancial(acc.grossProfit, row.symbolStats.summary.grossProfit),
+      grossLoss: sumKnownFinancial(acc.grossLoss, row.symbolStats.summary.grossLoss),
+      feesPaid: sumKnownFinancial(acc.feesPaid, row.symbolStats.summary.feesPaid),
     }),
     {
       totalSignals: 0,
@@ -767,18 +766,18 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       exits: 0,
       dcaCount: 0,
       closedTrades: 0,
-      winningTrades: 0,
-      losingTrades: 0,
-      realizedPnl: 0,
-      grossProfit: 0,
-      grossLoss: 0,
-      feesPaid: 0,
+      winningTrades: 0 as number | null,
+      losingTrades: 0 as number | null,
+      realizedPnl: 0 as number | null,
+      grossProfit: 0 as number | null,
+      grossLoss: 0 as number | null,
+      feesPaid: 0 as number | null,
     }
   );
   const symbolSummary = {
     ...historicalSymbolSummary,
     unrealizedPnl: symbolCurrentSummary.unrealizedPnl,
-    totalPnl: historicalSymbolSummary.realizedPnl + symbolCurrentSummary.unrealizedPnl,
+    totalPnl: historicalSymbolSummary.realizedPnl == null ? null : historicalSymbolSummary.realizedPnl + symbolCurrentSummary.unrealizedPnl,
     openPositionCount: symbolCurrentSummary.openPositionCount,
     openPositionQty: symbolCurrentSummary.openPositionQty,
   };
@@ -836,9 +835,9 @@ const getBotRuntimeMonitoringAggregateUncached = async (
         ? Math.max(0, referenceBalance - Math.max(0, usedMargin))
         : null;
   const positionsSummary = {
-    realizedPnl: historicalPositionRows.reduce((acc, row) => acc + row.positions.summary.realizedPnl, 0),
+    realizedPnl: historicalPositionRows.reduce<number | null>((acc, row) => sumKnownFinancial(acc, row.positions.summary.realizedPnl), 0),
     unrealizedPnl: latestUnrealizedPnl,
-    feesPaid: historicalPositionRows.reduce((acc, row) => acc + row.positions.summary.feesPaid, 0),
+    feesPaid: historicalPositionRows.reduce<number | null>((acc, row) => sumKnownFinancial(acc, row.positions.summary.feesPaid), 0),
     openPositionQty: latestOpenPositionQty,
     referenceBalance,
     freeCash,
@@ -866,7 +865,7 @@ const getBotRuntimeMonitoringAggregateUncached = async (
   const tradeTotalRows = selectLatestRunningProjectionRows(completePayloadRows);
   const tradeItems = buildRuntimeAggregateProjectedTradeItems(tradeTotalRows);
   const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
-  const totalTradeFeesPaid = tradeTotalRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
+  const totalTradeFeesPaid = tradeTotalRows.reduce<number | null>((acc, row) => sumKnownFinancial(acc, row.trades.feesPaid), 0);
   const windowFinishedAt = finishedAt ?? new Date();
   const tradeMeta = buildRuntimeAggregateTradesMeta({
     totalTrades,

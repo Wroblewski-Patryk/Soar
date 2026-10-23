@@ -22,6 +22,7 @@ export const BOT_ERROR_CODES = {
   botLiveApiKeyNotFound: 'BOT_LIVE_API_KEY_NOT_FOUND',
   botLiveApiKeyExchangeMismatch: 'BOT_LIVE_API_KEY_EXCHANGE_MISMATCH',
   strategyDerivativesRequireFutures: 'STRATEGY_DERIVATIVES_REQUIRE_FUTURES',
+  runtimeDcaConfigUnsupported: 'RUNTIME_DCA_CONFIG_UNSUPPORTED',
 } as const;
 
 type BotErrorCode = (typeof BOT_ERROR_CODES)[keyof typeof BOT_ERROR_CODES];
@@ -72,4 +73,6 @@ export const botErrors = {
     new BotDomainError(BOT_ERROR_CODES.botLiveApiKeyExchangeMismatch, 400),
   strategyDerivativesRequireFutures: (details?: Record<string, unknown>) =>
     new BotDomainError(BOT_ERROR_CODES.strategyDerivativesRequireFutures, 400, details),
+  runtimeDcaConfigUnsupported: (details?: Record<string, unknown>) =>
+    new BotDomainError(BOT_ERROR_CODES.runtimeDcaConfigUnsupported, 409, details),
 };

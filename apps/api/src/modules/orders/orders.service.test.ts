@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
+import { createEntitledUser } from '../../test/createEntitledUser';
 import {
   cancelOrder,
   closeOrder,
@@ -8,17 +9,21 @@ import {
   openOrder,
   resolveLiveExecutionApiKey,
 } from './orders.service';
-import { ORDER_ERROR_CODES } from './orders.errors';
+import { ORDER_ERROR_CODES, orderErrors } from './orders.errors';
+import { resolveLiveFillTradeIds } from './orders.liveIntent.service';
 import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
+import { createLiveScopedBotContext } from './orders.service.fixture';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();
+  await prisma.backtestContribution.deleteMany();
   await prisma.backtestRun.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.liveOrderIntent.deleteMany();
   await prisma.position.deleteMany();
   await prisma.signal.deleteMany();
   await prisma.botRuntimeSymbolStat.deleteMany();
@@ -39,79 +44,6 @@ const cleanupDb = async () => {
   await prisma.user.deleteMany();
 };
 
-const createLiveScopedBotContext = async (params: {
-  userId: string;
-  botName: string;
-  strategyName: string;
-  symbol: string;
-  apiKeyId?: string;
-}) => {
-  const strategy = await prisma.strategy.create({
-    data: {
-      userId: params.userId,
-      name: params.strategyName,
-      interval: '5m',
-      leverage: 5,
-      walletRisk: 1,
-      config: {
-        additional: {
-          orderType: 'MARKET',
-          marginMode: 'ISOLATED',
-        },
-      },
-    },
-  });
-  const wallet = await prisma.wallet.create({
-    data: {
-      userId: params.userId,
-      name: `${params.botName} wallet`,
-      mode: 'LIVE',
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      baseCurrency: 'USDT',
-    },
-  });
-  const universe = await prisma.marketUniverse.create({
-    data: {
-      userId: params.userId,
-      name: `${params.botName} universe`,
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      baseCurrency: 'USDT',
-      whitelist: [params.symbol],
-      blacklist: [],
-    },
-  });
-  const symbolGroup = await prisma.symbolGroup.create({
-    data: {
-      userId: params.userId,
-      marketUniverseId: universe.id,
-      name: `${params.botName} symbols`,
-      symbols: [params.symbol],
-    },
-  });
-  const bot = await prisma.bot.create({
-    data: {
-      userId: params.userId,
-      name: params.botName,
-      mode: 'LIVE',
-      exchange: 'BINANCE',
-      marketType: 'FUTURES',
-      positionMode: 'ONE_WAY',
-      apiKeyId: params.apiKeyId ?? null,
-      isActive: true,
-      liveOptIn: true,
-      consentTextVersion: 'mvp-v1',
-      maxOpenPositions: 3,
-      walletId: wallet.id,
-      strategyId: strategy.id,
-      symbolGroupId: symbolGroup.id,
-    },
-  });
-
-  return { bot, strategy, wallet, universe, symbolGroup };
-};
-
 const allowLive = async () => {
   await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
   const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
@@ -130,13 +62,17 @@ const allowLive = async () => {
   });
 };
 
+afterAll(async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+});
+
 describe('listOrders active order contract', () => {
   beforeEach(async () => {
     await cleanupDb();
   });
 
   it('excludes stale local rows from active status lists while preserving history access', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-list-active-sync-state@example.com', password: 'hashed' },
     });
 
@@ -192,7 +128,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('does not execute exchange side effects for PAPER mode', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper@example.com', password: 'hashed' },
     });
     const executeLiveOrder = vi.fn();
@@ -250,7 +186,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('rejects PAPER MARKET order when canonical fill price cannot be resolved', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-waiting-fill@example.com', password: 'hashed' },
     });
     const executeLiveOrder = vi.fn();
@@ -289,107 +225,8 @@ describe('openOrder live execution contract', () => {
     }
   });
 
-  it('fills PAPER MARKET order immediately from canonical manual-context price when bot scope is provided', async () => {
-    const user = await prisma.user.create({
-      data: { email: 'orders-paper-manual-context-fill@example.com', password: 'hashed' },
-    });
-    const strategy = await prisma.strategy.create({
-      data: {
-        userId: user.id,
-        name: 'Paper market strategy',
-        interval: '5m',
-        leverage: 5,
-        walletRisk: 1,
-        config: {
-          additional: {
-            marginMode: 'ISOLATED',
-            orderType: 'MARKET',
-          },
-        },
-      },
-    });
-    const universe = await prisma.marketUniverse.create({
-      data: {
-        userId: user.id,
-        name: 'Paper market universe',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        baseCurrency: 'USDT',
-        whitelist: ['BTCUSDT'],
-        blacklist: [],
-      },
-    });
-    const symbolGroup = await prisma.symbolGroup.create({
-      data: {
-        userId: user.id,
-        marketUniverseId: universe.id,
-        name: 'Paper market symbols',
-        symbols: ['BTCUSDT'],
-      },
-    });
-    const bot = await prisma.bot.create({
-      data: {
-        userId: user.id,
-        name: 'Paper market bot',
-        mode: 'PAPER',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        positionMode: 'ONE_WAY',
-        isActive: true,
-        strategyId: strategy.id,
-        symbolGroupId: symbolGroup.id,
-      },
-    });
-    const executeLiveOrder = vi.fn();
-    const previousNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
-
-    try {
-      const order = await openOrder(
-        user.id,
-        {
-          botId: bot.id,
-          symbol: 'BTCUSDT',
-          side: 'BUY',
-          type: 'MARKET',
-          quantity: 0.1,
-          mode: 'PAPER',
-          riskAck: false,
-        },
-        { executeLiveOrder }
-      );
-
-      expect(executeLiveOrder).not.toHaveBeenCalled();
-      expect(order.status).toBe('FILLED');
-      expect(order.averageFillPrice).toBeTruthy();
-      expect(order.positionId).toBeTruthy();
-      const openedPosition = await prisma.position.findUnique({
-        where: { id: order.positionId ?? '' },
-      });
-      expect(openedPosition).not.toBeNull();
-      expect(openedPosition?.entryPrice).toBe(order.averageFillPrice);
-      const auditLog = await prisma.log.findFirst({
-        where: {
-          userId: user.id,
-          action: 'order.opened',
-          entityType: 'ORDER',
-          entityId: order.id,
-        },
-        orderBy: { occurredAt: 'desc' },
-      });
-      const metadata = (auditLog?.metadata ?? {}) as {
-        waitingForFill?: boolean;
-        fillPriceResolved?: boolean;
-      };
-      expect(metadata.waitingForFill).toBe(false);
-      expect(metadata.fillPriceResolved).toBe(true);
-    } finally {
-      process.env.NODE_ENV = previousNodeEnv;
-    }
-  }, 10_000);
-
   it('opens LIVE orders with active canonical market-group venue when direct bot symbol group is stale', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-canonical-venue@example.com', password: 'hashed' },
     });
     const { bot, strategy, symbolGroup } = await createLiveScopedBotContext({
@@ -494,7 +331,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('reuses and reprices existing same-symbol open position for manual PAPER MARKET add', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-manual-add-existing-position@example.com', password: 'hashed' },
     });
     const wallet = await prisma.wallet.create({
@@ -611,7 +448,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('keeps PAPER MARKET fill bot-scoped when another bot shares the same wallet and symbol', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-shared-wallet-bot-scope@example.com', password: 'hashed' },
     });
     const wallet = await prisma.wallet.create({
@@ -757,7 +594,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('fails closed when manual open tries to reverse an already open symbol direction', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-manual-reverse-conflict@example.com', password: 'hashed' },
     });
     await prisma.position.create({
@@ -794,7 +631,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('ignores stale local positions when checking manual reverse conflicts', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-manual-stale-reverse-conflict@example.com', password: 'hashed' },
     });
     await prisma.position.create({
@@ -831,7 +668,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('releases stale local blockers before PAPER MARKET fill creates a new position', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-paper-stale-blocker-release@example.com', password: 'hashed' },
     });
     const staleLocalPosition = await prisma.position.create({
@@ -896,7 +733,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('fails closed when manual LIVE open reverses an owned imported exchange position', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-owned-import-reverse-conflict@example.com', password: 'hashed' },
     });
     const apiKey = await prisma.apiKey.create({
@@ -977,7 +814,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('ignores stale owned imported positions when checking LIVE reverse conflicts', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-owned-import-stale-reverse-conflict@example.com', password: 'hashed' },
     });
     const apiKey = await prisma.apiKey.create({
@@ -1056,7 +893,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('reuses owned imported LIVE position when a same-side manual fill confirms', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-owned-import-fill-reuse@example.com', password: 'hashed' },
     });
     const apiKey = await prisma.apiKey.create({
@@ -1168,7 +1005,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('allows manual open when the same symbol is already open on a different wallet scope', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-wallet-scoped-open@example.com', password: 'hashed' },
     });
     const liveWallet = await prisma.wallet.create({
@@ -1292,9 +1129,13 @@ describe('openOrder live execution contract', () => {
   });
 
   it('derives mode, wallet and strategy from canonical bot context when botId is provided', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-canonical-context@example.com', password: 'hashed' },
     });
+    const canonicalKey = await prisma.apiKey.create({ data: {
+      userId: user.id, label: 'Canonical wallet key', exchange: 'BINANCE',
+      apiKey: 'canonical-wallet-key', apiSecret: 'canonical-wallet-secret',
+    } });
     const strategyCanonical = await prisma.strategy.create({
       data: {
         userId: user.id,
@@ -1323,6 +1164,7 @@ describe('openOrder live execution contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: canonicalKey.id,
       },
     });
     const spoofedWallet = await prisma.wallet.create({
@@ -1437,8 +1279,39 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('refuses a new LIVE intent without a bound key before any submit', async () => {
+    const user = await createEntitledUser({ data: {
+      email: 'orders-live-unbound-key@example.com', password: 'hashed',
+    } });
+    await prisma.apiKey.create({ data: {
+      userId: user.id, label: 'Unbound Binance key', exchange: 'BINANCE',
+      apiKey: 'unbound-key', apiSecret: 'unbound-secret',
+    } });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id, botName: 'No-key LIVE bot',
+      strategyName: 'No-key LIVE strategy', symbol: 'BTCUSDT', apiKeyId: null,
+    });
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, {
+        botId: bot.id, symbol: 'BTCUSDT', side: 'BUY', type: 'LIMIT',
+        quantity: 0.1, price: 60_000, mode: 'LIVE', riskAck: true,
+        clientOrderId: 'soar_unbound_live_key',
+      }, { executeLiveOrder })).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.liveApiKeyRequired,
+      });
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(await prisma.liveOrderIntent.count({ where: { userId: user.id } })).toBe(0);
+      expect(await prisma.order.count({ where: { userId: user.id } })).toBe(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('executes exchange order for LIVE but waits for fill truth before lifecycle finality', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: {
         email: 'orders-live@example.com',
         password: 'hashed',
@@ -1451,15 +1324,11 @@ describe('openOrder live execution contract', () => {
           },
         },
       },
-      include: {
-        apiKeys: {
-          select: {
-            id: true,
-          },
-        },
-      },
     });
-    const apiKeyId = user.apiKeys[0]?.id;
+    const apiKeyId = (await prisma.apiKey.findFirstOrThrow({
+      where: { userId: user.id },
+      select: { id: true },
+    })).id;
     expect(apiKeyId).toBeTruthy();
     const { bot } = await createLiveScopedBotContext({
       userId: user.id,
@@ -1512,7 +1381,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('keeps LIVE MARKET order submitted when exchange placement returns OPEN without fill truth', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-market-submitted@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -1577,7 +1446,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('fails closed for LIVE order when requested symbol is outside canonical bot strategy scope', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-scope-mismatch@example.com', password: 'hashed' },
     });
     const strategy = await prisma.strategy.create({
@@ -1662,7 +1531,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('fails closed for LIVE order when canonical symbol scope has multiple enabled strategies', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-manual-scope-ambiguous@example.com', password: 'hashed' },
     });
     const primaryStrategy = await prisma.strategy.create({
@@ -1792,7 +1661,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('fails closed for LIVE order when wallet and market-universe venue context drift', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-context-mismatch@example.com', password: 'hashed' },
     });
     const strategy = await prisma.strategy.create({
@@ -1879,7 +1748,7 @@ describe('openOrder live execution contract', () => {
   });
 
   it('persists live fee metadata and order fills returned by adapter', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-fees@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -1958,8 +1827,83 @@ describe('openOrder live execution contract', () => {
     }
   });
 
-  it('propagates LIVE execution error', async () => {
-    const user = await prisma.user.create({
+  it('recovers two LIVE fills without exchange IDs or timestamps after an unknown outcome', async () => {
+    const user = await createEntitledUser({
+      data: { email: 'orders-live-missing-fill-identity@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Live Bot Missing Fill Identity',
+      strategyName: 'Live Missing Fill Identity Strategy',
+      symbol: 'ETHUSDT',
+    });
+    const fills = [
+      {
+        exchangeTradeId: null, exchangeOrderId: 'binance-order-missing-fill-identity',
+        symbol: 'ETHUSDT', side: 'buy', price: 3200, quantity: 0.4,
+        notional: 1280, feeCost: 0.04, feeCurrency: 'USDT', feeRate: null,
+        executedAt: null, source: 'fetchOrder' as const, raw: {},
+      },
+      {
+        exchangeTradeId: null, exchangeOrderId: 'binance-order-missing-fill-identity',
+        symbol: 'ETHUSDT', side: 'buy', price: 3210, quantity: 0.6,
+        notional: 1926, feeCost: 0.06, feeCurrency: 'USDT', feeRate: null,
+        executedAt: null, source: 'fetchOrder' as const, raw: {},
+      },
+    ];
+    const expectedIds = resolveLiveFillTradeIds(fills, 'ETHUSDT', 'BUY');
+    expect(new Set(expectedIds).size).toBe(2);
+    expect(resolveLiveFillTradeIds([
+      { ...fills[1], feeCost: 0.16 },
+      { ...fills[0], feeCost: 0.14 },
+    ], 'ETHUSDT', 'BUY').sort()).toEqual([...expectedIds].sort());
+    expect(new Set(resolveLiveFillTradeIds([
+      fills[0], { ...fills[0], feeCost: 0.14 },
+    ], 'ETHUSDT', 'BUY')).size).toBe(2);
+
+    const executeLiveOrder = vi.fn().mockRejectedValue(new Error('response lost'));
+    const lookupLiveOrder = vi.fn()
+      .mockRejectedValueOnce(new Error('lookup unavailable'))
+      .mockResolvedValue({
+        exchangeOrderId: 'binance-order-missing-fill-identity',
+        status: 'FILLED' as const,
+        fills,
+        fee: 0.1,
+        feeSource: 'EXCHANGE_FILL' as const,
+        feePending: false,
+        feeCurrency: 'USDT',
+      });
+    const payload = {
+      botId: bot.id, symbol: 'ETHUSDT', side: 'BUY' as const,
+      type: 'MARKET' as const, quantity: 1, mode: 'LIVE' as const,
+      riskAck: true, clientOrderId: 'soar_missing_fill_identity',
+    };
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+      await expect(openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder }))
+        .rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
+      const order = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+      const persistedFills = await prisma.orderFill.findMany({ where: { orderId: order.id } });
+      expect(persistedFills).toHaveLength(2);
+      expect(persistedFills.map((fill) => fill.exchangeTradeId).sort()).toEqual([...expectedIds].sort());
+      expect(persistedFills.map((fill) => fill.quantity).sort()).toEqual([0.4, 0.6]);
+      expect(await prisma.position.count({ where: { id: order.positionId ?? '' } })).toBe(1);
+
+      const retriedOrder = await openOrder(user.id, payload, { executeLiveOrder, lookupLiveOrder });
+      expect(retriedOrder.id).toBe(order.id);
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
+      expect(lookupLiveOrder).toHaveBeenCalledTimes(2);
+      expect(await prisma.orderFill.count({ where: { orderId: order.id } })).toBe(2);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('reports an unknown outcome after an ambiguous LIVE execution error', async () => {
+    const user = await createEntitledUser({
       data: { email: 'orders-live-fail@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -1988,14 +1932,14 @@ describe('openOrder live execution contract', () => {
           },
           { executeLiveOrder }
         )
-      ).rejects.toThrow('LIVE_EXECUTION_FAILED');
+      ).rejects.toMatchObject({ code: ORDER_ERROR_CODES.liveExecutionUnknown });
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
   });
 
   it('propagates LIVE pretrade guard errors without masking', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-live-pretrade@example.com', password: 'hashed' },
     });
     const { bot } = await createLiveScopedBotContext({
@@ -2007,7 +1951,7 @@ describe('openOrder live execution contract', () => {
 
     const executeLiveOrder = vi
       .fn()
-      .mockRejectedValue(new Error('LIVE_PRETRADE_EXTERNAL_POSITION_OPEN'));
+      .mockRejectedValue(orderErrors.livePretradeExternalPositionOpen());
     const previousNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
 
@@ -2039,7 +1983,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('falls back to MARKET order type when strategy config orderType is unresolved', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-fallback@example.com', password: 'hashed' },
     });
     const strategy = await prisma.strategy.create({
@@ -2138,7 +2082,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('prefers canonical bot market group strategy over stale direct projections', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-canonical-first@example.com', password: 'hashed' },
     });
     const canonicalStrategy = await prisma.strategy.create({
@@ -2280,7 +2224,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('fails closed when selected bot has no strategy matching requested symbol', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-no-symbol-match@example.com', password: 'hashed' },
     });
     const canonicalStrategy = await prisma.strategy.create({
@@ -2422,7 +2366,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('does not fall back to stale direct strategy for manual context when canonical groups exist', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-no-direct-fallback@example.com', password: 'hashed' },
     });
     const canonicalStrategy = await prisma.strategy.create({
@@ -2558,7 +2502,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('derives min executable quantity from minAmount/minNotional and precision', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-minqty@example.com', password: 'hashed' },
     });
     const strategy = await prisma.strategy.create({
@@ -2645,6 +2589,7 @@ describe('getManualOrderContext', () => {
             minAmount: 0.0031,
             minNotional: 100,
             amountPrecision: 0.001,
+            contractSize: 1,
           }),
           fetchMarkPrice: async () => 27_000,
           disconnect: async () => undefined,
@@ -2658,7 +2603,7 @@ describe('getManualOrderContext', () => {
   });
 
   it('returns stable response when rules and mark price cannot be fetched', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-manual-context-degraded@example.com', password: 'hashed' },
     });
     const strategy = await prisma.strategy.create({
@@ -2759,7 +2704,7 @@ describe('closeOrder close attribution', () => {
   });
 
   it('persists USER_APP manual close attribution on both order and linked position', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-close-attribution@example.com', password: 'hashed' },
     });
     const position = await prisma.position.create({
@@ -2813,7 +2758,7 @@ describe('manual order action active sync-state contract', () => {
   });
 
   it('does not cancel stale local open-status orders', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-stale-cancel@example.com', password: 'hashed' },
     });
     const order = await prisma.order.create({
@@ -2841,7 +2786,7 @@ describe('manual order action active sync-state contract', () => {
   });
 
   it('does not locally cancel exchange-backed open orders without exchange cancel support', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-cancel-exchange-backed@example.com', password: 'hashed' },
     });
     const order = await prisma.order.create({
@@ -2870,7 +2815,7 @@ describe('manual order action active sync-state contract', () => {
   });
 
   it('does not close stale local open-status orders or linked positions', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-stale-close@example.com', password: 'hashed' },
     });
     const position = await prisma.position.create({
@@ -2911,7 +2856,7 @@ describe('manual order action active sync-state contract', () => {
   });
 
   it('does not locally close exchange-backed open orders as filled', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-close-exchange-backed@example.com', password: 'hashed' },
     });
     const order = await prisma.order.create({
@@ -2941,7 +2886,7 @@ describe('manual order action active sync-state contract', () => {
   });
 
   it('does not close a stale local linked position from a synced open order', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-synced-order-stale-linked-position@example.com', password: 'hashed' },
     });
     const position = await prisma.position.create({
@@ -2989,7 +2934,7 @@ describe('resolveLiveExecutionApiKey', () => {
   });
 
   it('uses bot-bound API key when ownership and exchange match bot context', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-resolver-bound@example.com', password: 'hashed' },
     });
     const key = await prisma.apiKey.create({
@@ -3016,7 +2961,7 @@ describe('resolveLiveExecutionApiKey', () => {
   });
 
   it('uses wallet-bound API key when bot-bound key is missing', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-resolver-wallet@example.com', password: 'hashed' },
     });
     const walletKey = await prisma.apiKey.create({
@@ -3055,7 +3000,7 @@ describe('resolveLiveExecutionApiKey', () => {
   });
 
   it('fails closed when no canonically bound API key exists for bot exchange', async () => {
-    const user = await prisma.user.create({
+    const user = await createEntitledUser({
       data: { email: 'orders-resolver-missing@example.com', password: 'hashed' },
     });
     const mismatch = await prisma.apiKey.create({

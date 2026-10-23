@@ -2,7 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
-import { computeMinExecutableQuantity, normalizeAmountFixed, type SymbolTradingRules } from './orders.quantityRules';
+import { computeMinExecutableQuantity, normalizeAmountByPrecision, normalizeAmountFixed, resolvePrecisionStep, resolveQuantityContractSize, type SymbolTradingRules } from './orders.quantityRules';
 import type { ManualOrderContextQuery, OpenOrderDto } from './orders.types';
 import { resolveSymbolTradingRulesMetadata } from '../exchange/exchangeMetadataContract.service';
 import { resolveCanonicalRuntimeVenueContext } from '../engine/runtimeBotExecutionContext';
@@ -338,24 +338,34 @@ export const getManualOrderContext = async (
   }
 
   const minExecutableQty = computeMinExecutableQuantity({
+    marketType: venueContext.marketType,
     minAmount: rules.minAmount,
     minNotional: rules.minNotional,
     markPrice,
     amountPrecision: rules.amountPrecision,
+    amountPrecisionMode: rules.amountPrecisionMode,
     contractSize: rules.contractSize,
   });
-  const contractSize =
-    typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
-      ? rules.contractSize
-      : 1;
+  const contractSize = resolveQuantityContractSize(rules.contractSize, venueContext.marketType);
+  const amountStep = contractSize != null && (rules.amountPrecisionMode === 'TICK_SIZE' ||
+    rules.amountPrecisionMode === 'DECIMAL_PLACES')
+      ? resolvePrecisionStep(rules.amountPrecision, rules.amountPrecisionMode)
+      : null;
 
   const requestedQuantity =
     typeof query.quantity === 'number' && Number.isFinite(query.quantity) && query.quantity > 0
       ? query.quantity
       : null;
+  const normalizedQuantity = requestedQuantity == null ? null
+    : normalizeAmountByPrecision(requestedQuantity, rules.amountPrecision, rules.amountPrecisionMode);
   const estimatedNotional =
-    requestedQuantity != null && markPrice != null
-      ? normalizeAmountFixed(requestedQuantity * markPrice * contractSize, rules.amountPrecision)
+    requestedQuantity != null && markPrice != null && normalizedQuantity != null && contractSize != null
+      && minExecutableQty != null && requestedQuantity + 1e-12 >= minExecutableQty
+      && Number.isFinite(normalizedQuantity)
+      && Math.abs(requestedQuantity - normalizedQuantity) <= 1e-12
+      ? rules.amountPrecisionMode === undefined
+        ? normalizeAmountFixed(requestedQuantity * markPrice * contractSize, rules.amountPrecision)
+        : Number((requestedQuantity * markPrice * contractSize).toPrecision(15))
       : null;
   const estimatedMargin =
     estimatedNotional != null ? estimatedNotional / Math.max(1, resolvedLeverage) : null;
@@ -374,6 +384,8 @@ export const getManualOrderContext = async (
     quantityConstraints: {
       minAmount: rules.minAmount,
       amountPrecision: rules.amountPrecision,
+      amountPrecisionMode: rules.amountPrecisionMode ?? null,
+      amountStep,
       minNotional: rules.minNotional,
       contractSize: rules.contractSize ?? null,
       minExecutableQty,

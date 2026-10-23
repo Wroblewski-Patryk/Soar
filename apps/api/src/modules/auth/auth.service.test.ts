@@ -7,6 +7,7 @@ describe('registerUser', () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
@@ -44,19 +45,7 @@ describe('registerUser', () => {
     });
     expect(dbUser.password).not.toBe('test123');
 
-    const activeSubscription = await prisma.userSubscription.findFirstOrThrow({
-      where: {
-        userId: user.id,
-        status: 'ACTIVE',
-      },
-      include: {
-        subscriptionPlan: {
-          select: { code: true },
-        },
-      },
-    });
-    expect(activeSubscription.subscriptionPlan.code).toBe('FREE');
-    expect(activeSubscription.source).toBe('DEFAULT');
+    expect(await prisma.userSubscription.count({ where: { userId: user.id } })).toBe(0);
   });
 
   it('should throw if user exists', async () => {

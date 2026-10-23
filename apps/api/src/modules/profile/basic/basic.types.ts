@@ -35,8 +35,8 @@ const timeZonePreferenceSchema = z
   );
 
 export const updateUserSchema = z.object({
-  name: z.string().trim().min(1).max(100).optional(),
-  avatarUrl: z.string().url().optional(),
+  name: z.string().trim().max(100).optional(),
+  avatarUrl: z.union([z.string().url(), z.literal("")]).optional(),
   uiPreferences: z
     .object({
       tableColumnVisibility: tableColumnVisibilitySchema.optional(),

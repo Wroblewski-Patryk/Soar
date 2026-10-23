@@ -1,0 +1,112 @@
+# Gate.io FUTURES: dodatnie advanced DCA → TTP w trzech trybach — plan przed próbą
+
+Stan wejściowy: `cb43aaf68af8fb2edb29788905f6fd48e5313d53`. To ograniczony
+przypadek P0 w istniejącym `POSITION-CYCLE`; lokalny dowód 008O obejmuje
+Gate FUTURES direct ENTRY, 008 obejmuje Gate FUTURES ujemne DCA/TSL z pełnym
+sygnałem, a 011 obejmuje Binance FUTURES dodatnie DCA/TTP z pełnym sygnałem.
+Żaden z nich nie stanowi odbioru opisanego tu połączenia dla Gate FUTURES.
+
+## Scenariusz i kryteria
+
+- Jedna zapisana strategia, jeden bot na jedną aktywną grupę dla każdego
+  trybu, ten sam indeksowany ciąg świec dla BACKTEST, PAPER i wewnętrznego
+  Gate.io FUTURES mock LIVE. Zwykłe `MOMENTUM(2) > 0,5` daje LONG na świecy
+  2; późniejszy brak wejścia daje HOLD bez EXIT mimo zapisanego
+  `noMatchAction=EXIT`.
+- Taśma zamknięć: `0,2 → 1 → 1 → 0,99 → 1,24 → 1,13 → 1,13`.
+  Świeca 5 ma jawne, uporządkowane ticki `1,25` (+20 s, DCA) i `1,13`
+  (zamknięcie, TTP). Przy 1,24 TTP jest uzbrojone, lecz +25% DCA jeszcze
+  nie osiągnięto. Potwierdzony fill DCA na 1,25 poprzedza TTP na późniejszym
+  ticku tej samej świecy. Po DCA i przed TTP następuje restart procesu.
+- Syntetyczne, jawne reguły Gate FUTURES: `contractSize=1`, krok/minimum
+  1 kontrakt, minimum notional 5 USDT, krok ceny 0,01; saldo 1000/900 USDT,
+  leverage 1, walletRisk 10%, fee 0,0004. ENTRY 100 kontraktów przy 1 za
+  100 USDT, DCA +25% ×1 daje 80 kontraktów przy 1,25 za 100 USDT; średnia
+  `200/180`. CLOSE 180 przy 1,13 daje notional 203,4, fee łącznie
+  `0,16136`, net PnL `+3,23864` USDT. Odrzucenia niewykonalnych reguł
+  muszą nastąpić przed kapitałem, dedupe, intentem i submittem.
+- BACKTEST ma jeden `COMPLETED` run, raport, trade TTP i dwa wkłady z
+  poziomem/mnożnikiem DCA; PAPER i mock LIVE mają trwałe ENTRY/DCA/CLOSE,
+  zaś mock LIVE trzy unikalne intenty, zlecenia `FILLED`, fille i jedną
+  deduplikację DCA. Ilości, średnia, fee i net PnL wynikają z trwałych filli.
+  Retry tego samego ticku i BACKTEST nie tworzy kolejnych rekordów.
+- Osobny replay tego samego OHLC bez kolejności ticków ma zachowawczo
+  odroczyć TTP do kolejnej świecy. Fixture nie może zaszczepiać stanu
+  ochrony ani podawać bezpośredniego ENTRY lub wymuszonego HOLD.
+
+Errata planu przed ponowną próbą: bieżący endpoint zapisu strategii odrzucił
+`MOMENTUM(1)` kodem 400, zgodnie z kontraktem okresu `2..255`. Okres 2 daje
+LONG na świecy 2 względem świecy 0 i zanikanie wejścia na świecy 3; pozostała
+taśma, strategia i kryteria są bez zmian. Nie traktować tego odrzucenia jako
+wyniku odbioru trzech trybów.
+
+## Wykonanie i granice
+
+Przygotować jeden celowany opt-in test, korzystając z istniejących seamów
+008O/008/011. Uruchomić go wyłącznie na własnej świeżej PostgreSQL
+`soar_gate_futures_positive_parity_test` na porcie `127.0.0.1:5585` i
+osobnym Redisie `127.0.0.1:6425`; przed startem sprawdzić dostępność.
+Sprawdzić typecheck, celowany test, guardrails, docs parity i diff. Po próbie
+odczytać licznik migracji oraz User/BacktestRun/Trade i Redis DBSIZE; usunąć
+tylko własne kontenery. Zapisać wynik i ograniczenia, zrobić selektywny
+commit/push i przekazać exact SHA do niezależnego odbioru.
+
+Metadane kontraktu, saldo, fille i fee są syntetyczne; `contractSize≠1`,
+rzeczywiste reguły Gate, transport, real LIVE, uwierzytelniona produkcja i
+deploy pozostają poza tym odbiorem. Lokalny PASS nie zamyka pełnego
+`POSITION-CYCLE` ani bramki wydania.
+
+## Wynik autorski 2026-10-22
+
+Celowany test [Gate FUTURES full signal](../../apps/api/src/modules/engine/runtimeGateFuturesThreeModePositiveDcaTtpParity.e2e.test.ts)
+przeszedł `1/1` (`resume` uruchomiony w odrębnym procesie; jego test jest
+pominięty tylko w nadrzędnym procesie). Pierwsza próba odrzuciła konfigurację
+`MOMENTUM(1)` przy zapisie HTTP 400; po zapisanej wyżej erracie okresu 2
+test przeszedł. To nie jest osobny wynik pozytywnego odbioru.
+
+BACKTEST, PAPER i Gate.io FUTURES internal mock LIVE użyły tej samej zapisanej
+strategii i taśmy: jeden LONG, później HOLD bez EXIT, DCA 80 kontraktów przy
+1,25 przed restartem i pojedynczy TTP 180 kontraktów przy 1,13 po restarcie.
+W obu botach była jedna aktywna grupa. BACKTEST miał jeden `COMPLETED` run,
+trade i raport, ENTRY/DCA z poziomem 0 i mnożnikiem 1. PAPER i mock LIVE
+zapisały ENTRY/DCA/CLOSE, a mock LIVE trzy unikalne intenty, trzy `FILLED`
+orders, trzy fille i jedną deduplikację DCA. Fille, średnia `200/180`, fee
+`0,16136` i net PnL `+3,23864` USDT zgadzały się w trzech trybach. Ponowienie
+ticku i BACKTEST nie dodało rekordów. Osobny BACKTEST bez uporządkowanych
+ticków odroczył TTP do świecy 6.
+
+Weryfikacja: API typecheck, docs parity, guardrails i graph drift `951/951`
+`PASS`; `git diff --check` bez błędów. Po teście własna baza miała 88
+ukończonych migracji, `User=0`, `BacktestRun=0`, `Trade=0`; Redis `DBSIZE=0`.
+Usunięto wyłącznie własne kontenery na portach 5585 i 6425. Odbiór niezależny
+na tym etapie pozostawał otwarty; ten test nie obejmuje realnej giełdy ani
+produkcji.
+
+## Niezależny odbiór ograniczonego scenariusza 012
+
+Niezależny reviewer dał ograniczony statyczny `PASS` dla końcowego
+SHA kodu `66da64559686b188f9ff19624445706703fa053b` i dokumentacyjnego
+HEAD `a4a4ef1f78e9b36c1db05f8be929a3d6bf0d8929`. API typecheck,
+docs parity i diff check przeszły. Reviewer nie uruchomił guardrails:
+generator zmieniał pliki grafu w zastanym brudnym checkoutcie. Ten brak
+nie jest wynikiem `PASS` guardrails w niezależnym odbiorze.
+
+Niezależny QA uruchomił ten sam test na dokładnym HEAD (tree
+`09e23f1b0c32ddb1e1f89f0766e862f167a47fad`, blob testu
+`c448fb54a5db1ec8503e99522dd8a33484304951`) we własnej świeżej
+PostgreSQL `_test` po 88 migracjach i osobnym Redisie. Proces nadrzędny
+dał `1 PASS / 1` celowy `SKIP`; zaliczony test wymagał `resume` w drugim
+procesie, gdzie przeszedł `1/1`. Test potwierdził zwykły LONG, po zaniku
+wejścia HOLD bez EXIT, DCA 80 kontraktów przy 1,25 przed TTP 180 przy
+1,13 po restarcie, jeden `COMPLETED` BACKTEST, trwałe ENTRY/DCA/CLOSE
+w PAPER i Gate.io FUTURES internal mock LIVE oraz zgodne fee `0,16136`
+i net PnL `+3,23864` USDT bez duplikatu po retry. Log QA SHA-256:
+`6291fa1756817bcb1a42c7ac565b2ab8af32765fc0d836d23fefa1da9b951217`
+(`%LOCALAPPDATA%/Soar/local-ci/diagnostics/qa-gate012-a4a4-20261022/vitest.log`).
+QA usunął wyłącznie własne kontenery i anonimowe woluminy, nie zmienił
+śledzonych plików ani zachowanych zasobów innych prób.
+
+To niezależny lokalny `PASS` dla jednego syntetycznego scenariusza Gate
+FUTURES z `contractSize=1`. Reguły rzeczywistej giełdy, inne
+`contractSize`, transport i fille real LIVE oraz produkcja nie zostały
+odebrane. Pełny `POSITION-CYCLE` pozostaje `OPEN`, wydanie `NO-GO`.

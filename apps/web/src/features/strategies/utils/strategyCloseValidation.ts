@@ -15,33 +15,15 @@ export const hasInvalidTrailingCloseThresholds = (close: CloseConditions) => {
   return hasInvalidTtpThreshold(close) || hasInvalidTslThreshold(close);
 };
 
-const resolveDcaLevelPercents = (additional: AdditionalState) => {
-  if (!additional.dcaEnabled) return [];
-  if (additional.dcaMode === 'advanced') {
-    return additional.dcaLevels
-      .map((level) => Number(level.percent))
-      .filter((value) => Number.isFinite(value) && value !== 0);
-  }
-
-  const primaryLevelPercent = Number(additional.dcaLevels[0]?.percent);
-  const repeatCount = Math.max(0, Math.floor(Number(additional.dcaTimes) || 0));
-  if (!Number.isFinite(primaryLevelPercent) || primaryLevelPercent === 0 || repeatCount <= 0) {
-    return [];
-  }
-  return Array.from({ length: repeatCount }, () => primaryLevelPercent);
-};
-
-export const hasUnreachableBasicDcaLevels = (
-  close: CloseConditions,
-  additional: AdditionalState
-) => {
-  if (close.mode !== 'basic') return false;
-  const takeProfitPercent = Number(close.tp);
-  const stopLossPercent = Number(close.sl);
-  return resolveDcaLevelPercents(additional).some((percent) => {
-    if (Number.isFinite(takeProfitPercent) && takeProfitPercent > 0 && percent > takeProfitPercent) {
-      return true;
-    }
-    return Number.isFinite(stopLossPercent) && stopLossPercent > 0 && percent < -Math.abs(stopLossPercent);
+export const hasUnreachableLegacyDcaLevels = (close: CloseConditions, additional: AdditionalState) => {
+  if (close.mode !== 'basic' || !additional.dcaEnabled ||
+    additional.dcaSizingBasis === 'usdt_contribution_v1') return false;
+  const levels = additional.dcaMode === 'basic'
+    ? (additional.dcaTimes > 0 ? additional.dcaLevels.slice(0, 1) : [])
+    : additional.dcaLevels;
+  return levels.some((level) => {
+    const percent = Number(level?.percent);
+    return (Number(close.tp) > 0 && percent > Number(close.tp)) ||
+      (Number(close.sl) > 0 && percent < -Math.abs(Number(close.sl)));
   });
 };

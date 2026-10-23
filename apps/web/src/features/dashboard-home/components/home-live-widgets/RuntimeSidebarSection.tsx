@@ -66,6 +66,8 @@ export type RuntimeSidebarSectionProps = {
     maxExecutableQty: number | null;
     liveReferencePrice: number | null;
     quantity: string;
+    quantityError: string | null;
+    quantityStep: number | null;
     budget: string;
     price: string;
     sliderPercent: number;
@@ -137,7 +139,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const selectedWalletMode = selectedWallet?.mode ?? props.selected?.bot.mode ?? null;
   const walletName = selectedWallet?.name ?? "-";
   const selectedUsedMargin = Math.max(0, props.selectedData?.usedMargin ?? 0);
-  const selectedNet = props.selectedData?.net ?? 0;
+  const selectedNet = props.selectedData?.net ?? null;
   const paperStartBalance = resolvePaperConfigBaseline(props.selected?.bot);
   const isAggregateRuntime = props.selected?.positions?.sessionId === "AGGREGATE";
   const liveFixedAllocation =
@@ -161,10 +163,10 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const walletTotal =
     selectedWalletMode === "LIVE"
       ? runtimeWalletTotal
-      : runtimeWalletTotal ?? (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
+      : runtimeWalletTotal ?? (walletBaseline != null && selectedNet != null ? Math.max(0, walletBaseline + selectedNet) : null);
   const walletDeltaBaseline = (() => {
     if (walletBaseline != null && walletBaseline > 0) return walletBaseline;
-    if (selectedWalletMode !== "LIVE" || walletTotal == null) return null;
+    if (selectedWalletMode !== "LIVE" || walletTotal == null || selectedNet == null) return null;
     const derivedBaseline = walletTotal - selectedNet;
     return Number.isFinite(derivedBaseline) && derivedBaseline > 0 ? derivedBaseline : null;
   })();
@@ -534,8 +536,8 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
               ) : null}
               <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-delta-row">
                 <span className="opacity-65">{props.text.deltaFromStart}</span>
-                <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
-                  {walletDeltaBaseline != null
+                <span className={`font-semibold ${selectedNet == null ? "" : selectedNet >= 0 ? "text-success" : "text-error"}`}>
+                  {walletDeltaBaseline != null && selectedNet != null
                     ? `${props.formatPercent((selectedNet / walletDeltaBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
                     : "-"}
                 </span>
@@ -673,16 +675,20 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                       type="number"
                       inputMode="decimal"
                       min={props.manualOrder.minExecutableQty ?? 0}
-                      step="0.000001"
+                      step={props.manualOrder.quantityStep ?? "any"}
                       className="input input-bordered input-sm"
                       data-testid="manual-order-quantity-input"
+                      aria-invalid={props.manualOrder.quantityError != null && props.manualOrder.quantity !== ""}
+                      aria-describedby="manual-order-quantity-helper"
                       value={props.manualOrder.quantity}
                       disabled={props.manualOrder.isSubmitting}
                       onChange={(event) => props.manualOrder.onQuantityChange(event.target.value)}
                     />
                   </label>
-                  <p className="min-h-4 text-[10px] leading-4 opacity-70" data-testid="manual-order-min-qty-helper">
-                    {props.manualOrder.minQtyLabel}: {props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}
+                  <p id="manual-order-quantity-helper" role={props.manualOrder.quantityError ? "alert" : undefined}
+                    className={`min-h-4 text-[10px] leading-4 ${props.manualOrder.quantityError ? "text-error" : "opacity-70"}`}
+                    data-testid="manual-order-min-qty-helper">
+                    {props.manualOrder.quantityError ?? `${props.manualOrder.minQtyLabel}: ${props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}`}
                   </p>
                 </div>
                 <div className="space-y-1.5 pt-1">
@@ -713,7 +719,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     className="input input-bordered input-sm"
                     data-testid="manual-order-budget-input"
                     value={props.manualOrder.budget}
-                    disabled={props.manualOrder.isSubmitting}
+                    disabled={props.manualOrder.isSubmitting || props.manualOrder.quantityStep == null}
                     onChange={(event) => props.manualOrder.onBudgetChange(event.target.value)}
                   />
                   <span className="text-[10px] opacity-70">

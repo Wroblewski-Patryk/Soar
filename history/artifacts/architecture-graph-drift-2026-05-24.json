@@ -1,68 +1,68 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 811,
-    "covered": 811,
+    "total": 943,
+    "covered": 943,
     "missing": 0
   },
   "categories": {
     "apiRoutes": {
-      "total": 22,
-      "covered": 22,
+      "total": 27,
+      "covered": 27,
       "missing": 0,
       "missingSamples": []
     },
     "apiServices": {
-      "total": 119,
-      "covered": 119,
+      "total": 137,
+      "covered": 137,
       "missing": 0,
       "missingSamples": []
     },
     "apiTests": {
-      "total": 200,
-      "covered": 200,
+      "total": 286,
+      "covered": 286,
       "missing": 0,
       "missingSamples": []
     },
     "webPages": {
-      "total": 37,
-      "covered": 37,
+      "total": 38,
+      "covered": 38,
       "missing": 0,
       "missingSamples": []
     },
     "webComponents": {
-      "total": 117,
-      "covered": 117,
+      "total": 118,
+      "covered": 118,
       "missing": 0,
       "missingSamples": []
     },
     "webHooksAndServices": {
-      "total": 40,
-      "covered": 40,
+      "total": 42,
+      "covered": 42,
       "missing": 0,
       "missingSamples": []
     },
     "webTests": {
-      "total": 149,
-      "covered": 149,
+      "total": 160,
+      "covered": 160,
       "missing": 0,
       "missingSamples": []
     },
     "moduleDocs": {
-      "total": 45,
-      "covered": 45,
+      "total": 48,
+      "covered": 48,
       "missing": 0,
       "missingSamples": []
     },
     "architectureDocs": {
-      "total": 71,
-      "covered": 71,
+      "total": 74,
+      "covered": 74,
       "missing": 0,
       "missingSamples": []
     },
     "configAndPipelines": {
-      "total": 11,
-      "covered": 11,
+      "total": 13,
+      "covered": 13,
       "missing": 0,
       "missingSamples": []
     }

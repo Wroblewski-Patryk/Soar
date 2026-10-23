@@ -26,6 +26,7 @@ vi.mock("sonner", () => ({
 describe("useManualOrderController", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.clear();
     openDashboardManualOrderMock.mockResolvedValue({
       id: "order-manual-controller",
       status: "FILLED",
@@ -51,6 +52,9 @@ describe("useManualOrderController", () => {
             quantityConstraints: {
               minAmount: 0.01,
               amountPrecision: 0.01,
+              amountPrecisionMode: "TICK_SIZE",
+              amountStep: 0.01,
+              contractSize: 1,
               minNotional: 5,
               minExecutableQty: 0.01,
             },
@@ -72,6 +76,9 @@ describe("useManualOrderController", () => {
             quantityConstraints: {
               minAmount: 1,
               amountPrecision: 1,
+              amountPrecisionMode: "DECIMAL_PLACES",
+              amountStep: 0.1,
+              contractSize: 1,
               minNotional: 5,
               minExecutableQty: 51.1,
             },
@@ -92,6 +99,9 @@ describe("useManualOrderController", () => {
           quantityConstraints: {
             minAmount: 1,
             amountPrecision: 1,
+            amountPrecisionMode: "DECIMAL_PLACES",
+            amountStep: 0.1,
+            contractSize: 1,
             minNotional: 5,
             minExecutableQty: 349,
           },
@@ -102,6 +112,8 @@ describe("useManualOrderController", () => {
     const labels = {
       invalidSymbol: "invalid-symbol",
       invalidQuantity: "invalid-quantity",
+      invalidQuantityStep: "invalid-step {value}",
+      quantityRulesUnavailable: "rules-unavailable",
       invalidPrice: "invalid-price",
       requiredPrice: "required-price",
       marketPriceUnavailable: "market-price-unavailable",
@@ -225,7 +237,7 @@ describe("useManualOrderController", () => {
     });
 
     await waitFor(() => {
-      expect(result.current.manualOrderQuantity).toBe("1532.64534587");
+      expect(result.current.manualOrderQuantity).toBe("1532.6");
     });
 
     await act(async () => {
@@ -237,7 +249,7 @@ describe("useManualOrderController", () => {
       symbol: "DOGEUSDT",
       side: "BUY",
       type: "MARKET",
-      quantity: 1532.64534587,
+      quantity: 1532.6,
       price: 0.09787,
       riskAck: true,
     });
@@ -258,6 +270,9 @@ describe("useManualOrderController", () => {
       quantityConstraints: {
         minAmount: 0.001,
         amountPrecision: 0.001,
+        amountPrecisionMode: "TICK_SIZE",
+        amountStep: 0.001,
+        contractSize: 1,
         minNotional: 5,
         minExecutableQty: 0.001,
       },
@@ -266,6 +281,8 @@ describe("useManualOrderController", () => {
     const labels = {
       invalidSymbol: "invalid-symbol",
       invalidQuantity: "invalid-quantity",
+      invalidQuantityStep: "invalid-step {value}",
+      quantityRulesUnavailable: "rules-unavailable",
       invalidPrice: "invalid-price",
       requiredPrice: "required-price",
       marketPriceUnavailable: "market-price-unavailable",
@@ -346,6 +363,7 @@ describe("useManualOrderController", () => {
 
     expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
       botId: "bot-live-margin",
+      clientOrderId: expect.stringMatching(/^soar_[a-f0-9]{22}$/),
       symbol: "BTCUSDT",
       side: "BUY",
       type: "MARKET",
@@ -381,6 +399,9 @@ describe("useManualOrderController", () => {
       quantityConstraints: {
         minAmount: 0.001,
         amountPrecision: 0.001,
+        amountPrecisionMode: "TICK_SIZE",
+        amountStep: 0.001,
+        contractSize: 1,
         minNotional: 5,
         minExecutableQty: 0.001,
       },
@@ -389,6 +410,8 @@ describe("useManualOrderController", () => {
     const labels = {
       invalidSymbol: "invalid-symbol",
       invalidQuantity: "invalid-quantity",
+      invalidQuantityStep: "invalid-step {value}",
+      quantityRulesUnavailable: "rules-unavailable",
       invalidPrice: "invalid-price",
       requiredPrice: "required-price",
       marketPriceUnavailable: "market-price-unavailable",
@@ -453,6 +476,7 @@ describe("useManualOrderController", () => {
     expect(confirmRiskAction).toHaveBeenCalledTimes(2);
     expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
       botId: "bot-live-confirm",
+      clientOrderId: expect.stringMatching(/^soar_[a-f0-9]{22}$/),
       symbol: "BTCUSDT",
       side: "BUY",
       type: "MARKET",
@@ -477,6 +501,9 @@ describe("useManualOrderController", () => {
       quantityConstraints: {
         minAmount: 0.01,
         amountPrecision: 0.01,
+        amountPrecisionMode: "TICK_SIZE",
+        amountStep: 0.01,
+        contractSize: 1,
         minNotional: 5,
         minExecutableQty: 0.02,
       },
@@ -485,6 +512,8 @@ describe("useManualOrderController", () => {
     const labels = {
       invalidSymbol: "invalid-symbol",
       invalidQuantity: "invalid-quantity",
+      invalidQuantityStep: "invalid-step {value}",
+      quantityRulesUnavailable: "rules-unavailable",
       invalidPrice: "invalid-price",
       requiredPrice: "required-price",
       marketPriceUnavailable: "market-price-unavailable",
@@ -569,6 +598,9 @@ describe("useManualOrderController", () => {
       quantityConstraints: {
         minAmount: 0.001,
         amountPrecision: 0.001,
+        amountPrecisionMode: "TICK_SIZE",
+        amountStep: 0.001,
+        contractSize: 1,
         minNotional: 5,
         minExecutableQty: 0.001,
       },
@@ -587,6 +619,8 @@ describe("useManualOrderController", () => {
     const labels = {
       invalidSymbol: "invalid-symbol",
       invalidQuantity: "invalid-quantity",
+      invalidQuantityStep: "invalid-step {value}",
+      quantityRulesUnavailable: "rules-unavailable",
       invalidPrice: "invalid-price",
       requiredPrice: "required-price",
       marketPriceUnavailable: "market-price-unavailable",
@@ -622,7 +656,7 @@ describe("useManualOrderController", () => {
       open: [],
     } as unknown as RuntimeSelectedData;
 
-    const { result } = renderHook(() =>
+    const { result, unmount } = renderHook(() =>
       useManualOrderController({
         selected,
         selectedData,
@@ -646,10 +680,198 @@ describe("useManualOrderController", () => {
     expect(result.current.manualOrderLastError).toBe("LIVE_MANUAL_SCOPE_UNRESOLVED");
     expect(toast.error).toHaveBeenCalledWith("LIVE_MANUAL_SCOPE_UNRESOLVED");
 
+    const firstClientOrderId = openDashboardManualOrderMock.mock.calls[0]?.[0]?.clientOrderId;
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[1]?.[0]?.clientOrderId).toBe(firstClientOrderId);
+
+    unmount();
+    const resumed = renderHook(() => useManualOrderController({
+      selected,
+      selectedData,
+      load: vi.fn().mockResolvedValue(undefined),
+      labels,
+    }));
+    await waitFor(() => expect(resumed.result.current.manualOrderSymbol).toBe("BTCUSDT"));
+    act(() => resumed.result.current.handleManualOrderQuantityChange("0.01"));
+    await act(async () => {
+      await resumed.result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[2]?.[0]?.clientOrderId).toBe(firstClientOrderId);
+
     act(() => {
-      result.current.handleManualOrderQuantityChange("0.02");
+      resumed.result.current.handleManualOrderQuantityChange("0.02");
     });
 
-    expect(result.current.manualOrderLastError).toBeNull();
+    expect(resumed.result.current.manualOrderLastError).toBeNull();
+    await act(async () => {
+      await resumed.result.current.handleSubmitManualOrder();
+    });
+    expect(openDashboardManualOrderMock.mock.calls[3]?.[0]?.clientOrderId).not.toBe(firstClientOrderId);
+  });
+});
+
+describe("manual quantity grid parity", () => {
+  const labels = {
+    invalidSymbol: "invalid-symbol",
+    invalidQuantity: "invalid-quantity",
+    invalidQuantityStep: "invalid-step {value}",
+    quantityRulesUnavailable: "rules-unavailable",
+    invalidPrice: "invalid-price",
+    requiredPrice: "required-price",
+    marketPriceUnavailable: "market-price-unavailable",
+    minQuantity: "min-quantity {value}",
+    exceedsFreeFunds: "exceeds-free-funds",
+    success: "success",
+    error: "error",
+  };
+
+  const setup = async (params: {
+    precision: number;
+    mode: "TICK_SIZE" | "DECIMAL_PLACES" | null;
+    step: number | null;
+    marketType?: "FUTURES" | "SPOT";
+    min?: number | null;
+    contractSize?: number | null;
+  }) => {
+    const spot = params.marketType === "SPOT";
+    const symbol = spot ? "ADAUSDT" : "NGUSDT";
+    const botId = spot ? "spot-bot" : "gate-futures-bot";
+    const markPrice = spot ? 2 : 0.25;
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId, symbol, mode: spot ? "PAPER" : "LIVE", orderType: "MARKET",
+      marginMode: spot ? "NONE" : "ISOLATED", leverage: spot ? 1 : 5,
+      priceReference: { markPrice, source: "exchange_mark" },
+      quantityConstraints: {
+        minAmount: spot ? 0.25 : 1, minNotional: spot ? 1 : 5.1,
+        amountPrecision: params.precision, amountPrecisionMode: params.mode,
+        amountStep: params.step,
+        contractSize: params.contractSize === undefined ? (spot ? null : 10) : params.contractSize,
+        minExecutableQty: params.min === undefined ? (spot ? 0.25 : 60) : params.min,
+      },
+      sideAwarePreview: { side: "BUY", requestedQuantity: null,
+        estimatedNotional: null, estimatedMargin: null, maxOpenPositions: 3 },
+    });
+    const selected = {
+      bot: { id: botId, name: "Grid bot", mode: spot ? "PAPER" : "LIVE",
+        marketType: spot ? "SPOT" : "FUTURES", exchange: "GATEIO",
+        symbolGroup: { id: "group", name: "Group", symbols: [symbol] } },
+      runtimeGraph: { marketGroups: [] },
+    } as unknown as RuntimeSnapshot;
+    const selectedData = { free: spot ? 10 : 50,
+      symbols: [{ symbol, liveLastPrice: markPrice }], open: [] } as unknown as RuntimeSelectedData;
+    const hook = renderHook(() => useManualOrderController({
+      selected, selectedData, load: vi.fn().mockResolvedValue(undefined), labels,
+    }));
+    await waitFor(() => expect(hook.result.current.manualOrderContext?.symbol).toBe(symbol));
+    return hook;
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    window.localStorage.clear();
+    openDashboardManualOrderMock.mockResolvedValue({ id: "grid-order", status: "FILLED" });
+  });
+
+  it("rejects 60.5 for integer Gate contracts and floors budget/slider to the API step", async () => {
+    const { result } = await setup({ precision: 1, mode: "TICK_SIZE", step: 1 });
+    expect(result.current.manualOrderSliderMaxQuantity).toBe(100);
+    act(() => result.current.handleManualOrderQuantityChange("60.5"));
+    await waitFor(() => {
+      expect(result.current.manualOrderQuantityError).toBe("invalid-step 1");
+      expect(result.current.manualOrderNotionalEstimate).toBeNull();
+      expect(result.current.manualOrderMarginEstimate).toBeNull();
+      expect(result.current.manualOrderBudget).toBe("");
+    });
+    await act(async () => { await result.current.handleSubmitManualOrder(); });
+    expect(toast.error).toHaveBeenCalledWith("invalid-step 1");
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+
+    act(() => result.current.handleManualOrderBudgetChange("30.25"));
+    await waitFor(() => {
+      expect(result.current.manualOrderQuantity).toBe("60");
+      expect(result.current.manualOrderNotionalEstimate).toBe(150);
+      expect(result.current.manualOrderMarginEstimate).toBe(30);
+      expect(result.current.manualOrderBudget).toBe("30");
+    });
+    act(() => result.current.handleManualOrderSliderChange(50));
+    expect(result.current.manualOrderQuantity).toBe("80");
+    expect(result.current.manualOrderMarginEstimate).toBe(40);
+    await act(async () => { await result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+      botId: "gate-futures-bot", quantity: 80, price: 0.25,
+    }));
+  });
+
+  it("accepts 60.5 for one decimal place with API-consistent contract-size quote", async () => {
+    const { result } = await setup({ precision: 1, mode: "DECIMAL_PLACES", step: 0.1 });
+    act(() => result.current.handleManualOrderQuantityChange("60.5"));
+    await waitFor(() => {
+      expect(result.current.manualOrderQuantityError).toBeNull();
+      expect(result.current.manualOrderNotionalEstimate).toBe(151.25);
+      expect(result.current.manualOrderMarginEstimate).toBe(30.25);
+      expect(result.current.manualOrderBudget).toBe("30.25");
+    });
+    await act(async () => { await result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({ quantity: 60.5 }));
+  });
+
+  it("requires multiples of tick five and refuses unknown precision metadata", async () => {
+    const five = await setup({ precision: 5, mode: "TICK_SIZE", step: 5 });
+    act(() => five.result.current.handleManualOrderQuantityChange("60.5"));
+    expect(five.result.current.manualOrderNotionalEstimate).toBeNull();
+    await act(async () => { await five.result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+    act(() => five.result.current.handleManualOrderBudgetChange("32.49"));
+    expect(five.result.current.manualOrderQuantity).toBe("60");
+    five.unmount();
+
+    const unknown = await setup({ precision: 1, mode: null, step: null, min: null });
+    expect(unknown.result.current.manualOrderSliderMaxQuantity).toBeNull();
+    act(() => unknown.result.current.handleManualOrderQuantityChange("60"));
+    expect(unknown.result.current.manualOrderNotionalEstimate).toBeNull();
+    expect(unknown.result.current.manualOrderQuantityError).toBe("rules-unavailable");
+    await act(async () => { await unknown.result.current.handleSubmitManualOrder(); });
+    expect(toast.error).toHaveBeenCalledWith("rules-unavailable");
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed for FUTURES without a contract size while SPOT keeps unit sizing", async () => {
+    const futures = await setup({ precision: 1, mode: "TICK_SIZE", step: 1,
+      min: 2, contractSize: null });
+    act(() => futures.result.current.handleManualOrderQuantityChange("60"));
+    expect(futures.result.current.manualOrderQuantityError).toBe("rules-unavailable");
+    expect(futures.result.current.manualOrderSliderMaxQuantity).toBeNull();
+    expect(futures.result.current.manualOrderNotionalEstimate).toBeNull();
+    expect(futures.result.current.manualOrderMarginEstimate).toBeNull();
+    act(() => futures.result.current.handleManualOrderBudgetChange("20"));
+    expect(futures.result.current.manualOrderQuantity).toBe("");
+    await act(async () => { await futures.result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+    futures.unmount();
+
+    const spot = await setup({ precision: 0.25, mode: "TICK_SIZE", step: 0.25,
+      marketType: "SPOT", contractSize: null });
+    act(() => spot.result.current.handleManualOrderQuantityChange("1.25"));
+    expect(spot.result.current.manualOrderNotionalEstimate).toBe(2.5);
+    await act(async () => { await spot.result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+      botId: "spot-bot", quantity: 1.25,
+    }));
+  });
+
+  it("uses one unit of notional per SPOT quantity and floors a budget to its fractional tick", async () => {
+    const { result } = await setup({ precision: 0.25, mode: "TICK_SIZE", step: 0.25, marketType: "SPOT" });
+    act(() => result.current.handleManualOrderBudgetChange("2.6"));
+    await waitFor(() => {
+      expect(result.current.manualOrderQuantity).toBe("1.25");
+      expect(result.current.manualOrderNotionalEstimate).toBe(2.5);
+      expect(result.current.manualOrderBudget).toBe("2.5");
+    });
+    await act(async () => { await result.current.handleSubmitManualOrder(); });
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith(expect.objectContaining({
+      botId: "spot-bot", quantity: 1.25,
+    }));
   });
 });

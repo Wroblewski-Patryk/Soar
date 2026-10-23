@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/profile`
 - Owner: backend/core
-- Last updated: 2026-05-09
+- Last updated: 2026-10-19
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -13,7 +13,7 @@
   - basic profile + UI preferences
   - security actions (password/account deletion)
   - API key lifecycle and exchange connection tests
-  - active subscription view + checkout intent bootstrap
+  - read-only subscription catalog and active assignment view
 
 Out of scope:
 - Admin-managed user mutations.
@@ -22,16 +22,20 @@ Out of scope:
 ## 2. Boundaries and Dependencies
 - Mounted under `/dashboard/profile/*` via `apps/api/src/router/dashboard.routes.ts`.
 - Protected by global `requireAuth` on dashboard router.
+- Account and key operations require the signed human browser session in a cookie; moving a legacy Bearer token into Cookie does not qualify.
 - Depends on:
   - `prisma` persistence.
   - `users/publicUser` projection contract.
-  - `subscriptions.service` for catalog/default subscription alignment.
+  - `subscriptions.service` for catalog initialization; profile reads do not assign a plan.
   - exchange capability/probe helpers for API-key tests.
   - crypto helpers for encrypted API key storage.
 
 ## 3. Data and Contract Surface
 - Basic profile:
   - `GET/PATCH/DELETE /dashboard/profile/basic`.
+  - Account deletion on the basic route uses the same password confirmation,
+    user rate limit, and session-cookie clearing as
+    `DELETE /dashboard/profile/security/account`.
   - merges `uiPreferences` safely with table column visibility normalization.
 - Security:
   - `PATCH /dashboard/profile/security/password`
@@ -44,7 +48,8 @@ Out of scope:
   - `POST /dashboard/profile/apiKeys/:id/revoke`
 - Subscription:
   - `GET /dashboard/profile/subscription`
-  - `POST /dashboard/profile/subscription/checkout-intents`
+  - `activeSubscription` and `activePlanCode` are null until an administrator assigns a plan.
+  - `POST /dashboard/profile/subscription/checkout-intents` is retired and returns 404.
 
 ## 4. Runtime Flows
 - Basic profile update:
@@ -74,6 +79,8 @@ Out of scope:
 - Sensitive profile routes are rate-limited (`user`/`user_exchange` scopes).
 - Security actions require current password verification.
 - Account deletion clears dependent runtime/trading entities before user removal.
+- Profile basic PATCH/DELETE, security PATCH/DELETE, all API-key routes, and avatar upload reject legacy or Bearer-only credentials. Basic and subscription reads remain separately authenticated.
+- API-key create/list/update/rotate responses return masked key metadata and never the secret; connection tests return status and permissions only.
 
 ## 7. Observability and Operations
 - API key tests write structured audit entries (`profile.api_key.test_connection`).

@@ -31,14 +31,34 @@ export const TrailingLossConfigSchema = z.object({
   startPercent: z.number(),
   stepPercent: z.number().positive().max(10),
 });
+export const TrailingLossLevelSchema = z.object({
+  startPercent: z.number().negative(),
+  stepPercent: z.number().positive().max(10),
+});
+
+// Missing in stored strategy configs means the original quantity-based behavior.
+// The explicit USDT mode is opt-in in BACKTEST, PAPER and LIVE.
+export const DcaSizingBasisSchema = z.enum(['quantity_v1', 'usdt_contribution_v1']);
+export type DcaSizingBasis = z.infer<typeof DcaSizingBasisSchema>;
 
 export const DcaConfigSchema = z.object({
   enabled: z.boolean().default(false),
   maxAdds: z.number().int().min(0).default(0),
   stepPercent: z.number().positive().max(1).default(0.01),
-  addSizeFraction: z.number().positive().max(2).default(0.5),
+  addSizeFraction: z.number().positive().max(10).default(0.5),
   levelPercents: z.array(z.number().min(-10).max(10)).optional(),
   addSizeFractions: z.array(z.number().positive().max(10)).optional(),
+  sizingBasis: DcaSizingBasisSchema.default('quantity_v1'),
+}).superRefine((config, context) => {
+  if (config.sizingBasis !== 'quantity_v1') return;
+  if (config.addSizeFraction > 2) {
+    context.addIssue({ code: 'custom', path: ['addSizeFraction'], message: 'quantity DCA multiplier cannot exceed 2' });
+  }
+  config.addSizeFractions?.forEach((multiplier, index) => {
+    if (multiplier > 2) {
+      context.addIssue({ code: 'custom', path: ['addSizeFractions', index], message: 'quantity DCA multiplier cannot exceed 2' });
+    }
+  });
 });
 
 export const PositionManagementInputSchema = z.object({
@@ -47,6 +67,7 @@ export const PositionManagementInputSchema = z.object({
   leverage: z.number().positive().default(1),
   currentPnlFraction: z.number().optional(),
   dcaFundsExhausted: z.boolean().optional(),
+  dcaSizingBasis: DcaSizingBasisSchema.optional(),
   takeProfitPrice: z.number().positive().optional(),
   stopLossPrice: z.number().positive().optional(),
   trailingStop: TrailingStopConfigSchema.optional(),
@@ -54,6 +75,7 @@ export const PositionManagementInputSchema = z.object({
   trailingTakeProfitLevels: z.array(TrailingTakeProfitLevelSchema).optional(),
   trailingStopLevels: z.array(TrailingStopLevelSchema).optional(),
   trailingLoss: TrailingLossConfigSchema.optional(),
+  trailingLossLevels: z.array(TrailingLossLevelSchema).optional(),
   dca: DcaConfigSchema.optional(),
 });
 
@@ -64,8 +86,10 @@ export const PositionManagementStateSchema = z.object({
   executedDcaLevelIndices: z.array(z.number().int().min(0)).optional(),
   trailingAnchorPrice: z.number().positive().optional(),
   trailingLossLimitPercent: z.number().optional(),
+  trailingLossActiveLevelIndex: z.number().int().min(0).optional(),
   trailingTakeProfitHighPercent: z.number().optional(),
   trailingTakeProfitStepPercent: z.number().optional(),
+  trailingTakeProfitActiveLevelIndex: z.number().int().min(0).optional(),
   lastDcaPrice: z.number().positive().optional(),
 });
 

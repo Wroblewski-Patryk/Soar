@@ -7,6 +7,7 @@ import { runtimeMetricsService } from './runtimeMetrics.service';
 import { mergeRuntimeStrategyVotes, StrategyVote } from './runtimeSignalMerge';
 import { ActiveBot, ActiveBotStrategy, resolveRuntimeOrderQuantity } from './runtimeSignalLoopDefaults';
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
+import { resolveRuntimeDcaPolicyBlock } from './runtimeDcaPolicy';
 import { RuntimeSignalConditionLine, StrategyEvaluation } from './runtimeSignalEvaluationTypes';
 import {
   RuntimeExchangeOrderGuardResult,
@@ -279,6 +280,26 @@ export const processRuntimeFinalCandleDecision = async (
         { conditionLines: RuntimeSignalConditionLine[]; indicatorSummary: string | null }
       > = {};
       const runtimeStrategies = runtimeContext.strategies ?? [runtimeContext.strategy];
+      const blockedStrategy = runtimeStrategies
+        .map((strategy) => ({ strategy, block: resolveRuntimeDcaPolicyBlock(strategy.strategyConfig) }))
+        .find(({ block }) => block != null);
+      if (blockedStrategy?.block) {
+        await context.recordRuntimeEvent?.({
+          userId: bot.userId,
+          botId: bot.id,
+          mode: bot.mode,
+          sessionId,
+          eventType: 'PRETRADE_BLOCKED',
+          level: 'WARN',
+          symbol: event.symbol,
+          strategyId: blockedStrategy.strategy.strategyId,
+          message: blockedStrategy.block.message,
+          payload: { reason: blockedStrategy.block.code,
+            ...(blockedStrategy.block.multiplier == null ? {} : { multiplier: blockedStrategy.block.multiplier }) },
+          eventAt: new Date(event.eventTime),
+        });
+        return;
+      }
       const eligibleStrategies = runtimeStrategies.filter((strategy) =>
         strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
       );

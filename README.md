@@ -67,6 +67,7 @@ What this command does:
 - checks Postgres/Redis availability
 - if needed, tries `docker compose up -d postgres redis`
 - runs `prisma generate` and `prisma migrate deploy`
+- preserves existing database contents by default (`BACKEND_DEV_RESET_DB=true` opts into a reset)
 - starts API watch mode
 - starts workers (`execution` + `market-stream`) by default
 
@@ -99,6 +100,16 @@ This starts:
 
 Use this only when you intentionally disable worker auto-start in `backend/dev`
 or when you want a separate worker terminal.
+
+### API test database
+
+API Vitest tests delete records as part of fixture setup. The test runner uses a
+separate PostgreSQL database: for a local `DATABASE_URL`, its name is suffixed
+with `_test` (for example `cryptosparrow_test`). Create that database and apply
+the API Prisma migrations before running `pnpm --filter api exec vitest run`.
+For a non-local database host, set `TEST_DATABASE_URL` explicitly to a different
+database whose name ends in `_test`. The test runner refuses to use the active
+application database. Keep the API test database separate from local UI data.
 
 ## Minimal number of terminals (VS Code)
 - Standard full runtime: 2 terminals

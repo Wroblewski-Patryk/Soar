@@ -7,10 +7,12 @@ const cleanupDb = async () => {
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();
+  await prisma.backtestContribution.deleteMany();
   await prisma.backtestRun.deleteMany();
   await prisma.orderFill.deleteMany();
   await prisma.trade.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.liveOrderIntent.deleteMany();
   await prisma.position.deleteMany();
   await prisma.signal.deleteMany();
   await prisma.botRuntimeSymbolStat.deleteMany();
@@ -199,5 +201,44 @@ describe('orders.exchangeEvents fee backfill', () => {
     expect(trade.fee).toBeCloseTo(0.3, 10);
     expect(trade.feeSource).toBe('EXCHANGE_FILL');
     expect(trade.feePending).toBe(true);
+  });
+
+  it('does not attribute a later fee to the wrong identical synthetic fill', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'ambiguous-synthetic-fee@example.com', password: 'hashed' },
+    });
+    const order = await prisma.order.create({ data: {
+      userId: user.id, symbol: 'ETHUSDT', side: 'BUY', type: 'MARKET',
+      status: 'FILLED', quantity: 1, filledQuantity: 1, averageFillPrice: 100,
+      fee: 0.01, feeSource: 'EXCHANGE_FILL', feePending: true,
+      exchangeOrderId: 'ambiguous-synthetic-fee-order',
+      filledAt: new Date('2026-05-06T11:00:00.000Z'),
+    } });
+    await prisma.orderFill.createMany({ data: [
+      { userId: user.id, orderId: order.id, symbol: 'ETHUSDT', side: 'BUY',
+        exchangeTradeId: 'soar-fill-known-1', price: 100, quantity: 0.5,
+        notional: 50, feeCost: 0.01, feeCurrency: 'USDT', feeRate: null,
+        executedAt: new Date('2026-05-06T11:00:00.000Z'), raw: {} },
+      { userId: user.id, orderId: order.id, symbol: 'ETHUSDT', side: 'BUY',
+        exchangeTradeId: 'soar-fill-unknown-2', price: 100, quantity: 0.5,
+        notional: 50, feeCost: null, feeCurrency: null, feeRate: null,
+        executedAt: new Date('2026-05-06T11:00:00.000Z'), raw: {} },
+    ] });
+    await applyLiveExchangeOrderTradeUpdateEvent({ userId: user.id, event: {
+      eventType: 'ORDER_TRADE_UPDATE', marketType: 'FUTURES',
+      eventTime: 4_000, transactionTime: 4_001,
+      symbol: 'ETHUSDT', side: 'BUY', orderType: 'MARKET',
+      orderStatus: 'FILLED', executionType: 'TRADE',
+      exchangeOrderId: 'ambiguous-synthetic-fee-order', clientOrderId: 'ambiguous-fee',
+      averagePrice: 100, cumulativeFilledQuantity: 1,
+      lastFilledQuantity: 0.5, lastFilledPrice: 100,
+      fee: 0.01, feeCurrency: 'USDT', exchangeTradeId: 'later-ambiguous-trade', raw: {},
+    } });
+    const unchangedOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    const fills = await prisma.orderFill.findMany({ where: { orderId: order.id } });
+    expect(unchangedOrder.fee).toBeCloseTo(0.01, 10);
+    expect(unchangedOrder.feePending).toBe(true);
+    expect(fills).toHaveLength(2);
+    expect(fills.find((fill) => fill.exchangeTradeId === 'soar-fill-unknown-2')?.feeCost).toBeNull();
   });
 });

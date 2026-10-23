@@ -1,7 +1,7 @@
 # V1 Release Gate Runbook
 
 Date: 2026-04-22  
-Scope: one canonical command for local and target-environment V1 release gating
+Scope: local Windows rehearsal and production evidence on the existing Coolify environment; no separate STAGE.
 
 ## Purpose
 
@@ -42,11 +42,10 @@ pnpm run ops:release:v1:gate -- --environment local --dry-run --base-url http://
 
 ## Target-Only Variant
 
-When local quality/build/go-live gates already passed earlier in CI or on the
-same candidate SHA:
+Only after local quality/build/go-live gates passed on the same exact candidate SHA, the owner approved the production window, and the deployment readback matches that SHA:
 
 ```bash
-pnpm run ops:release:v1:gate -- --environment stage --base-url https://<target-api> --web-base-url https://<target-web> --auth-token <ADMIN_JWT> --skip-local-quality
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://<target-api> --web-base-url https://<target-web> --auth-token <ADMIN_JWT> --skip-local-quality
 ```
 
 ## Evidence Truth
@@ -54,27 +53,15 @@ pnpm run ops:release:v1:gate -- --environment stage --base-url https://<target-a
 The gate now evaluates required evidence families before claiming readiness.
 
 - `local`: evidence is informational only; dry-run stays available as a non-prod signal.
-- `stage`: activation audit and activation plan must be fresh for the current day.
 - `prod`: activation audit, activation plan, RC checklist, RC external-gates
   status, RC sign-off record, backup/restore drill evidence, and rollback proof
   pack must all be fresh for the current day.
 
 If any required family is stale or missing, the gate stays `not_ready`.
 
-## Canonical Stage Rehearsal Path
+## Environment Boundary
 
-```bash
-pnpm run ops:release:v1:stage-rehearsal -- --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --auth-token <ADMIN_JWT>
-```
-
-Dry-run variant when the target environment or credentials are not available:
-
-```bash
-pnpm run ops:release:v1:stage-rehearsal -- --dry-run --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch
-```
-
-Both commands emit release-gate and stage-rehearsal artifacts under
-`docs/operations/`.
+The local dry-run is rehearsal only. Soar has no STAGE deployment or second VPS. Production gate output must come from the existing Coolify environment on the approved exact SHA; it cannot be inferred from local or historical stage artifacts.
 
 ## Canonical Backup / Rollback Proof Commands
 
@@ -82,12 +69,6 @@ Prod backup/restore drill evidence:
 
 ```bash
 pnpm run ops:db:restore-drill:prod
-```
-
-Stage rollback proof:
-
-```bash
-pnpm run ops:deploy:rollback-proof:stage -- --base-url https://stage-api.soar.luckysparrow.ch --auth-token <ADMIN_JWT>
 ```
 
 Prod rollback proof:
@@ -100,27 +81,17 @@ Each command emits human-reviewable artifacts under `docs/operations/`, and
 prod activation must remain blocked until fresh prod variants exist for the
 current day.
 
-## Stage Execution Preflight
+## Production Execution Preflight
 
-Before treating stage rehearsal as real evidence, confirm all of the following:
+Before treating the production run as release evidence, verify:
 
-1. domain mapping is correct for the current deployment:
-   - API: `https://stage-api.soar.luckysparrow.ch`
-   - Web: `https://stage.soar.luckysparrow.ch`
-2. the target SHA/build is already deployed on stage,
-3. OPS auth is available in one canonical form:
-   - `--auth-token <ADMIN_JWT>`, or
-   - `--auth-email <email> --auth-password <password>`, or
-   - OPS private-route protection via `--ops-basic-user/--ops-basic-password`,
-   - optional private-route header via `--ops-auth-header-name/--ops-auth-header-value`
-4. stage workers are expected to be online and reporting:
-   - `/workers/health`
-   - `/workers/runtime-freshness`
-5. the operator is ready to keep the generated artifacts from the real run and
-   not mix them with dry-run-only output.
+1. The owner separately approved the exact SHA and deployment window.
+2. Local Windows gates and protected signed-in user/admin journeys are recorded for that SHA; local PASS remains local evidence.
+3. Production backup/restore and rollback proof are ready, migrations are reviewed, and the stop-before-start worker switch can be paused and checked.
+4. Coolify readback binds the actual API/Web/worker images to the selected SHA; production health, `/ready`, protected journeys and logs are then checked separately.
+5. The operator can access protected OPS routes and keeps real run artifacts distinct from dry-run output.
 
-If any preflight point is unresolved, stage evidence remains `BLOCKED` by
-design.
+Unmet preflight points keep production release `NO-GO`.
 
 ## Auth Passthrough
 

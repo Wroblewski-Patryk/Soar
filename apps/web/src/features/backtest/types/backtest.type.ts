@@ -15,6 +15,7 @@ export type BacktestRun = {
   finishedAt: string | null;
   notes: string | null;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type BacktestTrade = {
@@ -28,7 +29,7 @@ export type BacktestTrade = {
   closedAt: string;
   pnl: number;
   fee: number | null;
-  exitReason?: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason?: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated?: boolean;
 };
 

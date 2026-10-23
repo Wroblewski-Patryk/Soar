@@ -18,12 +18,12 @@ export default function RegisterPage() {
   
   return (
     <section className="hero flex-1 min-h-full bg-base-200 px-4 py-8 md:px-6 md:py-12">
-      <div className="hero-content w-full max-w-6xl flex-col gap-8 p-0 lg:flex-row-reverse lg:gap-12">
-        <div className="max-w-xl text-center lg:text-left">
+      <div className="hero-content w-full min-w-0 max-w-6xl flex-col gap-8 p-0 lg:flex-row-reverse lg:gap-12">
+        <div className="w-full min-w-0 max-w-xl text-center lg:text-left">
           <h1 className="text-4xl font-bold md:text-5xl">{t('auth.page.register.title')}</h1>
           <p className="py-4 text-base-content/75 md:py-6">{t('auth.page.register.description')}</p>
         </div>
-        <div className="card bg-base-100 w-full max-w-md shrink-0 shadow-xl">
+        <div className="card bg-base-100 w-full min-w-0 max-w-md shadow-xl lg:shrink-0">
           <div className="card-body">
             <RegisterForm />
           </div>

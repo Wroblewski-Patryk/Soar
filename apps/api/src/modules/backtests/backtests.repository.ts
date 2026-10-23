@@ -12,6 +12,22 @@ export const updateBacktestRunById = (runId: string, data: Prisma.BacktestRunUpd
 export const findBacktestRunById = (runId: string) =>
   prisma.backtestRun.findUnique({ where: { id: runId } });
 
+const publicBacktestRunSelect = {
+  id: true,
+  userId: true,
+  strategyId: true,
+  name: true,
+  symbol: true,
+  timeframe: true,
+  startedAt: true,
+  finishedAt: true,
+  status: true,
+  seedConfig: true,
+  notes: true,
+  createdAt: true,
+  updatedAt: true,
+} satisfies Prisma.BacktestRunSelect;
+
 export const findOwnedStrategyForBacktest = (userId: string, strategyId: string) =>
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
@@ -32,38 +48,6 @@ export const findOwnedStrategySignalConfig = (userId: string, strategyId: string
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
     select: { config: true, walletRisk: true },
-  });
-
-export const createBacktestTrades = (data: Prisma.BacktestTradeCreateManyInput[]) =>
-  prisma.backtestTrade.createMany({
-    data,
-    skipDuplicates: false,
-  });
-
-export const deleteBacktestTradesForRun = (userId: string, runId: string) =>
-  prisma.backtestTrade.deleteMany({
-    where: { userId, backtestRunId: runId },
-  });
-
-export const countWinningBacktestTrades = (userId: string, runId: string) =>
-  prisma.backtestTrade.count({
-    where: { backtestRunId: runId, userId, pnl: { gt: 0 } },
-  });
-
-export const countLosingBacktestTrades = (userId: string, runId: string) =>
-  prisma.backtestTrade.count({
-    where: { backtestRunId: runId, userId, pnl: { lt: 0 } },
-  });
-
-export const upsertBacktestReportForRun = (input: {
-  backtestRunId: string;
-  create: Prisma.BacktestReportUncheckedCreateInput;
-  update: Prisma.BacktestReportUpdateInput;
-}) =>
-  prisma.backtestReport.upsert({
-    where: { backtestRunId: input.backtestRunId },
-    update: input.update,
-    create: input.create,
   });
 
 export const findOwnedMarketUniverseById = (userId: string, marketUniverseId: string) =>
@@ -178,6 +162,7 @@ export const listOwnedBacktestRuns = async (
 export const findOwnedBacktestRun = (userId: string, runId: string) =>
   prisma.backtestRun.findFirst({
     where: { id: runId, userId },
+    select: publicBacktestRunSelect,
   });
 
 export const findOwnedBacktestRunId = (userId: string, runId: string) =>
@@ -194,6 +179,9 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await prisma.$transaction([
+        prisma.backtestContribution.deleteMany({
+          where: { userId, backtestRunId: runId },
+        }),
         prisma.backtestReport.deleteMany({
           where: {
             userId,
@@ -206,8 +194,8 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
             backtestRunId: runId,
           },
         }),
-        prisma.backtestRun.delete({
-          where: { id: runId },
+        prisma.backtestRun.deleteMany({
+          where: { id: runId, userId },
         }),
       ]);
       return;
@@ -218,8 +206,20 @@ export const deleteOwnedBacktestRunCascade = async (userId: string, runId: strin
   }
 };
 
-export const createBacktestRun = (data: Prisma.BacktestRunUncheckedCreateInput) =>
-  prisma.backtestRun.create({ data });
+export const createBacktestRun = (
+  data: Prisma.BacktestRunUncheckedCreateInput,
+  pendingReportMetrics: Prisma.InputJsonValue,
+) => prisma.$transaction(async (tx) => {
+  const run = await tx.backtestRun.create({ data, select: publicBacktestRunSelect });
+  await tx.backtestReport.create({
+    data: {
+      userId: data.userId,
+      backtestRunId: run.id,
+      metrics: pendingReportMetrics,
+    },
+  });
+  return run;
+});
 
 export const listOwnedBacktestTrades = (userId: string, runId: string, query: ListBacktestTradesQuery) =>
   prisma.backtestTrade.findMany({

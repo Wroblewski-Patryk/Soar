@@ -1,7 +1,14 @@
 # Exchange Access Ownership Matrix
 
 Status: Active  
-Updated: 2026-05-21
+Updated: 2026-10-17
+
+This document records exchange-access ownership and source-level capability
+flags. The exact tuple inventory below separates those flags from accepted
+end-to-end support.
+The [Current Version Product Contract](../../product/current-version-contract.md)
+requires PAPER and LIVE scope on Binance and Gate.io. Neither an enabled source
+flag nor this matrix proves deployed or exchange-side acceptance.
 
 ## Purpose
 
@@ -59,21 +66,20 @@ callers and compatibility surfaces:
 
 These flags remain allowed only as coarse compatibility truth. They answer:
 
-- whether a broad exchange family has any currently approved support for that
-  area
+- whether a broad exchange family is enabled in source for that area
 - whether a caller may enter the exchange module for that capability family at
   all
 
-Current compatibility-stage support:
+Current coarse source flags (not exact support):
 
 | Exchange | `MARKET_CATALOG` | `PAPER_PRICING_FEED` | `LIVE_EXECUTION` | `API_KEY_PROBE` |
 | --- | --- | --- | --- | --- |
-| `BINANCE` | supported | supported | supported | supported |
-| `GATEIO` | supported | supported | supported | supported |
-| `BYBIT` | unsupported | unsupported | unsupported | unsupported |
-| `OKX` | unsupported | unsupported | unsupported | unsupported |
-| `KRAKEN` | unsupported | unsupported | unsupported | unsupported |
-| `COINBASE` | unsupported | unsupported | unsupported | unsupported |
+| `BINANCE` | enabled | enabled | enabled | enabled |
+| `GATEIO` | enabled | enabled | enabled | enabled |
+| `BYBIT` | disabled | disabled | disabled | disabled |
+| `OKX` | disabled | disabled | disabled | disabled |
+| `KRAKEN` | disabled | disabled | disabled | disabled |
+| `COINBASE` | disabled | disabled | disabled | disabled |
 
 They do **not** answer:
 
@@ -97,6 +103,50 @@ Examples:
 
 This exact-stage matrix is the only form allowed to answer whether a specific
 operation is supported for a specific venue context.
+
+The source flags for authenticated reads and LIVE writes come from
+[`exchangeExecutionCapabilityContract.service.ts`](../../../apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.ts).
+`true` means the code permits that tuple to enter its operation boundary;
+it does **not** prove the route, adapter, exchange, or deployed user journey.
+`PAPER_PRICING_FEED` currently has only a coarse exchange flag, so no exact
+market-type claim follows from it. `UNKNOWN` means this document has no
+current-version end-to-end acceptance for that exact tuple, even where a
+source flag or selected local test exists.
+
+| Exchange | Market type | Operation | Source flag | Accepted exact pair |
+| --- | --- | --- | --- | --- |
+| `BINANCE` | `SPOT` | `PAPER_PRICING_FEED` | coarse exchange flag only | UNKNOWN |
+| `BINANCE` | `SPOT` | `BALANCE_PREVIEW` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `POSITIONS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `OPEN_ORDERS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `TRADE_HISTORY_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `WALLET_CASHFLOW_HISTORY` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `LIVE_ORDER_SUBMIT` | `true` in source | UNKNOWN |
+| `BINANCE` | `SPOT` | `LIVE_ORDER_CANCEL` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `PAPER_PRICING_FEED` | coarse exchange flag only | UNKNOWN |
+| `BINANCE` | `FUTURES` | `BALANCE_PREVIEW` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `POSITIONS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `OPEN_ORDERS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `TRADE_HISTORY_SNAPSHOT` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `WALLET_CASHFLOW_HISTORY` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `LIVE_ORDER_SUBMIT` | `true` in source | UNKNOWN |
+| `BINANCE` | `FUTURES` | `LIVE_ORDER_CANCEL` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `PAPER_PRICING_FEED` | coarse exchange flag only | UNKNOWN |
+| `GATEIO` | `SPOT` | `BALANCE_PREVIEW` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `POSITIONS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `OPEN_ORDERS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `TRADE_HISTORY_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `WALLET_CASHFLOW_HISTORY` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `LIVE_ORDER_SUBMIT` | `true` in source | UNKNOWN |
+| `GATEIO` | `SPOT` | `LIVE_ORDER_CANCEL` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `PAPER_PRICING_FEED` | coarse exchange flag only | UNKNOWN |
+| `GATEIO` | `FUTURES` | `BALANCE_PREVIEW` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `POSITIONS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `OPEN_ORDERS_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `TRADE_HISTORY_SNAPSHOT` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `WALLET_CASHFLOW_HISTORY` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `LIVE_ORDER_SUBMIT` | `true` in source | UNKNOWN |
+| `GATEIO` | `FUTURES` | `LIVE_ORDER_CANCEL` | `true` in source | UNKNOWN |
 
 ### Migration Rules
 
@@ -124,14 +174,10 @@ Consumers must never infer:
 - `supported on SPOT => supported on FUTURES`
 - `supported on BINANCE => supported on another exchange`
 
-| Exchange | `BALANCE_PREVIEW` | `POSITIONS_SNAPSHOT` | `OPEN_ORDERS_SNAPSHOT` | `TRADE_HISTORY_SNAPSHOT` | `WALLET_CASHFLOW_HISTORY` | `LIVE_ORDER_SUBMIT` | `LIVE_ORDER_CANCEL` | Source derivation |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `BINANCE` | supported | supported | supported | supported | supported | supported | supported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit/cancel paths through `orders.service.ts` / exchange boundary / live adapter |
-| `BYBIT` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | supported | supported | supported | supported | supported | supported | supported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, wallet cashflow history, live order submit, and live order cancel are supported through canonical exchange boundaries |
+The former exchange-only operation table omitted `marketType` and therefore
+cannot establish exact support. The tuple inventory above supersedes it for
+the current Binance/Gate.io product scope. Non-product exchanges are governed
+by source gates and separate evidence; no exact support is asserted here.
 
 Runtime market-event boundary:
 
@@ -139,50 +185,17 @@ Runtime market-event boundary:
 - the Binance websocket normalizer still emits only `BINANCE`
 - Gate.io runtime events are allowed only as normalized input from the approved
   exchange-owned public market-data reader and market-stream polling adapter
-- Gate.io public ticker and candle reads are available inside the exchange
-  module through the public market-data reader, and app `GATEIO/FUTURES`
-  resolves to CCXT `swap` for perpetual futures
-- Gate.io public symbol rules are available through
-  `exchangeSymbolRules.service.ts` when `MARKET_CATALOG` is supported; this
-  is public metadata only and does not imply authenticated reads or live
-  execution support
-- `GATEIO` `PAPER_PRICING_FEED` is supported for public `FUTURES` paper
-  runtime after the approved exchange-owned polling source emitted real ticker
-  and final-candle events. This is public pricing only and does not imply
-  authenticated reads, live order submit, or exchange-side cancel support.
-- `GATEIO` `API_KEY_PROBE` is supported through the profile API-key connection
-  test surface using the shared exchange-aware probe service. This validates
-  credential reachability/permissions only and does not enable balance preview,
-  positions/open-orders/trade-history snapshots, live submit, or exchange-side
-  cancel support.
-- `GATEIO` `BALANCE_PREVIEW` is supported through the canonical
-  authenticated-read boundary and wallet preview route. This reads account
-  balance only and does not imply positions/open-orders/trade-history snapshots,
-  live submit, or exchange-side cancel support.
-- `GATEIO` `POSITIONS_SNAPSHOT` is supported through the canonical
-  authenticated-read boundary and positions exchange-snapshot route. This reads
-  positions only and does not imply open-orders/trade-history snapshots, live
-  submit, or exchange-side cancel support.
-- `GATEIO` `OPEN_ORDERS_SNAPSHOT` is supported through the canonical
-  authenticated-read boundary and reconciliation snapshot service. This reads
-  open orders only and does not imply trade-history snapshots, live submit, or
-  exchange-side cancel support.
-- `GATEIO` `TRADE_HISTORY_SNAPSHOT` is supported through the canonical
-  authenticated-read boundary and trade-history snapshot service. This reads
-  executed trades only and does not imply wallet cashflow history, live submit,
-  or exchange-side cancel support.
-- `GATEIO` `WALLET_CASHFLOW_HISTORY` is supported through the canonical
-  exchange adapter boundary for ledger/performance analytics reads. This reads
-  deposits, withdrawals, transfers, fees, funding, and income-like account
-  history only and does not imply live submit or exchange-side cancel support.
-- `GATEIO` `LIVE_ORDER_SUBMIT` is supported through the canonical
-  `orders.service.ts` -> `exchangeAdapterBoundary.service.ts` ->
-  `liveOrderAdapter.service.ts` path. This enables live submit only; it does
-  not imply exchange-side cancel support.
-- `GATEIO` `LIVE_ORDER_CANCEL` is supported through the canonical
-  `orders.service.ts` -> `exchangeAdapterBoundary.service.ts` -> authenticated
-  connector path. Local order state is mutated only after the boundary call
-  succeeds.
+- Local Gate.io implementation includes a public market-data reader and a
+  `GATEIO/FUTURES` mapping to CCXT `swap`. Selected local PAPER polling tests
+  exercise that source, but do not prove every market type or deployed feed.
+- Public symbol-rule resolution goes through
+  `exchangeSymbolRules.service.ts`; it does not establish authenticated reads.
+- The profile API-key probe checks credential reachability/permissions only;
+  it does not grant account-read or write capability.
+- Source flags for authenticated reads and LIVE submit/cancel are listed by
+  exact tuple above. Those paths must still pass their canonical boundaries
+  and receive separate route, adapter, and exchange-side verification before
+  the tuple can be marked accepted.
 
 Canonical owner:
 

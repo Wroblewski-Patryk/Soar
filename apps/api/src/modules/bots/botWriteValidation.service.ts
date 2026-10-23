@@ -5,6 +5,7 @@ import {
   resolveStrategyDerivativeRequirements,
 } from '../engine/strategyDataRequirements';
 import { botErrors } from './bots.errors';
+import { resolveRuntimeDcaPolicyBlock } from '../engine/runtimeDcaPolicy';
 
 type OwnedStrategy = {
   id: string;
@@ -94,6 +95,14 @@ export const assertStrategiesCompatibleWithMarketType = (params: {
   marketType: 'FUTURES' | 'SPOT';
   strategies: Array<{ id: string; config: unknown }>;
 }) => {
+  for (const strategy of params.strategies) {
+    const block = resolveRuntimeDcaPolicyBlock(strategy.config);
+    if (block) throw botErrors.runtimeDcaConfigUnsupported({
+      strategyId: strategy.id,
+      reason: block.code,
+      ...(block.multiplier == null ? {} : { multiplier: block.multiplier }),
+    });
+  }
   if (params.marketType === 'FUTURES') return;
 
   const incompatibleStrategyIds = params.strategies

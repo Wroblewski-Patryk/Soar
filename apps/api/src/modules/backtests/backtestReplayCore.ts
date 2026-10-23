@@ -1,14 +1,20 @@
 import { PositionSide } from '@prisma/client';
 import { decideExecutionAction } from '../engine/sharedExecutionCore';
-import { evaluatePositionManagement } from '../engine/positionManagement.service';
-import { PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
+import { evaluatePositionManagement, rebasePositionManagementProtection } from '../engine/positionManagement.service';
+import { DcaSizingBasis, PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
 import {
+  buildStrategySignalPriceSeries,
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
   type StrategySignalDerivativesSeries,
 } from '../engine/strategySignalEvaluator';
 import { computeRiskBasedOrderQuantity, normalizeWalletRiskPercent } from '../engine/positionSizing';
 import { BacktestFillModelConfig, createHistoricalBacktestFillModel } from './backtestFillModel';
+import { entryContribution, dcaContribution, type ReplayContributionDraft } from './backtestContributionDraft';
+import { replayProtectionAfterConfirmedDca, resolveReplayDcaProbePrice,
+  shouldBlockCloseByPendingDca, verifyReplayIntrabarTicks } from './backtestIntrabarReplay';
+export { replayProtectionAfterConfirmedDca, resolveReplayDcaProbePrice,
+  shouldBlockCloseByPendingDca, verifyReplayIntrabarTicks } from './backtestIntrabarReplay';
 
 export type ReplayMarketType = 'SPOT' | 'FUTURES';
 export type ReplayMarginMode = 'CROSSED' | 'ISOLATED' | 'NONE';
@@ -21,6 +27,7 @@ export type ReplayCandle = {
   low: number;
   close: number;
   volume: number;
+  intrabarTicks?: Array<{ eventTime: number; price: number }>;
 };
 
 export type ReplayTradeDraft = {
@@ -33,7 +40,7 @@ export type ReplayTradeDraft = {
   closedAt: Date;
   pnl: number;
   fee: number;
-  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION';
+  exitReason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION' | 'TP' | 'SL' | 'TTP' | 'TSL';
   liquidated: boolean;
 };
 
@@ -56,6 +63,15 @@ export type ReplayEventDraft = {
   pnl: number | null;
   tradeSequence: number;
   candleIndex: number;
+  contribution?: ReplayContributionDraft;
+};
+
+export type ReplayDcaFundsExhaustedSample = {
+  timestamp: Date;
+  candleIndex: number;
+  side: PositionSide;
+  levelIndex: number;
+  price: number;
 };
 
 export type ReplayParityDecisionTrace = {
@@ -82,6 +98,8 @@ export type ReplaySymbolSimulationResult = {
   events: ReplayEventDraft[];
   eventCounts: Record<ReplayEventType, number>;
   decisionTrace: ReplayParityDecisionTrace[];
+  dcaFundsExhaustedCount: number;
+  dcaFundsExhaustedSamples: ReplayDcaFundsExhaustedSample[];
 };
 
 type ReplayRuntimeConfig = {
@@ -96,37 +114,11 @@ export type StrategyRiskConfig = {
   stopLossPct: number;
   trailingStopLevels: Array<{ arm: number; percent: number }>;
   trailingLoss: { start: number; step: number } | null;
+  trailingLossLevels: Array<{ start: number; step: number }>;
   maxDcaPerTrade: number;
   dcaLevels: number[];
   dcaMultipliers: number[];
-};
-
-export const shouldBlockCloseByPendingDca = (
-  input: {
-    lockTrailingByPendingDca: boolean;
-    closeReason?: string;
-    riskConfig: Pick<StrategyRiskConfig, 'dcaLevels'>;
-    executedDcaLevelIndices?: number[];
-  }
-) => {
-  if (!input.lockTrailingByPendingDca) return false;
-  const blocksLossSideDca =
-    input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss';
-  const blocksProfitSideDca =
-    input.closeReason === 'take_profit' || input.closeReason === 'trailing_take_profit';
-  if (!blocksLossSideDca && !blocksProfitSideDca) return false;
-
-  const executed = new Set(
-    (input.executedDcaLevelIndices ?? []).filter(
-      (index) => Number.isInteger(index) && index >= 0,
-    ),
-  );
-  return input.riskConfig.dcaLevels.some(
-    (level, index) =>
-      !executed.has(index) &&
-      Number.isFinite(level) &&
-      (blocksProfitSideDca ? level >= 0 : level < 0),
-  );
+  dcaSizingBasis: DcaSizingBasis;
 };
 
 type TtpLevel = {
@@ -209,6 +201,7 @@ export const buildReplayPositionManagementInput = (args: {
     side,
     currentPrice,
     leverage,
+    dcaSizingBasis: riskConfig.dcaSizingBasis,
     takeProfitPrice: Number.isFinite(riskConfig.takeProfitPct)
       ? computeRiskPriceFromPercent(side, entryPrice, riskConfig.takeProfitPct, 'tp', leverage)
       : undefined,
@@ -237,6 +230,13 @@ export const buildReplayPositionManagementInput = (args: {
           stepPercent: riskConfig.trailingLoss.step,
         }
       : undefined,
+    trailingLossLevels:
+      (riskConfig.dcaSizingBasis === 'usdt_contribution_v1' ||
+        riskConfig.trailingLossLevels.length > 1) && riskConfig.trailingLossLevels.length > 0
+        ? riskConfig.trailingLossLevels.map((level) => ({
+            startPercent: level.start, stepPercent: level.step,
+          }))
+        : undefined,
     dca:
       riskConfig.maxDcaPerTrade > 0
         ? {
@@ -246,63 +246,10 @@ export const buildReplayPositionManagementInput = (args: {
             addSizeFraction: Math.max(0.01, riskConfig.dcaMultipliers[0] ?? 1),
             levelPercents: riskConfig.dcaLevels,
             addSizeFractions: riskConfig.dcaMultipliers,
+            sizingBasis: riskConfig.dcaSizingBasis,
           }
         : undefined,
   };
-};
-
-const resolveReplayPnlFraction = (
-  side: 'LONG' | 'SHORT',
-  entryPrice: number,
-  currentPrice: number,
-  leverage: number,
-) => {
-  if (!Number.isFinite(entryPrice) || entryPrice <= 0 || !Number.isFinite(currentPrice)) return null;
-  const move =
-    side === 'LONG'
-      ? (currentPrice - entryPrice) / entryPrice
-      : (entryPrice - currentPrice) / entryPrice;
-  const pnl = move * Math.max(1, leverage);
-  return Number.isFinite(pnl) ? pnl : null;
-};
-
-export const resolveReplayDcaProbePrice = (args: {
-  side: 'LONG' | 'SHORT';
-  candle: { high: number; low: number; close: number };
-  entryPrice: number;
-  leverage: number;
-  riskConfig: Pick<StrategyRiskConfig, 'dcaLevels'>;
-  executedDcaLevelIndices?: number[];
-}) => {
-  const executed = new Set(
-    (args.executedDcaLevelIndices ?? []).filter(
-      (index) => Number.isInteger(index) && index >= 0 && index < args.riskConfig.dcaLevels.length,
-    ),
-  );
-  const favorablePrice = args.side === 'LONG' ? args.candle.high : args.candle.low;
-  const adversePrice = args.side === 'LONG' ? args.candle.low : args.candle.high;
-
-  const candidates = args.riskConfig.dcaLevels
-    .map((level, index) => {
-      const price = level >= 0 ? favorablePrice : adversePrice;
-      const pnl = resolveReplayPnlFraction(args.side, args.entryPrice, price, args.leverage);
-      const reached =
-        typeof pnl === 'number' && Number.isFinite(pnl)
-          ? level >= 0
-            ? pnl >= level
-            : pnl <= level
-          : false;
-      return { index, level, price, reached };
-    })
-    .filter(({ index, level, reached }) => !executed.has(index) && Number.isFinite(level) && reached)
-    .sort((left, right) => {
-      const leftDistance = Math.abs(left.level);
-      const rightDistance = Math.abs(right.level);
-      if (leftDistance !== rightDistance) return leftDistance - rightDistance;
-      return left.index - right.index;
-    });
-
-  return candidates[0]?.price ?? args.candle.close;
 };
 
 const defaultConfig: ReplayRuntimeConfig = {
@@ -316,9 +263,17 @@ const defaultRiskConfig: StrategyRiskConfig = {
   stopLossPct: 0.01,
   trailingStopLevels: [{ arm: 0.006, percent: 0.0075 }],
   trailingLoss: null,
+  trailingLossLevels: [],
   maxDcaPerTrade: 1,
   dcaLevels: [-0.008],
   dcaMultipliers: [1],
+  dcaSizingBasis: 'quantity_v1',
+};
+
+const parseDcaSizingBasis = (value: unknown): DcaSizingBasis => {
+  if (value == null || value === 'quantity_v1') return 'quantity_v1';
+  if (value === 'usdt_contribution_v1') return value;
+  throw new Error('Unsupported DCA sizing basis in backtest strategy snapshot');
 };
 
 const toSignalDirection = (
@@ -361,6 +316,7 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     dcaMode?: unknown;
     dcaTimes?: unknown;
     dcaLevels?: Array<{ percent?: unknown; multiplier?: unknown }>;
+    dcaSizingBasis?: unknown;
   } | undefined) ?? { };
 
   const closeMode = close.mode === 'advanced' ? 'advanced' : 'basic';
@@ -391,7 +347,16 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     trailingLossRawStep > 0
       ? { start: trailingLossRawPercent / 100, step: Math.abs(trailingLossRawStep) / 100 }
       : null;
+  const trailingLossLevels = (Array.isArray(close.tsl) ? close.tsl : [])
+    .map((level) => ({
+      start: asSignedPercent(level?.percent, Number.NaN),
+      step: asPercent(level?.arm, Number.NaN),
+    }))
+    .filter((level) => Number.isFinite(level.start) && level.start < 0 &&
+      Number.isFinite(level.step) && level.step > 0)
+    .sort((left, right) => left.start - right.start);
   const dcaMode = additional.dcaMode === 'advanced' ? 'advanced' : 'basic';
+  const dcaSizingBasis = parseDcaSizingBasis(additional.dcaSizingBasis);
   const maxDcaRaw = Number(additional.dcaTimes);
   const dcaEnabled = Boolean(additional.dcaEnabled ?? true);
   const configuredMaxDcaPerTrade = dcaEnabled
@@ -400,12 +365,30 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
       : defaultRiskConfig.maxDcaPerTrade
     : 0;
   const rawDcaLevels = Array.isArray(additional.dcaLevels) ? additional.dcaLevels : [];
-  const configuredLevels = rawDcaLevels
-    .map((level) => asSignedPercent(level?.percent, Number.NaN))
-    .filter((value) => Number.isFinite(value) && value !== 0);
-  const configuredMultipliers = rawDcaLevels
-    .map((level) => Number(level?.multiplier))
-    .filter((value) => Number.isFinite(value) && value > 0);
+  const quotePairs = dcaSizingBasis === 'usdt_contribution_v1' && dcaEnabled
+    ? rawDcaLevels.map((level, index) => {
+        const percent = asSignedPercent(level?.percent, Number.NaN);
+        const multiplier = Number(level?.multiplier);
+        if (!Number.isFinite(percent) || percent === 0 || !Number.isFinite(multiplier) || multiplier <= 0 || multiplier > 10) {
+          throw new Error(`Invalid USDT DCA level at index ${index}`);
+        }
+        return { percent, multiplier };
+      })
+    : null;
+  if (dcaSizingBasis === 'usdt_contribution_v1' && dcaEnabled &&
+      (dcaMode === 'advanced' || configuredMaxDcaPerTrade > 0) && quotePairs?.length === 0) {
+    throw new Error('USDT DCA requires an explicit level');
+  }
+  const configuredLevels = quotePairs
+    ? quotePairs.map((level) => level.percent)
+    : rawDcaLevels
+        .map((level) => asSignedPercent(level?.percent, Number.NaN))
+        .filter((value) => Number.isFinite(value) && value !== 0);
+  const configuredMultipliers = quotePairs
+    ? quotePairs.map((level) => level.multiplier)
+    : rawDcaLevels
+        .map((level) => Number(level?.multiplier))
+        .filter((value) => Number.isFinite(value) && value > 0);
   const dcaLevels =
     !dcaEnabled
       ? []
@@ -440,9 +423,11 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     stopLossPct: closeMode === 'basic' ? Math.max(0.0001, stopLossPct) : Number.POSITIVE_INFINITY,
     trailingStopLevels: closeMode === 'advanced' && !trailingLoss ? parsedTrailingStopLevels : [],
     trailingLoss: closeMode === 'advanced' ? trailingLoss : null,
+    trailingLossLevels: closeMode === 'advanced' ? trailingLossLevels : [],
     maxDcaPerTrade: dcaLevels.length,
     dcaLevels,
     dcaMultipliers,
+    dcaSizingBasis,
   };
 };
 
@@ -476,7 +461,8 @@ export const simulateTradesForSymbolReplay = (input: {
     LIQUIDATION: 0,
   };
   if (candles.length < 3) {
-    return { trades: [], liquidations: 0, events: [], eventCounts: initialEventCounts, decisionTrace: [] };
+    return { trades: [], liquidations: 0, events: [], eventCounts: initialEventCounts,
+      decisionTrace: [], dcaFundsExhaustedCount: 0, dcaFundsExhaustedSamples: [] };
   }
 
   const config: ReplayRuntimeConfig = {
@@ -488,6 +474,7 @@ export const simulateTradesForSymbolReplay = (input: {
   const strategyModeEnabled = Boolean(input.strategyConfig && typeof input.strategyConfig === 'object');
   const riskConfig = parseStrategyRiskConfig(input.strategyConfig);
   const indicatorSeriesCache = new Map<string, Array<number | null>>();
+  const strategyPriceSeries = strategyModeEnabled ? buildStrategySignalPriceSeries(candles) : undefined;
   const fillModel = createHistoricalBacktestFillModel(input.fillModelConfig);
   const positionSizingMode = input.positionSizing?.mode ?? 'fixed';
   const fixedQuantity = Math.max(0.000001, Number(input.positionSizing?.fixedQuantity ?? 1));
@@ -500,6 +487,8 @@ export const simulateTradesForSymbolReplay = (input: {
   const events: ReplayEventDraft[] = [];
   const eventCounts: Record<ReplayEventType, number> = { ...initialEventCounts };
   const decisionTrace: ReplayParityDecisionTrace[] = [];
+  const dcaFundsExhaustedSamples: ReplayDcaFundsExhaustedSample[] = [];
+  let dcaFundsExhaustedCount = 0;
   let accountBalance = trackedBalanceEnabled ? sizingReferenceBalance : Number.POSITIVE_INFINITY;
   let liquidations = 0;
   let tradeSequence = 0;
@@ -515,8 +504,10 @@ export const simulateTradesForSymbolReplay = (input: {
         marginUsed: number;
         executedDcaLevelIndices?: number[];
         trailingLossLimit?: number;
+        trailingLossActiveLevelIndex?: number;
         trailingTakeProfitHigh?: number;
         trailingTakeProfitStep?: number;
+        trailingTakeProfitActiveLevelIndex?: number;
       }
     | null = null;
 
@@ -528,6 +519,7 @@ export const simulateTradesForSymbolReplay = (input: {
     pnl: number | null,
     candleIndex: number,
     sequence: number,
+    contribution?: ReplayContributionDraft,
   ) => {
     events.push({
       symbol,
@@ -538,6 +530,7 @@ export const simulateTradesForSymbolReplay = (input: {
       pnl,
       candleIndex,
       tradeSequence: sequence,
+      contribution,
     });
     eventCounts[type] += 1;
   };
@@ -557,6 +550,7 @@ export const simulateTradesForSymbolReplay = (input: {
       ? strategyRules
         ? evaluateStrategySignalAtIndex(strategyRules, candles, index, indicatorSeriesCache, {
             derivatives: input.derivativesSeries,
+            priceSeries: strategyPriceSeries,
           })
         : null
       : toSignalDirection(current, previous, config);
@@ -634,14 +628,18 @@ export const simulateTradesForSymbolReplay = (input: {
         marginUsed: initialMargin,
         executedDcaLevelIndices: undefined,
       };
-      pushEvent('ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), effectiveEntryPrice, null, index, tradeSequence);
+      pushEvent('ENTRY', decision.positionSide as PositionSide, new Date(current.openTime),
+        effectiveEntryPrice, null, index, tradeSequence,
+        entryContribution(effectiveEntryPrice, initialQuantity));
       continue;
     }
 
     if (!openPosition) {
       continue;
     }
+    const replayPosition = openPosition;
 
+    const priorBestPrice = openPosition.bestPrice;
     if (openPosition.side === 'LONG') {
       openPosition.bestPrice = Math.max(openPosition.bestPrice, current.high);
     } else {
@@ -654,12 +652,15 @@ export const simulateTradesForSymbolReplay = (input: {
       currentAdds: openPosition.dcaCount,
       trailingAnchorPrice: openPosition.bestPrice,
       trailingLossLimitPercent: openPosition.trailingLossLimit,
+      trailingLossActiveLevelIndex: openPosition.trailingLossActiveLevelIndex,
       trailingTakeProfitHighPercent: openPosition.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: openPosition.trailingTakeProfitStep,
+      trailingTakeProfitActiveLevelIndex: openPosition.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: openPosition.lastDcaPrice,
       executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
     } satisfies PositionManagementState;
 
+    const orderedTicks = verifyReplayIntrabarTicks(current);
     const dcaProbeInput: PositionManagementInput = {
       ...buildReplayPositionManagementInput({
         side: openPosition.side,
@@ -670,6 +671,7 @@ export const simulateTradesForSymbolReplay = (input: {
           leverage: effectiveLeverage,
           riskConfig,
           executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+          orderedTicks,
         }),
         entryPrice: openPosition.entryPrice,
         leverage: effectiveLeverage,
@@ -682,28 +684,52 @@ export const simulateTradesForSymbolReplay = (input: {
       trailingStop: undefined,
       trailingStopLevels: undefined,
       trailingLoss: undefined,
+      trailingLossLevels: undefined,
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = openPosition.dcaCount < riskConfig.maxDcaPerTrade;
-    const estimatedNextDcaAddedQty = dcaProbeResult.dcaExecuted
-      ? Math.max(0, dcaProbeResult.dcaAddedQuantity)
+    const addedQty = dcaProbeResult.dcaExecuted
+      ? Math.max(0, dcaProbeResult.nextState.quantity - openPosition.quantity)
       : 0;
     const dcaFillPrice = dcaProbeResult.nextState.lastDcaPrice ?? dcaProbeInput.currentPrice ?? current.close;
-    const estimatedNextDcaMargin = (dcaFillPrice * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
+    const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
     const dcaFundsExhausted =
-      trackedBalanceEnabled && hasPendingDcaLevels && estimatedNextDcaAddedQty > 0
-        ? estimatedNextDcaMargin > accountBalance
+      trackedBalanceEnabled && hasPendingDcaLevels && addedQty > 0
+        ? addMargin > accountBalance
         : false;
-    const lockTrailingByPendingDca = hasPendingDcaLevels && !dcaFundsExhausted;
+    if (dcaFundsExhausted && dcaProbeResult.dcaLevelIndex != null) {
+      dcaFundsExhaustedCount += 1;
+      if (dcaFundsExhaustedSamples.length < 25) dcaFundsExhaustedSamples.push({
+        timestamp: new Date(current.openTime), candleIndex: index,
+        side: openPosition.side as PositionSide,
+        levelIndex: dcaProbeResult.dcaLevelIndex, price: dcaFillPrice,
+      });
+    }
+    const lockTrailingByPendingDca = hasPendingDcaLevels &&
+      (!dcaFundsExhausted || riskConfig.dcaSizingBasis === 'usdt_contribution_v1');
+    const dcaFilledThisCandle = dcaProbeResult.dcaExecuted && !dcaFundsExhausted;
+    if (orderedTicks && dcaFilledThisCandle) {
+      const fillIndex = orderedTicks.findIndex((tick) => Math.abs(tick.price - dcaFillPrice) <= 1e-9);
+      if (fillIndex < 0) throw new Error('BACKTEST_DCA_FILL_TICK_MISSING');
+      openPosition.bestPrice = orderedTicks.slice(0, fillIndex + 1).reduce((best, tick) =>
+        replayPosition.side === 'LONG' ? Math.max(best, tick.price) : Math.min(best, tick.price),
+      priorBestPrice);
+    }
     if (dcaProbeResult.dcaExecuted) {
-      const addedQty = Math.max(0, dcaProbeResult.nextState.quantity - openPosition.quantity);
-      const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
       if (!trackedBalanceEnabled || addMargin <= accountBalance) {
         if (Number.isFinite(accountBalance)) {
           accountBalance = Math.max(0, accountBalance - addMargin);
         }
         openPosition.quantity = dcaProbeResult.nextState.quantity;
         openPosition.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
+        if (riskConfig.dcaSizingBasis === 'usdt_contribution_v1') {
+          const rebased = rebasePositionManagementProtection({ ...baseState,
+            trailingAnchorPrice: openPosition.bestPrice },
+            openPosition.entryPrice, openPosition.side, effectiveLeverage);
+          openPosition.trailingLossLimit = rebased.trailingLossLimitPercent;
+          openPosition.trailingTakeProfitHigh = rebased.trailingTakeProfitHighPercent;
+          openPosition.trailingTakeProfitStep = rebased.trailingTakeProfitStepPercent;
+        }
         openPosition.dcaCount = dcaProbeResult.nextState.currentAdds;
         openPosition.marginUsed += addMargin;
         openPosition.executedDcaLevelIndices = dcaProbeResult.nextState.executedDcaLevelIndices;
@@ -711,11 +737,15 @@ export const simulateTradesForSymbolReplay = (input: {
         pushEvent(
           'DCA',
           openPosition.side as PositionSide,
-          new Date(current.openTime),
+          new Date(orderedTicks?.find((tick) => Math.abs(tick.price - dcaFillPrice) <= 1e-9)
+            ?.eventTime ?? current.openTime),
           dcaFillPrice,
           null,
           index,
-          tradeSequence
+          tradeSequence,
+          dcaContribution({ addSequence: openPosition.dcaCount,
+            levelIndex: dcaProbeResult.dcaLevelIndex, levels: riskConfig.dcaLevels,
+            multipliers: riskConfig.dcaMultipliers, price: dcaFillPrice, quantity: addedQty }),
         );
       }
     }
@@ -731,7 +761,7 @@ export const simulateTradesForSymbolReplay = (input: {
       dca: undefined,
       dcaFundsExhausted,
     };
-    let managementResult = evaluatePositionManagement(managementInput, {
+    const managementState: PositionManagementState = {
       averageEntryPrice: openPosition.entryPrice,
       quantity: openPosition.quantity,
       currentAdds: openPosition.dcaCount,
@@ -739,23 +769,43 @@ export const simulateTradesForSymbolReplay = (input: {
       // trailing inputs and must not clear active TTP/TSL tracking.
       trailingAnchorPrice: openPosition.bestPrice,
       trailingLossLimitPercent: openPosition.trailingLossLimit,
+      trailingLossActiveLevelIndex: openPosition.trailingLossActiveLevelIndex,
       trailingTakeProfitHighPercent: openPosition.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: openPosition.trailingTakeProfitStep,
+      trailingTakeProfitActiveLevelIndex: openPosition.trailingTakeProfitActiveLevelIndex,
       lastDcaPrice: openPosition.lastDcaPrice,
       executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
-    });
+    };
+    const orderedProtection = orderedTicks && dcaFilledThisCandle
+      ? replayProtectionAfterConfirmedDca({ ticks: orderedTicks, fillPrice: dcaFillPrice,
+          state: managementState, riskConfig, dcaFundsExhausted,
+          lockTrailingByPendingDca,
+          buildManagementInput: (price) => buildReplayPositionManagementInput({
+            side: replayPosition.side, currentPrice: price, entryPrice: replayPosition.entryPrice,
+            leverage: effectiveLeverage, riskConfig,
+          }) })
+      : null;
+    let managementResult = orderedProtection?.result ??
+      evaluatePositionManagement(managementInput, managementState);
     openPosition.trailingLossLimit = managementResult.nextState.trailingLossLimitPercent;
+    openPosition.trailingLossActiveLevelIndex = managementResult.nextState.trailingLossActiveLevelIndex;
     openPosition.trailingTakeProfitHigh = managementResult.nextState.trailingTakeProfitHighPercent;
     openPosition.trailingTakeProfitStep = managementResult.nextState.trailingTakeProfitStepPercent;
+    openPosition.trailingTakeProfitActiveLevelIndex = managementResult.nextState.trailingTakeProfitActiveLevelIndex;
     openPosition.bestPrice = managementResult.nextState.trailingAnchorPrice ?? openPosition.bestPrice;
 
     if (
       managementResult.shouldClose &&
-      shouldBlockCloseByPendingDca({
+      !orderedProtection && shouldBlockCloseByPendingDca({
         lockTrailingByPendingDca,
         closeReason: managementResult.closeReason,
         riskConfig,
         executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+        dcaFundsExhausted,
+        dcaSizingBasis: riskConfig.dcaSizingBasis,
+        reachedDcaLevelIndex: dcaProbeResult.dcaExecuted ? dcaProbeResult.dcaLevelIndex : undefined,
+        filledDcaLevelIndex: dcaProbeResult.dcaExecuted && !dcaFundsExhausted
+          ? dcaProbeResult.dcaLevelIndex : undefined,
       })
     ) {
       managementResult = {
@@ -765,7 +815,8 @@ export const simulateTradesForSymbolReplay = (input: {
       };
     }
 
-    const exitMarkPrice = current.close;
+    const exitMarkPrice = orderedProtection?.closeTick?.price ?? current.close;
+    const exitTime = orderedProtection?.closeTick?.eventTime ?? current.closeTime;
 
     const clampedExitMarkPrice = Math.min(current.high, Math.max(current.low, exitMarkPrice));
     const effectiveExitPrice = fillModel.exitPrice(clampedExitMarkPrice, openPosition.side as PositionSide);
@@ -818,16 +869,19 @@ export const simulateTradesForSymbolReplay = (input: {
       exitPrice: effectiveExitPrice,
       quantity: openPosition.quantity,
       openedAt: openPosition.openedAt,
-      closedAt: new Date(current.closeTime),
+      closedAt: new Date(exitTime),
       pnl,
       fee,
-      exitReason: isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
+      exitReason: closeType === 'TP' || closeType === 'SL' ||
+        closeType === 'TTP' || closeType === 'TSL'
+        ? closeType
+        : isIsolatedLiquidated ? 'LIQUIDATION' : 'SIGNAL_EXIT',
       liquidated: isIsolatedLiquidated,
     });
     pushEvent(
       closeType,
       openPosition.side as PositionSide,
-      new Date(current.closeTime),
+      new Date(exitTime),
       effectiveExitPrice,
       pnl,
       index,
@@ -882,5 +936,6 @@ export const simulateTradesForSymbolReplay = (input: {
     });
   }
 
-  return { trades, liquidations, events, eventCounts, decisionTrace };
+  return { trades, liquidations, events, eventCounts, decisionTrace,
+    dcaFundsExhaustedCount, dcaFundsExhaustedSamples };
 };

@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +32,12 @@ jobs:
       - name: Run repository guardrails
         run: pnpm run quality:guardrails
 
+      - name: Check documentation parity
+        run: pnpm run docs:parity:check
+
+      - name: Test local CI evidence and release gate
+        run: pnpm run ci:local:self-test
+
   web-checks:
     name: Web checks
     runs-on: ubuntu-latest
@@ -56,12 +65,47 @@ jobs:
         run: pnpm --filter web run typecheck
 
       - name: Test web
-        run: pnpm --filter web run test -- --run
+        run: pnpm --filter web exec vitest run
+
+      - name: Build web
+        run: pnpm --filter web run build
 
   api-checks:
     name: API checks
     runs-on: ubuntu-latest
     needs: repo-guardrails
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-only-postgres
+          POSTGRES_DB: soar_ci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d soar_ci_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # Runtime and test URLs are different so the Vitest isolation guard can verify them.
+      # Only the disposable service database exists; Prisma migrations target TEST_DATABASE_URL.
+      DATABASE_URL: postgresql://postgres:ci-only-postgres@127.0.0.1:5432/soar_ci_runtime?schema=public
+      TEST_DATABASE_URL: postgresql://postgres:ci-only-postgres@127.0.0.1:5432/soar_ci_test?schema=public
+      REDIS_URL: redis://127.0.0.1:6379
+      JWT_SECRET: ci-only-jwt-secret-generated-for-tests-32-plus
+      API_KEY_ENCRYPTION_KEYS: v1:ci-only-encryption-key-generated-for-tests-32-plus
+      API_KEY_ENCRYPTION_ACTIVE_VERSION: v1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,6 +122,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        run: pnpm --filter api exec prisma generate --schema prisma/schema.prisma
+
+      - name: Apply migrations to disposable test database
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+        run: pnpm --filter api exec prisma migrate deploy --schema prisma/schema.prisma
+
+      - name: Verify test database migration status
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+        run: pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma
+
       - name: Build api
         run: pnpm --filter api run build
 
@@ -85,5 +142,5 @@ jobs:
         run: pnpm --filter api run typecheck
 
       - name: Test api
-        run: pnpm --filter api run test -- --run
+        run: pnpm --filter api exec vitest run
 

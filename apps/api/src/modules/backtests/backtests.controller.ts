@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sendError } from '../../utils/apiError';
 import { sendValidationError } from '../../utils/formatZodError';
 import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities';
+import { ZodError } from 'zod';
 import {
   CreateBacktestRunSchema,
   GetBacktestTimelineQuerySchema,
@@ -9,6 +10,7 @@ import {
   ListBacktestTradesQuerySchema,
 } from './backtests.types';
 import * as backtestsService from './backtests.service';
+import { BacktestTimelineSourceError } from './backtestIntrabarTimelineSource';
 
 export const listBacktestRuns = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -50,7 +52,11 @@ export const createBacktestRun = async (req: Request, res: Response) => {
     if (error instanceof backtestsService.BacktestRunValidationError) {
       return sendError(res, 400, error.message);
     }
-    return sendValidationError(res, error);
+    if (error instanceof backtestsService.BacktestQueueUnavailableError) {
+      return sendError(res, 503, error.message, { runId: error.runId, recovery: 'pending' });
+    }
+    if (error instanceof ZodError) return sendValidationError(res, error);
+    return sendError(res, 500, 'Backtest creation failed');
   }
 };
 
@@ -99,6 +105,8 @@ export const getBacktestRunTimeline = async (req: Request, res: Response) => {
     if (!timeline) return sendError(res, 404, 'Not found');
     return res.json(timeline);
   } catch (error) {
+    if (error instanceof BacktestTimelineSourceError)
+      return sendError(res, 409, error.message, { code: error.code });
     return sendValidationError(res, error);
   }
 };

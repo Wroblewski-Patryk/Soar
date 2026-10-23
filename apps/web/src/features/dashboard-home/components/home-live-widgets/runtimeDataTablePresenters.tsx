@@ -202,7 +202,7 @@ export const createOpenPositionsColumns = ({
       label: withRuntimeUnit(t("dashboard.home.runtime.fee")),
       sortable: true,
       accessor: (row) => row.feesPaid,
-      render: (row) => formatRuntimeAmount(row.feesPaid),
+      render: (row) => row.feesPaid == null ? "-" : formatRuntimeAmount(row.feesPaid),
     },
     {
       key: "pnl",
@@ -609,8 +609,8 @@ export const createHistoryPositionsColumns = ({
     sortable: true,
     accessor: (row) => row.realizedPnl,
     render: (row) => (
-      <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
-        {formatRuntimeAmount(row.realizedPnl)}
+      <span className={row.realizedPnl == null ? "" : row.realizedPnl >= 0 ? "text-success" : "text-error"}>
+        {row.realizedPnl == null ? "-" : formatRuntimeAmount(row.realizedPnl)}
       </span>
     ),
   },
@@ -656,7 +656,7 @@ export const createHistoryPositionsColumns = ({
     label: withRuntimeUnit(t("dashboard.home.runtime.fee")),
     sortable: true,
     accessor: (row) => row.feesPaid,
-    render: (row) => formatRuntimeAmount(row.feesPaid),
+    render: (row) => row.feesPaid == null ? "-" : formatRuntimeAmount(row.feesPaid),
   },
   {
     key: "closeInitiator",
@@ -789,7 +789,7 @@ export const createTradesColumns = ({
     accessor: (row) => row.fee,
     render: (row) => (
       <div className="flex flex-col leading-tight">
-        <span>{formatRuntimeAmount(row.fee)}</span>
+        <span>{row.fee == null ? "-" : formatRuntimeAmount(row.fee)}</span>
         <span className="text-[10px] uppercase tracking-wide opacity-60">
           {formatRuntimeTradeFeeMeta(row)}
         </span>
@@ -802,8 +802,8 @@ export const createTradesColumns = ({
     sortable: true,
     accessor: (row) => row.realizedPnl,
     render: (row) => (
-      <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
-        {formatRuntimeAmount(row.realizedPnl)}
+      <span className={row.realizedPnl == null ? "" : row.realizedPnl >= 0 ? "text-success" : "text-error"}>
+        {row.realizedPnl == null ? "-" : formatRuntimeAmount(row.realizedPnl)}
       </span>
     ),
   },

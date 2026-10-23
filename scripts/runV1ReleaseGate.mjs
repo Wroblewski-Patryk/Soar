@@ -5,6 +5,11 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  assertFullSha,
+  resolveReleaseManifestPath,
+  verifyLocalCiManifest,
+} from './localCiManifest.mjs';
 
 const VALID_ENVIRONMENTS = new Set(['local', 'stage', 'prod']);
 const repoRoot = process.cwd();
@@ -586,12 +591,27 @@ const writeArtifacts = async (report, stamp) => {
   };
 };
 
+export const verifyReleaseLocalCiEvidence = (options, evidenceRoot) => {
+  if (options.environment === 'local') return null;
+  const expectedSha = assertFullSha(options.expectedSha?.trim());
+  return verifyLocalCiManifest({
+    manifestPath: resolveReleaseManifestPath(expectedSha, evidenceRoot),
+    expectedSha,
+    requireReleaseMode: true,
+    maxAgeHours: 24,
+  });
+};
+
 const main = async () => {
   const options = parseArgs();
   if (options.help) {
     printUsage();
     process.exit(0);
   }
+
+  // A stage/prod release must have fresh, complete local CI evidence for its exact source commit.
+  // This check is independent of --skip-local-quality and runs before any release steps.
+  verifyReleaseLocalCiEvidence(options);
 
   const evidence = await evaluateEvidenceReadiness({
     environment: options.environment,

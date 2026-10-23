@@ -183,6 +183,8 @@ export const dashboardHomeEn = {
     "manualOrderSemanticsHint": "Manual order follows unified lifecycle: order -> fill -> position.",
     "manualOrderSymbolRequired": "Symbol is required.",
     "manualOrderQuantityRequired": "Quantity must be a positive number.",
+    "manualOrderQuantityStepInvalid": "Quantity must match the exchange step of {value}.",
+    "manualOrderQuantityRulesUnavailable": "Exchange quantity rules are unavailable. Refresh before submitting.",
     "manualOrderPriceRequired": "Price is required for this order type.",
     "manualOrderPriceInvalid": "Price must be a positive number.",
     "manualOrderMarketPriceUnavailable": "No trustworthy market price is available for PAPER MARKET open.",

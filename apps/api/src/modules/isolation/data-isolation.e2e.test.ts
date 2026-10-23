@@ -2,6 +2,7 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -10,6 +11,14 @@ const registerAndLogin = async (email: string) => {
     password: 'test1234',
   });
   expect(res.status).toBe(201);
+  await ensureSubscriptionCatalog(prisma);
+  await setActiveSubscriptionForUser(prisma, {
+    userId: res.body.user.id as string,
+    planCode: 'FREE',
+    source: 'ADMIN_OVERRIDE',
+    autoRenew: false,
+    metadata: { reason: 'isolation_test_fixture' },
+  });
   return agent;
 };
 
@@ -23,6 +32,7 @@ describe('Cross-module data isolation contract', () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();

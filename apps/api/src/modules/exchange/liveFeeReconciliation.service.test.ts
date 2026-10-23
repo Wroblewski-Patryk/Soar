@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
 import { CcxtFuturesOrderFill } from './ccxtFuturesConnector.types';
-import { reconcileLiveOrderFee } from './liveFeeReconciliation.service';
+import { LiveFillReconciliationUnknownError, reconcileLiveOrderFee } from './liveFeeReconciliation.service';
 
 const baseFill = (patch: Partial<CcxtFuturesOrderFill> = {}): CcxtFuturesOrderFill => ({
   exchangeTradeId: 't-1',
@@ -157,6 +157,81 @@ describe('reconcileLiveOrderFee', () => {
     expect(result.effectiveFeeRate).toBeCloseTo(0.08 / 300, 12);
     expect(connector.fetchOrderWithFills).not.toHaveBeenCalled();
     expect(connector.fetchTradesForOrder).not.toHaveBeenCalled();
+  });
+
+  it('keeps two identical unidentified fills when exchange quantity proves both executions', async () => {
+    const connector = createConnector();
+    const fill = baseFill({
+      exchangeTradeId: null, exchangeOrderId: 'o-two', executedAt: null,
+      quantity: 0.5, notional: 50, feeCost: 0.01,
+    });
+    const result = await reconcileLiveOrderFee(connector, {
+      symbol: 'BTCUSDT', exchangeOrderId: 'o-two', exchangeFilledQuantity: 1,
+      inlineFills: [fill, { ...fill }],
+    });
+    expect(result.fills).toHaveLength(2);
+    expect(result.fee).toBeCloseTo(0.02, 10);
+  });
+
+  it('keeps fee pending when only one of two proven executions has a fee', async () => {
+    const connector = createConnector();
+    const fill = baseFill({
+      exchangeTradeId: null, exchangeOrderId: 'o-partial-fee', executedAt: null,
+      quantity: 0.5, notional: 50, feeCost: 0.01,
+    });
+    const result = await reconcileLiveOrderFee(connector, {
+      symbol: 'BTCUSDT', exchangeOrderId: 'o-partial-fee', exchangeFilledQuantity: 1,
+      inlineFills: [fill, { ...fill, feeCost: Number.NaN }],
+    });
+    expect(result.fills).toHaveLength(2);
+    expect(result.fee).toBeCloseTo(0.01, 10);
+    expect(result.feePending).toBe(true);
+    expect(result.effectiveFeeRate).toBeNull();
+  });
+
+  it('collapses an unidentified duplicate snapshot when exchange quantity proves one fill', async () => {
+    const connector = createConnector();
+    const fill = baseFill({
+      exchangeTradeId: null, exchangeOrderId: 'o-duplicate', executedAt: null,
+      quantity: 0.5, notional: 50, feeCost: 0.01,
+    });
+    const result = await reconcileLiveOrderFee(connector, {
+      symbol: 'BTCUSDT', exchangeOrderId: 'o-duplicate', exchangeFilledQuantity: 0.5,
+      inlineFills: [fill, { ...fill }],
+    });
+    expect(result.fills).toHaveLength(1);
+    expect(result.fee).toBeCloseTo(0.01, 10);
+  });
+
+  it('deduplicates unidentified inline and fetched snapshots while retaining the fetched fee', async () => {
+    const connector = createConnector();
+    const inline = baseFill({
+      exchangeTradeId: null, exchangeOrderId: 'o-fetched-duplicate', executedAt: null,
+      quantity: 0.5, notional: 50, feeCost: Number.NaN,
+    });
+    connector.fetchOrderWithFills.mockResolvedValue({
+      order: { id: 'o-fetched-duplicate', raw: {} },
+      fills: [{ ...inline, feeCost: 0.01, source: 'fetchOrder' }],
+    });
+    const result = await reconcileLiveOrderFee(connector, {
+      symbol: 'BTCUSDT', exchangeOrderId: 'o-fetched-duplicate',
+      exchangeFilledQuantity: 0.5, inlineFills: [inline],
+    });
+    expect(result.fills).toHaveLength(1);
+    expect(result.fee).toBeCloseTo(0.01, 10);
+    expect(result.feePending).toBe(false);
+  });
+
+  it('fails closed when unidentified fill multiplicity cannot explain exchange quantity', async () => {
+    const connector = createConnector();
+    const fill = baseFill({
+      exchangeTradeId: null, exchangeOrderId: 'o-ambiguous', executedAt: null,
+      quantity: 0.5, notional: 50, feeCost: 0.01,
+    });
+    await expect(reconcileLiveOrderFee(connector, {
+      symbol: 'BTCUSDT', exchangeOrderId: 'o-ambiguous', exchangeFilledQuantity: 0.75,
+      inlineFills: [fill, { ...fill }],
+    })).rejects.toBeInstanceOf(LiveFillReconciliationUnknownError);
   });
 
   it('sets fee currency to null when fills report mixed fee currencies', async () => {

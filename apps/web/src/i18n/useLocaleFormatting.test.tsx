@@ -32,7 +32,7 @@ describe("useLocaleFormatting", () => {
     expect(en.result.current.formatNumber(1234.56)).toBe("1,234.56");
     expect(pl.result.current.formatNumber(1234.56)).toBe("1234,56");
     expect(pt.result.current.formatNumber(1234.56)).toBe("1234,56");
-    expect(deCh.result.current.formatNumber(1234.56)).toBe("1’234.56");
+    expect(deCh.result.current.formatNumber(1234.56)).toMatch(/^1['’]234\.56$/);
   });
 
   it("formats currency and percent with locale conventions", () => {

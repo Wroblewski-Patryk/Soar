@@ -48,6 +48,7 @@ Out of scope:
   - `GET /workers/health`
   - `GET /workers/ready`
   - `GET /workers/runtime-freshness`
+  - `GET /workers/live-execution`
 - Protected router mount probes:
   - `GET /dashboard`
   - `GET /admin`
@@ -74,6 +75,7 @@ Out of scope:
   - `GET /workers/health`
   - `GET /workers/ready`
   - `GET /workers/runtime-freshness`
+  - `GET /workers/live-execution`
   - `GET /dashboard`
   - `GET /admin`
 
@@ -81,9 +83,9 @@ Out of scope:
 - `GET /`, `GET /health`, and `GET /ready` are public and must avoid secrets,
   privileged internals, or user-specific data.
 - `GET /ready/details`, `GET /metrics`, `GET /alerts`,
-  `GET /workers/health`, `GET /workers/ready`, and
-  `GET /workers/runtime-freshness` require auth, `ADMIN` role, and operations
-  network access.
+  `GET /workers/health`, `GET /workers/ready`,
+  `GET /workers/runtime-freshness`, and `GET /workers/live-execution` require
+  auth, `ADMIN` role, and operations network access.
 - Dashboard and admin routers apply no-store headers and route-level auth
   middleware before module routes execute.
 

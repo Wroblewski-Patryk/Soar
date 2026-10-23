@@ -17,7 +17,7 @@ tags: [soar-map, component, frontend, verified_local]
 
 | Field | Value |
 | --- | --- |
-| Description | Profile subscription panel for current plan visibility and checkout intent creation. |
+| Description | Profile subscription panel for current plan and catalog visibility. |
 | File path | apps/web/src/features/profile/components/Subscription.tsx |
 | Related files | apps/web/src/features/profile/components/Subscription.test.tsx |
 | Parent | [[SOAR-PAGE-PROFILE]] |

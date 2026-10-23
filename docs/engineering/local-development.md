@@ -289,6 +289,48 @@ docker compose down
 - `pnpm --filter web run typecheck`
 - `pnpm run typecheck` (aggregate root)
 
+## Isolated local CI when GitHub Actions cannot start
+
+The local CI runner checks a committed, trusted full SHA in a disposable clone.
+It uses its own Docker Compose project with Node 20, PostgreSQL 15, and Redis 7.
+The test database ends in `_test`; the ordinary local `DATABASE_URL`, local
+Compose containers, `.env` files, and production credentials are not passed in.
+PostgreSQL and Redis stay on an internal Docker network without host ports.
+The check container also has outbound access because the Web build fetches
+Google Fonts. Do not run unreviewed public PR code on this workstation.
+
+```powershell
+$sha = git rev-parse HEAD
+node scripts/localCiGate.mjs --mode release --sha $sha
+node scripts/verifyLocalCi.mjs --sha $sha
+```
+
+The release mode always makes a fresh run. A stage/prod `ops:release:v1:gate`
+requires its exact SHA's release-mode manifest from the last 24 hours, even
+with `--skip-local-quality`. The release gate's other approvals and deployed
+runtime evidence remain separate. The local CI runner never deploys.
+
+Evidence and per-step logs are saved under `%LOCALAPPDATA%\Soar\local-ci\runs`.
+The required steps include the manifest, staging-cleanup, and release-gate
+self-tests. Each manifest records Docker and staging cleanup separately. A
+staging deletion error makes the run FAIL; the runner then attempts to move
+the remainder to `%LOCALAPPDATA%\Soar\local-ci\quarantine` so it does not stay
+in the repository. The manifest retains both the original check failure and
+any later cleanup error. An interrupt handled by the runner follows the same
+cleanup path; an operating-system hard kill cannot guarantee cleanup.
+The schema 2 verifier rejects older manifests that lack staging cleanup proof.
+The manifest reports CI parity PASS/FAIL and explicitly marks application
+coverage PARTIAL: worker image builds, running-worker smoke, real exchange
+access, and production user flows are not covered by this runner. A local PASS
+does not create a GitHub required status check or prevent a direct manual
+deployment outside the release procedure.
+
+For an optional nightly trusted-main run while signed in, register the Windows
+task once with `powershell -File scripts/registerLocalCiNightly.ps1`. It runs at
+02:30 local time, does not wake the computer or catch up missed runs, and
+skips if another run holds the lock. Repeated results for the same SHA remain
+quiet. Docker Desktop must be available in the signed-in user session.
+
 ## Related Docs
 - `docs/operations/dev-stage-prod-environment-matrix.md`
 - `history/plans/deployment-dev-prod-coolify-plan-2026-04-02.md`

@@ -42,6 +42,7 @@ Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-1
 - `/admin`
 - `/admin/users`
 - `/admin/subscriptions`
+- `/admin/live-execution`
 
 ### Public/Access
 - `/`
@@ -80,6 +81,7 @@ Wallet placement rule:
 | `/dashboard/logs` | `features/logs` | `/dashboard/logs` | `api/logs` | User-scoped audit reads only; severity/source filters validated server-side. |
 | `/admin/subscriptions` | `features/admin/subscriptions` | `/admin/subscriptions/plans*` | `api/admin/subscriptionPlans` | Requires admin role server-side (`requireRole('ADMIN')`). |
 | `/admin/users` | `features/admin/users` | `/admin/users*` | `api/admin/users` | Requires admin role server-side; UI prevents self-demotion action. |
+| `/admin/live-execution` | `features/admin/liveExecution` | `/admin/live-execution` | `api/admin/liveExecution`, `api/orders` | Requires admin role server-side; shared pause state is versioned and read back. |
 | `/`, `/offline` | `app/(public)`, offline page | none (or auth session probe) | n/a | Public entry points; no privileged route contract. |
 
 ## Legacy and Redirect Contract

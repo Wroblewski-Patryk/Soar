@@ -1,15 +1,17 @@
 import request from 'supertest';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../index';
 import { prisma } from '../prisma/client';
 
 const workerHeartbeatClientMock = vi.hoisted(() => ({
   readMany: vi.fn(),
 }));
+const liveExecutionMock = vi.hoisted(() => ({ readLiveExecutionOperationalStatus: vi.fn() }));
 
 vi.mock('../workers/workerHeartbeat', () => ({
   workerHeartbeatClient: workerHeartbeatClientMock,
 }));
+vi.mock('../observability/liveExecutionOperationalStatus', () => liveExecutionMock);
 
 const originalWorkerMode = process.env.WORKER_MODE;
 const originalMarketQueue = process.env.WORKER_MARKET_DATA_QUEUE;
@@ -26,6 +28,7 @@ afterEach(() => {
   process.env.WORKER_MARKET_DATA_OWNERSHIP = originalMarketDataOwnership;
   process.env.WORKER_BACKTEST_OWNERSHIP = originalBacktestOwnership;
   workerHeartbeatClientMock.readMany.mockReset();
+  liveExecutionMock.readLiveExecutionOperationalStatus.mockReset();
 });
 
 const createAdminAgent = async () => {
@@ -51,9 +54,30 @@ const createAdminAgent = async () => {
 };
 
 describe('workers health and readiness endpoints', () => {
+  beforeEach(() => {
+    liveExecutionMock.readLiveExecutionOperationalStatus.mockResolvedValue({
+      status: 'healthy', stream: { status: 'healthy', eligibleAccounts: 0,
+        connectedAccounts: 0 }, recovery: { status: 'healthy' },
+    });
+  });
   it('rejects unauthenticated access', async () => {
     const res = await request(app).get('/workers/health');
     expect(res.status).toBe(401);
+    expect((await request(app).get('/workers/live-execution')).status).toBe(401);
+  });
+
+  it('exposes aggregate LIVE execution state only to operators', async () => {
+    const adminAgent = await createAdminAgent();
+    liveExecutionMock.readLiveExecutionOperationalStatus.mockResolvedValue({
+      status: 'degraded', stream: { status: 'degraded', eligibleAccounts: 1,
+        connectedAccounts: 0, reconnectTotal: 2, errorTotal: 1 },
+      recovery: { status: 'healthy', pendingCount: 3, oldestPendingAgeMs: 1200,
+        unknownTotal: 4, errorTotal: 0 },
+    });
+    const res = await adminAgent.get('/workers/live-execution');
+    expect(res.status).toBe(503);
+    expect(res.body.stream).toMatchObject({ connectedAccounts: 0, reconnectTotal: 2 });
+    expect(res.body.recovery).toMatchObject({ pendingCount: 3, unknownTotal: 4 });
   });
 
   it('returns workers health status', async () => {
@@ -153,5 +177,27 @@ describe('workers health and readiness endpoints', () => {
     expect(res.status).toBe(503);
     expect(res.body.status).toBe('not_ready');
     expect(res.body.staleWorkers).toEqual(['market-data']);
+  });
+
+  it('rejects split-worker READY when the LIVE stream is disconnected', async () => {
+    const adminAgent = await createAdminAgent();
+    process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'inline';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'inline';
+    process.env.WORKER_MARKET_DATA_QUEUE = '';
+    process.env.WORKER_BACKTEST_QUEUE = '';
+    process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    workerHeartbeatClientMock.readMany.mockResolvedValue([
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+    ]);
+    liveExecutionMock.readLiveExecutionOperationalStatus.mockResolvedValue({
+      status: 'degraded', stream: { status: 'degraded', eligibleAccounts: 1,
+        connectedAccounts: 0 }, recovery: { status: 'healthy' },
+    });
+    const res = await adminAgent.get('/workers/ready');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body.liveExecution.stream.connectedAccounts).toBe(0);
   });
 });

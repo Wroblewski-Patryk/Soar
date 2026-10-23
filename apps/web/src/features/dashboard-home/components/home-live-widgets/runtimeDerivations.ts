@@ -68,12 +68,15 @@ export const resolveUnrealized = (snapshot: RuntimeSnapshot | null) => {
 
 export const maxDrawdown = (trades: BotRuntimeTrade[]) => {
   if (trades.length === 0) return { abs: 0, pct: null as number | null };
+  if (trades.some((trade) => trade.realizedPnl == null)) {
+    return { abs: null as number | null, pct: null as number | null };
+  }
   const sorted = [...trades].sort((left, right) => toTimestamp(left.executedAt) - toTimestamp(right.executedAt));
   let running = 0;
   let peak = 0;
   let drawdown = 0;
   for (const trade of sorted) {
-    running += trade.realizedPnl;
+    running += trade.realizedPnl!;
     peak = Math.max(peak, running);
     drawdown = Math.min(drawdown, running - peak);
   }

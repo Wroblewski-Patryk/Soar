@@ -4,7 +4,7 @@ type: function_chain
 status: verified_local
 feature: subscriptions-admin
 risk_level: critical
-last_verified_at: 2026-05-24
+last_verified_at: 2026-10-19
 tags: [soar-map, function-chain, verified_local]
 ---
 
@@ -15,7 +15,7 @@ tags: [soar-map, function-chain, verified_local]
 - Tests: [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-API]], [[SOAR-TEST-SUBSCRIPTIONS-ENTITLEMENTS]], [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB]]
 - Docs: [[SOAR-DOC-API-ADMIN]], [[SOAR-DOC-API-SUBSCRIPTIONS]], [[SOAR-DOC-WEB-ADMIN]]
 - Evidence: docs/modules/api-admin.md;docs/modules/api-subscriptions.md;docs/modules/web-admin.md
-- Missing links: Fresh authenticated browser proof checkout provider callback proof and production admin mutation proof remain separate
+- Missing links: Fresh authenticated browser and production admin mutation proof remain separate
 
 ## Execution Chain
 
@@ -41,23 +41,20 @@ tags: [soar-map, function-chain, verified_local]
 20. [[SOAR-COMP-PROFILE-SUBSCRIPTION]]
 21. [[SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION]]
 22. [[SOAR-API-PROFILE-SUBSCRIPTION-GET]]
-23. [[SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT]]
-24. [[SOAR-CONTROLLER-PROFILE-SUBSCRIPTION]]
-25. [[SOAR-SERVICE-PROFILE-SUBSCRIPTION]]
-26. [[SOAR-SERVICE-SUBSCRIPTIONS]]
-27. [[SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS]]
-28. [[SOAR-SERVICE-PAYMENT-CHECKOUT]]
-29. [[SOAR-DB-SUBSCRIPTION-PLAN]]
-30. [[SOAR-DB-USER-SUBSCRIPTION]]
-31. [[SOAR-DB-PAYMENT-INTENT]]
-32. [[SOAR-DB-USER]]
-33. [[SOAR-FEATURE-BOT-SETUP]]
-34. [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-API]]
-35. [[SOAR-TEST-SUBSCRIPTIONS-ENTITLEMENTS]]
-36. [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB]]
-37. [[SOAR-DOC-API-ADMIN]]
-38. [[SOAR-DOC-API-SUBSCRIPTIONS]]
-39. [[SOAR-DOC-WEB-ADMIN]]
+23. [[SOAR-CONTROLLER-PROFILE-SUBSCRIPTION]]
+24. [[SOAR-SERVICE-PROFILE-SUBSCRIPTION]]
+25. [[SOAR-SERVICE-SUBSCRIPTIONS]]
+26. [[SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS]]
+27. [[SOAR-DB-SUBSCRIPTION-PLAN]]
+28. [[SOAR-DB-USER-SUBSCRIPTION]]
+29. [[SOAR-DB-USER]]
+30. [[SOAR-FEATURE-BOT-SETUP]]
+31. [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-API]]
+32. [[SOAR-TEST-SUBSCRIPTIONS-ENTITLEMENTS]]
+33. [[SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB]]
+34. [[SOAR-DOC-API-ADMIN]]
+35. [[SOAR-DOC-API-SUBSCRIPTIONS]]
+36. [[SOAR-DOC-WEB-ADMIN]]
 
 ## Systemic Analysis Rule
 

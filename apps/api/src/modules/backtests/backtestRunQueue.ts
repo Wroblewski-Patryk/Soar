@@ -6,12 +6,41 @@ type RedisClient = ReturnType<typeof createClient>;
 
 type BacktestRunQueueBackend = 'inline' | 'redis';
 
+const enqueueIfAbsentScript = `
+if redis.call('SADD', KEYS[1], ARGV[1]) == 0 then
+  return 0
+end
+redis.call('LPUSH', KEYS[2], ARGV[1])
+return 1
+`;
+
+const reconcileRunScript = `
+redis.call('SADD', KEYS[3], ARGV[1])
+if redis.call('LPOS', KEYS[1], ARGV[1]) then
+  return 0
+end
+redis.call('LREM', KEYS[2], 0, ARGV[1])
+redis.call('LPUSH', KEYS[1], ARGV[1])
+return 1
+`;
+
+const acknowledgeRunScript = `
+redis.call('LREM', KEYS[2], 1, ARGV[1])
+if not redis.call('LPOS', KEYS[1], ARGV[1]) and not redis.call('LPOS', KEYS[2], ARGV[1]) then
+  redis.call('SREM', KEYS[3], ARGV[1])
+end
+return 1
+`;
+
 type BacktestRunQueueOptions = {
   backend?: BacktestRunQueueBackend;
   queueName?: string;
   redisUrl?: string;
   pollIntervalMs?: number;
+  recoveryIntervalMs?: number;
   createRedisClient?: () => RedisClient;
+  recoverPendingRunIds?: () => Promise<string[]>;
+  discardProcessingRunIds?: (ids: string[]) => Promise<string[]>;
 };
 
 export class BacktestRunQueue {
@@ -22,11 +51,15 @@ export class BacktestRunQueue {
   private readonly processingKey: string;
   private readonly dedupeKey: string;
   private readonly pollIntervalMs: number;
+  private readonly recoveryIntervalMs: number;
   private readonly createRedisClient: () => RedisClient;
+  private readonly recoverPendingRunIds?: () => Promise<string[]>;
+  private readonly discardProcessingRunIds?: (ids: string[]) => Promise<string[]>;
   private redisClient: RedisClient | null = null;
   private draining = false;
   private workerStarted = false;
   private workerTimer: NodeJS.Timeout | null = null;
+  private lastRecoveryAt = 0;
 
   constructor(private readonly worker: BacktestRunWorker, options: BacktestRunQueueOptions = {}) {
     const queueName = options.queueName?.trim() || 'backtest';
@@ -36,7 +69,10 @@ export class BacktestRunQueue {
     this.processingKey = `soar:queue:${queueName}:processing`;
     this.dedupeKey = `soar:queue:${queueName}:dedupe`;
     this.pollIntervalMs = options.pollIntervalMs ?? 1_000;
+    this.recoveryIntervalMs = options.recoveryIntervalMs ?? 30_000;
     this.createRedisClient = options.createRedisClient ?? (() => createClient({ url: redisUrl }));
+    this.recoverPendingRunIds = options.recoverPendingRunIds;
+    this.discardProcessingRunIds = options.discardProcessingRunIds;
   }
 
   async enqueue(runId: string) {
@@ -55,7 +91,7 @@ export class BacktestRunQueue {
   startWorker() {
     if (this.backend !== 'redis' || this.workerStarted) return;
     this.workerStarted = true;
-    void this.recoverProcessingQueue().finally(() => this.pollRedis());
+    void this.initializeRedisWorker();
   }
 
   async stopWorker() {
@@ -82,22 +118,42 @@ export class BacktestRunQueue {
 
   private async enqueueRedis(runId: string) {
     const client = await this.getRedisClient();
-    const added = await client.sAdd(this.dedupeKey, runId);
-    if (added === 0) return;
-    try {
-      await client.lPush(this.queueKey, runId);
-    } catch (error) {
-      await client.sRem(this.dedupeKey, runId).catch(() => undefined);
-      throw error;
-    }
+    await client.eval(enqueueIfAbsentScript, {
+      keys: [this.dedupeKey, this.queueKey],
+      arguments: [runId],
+    });
   }
 
-  private async recoverProcessingQueue() {
+  private async recoverDatabaseRuns() {
     const client = await this.getRedisClient();
-    while (true) {
-      const runId = await client.rPop(this.processingKey);
-      if (!runId) return;
-      await client.lPush(this.queueKey, runId);
+    for (const runId of await this.recoverPendingRunIds?.() ?? []) {
+      if (!this.workerStarted) return;
+      await client.eval(reconcileRunScript, {
+        keys: [this.queueKey, this.processingKey, this.dedupeKey],
+        arguments: [runId],
+      });
+    }
+    if (this.discardProcessingRunIds) {
+      const processingIds = await client.lRange(this.processingKey, 0, 499);
+      for (const runId of await this.discardProcessingRunIds(processingIds)) {
+        await client.eval(acknowledgeRunScript, {
+          keys: [this.queueKey, this.processingKey, this.dedupeKey],
+          arguments: [runId],
+        });
+      }
+    }
+    this.lastRecoveryAt = Date.now();
+  }
+
+  private async initializeRedisWorker() {
+    try {
+      await this.recoverDatabaseRuns();
+      if (this.workerStarted) this.pollRedis();
+    } catch (error) {
+      console.error('BacktestRunQueue recovery failed:', error);
+      if (this.workerStarted) {
+        this.workerTimer = setTimeout(() => void this.initializeRedisWorker(), this.pollIntervalMs);
+      }
     }
   }
 
@@ -105,6 +161,9 @@ export class BacktestRunQueue {
     if (!this.workerStarted) return;
     const delay = async () => {
       try {
+        if (Date.now() - this.lastRecoveryAt >= this.recoveryIntervalMs) {
+          await this.recoverDatabaseRuns();
+        }
         await this.processOneRedisJob();
       } catch (error) {
         console.error('BacktestRunQueue redis worker failed:', error);
@@ -125,12 +184,14 @@ export class BacktestRunQueue {
     try {
       await this.worker(runId);
     } catch (error) {
-      // Keep queue alive even when a single run fails. The job owns terminal run state.
+      // The database-led recovery scan will retry after this execution lease expires.
       console.error('BacktestRunQueue worker failed:', error);
-    } finally {
-      await client.lRem(this.processingKey, 1, runId);
-      await client.sRem(this.dedupeKey, runId);
+      throw error;
     }
+    await client.eval(acknowledgeRunScript, {
+      keys: [this.queueKey, this.processingKey, this.dedupeKey],
+      arguments: [runId],
+    });
     return true;
   }
 

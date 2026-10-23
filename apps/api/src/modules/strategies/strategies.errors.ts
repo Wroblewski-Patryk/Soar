@@ -5,6 +5,7 @@ export const STRATEGY_ERROR_CODES = {
   linkedRecords: 'STRATEGY_LINKED_RECORDS',
   invalidImportPayload: 'INVALID_STRATEGY_IMPORT_PAYLOAD',
   invalidCloseConfig: 'INVALID_STRATEGY_CLOSE_CONFIG',
+  invalidMomentumPeriod: 'INVALID_MOMENTUM_PERIOD',
 } as const;
 
 type StrategyErrorCode = (typeof STRATEGY_ERROR_CODES)[keyof typeof STRATEGY_ERROR_CODES];
@@ -28,4 +29,6 @@ export const strategyErrors = {
     new StrategyDomainError(STRATEGY_ERROR_CODES.invalidImportPayload, 400),
   invalidCloseConfig: (details?: Record<string, unknown>) =>
     new StrategyDomainError(STRATEGY_ERROR_CODES.invalidCloseConfig, 400, details),
+  invalidMomentumPeriod: (details?: Record<string, unknown>) =>
+    new StrategyDomainError(STRATEGY_ERROR_CODES.invalidMomentumPeriod, 400, details),
 };

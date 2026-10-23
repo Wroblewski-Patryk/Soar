@@ -20,6 +20,7 @@ Status legend:
 | api | users | `apps/api/src/modules/users` | `docs/modules/api-users.md` | Published | DCP-04 |
 | api | engine | `apps/api/src/modules/engine` | `docs/modules/api-engine.md` | Published | DCP-05 |
 | api | exchange | `apps/api/src/modules/exchange` | `docs/modules/api-exchange.md` | Published | DCP-05 |
+| api | externalClientGrants | `apps/api/src/modules/externalClientGrants` | `docs/modules/api-externalClientGrants.md` | Published | SOAR-EXT-GRANT-001A |
 | api | market-data | `apps/api/src/modules/market-data` | `docs/modules/api-market-data.md` | Published | DCP-05 |
 | api | market-stream | `apps/api/src/modules/market-stream` | `docs/modules/api-market-stream.md` | Published | DCP-05 |
 | api | strategies | `apps/api/src/modules/strategies` | `docs/modules/api-strategies.md` | Published | DCP-06 |
@@ -43,6 +44,7 @@ Status legend:
 |---|---|---|---|---|---|
 | web | admin | `apps/web/src/features/admin` | `docs/modules/web-admin.md` | Published | DCP-08 |
 | web | auth | `apps/web/src/features/auth` | `docs/modules/web-auth.md` | Published | DCP-08 |
+| web | external-client-grants | `apps/web/src/features/external-client-grants` | `docs/modules/web-external-client-grants.md` | Published | SOAR-EXT-GRANT-001C/WEB-GRANT |
 | web | profile | `apps/web/src/features/profile` | `docs/modules/web-profile.md` | Published | DCP-08 |
 | web | dashboard-home | `apps/web/src/features/dashboard-home` | `docs/modules/web-dashboard-home.md` | Published | DCP-08 |
 | web | bots | `apps/web/src/features/bots` | `docs/modules/web-bots.md` | Published | DCP-09 |
@@ -56,6 +58,12 @@ Status legend:
 | web | logs | `apps/web/src/features/logs` | `docs/modules/web-logs.md` | Published | DCP-09 |
 | web | icons | `apps/web/src/features/icons` | `docs/modules/web-icons.md` | Published | DCP-09 |
 | web | shared | `apps/web/src/features/shared` | `docs/modules/web-shared.md` | Published | V1CLOSEOUT-07 |
+
+## Local MCP Package (`apps/mcp`)
+
+| Layer | Module | Source Path | Target Deep-Dive File | Status | Planned Task |
+|---|---|---|---|---|---|
+| mcp | grant-status | `apps/mcp/src` | `docs/modules/mcp-grant-status.md` | Published | SOAR-MCP-001A/READ-ONLY-GRANT-STATUS; SOAR-MCP-001C/READ-BOT-STATUS-TOOL |
 
 ## Governance Notes
 - Use `docs/modules/module-deep-dive-template.md` for every new deep-dive file listed above.

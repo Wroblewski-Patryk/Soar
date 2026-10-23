@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { createHmac } from 'node:crypto';
 
 import {
   BinanceUserDataStreamService,
@@ -90,9 +91,22 @@ describe('binanceUserDataStream.service', () => {
       expect.objectContaining({
         url: 'https://futures.example/fapi/v1/listenKey',
         method: 'DELETE',
-        body: 'listenKey=futures-listen-key',
+        body: undefined,
       })
     );
+  });
+
+  it('uses the Futures key-scoped keepalive and reports a replacement listenKey', async () => {
+    const httpClient = vi.fn().mockResolvedValue({ ok: true, status: 200,
+      text: async () => JSON.stringify({ listenKey: 'replacement-key' }) });
+    const service = new BinanceUserDataStreamService(httpClient as any);
+    const key = await service.keepAliveListenKey({ marketType: 'FUTURES',
+      apiKey: 'futures-key', listenKey: 'prior-key' });
+    expect(key).toBe('replacement-key');
+    expect(httpClient).toHaveBeenCalledWith(expect.objectContaining({
+      url: 'https://fapi.binance.com/fapi/v1/listenKey', method: 'PUT',
+      body: undefined, headers: { 'X-MBX-APIKEY': 'futures-key' },
+    }));
   });
 
   it('normalizes supported Binance Futures and Spot user-data events into one explicit event contract', () => {
@@ -209,5 +223,52 @@ describe('binanceUserDataStream.service', () => {
 
     session.close();
     expect(socket.close).toHaveBeenCalledOnce();
+  });
+
+  it('subscribes Spot through a signed WebSocket API request and unwraps account events', () => {
+    const listeners = new Map<string, (...args: unknown[]) => void>();
+    const socket = {
+      on: vi.fn((event: string, listener: (...args: unknown[]) => void) => {
+        listeners.set(event, listener);
+      }),
+      send: vi.fn(), ping: vi.fn(), close: vi.fn(),
+    };
+    const service = new BinanceUserDataStreamService(vi.fn() as any,
+      vi.fn(() => socket) as any, { spotWebSocketApiUrl: 'wss://spot.example/ws-api/v3' });
+    const onEvent = vi.fn();
+    const onOpen = vi.fn();
+    const session = service.connectSignedSpot({ apiKey: 'spot-key',
+      apiSecret: 'spot-secret', onEvent, onOpen });
+    listeners.get('open')?.();
+    const request = JSON.parse(socket.send.mock.calls[0][0]);
+    expect(request).toMatchObject({ method: 'userDataStream.subscribe.signature',
+      params: { apiKey: 'spot-key' } });
+    expect(request.params.signature).toBe(createHmac('sha256', 'spot-secret')
+      .update(`apiKey=spot-key&timestamp=${request.params.timestamp}`).digest('hex'));
+    expect(onOpen).not.toHaveBeenCalled();
+    listeners.get('message')?.(JSON.stringify({ id: request.id, status: 200,
+      result: { subscriptionId: 7 } }));
+    expect(onOpen).toHaveBeenCalledOnce();
+    listeners.get('message')?.(JSON.stringify({ subscriptionId: 7, event: {
+      e: 'executionReport', E: 2000, T: 2001, s: 'BTCUSDT', S: 'BUY',
+      o: 'MARKET', X: 'FILLED', x: 'TRADE', i: 42, c: 'client-1',
+      Z: '100', z: '1', L: '100', l: '1', n: '0', N: 'USDT', t: 99,
+    } }));
+    expect(onEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'ORDER_TRADE_UPDATE', marketType: 'SPOT', exchangeOrderId: '42',
+    }));
+    expect(session.listenKey).toBeNull();
+    session.ping();
+    session.close();
+    expect(socket.ping).toHaveBeenCalledOnce();
+    expect(socket.close).toHaveBeenCalledOnce();
+  });
+
+  it('does not include venue response bodies in listenKey errors', async () => {
+    const service = new BinanceUserDataStreamService(vi.fn().mockResolvedValue({
+      ok: false, status: 401, text: async () => 'secret-from-venue',
+    }) as any);
+    await expect(service.createListenKey({ marketType: 'FUTURES', apiKey: 'key' }))
+      .rejects.toThrow('Binance listenKey create failed (401)');
   });
 });

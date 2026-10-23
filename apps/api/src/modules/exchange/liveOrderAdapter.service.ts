@@ -46,13 +46,6 @@ const defaultExchangeLogger: ExchangeLogger = {
   error: (payload) => emitDefaultLog('error', payload),
 };
 
-const retryableErrorPatterns = [/timeout/i, /network/i, /rate.?limit/i, /temporar/i];
-
-const isRetryableError = (error: unknown) => {
-  if (!(error instanceof Error)) return false;
-  return retryableErrorPatterns.some((pattern) => pattern.test(error.message));
-};
-
 export class LiveOrderAdapter {
   constructor(
     private readonly connector: CcxtFuturesConnector,
@@ -62,63 +55,35 @@ export class LiveOrderAdapter {
 
   async placeLiveOrderWithRetry(input: PlaceLiveOrderInput): Promise<CcxtFuturesOrderResult> {
     const parsed = PlaceLiveOrderInputSchema.parse(input);
-    const { maxAttempts, baseDelayMs } = parsed.retryPolicy;
-
-    let attempt = 0;
-    let lastError: unknown;
-
-    while (attempt < maxAttempts) {
-      attempt += 1;
-      metricsStore.recordExchangeOrderAttempt();
-      try {
-        const result = await this.connector.placeOrder(parsed.order);
-        this.logger.info({
-          event: 'exchange.live_order.success',
-          attempt,
-          maxAttempts,
-          symbol: parsed.order.symbol,
-          orderType: parsed.order.type,
-          side: parsed.order.side,
-        });
-        return result;
-      } catch (error) {
-        lastError = error;
-        const retryable = isRetryableError(error);
-        const canRetry = attempt < maxAttempts && retryable;
-        if (!canRetry) {
-          metricsStore.recordExchangeOrderFailure();
-          metricsStore.recordRuntimeExecutionError(
-            retryable ? 'live_order_retry_exhausted' : 'live_order_non_retryable'
-          );
-          this.logger.error({
-            event: 'exchange.live_order.failed',
-            attempt,
-            maxAttempts,
-            symbol: parsed.order.symbol,
-            orderType: parsed.order.type,
-            side: parsed.order.side,
-            error: error instanceof Error ? error.message : 'unknown_error',
-          });
-          break;
-        }
-
-        const delay = baseDelayMs * attempt;
-        metricsStore.recordExchangeOrderRetry();
-        this.logger.warn({
-          event: 'exchange.live_order.retry',
-          attempt,
-          maxAttempts,
-          symbol: parsed.order.symbol,
-          orderType: parsed.order.type,
-          side: parsed.order.side,
-          delayMs: delay,
-          error: error instanceof Error ? error.message : 'unknown_error',
-        });
-        await this.sleep(delay);
-      }
+    // A createOrder timeout can mean the exchange accepted the order. Never
+    // submit again here; the durable intent owner performs a read-only lookup.
+    void this.sleep;
+    metricsStore.recordExchangeOrderAttempt();
+    try {
+      const result = await this.connector.placeOrder(parsed.order);
+      this.logger.info({
+        event: 'exchange.live_order.success',
+        attempt: 1,
+        maxAttempts: 1,
+        symbol: parsed.order.symbol,
+        orderType: parsed.order.type,
+        side: parsed.order.side,
+      });
+      return result;
+    } catch (error) {
+      metricsStore.recordExchangeOrderFailure();
+      metricsStore.recordRuntimeExecutionError('live_order_submission_uncertain');
+      this.logger.error({
+        event: 'exchange.live_order.unknown',
+        attempt: 1,
+        maxAttempts: 1,
+        symbol: parsed.order.symbol,
+        orderType: parsed.order.type,
+        side: parsed.order.side,
+        error: error instanceof Error ? error.message : 'unknown_error',
+      });
+      throw error;
     }
-
-    throw lastError instanceof Error ? lastError : new Error('Live order placement failed');
   }
 
   async placeLiveOrderWithFees(input: PlaceLiveOrderInput): Promise<PlaceLiveOrderWithFeesResult> {
@@ -128,6 +93,7 @@ export class LiveOrderAdapter {
     const feeReconciliation = await reconcileLiveOrderFee(this.connector, {
       symbol: parsed.order.symbol,
       exchangeOrderId: orderResult.id || null,
+      exchangeFilledQuantity: orderResult.filled,
       inlineFills: orderResult.fills ?? [],
     });
     metricsStore.recordRuntimeReconciliationDelay(
@@ -138,6 +104,8 @@ export class LiveOrderAdapter {
     return {
       exchangeOrderId: orderResult.id || null,
       status: orderResult.status,
+      exchangeFilledQuantity: orderResult.filled,
+      exchangeAverageFillPrice: orderResult.average,
       fee: feeReconciliation.fee,
       feeSource: feeReconciliation.feeSource,
       feePending: feeReconciliation.feePending,

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Link from "next/link";
 import { useI18n } from "@/i18n/I18nProvider";
 import {
   CompoundField,
@@ -17,7 +18,8 @@ import {
 import { createDcaLevel } from "../../utils/strategyThresholdItems";
 import { SortableThresholdListEditor } from "./SortableThresholdListEditor";
 
-const getPrimaryDcaLevel = (levels: DcaLevel[]): DcaLevel => levels[0] ?? createDcaLevel();
+const getPrimaryDcaLevel = (levels: DcaLevel[], multiplier: number): DcaLevel =>
+  levels[0] ?? createDcaLevel({ multiplier });
 const integerInputProps = numericInputProps(strategyNumericContracts.integer);
 const decimalInputProps = numericInputProps(strategyNumericContracts.decimal2);
 
@@ -39,6 +41,12 @@ export function Additional({ data, setData }: AdditionalProps) {
     times: t("dashboard.strategies.form.additional.times"),
     triggerLevel: t("dashboard.strategies.form.additional.triggerLevel"),
     multiplier: t("dashboard.strategies.form.additional.multiplier"),
+    usdtBasis: t("dashboard.strategies.form.additional.usdtBasis"),
+    legacyBasis: t("dashboard.strategies.form.additional.legacyBasis"),
+    legacyCreate: t("dashboard.strategies.form.additional.legacyCreate"),
+    dcaPriority: t("dashboard.strategies.form.additional.dcaPriority"),
+    plannedOnly: t("dashboard.strategies.form.additional.plannedOnly"),
+    contributionExample: t("dashboard.strategies.form.additional.contributionExample"),
     levelPercent: t("dashboard.strategies.form.additional.levelPercent"),
     removeLevel: t("dashboard.strategies.form.additional.removeLevel"),
     addLevel: t("dashboard.strategies.form.additional.addLevel"),
@@ -67,16 +75,34 @@ export function Additional({ data, setData }: AdditionalProps) {
 
   const setPrimaryDcaLevel = (changes: Partial<DcaLevel>) =>
     setData((prev) => {
-      const current = getPrimaryDcaLevel(prev.dcaLevels);
+      const current = getPrimaryDcaLevel(prev.dcaLevels, prev.dcaMultiplier);
       const next = { ...current, ...changes };
       const rest = prev.dcaLevels.slice(1);
-      return { ...prev, dcaLevels: [next, ...rest] };
+      return {
+        ...prev,
+        dcaLevels: [next, ...rest],
+        ...(changes.multiplier === undefined ? {} : { dcaMultiplier: changes.multiplier }),
+      };
     });
 
-  const primaryLevel = getPrimaryDcaLevel(data.dcaLevels);
+  const primaryLevel = getPrimaryDcaLevel(data.dcaLevels, data.dcaMultiplier);
+  const isUsdtBasis = data.dcaSizingBasis === "usdt_contribution_v1";
+  const plannedLevels = data.dcaMode === "basic"
+    ? Array.from({ length: data.dcaLevels.length > 0 ? Math.min(10, Math.max(0, data.dcaTimes)) : 0 }, () => ({
+        percent: primaryLevel.percent,
+        multiplier: primaryLevel.multiplier,
+      }))
+    : data.dcaLevels;
+  let contribution = 1;
+  const contributionSteps = plannedLevels.map((level) => {
+    const add = contribution * level.multiplier;
+    contribution += add;
+    return { ...level, add, total: contribution };
+  });
+  const formatUsdt = (value: number) => Number.isFinite(value) ? Number(value.toFixed(2)).toString() : "?";
 
   return (
-    <FormGrid columns={2}>
+    <FormGrid columns={1} className="xl:grid-cols-2">
       <FormSectionCard title={copy.positions}>
         <div className="space-y-6">
           <FormGrid columns={2}>
@@ -183,6 +209,15 @@ export function Additional({ data, setData }: AdditionalProps) {
 
           {data.dcaEnabled ? (
             <>
+              <div className="rounded-box border border-base-300 bg-base-200/50 p-3 text-sm" data-testid="dca-sizing-contract">
+                <p className="font-semibold">{isUsdtBasis ? copy.usdtBasis : copy.legacyBasis}</p>
+                {!isUsdtBasis ? (
+                  <Link className="link link-primary mt-2 inline-block" href="/dashboard/strategies/create">
+                    {copy.legacyCreate}
+                  </Link>
+                ) : null}
+                {isUsdtBasis ? <p className="mt-2">{copy.dcaPriority}</p> : null}
+              </div>
               <RadioGroupField
                 id="strategy-dca-mode"
                 label={copy.dca}
@@ -262,14 +297,14 @@ export function Additional({ data, setData }: AdditionalProps) {
                   <NumberField
                     id="strategy-dca-multiplier"
                     label={copy.multiplier}
-                    min={1}
+                    min={0.01}
+                    max={isUsdtBasis ? 10 : undefined}
                     step={Number(decimalInputProps.step)}
                     inputMode={decimalInputProps.inputMode}
-                    value={data.dcaMultiplier}
+                    value={primaryLevel.multiplier}
                     onChange={(value) => {
                       const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
                       if (parsed == null) return;
-                      patch({ dcaMultiplier: parsed });
                       setPrimaryDcaLevel({ multiplier: parsed });
                     }}
                   />
@@ -279,7 +314,7 @@ export function Additional({ data, setData }: AdditionalProps) {
                   items={data.dcaLevels}
                   fields={[
                     { key: "percent", label: copy.levelPercent, idPrefix: "strategy-dca-level-percent" },
-                    { key: "multiplier", label: copy.multiplier, idPrefix: "strategy-dca-level-multiplier", min: 1 },
+                    { key: "multiplier", label: copy.multiplier, idPrefix: "strategy-dca-level-multiplier", min: 0.01, max: isUsdtBasis ? 10 : undefined },
                   ]}
                   addLabel={copy.addLevel}
                   removeLabel={copy.removeLevel}
@@ -290,6 +325,19 @@ export function Additional({ data, setData }: AdditionalProps) {
                   onChange={setAdvancedLevels}
                 />
               )}
+              {isUsdtBasis && contributionSteps.length > 0 ? (
+                <div className="rounded-box border border-base-300/60 bg-base-100 p-3 text-sm" data-testid="dca-contribution-preview">
+                  <p className="font-semibold">{copy.contributionExample}</p>
+                  <ol className="mt-2 list-decimal space-y-1 pl-5">
+                    {contributionSteps.map((step, index) => (
+                      <li key={index}>
+                        {step.percent}%: {formatUsdt(step.add)} USDT → {formatUsdt(step.total)} USDT
+                      </li>
+                    ))}
+                  </ol>
+                  <p className="mt-2 text-base-content/70">{copy.plannedOnly}</p>
+                </div>
+              ) : null}
             </>
           ) : null}
         </div>

@@ -164,6 +164,7 @@ export const openDashboardManualOrder = async (payload: {
   quantity: number;
   price?: number;
   riskAck?: boolean;
+  clientOrderId?: string;
 }): Promise<DashboardManualOrderResponse> => {
   const res = await api.post<DashboardManualOrderResponse>("/dashboard/orders/open", payload);
   return res.data;

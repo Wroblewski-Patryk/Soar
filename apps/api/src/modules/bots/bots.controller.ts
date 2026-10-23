@@ -125,6 +125,9 @@ const handleBotCommandValidationError = (res: Response, error: unknown) => {
       mapped.details
     );
   }
+  if (mapped.code === BOT_ERROR_CODES.runtimeDcaConfigUnsupported) {
+    return sendError(res, 409, 'strategy DCA sizing is not supported by PAPER or LIVE runtime', mapped.details);
+  }
   if (mapped.code === BOT_ERROR_CODES.botNotFound) {
     return sendError(res, 404, 'Not found', mapped.details);
   }
@@ -134,6 +137,9 @@ const handleBotCommandValidationError = (res: Response, error: unknown) => {
 
 const handleBotMarketGroupError = (res: Response, error: unknown) => {
   const mapped = mapErrorToHttpResponse(error);
+  if (mapped.code === BOT_ERROR_CODES.runtimeDcaConfigUnsupported) {
+    return sendError(res, 409, 'strategy DCA sizing is not supported by PAPER or LIVE runtime', mapped.details);
+  }
   if (mapped.code === BOT_ERROR_CODES.botNotFound) {
     return sendError(res, 404, 'Not found', mapped.details);
   }

@@ -279,10 +279,6 @@ export class BinanceMarketStreamWorker {
         const parsed = JSON.parse(rawData) as unknown;
         const normalized = normalizeBinanceStreamEvent(parsed, this.marketType);
         if (!normalized) return;
-        this.logger.info({
-          event: `market_stream.${normalized.type}`,
-          ...normalized,
-        });
         void this.config.onEvent?.(normalized);
       } catch (error) {
         this.logger.warn({

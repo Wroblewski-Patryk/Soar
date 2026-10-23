@@ -1,5 +1,6 @@
 ﻿import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useInsertionEffect } from "react";
 import { I18nProvider, useI18n } from "./I18nProvider";
 
 function RouteScopeProbe() {
@@ -24,6 +25,13 @@ function PublicToAuthProbe() {
     : "public.landing.badge";
 
   return <span data-testid="route-value">{t(key)}</span>;
+}
+
+function InsertionNavigationProbe() {
+  useInsertionEffect(() => {
+    window.history.pushState({}, "", "/dashboard/markets/list");
+  }, []);
+  return null;
 }
 
 describe("I18nProvider route loading", () => {
@@ -124,5 +132,20 @@ describe("I18nProvider route loading", () => {
       expect(screen.getByTestId("locale")).toHaveTextContent("pt");
       expect(screen.getByTestId("value")).toHaveTextContent("Mercados");
     });
+  });
+
+  it("does not schedule provider updates during insertion-effect navigation", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    render(
+      <I18nProvider>
+        <InsertionNavigationProbe />
+        <RouteScopeProbe />
+      </I18nProvider>
+    );
+
+    await waitFor(() => expect(screen.getByTestId("value")).toHaveTextContent("Markets"));
+    expect(errorSpy.mock.calls.some(([message]) => String(message).includes("useInsertionEffect must not schedule updates"))).toBe(false);
+    errorSpy.mockRestore();
   });
 });

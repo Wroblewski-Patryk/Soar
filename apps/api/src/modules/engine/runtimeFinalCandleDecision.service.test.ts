@@ -138,6 +138,46 @@ const createContext = (options?: {
 };
 
 describe('runtimeFinalCandleDecision.service', () => {
+  it('blocks an existing bot with missing strategy config before a new signal or order', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      botOverrides: { runtimeContext: {
+        ...baseBot.runtimeContext,
+        strategy: { ...baseStrategy, strategyConfig: null },
+      } } as any,
+    });
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED',
+      payload: expect.objectContaining({ reason: 'RUNTIME_DCA_STRATEGY_UNAVAILABLE' }),
+    }));
+  });
+
+  it.each([2, 5])('allows a restarted active bot with USDT DCA multiplier %s to make a normal signal', async (multiplier) => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      botOverrides: { runtimeContext: {
+        ...baseBot.runtimeContext,
+        strategy: { ...baseStrategy, strategyConfig: {
+          ...baseStrategy.strategyConfig,
+          additional: { dcaEnabled: true, dcaMode: 'basic', dcaTimes: 1,
+            dcaSizingBasis: 'usdt_contribution_v1',
+            dcaLevels: [{ percent: -20, multiplier }] },
+        } },
+      } } as any,
+    });
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).toHaveBeenCalledTimes(1);
+    expect(orchestrateFn).toHaveBeenCalledTimes(1);
+    expect(recordRuntimeEvent).not.toHaveBeenCalledWith(expect.objectContaining({
+      eventType: 'PRETRADE_BLOCKED',
+      payload: expect.objectContaining({ reason: 'INVALID_DCA_SIZING_BASIS' }),
+    }));
+  });
+
   it('records no-trade decision when merged direction is null', async () => {
     const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
       direction: null,

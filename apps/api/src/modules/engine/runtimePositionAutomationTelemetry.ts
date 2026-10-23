@@ -48,7 +48,7 @@ export const recordRuntimeDcaFundsExhaustedTelemetry = async (params: {
     symbol: params.symbol,
     strategyId: params.strategyId ?? undefined,
     signalDirection: params.side,
-    message: 'Runtime DCA funds exhausted; close protections may execute',
+    message: 'Runtime DCA blocked by insufficient funds',
     payload: {
       reason: 'dca_funds_exhausted',
       currentAdds: params.currentAdds,

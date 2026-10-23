@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BacktestRunDetails from "./BacktestRunDetails";
 import { I18nProvider } from "@/i18n/I18nProvider";
@@ -164,5 +164,47 @@ describe("BacktestRunDetails loading UX", () => {
 
     expect(await screen.findByText("Gate spot run")).toBeInTheDocument();
     expect(screen.getByText("GATEIO / SPOT / USDT")).toBeInTheDocument();
+  });
+
+  it("shows a delayed state for an old pending run without inventing progress", async () => {
+    getBacktestRunMock.mockResolvedValue({
+      id: "old_pending", strategyId: null, name: "Old pending run", symbol: "SOLUSDT",
+      timeframe: "5m", status: "PENDING", seedConfig: null,
+      startedAt: "2026-06-14T10:00:00.000Z", finishedAt: null, notes: null,
+      createdAt: "2026-06-14T10:00:00.000Z", updatedAt: "2026-06-14T10:00:00.000Z",
+    });
+    getBacktestRunReportMock.mockResolvedValue(null);
+    listBacktestRunTradesMock.mockResolvedValue([]);
+    getStrategyMock.mockResolvedValue(null);
+    getMarketUniverseMock.mockResolvedValue(null);
+
+    renderWithI18n("old_pending");
+    expect(await screen.findByText("Old pending run")).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toHaveTextContent("ponad 30 minut");
+    expect(screen.getByText("Opozniony")).toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+
+    const callsBeforeRetry = getBacktestRunMock.mock.calls.length;
+    fireEvent.click(screen.getByRole("button", { name: "Sprobuj ponownie" }));
+    await waitFor(() => expect(getBacktestRunMock.mock.calls.length).toBeGreaterThan(callsBeforeRetry));
+  });
+
+  it("keeps a recent pending run in the waiting state", async () => {
+    const now = new Date().toISOString();
+    getBacktestRunMock.mockResolvedValue({
+      id: "new_pending", strategyId: null, name: "New pending run", symbol: "SOLUSDT",
+      timeframe: "5m", status: "PENDING", seedConfig: null,
+      startedAt: now, finishedAt: null, notes: null, createdAt: now, updatedAt: now,
+    });
+    getBacktestRunReportMock.mockResolvedValue(null);
+    listBacktestRunTradesMock.mockResolvedValue([]);
+    getStrategyMock.mockResolvedValue(null);
+    getMarketUniverseMock.mockResolvedValue(null);
+
+    renderWithI18n("new_pending");
+    expect(await screen.findByText("New pending run")).toBeInTheDocument();
+    expect(screen.getByText("Oczekuje")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
   });
 });

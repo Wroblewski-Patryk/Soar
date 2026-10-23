@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
 import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore } from './runtimeTickerStore';
-import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+import { ensureSubscriptionCatalog, setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -35,12 +35,22 @@ const registerAndLogin = async (email: string) => {
 };
 
 describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
+  let createdBotId: string | undefined;
+
+  afterEach(async () => {
+    if (createdBotId) {
+      await prisma.bot.updateMany({ where: { id: createdBotId }, data: { isActive: false } });
+      createdBotId = undefined;
+    }
+  });
+
   beforeEach(async () => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.trade.deleteMany();
@@ -72,6 +82,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       where: { email },
       select: { id: true },
     });
+    await ensureSubscriptionCatalog(prisma);
     await setActiveSubscriptionForUser(prisma, {
       userId: user.id,
       planCode: 'PROFESSIONAL',
@@ -156,6 +167,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     });
     expect(botRes.status).toBe(201);
     const botId = botRes.body.id as string;
+    createdBotId = botId;
 
     await expect(
       prisma.botMarketGroup.findFirstOrThrow({ where: { botId, isEnabled: true, lifecycleStatus: 'ACTIVE' } })
@@ -236,19 +248,22 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     );
     expect(runtimeSignal?.direction).toBe('LONG');
 
-    await emitFinalCandle(3, 50000);
-    const exitSignal = await pollUntil(
-      () =>
-        prisma.signal.findFirst({
-          where: {
-            botId,
-            symbol: 'BTCUSDT',
-          },
-          orderBy: { createdAt: 'desc' },
-        }),
-      (value) => value?.direction === 'EXIT'
-    );
-    expect(exitSignal?.direction).toBe('EXIT');
+    const ledgerWhere = { botId, symbol: 'BTCUSDT' };
+    const readLedgerCounts = async () => ({
+      orders: await prisma.order.count({ where: ledgerWhere }),
+      trades: await prisma.trade.count({ where: ledgerWhere }),
+      fills: await prisma.orderFill.count({ where: ledgerWhere }),
+    });
+    const countsAfterEntry = await readLedgerCounts();
+
+    // RSI loses its entry vote, but this price is still above the configured SL.
+    await emitFinalCandle(3, 64100);
+    const heldPosition = await prisma.position.findUnique({ where: { id: openedPosition!.id } });
+    expect(heldPosition?.status).toBe('OPEN');
+    expect(heldPosition?.closeReason).toBeNull();
+    expect(await readLedgerCounts()).toEqual(countsAfterEntry);
+    expect(await prisma.signal.count({ where: { botId, symbol: 'BTCUSDT', direction: 'EXIT' } }))
+      .toBe(0);
 
     await runtimeSignalLoop.processTickerEvent({
       type: 'ticker',
@@ -272,6 +287,9 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       (value) => value?.status === 'CLOSED'
     );
     expect(closedPosition?.status).toBe('CLOSED');
+    expect(closedPosition?.closeReason).toBe('SL');
+    expect(await prisma.order.count({ where: { ...ledgerWhere, closeReason: 'SL' } })).toBe(1);
+    expect(await prisma.trade.count({ where: { ...ledgerWhere, closeReason: 'SL' } })).toBe(1);
 
     const runtimeSession = await pollUntil(
       () =>
@@ -298,13 +316,13 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
         }),
       (value) =>
         Boolean(value) &&
-        Number(value?.totalSignals ?? 0) >= 2 &&
+        Number(value?.totalSignals ?? 0) >= 1 &&
         Number(value?.lastPrice ?? 0) === 50000
     );
     expect(runtimeStats?.symbol).toBe('BTCUSDT');
-    expect(Number(runtimeStats?.totalSignals ?? 0)).toBeGreaterThanOrEqual(2);
+    expect(Number(runtimeStats?.totalSignals ?? 0)).toBeGreaterThanOrEqual(1);
     expect(Number(runtimeStats?.longEntries ?? 0)).toBeGreaterThanOrEqual(1);
-    expect(Number(runtimeStats?.exits ?? 0)).toBeGreaterThanOrEqual(1);
+    expect(Number(runtimeStats?.exits ?? 0)).toBe(0);
     expect(Number(runtimeStats?.lastPrice ?? 0)).toBe(50000);
 
     const runtimeEventsCount = await prisma.botRuntimeEvent.count({
@@ -340,16 +358,16 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       })
     );
     expect(apiSession?.eventsCount).toBeGreaterThanOrEqual(3);
-    expect(apiSession?.summary.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(apiSession?.summary.totalSignals).toBeGreaterThanOrEqual(1);
 
     const detailRes = await agent.get(`/dashboard/bots/${botId}/runtime-sessions/${runtimeSession?.id}`);
     expect(detailRes.status).toBe(200);
     expect(detailRes.body.id).toBe(runtimeSession?.id);
     expect(detailRes.body.eventsCount).toBeGreaterThanOrEqual(3);
     expect(detailRes.body.symbolsTracked).toBe(1);
-    expect(detailRes.body.summary.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(detailRes.body.summary.totalSignals).toBeGreaterThanOrEqual(1);
     expect(detailRes.body.summary.longEntries).toBeGreaterThanOrEqual(1);
-    expect(detailRes.body.summary.exits).toBeGreaterThanOrEqual(1);
+    expect(detailRes.body.summary.exits).toBe(0);
 
     const symbolStatsRes = await agent.get(
       `/dashboard/bots/${botId}/runtime-sessions/${runtimeSession?.id}/symbol-stats`
@@ -366,11 +384,10 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       }>
     ).find((item) => item.symbol === 'BTCUSDT');
     expect(apiBtcStats).toBeTruthy();
-    expect(apiBtcStats?.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(apiBtcStats?.totalSignals).toBeGreaterThanOrEqual(1);
     expect(apiBtcStats?.longEntries).toBeGreaterThanOrEqual(1);
-    expect(apiBtcStats?.exits).toBeGreaterThanOrEqual(1);
+    expect(apiBtcStats?.exits).toBe(0);
     expect(Number(apiBtcStats?.lastPrice ?? 0)).toBe(50000);
-    expect(apiBtcStats?.lastSignalDirection).toBe('EXIT');
 
     const aggregateRes = await agent.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
       status: 'RUNNING',
@@ -382,7 +399,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(1);
     expect(aggregateRes.body.symbolStats.items).toHaveLength(1);
     expect(aggregateRes.body.symbolStats.items[0].symbol).toBe('BTCUSDT');
-    expect(aggregateRes.body.symbolStats.summary.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(aggregateRes.body.symbolStats.summary.totalSignals).toBeGreaterThanOrEqual(1);
     expect(aggregateRes.body.positions.closedCount).toBeGreaterThanOrEqual(1);
   });
 });

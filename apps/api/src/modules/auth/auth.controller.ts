@@ -10,7 +10,7 @@ import {
   getSessionTtlMs,
   REMEMBER_ME_TTL_MS,
 } from './auth.session';
-import { signAuthToken } from './auth.jwt';
+import { signHumanSessionToken } from './auth.jwt';
 import {
   getCandidateTokensFromRequest,
   getVerifiedAuthTokenCandidates,
@@ -61,7 +61,7 @@ export const register = async (req: Request, res: Response) => {
     const input = RegisterSchema.parse(req.body);
     const user = await registerUser(input);
 
-    const token = signAuthToken(
+    const token = signHumanSessionToken(
       { userId: user.id, email: user.email, role: user.role, sessionVersion: 1 },
       getSessionJwtExpiresIn(true)
     );
@@ -137,9 +137,13 @@ export const me = async (req: Request, res: Response) => {
         continue;
       }
 
-      // Heal legacy dual-cookie sessions by writing the selected session token back.
+      if (candidate.source === 'cookie' && candidate.kind === 'legacy') {
+        continue;
+      }
+
+      // Heal duplicate domain cookies using the selected human session only.
       const maxAge = getTokenMaxAgeMs(candidate);
-      if (maxAge) {
+      if (maxAge && candidate.source === 'cookie' && candidate.kind === 'human') {
         setSessionCookie(res, candidate.token, maxAge);
       }
 
@@ -161,8 +165,14 @@ export const me = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   const verifiedCandidates = getVerifiedAuthTokenCandidates(req);
 
+  if (req.headers.authorization !== undefined) {
+    clearSessionCookie(res);
+    return sendError(res, 403, 'Human browser session required');
+  }
+
   try {
     for (const candidate of verifiedCandidates) {
+      if (candidate.source !== 'cookie' || candidate.kind !== 'human') continue;
       const user = await prisma.user.findUnique({
         where: { id: candidate.claims.userId },
         select: { id: true, sessionVersion: true },

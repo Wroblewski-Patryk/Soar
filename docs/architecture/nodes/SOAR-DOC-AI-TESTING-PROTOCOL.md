@@ -2,39 +2,39 @@
 id: SOAR-DOC-AI-TESTING-PROTOCOL
 name: "AI testing protocol"
 type: documentation
-status: verified_local
+status: deprecated
 layer: documentation
 module: ai-assistant
 feature: ai-assistant-foundation
-risk_level: 90
-completion_percent: 2026-05-24
-last_verified_at: verified_local
-verification_status: Required before any AI behavior completion claim.
-tags: [soar-map, documentation, documentation, verified_local]
+risk_level: critical
+completion_percent: 0
+last_verified_at: 2026-10-19
+verification_status: deprecated
+tags: [soar-map, documentation, documentation, deprecated]
 ---
 
 # AI testing protocol
 
 | Field | Value |
 | --- | --- |
-| Description | AI testing protocol for prompt injection data leakage unauthorized access and multi-turn AI behavior checks. |
+| Description | Historical AI testing protocol retained outside the current product delivery. |
 | File path | AI_TESTING_PROTOCOL.md |
-| Related files | .codex/agents/ai-red-team-agent.md |
+| Related files | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | Parent | [[SOAR-FEATURE-AI-ASSISTANT-FOUNDATION]] |
 | Children |  |
 | Depends on | [[SOAR-DOC-ASSISTANT-RUNTIME-CONTRACT]] |
 | Used by | [[SOAR-AGENT-AI-RED-TEAM]] |
 | UI related |  |
 | API related |  |
-| Database related | [[SOAR-TEST-AI-PROTOCOL-HARNESS]] |
-| Tests related | [[SOAR-DOC-ASSISTANT-RUNTIME]] |
-| Docs related | [[SOAR-AGENT-AI-RED-TEAM]] |
-| Agent related | [[critical]] |
-| Notes |  |
+| Database related |  |
+| Tests related | [[SOAR-TEST-AI-PROTOCOL-HARNESS]] |
+| Docs related | [[SOAR-DOC-ASSISTANT-RUNTIME]] |
+| Agent related | [[SOAR-AGENT-AI-RED-TEAM]] |
+| Notes | Protocol file remains for historical or future work; built-in AI is outside the current product scope. The red-team prompt was removed in 0960b0979. |
 
 ## Relations
 
-- enforces <- [[SOAR-AGENT-AI-RED-TEAM]] (verified_local)
+- enforces <- [[SOAR-AGENT-AI-RED-TEAM]] (deprecated)
 
 ## Evidence Rule
 

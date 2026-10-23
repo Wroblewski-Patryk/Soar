@@ -2,7 +2,7 @@
 type: docs_index
 status: canonical
 area: product
-last_verified: 2026-05-23
+last_verified: 2026-10-17
 ---
 
 # Product Documentation
@@ -14,13 +14,14 @@ which boundaries are intentional.
 
 | Need | Doc |
 | --- | --- |
+| Required current-version behavior and acceptance boundary | [current-version-contract.md](./current-version-contract.md) |
 | Quick product overview | [overview.md](./overview.md) |
-| Full product specification | [product.md](./product.md) |
+| Earlier full product specification and future proposals | [product.md](./product.md) |
 | Long-range autonomous agent direction | [autonomous-agent-vision.md](./autonomous-agent-vision.md) |
 | AI product scope | [ai-integration.md](./ai-integration.md) |
-| MVP scope | [mvp_scope.md](./mvp_scope.md) |
-| Known limits | [known-limits.md](./known-limits.md) |
-| Product roadmap summary | [roadmap.md](./roadmap.md) |
+| Earlier MVP scope reference | [mvp_scope.md](./mvp_scope.md) |
+| Dated implementation limits | [known-limits.md](./known-limits.md) |
+| Historical roadmap pointer | [roadmap.md](./roadmap.md) |
 | Localization product baseline | [localization.md](./localization.md) |
 | Terms and domain language | [glossary.md](./glossary.md) |
 

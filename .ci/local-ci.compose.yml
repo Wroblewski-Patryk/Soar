@@ -1,0 +1,65 @@
+services:
+  prepare:
+    image: ${SOAR_CI_PROJECT}-runner:node20
+    build:
+      context: .
+      dockerfile: Dockerfile.local-runner
+    working_dir: /work
+    command:
+      - sh
+      - -ec
+      - git clone --no-local /source /work && git -C /work checkout --detach ${SOAR_CI_SHA} && pnpm install --frozen-lockfile --store-dir /tmp/pnpm-store
+    volumes:
+      - ${SOAR_CI_SOURCE}:/source:ro
+      - workspace:/work
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ci
+      POSTGRES_PASSWORD: ${SOAR_CI_DB_PASSWORD}
+      POSTGRES_DB: soar_local_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ci -d soar_local_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [isolated]
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [isolated]
+
+  checks:
+    image: ${SOAR_CI_PROJECT}-runner:node20
+    working_dir: /work
+    command: ["node", "scripts/localCiRunner.mjs"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    environment:
+      SOURCE_COMMIT: ${SOAR_CI_SHA}
+      DATABASE_URL: postgresql://ci:${SOAR_CI_DB_PASSWORD}@postgres:5432/soar_local_runtime?schema=public
+      TEST_DATABASE_URL: postgresql://ci:${SOAR_CI_DB_PASSWORD}@postgres:5432/soar_local_test?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: local-ci-only-jwt-material-32-plus
+      API_KEY_ENCRYPTION_KEYS: v1:local-ci-only-encryption-material-32-plus
+      API_KEY_ENCRYPTION_ACTIVE_VERSION: v1
+    volumes:
+      - workspace:/work
+      - ${SOAR_CI_EVIDENCE}:/evidence
+    networks: [isolated, egress]
+
+volumes:
+  workspace:
+
+networks:
+  isolated:
+    internal: true
+  egress:

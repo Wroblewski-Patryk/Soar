@@ -37,6 +37,70 @@ const baseForm = (): StrategyFormState => ({
 });
 
 describe('formToPayload', () => {
+  it('loads an old openConditions MOMENTUM definition without hiding its period', () => {
+    const base = baseForm();
+    const openConditions = { ...base.openConditions,
+      indicatorsLong: [{ group: 'MOMENTUM_OSCILLATOR', name: 'MOMENTUM',
+        params: { period: 1 }, condition: '>' as const, value: 1.5, weight: 1 }] };
+    const form = dtoToForm({ id: 'legacy-momentum', name: base.name,
+      description: '', interval: '5m', leverage: 5, walletRisk: 1,
+      createdAt: '2026-10-21T00:00:00.000Z', config: {
+        openConditions, close: base.closeConditions, additional: base.additional } });
+    expect(form.openConditions.indicatorsLong[0].params.period).toBe(1);
+    expect(formToPayload(form).config.open.indicatorsLong[0].params.period).toBe(1);
+  });
+
+  it('preserves an unversioned legacy quantity strategy on edit', () => {
+    const legacy = baseForm();
+    const form = dtoToForm({
+      id: 'legacy-1', name: legacy.name, description: legacy.description,
+      interval: legacy.interval, leverage: legacy.leverage, walletRisk: legacy.walletRisk,
+      createdAt: new Date().toISOString(),
+      config: { open: legacy.openConditions, close: legacy.closeConditions, additional: legacy.additional },
+    });
+    expect(form.additional.dcaSizingBasis).toBeUndefined();
+    expect(formToPayload(form).config.additional.dcaSizingBasis).toBeUndefined();
+  });
+
+  it('resolves a conflicting Basic alias using the runtime level precedence', () => {
+    const base = baseForm();
+    const form = dtoToForm({
+      id: 'conflict-1', name: base.name, description: '', interval: '5m',
+      leverage: 5, walletRisk: 1, createdAt: '2026-10-18T00:00:00.000Z',
+      config: { open: base.openConditions, close: base.closeConditions,
+        additional: { ...base.additional, dcaMultiplier: 1,
+          dcaLevels: [{ percent: -5, multiplier: 2 }] } },
+    });
+    expect(form.additional.dcaMultiplier).toBe(2);
+    expect(formToPayload(form).config.additional).toEqual(expect.objectContaining({
+      dcaMultiplier: 2, dcaLevels: [{ percent: -5, multiplier: 2 }],
+    }));
+  });
+
+  it('uses the top-level Basic multiplier only when the saved level omits one', () => {
+    const base = baseForm();
+    const form = dtoToForm({
+      id: 'fallback-1', name: base.name, description: '', interval: '5m',
+      leverage: 5, walletRisk: 1, createdAt: '2026-10-18T00:00:00.000Z',
+      config: { open: base.openConditions, close: base.closeConditions,
+        additional: { ...base.additional, dcaMultiplier: 0.5,
+          dcaLevels: [{ percent: -5 }] } },
+    });
+    expect(form.additional.dcaLevels[0].multiplier).toBe(0.5);
+    expect(formToPayload(form).config.additional.dcaLevels).toEqual([{ percent: -5, multiplier: 0.5 }]);
+  });
+
+  it('does not invent a multiplier for an incomplete saved level', () => {
+    const base = baseForm();
+    expect(() => dtoToForm({
+      id: 'incomplete-1', name: base.name, description: '', interval: '5m',
+      leverage: 5, walletRisk: 1, createdAt: '2026-10-18T00:00:00.000Z',
+      config: { open: base.openConditions, close: base.closeConditions,
+        additional: { ...base.additional, dcaMultiplier: undefined,
+          dcaLevels: [{ percent: -5 }] } },
+    })).toThrow('DCA level 1');
+  });
+
   it('keeps signed basic DCA trigger percent', () => {
     const payload = formToPayload(baseForm());
     const additional = payload.config.additional as {

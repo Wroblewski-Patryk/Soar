@@ -69,6 +69,7 @@ export type RuntimeManagedPosition = Pick<
 };
 
 export type RuntimePositionAutomationDeps = {
+  readLiveExecutionPause: () => Promise<{ available: boolean; paused: boolean }>;
   listOpenPositionsBySymbol: (
     symbol: string
   ) => Promise<RuntimeManagedPosition[]>;
@@ -85,9 +86,11 @@ export type RuntimePositionAutomationDeps = {
     strategyId?: string | null;
     symbol: string;
     positionSide: PositionSide;
+    sizingBasis?: 'quantity_v1' | 'usdt_contribution_v1';
   }) => Promise<{
     currentAdds: number;
     lastDcaPrice?: number;
+    executedDcaLevelIndices?: number[];
   } | null>;
   executeDca: (input: {
     userId: string;
@@ -103,8 +106,13 @@ export type RuntimePositionAutomationDeps = {
     addedQuantity: number;
     currentQuantity: number;
     currentEntryPrice: number;
+    eventAt?: Date;
   }) => Promise<{
     feePaid: number;
+    feePending?: boolean;
+    orderId?: string;
+    replayed?: boolean;
+    telemetryRecorded?: boolean;
     executed: boolean;
     nextQuantity?: number;
     nextEntryPrice?: number;

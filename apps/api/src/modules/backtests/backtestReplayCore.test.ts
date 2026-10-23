@@ -62,6 +62,8 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(
       result.events.some((event) => event.type === 'EXIT' && event.candleIndex < candles.length - 1),
     ).toBe(false);
+    expect(result.trades).toHaveLength(1);
+    expect(result.trades[0].exitReason).toBe('FINAL_CANDLE');
   });
 
   it('does not create overlapping trade intervals for one symbol', () => {
@@ -111,6 +113,7 @@ describe('simulateTradesForSymbolReplay', () => {
 
     expect(result.liquidations).toBeGreaterThanOrEqual(1);
     expect(result.eventCounts.LIQUIDATION).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'LIQUIDATION')).toBe(true);
   });
 
   it('supports FUNDING_RATE strategy rules via derivatives series input', () => {
@@ -334,6 +337,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TP).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TP')).toBe(true);
   });
 
   it('emits TSL-take-profit event when arm and pullback thresholds are hit', () => {
@@ -379,6 +383,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TTP).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TTP')).toBe(true);
   });
 
   it('keeps TTP blocked while affordable profit-side DCA levels remain pending', () => {
@@ -544,6 +549,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TSL).toBeGreaterThanOrEqual(1);
+    expect(result.trades.some((trade) => trade.exitReason === 'TSL')).toBe(true);
   });
 
   it('triggers DCA on intrabar wick (low/high), not only on candle close', () => {
@@ -1259,5 +1265,22 @@ describe('shouldBlockCloseByPendingDca', () => {
         closeReason: 'take_profit',
       }),
     ).toBe(true);
+  });
+
+  it('keeps unfunded USDT profit exits blocked but releases reached negative SL', () => {
+    const input = {
+      lockTrailingByPendingDca: true,
+      riskConfig: { dcaLevels: [0.2, -0.2] },
+      dcaFundsExhausted: true,
+      dcaSizingBasis: 'usdt_contribution_v1' as const,
+      reachedDcaLevelIndex: 0,
+    };
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'take_profit' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'trailing_take_profit' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'stop_loss' })).toBe(true);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'stop_loss',
+      reachedDcaLevelIndex: 1 })).toBe(false);
+    expect(shouldBlockCloseByPendingDca({ ...input, closeReason: 'trailing_stop',
+      reachedDcaLevelIndex: 1 })).toBe(true);
   });
 });

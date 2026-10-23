@@ -1195,6 +1195,28 @@ describe("createHistoryPositionsColumns", () => {
 });
 
 describe("createTradesColumns", () => {
+  it("shows unavailable fee and PnL for a pending imported close", () => {
+    const columns = createTradesColumns({
+      t: (key) => key,
+      formatNumber: (value) => String(value),
+      formatRuntimeAmount: (value) => String(value),
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      formatDateTime: (value) => value ?? "-",
+    });
+    const pending = { ...tradeRow, lifecycleAction: "CLOSE" as const,
+      fee: null, feePending: true, realizedPnl: null };
+    render(<>
+      <div data-testid="pending-fee">{columns.find((column) => column.key === "fee")?.render?.(pending)}</div>
+      <div data-testid="pending-pnl">{columns.find((column) => column.key === "realizedPnl")?.render?.(pending)}</div>
+    </>);
+    expect(screen.getByTestId("pending-fee")).toHaveTextContent("-");
+    expect(screen.getByTestId("pending-pnl")).toHaveTextContent("-");
+    expect(screen.getByTestId("pending-pnl")).not.toHaveTextContent("0");
+  });
+
   it("keeps long trade reason and actor pills on one line", () => {
     const columns = createTradesColumns({
       t: (key) =>

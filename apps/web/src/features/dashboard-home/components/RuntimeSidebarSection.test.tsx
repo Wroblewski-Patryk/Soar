@@ -199,6 +199,8 @@ const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSi
       maxExecutableQty: 1,
       liveReferencePrice: 10000,
       quantity: "",
+      quantityError: null,
+      quantityStep: 0.001,
       budget: "",
       price: "",
       sliderPercent: 0,
@@ -693,5 +695,24 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(quantityInput.closest("label")).not.toHaveTextContent("Min:");
     expect(minQtyHelper).toHaveTextContent("Min: 0,001");
     expect(minQtyHelper.compareDocumentPosition(slider)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  it("announces an off-grid quantity and prevents a manual submit", () => {
+    const base = createProps();
+    const props = createProps({ manualOrder: {
+      ...base.manualOrder,
+      quantity: "60.5",
+      quantityError: "Quantity must match the exchange step of 1.",
+      quantityStep: 1,
+      isActionDisabled: true,
+    } });
+    render(<RuntimeSidebarSection {...props} />);
+
+    const input = screen.getByTestId("manual-order-quantity-input");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("step", "1");
+    expect(input).toHaveAttribute("aria-describedby", "manual-order-quantity-helper");
+    expect(screen.getByRole("alert")).toHaveTextContent("Quantity must match the exchange step of 1.");
+    expect(screen.getByRole("button", { name: "Open" })).toBeDisabled();
   });
 });

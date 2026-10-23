@@ -1,22 +1,16 @@
-# Deployment Incident Playbook (Blocked Promotion / Stage / Prod Failure)
+# Deployment Incident Playbook (Blocked Candidate / Production Failure)
 
 Date: 2026-04-03  
 Task: `DPL-20 docs(runbook)`
 
 ## Goal
-Provide a deterministic response flow when deployment promotion is blocked or when STAGE/PROD rollout fails.
+Provide a deterministic response flow when local candidate validation is blocked or the existing Coolify production rollout fails. Soar has no separate STAGE environment.
 
 ## Incident Classes
-1. **Blocked promotion**
-   - stage gate pack did not pass,
-   - or evidence/sign-off requirements are incomplete.
-2. **Failed STAGE rollout**
-   - deploy trigger failed,
-   - stage health/smoke regression.
-3. **Failed PROD rollout**
-   - promote-prod failed,
-   - post-deploy health failure,
-   - rollback triggered or required.
+1. **Blocked candidate**
+   - local isolated gates failed, or exact SHA, backup/rollback, migration, protected acceptance or owner approval is incomplete.
+2. **Failed PROD rollout**
+   - Coolify deployment failed, post-deploy health/readback failed, or rollback is required.
 
 ## Core Roles
 - **Incident Commander (IC)**: coordinates timeline and go/no-go decisions.
@@ -25,49 +19,45 @@ Provide a deterministic response flow when deployment promotion is blocked or wh
 - **Release Owner**: approves resume of promotion path.
 
 ## Shared Triage Checklist (All Classes)
-1. Capture failing SHA, workflow run ID, environment.
-2. Retrieve latest artifacts:
-   - `stage-gates-report.json` / `.md`,
-   - promote/rollback workflow logs.
+1. Capture failing SHA, local gate run ID or Coolify deployment ID, and environment (`local`/`prod`).
+2. Retrieve latest local gate evidence, Coolify deployment logs and rollback records.
 3. Confirm current service state:
    - API `/health` + `/ready`,
    - web root and dashboard route,
    - workers health/ready.
-4. Classify blast radius:
-   - stage only,
-   - production impact,
-   - worker-only degradation.
+4. Classify blast radius: local candidate only, production impact, or worker-only degradation.
 
-## Playbook A: Blocked Promotion
-1. Set release status to `PROMOTION_BLOCKED`.
-2. Identify failing gate(s) from stage report artifact.
+## Playbook A: Blocked Candidate
+1. Set release status to `PROMOTION_BLOCKED`; leave PROD unchanged.
+2. Identify failing gate(s) from exact-SHA local evidence and production prerequisites.
 3. Assign owner per failing gate:
    - build/test -> engineering owner,
    - migration -> backend/db owner,
    - health/smoke -> ops + app owners.
 4. Prepare fix commit SHA.
-5. Re-run chain:
-   - deploy stage -> stage gates -> promote prod.
-6. Keep PROD unchanged until new SHA passes all gates.
+5. Re-run isolated local gates on the fix SHA; obtain fresh backup/rollback, migration and protected acceptance evidence.
+6. Keep PROD unchanged until a separate owner-approved deployment decision.
 
-## Playbook B: Failed STAGE Rollout
-1. Mark incident `STAGE_FAILED`.
-2. Pause promotion chain for current SHA.
-3. Recover STAGE:
-   - redeploy known-good stage SHA or fix config,
-   - re-run stage health/smoke.
-4. Validate gate pack is green before re-enabling promotion path.
-
-## Playbook C: Failed PROD Rollout
+## Playbook B: Failed PROD Rollout
 1. Mark incident `PROD_FAILED`.
-2. Confirm whether `prod-rollback` workflow already executed.
-3. If rollback did not execute, trigger rollback manually.
-4. Validate post-rollback stability:
+2. Identify the active topology and read back actual process state; do not infer
+   a completed rollback from a workflow status or health endpoint.
+3. After any Coolify Service Stack process starts, including before domain
+   cutover, follow mode D in the
+   [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+   before starting any old API or worker. Unknown process state, unresolved
+   in-flight/`UNKNOWN` work, or unproven schema compatibility is STOP/NO-GO;
+   obtain an operator recovery decision. Do not trigger automatic destructive
+   rollback or replay. Mode A requires proof that no new process ever started;
+   uncertain history requires mode D or STOP/NO-GO.
+4. For other topologies, use the controlled
+   [rollback playbook](deployment-rollback-playbook.md).
+5. Validate post-rollback stability:
    - API ready,
    - web reachable,
    - workers healthy.
-5. Freeze promotion of failing SHA.
-6. Create remediation issue and require new validated SHA through STAGE path.
+6. Freeze promotion of failing SHA.
+7. Record remediation under the existing release queue; require a new locally validated exact SHA and separate owner approval before another production attempt.
 
 ## Communication Contract
 Every incident update must include:
@@ -86,7 +76,7 @@ Incident may close only when:
 
 ## Evidence to Attach
 - Gate reports,
-- Workflow logs (deploy/stage-gates/promote/rollback),
+- Local gate logs and Coolify deploy/rollback logs,
 - Timestamped decisions,
 - Final root-cause summary and prevention action list.
 

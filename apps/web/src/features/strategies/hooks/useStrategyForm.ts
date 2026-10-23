@@ -22,6 +22,7 @@ const defaultState: StrategyFormState = {
     },
     additional: {
         dcaEnabled: true,
+        dcaSizingBasis: "usdt_contribution_v1",
         dcaMode: "advanced",
         dcaTimes: 1,
         dcaMultiplier: 2,

@@ -27,7 +27,7 @@ type ApplyOrderFillLifecycleInput = {
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
-const resolveOrderPositionLeverage = async (params: {
+const resolveOrderPositionLeverage = async (tx: Prisma.TransactionClient, params: {
   userId: string;
   strategyId: string | null;
   fallbackLeverage?: number | null;
@@ -37,7 +37,7 @@ const resolveOrderPositionLeverage = async (params: {
   }
   if (!params.strategyId) return 1;
 
-  const strategy = await prisma.strategy.findFirst({
+  const strategy = await tx.strategy.findFirst({
     where: {
       id: params.strategyId,
       userId: params.userId,
@@ -58,6 +58,7 @@ type ReusableOpenPosition = {
   side: PositionSide;
   entryPrice: number;
   quantity: number;
+  contractSize: number | null;
 };
 
 type PositionScopeOrder = {
@@ -214,6 +215,7 @@ const findOwnedLiveImportedOpenPositionForFill = async (
       side: true,
       entryPrice: true,
       quantity: true,
+      contractSize: true,
     },
   });
 };
@@ -223,6 +225,7 @@ const applyFillToReusableOpenPosition = async (
   params: {
     orderId: string;
     position: ReusableOpenPosition;
+    contractSize: number | null;
     targetPositionSide: PositionSide;
     targetQuantity: number;
     fillPrice: number;
@@ -230,6 +233,9 @@ const applyFillToReusableOpenPosition = async (
 ) => {
   if (params.position.side !== params.targetPositionSide) {
     throw orderErrors.openPositionSideConflict();
+  }
+  if (params.contractSize != null && params.position.contractSize !== params.contractSize) {
+    throw orderErrors.openPositionContractUnitMismatch();
   }
 
   const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
@@ -260,8 +266,10 @@ const applyFillToReusableOpenPosition = async (
   };
 };
 
-export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInput) => {
-  return prisma.$transaction(async (tx) => {
+export const applyOrderFillLifecycleInTransaction = async (
+  tx: Prisma.TransactionClient,
+  params: ApplyOrderFillLifecycleInput
+) => {
     const existingOrder = await tx.order.findFirst({
       where: {
         id: params.orderId,
@@ -296,7 +304,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
         filledQuantity: targetQuantity,
         filledAt,
         averageFillPrice: fillPrice,
-        feePending: false,
+        feePending: params.mode === 'LIVE' ? existingOrder.feePending : false,
       },
     });
 
@@ -331,6 +339,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
         side: true,
         entryPrice: true,
         quantity: true,
+        contractSize: true,
       },
     });
 
@@ -338,6 +347,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       return applyFillToReusableOpenPosition(tx, {
         orderId: updatedOrder.id,
         position: existingOpenPosition,
+        contractSize: updatedOrder.contractSize,
         targetPositionSide,
         targetQuantity,
         fillPrice,
@@ -356,13 +366,14 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       return applyFillToReusableOpenPosition(tx, {
         orderId: updatedOrder.id,
         position: ownedImportedPosition,
+        contractSize: updatedOrder.contractSize,
         targetPositionSide,
         targetQuantity,
         fillPrice,
       });
     }
 
-    const leverage = await resolveOrderPositionLeverage({
+    const leverage = await resolveOrderPositionLeverage(tx, {
       userId: params.userId,
       strategyId: updatedOrder.strategyId,
       fallbackLeverage: params.leverage,
@@ -394,10 +405,15 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
         status: 'OPEN',
         entryPrice: fillPrice,
         quantity: Math.max(0, targetQuantity),
+        contractSize: updatedOrder.contractSize,
+        gateFuturesEconomics: updatedOrder.gateFuturesEconomics ?? Prisma.JsonNull,
         leverage,
         origin: updatedOrder.origin,
         managementMode: updatedOrder.managementMode,
         syncState: 'IN_SYNC',
+        ...(params.mode === 'LIVE' && updatedOrder.origin === 'BOT' &&
+          updatedOrder.managementMode === 'BOT_MANAGED'
+          ? { runtimeTtpEverArmed: false, runtimeTslEverArmed: false } : {}),
         openedAt: filledAt,
       },
       select: {
@@ -415,6 +431,9 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
     return {
       order: orderWithPosition,
       positionId: createdPosition.id,
+      createdPosition: true as const,
     };
-  });
 };
+
+export const applyOrderFillLifecycle = (params: ApplyOrderFillLifecycleInput) =>
+  prisma.$transaction((tx) => applyOrderFillLifecycleInTransaction(tx, params));

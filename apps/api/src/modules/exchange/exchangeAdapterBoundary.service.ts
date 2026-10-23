@@ -2,6 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
+import { reconcileLiveOrderFee } from './liveFeeReconciliation.service';
 import {
   CcxtFuturesOrderFill,
   CcxtWalletCashflowHistoryEntry,
@@ -25,6 +26,12 @@ export type LiveExecutionApiKey = {
   exchange: Exchange;
   apiKey: string;
   apiSecret: string;
+  credentialVersion?: number;
+};
+
+export type LiveExecutionCredentialBinding = {
+  apiKeyId: string;
+  apiKeyCredentialVersion: number;
 };
 
 export type SupportedExchangeReadCredentials = {
@@ -36,6 +43,7 @@ export type SupportedExchangeReadCredentials = {
 
 export type SubmitLiveExchangeOrderInput = {
   userId: string;
+  credentialBinding?: LiveExecutionCredentialBinding | null;
   bot: {
     exchange: Exchange;
     marketType: TradeMarket;
@@ -51,6 +59,7 @@ export type SubmitLiveExchangeOrderInput = {
     price?: number;
     strategyId?: string | null;
     reduceOnly?: boolean;
+    contractSize?: number;
     clientOrderId?: string;
   };
   targetLeverage: number | null;
@@ -59,6 +68,8 @@ export type SubmitLiveExchangeOrderInput = {
 export type SubmitLiveExchangeOrderResult = {
   exchangeOrderId: string | null;
   status: 'OPEN' | 'FILLED';
+  exchangeFilledQuantity?: number;
+  exchangeAverageFillPrice?: number;
   fee?: number | null;
   feeSource?: 'ESTIMATED' | 'EXCHANGE_FILL';
   feePending?: boolean;
@@ -88,6 +99,17 @@ export type CancelLiveExchangeOrderResult = {
 };
 
 type AuthenticatedConnectorLike = {
+  fetchOrderByClientOrderId?: (input: { symbol: string; clientOrderId: string }) => Promise<{
+    id: string;
+    clientOrderId?: string;
+    status?: string;
+    symbol?: string;
+    side?: string;
+    amount?: number;
+    filled?: number;
+    average?: number;
+    fills?: CcxtFuturesOrderFill[];
+  }>;
   fetchPositions: () => Promise<Record<string, unknown>[]>;
   fetchOpenOrders: () => Promise<Record<string, unknown>[]>;
   fetchTradesForWindow?: (input: {
@@ -120,6 +142,10 @@ type AuthenticatedConnectorLike = {
   }>;
 };
 
+type LiveLookupOrder = Awaited<ReturnType<
+  NonNullable<AuthenticatedConnectorLike['fetchOrderByClientOrderId']>
+>>;
+
 type ExchangeAdapterBoundaryDeps = {
   createAuthenticatedConnector: (params: SupportedExchangeReadCredentials) => AuthenticatedConnectorLike;
   fetchBalanceRaw: (params: SupportedExchangeReadCredentials) => Promise<unknown>;
@@ -149,6 +175,8 @@ type ExchangeAdapterBoundaryDeps = {
     }) => Promise<{
       exchangeOrderId: string | null;
       status?: string;
+      exchangeFilledQuantity?: number;
+      exchangeAverageFillPrice?: number;
       fee?: number | null;
       feeSource?: 'ESTIMATED' | 'EXCHANGE_FILL';
       feePending?: boolean;
@@ -195,9 +223,36 @@ const mapLiveOrderStatus = (
 ) => {
   if (status) {
     const normalized = status.toLowerCase();
-    if (normalized.includes('filled') || normalized.includes('closed')) return 'FILLED' as const;
+    if (normalized === 'filled' || normalized === 'closed') return 'FILLED' as const;
+    if (['open', 'new', 'pending', 'partially_filled', 'partiallyfilled'].includes(normalized)) {
+      return 'OPEN' as const;
+    }
+    // Terminal cancellation/rejection and unfamiliar states need human
+    // reconciliation; persisting either as OPEN would hide the uncertainty.
+    throw orderErrors.liveExecutionFailed();
   }
-  return 'OPEN' as const;
+  throw orderErrors.liveExecutionFailed();
+};
+
+const normalizeLiveLookupSymbol = (symbol: string) =>
+  symbol.split(':')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+const assertLiveLookupIdentity = (
+  order: LiveLookupOrder,
+  expected: SubmitLiveExchangeOrderInput['order']
+) => {
+  const amountMatches = typeof order.amount === 'number' && Number.isFinite(order.amount) &&
+    order.amount > 0 && Number.isFinite(expected.quantity) && expected.quantity > 0 &&
+    Math.abs(order.amount - expected.quantity) <= 16 * Number.EPSILON *
+      Math.max(Math.abs(order.amount), Math.abs(expected.quantity));
+  if (typeof order.id !== 'string' || !order.id.trim() ||
+      !expected.clientOrderId || order.clientOrderId !== expected.clientOrderId ||
+      typeof order.symbol !== 'string' || !order.symbol.trim() ||
+      normalizeLiveLookupSymbol(order.symbol) !== normalizeLiveLookupSymbol(expected.symbol) ||
+      typeof order.side !== 'string' || order.side.toUpperCase() !== expected.side ||
+      !amountMatches) {
+    throw orderErrors.liveExecutionFailed();
+  }
 };
 
 const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();
@@ -272,6 +327,7 @@ export const resolveLiveExecutionApiKey = async (params: {
         exchange: true,
         apiKey: true,
         apiSecret: true,
+        credentialVersion: true,
       },
     });
 
@@ -295,6 +351,7 @@ export const resolveLiveExecutionApiKey = async (params: {
             exchange: true,
             apiKey: true,
             apiSecret: true,
+            credentialVersion: true,
           },
         },
       },
@@ -306,6 +363,16 @@ export const resolveLiveExecutionApiKey = async (params: {
   }
 
   throw orderErrors.liveApiKeyRequired();
+};
+
+const assertLiveCredentialBinding = (
+  key: LiveExecutionApiKey,
+  binding: LiveExecutionCredentialBinding | null | undefined
+) => {
+  if (binding && (key.id !== binding.apiKeyId ||
+      key.credentialVersion !== binding.apiKeyCredentialVersion)) {
+    throw orderErrors.liveExecutionFailed();
+  }
 };
 
 export const fetchSupportedExchangePositionsRaw = async (
@@ -431,6 +498,7 @@ export const submitLiveOrderThroughBoundary = async (
   if (apiKey.exchange !== params.bot.exchange) {
     throw orderErrors.liveApiKeyRequired();
   }
+  assertLiveCredentialBinding(apiKey, params.credentialBinding);
 
   const connector = deps.createAuthenticatedConnector({
     exchange: apiKey.exchange,
@@ -455,6 +523,7 @@ export const submitLiveOrderThroughBoundary = async (
         quantity: params.order.quantity,
         price: params.order.price,
         reduceOnly: params.order.reduceOnly,
+        expectedContractSize: params.order.contractSize,
       },
     });
     await deps.convergeLiveMarginAndLeverageIfNeeded({
@@ -463,6 +532,13 @@ export const submitLiveOrderThroughBoundary = async (
       symbol: params.order.symbol.toUpperCase(),
       targetLeverage: params.targetLeverage,
     });
+
+    if (params.credentialBinding) {
+      // Pretrade calls can take time. Recheck before the only venue submit.
+      assertLiveCredentialBinding(await deps.resolveLiveExecutionApiKey({
+        userId: params.userId, bot: params.bot,
+      }), params.credentialBinding);
+    }
 
     const liveOrderPayload = {
       symbol: params.order.symbol.toUpperCase(),
@@ -482,6 +558,8 @@ export const submitLiveOrderThroughBoundary = async (
     return {
       exchangeOrderId: result.exchangeOrderId,
       status: mapLiveOrderStatus(result.rawOrderStatus ?? result.status, params.order.type),
+      exchangeFilledQuantity: result.exchangeFilledQuantity,
+      exchangeAverageFillPrice: result.exchangeAverageFillPrice,
       fee: result.fee,
       feeSource: result.feeSource,
       feePending: result.feePending,
@@ -495,6 +573,53 @@ export const submitLiveOrderThroughBoundary = async (
       throw error;
     }
     throw orderErrors.liveExecutionFailed();
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const lookupLiveOrderThroughBoundary = async (
+  params: SubmitLiveExchangeOrderInput,
+  deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector' | 'resolveLiveExecutionApiKey'> = getDefaultDeps()
+): Promise<SubmitLiveExchangeOrderResult> => {
+  assertExchangeExecutionCapabilitySupport(params.bot.exchange, params.bot.marketType, 'LIVE_ORDER_SUBMIT');
+  if (!params.order.clientOrderId) throw orderErrors.liveExecutionFailed();
+  const apiKey = await deps.resolveLiveExecutionApiKey({ userId: params.userId, bot: params.bot });
+  if (apiKey.exchange !== params.bot.exchange) throw orderErrors.liveApiKeyRequired();
+  assertLiveCredentialBinding(apiKey, params.credentialBinding);
+  const connector = deps.createAuthenticatedConnector({
+    exchange: apiKey.exchange,
+    apiKey: apiKey.apiKey,
+    apiSecret: apiKey.apiSecret,
+    marketType: params.bot.marketType,
+  });
+  try {
+    if (!connector.fetchOrderByClientOrderId) throw orderErrors.liveExecutionFailed();
+    const order = await connector.fetchOrderByClientOrderId({
+      symbol: params.order.symbol.toUpperCase(),
+      clientOrderId: params.order.clientOrderId,
+    });
+    assertLiveLookupIdentity(order, params.order);
+    const status = mapLiveOrderStatus(order.status, params.order.type);
+    const fee = await reconcileLiveOrderFee(connector as unknown as CcxtFuturesConnector, {
+      symbol: params.order.symbol,
+      exchangeOrderId: order.id,
+      exchangeFilledQuantity: order.filled,
+      inlineFills: order.fills ?? [],
+    });
+    return {
+      exchangeOrderId: order.id,
+      status,
+      exchangeFilledQuantity: order.filled,
+      exchangeAverageFillPrice: order.average,
+      fee: fee.fee,
+      feeSource: fee.feeSource,
+      feePending: fee.feePending,
+      feeCurrency: fee.feeCurrency,
+      effectiveFeeRate: fee.effectiveFeeRate,
+      exchangeTradeId: fee.exchangeTradeId,
+      fills: fee.fills,
+    };
   } finally {
     await connector.disconnect().catch(() => undefined);
   }

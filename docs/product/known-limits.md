@@ -1,9 +1,14 @@
-# MVP Known Limits and Post-MVP Boundaries
+# Dated MVP Implementation Limits and Current Boundaries
 
-This document defines intentional MVP limits so release decisions remain explicit and predictable.
+These MVP implementation notes were last reconciled in May 2026. The
+[Current Version Product Contract](./current-version-contract.md) owns current
+required scope. Statements about shipped behavior below require fresh
+environment-specific proof; they are not current-version acceptance.
 
 ## Scope Boundaries (MVP)
-- Exchange support: Binance Spot + Binance Futures only.
+- Current required exchange scope includes Binance and Gate.io for PAPER and
+  LIVE. Exact market-type and operation support is governed by the
+  [exchange capability matrix](../architecture/reference/exchange-access-ownership-matrix.md).
 - Trading mode: paper + live available.
 - Strategy model: flat rule model only (no deep nested logic trees).
 - Historical order-book snapshots are not currently sourced by the backtest
@@ -15,7 +20,8 @@ This document defines intentional MVP limits so release decisions remain explici
 - Logs UX: dashboard logs supports core filtering (`source`, `actor`, `severity`) but no advanced query builder.
 - Rate limiting: Redis-backed counters enabled, but no distributed abuse analytics or adaptive throttling.
 - API key crypto: AEAD + key versioning shipped; no automated key rotation workflow yet.
-- Localization: EN/PL baseline complete for core modules; residual copy polish may continue post-MVP.
+- English and Polish are the current supported languages; complete route and
+  production verification remains evidence-dependent.
 
 ## Operational Limits (MVP)
 - Single-region deployment assumption.
@@ -36,7 +42,7 @@ This document defines intentional MVP limits so release decisions remain explici
 - No advanced anomaly detection on account behavior yet.
 
 ## Explicit Post-MVP Items (V1 Track)
-- Additional exchange integrations beyond Binance (adapter-based rollout).
+- Additional exchanges beyond Binance and Gate.io (adapter-based rollout).
 - Advanced risk controls (daily loss, drawdown, cooldowns).
 - Full production observability stack (metrics + alerts + incident drills).
 - Expanded logs explorer and decision-trace UX.

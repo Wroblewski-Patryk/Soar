@@ -9,7 +9,11 @@ const logger = createModuleLogger('rate-limit');
 type RateLimitOptions = {
   windowMs: number;
   max: number;
-  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange';
+  keyScope?: 'ip' | 'auth' | 'user' | 'user_exchange' | 'read_grant' | 'order_grant';
+  bucketId?: string;
+  requireSharedStore?: boolean;
+  sharedStoreTimeoutMs?: number;
+  forceSharedStoreInTest?: boolean;
 };
 
 type Bucket = {
@@ -50,6 +54,23 @@ const resolveRateLimitSubject = (
     return userId ? `user:${userId}` : `ip:${ip}`;
   }
 
+  if (keyScope === 'read_grant') {
+    const secret = /^Bearer (soar_read_[A-Za-z0-9_-]{43})$/i.exec(
+      req.headers.authorization ?? ''
+    )?.[1];
+    return secret
+      ? `read-grant:${createHash('sha256').update(secret).digest('hex')}`
+      : `ip:${ip}`;
+  }
+  if (keyScope === 'order_grant') {
+    const secret = /^Bearer (soar_ext_[A-Za-z0-9_-]{43})$/i.exec(
+      req.headers.authorization ?? ''
+    )?.[1];
+    return secret
+      ? `order-grant:${createHash('sha256').update(secret).digest('hex')}`
+      : `ip:${ip}`;
+  }
+
   const exchange = normalizeToken(body.exchange) || normalizeToken(query.exchange) || 'unknown';
   const apiKeyHash = apiKeyFingerprint(body.apiKey);
   const savedKeyId = normalizeToken(req.params?.id);
@@ -60,10 +81,26 @@ const resolveRateLimitSubject = (
 
 const rateLimitKey = (
   req: Request,
-  keyScope: NonNullable<RateLimitOptions['keyScope']>
-) => `${req.method}:${req.baseUrl}${req.path}:${resolveRateLimitSubject(req, keyScope)}`;
+  keyScope: NonNullable<RateLimitOptions['keyScope']>,
+  bucketId?: string,
+) => `${req.method}:${bucketId ?? `${req.baseUrl}${req.path}`}:${resolveRateLimitSubject(req, keyScope)}`;
 
 type RedisClient = ReturnType<typeof createClient>;
+class SharedStoreTimeoutError extends Error {}
+const withinSharedStoreDeadline = async <T>(operation: Promise<T>, timeoutMs?: number): Promise<T> => {
+  if (timeoutMs == null) return operation;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new SharedStoreTimeoutError()), Math.max(1, timeoutMs));
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+};
 let redisClientPromise: Promise<RedisClient | null> | null = null;
 let redisClientFailedAtMs: number | null = null;
 const redisReconnectCooldownMs = Math.max(
@@ -71,9 +108,20 @@ const redisReconnectCooldownMs = Math.max(
   Number.parseInt(process.env.RATE_LIMIT_REDIS_RECONNECT_COOLDOWN_MS ?? '15000', 10)
 );
 
-const getRedisClient = async () => {
-  if (process.env.NODE_ENV === 'test') {
+const getRedisClient = async (forceSharedStoreInTest = false) => {
+  if (process.env.NODE_ENV === 'test' && !forceSharedStoreInTest) {
     return null;
+  }
+
+  let testRedisUrl: string | null = null;
+  if (process.env.NODE_ENV === 'test') {
+    try {
+      const parsed = new URL(process.env.TEST_REDIS_URL ?? '');
+      if (parsed.protocol === 'redis:' &&
+          ['127.0.0.1', 'localhost', '[::1]'].includes(parsed.hostname) &&
+          !parsed.username && !parsed.password) testRedisUrl = parsed.href;
+    } catch { /* fail closed without an explicit local test Redis */ }
+    if (!testRedisUrl) return null;
   }
 
   const nowMs = Date.now();
@@ -87,7 +135,7 @@ const getRedisClient = async () => {
   if (!redisClientPromise || redisClientFailedAtMs != null) {
     redisClientFailedAtMs = null;
     redisClientPromise = (async () => {
-      const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+      const redisUrl = testRedisUrl ?? (process.env.REDIS_URL || 'redis://localhost:6379');
       const client = createClient({ url: redisUrl });
 
       client.on('error', (error) => {
@@ -110,26 +158,42 @@ const shouldAllowInMemoryFallback = () =>
   process.env.RATE_LIMIT_ALLOW_LOCAL_FALLBACK === 'true';
 
 let getRedisClientOverride: (() => Promise<RedisClient | null>) | null = null;
-const resolveRedisClient = () =>
-  getRedisClientOverride ? getRedisClientOverride() : getRedisClient();
+const resolveRedisClient = (forceSharedStoreInTest = false) =>
+  getRedisClientOverride ? getRedisClientOverride() : getRedisClient(forceSharedStoreInTest);
 
-export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimitOptions) => {
+export const createRateLimiter = ({ windowMs, max, keyScope = 'user', bucketId,
+  requireSharedStore = false, sharedStoreTimeoutMs,
+  forceSharedStoreInTest = false }: RateLimitOptions) => {
   const buckets = new Map<string, Bucket>();
+  const canFallback = () => !requireSharedStore &&
+    (process.env.NODE_ENV === 'test' || shouldAllowInMemoryFallback());
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (
       process.env.NODE_ENV === 'test' &&
-      process.env.RATE_LIMIT_ENABLE_TEST_MODE !== 'true'
+      process.env.RATE_LIMIT_ENABLE_TEST_MODE !== 'true' &&
+      !forceSharedStoreInTest
     ) {
       return next();
     }
 
-    const redis = await resolveRedisClient();
-    const key = `rate_limit:${rateLimitKey(req, keyScope)}`;
+    let redis: RedisClient | null;
+    if (sharedStoreTimeoutMs == null) {
+      redis = await resolveRedisClient(forceSharedStoreInTest);
+    } else {
+      try {
+        redis = await withinSharedStoreDeadline(
+          resolveRedisClient(forceSharedStoreInTest), sharedStoreTimeoutMs);
+      } catch {
+        res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
+        return sendError(res, 503, 'Rate limit temporarily unavailable');
+      }
+    }
+    const key = `rate_limit:${rateLimitKey(req, keyScope, bucketId)}`;
 
     if (redis) {
       try {
-        const result = (await redis.eval(
+        const result = (await withinSharedStoreDeadline(redis.eval(
           `
             local current = redis.call('INCR', KEYS[1])
             if current == 1 then
@@ -142,7 +206,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
             keys: [key],
             arguments: [String(windowMs)],
           }
-        )) as [number, number];
+        ), sharedStoreTimeoutMs)) as [number, number];
 
         const currentCount = Number(result[0]);
         const ttlMs = Number(result[1]);
@@ -155,7 +219,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
         return next();
       } catch (error) {
-        if (!shouldAllowInMemoryFallback()) {
+        if (error instanceof SharedStoreTimeoutError || !canFallback()) {
           logger.error('redis_eval_failed_denied', { error });
           res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
           return sendError(res, 503, 'Rate limit temporarily unavailable');
@@ -163,7 +227,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
         logger.error('redis_eval_failed_fallback', { error });
       }
-    } else if (!shouldAllowInMemoryFallback()) {
+    } else if (!canFallback()) {
       res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
       return sendError(res, 503, 'Rate limit temporarily unavailable');
     }
@@ -209,5 +273,11 @@ export const __rateLimitInternals = {
   },
   setGetRedisClientForTests: (override: (() => Promise<RedisClient | null>) | null) => {
     getRedisClientOverride = override;
+  },
+  closeRedisClientForTests: async () => {
+    const client = await redisClientPromise;
+    if (client?.isOpen) await client.quit();
+    redisClientPromise = null;
+    redisClientFailedAtMs = null;
   },
 };

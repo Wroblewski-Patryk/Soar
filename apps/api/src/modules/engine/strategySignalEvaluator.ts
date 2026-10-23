@@ -57,8 +57,31 @@ export type SignalCandle = {
   low?: number;
 };
 
+export type StrategySignalPriceSeries = {
+  opens: number[];
+  closes: number[];
+  highs: number[];
+  lows: number[];
+};
+
 export type StrategySignalEvaluationContext = {
   derivatives?: StrategySignalDerivativesSeries;
+  priceSeries?: StrategySignalPriceSeries;
+};
+
+export const buildStrategySignalPriceSeries = (candles: readonly SignalCandle[]): StrategySignalPriceSeries => {
+  const opens: number[] = [];
+  const closes: number[] = [];
+  const highs: number[] = [];
+  const lows: number[] = [];
+  for (const candle of candles) {
+    const close = candle.close;
+    closes.push(close);
+    opens.push(typeof candle.open === 'number' && Number.isFinite(candle.open) ? candle.open : close);
+    highs.push(typeof candle.high === 'number' && Number.isFinite(candle.high) ? candle.high : close);
+    lows.push(typeof candle.low === 'number' && Number.isFinite(candle.low) ? candle.low : close);
+  }
+  return { opens, closes, highs, lows };
 };
 
 const isComparatorCondition = (
@@ -262,6 +285,10 @@ const parseRule = (value: unknown): StrategyIndicatorRule | null => {
   };
 };
 
+// Shared by strategy admission and migration so both inspect only rules the
+// evaluator would actually execute.
+export const parseStrategyIndicatorRule = parseRule;
+
 export const parseStrategySignalRules = (
   strategyConfig?: Record<string, unknown> | null,
 ): StrategySignalRules | null => {
@@ -421,16 +448,8 @@ export const evaluateStrategyRuleAtIndex = (params: {
   cache: Map<string, Array<number | null>>;
   context?: StrategySignalEvaluationContext;
 }) => {
-  const opens = params.candles.map((candle) =>
-    typeof candle.open === 'number' && Number.isFinite(candle.open) ? candle.open : candle.close
-  );
-  const closes = params.candles.map((candle) => candle.close);
-  const highs = params.candles.map((candle) =>
-    typeof candle.high === 'number' && Number.isFinite(candle.high) ? candle.high : candle.close
-  );
-  const lows = params.candles.map((candle) =>
-    typeof candle.low === 'number' && Number.isFinite(candle.low) ? candle.low : candle.close
-  );
+  const { opens, closes, highs, lows } =
+    params.context?.priceSeries ?? buildStrategySignalPriceSeries(params.candles);
 
   return evaluateRuleAtIndex(
     params.rule,
@@ -451,16 +470,7 @@ export const evaluateStrategySignalAtIndex = (
   cache: Map<string, Array<number | null>>,
   context?: StrategySignalEvaluationContext,
 ): StrategySignalDirection | null => {
-  const opens = candles.map((candle) =>
-    typeof candle.open === 'number' && Number.isFinite(candle.open) ? candle.open : candle.close
-  );
-  const closes = candles.map((candle) => candle.close);
-  const highs = candles.map((candle) =>
-    typeof candle.high === 'number' && Number.isFinite(candle.high) ? candle.high : candle.close
-  );
-  const lows = candles.map((candle) =>
-    typeof candle.low === 'number' && Number.isFinite(candle.low) ? candle.low : candle.close
-  );
+  const { opens, closes, highs, lows } = context?.priceSeries ?? buildStrategySignalPriceSeries(candles);
   const canLong = rules.direction !== 'short';
   const canShort = rules.direction !== 'long';
   const longMatched =
@@ -478,6 +488,5 @@ export const evaluateStrategySignalAtIndex = (
 
   if (longMatched && !shortMatched) return 'LONG';
   if (shortMatched && !longMatched) return 'SHORT';
-  if (!longMatched && !shortMatched) return rules.noMatchAction === 'EXIT' ? 'EXIT' : null;
   return null;
 };

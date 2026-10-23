@@ -34,35 +34,32 @@ truth.
 - [Modules](./modules/module-documentation.md): implementation-oriented deep-dives mapped to code ownership.
 
 ## Recommended Reading Order
-1. [Autonomous agent vision](./product/autonomous-agent-vision.md)
+1. [Current version product contract](./product/current-version-contract.md)
 2. [Product overview](./product/overview.md)
-3. [Product specification](./product/product.md)
-4. [Architecture Documentation](./architecture/architecture-documentation.md)
-5. [Codebase map](./architecture/codebase-map.md)
-6. [Traceability matrix](./architecture/traceability-matrix.md)
-7. [Architecture evidence graph system](./architecture/architecture-evidence-graph-system.md)
-8. [Pipeline registry](./pipelines/pipeline-registry.md)
-9. [Module registry](./modules/module-registry.md)
-10. [Architecture overview and principles](./architecture/01_overview-and-principles.md)
-11. [System topology](./architecture/02_system-topology.md)
-12. [Domain model](./architecture/03_domain-model.md)
-13. [Runtime contexts](./architecture/04_runtime-contexts.md)
-14. [Strategy, signal, and decision flow](./architecture/05_strategy-signal-and-decision-flow.md)
-15. [Execution lifecycle](./architecture/06_execution-lifecycle.md)
-16. [Modes, parity, and data](./architecture/07_modes-parity-and-data.md)
-17. [Operator surfaces and routing](./architecture/08_operator-surfaces-and-routing.md)
-18. [Integrations, deployment, and runtime services](./architecture/09_integrations-deployment-and-runtime-services.md)
-19. [Safety, entitlements, and risk](./architecture/10_safety-entitlements-and-risk.md)
-20. [Assistant runtime](./architecture/11_assistant-runtime.md)
-21. [Documentation governance](./architecture/12_documentation-governance.md)
-22. [System modules](./modules/system-modules.md)
-23. [MVP execution plan](./planning/mvp-execution-plan.md)
-24. [MVP next commits](./planning/mvp-next-commits.md)
-25. [Open decisions](./planning/open-decisions.md)
-26. `.agents/core/operating-system.md`
-27. `.agents/core/execution-loop.md`
-28. `.agents/core/anti-regression.md`
-29. `.agents/core/quality-gates.md`
+3. [Earlier product specification](./product/product.md)
+4. [Autonomous agent vision (future direction)](./product/autonomous-agent-vision.md)
+5. [Architecture Documentation](./architecture/architecture-documentation.md)
+6. [Codebase map](./architecture/codebase-map.md)
+7. [Traceability matrix](./architecture/traceability-matrix.md)
+8. [Architecture evidence graph system](./architecture/architecture-evidence-graph-system.md)
+9. [Pipeline registry](./pipelines/pipeline-registry.md)
+10. [Module registry](./modules/module-registry.md)
+11. [Architecture overview and principles](./architecture/01_overview-and-principles.md)
+12. [System topology](./architecture/02_system-topology.md)
+13. [Domain model](./architecture/03_domain-model.md)
+14. [Runtime contexts](./architecture/04_runtime-contexts.md)
+15. [Strategy, signal, and decision flow](./architecture/05_strategy-signal-and-decision-flow.md)
+16. [Execution lifecycle](./architecture/06_execution-lifecycle.md)
+17. [Modes, parity, and data](./architecture/07_modes-parity-and-data.md)
+18. [Operator surfaces and routing](./architecture/08_operator-surfaces-and-routing.md)
+19. [Integrations, deployment, and runtime services](./architecture/09_integrations-deployment-and-runtime-services.md)
+20. [Safety, entitlements, and risk](./architecture/10_safety-entitlements-and-risk.md)
+21. [Assistant runtime foundation (outside current product)](./architecture/11_assistant-runtime.md)
+22. [Documentation governance](./architecture/12_documentation-governance.md)
+23. [System modules](./modules/system-modules.md)
+24. [MVP execution plan (historical sequencing)](./planning/mvp-execution-plan.md)
+25. [MVP next commits (dated queue)](./planning/mvp-next-commits.md)
+26. [Open decisions](./planning/open-decisions.md)
 
 ## Source-of-Truth Rule
 - Architecture truth belongs in `docs/architecture/`.
@@ -74,12 +71,9 @@ truth.
 - Historical assumptions and rollout evidence should stay in planning and operations artifacts, not in the canonical architecture set.
 - Historical tasks, old plans, audits, generated evidence, release packets, and
   raw artifacts belong under `../history/`, not under canonical docs folders.
-## Template Sync: Shared Agent Standards
+## Shared Standards
 
-Additional cross-project standards adopted for this repository:
-
-- `.agents/workflows/user-collaboration.md`
-- `.agents/workflows/world-class-delivery.md`
+Standards present in this repository:
 - `docs/governance/world-class-product-engineering-standard.md`
 - `docs/governance/autonomous-engineering-loop.md`
 - `docs/operations/service-reliability-and-observability.md`

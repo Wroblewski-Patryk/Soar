@@ -95,6 +95,7 @@ const IGNORED_DIRS = new Set([
   ".git",
   "node_modules",
   ".next",
+  ".next-dev",
   "dist",
   "build",
   "coverage",
@@ -178,11 +179,23 @@ const validateLockfilePolicy = (trackedFiles) => {
   return errors;
 };
 
-const validateSourceFileBudgets = (trackedFiles) => {
+const countSourceBytesWithLfEndings = (absolute, readSourceFile) => {
+  const content = readSourceFile(absolute);
+  let size = content.length;
+  for (let index = 1; index < content.length; index += 1) {
+    if (content[index - 1] === 13 && content[index] === 10) size -= 1;
+  }
+  return size;
+};
+
+export const validateSourceFileBudgets = (
+  trackedFiles,
+  { rootDir = ROOT_DIR, readSourceFile = fs.readFileSync } = {},
+) => {
   const oversize = [];
   for (const filePath of trackedFiles) {
     if (!SOURCE_FILE_RE.test(filePath)) continue;
-    const absolute = path.join(ROOT_DIR, filePath);
+    const absolute = path.join(rootDir, filePath);
     let stats;
     try {
       stats = fs.statSync(absolute);
@@ -190,10 +203,20 @@ const validateSourceFileBudgets = (trackedFiles) => {
       continue;
     }
     const budget = resolveSourceFileBudget(filePath);
-    if (stats.size > budget) {
+    let size = stats.size;
+    if (size > budget) {
+      try {
+        // A Windows checkout may expand tracked LF to CRLF without changing the source.
+        size = countSourceBytesWithLfEndings(absolute, readSourceFile);
+      } catch {
+        // Without a readable source, the raw over-budget size must still fail.
+        size = stats.size;
+      }
+    }
+    if (size > budget) {
       oversize.push({
         filePath,
-        size: stats.size,
+        size,
         budget,
       });
     }

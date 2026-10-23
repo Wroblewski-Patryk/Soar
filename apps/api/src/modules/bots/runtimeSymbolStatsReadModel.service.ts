@@ -91,6 +91,8 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
   sessionUpdatedAt: Date;
   symbols: string[];
   statBySymbol: Map<string, RuntimeSymbolStatRow>;
+  pendingPnlSymbols?: ReadonlySet<string>;
+  pendingFeeSymbols?: ReadonlySet<string>;
   aggregateSummary: RuntimeSymbolAggregateSummary;
   openPositionCountBySymbol: Map<string, number>;
   openPositionQtyBySymbol: Map<string, number>;
@@ -223,12 +225,12 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       exits: stat?.exits ?? 0,
       dcaCount: stat?.dcaCount ?? 0,
       closedTrades: stat?.closedTrades ?? 0,
-      winningTrades: stat?.winningTrades ?? 0,
-      losingTrades: stat?.losingTrades ?? 0,
-      realizedPnl: stat?.realizedPnl ?? 0,
-      grossProfit: stat?.grossProfit ?? 0,
-      grossLoss: stat?.grossLoss ?? 0,
-      feesPaid: stat?.feesPaid ?? 0,
+      winningTrades: params.pendingPnlSymbols?.has(symbol) ? null : stat?.winningTrades ?? 0,
+      losingTrades: params.pendingPnlSymbols?.has(symbol) ? null : stat?.losingTrades ?? 0,
+      realizedPnl: params.pendingPnlSymbols?.has(symbol) ? null : stat?.realizedPnl ?? 0,
+      grossProfit: params.pendingPnlSymbols?.has(symbol) ? null : stat?.grossProfit ?? 0,
+      grossLoss: params.pendingPnlSymbols?.has(symbol) ? null : stat?.grossLoss ?? 0,
+      feesPaid: params.pendingFeeSymbols?.has(symbol) ? null : stat?.feesPaid ?? 0,
       openPositionCount: openCount ?? stat?.openPositionCount ?? 0,
       openPositionQty: openQty ?? stat?.openPositionQty ?? 0,
       unrealizedPnl,
@@ -266,7 +268,9 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
   const summaryOpenPositionQty =
     params.aggregateLiveSummary?.openPositionQty ??
     items.reduce((acc, item) => acc + item.openPositionQty, 0);
-  const summaryRealizedPnl = params.aggregateSummary.realizedPnl ?? 0;
+  const pnlPending = (params.pendingPnlSymbols?.size ?? 0) > 0;
+  const feePending = (params.pendingFeeSymbols?.size ?? 0) > 0;
+  const summaryRealizedPnl = pnlPending ? null : params.aggregateSummary.realizedPnl ?? 0;
 
   return {
     items,
@@ -277,14 +281,14 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       exits: params.aggregateSummary.exits ?? 0,
       dcaCount: params.aggregateSummary.dcaCount ?? 0,
       closedTrades: params.aggregateSummary.closedTrades ?? 0,
-      winningTrades: params.aggregateSummary.winningTrades ?? 0,
-      losingTrades: params.aggregateSummary.losingTrades ?? 0,
+      winningTrades: pnlPending ? null : params.aggregateSummary.winningTrades ?? 0,
+      losingTrades: pnlPending ? null : params.aggregateSummary.losingTrades ?? 0,
       realizedPnl: summaryRealizedPnl,
       unrealizedPnl: summaryUnrealizedPnl,
-      totalPnl: summaryRealizedPnl + summaryUnrealizedPnl,
-      grossProfit: params.aggregateSummary.grossProfit ?? 0,
-      grossLoss: params.aggregateSummary.grossLoss ?? 0,
-      feesPaid: params.aggregateSummary.feesPaid ?? 0,
+      totalPnl: summaryRealizedPnl == null ? null : summaryRealizedPnl + summaryUnrealizedPnl,
+      grossProfit: pnlPending ? null : params.aggregateSummary.grossProfit ?? 0,
+      grossLoss: pnlPending ? null : params.aggregateSummary.grossLoss ?? 0,
+      feesPaid: feePending ? null : params.aggregateSummary.feesPaid ?? 0,
       openPositionCount: summaryOpenPositionCount,
       openPositionQty: summaryOpenPositionQty,
     },

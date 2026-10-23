@@ -2,6 +2,12 @@
 
 Purpose: safely revert to legacy runtime when cutover validation fails or runtime safety is degraded.
 
+This local legacy-runtime checklist does not govern Coolify Service Stack
+cutover. For that topology, follow the
+[rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover),
+including verified exit of the new API and all four new workers before any old
+consumer starts.
+
 ## Rollback Triggers
 - execution anomalies after cutover (unexpected repeated failures),
 - stale data + missing recovery in acceptable window,

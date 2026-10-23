@@ -1,4 +1,4 @@
-# Post-Deploy Smoke Checklist (Stage/Prod)
+# Post-Deploy Smoke Checklist (Coolify Production)
 
 Date: 2026-04-03  
 Scope: Manual + scripted smoke checks after deployment on target domains.
@@ -7,17 +7,22 @@ Scope: Manual + scripted smoke checks after deployment on target domains.
 - Web: `https://soar.luckysparrow.ch`
 - API: `https://api.soar.luckysparrow.ch`
 
-For STAGE use corresponding stage domains (`stage-soar` / `stage-api.soar`) when provisioned.
+Soar has no separate STAGE. Local Windows validation uses isolated test data and is recorded separately from this production smoke.
 
 ## Purpose
 Quickly confirm that the deployed revision is operational for critical user flows before declaring rollout healthy.
 
 ## Preconditions
-- Deployment finished with green build/migration/health gates.
-- Candidate SHA and environment are known.
+- Owner separately approved deployment of the exact candidate SHA to the existing Coolify production environment.
+- Local candidate gates, backup/restore and rollback path, migration compatibility, and protected signed-in acceptance plan are recorded; they are not production proof.
+- Deployment finished with green build/migration/health gates and deployed SHA readback.
+- Stop-before-start worker switch preflight passed before candidate workers started.
 - Worker services are running.
 - For the Coolify Service Stack topology, API and Web stack healthchecks are
   green and all four worker containers are running after the API liveness gate.
+  The pre-start worker-switch preflight must have passed from a fresh read-only
+  inventory; post-start inspect must match its candidate API image ID and full
+  revision label for API and all four workers, with old workers still stopped.
   The API container healthcheck is `/health`; `/ready` remains a separate
   release-readiness smoke item. Web/workers may depend only on API
   `service_started`, so this checklist is the acceptance gate for dependency
@@ -45,8 +50,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - valid login works,
 - login must not return `Rate limit temporarily unavailable`; that indicates a
   Redis dependency failure and the rollout is degraded.
-- protected route access works with active session,
-- logout returns to expected public route.
+- protected user and administrator routes work with active sessions in EN/PL, including plan/role boundaries,
+- logout returns to expected public route. Record account/role, SHA and result without exposing credentials.
 
 ### 4) Dashboard baseline
 - `/dashboard` renders successfully,
@@ -63,6 +68,15 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 6) Workers and queue baseline
 - workers health/readiness is green,
+- in each worker container, verify `WORKER_MODE=split`, the matching ownership
+  (`WORKER_BACKTEST_OWNERSHIP=worker` and
+  `WORKER_MARKET_DATA_OWNERSHIP=worker`), and the applicable queue name;
+  compare them with the API container. A heartbeat alone does not prove queue
+  consumption. Missing variables fail this gate.
+- enqueue one controlled PAPER backtest and verify its id leaves Redis pending,
+  reaches a terminal database status, and produces a report. Investigate
+  orphaned `PENDING` rows and queue ids without database rows separately;
+  do not replay historical jobs blindly.
 - no crash-loop in worker logs,
 - market/signal updates visible in runtime within expected interval.
 - Coolify Redis resource is `running:healthy`; Redis restart-count growth or
@@ -81,11 +95,15 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ## Pass/Fail Rules
 - **PASS**: all required smoke items succeed.
-- **FAIL**: any required item fails -> rollout marked degraded; trigger incident/rollback decision path.
+- **FAIL**: any required item fails -> rollout marked degraded; trigger the
+  incident/rollback decision path. After any Service Stack process starts,
+  including before domain cutover, follow mode D in the
+  [rollback stop-before-start sequence](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover)
+  before restoring old API or workers.
 
 ## Evidence Recording
 Record for each smoke run:
-- environment (`stage`/`prod`),
+- environment (`prod`; local test results are a separate record),
 - candidate SHA,
 - checklist status per section,
 - timestamp,

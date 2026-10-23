@@ -1,5 +1,8 @@
 # Deployment Template (Local -> Stage -> Production)
 
+> Generic legacy template only. Soar's active release path (owner decision 2026-10-23) has local Windows and the existing Coolify production environment; STAGE and a second VPS are not prerequisites. Follow the current release board and local/production environment matrix instead.
+
+
 Purpose: reusable deployment template for new apps/projects hosted on VPS + Coolify.
 
 ## Phase 0: Prerequisites

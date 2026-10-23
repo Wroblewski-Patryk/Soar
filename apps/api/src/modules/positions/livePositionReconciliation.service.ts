@@ -1,4 +1,6 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
+import { lockExchangeOrderIdentity } from '../orders/orders.exchangeIdentityLock';
 import {
   fetchExchangeOpenOrdersSnapshotByApiKeyId,
   fetchExchangePositionsSnapshotByApiKeyId,
@@ -29,7 +31,9 @@ import {
   hydrateImportedPositionHistory,
 } from './importedPositionHistoryHydrator.service';
 import {
+  backfillClosedImportedPositionsPendingHistory,
   hydrateReconciledImportedPositionHistory,
+  listClosedImportedPositionsPendingHistoryForApiKey,
   resolveImportedClosedHistoryClosedAt,
 } from './livePositionReconciliation.history';
 import { CanonicalBotContinuityContext, LocalManagedLivePosition, ReconciliationPositionDiagnostic, ReconciliationResult, ReconcileDeps, ReconcileFn } from './livePositionReconciliation.types';
@@ -140,6 +144,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         entryPrice: input.entryPrice,
         unrealizedPnl: input.unrealizedPnl,
         marginUsed: input.marginUsed,
+        contractSize: input.contractSize ?? null,
+        gateFuturesEconomics: input.gateFuturesEconomics ? { ...input.gateFuturesEconomics } : Prisma.DbNull,
         leverage: input.leverage,
         managementMode: input.managementMode,
         origin: 'EXCHANGE_SYNC',
@@ -175,6 +181,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         leverage: input.leverage,
         unrealizedPnl: input.unrealizedPnl,
         marginUsed: input.marginUsed,
+        contractSize: input.contractSize ?? null,
+        gateFuturesEconomics: input.gateFuturesEconomics ? { ...input.gateFuturesEconomics } : Prisma.DbNull,
         openedAt: input.openedAt,
         lastExchangeSeenAt: input.lastExchangeSeenAt,
         lastExchangeSyncAt: input.lastExchangeSyncAt,
@@ -206,6 +214,8 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
         managementMode: true,
       },
     }),
+  listClosedSyncedPositionsPendingHistoryForApiKey:
+    listClosedImportedPositionsPendingHistoryForApiKey,
   markMissingSyncedPosition: async (positionId, input) => {
     await prisma.position.update({
       where: { id: positionId },
@@ -239,56 +249,42 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   hydrateImportedPositionHistory,
   hydrateClosedImportedPositionHistory: backfillClosedImportedPositionHistory,
   upsertSyncedOpenOrder: async (input) => {
-    const existing = await prisma.order.findFirst({
-      where: {
-        userId: input.userId,
-        exchangeOrderId: input.exchangeOrderId,
-        OR: [{ botId: input.botId }, { botId: null, walletId: input.walletId }],
-      },
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-      select: {
-        id: true,
-        origin: true,
-      },
-    });
-
-    if (existing && existing.origin !== 'EXCHANGE_SYNC') {
-      return;
-    }
-
-    const data = {
-      botId: input.botId,
-      walletId: input.walletId,
-      strategyId: null,
-      positionId: null,
-      origin: 'EXCHANGE_SYNC' as const,
-      managementMode: 'BOT_MANAGED' as const,
-      syncState: 'IN_SYNC' as const,
-      symbol: input.symbol,
-      side: input.side,
-      type: input.type,
-      status: input.status,
-      quantity: input.quantity,
-      filledQuantity: input.filledQuantity,
-      price: input.price,
-      exchangeOrderId: input.exchangeOrderId,
-      submittedAt: input.submittedAt,
-      canceledAt: null,
-    };
-
-    if (existing) {
-      await prisma.order.update({
-        where: { id: existing.id },
-        data,
+    await prisma.$transaction(async (tx) => {
+      await lockExchangeOrderIdentity(tx, input.userId, input.exchangeOrderId);
+      const existing = await tx.order.findFirst({
+        where: {
+          userId: input.userId,
+          exchangeOrderId: input.exchangeOrderId,
+        },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        select: { id: true, origin: true, botId: true, walletId: true },
       });
-      return;
-    }
-
-    await prisma.order.create({
-      data: {
-        userId: input.userId,
-        ...data,
-      },
+      if (existing && (existing.origin !== 'EXCHANGE_SYNC' ||
+        existing.botId !== input.botId || existing.walletId !== input.walletId)) return;
+      const data = {
+        botId: input.botId,
+        walletId: input.walletId,
+        strategyId: null,
+        positionId: null,
+        origin: 'EXCHANGE_SYNC' as const,
+        managementMode: 'BOT_MANAGED' as const,
+        syncState: 'IN_SYNC' as const,
+        symbol: input.symbol,
+        side: input.side,
+        type: input.type,
+        status: input.status,
+        quantity: input.quantity,
+        filledQuantity: input.filledQuantity,
+        price: input.price,
+        exchangeOrderId: input.exchangeOrderId,
+        submittedAt: input.submittedAt,
+        canceledAt: null,
+      };
+      if (existing) {
+        await tx.order.update({ where: { id: existing.id }, data });
+      } else {
+        await tx.order.create({ data: { userId: input.userId, ...data } });
+      }
     });
   },
   listOpenSyncedOrdersForOwner: async ({ userId, botId, walletId }) =>
@@ -618,6 +614,8 @@ export const reconcileExternalPositionsFromExchange = async (
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             marginUsed: position.marginUsed ?? null,
+            contractSize: position.contractSize ?? null,
+            gateFuturesEconomics: position.gateFuturesEconomics ?? null,
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
@@ -660,7 +658,7 @@ export const reconcileExternalPositionsFromExchange = async (
             openedAt: reusablePosition.openedAt ?? openedAtFallback,
           });
           if (
-            deps.processOwnedSyncedPositionAutomation &&
+            deps.processOwnedSyncedPositionAutomation && (apiKey.exchange === 'BINANCE' || apiKey.exchange === 'GATEIO') &&
             shouldTriggerOwnedSyncedPositionAutomation({
               managementMode,
               continuityState,
@@ -668,7 +666,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange,
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
@@ -704,6 +702,8 @@ export const reconcileExternalPositionsFromExchange = async (
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             marginUsed: position.marginUsed ?? null,
+            contractSize: position.contractSize ?? null,
+            gateFuturesEconomics: position.gateFuturesEconomics ?? null,
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
@@ -739,7 +739,7 @@ export const reconcileExternalPositionsFromExchange = async (
             });
           }
           if (
-            deps.processOwnedSyncedPositionAutomation &&
+            deps.processOwnedSyncedPositionAutomation && (apiKey.exchange === 'BINANCE' || apiKey.exchange === 'GATEIO') &&
             shouldTriggerOwnedSyncedPositionAutomation({
               managementMode,
               continuityState,
@@ -747,7 +747,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange,
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
@@ -834,6 +834,8 @@ export const reconcileExternalPositionsFromExchange = async (
             : deps.now();
         await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
       }
+
+      await backfillClosedImportedPositionsPendingHistory({ deps, apiKey });
 
       const openOrderPositionKeysByOwner = new Map<string, Set<string>>();
       let openOrderSnapshotAvailable = false;

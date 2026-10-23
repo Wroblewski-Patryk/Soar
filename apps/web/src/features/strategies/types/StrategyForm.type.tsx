@@ -109,12 +109,14 @@ export type CloseProps = {
 //SECTION ADDITIONAL
 export type TimeUnit = "min" | "h" | "d" | "w";
 export type DcaMode = "basic" | "advanced";
+export type DcaSizingBasis = "quantity_v1" | "usdt_contribution_v1";
 export type DcaLevel = { percent: number; multiplier: number; clientId?: string };
 export type MarginMode = "CROSSED" | "ISOLATED";
 
 export type AdditionalState = {
     // DCA
     dcaEnabled: boolean;
+    dcaSizingBasis?: DcaSizingBasis; // absent in saved legacy strategies means quantity_v1
     dcaMode: DcaMode;
     dcaTimes: number;         // basic
     dcaMultiplier: number;    // basic

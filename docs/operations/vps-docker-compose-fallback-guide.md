@@ -34,6 +34,7 @@ cp .env.vps.example .env.vps
 
 Then set at minimum:
 - `NODE_ENV=production`
+- `SOURCE_COMMIT=<exact lowercase 40-character git SHA of this checkout>`
 - `JWT_SECRET=<strong-secret>`
 - `API_KEY_ENCRYPTION_KEYS=<versioned-keys>`
 - `API_KEY_ENCRYPTION_ACTIVE_VERSION=<active-version>`
@@ -45,6 +46,11 @@ If using external managed DB/Redis:
 
 If using local infra profile:
 - keep defaults or override with local values.
+
+Compose passes `SOURCE_COMMIT` to the API and all four worker builds. An absent,
+empty, placeholder, or malformed SHA blocks those builds. Verify the checkout
+and SHA together before building; the image label is the supplied commit, not
+an independent proof that the checkout matches it.
 
 ## Variant A: Full stack on one VPS (with local postgres/redis)
 
@@ -114,6 +120,14 @@ Expected worker services:
 Do not merge workers into API process in production.
 
 ## Rollback (compose fallback)
+
+If this fallback would restore an old API or worker after **any** new Coolify
+Service Stack process has started, or if that start history is uncertain, first
+complete [mode D stop-before-start](coolify-linux-vps-setup-guide.md#rollback-from-stack-cutover).
+This `up -d --build` path cannot bypass the new-process exit, in-flight/`UNKNOWN`,
+and schema gates. Only a proven never-started stack may use the simpler
+app-version rollback path, after resolving in-flight/`UNKNOWN` work and proving
+schema compatibility.
 
 1. Checkout previous stable commit.
 2. Rebuild and restart:

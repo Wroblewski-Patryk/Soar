@@ -9,7 +9,18 @@ export type RuntimeAutomationSkipReason =
   | 'execution_context_unresolved'
   | 'live_opt_in_disabled'
   | 'position_symbol_outside_configured_scope'
-  | 'multi_strategy_position_provenance_missing';
+  | 'multi_strategy_position_provenance_missing'
+  | 'protection_unconfirmed';
+
+export const recordRuntimeProtectionUnconfirmedTelemetry = async (
+  input: Pick<Parameters<typeof recordRuntimeAutomationSkipTelemetry>[0],
+    'recordRuntimeEvent' | 'event' | 'position' | 'inheritedExecutionContext' | 'strategyId'>
+) => recordRuntimeAutomationSkipTelemetry({
+  ...input,
+  reason: 'protection_unconfirmed',
+  message: 'Runtime protection cannot be confirmed from persisted position state',
+  extraPayload: { reason: 'PROTECTION_UNCONFIRMED' },
+});
 
 type RuntimeAutomationTelemetryPosition = {
   id: string;

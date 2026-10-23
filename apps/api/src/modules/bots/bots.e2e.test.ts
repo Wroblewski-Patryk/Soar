@@ -1112,6 +1112,7 @@ describe('Bots module contract', () => {
           leverage: 1,
           openedAt: new Date('2026-03-31T00:00:30.000Z'),
           closedAt: new Date('2026-03-31T00:04:30.000Z'),
+          realizedPnl: 0,
           managementMode: 'BOT_MANAGED',
         },
       ],
@@ -1498,8 +1499,10 @@ describe('Bots module contract', () => {
     expect(positionsRes.body.openItems[0].origin).toBe('BOT');
   });
 
-  it('closes open runtime position from dashboard endpoint and enforces risk acknowledgement', async () => {
-    const ownerEmail = 'bot-runtime-close-position-owner@example.com';
+  it.each(['RUNNING', 'CANCELED'] as const)(
+    'closes open runtime position from a %s session and enforces risk acknowledgement',
+    async (sessionStatus) => {
+    const ownerEmail = `bot-runtime-close-position-${sessionStatus.toLowerCase()}-owner@example.com`;
     const owner = await registerAndLogin(ownerEmail);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
 
@@ -1514,14 +1517,18 @@ describe('Bots module contract', () => {
     expect(botRes.status).toBe(201);
     const botId = botRes.body.id as string;
     const walletId = botRes.body.walletId as string;
+    if (sessionStatus === 'CANCELED') {
+      await prisma.bot.update({ where: { id: botId }, data: { isActive: false } });
+    }
 
     const session = await prisma.botRuntimeSession.create({
       data: {
         userId: ownerUser.id,
         botId,
         mode: 'PAPER',
-        status: 'RUNNING',
+        status: sessionStatus,
         startedAt: new Date('2026-04-10T03:00:00.000Z'),
+        finishedAt: sessionStatus === 'CANCELED' ? new Date('2026-04-10T03:06:00.000Z') : null,
         lastHeartbeatAt: new Date('2026-04-10T03:05:00.000Z'),
       },
       select: { id: true },
@@ -1574,7 +1581,8 @@ describe('Bots module contract', () => {
     });
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.closedAt).not.toBeNull();
-  });
+    }
+  );
 
   it('supports monitoring query filters for status/symbol/limit and enforces session time window', async () => {
     const ownerEmail = 'bot-runtime-monitoring-filters-owner@example.com';

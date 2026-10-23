@@ -2,6 +2,134 @@ import { describe, expect, it, vi } from 'vitest';
 import { createBacktestRunJob } from './backtestRunJob';
 
 describe('createBacktestRunJob', () => {
+  it.each(['BACKTEST_INTRABAR_ARCHIVE_FETCH_FAILED',
+    'BACKTEST_INTRABAR_ARCHIVE_SNAPSHOT_CHANGED'])(
+    'fails an archived run before simulation when source verification fails: %s',
+    async (reason) => {
+      const safeUpdateRun = vi.fn(async () => true);
+      const createBacktestTrades = vi.fn();
+      const simulateInterleavedPortfolio = vi.fn();
+      const upsertBacktestReportForRun = vi.fn(async () => true);
+      const fetchVerifiedArchivedIntrabarForRun = vi.fn(async () => {
+        throw new Error(reason);
+      });
+      const recentSource = vi.fn();
+      const runJob = createBacktestRunJob({
+        findBacktestRunById: async () => ({ id: 'archive-run', userId: 'u',
+          symbol: 'BTCUSDT', timeframe: '1m', strategyId: null, status: 'PENDING',
+          seedConfig: { symbols: ['BTCUSDT'], exchange: 'BINANCE',
+            marketType: 'FUTURES', maxCandles: 100,
+            startAt: '2020-01-01T00:01:00.000Z',
+            endAt: '2020-01-01T01:41:00.000Z',
+            intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' } }),
+        safeUpdateRun,
+        uniqueSorted: (values: string[]) => values,
+        computeAdaptiveMaxCandles: () => 100,
+        resolveIndicatorWarmupCandles: () => 0,
+        normalizeWalletRiskPercent: () => 1,
+        parseStrategySignalRules: () => null,
+        findOwnedStrategySignalConfig: async () => null,
+        fetchKlines: vi.fn(),
+        fetchKlinesWithVerifiedBinanceFuturesIntrabar: recentSource,
+        fetchVerifiedArchivedIntrabarForRun,
+        fetchSupplementalSeries: async () => ({ fundingRates: [],
+          openInterest: [], orderBook: [] }),
+        simulateInterleavedPortfolio,
+        createBacktestTrades,
+        createBacktestContributions: async () => undefined,
+        deleteBacktestTradesForRun: async () => undefined,
+        countWinningBacktestTrades: async () => 0,
+        countLosingBacktestTrades: async () => 0,
+        upsertBacktestReportForRun,
+        computeSourceWindowMs: () => 60_000,
+        maxDrawdownFromPnlSeries: () => 0,
+      } as any);
+
+      await runJob('archive-run');
+      expect(fetchVerifiedArchivedIntrabarForRun).toHaveBeenCalledOnce();
+      expect(recentSource).not.toHaveBeenCalled();
+      expect(simulateInterleavedPortfolio).not.toHaveBeenCalled();
+      expect(createBacktestTrades).not.toHaveBeenCalled();
+      expect(upsertBacktestReportForRun).toHaveBeenCalledWith(expect.objectContaining({
+        update: expect.objectContaining({ netPnl: null,
+          metrics: expect.objectContaining({ runLifecycle: expect.objectContaining({
+            state: 'FAILED', reportReady: false,
+          }) }),
+        }),
+      }));
+      expect(safeUpdateRun).toHaveBeenCalledWith('archive-run',
+        expect.objectContaining({ status: 'FAILED', seedConfig: expect.objectContaining({
+          error: expect.stringContaining(reason),
+        }) }));
+    });
+
+  it.each(['source unavailable', 'source changed on retry'])(
+    'fails a strict intrabar run without estimating PnL from OHLC: %s', async (caseName) => {
+    const changedOnRetry = caseName === 'source changed on retry';
+    const safeUpdateRun = vi.fn(async () => true);
+    const simulateInterleavedPortfolio = vi.fn();
+    const fetchKlines = vi.fn();
+    const fetchKlinesWithVerifiedBinanceFuturesIntrabar = vi.fn(async () => {
+      if (!changedOnRetry) throw new Error('BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE');
+      return [{ openTime: 1_700_000_000_000, closeTime: 1_700_000_059_999,
+        open: 1, high: 1, low: 1, close: 1, volume: 1,
+        intrabarTicks: [{ eventTime: 1_700_000_000_001, price: 1 },
+          { eventTime: 1_700_000_000_002, price: 1 }],
+        intrabarProvenance: { source: 'BINANCE_USDM_AGGTRADES',
+          endpoint: '/fapi/v1/aggTrades', symbol: 'BTCUSDT',
+          sha256: 'a'.repeat(64) } }];
+    });
+    const createBacktestTrades = vi.fn();
+    const upsertBacktestReportForRun = vi.fn(async () => true);
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: async () => ({ id: 'strict-run', userId: 'u',
+        symbol: 'BTCUSDT', timeframe: '1m', strategyId: null, status: 'PENDING',
+        seedConfig: { symbols: ['BTCUSDT'], exchange: 'BINANCE',
+          marketType: 'FUTURES', maxCandles: 100,
+          ...(changedOnRetry ? { intrabarSourceDigestBySymbol: { BTCUSDT: 'b'.repeat(64) } } : {}),
+          intrabarSource: 'BINANCE_USDM_AGGTRADES_REQUIRED' } }),
+      safeUpdateRun,
+      uniqueSorted: (values: string[]) => values,
+      computeAdaptiveMaxCandles: () => 100,
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => null,
+      findOwnedStrategySignalConfig: async () => null,
+      fetchKlines,
+      fetchKlinesWithVerifiedBinanceFuturesIntrabar,
+      fetchSupplementalSeries: async () => ({ fundingRates: [],
+        openInterest: [], orderBook: [] }),
+      simulateInterleavedPortfolio,
+      createBacktestTrades,
+      createBacktestContributions: async () => undefined,
+      deleteBacktestTradesForRun: async () => undefined,
+      countWinningBacktestTrades: async () => 0,
+      countLosingBacktestTrades: async () => 0,
+      upsertBacktestReportForRun,
+      computeSourceWindowMs: () => 60_000,
+      maxDrawdownFromPnlSeries: () => 0,
+    } as any);
+
+    await runJob('strict-run');
+    expect(fetchKlinesWithVerifiedBinanceFuturesIntrabar).toHaveBeenCalledOnce();
+    expect(fetchKlines).not.toHaveBeenCalled();
+    expect(simulateInterleavedPortfolio).not.toHaveBeenCalled();
+    expect(createBacktestTrades).not.toHaveBeenCalled();
+    expect(upsertBacktestReportForRun).toHaveBeenCalledWith(expect.objectContaining({
+      update: expect.objectContaining({ netPnl: null,
+        metrics: expect.objectContaining({ runLifecycle: expect.objectContaining({
+          state: 'FAILED', reportReady: false,
+        }) }),
+      }),
+    }));
+    expect(safeUpdateRun).toHaveBeenCalledWith('strict-run',
+      expect.objectContaining({ status: 'FAILED', seedConfig: expect.objectContaining({
+        error: expect.stringContaining(changedOnRetry
+          ? 'BACKTEST_INTRABAR_SOURCE_CHANGED_ON_RETRY'
+          : 'BACKTEST_INTRABAR_SOURCE_WINDOW_UNAVAILABLE'),
+      }) }));
+  });
+
   it('persists trades and report metrics for processed symbols', async () => {
     const safeUpdateRun = vi.fn(async () => true);
     const createBacktestTrades = vi.fn(async () => undefined);
@@ -77,6 +205,7 @@ describe('createBacktestRunJob', () => {
                   },
                 ],
                 liquidations: 0,
+                events: [],
                 eventCounts: {
                   ENTRY: 1,
                   EXIT: 1,
@@ -94,6 +223,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades,
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 1),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -142,6 +272,7 @@ describe('createBacktestRunJob', () => {
                 },
               ],
               liquidations: 0,
+              events: [],
               eventCounts: {
                 ENTRY: 1,
                 EXIT: 1,
@@ -253,6 +384,7 @@ describe('createBacktestRunJob', () => {
       })),
       simulateInterleavedPortfolio,
       createBacktestTrades,
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 1),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -360,6 +492,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades: vi.fn(async () => undefined),
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -445,6 +578,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades: vi.fn(async () => undefined),
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -538,6 +672,7 @@ describe('createBacktestRunJob', () => {
       })),
       simulateInterleavedPortfolio,
       createBacktestTrades: vi.fn(async () => undefined),
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -611,6 +746,7 @@ describe('createBacktestRunJob', () => {
         throw new Error('parent rows removed during async completion');
       }),
       createBacktestTrades: vi.fn(async () => undefined),
+      createBacktestContributions: vi.fn(async () => undefined),
       deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
@@ -627,6 +763,9 @@ describe('createBacktestRunJob', () => {
   it('skips terminal runs and clears stale trades before retrying active runs', async () => {
     const deleteBacktestTradesForRun = vi.fn(async () => undefined);
     const safeUpdateRun = vi.fn(async () => true);
+    const simulateInterleavedPortfolio = vi.fn(
+      () => ({ perSymbol: {}, finalBalance: 10_000 }) as any,
+    );
     const createJob = (status: string) =>
       createBacktestRunJob({
         findBacktestRunById: vi.fn(async () => ({
@@ -634,7 +773,7 @@ describe('createBacktestRunJob', () => {
           userId: 'user-1',
           symbol: 'BTCUSDT',
           timeframe: '1m',
-          strategyId: null,
+          strategyId: 'strategy-retry',
           status,
           seedConfig: {
             symbols: ['BTCUSDT'],
@@ -643,6 +782,11 @@ describe('createBacktestRunJob', () => {
             marginMode: 'CROSSED',
             initialBalance: 10_000,
             maxCandles: 200,
+            contextSnapshot: {
+              strategy: {
+                config: { additional: { dcaSizingBasis: 'usdt_contribution_v1' } },
+              },
+            },
           },
         })),
         safeUpdateRun,
@@ -651,7 +795,10 @@ describe('createBacktestRunJob', () => {
         resolveIndicatorWarmupCandles: () => 0,
         normalizeWalletRiskPercent: () => 1,
         parseStrategySignalRules: () => null,
-        findOwnedStrategySignalConfig: vi.fn(async () => null),
+        findOwnedStrategySignalConfig: vi.fn(async () => ({
+          config: { additional: { dcaSizingBasis: 'quantity_v1' } },
+          walletRisk: 1,
+        })),
         fetchKlines: vi.fn(async () => [
           {
             openTime: 0,
@@ -668,14 +815,9 @@ describe('createBacktestRunJob', () => {
           openInterest: [],
           orderBook: [],
         })),
-        simulateInterleavedPortfolio: vi.fn(
-          () =>
-            ({
-              perSymbol: {},
-              finalBalance: 10_000,
-            }) as any
-        ),
+        simulateInterleavedPortfolio,
         createBacktestTrades: vi.fn(async () => undefined),
+        createBacktestContributions: vi.fn(async () => undefined),
         deleteBacktestTradesForRun,
         countWinningBacktestTrades: vi.fn(async () => 0),
         countLosingBacktestTrades: vi.fn(async () => 0),
@@ -689,5 +831,9 @@ describe('createBacktestRunJob', () => {
 
     await createJob('RUNNING')('run-retry');
     expect(deleteBacktestTradesForRun).toHaveBeenCalledWith('user-1', 'run-retry');
+    expect(simulateInterleavedPortfolio).toHaveBeenCalledTimes(1);
+    expect((simulateInterleavedPortfolio as any).mock.calls[0]?.[0].strategyConfig).toEqual({
+      additional: { dcaSizingBasis: 'usdt_contribution_v1' },
+    });
   });
 });

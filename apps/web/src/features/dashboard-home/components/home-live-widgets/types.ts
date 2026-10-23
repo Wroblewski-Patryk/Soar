@@ -68,10 +68,10 @@ export type RuntimeSelectedData = {
   open: OpenPositionWithLive[];
   usedMargin: number;
   unrealized: number;
-  realized: number;
-  net: number;
-  wins: number;
-  losses: number;
+  realized: number | null;
+  net: number | null;
+  wins: number | null;
+  losses: number | null;
   winRate: number | null;
   paperInit: number | null;
   equity: number | null;
@@ -79,19 +79,19 @@ export type RuntimeSelectedData = {
   exposurePct: number | null;
   historyPositions: BotRuntimePositionItem[];
   trades: BotRuntimeTrade[];
-  drawdown: { abs: number; pct: number | null };
+  drawdown: { abs: number | null; pct: number | null };
 };
 
 export type RuntimeSummary = {
   openPositions: number;
   usedMargin: number;
-  realized: number;
+  realized: number | null;
   unrealized: number;
   totalSignals: number;
   dcaCount: number;
   paperStart: number;
-  paperDelta: number;
-  paperEquity: number;
+  paperDelta: number | null;
+  paperEquity: number | null;
 };
 
 export type RuntimeTradeMeta = BotRuntimeTradesResponse["meta"];

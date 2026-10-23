@@ -2,7 +2,6 @@ import { BotMode, Prisma, PrismaClient, SubscriptionPlanCode } from '@prisma/cli
 import { z } from 'zod';
 import { prisma } from '../../prisma/client';
 import {
-  ensureDefaultSubscriptionForUser,
   ensureSubscriptionCatalog,
   SUBSCRIPTION_PLAN_SEED,
 } from './subscriptions.service';
@@ -71,6 +70,15 @@ export type UserEntitlementsContext = {
   entitlements: SubscriptionEntitlements;
 };
 
+export class SubscriptionAssignmentRequiredError extends Error {
+  readonly status = 403;
+
+  constructor() {
+    super('SUBSCRIPTION_ASSIGNMENT_REQUIRED');
+    this.name = 'SubscriptionAssignmentRequiredError';
+  }
+}
+
 type BotLimitDetails = {
   planCode: SubscriptionPlanCode;
   planDisplayName: string;
@@ -116,7 +124,6 @@ export const resolveUserEntitlementsContext = async (
   db: DbClient = prisma,
 ): Promise<UserEntitlementsContext> => {
   await ensureSubscriptionCatalog(db);
-  await ensureDefaultSubscriptionForUser(db, userId);
 
   const active = await db.userSubscription.findFirst({
     where: {
@@ -138,11 +145,7 @@ export const resolveUserEntitlementsContext = async (
   });
 
   if (!active) {
-    return {
-      planCode: 'FREE',
-      planDisplayName: 'Free',
-      entitlements: fallbackEntitlements,
-    };
+    throw new SubscriptionAssignmentRequiredError();
   }
 
   return {

@@ -19,7 +19,7 @@ tags: [soar-map, test, testing, verified_local]
 | --- | --- |
 | Description | Aggregate runtime support test proof covering ownership portfolio history mode-switch runtime history DCA visibility PnL strategy context takeover projection drift and external owner behavior. |
 | File path | apps/api/src/modules/bots/botOwnership.service.test.ts |
-| Related files | apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-history-parity.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-imported-dca-visibility.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-pnl-parity.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-strategy-context.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-takeover.e2e.test.ts |
+| Related files | apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-history-parity.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-imported-dca-visibility.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-pnl-parity.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-strategy-context.e2e.test.ts, apps/api/src/modules/bots/bots.runtime-takeover.e2e.test.ts, apps/api/src/modules/bots/runtimeSignalConditionSummary.service.test.ts |
 | Parent | [[SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES]] |
 | Children |  |
 | Depends on | [[SOAR-SERVICE-BOT-OWNERSHIP]], [[SOAR-SERVICE-BOTS-RUNTIME-READ]], [[SOAR-SERVICE-PAPER-RUNTIME]], [[SOAR-SERVICE-PRETRADE-RISK]] |

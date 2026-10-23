@@ -20,6 +20,7 @@ describe('positions service legacy open-position repair', () => {
     await prisma.botRuntimeSession.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestReport.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.log.deleteMany();
     await prisma.botStrategy.deleteMany();
@@ -237,6 +238,7 @@ describe('positions service manual update active-state guard', () => {
     await prisma.botRuntimeSession.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestReport.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.log.deleteMany();
     await prisma.botStrategy.deleteMany();
@@ -313,6 +315,7 @@ describe('positions service management-mode active-state guard', () => {
     await prisma.botRuntimeSession.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestReport.deleteMany();
+    await prisma.backtestContribution.deleteMany();
     await prisma.backtestRun.deleteMany();
     await prisma.log.deleteMany();
     await prisma.botStrategy.deleteMany();

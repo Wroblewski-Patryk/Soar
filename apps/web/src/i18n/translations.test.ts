@@ -33,6 +33,28 @@ describe("translations", () => {
     expect(deChKeys).toEqual(enKeys);
   });
 
+  it("localizes manual order quantity rule errors in PT and de-CH", () => {
+    const keys = [
+      "dashboard.home.runtime.manualOrderQuantityStepInvalid",
+      "dashboard.home.runtime.manualOrderQuantityRulesUnavailable",
+    ];
+
+    for (const key of keys) {
+      const enValue = readNested(translations.en as unknown as Record<string, unknown>, key);
+      for (const locale of ["pt", "de-CH"] as const) {
+        const value = readNested(translations[locale] as unknown as Record<string, unknown>, key);
+        expect(value, `Missing ${locale} key: ${key}`).toEqual(expect.any(String));
+        expect(String(value).trim().length).toBeGreaterThan(0);
+        expect(value).not.toBe(enValue);
+      }
+    }
+
+    for (const locale of ["pt", "de-CH"] as const) {
+      const stepMessage = readNested(translations[locale] as unknown as Record<string, unknown>, keys[0]);
+      expect(stepMessage).toContain("{value}");
+    }
+  });
+
   it("contains non-empty localized strings for critical nav and runtime keys", () => {
     const criticalKeys = [
       "dashboard.nav.menu",

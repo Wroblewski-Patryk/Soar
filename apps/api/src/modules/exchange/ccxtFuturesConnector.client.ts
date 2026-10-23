@@ -6,6 +6,7 @@ import type {
 
 export type CcxtOrderLike = {
   id?: string;
+  clientOrderId?: string;
   status?: string;
   symbol?: string;
   side?: string;
@@ -60,12 +61,15 @@ export type CcxtWalletCashflowLike = {
 export type CcxtPositionLike = {
   symbol?: string;
   contracts?: number;
+  contractSize?: number;
+  gateFuturesEconomics?: unknown;
   amount?: number;
   positionAmt?: number;
   info?: Record<string, unknown>;
 };
 
 export interface CcxtExchangeLikeClient {
+  precisionMode?: number;
   setSandboxMode?: (enabled: boolean) => void;
   loadMarkets: () => Promise<unknown>;
   fetchPositions?: (
@@ -110,6 +114,12 @@ export interface CcxtExchangeLikeClient {
     symbol?: string,
     params?: Record<string, unknown>
   ) => Promise<CcxtOrderLike>;
+  fetchClosedOrders?: (
+    symbol?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtOrderLike[]>;
   fetchMyTrades?: (
     symbol?: string,
     since?: number,

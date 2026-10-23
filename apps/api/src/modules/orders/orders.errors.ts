@@ -3,6 +3,14 @@ import { DomainError } from '../../lib/errors';
 export const ORDER_ERROR_CODES = {
   botContextNotFound: 'BOT_CONTEXT_NOT_FOUND',
   openPositionSideConflict: 'OPEN_POSITION_SIDE_CONFLICT',
+  openPositionContractUnitMismatch: 'OPEN_POSITION_CONTRACT_UNIT_MISMATCH',
+  openOrderContractUnitMismatch: 'OPEN_ORDER_CONTRACT_UNIT_MISMATCH',
+  entryContractUnitUnavailable: 'ENTRY_CONTRACT_UNIT_UNAVAILABLE',
+  entryNonunitContractUnsupported: 'ENTRY_NONUNIT_CONTRACT_UNSUPPORTED',
+  reduceOnlyPositionRequired: 'REDUCE_ONLY_POSITION_REQUIRED',
+  gatePositionScopeUnverified: 'GATE_POSITION_SCOPE_UNVERIFIED',
+  gatePositionUnitUnsafe: 'GATE_POSITION_UNIT_UNSAFE',
+  livePretradeGateNonunitUnsupported: 'LIVE_PRETRADE_GATE_NONUNIT_UNSUPPORTED',
   paperMarketPriceUnavailable: 'PAPER_MARKET_PRICE_UNAVAILABLE',
   liveRiskAckRequired: 'LIVE_RISK_ACK_REQUIRED',
   liveBotRequired: 'LIVE_BOT_REQUIRED',
@@ -16,13 +24,19 @@ export const ORDER_ERROR_CODES = {
   liveOrderTypeUnsupported: 'LIVE_ORDER_TYPE_UNSUPPORTED',
   liveOrderCancelUnsupported: 'LIVE_ORDER_CANCEL_UNSUPPORTED',
   liveExecutionFailed: 'LIVE_EXECUTION_FAILED',
+  liveExecutionUnknown: 'LIVE_EXECUTION_UNKNOWN',
+  liveIntentConflict: 'LIVE_INTENT_CONFLICT',
   livePretradeMarginLeverageConvergenceFailed: 'LIVE_PRETRADE_MARGIN_LEVERAGE_CONVERGENCE_FAILED',
   livePretradeInvalidQuantity: 'LIVE_PRETRADE_INVALID_QUANTITY',
   livePretradeExternalPositionOpen: 'LIVE_PRETRADE_EXTERNAL_POSITION_OPEN',
   livePretradeAmountBelowMin: 'LIVE_PRETRADE_AMOUNT_BELOW_MIN',
   livePretradeAmountPrecision: 'LIVE_PRETRADE_AMOUNT_PRECISION',
+  livePretradeContractSizeUnavailable: 'LIVE_PRETRADE_CONTRACT_SIZE_UNAVAILABLE',
+  livePretradeContractUnitMismatch: 'LIVE_PRETRADE_CONTRACT_UNIT_MISMATCH',
   livePretradeNotionalBelowMin: 'LIVE_PRETRADE_NOTIONAL_BELOW_MIN',
   livePretradeNotionalPriceUnavailable: 'LIVE_PRETRADE_NOTIONAL_PRICE_UNAVAILABLE',
+  livePretradePaused: 'LIVE_PRETRADE_PAUSED',
+  livePretradePauseUnavailable: 'LIVE_PRETRADE_PAUSE_UNAVAILABLE',
   orderNotCancelable: 'ORDER_NOT_CANCELABLE',
   orderCancelRiskAckRequired: 'ORDER_CANCEL_RISK_ACK_REQUIRED',
   orderCloseRiskAckRequired: 'ORDER_CLOSE_RISK_ACK_REQUIRED',
@@ -45,6 +59,22 @@ export const orderErrors = {
   botContextNotFound: () => new OrderDomainError(ORDER_ERROR_CODES.botContextNotFound, 404),
   openPositionSideConflict: () =>
     new OrderDomainError(ORDER_ERROR_CODES.openPositionSideConflict, 409),
+  openPositionContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.openPositionContractUnitMismatch, 409),
+  openOrderContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.openOrderContractUnitMismatch, 409),
+  entryContractUnitUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.entryContractUnitUnavailable, 409),
+  entryNonunitContractUnsupported: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.entryNonunitContractUnsupported, 409),
+  reduceOnlyPositionRequired: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.reduceOnlyPositionRequired, 409),
+  gatePositionScopeUnverified: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.gatePositionScopeUnverified, 409),
+  gatePositionUnitUnsafe: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.gatePositionUnitUnsafe, 409),
+  livePretradeGateNonunitUnsupported: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeGateNonunitUnsupported, 409),
   paperMarketPriceUnavailable: () =>
     new OrderDomainError(ORDER_ERROR_CODES.paperMarketPriceUnavailable, 400),
   liveRiskAckRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveRiskAckRequired, 400),
@@ -62,6 +92,9 @@ export const orderErrors = {
   liveOrderCancelUnsupported: () =>
     new OrderDomainError(ORDER_ERROR_CODES.liveOrderCancelUnsupported, 501),
   liveExecutionFailed: () => new OrderDomainError(ORDER_ERROR_CODES.liveExecutionFailed, 502),
+  liveExecutionUnknown: (details: { orderId: string; clientOrderId: string }) =>
+    new OrderDomainError(ORDER_ERROR_CODES.liveExecutionUnknown, 503, details),
+  liveIntentConflict: () => new OrderDomainError(ORDER_ERROR_CODES.liveIntentConflict, 409),
   livePretradeMarginLeverageConvergenceFailed: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeMarginLeverageConvergenceFailed, 400),
   livePretradeInvalidQuantity: () =>
@@ -72,10 +105,17 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountBelowMin, 400),
   livePretradeAmountPrecision: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountPrecision, 400),
+  livePretradeContractSizeUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeContractSizeUnavailable, 400),
+  livePretradeContractUnitMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeContractUnitMismatch, 409),
   livePretradeNotionalBelowMin: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalBelowMin, 400),
   livePretradeNotionalPriceUnavailable: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalPriceUnavailable, 400),
+  livePretradePaused: () => new OrderDomainError(ORDER_ERROR_CODES.livePretradePaused, 503),
+  livePretradePauseUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradePauseUnavailable, 503),
   orderNotCancelable: () => new OrderDomainError(ORDER_ERROR_CODES.orderNotCancelable, 400),
   orderCancelRiskAckRequired: () =>
     new OrderDomainError(ORDER_ERROR_CODES.orderCancelRiskAckRequired, 400),

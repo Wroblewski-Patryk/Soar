@@ -37,9 +37,8 @@ export const buildSignalConditionSummary = (
   if (!rules) return null;
 
   if (direction === 'EXIT') {
-    return rules.noMatchAction === 'EXIT'
-      ? 'No-match action: EXIT'
-      : 'No-match action: HOLD';
+    // Entry rules cannot identify whether an EXIT came from strategy or position protection.
+    return null;
   }
 
   if (direction === 'LONG' || direction === 'SHORT') {
